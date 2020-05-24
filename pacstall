@@ -47,13 +47,13 @@ while test $# -gt 0; do
       ;;
     -S)
      repo=Henryws
-     echo what package do you want to search?
+     echo "what package do you want to search for?"
      read $package
      wget -q --spider https://github.com/$repo/test-pacstall/tree/master/packages/$package/$package.tar.xz
      if [ $? -eq 0 ]; then
-        echo Package is available
+        echo "$package is available"
      else
-        echo Package is not available. Add another repo or check your spelling
+        echo "$package is not available. Add another repo or check your spelling"
      fi
       ;;
     -R)
