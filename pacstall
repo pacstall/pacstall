@@ -47,18 +47,15 @@ while test $# -gt 0; do
       ;;
     -S)
      repo=Henryws
-     echo "what package do you want to search?"
-     read $package
-     wget -q --spider https://github.com/$repo/test-pacstall/blob/master/packages/$package/$package.tar.xz
+     read -p "what package do you want to search for?" search
+     wget -q --spider https://github.com/$repo/test-pacstall/tree/master/packages/$search/
      if [ $? -eq 0 ]; then
-        echo "$package is available. Do you want to see the readme?"
-	select yn in "Yes" "No"
-	case $yn in
-	    Yes ) pandoc -t plain https://raw.githubusercontent.com/$repo/test-pacstall/master/packages/$package/README.md | less;;
-            No ) exit;;
-       esac
+        read -p ""$search" is available in the "$repo" repository. Do you want to see the readme?" answer
+	if [[ $answer = y ]] ; then
+	pandoc -t plain https://raw.githubusercontent.com/$repo/test-pacstall/master/packages/$search/README.md | less
+        fi
      else
-        echo $package is not available. Add another repo or check your spelling
+        echo $search is not available. Add another repo or check your spelling
      fi
       ;;
     -R)
