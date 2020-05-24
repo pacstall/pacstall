@@ -3,4 +3,4 @@ sudo apt install -y qtbase5-dev libqt5svg5-dev libqt5x11extras5-dev libkf5window
 mkdir build && cd build
 cmake ..
 make
-sudo make install
+sudo checkinstall
