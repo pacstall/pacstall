@@ -47,11 +47,16 @@ while test $# -gt 0; do
       ;;
     -S)
      repo=Henryws
-     echo "what package do you want to search for?"
+     echo "what package do you want to search?"
      read $package
      wget -q --spider https://github.com/$repo/test-pacstall/blob/master/packages/$package/$package.tar.xz
      if [ $? -eq 0 ]; then
-        echo $package is available
+        echo "$package is available. Do you want to see the readme?"
+	select yn in "Yes" "No"
+	case $yn in
+	    Yes ) pandoc -t plain https://raw.githubusercontent.com/$repo/test-pacstall/master/packages/$package/README.md | less;;
+            No ) exit;;
+       esac
      else
         echo $package is not available. Add another repo or check your spelling
      fi
