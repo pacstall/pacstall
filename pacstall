@@ -13,7 +13,7 @@ while test $# -gt 0; do
       exit 0
       ;;
     -I)
-      repo=' cat /usr/share/pacstall/repo/pacstallrepo.txt'
+      repo='cat /usr/share/pacstall/repo/pacstallrepo.txt'
       RED='\033[0;31m'
       CYAN='\033[0;36m'
       NC='\033[0m' # No Color
