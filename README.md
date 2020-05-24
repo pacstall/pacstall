@@ -5,5 +5,4 @@ ONLY WORKS WITH COMPILED PACKAGES THAT CAN BE INSTALLED WITH:
   
   >sudo make install
   
-  eg: most suckless programs (thats what im starting out with but i will add more options down the road)
-Only works with tar.xz (recommended) or tar (if you want)
+Only works with tar.xz files (for now)
