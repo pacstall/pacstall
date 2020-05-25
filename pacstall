@@ -14,7 +14,7 @@ while test $# -gt 0; do
       exit 0
       ;;
     -I)
-      repo='cat /usr/share/pacstall/repo/pacstallrepo.txt'
+      repo=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       RED='\033[0;31m'
       CYAN='\033[0;36m'
       NC='\033[0m' # No Color
@@ -33,15 +33,13 @@ while test $# -gt 0; do
       echo "cleaning package folder"
       sudo rm -rf $package
       sudo mkdir $package
-      wget https://raw.githubusercontent.com/$repo/test-pacstall/master/packages/$package/depends.sh | bash
+      wget -O- https://raw.githubusercontent.com/$repo/test-pacstall/master/packages/$package/depends.sh | bash
       wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/test-pacstall/raw/master/packages/$package/$package.tar.xz
       echo -e "${RED}extracting...${NC}"
       tar -xf $package.tar.xz
       cd $package
       echo -e "${CYAN}Downloading and running install script for ${NC}$package"
-      wget https://raw.githubusercontent.com/$repo/test-pacstall/master/packages/$package/install.sh | bash
-      sudo chmod a+x install.sh
-      sudo ./install.sh
+      wget -O- https://raw.githubusercontent.com/$repo/test-pacstall/master/packages/$package/install.sh | bash
       echo "Cleaning up..."
       cd /tmp/pacstall
       rm -rf $package*
@@ -98,9 +96,9 @@ while test $# -gt 0; do
       done
       ;;
     -V)
-      echo "version 0.1.3"
+      echo "version 0.1.9"
       break
-      ;;
+      ;;    
     *)
       break
       ;;
