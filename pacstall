@@ -105,6 +105,7 @@ while test $# -gt 0; do
     -U)
       sudo wget -q https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall -O /bin/pacstall
       echo "Updating complete"
+      ;;
     *)
       break
       ;;
