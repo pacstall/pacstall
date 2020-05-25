@@ -3,4 +3,9 @@ mkdir build
 cd build
 cmake ..
 make
-sudo make install
+if sudo checkinstall ; then
+    echo "checkinstall succeeded"
+else
+    echo "checkinstall failed... running make install"
+    sudo make install
+fi
