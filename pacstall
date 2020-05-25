@@ -11,6 +11,7 @@ while test $# -gt 0; do
       echo "-S, --Search       Search for package"
       echo "-R, --Remove      Removes package"
       echo "-C, --repo-select	Chooses repo"
+      echo "-U, --pacstall-update	Update script"
       exit 0
       ;;
     -I)
@@ -101,6 +102,9 @@ while test $# -gt 0; do
       echo "version 0.1.9"
       break
       ;;    
+    -U)
+      sudo wget -P -O /bin https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall
+      echo "Updating complete"
     *)
       break
       ;;
