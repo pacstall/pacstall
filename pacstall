@@ -11,6 +11,7 @@ while test $# -gt 0; do
       echo "-S, --Search       Search for package"
       echo "-R, --Remove      Removes package"
       echo "-C, --repo-select	Chooses repo"
+      echo "-U, --pacstall-update	Update script"
       exit 0
       ;;
     -I)
@@ -33,13 +34,13 @@ while test $# -gt 0; do
       echo "cleaning package folder"
       sudo rm -rf $package
       sudo mkdir $package
-      wget -O- https://raw.githubusercontent.com/$repo/test-pacstall/master/packages/$package/depends.sh | bash
-      wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/test-pacstall/raw/master/packages/$package/$package.tar.xz
+      wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/depends.sh | bash
+      wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz
       echo -e "${RED}extracting...${NC}"
       tar -xf $package.tar.xz
       cd $package
       echo -e "${CYAN}Downloading and running install script for ${NC}$package"
-      wget -O- https://raw.githubusercontent.com/$repo/test-pacstall/master/packages/$package/install.sh | bash
+      wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/install.sh | bash
       echo "Cleaning up..."
       cd /tmp/pacstall
       rm -rf $package*
@@ -47,11 +48,11 @@ while test $# -gt 0; do
     -S)
      repo=Henryws
      read -p "what package do you want to search for?" search
-     wget -q --spider https://github.com/$repo/test-pacstall/tree/master/packages/$search/
+     wget -q --spider https://github.com/$repo/pacstall/tree/master/packages/$search/
      if [ $? -eq 0 ]; then
         read -p ""$search" is available in the "$repo" repository. Do you want to see the readme?" answer
 	if [[ $answer = y ]] ; then
-	pandoc -t plain https://raw.githubusercontent.com/$repo/test-pacstall/master/packages/$search/README.md | less
+	pandoc -t plain https://raw.githubusercontent.com/$repo/pacstall/master/packages/$search/README.md | less
         fi
      else
         echo $search is not available. Add another repo or check your spelling
@@ -99,6 +100,9 @@ while test $# -gt 0; do
       echo "version 0.1.9"
       break
       ;;    
+    -U)
+      sudo wget -P /bin https://raw.githubusercontent.com/$repo/pacstall/pacstall
+      echo "Updating complete"
     *)
       break
       ;;
