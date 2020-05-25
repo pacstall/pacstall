@@ -12,4 +12,4 @@ surf http://your-url
 
 You can navigate by clicking on links on the displayed page. Hit Ctrl-g to enter a new URL. For more commands consult
 
-man surf
+> man surf
