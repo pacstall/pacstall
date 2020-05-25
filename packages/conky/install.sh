@@ -1,4 +1,3 @@
-mkdir build && cd build
 make
 if checkinstall ; then
     echo "checkinstall succeded... Installing"
