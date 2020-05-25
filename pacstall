@@ -99,7 +99,7 @@ while test $# -gt 0; do
       done
       ;;
     -V)
-      echo "version 0.1.9"
+      echo "version 0.2.0"
       break
       ;;    
     -U)
