@@ -10,6 +10,7 @@ while test $# -gt 0; do
       echo "-I, --Install               Installs package"
       echo "-S, --Search       Search for package"
       echo "-R, --Remove      Removes package"
+      echo "-C, --repo-select	Chooses repo"
       exit 0
       ;;
     -I)
@@ -32,9 +33,7 @@ while test $# -gt 0; do
       echo "cleaning package folder"
       sudo rm -rf $package
       sudo mkdir $package
-      
-      echo "Installing dependencies"
-      wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/test-pacstall/raw/master/packages/$package/depends.sh | bash
+
       wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/test-pacstall/raw/master/packages/$package/$package.tar.xz
       echo -e "${RED}extracting...${NC}"
       tar -xf $package.tar.xz
@@ -70,6 +69,36 @@ while test $# -gt 0; do
           echo "$package could not be removed"
       fi
       ;;
+    -C)
+      echo "repo changer"
+      cmd=(dialog --separate-output --checklist "Select Repository:" 22 76 16)
+      options=(1 "Henryws" on    # any option can be set to default to "on"
+               2 "Option 2" off
+               3 "Option 3" off
+               4 "Option 4" off)
+      choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
+      clear
+      for choice in $choices
+      do
+          case $choice in
+              1)
+                  echo "Henryws repository selected" && echo Henryws > /usr/share/pacstall/repo/pacstallrepo.txt
+                  exit
+                  ;;
+              2)
+                  echo "Second Option"
+                  ;;
+              3)
+                  echo "Third Option"
+                  ;;
+              4)
+                  echo "Fourth Option"
+                  ;;
+          esac
+      done
+      ;;
+    -V)
+      echo "version 0.1.3"
     *)
       break
       ;;
