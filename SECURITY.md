@@ -6,7 +6,7 @@ This is what versions are supported. If you want to check which version your on,
 
 | Version | Supported          |
 | ------- | ------------------ |
-| > 0.1.x   | :white_check_mark: |
+| > 0.1.9   | :white_check_mark: |
 | 0.1.0   | :x:                |
 | 0.0.x   | :x:                |
 
