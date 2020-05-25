@@ -99,6 +99,8 @@ while test $# -gt 0; do
       ;;
     -V)
       echo "version 0.1.3"
+      break
+      ;;
     *)
       break
       ;;
