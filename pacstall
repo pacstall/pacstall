@@ -123,6 +123,7 @@ while test $# -gt 0; do
     -L)
       wc -l /etc/pacstall_packages
       cat /etc/pacstall_packages
+      exit 0
       ;;
      *)
       break
