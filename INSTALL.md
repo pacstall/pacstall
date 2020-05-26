@@ -6,4 +6,5 @@
 To install on Debian based systems, you can install the deb file by clicking on the release icon above and choosing the current version. To install on other systems, or if you don't want the deb package, you can run these two commands:
 
 > sudo wget -q https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall -O /bin/pacstall
+
 > echo Henryws > /usr/share/pacstall/repo/pacstallrepo.txt
