@@ -37,7 +37,7 @@ while test $# -gt 0; do
       # This is where pacstall will alert the user of anything they might need to know that could affect the installation of there package
       wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/alerts.sh | bash
       wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/depends.sh | bash
-      wget -q --show-progress --progress=bar:force:noscroll -r --no-parent -A "$package*" https://github.com/$repo/pacstall/raw/master/packages/$package/
+      wget -q --show-progress --progress=bar:force:noscroll -r https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz
       echo -e "${RED}extracting...${NC}"
       tar -xf $package.tar.xz
       cd $package
