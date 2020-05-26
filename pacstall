@@ -56,6 +56,7 @@ while test $# -gt 0; do
       echo "Cleaning up..."
       cd /tmp/pacstall
       rm -rf $package*
+      exit 0
       ;;
     -S)
      repo=Henryws
@@ -76,8 +77,10 @@ while test $# -gt 0; do
       sudo dpkg -r $package
       if [ $? -eq 0 ]; then
           echo "$package has been succesfuly removed"
+	  exit 0
       else
           echo "$package could not be removed"
+	  exit 1
       fi
       ;;
     -C)
@@ -114,8 +117,14 @@ while test $# -gt 0; do
       ;;    
     -U)
       sudo wget -q https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall -O /bin/pacstall
-      echo "Updating complete"
-      exit 0
+      if [ $? -eq 0 ]
+      then
+        echo "Successfully updated"
+	exit 0
+      else
+        echo "Update failed" >&2
+	exit 1
+      fi
       ;;
     *)
       break
