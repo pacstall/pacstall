@@ -19,12 +19,12 @@ while test $# -gt 0; do
       RED='\033[0;31m'
       CYAN='\033[0;36m'
       NC='\033[0m' # No Color
+      GREEN='\033[0;32m'
       if [ ! -d /tmp/pacstall ]; then
 	  mkdir -p /tmp/pacstall;
       fi
       echo -e "${RED}input package name...${NC}"
       read package
-
       #This is the part where it searches your package on all repos and puts it in /tmp
       echo "Strings are equal, proceeding to install $package"
       echo "cleaning /tmp/pacstall"
@@ -51,11 +51,14 @@ while test $# -gt 0; do
 	  status=$?
       fi
       cd $package
-      echo -e "${CYAN}Downloading and running install script for ${NC}$package"
+      echo -e "${CYAN}Downloading and running install script for ${GREEN}$package...${NC}"
       wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/install.sh | bash
       echo "Cleaning up..."
       cd /tmp/pacstall
       rm -rf $package*
+      echo "Indexing..."
+      echo $package >> /etc/pacstall_packages
+      sudo sed -i '$!N; /^\(.*\)\n\1$/!P; D' /etc/pacstall_packages
       [ $? -eq 0 ] || exit 1
       ;;
     -S)
@@ -118,7 +121,11 @@ while test $# -gt 0; do
       echo "Updating complete"
       exit 0
       ;;
-    *)
+    -L)
+      wc -l /etc/pacstall_packages
+      cat /etc/pacstall_packages
+      ;;
+     *)
       break
       ;;
   esac
