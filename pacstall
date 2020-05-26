@@ -48,7 +48,6 @@ while test $# -gt 0; do
           wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.zip
           echo -e "${RED}extracting...${NC}"
           unzip $package.zip
-	  status=$?
       fi
       cd $package
       echo -e "${CYAN}Downloading and running install script for ${GREEN}$package...${NC}"
