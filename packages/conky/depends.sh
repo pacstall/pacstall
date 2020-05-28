@@ -5,5 +5,5 @@ if [ $equals = /usr/bin/apt ] ; then
 fi
 equals=$(command -v dnf)
 if [ $equals = /usr/bin/dnf ] ; then
-    sudo dnf install -y cmake imlib2 libcurl libX11 libXdamage glibc cairo libcurl libgcc lua-libs
+    sudo dnf install -y cmake imlib2 libcurl libX11 libXdamage glibc cairo libcurl libgcc lua-libs g++ ncurses-devel libx11-devel libXdamage-devel libXft-devel libXinerama-devel libcurl-devel lua-devel imlib2-devel
 fi
