@@ -5,6 +5,6 @@ if [ $equals == /usr/bin/apt ] ; then
 fi
 equals=$(command -v dnf)
 if [ $equals == /usr/bin/dnf ] ; then
-    sudo dnf install -y python3-pip
+    sudo dnf install -y python3-pip ninja-build python27 python3-setuptools
 fi
 pip3 install --user meson
