@@ -40,13 +40,13 @@ while test $# -gt 0; do
       if wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz ; then
           echo "tar.xz detected"
           echo -e "${RED}extracting...${NC}"
-          tar -xf $package.tar.xz
+          sudo tar -xf $package.tar.xz
           status=$?
       else
           echo "tar.xz not detected... trying zip"
           wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.zip
           echo -e "${RED}extracting...${NC}"
-          unzip $package.zip
+          sudo unzip $package.zip
       fi
       cd $package
       echo -e "${CYAN}Downloading and running install script for ${GREEN}$package...${NC}"
