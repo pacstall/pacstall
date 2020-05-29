@@ -5,5 +5,5 @@ sudo apt install -y gcc autoconf libtool gettext libdb-dev libpopt-dev libncurse
 fi
 if [ command -v dnf -eq /usr/bin/dnf ]
 then
-sudo yum install aspell enca faad2-libs ffmpeg-libs fluid-soundfont-common fluid-soundfont-lite-patches intel-mediasdk jack-audio-connection-kit libaom libass libdav1d libffado libguess libid3tag libmad libmodplug librcc librcd libtimidity libva libvdpau libvmaf libxml++ ocl-icd opencore-amr pugixml srt-libs vid.stab vo-amrwbenc x264-libs x265-libs xvidcore zimg zvbi
+sudo yum install aspell enca faad2-libs ffmpeg-libs fluid-soundfont-common fluid-soundfont-lite-patches intel-mediasdk jack-audio-connection-kit libaom libass libdav1d libffado libguess libid3tag libmad libmodplug librcc librcd libtimidity libva libvdpau libvmaf libxml++ ocl-icd opencore-amr pugixml srt-libs vid.stab vo-amrwbenc x264-libs x265-libs xvidcore zimg zvbi libtool
 fi
