@@ -33,7 +33,6 @@ while test $# -gt 0; do
       cd /tmp/pacstall/
       echo "cleaning package folder"
       sudo rm -rf $package
-      sudo mkdir $package
       # This is where pacstall will alert the user of anything they might need to know that could affect the installation of there package
       wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/alerts.sh | bash
       wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/depends.sh | bash
