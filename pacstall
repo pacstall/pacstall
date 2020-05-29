@@ -33,7 +33,7 @@ while test $# -gt 0; do
       sudo rm -rf /tmp/pacstall
       sudo mkdir /tmp/pacstall
       cd /tmp/pacstall/
-      echo "cleaning package folder"
+      echo "cleaning package build directory"
       sudo rm -rf $package
       # This is where pacstall will alert the user of anything they might need to know that could affect the installation of there package
       wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/alerts.sh | bash
@@ -58,14 +58,14 @@ while test $# -gt 0; do
       echo "Indexing..."
       echo $package >> /etc/pacstall_packages
       sudo sed -i '$!N; /^\(.*\)\n\1$/!P; D' /etc/pacstall_packages
-      exit 1
+      exit 0
       ;;
     -S)
      repo=Henryws
      read -p "what package do you want to search for?" search
      wget -q --spider https://github.com/$repo/pacstall/tree/master/packages/$search/
      if [ $? -eq 0 ]; then
-        read -p ""$search" is available in the "$repo" repository. Do you want to see the readme?" answer
+        read -p "${GREEN}"$search"${NC} is available in the "$repo" repository. Do you want to see the readme?" answer
 	if [[ $answer = y ]] ; then
 	pandoc -t plain https://raw.githubusercontent.com/$repo/pacstall/master/packages/$search/README.md | less
         fi
