@@ -1,7 +1,7 @@
 #!/bin/bash
 autoreconf -if
 ./configure
-make -j 2
+make
 if sudo checkinstall ; then
     echo "checkinstall succeded"
 else
