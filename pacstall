@@ -56,9 +56,7 @@ while test $# -gt 0; do
       echo "Indexing..."
       echo $package >> /etc/pacstall_packages
       sudo sed -i '$!N; /^\(.*\)\n\1$/!P; D' /etc/pacstall_packages
-      if [[ $? -ne 0 ]] ; then
       exit 1
-      fi
       ;;
     -S)
      repo=Henryws
