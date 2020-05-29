@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "This package is apt only"
+echo "This package will work with Deb based systems and RPM based systems"
