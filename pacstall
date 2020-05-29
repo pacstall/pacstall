@@ -7,11 +7,13 @@ while test $# -gt 0; do
       echo "$package [options] application [arguments]"
       echo " "
       echo "options:"
-      echo "-I, --Install               Installs package"
-      echo "-S, --Search       Search for package"
-      echo "-R, --Remove      Removes package"
-      echo "-C, --repo-select	Chooses repo"
-      echo "-U, --pacstall-update	Update script"
+      echo "-I, Installs package"
+      echo "-S, Search for package"
+      echo "-R, Removes package"
+      echo "-C,	Chooses repo"
+      echo "-U,	Update script"
+      echo "-V, Prints version number"
+      echo "-L, Lists installed packages"
       exit 0
       ;;
     -I)
