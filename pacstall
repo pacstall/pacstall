@@ -15,6 +15,7 @@ while test $# -gt 0; do
       exit 0
       ;;
     -I)
+      package=$2
       repo=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       RED='\033[0;31m'
       CYAN='\033[0;36m'
@@ -23,8 +24,8 @@ while test $# -gt 0; do
       if [ ! -d /tmp/pacstall ]; then
 	  mkdir -p /tmp/pacstall;
       fi
-      echo -e "${RED}input package name...${NC}"
-      read package
+      #echo -e "${RED}input package name...${NC}"
+      #read package
       #This is the part where it searches your package on all repos and puts it in /tmp
       echo "Strings are equal, proceeding to install $package"
       echo "cleaning /tmp/pacstall"
