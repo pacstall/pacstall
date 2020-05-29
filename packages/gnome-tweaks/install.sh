@@ -1,4 +1,4 @@
 #!/bin/bash
-~/.local/bin/meson builddir
+meson builddir
 ninja -C builddir
 ninja -C builddir install
