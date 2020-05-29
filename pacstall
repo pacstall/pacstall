@@ -111,7 +111,7 @@ while test $# -gt 0; do
       done
       ;;
     -V)
-      echo "version 0.2.3"
+      echo "version 0.2.4"
       break
       ;;    
     -U)
