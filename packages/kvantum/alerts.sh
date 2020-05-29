@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "pacman and apt versions are available"
+echo "dnf and apt versions are available"
