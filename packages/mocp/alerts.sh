@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "apt only"
+echo "apt only, currently working on rpm version"
