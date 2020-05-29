@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "apt version only"
+echo "apt and rpm version only"
