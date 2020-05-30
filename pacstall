@@ -14,6 +14,7 @@ while test $# -gt 0; do
       echo "-U,	Update script"
       echo "-V, Prints version number"
       echo "-L, Lists installed packages"
+      echo "-D, Downloads but doesn't install"
       exit 0
       ;;
     -I)
