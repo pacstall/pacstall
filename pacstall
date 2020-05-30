@@ -53,12 +53,13 @@ while test $# -gt 0; do
       cd $package
       echo -e "${CYAN}Downloading and running install script for ${GREEN}$package...${NC}"
       wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/install.sh | bash
-      echo "Cleaning up..."
+      echo -e "${GREEN}Cleaning up...${NC}"
       cd /tmp/pacstall
       rm -rf $package*
       echo "Indexing..."
       echo $package >> /etc/pacstall_packages
       sudo sed -i '$!N; /^\(.*\)\n\1$/!P; D' /etc/pacstall_packages
+      echo -e "${CYAN}Done!!${NC}"
       exit 0
       ;;
     -S)
@@ -66,7 +67,7 @@ while test $# -gt 0; do
      read -p "what package do you want to search for?" search
      wget -q --spider https://github.com/$repo/pacstall/tree/master/packages/$search/
      if [ $? -eq 0 ]; then
-        read -p "${GREEN}"$search"${NC} is available in the "$repo" repository. Do you want to see the readme?" answer
+        read -p "${GREEN}"$search"${NC} is available in the ${PURPLE}"$repo"${NC} repository. Do you want to see the readme?" answer
 	if [[ $answer = y ]] ; then
 	pandoc -t plain https://raw.githubusercontent.com/$repo/pacstall/master/packages/$search/README.md | less
         fi
@@ -97,7 +98,7 @@ while test $# -gt 0; do
       do
           case $choice in
               1)
-                  echo "Henryws repository selected" && echo Henryws > /usr/share/pacstall/repo/pacstallrepo.txt
+                  echo -e "${PURPLE}Henryws${NC} repository selected" && echo Henryws > /usr/share/pacstall/repo/pacstallrepo.txt
                   exit
                   ;;
               2)
