@@ -133,13 +133,13 @@ while test $# -gt 0; do
 	  mkdir -p /tmp/pacstall/cache;
        fi
        cd /usr/share/pacstall/cache
-       if wget -q -P --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz /usr/share/pacstall/cache; then
+       if wget -q -P /usr/share/pacstall/cache --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz; then
           echo "tar.xz detected"
        else
           echo "tar.xz not detected... trying zip"
-          wget -q -P --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.zip /usr/share/pacstall/cache
-       echo -e "Saved $package to ${YELLOW}/usr/share/pacstall/cache/${NC}"
+          wget -q -P /usr/share/pacstall/cache --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.zip
        fi
+       echo -e "Saved $package to ${YELLOW}/usr/share/pacstall/cache/${NC}"
      *)
       break
       ;;
