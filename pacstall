@@ -37,10 +37,12 @@ while test $# -gt 0; do
       echo "cleaning package build directory"
       sudo rm -rf $package
       # This is where pacstall will alert the user of anything they might need to know that could affect the installation of there package
-      echo "File exists, proceeding to install."
       wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/alerts.sh | bash
+      sleep .5
+      clear
+      echo "Installing dependencies for $package"
       wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/depends.sh | bash
-      
+      echo "#################################Installing#################################"
       if wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz ; then
           echo "tar.xz detected"
           echo -e "${RED}extracting...${NC}"
