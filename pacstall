@@ -36,29 +36,36 @@ while test $# -gt 0; do
       echo "cleaning package build directory"
       sudo rm -rf $package
       # This is where pacstall will alert the user of anything they might need to know that could affect the installation of there package
-      wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/alerts.sh | bash
-      wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/depends.sh | bash
+      if wget -q --method=HEAD https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package;
+       then
+        echo "File exists, proceeding to install."
+        wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/alerts.sh | bash
+        wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/depends.sh | bash
       
-      if wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz ; then
-          echo "tar.xz detected"
-          echo -e "${RED}extracting...${NC}"
-          sudo tar -xf $package.tar.xz
-      else
-          echo "tar.xz not detected... trying zip"
-          wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.zip
-          echo -e "${RED}extracting...${NC}"
-          sudo unzip /tmp/pacstall/$package.zip
+        if wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz ; then
+            echo "tar.xz detected"
+            echo -e "${RED}extracting...${NC}"
+            sudo tar -xf $package.tar.xz
+        else
+            echo "tar.xz not detected... trying zip"
+            wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.zip
+            echo -e "${RED}extracting...${NC}"
+            sudo unzip /tmp/pacstall/$package.zip
+        fi
+        cd $package
+        echo -e "${CYAN}Downloading and running install script for ${GREEN}$package...${NC}"
+        wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/install.sh | bash
+        echo "Cleaning up..."
+        cd /tmp/pacstall
+        rm -rf $package*
+        echo "Indexing..."
+        echo $package >> /etc/pacstall_packages
+        sudo sed -i '$!N; /^\(.*\)\n\1$/!P; D' /etc/pacstall_packages
+        exit 0
+       else
+        echo "File was not found! Sorry!"
+	exit 1
       fi
-      cd $package
-      echo -e "${CYAN}Downloading and running install script for ${GREEN}$package...${NC}"
-      wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/install.sh | bash
-      echo "Cleaning up..."
-      cd /tmp/pacstall
-      rm -rf $package*
-      echo "Indexing..."
-      echo $package >> /etc/pacstall_packages
-      sudo sed -i '$!N; /^\(.*\)\n\1$/!P; D' /etc/pacstall_packages
-      exit 0
       ;;
     -S)
      repo=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
