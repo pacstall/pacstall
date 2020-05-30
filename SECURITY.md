@@ -6,8 +6,10 @@ This is what versions are supported. If you want to check which version your on,
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 0.2.2   | :heavy_check_mark: |
-| 0.2.1   | :white_check_mark: |
+| 0.2.4   | :heavy_check_mark  |
+| 0.2.3   | :white_check_mark  |
+| 0.2.2   | :x:                |
+| 0.2.1   | :x:                |
 | 0.2.0   | :x:                |
 | 0.1.9   | :x:                |
 | 0.1.0   | :x:                |
@@ -17,7 +19,7 @@ This is what versions are supported. If you want to check which version your on,
 
 :white_check_mark: = Currently supported but not current version
 
-:x: = Not supported
+:x: = Not supported (run sudo pacstall -U to update to supported version)
 
 ## Reporting a Vulnerability
 
