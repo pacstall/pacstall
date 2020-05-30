@@ -61,7 +61,7 @@ while test $# -gt 0; do
       exit 0
       ;;
     -S)
-     repo=Henryws
+     repo=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
      read -p "what package do you want to search for?" search
      wget -q --spider https://github.com/$repo/pacstall/tree/master/packages/$search/
      if [ $? -eq 0 ]; then
@@ -126,16 +126,18 @@ while test $# -gt 0; do
       exit 0
       ;;
      -D)
+       package=$2
+       repo=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
        #Downloads but doesn't install
        if [ ! -d /tmp/pacstall/cache ]; then
 	  mkdir -p /tmp/pacstall/cache;
        fi
        cd /usr/share/pacstall/cache
-       if wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz ; then
+       if wget -q -P --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz /usr/share/pacstall/cache; then
           echo "tar.xz detected"
        else
           echo "tar.xz not detected... trying zip"
-          wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.zip
+          wget -q -P --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.zip /usr/share/pacstall/cache
        echo -e "Saved $package to ${YELLOW}/usr/share/pacstall/cache/${NC}"
        fi
      *)
