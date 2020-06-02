@@ -69,7 +69,7 @@ while test $# -gt 0; do
      if [ $? -eq 0 ]; then
         read -p "${GREEN}"$search"${NC} is available in the ${PURPLE}"$repo"${NC} repository. Do you want to see the readme?" answer
 	if [[ $answer = y ]] ; then
-	w3m https://raw.githubusercontent.com/$repo/pacstall/master/packages/$search/README.md
+	pandoc -t plain https://raw.githubusercontent.com/$repo/pacstall/master/packages/$search/README.md | less
         fi
      else
         echo $search is not available. Add another repo or check your spelling
