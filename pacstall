@@ -10,8 +10,8 @@ while test $# -gt 0; do
       echo "-I, Installs package"
       echo "-S, Search for package"
       echo "-R, Removes package"
-      echo "-C,	Chooses repo"
-      echo "-U,	Update script"
+      echo "-C, Chooses repo"
+      echo "-U, Update script"
       echo "-V, Prints version number"
       echo "-L, Lists installed packages"
       echo "-D, Downloads but doesn't install"
@@ -37,12 +37,9 @@ while test $# -gt 0; do
       echo "cleaning package build directory"
       sudo rm -rf $package
       # This is where pacstall will alert the user of anything they might need to know that could affect the installation of there package
+      echo "File exists, proceeding to install."
       wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/alerts.sh | bash
-      sleep .5
-      clear
-      echo "Installing dependencies for $package"
       wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/depends.sh | bash
-      echo "#################################Installing#################################"
       if wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz ; then
           echo "tar.xz detected"
           echo -e "${RED}extracting...${NC}"
@@ -66,21 +63,20 @@ while test $# -gt 0; do
       exit 0
       ;;
     -S)
+     search=$2
      repo=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-     read -p "what package do you want to search for?" search
      wget -q --spider https://github.com/$repo/pacstall/tree/master/packages/$search/
      if [ $? -eq 0 ]; then
         read -p "${GREEN}"$search"${NC} is available in the ${PURPLE}"$repo"${NC} repository. Do you want to see the readme?" answer
 	if [[ $answer = y ]] ; then
-	pandoc -t plain https://raw.githubusercontent.com/$repo/pacstall/master/packages/$search/README.md | less
+	w3m https://raw.githubusercontent.com/$repo/pacstall/master/packages/$search/README.md
         fi
      else
         echo $search is not available. Add another repo or check your spelling
      fi
       ;;
     -R)
-      echo "what package should be removed?"
-      read $package
+      package=$2
       sudo dpkg -r $package
       if [ $? -eq 0 ]; then
           echo "$package has been succesfuly removed"
@@ -117,9 +113,9 @@ while test $# -gt 0; do
       done
       ;;
     -V)
-      echo "version 0.2.5"
+      echo "version 0.2.4"
       break
-      ;;    
+      ;;
     -U)
       sudo wget -q https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall -O /bin/pacstall
       echo "Updating complete"
@@ -150,4 +146,4 @@ while test $# -gt 0; do
       break
       ;;
   esac
-done
+done 
