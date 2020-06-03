@@ -5,7 +5,6 @@
 </p>
 
 <p align="center"><b>PACSTALL</b></p>
-
 This is a small project that aims to install dependencies with your package manager then installs the actual package from source. I guess one reason you might use it is for those pesky apps that have missing dependencies. If you package an app with pacstall, you could link to those deb or rpm files that allow you to install the app.
 
 <p align="center">
