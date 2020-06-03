@@ -130,17 +130,17 @@ while test $# -gt 0; do
        package=$2
        repo=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
        #Downloads but doesn't install
-       if [ ! -d /tmp/pacstall/cache ]; then
-	  mkdir -p /tmp/pacstall/cache;
+       if [ ! -d /var/cache/pacstall ]; then
+	  mkdir -p /var/cache/pacstall;
        fi
        cd /usr/share/pacstall/cache
-       if wget -q -P /usr/share/pacstall/cache --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz; then
+       if wget -q -P /var/cache/pacstall --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz; then
           echo "tar.xz detected"
        else
           echo "tar.xz not detected... trying zip"
-          wget -q -P /usr/share/pacstall/cache --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.zip
+          wget -q -P /var/cache/pacstall --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.zip
        fi
-       echo -e "Saved $package to ${YELLOW}/usr/share/pacstall/cache/${NC}"
+       echo -e "Saved $package to ${YELLOW}/var/cache/pacstall/${NC}"
        ;;
      *)
       break
