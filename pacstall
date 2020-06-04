@@ -91,6 +91,7 @@ while test $# -gt 0; do
       else
          echo "$package does not exist"
 	 exit 1
+      fi
       ;;
     -S|--search)
      search=$2
