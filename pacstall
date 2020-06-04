@@ -75,10 +75,10 @@ while test $# -gt 0; do
       if (( $installerror -eq 0 ))
       then
         echo -e "${GREEN}No errors in install.sh${NC}"
-	break
       else
         echo -e "${RED}Error in install.sh, if you try to launch $package and it works, you can ignore this error. If not, contact $package maintainer${NC}"
       fi
+      exit 0
       ;;
     -S|--search)
      search=$2
