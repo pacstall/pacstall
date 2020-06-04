@@ -203,6 +203,7 @@ while test $# -gt 0; do
           echo "tar.xz not detected... trying zip"
           wget -q -P $path --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.zip
        fi
+       exit 0
        ;;
      *)
       break
