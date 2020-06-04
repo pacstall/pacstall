@@ -56,28 +56,7 @@ while test $# -gt 0; do
       echo -e "${GREEN}Cleaning up...${NC}"
       cd /tmp/pacstall
       rm -rf $package*
-      echo "Checking for Errors..."
-      if [ $alertserror -eq 0 ]
-      then
-        echo -e "${GREEN}No errors in alerts.sh${NC}"
-      else
-	echo -e "${RED}Error with alerts.sh, this may be that there is no alerts.sh file, or if there was a syntax error${NC}"
-      fi
-      
-      if [ $dependserror -eq 0 ]
-      then
-        echo -e "${GREEN}No errors in depends.sh${NC}"
-      else
-        echo -e "${RED}Error with depends.sh, if you try to launch $package and it works, you can ignore this error. If not, contact $package maintainer${NC}"
-      fi
-      
-      if [ $installerror -eq 0 ]
-      then
-        echo -e "${GREEN}No errors in install.sh${NC}"
-      else
-        echo -e "${RED}Error in install.sh, if you try to launch $package and it works, you can ignore this error. If not, contact $package maintainer${NC}"
-      fi
-      
+   
       echo -e "${CYAN}Done${NC}"     
       if [ $? -eq 0 ]
       then
