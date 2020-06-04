@@ -145,9 +145,9 @@ while test $# -gt 0; do
       done
       ;;
     -V|--version)
-      YELLOW='\033[1;33m'
+      COLOR='\e[1;35m'
       NC='\033[0m' # No Color
-      echo -e "version 1.0.1 ${YELLOW}Aureolin${NC} LTS"
+      echo -e "version 1.0.2 ${COLOR}Byzantium${NC}"
       exit 0
       ;;
     -U|--update)
