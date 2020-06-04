@@ -6,11 +6,12 @@ This is what versions are supported. If you want to check which version your on,
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.0.0   | :heavy_check_mark: |
+| 1.0.1   | :heavy_check_mark: |
+| 1.0.0   | :white_check_mark: |
 | 0.2.4   | :x:                |
 | 0.2.3   | :x:                |
 | 0.2.2   | :x:                |
-| 0.2.1   | :x:                |
+
 
 
 
