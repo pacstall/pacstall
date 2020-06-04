@@ -4,14 +4,15 @@ while test $# -gt 0; do
     -h|--help)
       echo " "
       echo "options:"
-      echo "-I, Installs package"
-      echo "-S, Search for package"
-      echo "-R, Removes package"
-      echo "-C, Chooses repo"
-      echo "-U, Update script"
-      echo "-V, Prints version number"
-      echo "-L, Lists installed packages"
-      echo "-D, Downloads but doesn't install"
+      echo "-I --install, Installs package"
+      echo "-S --search, Search for package"
+      echo "-R --remove, Removes package"
+      echo "-C --change-repo, Chooses repo"
+      echo "-U --update, Update script"
+      echo "-V --version, Prints version number"
+      echo "-L --list, Lists installed packages"
+      echo "-D --download, Downloads but doesn't install"
+      echo " "
       exit 0
       ;;
     -I|--install) 
