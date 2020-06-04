@@ -92,7 +92,7 @@ while test $# -gt 0; do
           fi
           exit 0
        else
-          echo "$package does not exist"
+          echo "$package does not exist in the $repo repository. Check your spelling or choose a different repo"
 	  exit 1
        fi
       ;;
