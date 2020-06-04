@@ -59,11 +59,6 @@ while test $# -gt 0; do
       echo "Indexing..."
       echo $package >> /etc/pacstall_packages
       sudo sed -i '$!N; /^\(.*\)\n\1$/!P; D' /etc/pacstall_packages
-      if [ "$?" != "0" ]; then
-          echo "[Error] install failed!" 1>&2
-      sleep 2
-      exit 1
-      else
       echo -e "${CYAN}Done!!${NC}"
       fi
       ;;
