@@ -79,9 +79,11 @@ while test $# -gt 0; do
         read -p "${GREEN}"$search"${NC} is available in the ${PURPLE}"$repo"${NC} repository. Do you want to see the readme?" answer
 	if [[ $answer = y ]] ; then
 	pandoc -t plain https://raw.githubusercontent.com/$repo/pacstall/master/packages/$search/README.md | less
+	exit 0
         fi
      else
         echo $search is not available. Add another repo or check your spelling
+	exit 1
      fi
       ;;
     -R)
