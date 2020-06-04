@@ -182,6 +182,7 @@ while test $# -gt 0; do
        echo "You should probably check out https://raw.githubusercontent/$repo/pacstall/$package/install.sh and https://raw.githubusercontent/$repo/pacstall/$package/depends.sh"
        fi
        echo -e "Saved $package to ${YELLOW}/var/cache/pacstall/${NC}"
+       exit 0
        ;;
      *)
       break
