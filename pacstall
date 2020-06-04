@@ -61,8 +61,15 @@ while test $# -gt 0; do
       echo "Indexing..."
       echo $package >> /etc/pacstall_packages
       sudo sed -i '$!N; /^\(.*\)\n\1$/!P; D' /etc/pacstall_packages
-      echo -e "${CYAN}Done${NC}"
-      exit 0
+      echo -e "${CYAN}Done${NC}"     
+      if [ $? -eq 0 ]
+      then
+        echo "Successfully installed $package"
+	exit 0
+      else
+        echo "Could not install $package"
+	exit 1
+      fi
       ;;
     -S)
      search=$2
