@@ -39,60 +39,60 @@ while test $# -gt 0; do
       # This is where pacstall will alert the user of anything they might need to know that could affect the installation of there package
       checkexists=$(wget -q --spider https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/install.sh)
       if [[ "$checkexists" -ne "8" ]]; then
-         wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/alerts.sh | bash
+          wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/alerts.sh | bash
       
-         alertserror=$?
+          alertserror=$?
       
-         wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/depends.sh | bash
+          wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/depends.sh | bash
       
-         dependserror=$?
+          dependserror=$?
       
-         if wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz ; then
-             echo "tar.xz detected"
-             echo -e "${RED}extracting...${NC}"
-             sudo tar -xf $package.tar.xz
-         else
-             echo "tar.xz not detected... trying zip"
-             wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.zip
-             echo -e "${RED}extracting...${NC}"
-             sudo unzip /tmp/pacstall/$package.zip
-         fi
-         cd $package
-         echo -e "${CYAN}Downloading and running install script for ${GREEN}$package...${NC}"
-         wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/install.sh | bash
+          if wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz ; then
+              echo "tar.xz detected"
+              echo -e "${RED}extracting...${NC}"
+              sudo tar -xf $package.tar.xz
+          else
+              echo "tar.xz not detected... trying zip"
+              wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.zip
+              echo -e "${RED}extracting...${NC}"
+              sudo unzip /tmp/pacstall/$package.zip
+          fi
+          cd $package
+          echo -e "${CYAN}Downloading and running install script for ${GREEN}$package...${NC}"
+          wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/install.sh | bash
+       
+          installerror=$?
+       
+          echo -e "${GREEN}Cleaning up...${NC}"
+          cd /tmp/pacstall
+          rm -rf $package*
+          echo " "
+          echo "Checking for Errors..."
+          if [ $alertserror -ne 8 ]
+          then
+            echo -e "${GREEN}No errors in alerts.sh${NC}"
+          else
+	    echo -e "${RED}Error with alerts.sh, this may be that there is no alerts.sh file, or if there was a syntax error${NC}"
+          fi
+       
+          if [ $dependserror -ne 8 ]
+          then
+            echo -e "${GREEN}No errors in depends.sh${NC}"
+          else
+            echo -e "${RED}Error with depends.sh, if you try to launch $package and it works, you can ignore this error. If not, contact $package maintainer${NC}"
+          fi
       
-         installerror=$?
-      
-         echo -e "${GREEN}Cleaning up...${NC}"
-         cd /tmp/pacstall
-         rm -rf $package*
-         echo " "
-         echo "Checking for Errors..."
-         if [ $alertserror -ne 8 ]
-         then
-           echo -e "${GREEN}No errors in alerts.sh${NC}"
-         else
-	   echo -e "${RED}Error with alerts.sh, this may be that there is no alerts.sh file, or if there was a syntax error${NC}"
-         fi
-      
-         if [ $dependserror -ne 8 ]
-         then
-           echo -e "${GREEN}No errors in depends.sh${NC}"
-         else
-           echo -e "${RED}Error with depends.sh, if you try to launch $package and it works, you can ignore this error. If not, contact $package maintainer${NC}"
-         fi
-      
-         if [ $installerror -ne 8 ]
-         then
-           echo -e "${GREEN}No errors in install.sh${NC}"
-         else
-           echo -e "${RED}Error in install.sh, if you try to launch $package and it works, you can ignore this error. If not, contact $package maintainer${NC}"
-         fi
-         exit 0
-      else
-         echo "$package does not exist"
-	 exit 1
-      fi
+          if [ $installerror -ne 8 ]
+          then
+            echo -e "${GREEN}No errors in install.sh${NC}"
+          else
+            echo -e "${RED}Error in install.sh, if you try to launch $package and it works, you can ignore this error. If not, contact $package maintainer${NC}"
+          fi
+          exit 0
+       else
+          echo "$package does not exist"
+	  exit 1
+       fi
       ;;
     -S|--search)
      search=$2
