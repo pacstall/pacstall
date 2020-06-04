@@ -60,6 +60,7 @@ while test $# -gt 0; do
       echo $package >> /etc/pacstall_packages
       sudo sed -i '$!N; /^\(.*\)\n\1$/!P; D' /etc/pacstall_packages
       echo -e "${CYAN}Done!!${NC}"
+      exit 0
       ;;
     -S)
      search=$2
