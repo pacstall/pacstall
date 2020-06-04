@@ -58,37 +58,26 @@ while test $# -gt 0; do
       rm -rf $package*
       
       echo "Checking for Errors..."
-      if [ $alertserror -eq 0 ]
+      if (( $alertserror -eq 0 ))
       then
         echo -e "${GREEN}No errors in alerts.sh${NC}"
       else
 	echo -e "${RED}Error with alerts.sh, this may be that there is no alerts.sh file, or if there was a syntax error${NC}"
       fi
       
-      if [ $dependserror -eq 0 ]
+      if (( $dependserror -eq 0 ))
       then
         echo -e "${GREEN}No errors in depends.sh${NC}"
       else
         echo -e "${RED}Error with depends.sh, if you try to launch $package and it works, you can ignore this error. If not, contact $package maintainer${NC}"
       fi
       
-      if [ $installerror -eq 0 ]
+      if (( $installerror -eq 0 ))
       then
         echo -e "${GREEN}No errors in install.sh${NC}"
       else
         echo -e "${RED}Error in install.sh, if you try to launch $package and it works, you can ignore this error. If not, contact $package maintainer${NC}"
       fi
-
-      echo -e "${CYAN}Done${NC}"     
-      if [ $? -eq 0 ]
-      then
-        echo -e "${GREEN}Successfully installed ${NC}$package"
-	      exit 0
-      else
-        echo -e "${RED}Could not install ${NC}$package"
-	      exit 1
-      fi
-      exit 0
       ;;
     -S|--search)
      search=$2
@@ -98,6 +87,8 @@ while test $# -gt 0; do
         read -p "${GREEN}"$search"${NC} is available in the ${PURPLE}"$repo"${NC} repository. Do you want to see the readme?" answer
 	if [[ $answer = y ]] ; then
 	pandoc -t plain https://raw.githubusercontent.com/$repo/pacstall/master/packages/$search/README.md | less
+	exit 0
+	else
 	exit 0
         fi
      else
