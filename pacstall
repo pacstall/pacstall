@@ -12,6 +12,7 @@ while test $# -gt 0; do
       echo "-V --version, Prints version number"
       echo "-L --list, Lists installed packages"
       echo "-D --download, Downloads but doesn't install"
+      echo "-SD --save-download, Downloads to directory inputed"
       echo "-CD --clear-downloads, Clears the package download folder"
       echo " "
       exit 0
@@ -192,6 +193,15 @@ while test $# -gt 0; do
 	echo "$count downloads removed"
 	exit 0
        ;;
+     -SD|--save-download)
+        package=$2
+	repo=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
+        if wget -q -P $package --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz; then
+          echo "tar.xz detected"
+       else
+          echo "tar.xz not detected... trying zip"
+          wget -q -P $package --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.zip
+       fi
      *)
       break
       ;;
