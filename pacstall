@@ -124,7 +124,7 @@ while test $# -gt 0; do
     -V)
       YELLOW='\033[1;33m'
       NC='\033[0m' # No Color
-      echo -e "version 1.0.1 ${YELLOW}Aureolin${NC}"
+      echo -e "version 1.0.1 ${YELLOW}Aureolin${NC} LTS"
       break
       ;;
     -U)
