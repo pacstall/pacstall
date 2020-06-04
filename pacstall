@@ -18,6 +18,7 @@ while test $# -gt 0; do
       exit 0
       ;;
     -I) 
+      curl https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/pacstallascii.txt
       package=$2
       repo=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       RED='\033[0;31m'
