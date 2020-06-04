@@ -86,11 +86,13 @@ while test $# -gt 0; do
       ;;
     -R)
       package=$2
-      sudo dpkg -r $package
-      if [ $? -eq 0 ]; then
+      cmd=sudo dpkg -r $package
+      if [ "sudo: dpkg: command not found" == "$cmd" ]; then
           echo "$package has been succesfuly removed"
+	  exit 0
       else
           echo "$package could not be removed"
+	  exit 1
       fi
       ;;
     -C)
