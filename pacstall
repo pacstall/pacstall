@@ -2,9 +2,6 @@
 while test $# -gt 0; do
   case "$1" in
     -h|--help)
-      echo "$package - attempt to capture frames"
-      echo " "
-      echo "$package [options] application [arguments]"
       echo " "
       echo "options:"
       echo "-I, Installs package"
@@ -17,7 +14,7 @@ while test $# -gt 0; do
       echo "-D, Downloads but doesn't install"
       exit 0
       ;;
-    -I) 
+    -I|--install) 
       curl https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/pacstallascii.txt
       package=$2
       repo=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
@@ -71,7 +68,7 @@ while test $# -gt 0; do
 	exit 1
       fi
       ;;
-    -S)
+    -S|--search)
      search=$2
      repo=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
      wget -q --spider https://github.com/$repo/pacstall/tree/master/packages/$search/
@@ -86,7 +83,7 @@ while test $# -gt 0; do
 	exit 1
      fi
       ;;
-    -R)
+    -R|--remove)
       package=$2
       cmd=sudo dpkg -r $package
       if [ "sudo: dpkg: command not found" == "$cmd" ]; then
@@ -97,7 +94,7 @@ while test $# -gt 0; do
 	  exit 1
       fi
       ;;
-    -C)
+    -C|--change-repo)
       echo "repo changer"
       cmd=(dialog --separate-output --checklist "Select Repository:" 22 76 16)
       options=(1 "Henryws" on    # any option can be set to default to "on"
@@ -125,23 +122,23 @@ while test $# -gt 0; do
           esac
       done
       ;;
-    -V)
+    -V|--version)
       YELLOW='\033[1;33m'
       NC='\033[0m' # No Color
       echo -e "version 1.0.1 ${YELLOW}Aureolin${NC} LTS"
       break
       ;;
-    -U)
+    -U|--update)
       sudo wget -q https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall -O /bin/pacstall
       echo "Updating complete"
       exit 0
       ;;
-    -L)
+    -L|--list)
       wc -l /etc/pacstall_packages
       cat /etc/pacstall_packages
       exit 0
       ;;
-     -D)
+     -D|--download)
        package=$2
        repo=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
        #Downloads but doesn't install
