@@ -12,6 +12,7 @@ while test $# -gt 0; do
       echo "-V --version, Prints version number"
       echo "-L --list, Lists installed packages"
       echo "-D --download, Downloads but doesn't install"
+      echo "-CD --clear-downloads, Clears the package download folder"
       echo " "
       exit 0
       ;;
@@ -183,6 +184,13 @@ while test $# -gt 0; do
        echo "You should probably check out https://raw.githubusercontent/$repo/pacstall/$package/install.sh and https://raw.githubusercontent/$repo/pacstall/$package/depends.sh"  
        echo -e "Saved $package to ${YELLOW}/var/cache/pacstall/${NC}"
        exit 0
+       ;;
+     -CD|--clear-downloads)
+        cd /var/cache/pacstall
+	count=$(ls | wc -l)
+	yes | sudo rm -rf /var/cache/pacstall/*
+	echo "$count downloads removed"
+	exit 0
        ;;
      *)
       break
