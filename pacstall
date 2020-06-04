@@ -64,10 +64,10 @@ while test $# -gt 0; do
       echo -e "${CYAN}Done${NC}"     
       if [ $? -eq 0 ]
       then
-        echo "Successfully installed $package"
+        echo -e "${GREEN}Successfully installed ${NC}$package"
 	exit 0
       else
-        echo "Could not install $package"
+        echo -e "${RED}Could not install ${NC}$package"
 	exit 1
       fi
       ;;
