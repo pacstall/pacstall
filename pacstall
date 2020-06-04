@@ -37,8 +37,8 @@ while test $# -gt 0; do
       echo "cleaning package build directory"
       sudo rm -rf $package
       # This is where pacstall will alert the user of anything they might need to know that could affect the installation of there package
-      checkexists=$(wget -q --spider https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/install.sh)
-      if [[ "$checkexists" -ne "8" ]]; then
+      url=https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/
+      if wget $url >/dev/null 2>&1 ; then
           wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/alerts.sh | bash
       
           alertserror=$?
