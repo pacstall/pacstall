@@ -38,7 +38,7 @@ while test $# -gt 0; do
       sudo rm -rf $package
       # This is where pacstall will alert the user of anything they might need to know that could affect the installation of there package
       checkexists=$(wget -q --spider https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/install.sh)
-      if [[ "$checkexists" -eq "0" ]]; then
+      if [[ "$checkexists" -ne "8" ]]; then
          wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/alerts.sh | bash
       
          alertserror=$?
