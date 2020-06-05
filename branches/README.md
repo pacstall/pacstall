@@ -13,3 +13,7 @@ This is the branch directory where you can put a package in a certain branch. Lo
 
 ## HOMA
 * Anything that's hit or miss installing, that work and could be considered stable, but install correctly sometimes. They will be tested until they work properly, but knock yourself out installing from this branch
+
+
+---
+*As long as it installs
