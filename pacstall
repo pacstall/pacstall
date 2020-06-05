@@ -182,7 +182,7 @@ while test $# -gt 0; do
           echo "tar.xz not detected... trying zip"
           wget -q -P /var/cache/pacstall --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.zip
        fi
-       echo "You should probably check out https://raw.githubusercontent/$repo/pacstall/$package/install.sh and https://raw.githubusercontent/$repo/pacstall/$package/depends.sh"  
+       echo You should probably check out https://raw.githubusercontent/$repo/pacstall/$package/install.sh and https://raw.githubusercontent/$repo/pacstall/$package/depends.sh 
        echo -e "Saved $package to ${YELLOW}/var/cache/pacstall/${NC}"
        exit 0
        ;;
