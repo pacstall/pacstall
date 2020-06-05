@@ -14,8 +14,12 @@ while test $# -gt 0; do
       echo "-D --download, Downloads but doesn't install"
       echo "-SD --save-download, Downloads to directory inputed"
       echo "-CD --clear-downloads, Clears the package download folder"
+      echo "-B --branch, Chooses branch to 
       echo " "
       exit 0
+      ;;
+    -C|--branch)
+      repo=$2
       ;;
     -I|--install) 
       curl https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/pacstallascii.txt
