@@ -153,9 +153,9 @@ while test $# -gt 0; do
       done
       ;;
     -V|--version)
-      COLOR='\e[1;35m'
+      COLOR='\e[0;34m'
       NC='\033[0m' # No Color
-      echo -e "version 1.0.2 ${COLOR}Byzantium${NC}"
+      echo -e "version 1.0.3 ${COLOR}Brandeis${NC}"
       exit 0
       ;;
     -U|--update)
