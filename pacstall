@@ -70,21 +70,21 @@ while test $# -gt 0; do
           rm -rf $package*
           echo " "
           echo "Checking for Errors..."
-          if [ $alertserror -ne 8 ]
+          if [[ $alertserror = 0 ]]
           then
             echo -e "${GREEN}No errors in alerts.sh${NC}"
           else
 	    echo -e "${RED}Error with alerts.sh, this may be that there is no alerts.sh file, or if there was a syntax error${NC}"
           fi
        
-          if [ $dependserror -ne 8 ]
+          if [[ $dependserror = 0 ]]
           then
             echo -e "${GREEN}No errors in depends.sh${NC}"
           else
             echo -e "${RED}Error with depends.sh, if you try to launch $package and it works, you can ignore this error. If not, contact $package maintainer${NC}"
           fi
       
-          if [ $installerror -ne 8 ]
+          if [[ $installerror = 0 ]]
           then
             echo -e "${GREEN}No errors in install.sh${NC}"
           else
