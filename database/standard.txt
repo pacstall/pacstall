@@ -1,0 +1,3 @@
+cmake = https://github.com/Kitware/CMake/releases/download/v3.17.3/cmake-3.17.3.tar.gz
+libncurses5-dev = https://invisible-island.net/datafiles/current/ncurses.tar.gz
+libx11-dev = https://github.com/mirror/libX11/archive/libX11-1.6.9.tar.gz
