@@ -2,5 +2,5 @@
 mkdir build
 cd build
 cmake ..
-sudo make
+sudo make -j4
 paco -lp conky "sudo make install"
