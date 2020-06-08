@@ -1,2 +1,2 @@
 #!/bin/bash
-sudo make install
+paco -lp neofetch "sudo make install"
