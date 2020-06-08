@@ -49,23 +49,8 @@ while test $# -gt 0; do
 	  if wget -q --spider https://github.com/"$repo"/pacstall/raw/master/packages/"$package"/"$package".tar.xz ; then
           pkgsize=$(curl -s https://github.com/"$repo"/pacstall/raw/master/packages/"$package"/"$package".tar.xz | wc -c)
 	  echo "$package will take up $pkgsize" && echo " "
-	  echo "Do you want to continue?"
-	  read confirm
-	  if [[ $confirm = y ]]; then
-	    break
-	  else
-	    exit 0
-	  fi
-          else
           pkgsize=$(curl -s https://github.com/"$repo"/pacstall/raw/master/packages/"$package"/"$package".zip | wc -c)
 	  echo "$package will take up $pkgsize" && echo " "
-	  echo "Do you want to continue?"
-	      read confirm
-	      if [[ $confirm = y ]]; then
-	        echo ok
-	      else
-	        exit 0
-	      fi
 	  fi	  
 	 
       if wget -q --show-progress --progress=bar:force:noscroll https://github.com/"$repo"/pacstall/raw/master/packages/"$package"/"$package".tar.xz ; then
