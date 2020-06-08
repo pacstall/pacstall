@@ -89,7 +89,9 @@ while test $# -gt 0; do
             echo -e "${GREEN}No errors in install.sh${NC}"
           else
             echo -e "${RED}Error in install.sh, if you try to launch $package and it works, you can ignore this error. If not, contact $package maintainer${NC}"
-          fi
+	  fi
+	  echo "Indexing..."
+	  echo $package >> /var/log/pacstall_installed
           exit 0
        else
           echo "$package does not exist in the $repo repository. Check your spelling or choose a different repo"
