@@ -2,4 +2,4 @@
 autoreconf -if
 ./configure
 make
-paco -lp mocp "sudo make install"
+paco -lp mocp "make install"
