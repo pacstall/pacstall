@@ -41,16 +41,12 @@ while test $# -gt 0; do
       # This is where pacstall will alert the user of anything they might need to know that could affect the installation of there package
       url="$echo https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/install.sh"
       if wget $url >/dev/null 2>&1 ; then
+
+          #Finds package size and prompts for installation
           wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/alerts.sh | bash
       
           alertserror=$?
-      
-          wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/depends.sh | bash
-      
-          dependserror=$?
-          
-          #Finds package size and prompts for installation
-          if wget -q --spider https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz ; then
+	  if wget -q --spider https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz ; then
           pkgsize=$(curl -s https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz | wc -c)
 	  echo "$package will take up $pkgsize" && echo " "
 	  echo "Do you want to continue?"
@@ -83,8 +79,12 @@ while test $# -gt 0; do
               sudo unzip /tmp/pacstall/$package.zip
           fi
           cd $package
-          echo -e "${CYAN}Downloading and running install script for ${GREEN}$package...${NC}"
-          wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/install.sh | bash
+          wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/depends.sh | bash
+      
+          dependserror=$?
+	  echo -e "${CYAN}Downloading and running install script for ${GREEN}$package...${NC}"
+	  
+	  wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/install.sh | bash
        
           installerror=$?
        
