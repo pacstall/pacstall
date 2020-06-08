@@ -117,13 +117,22 @@ while test $# -gt 0; do
       ;;
     -R|--remove)
       package=$2
-      cmd=sudo dpkg -r $package
-      if [ "sudo: dpkg: command not found" == "$cmd" ]; then
-          echo "$package has been succesfuly removed"
+      sudo rm `cat /var/log/paco/$package | sed -n 's/|\(.*\)//;/^#\(.*\)/d;p'`
+      if [ $? -eq 0 ]; then
+        echo "Removed $package"
+	echo "Indexing..."
+	sed -i "/\b\($package\)\b/d" /var/log/pacstall_installed
+	if [ $? -eq 0 ]; then
+	  echo "Index successful"
 	  exit 0
-      else
-          echo "$package could not be removed"
+	else
+	  echo "Index failed"
 	  exit 1
+	fi
+	exit 0
+      else
+        echo "Failed to remove $package"
+	exit 1
       fi
       ;;
     -C|--change-repo)
