@@ -1,4 +1,4 @@
 #!/bin/bash
 ./configure 
 make 
-paco -lp synaptic "sudo make install"
+paco -lp synaptic "make install"
