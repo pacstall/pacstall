@@ -70,7 +70,6 @@ while test $# -gt 0; do
 	      else
 	        exit 0
 	      fi
-          else
 	  fi	  
 	 
           if wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz ; then
