@@ -62,63 +62,56 @@ while test $# -gt 0; do
 	  echo "Do you want to continue?"
 	      read confirm
 	      if [[ $confirm = y ]]; then
-	        echo ok
-	      else
-	        exit 0
-	      fi
-	  fi	  
-	 
-      if wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz ; then
-          echo "tar.xz detected"
-          echo -e "${RED}extracting...${NC}"
-          sudo tar -xf $package.tar.xz
-      else
-          echo "tar.xz not detected... trying zip"
-          wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.zip
-          echo -e "${RED}extracting...${NC}"
-          sudo unzip /tmp/pacstall/$package.zip
-      fi
-      cd $package
-      wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/depends.sh | bash
+	        if wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz ; then
+                  echo "tar.xz detected"
+                  echo -e "${RED}extracting...${NC}"
+                  sudo tar -xf $package.tar.xz
+                else
+                  echo "tar.xz not detected... trying zip"
+                  wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.zip
+          	  echo -e "${RED}extracting...${NC}"
+         	  sudo unzip /tmp/pacstall/$package.zip
+      	        fi
+                cd $package
+      		wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/depends.sh | bash
       
-      dependserror=$?
-      echo -e "${CYAN}Downloading and running install script for ${GREEN}$package...${NC}"
+      		dependserror=$?
+      		echo -e "${CYAN}Downloading and running install script for ${GREEN}$package...${NC}"
 	  
-      wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/install.sh | bash
+      		wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/install.sh | bash
        
-      installerror=$?
+      		installerror=$?
        
-      echo -e "${GREEN}Cleaning up...${NC}"
-      cd /tmp/pacstall
-      rm -rf $package*
-      echo " "
-      echo "Checking for Errors..."
-      if [[ $alertserror = 0 ]]
-      then
-        echo -e "${GREEN}No errors in alerts.sh${NC}"
-      else
-      echo -e "${RED}Error with alerts.sh, this may be that there is no alerts.sh file, or if there was a syntax error${NC}"
-      fi
+      		echo -e "${GREEN}Cleaning up...${NC}"
+      		cd /tmp/pacstall
+      		rm -rf $package*
+      		echo " "
+      		echo "Checking for Errors..."
+      		if [[ $alertserror = 0 ]]; then
+                  echo -e "${GREEN}No errors in alerts.sh${NC}"
+    	        else
+                  echo -e "${RED}Error with alerts.sh, this may be that there is no alerts.sh file, or if there was a syntax error${NC}"
+                fi
        
-      if [[ $dependserror = 0 ]]
-      then
-        echo -e "${GREEN}No errors in depends.sh${NC}"
-      else
-        echo -e "${RED}Error with depends.sh, if you try to launch $package and it works, you can ignore this error. If not, contact $package maintainer${NC}"
-      fi
+                if [[ $dependserror = 0 ]]
+                then
+                  echo -e "${GREEN}No errors in depends.sh${NC}"
+                else
+                  echo -e "${RED}Error with depends.sh, if you try to launch $package and it works, you can ignore this error. If not, contact $package maintainer${NC}"
+                fi
       
-      if [[ $installerror = 0 ]]
-      then
-        echo -e "${GREEN}No errors in install.sh${NC}"
-      else
-        echo -e "${RED}Error in install.sh, if you try to launch $package and it works, you can ignore this error. If not, contact $package maintainer${NC}"
-      fi
-      echo "Indexing..."
-      echo $package >> /var/log/pacstall_installed
-      exit 0
-      else
-      echo "$package does not exist in the $repo repository. Check your spelling or choose a different repo"
-      exit 1
+                if [[ $installerror = 0 ]]
+                then
+                  echo -e "${GREEN}No errors in install.sh${NC}"
+                else
+                  echo -e "${RED}Error in install.sh, if you try to launch $package and it works, you can ignore this error. If not, contact $package maintainer${NC}"
+                fi
+                echo "Indexing..."
+                echo $package >> /var/log/pacstall_installed
+                exit 0
+                else
+                echo "$package does not exist in the $repo repository. Check your spelling or choose a different repo"
+                exit 1
       fi
       ;;
     -S|--search)
@@ -137,6 +130,12 @@ while test $# -gt 0; do
         echo $search is not available. Add another repo or check your spelling
 	exit 1
      fi
+	      else
+	        exit 0
+	      fi
+	  fi	  
+	 
+      
       ;;
     -R|--remove)
       package=$2
