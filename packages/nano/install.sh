@@ -1,4 +1,5 @@
 #!/bin/bash
 ./configure
-make
+cpu=$(grep -c ^prcessor /proc/cpuinfo)
+make -j$cpu
 sudo make install
