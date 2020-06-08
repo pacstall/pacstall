@@ -1,2 +1,2 @@
 #!/bin/bash
-paco -lp dwm "sudo make install"
+paco -lp dwm "make install"
