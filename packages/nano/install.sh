@@ -1,4 +1,4 @@
 #!/bin/bash
 ./configure
 make
-sudo make install
+paco -lp nano "sudo make install"
