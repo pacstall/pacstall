@@ -1,2 +1,2 @@
 #!/bin/bash
-paco -lp dmenu "sudo make install"
+paco -lp dmenu "make install"
