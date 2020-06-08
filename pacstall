@@ -48,7 +48,31 @@ while test $# -gt 0; do
           wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/depends.sh | bash
       
           dependserror=$?
-      
+          
+          #Finds package size and prompts for installation
+	  if wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz ; then
+              pkgsize=$(curl -s https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz | wc -c)
+	      echo "$package will take up $pkgsize" && echo " "
+	      echo "Do you want to continue?"
+	      read confirm
+	      if [[ $confirm = y ]]; then
+	        break
+	      else
+	        exit 0
+	      fi
+          else
+            pkgsize=$(curl -s https://github.com/$repo/pacstall/raw/master/packages/$package/$package.zip | wc -c)
+	    echo "$package will take up $pkgsize" && echo " "
+	      echo "Do you want to continue?"
+	      read confirm
+	      if [[ $confirm = y ]]; then
+	        break
+	      else
+	        exit 0
+	      fi
+          else
+	  fi	  
+	 
           if wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz ; then
               echo "tar.xz detected"
               echo -e "${RED}extracting...${NC}"
