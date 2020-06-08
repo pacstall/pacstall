@@ -1,2 +1,2 @@
 #!/bin/bash
-sudo checkinstall
+paco -lp surf "sudo make install"
