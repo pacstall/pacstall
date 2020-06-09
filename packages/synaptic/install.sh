@@ -1,4 +1,4 @@
 #!/bin/bash
 ./configure 
 make 
-paco -lp synaptic "make install"
+sudo porg -lp synaptic "make install"
