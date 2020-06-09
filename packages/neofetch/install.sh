@@ -1,2 +1,2 @@
 #!/bin/bash
-sudo paco -lp neofetch "make install"
+sudo porg -lp neofetch "make install"
