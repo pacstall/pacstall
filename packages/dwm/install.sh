@@ -1,2 +1,2 @@
 #!/bin/bash
-paco -lp dwm "make install"
+sudo porg -lp dwm "make install"
