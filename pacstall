@@ -40,7 +40,7 @@ while test $# -gt 0; do
       sudo rm -rf "$package"
       # This is where pacstall will alert the user of anything they might need to know that could affect the installation of there package
       url=https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/install.sh
-      if wget "$url" >/dev/null 2>&1 ; then
+      if wget -q "$url" >/dev/null 2>&1 ; then
 
           #Finds package size and prompts for installation
           wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/alerts.sh | bash
