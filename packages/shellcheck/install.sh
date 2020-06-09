@@ -1,0 +1,2 @@
+#!/binbash
+cabal-install
