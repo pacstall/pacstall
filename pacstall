@@ -11,6 +11,7 @@ while test $# -gt 0; do
       echo "-U --update, Update script"
       echo "-V --version, Prints version number"
       echo "-L --list, Lists installed packages"
+      echo "-DL --download-local, Downloads to local package"
       echo "-IL --install-local, Installs local package"
       echo " "
       exit 0
@@ -190,7 +191,7 @@ while test $# -gt 0; do
       cat /var/log/pacstall_installed
       exit 0
       ;;
-    -IL|--install-local)
+    -DL|--download-local)
        cd /var/cache/pacstall/
        package=$2
        repo=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
@@ -205,7 +206,6 @@ while test $# -gt 0; do
        else
        exit 1
        fi
-       else
        wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.zip
        unzip $package.zip
        cd $package
@@ -217,7 +217,18 @@ while test $# -gt 0; do
        else
        exit 1
        fi
+      ;;
+     -IL|--install-local)
+       package=$2
+       tar xf $package.tar.xz
+       cd $package
+       sudo ./install.sh
+       if [[ $? -eq 0 ]] ; then
+       exit 0
        else
+       echo "Failed to install $package"
+       exit 1
+       fi
       ;;
      *)
       break
