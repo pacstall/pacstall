@@ -130,7 +130,7 @@ while test $# -gt 0; do
       ;;
     -R|--remove)
       package=$2
-      sudo rm $(cat /var/log/paco/$package | sed -n 's/|\(.*\)//;/^#\(.*\)/d;p')
+      sudo rm $(cat /var/lib/porg/$package | sed -n 's/|\(.*\)//;/^#\(.*\)/d;p')
       if [ $? -eq 0 ]; then
         echo "Removed $package"
 	echo "Indexing..."
@@ -188,8 +188,8 @@ while test $# -gt 0; do
       exit 0
       ;;
     -L|--list)
-      wc -l /etc/pacstall_packages
-      cat /etc/pacstall_packages
+      wc -l /var/log/pacstall_installed
+      cat /var/log/pacstall_installed
       exit 0
       ;;
      -D|--download)
