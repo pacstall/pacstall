@@ -17,6 +17,10 @@ while test $# -gt 0; do
       exit 0
       ;;
     -I|--install) 
+      if [ "$EUID" -ne 0 ]
+      then echo "Please run as root"
+      exit
+      fi
       curl https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/pacstallascii.txt
       package=$2
       repo=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
@@ -229,6 +233,8 @@ while test $# -gt 0; do
        echo "Failed to install $package"
        exit 1
        fi
+     -Dep)
+       
       ;;
      *)
       break
