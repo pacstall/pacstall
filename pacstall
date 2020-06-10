@@ -221,7 +221,7 @@ while test $# -gt 0; do
        else
        exit 1
        fi
-      ;;
+       ;;
      -IL|--install-local)
        package=$2
        tar xf $package.tar.xz
