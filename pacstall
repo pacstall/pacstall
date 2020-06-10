@@ -206,9 +206,9 @@ while test $# -gt 0; do
        cd ..
        tar cfJ $package.tar.xz $package
        if [[ $? -eq 0 ]] ; then
-       exit 0
+       	exit 0
        else
-       exit 1
+       	exit 1
        fi
        wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.zip
        unzip $package.zip
