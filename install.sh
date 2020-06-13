@@ -7,9 +7,9 @@ then
   sudo apt install -y wget dialog porg curl pandoc
 else
   sudo dnf install -y wget porg dialog curl pandoc
-  else
-  echo "Distro not supported yet"
-  fi
+fi
+if [[ $? -eq 1 ]] ; then
+echo "Distro not supported yet"
 fi
 echo "Henryws" >> /usr/share/pacstall/repo/pacstallrepo.txt
 echo "Done"
