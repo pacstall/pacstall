@@ -10,6 +10,7 @@ else
 fi
 if [[ $? -eq 1 ]] ; then
 echo "Distro not supported yet"
+exit 1
 fi
 echo "Henryws" >> /usr/share/pacstall/repo/pacstallrepo.txt
 echo "Done"
