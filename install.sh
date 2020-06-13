@@ -5,6 +5,9 @@ if [[ "command -v apt == /usr/bin/apt" ]] ; then
   sudo apt install -y wget dialog porg curl pandoc
 else
   sudo dnf install -y wget porg dialog curl pandoc
+  else
+  echo "Distro not supported yet"
+  fi
 fi
 echo "Henryws" >> /usr/share/pacstall/repo/pacstallrepo.txt
 echo "Done"
