@@ -21,9 +21,12 @@ while test $# -gt 0; do
       then echo "Please run as root"
       exit
       fi
+      if [[ $(grep -c "ascii_art: true" /usr/share/pacstall/config.conf -eq 1) ]] ; then
       curl https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/pacstallascii.txt
+      if
       package=$2
       repo=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
+      if [[ $(grep -c "pacstall_color: true" /usr/share/pacstall/config.conf -eq 1) ]] ; then
       RED='\033[0;31m'
       CYAN='\033[0;36m'
       NC='\033[0m' # No Color
@@ -31,6 +34,7 @@ while test $# -gt 0; do
       PURPLE='\033[0;35m'
       YELLOW='\033[1;33m'
       BLUE='\033[0;34m'
+      fi
       if [ ! -d /tmp/pacstall ]; then
 	  mkdir -p /tmp/pacstall;
       fi
@@ -46,8 +50,9 @@ while test $# -gt 0; do
       if wget -q "$url" >/dev/null 2>&1 ; then
 
           #Finds package size and prompts for installation
+          if [[ $(grep -c "packagealerts: true" /usr/share/pacstall/config.conf -eq 1) ]] ; then
           wget -qO- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/alerts.sh | bash
-      
+          if
           alertserror=$?
 	  if wget -q --spider https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz ; then
           pkgsize=$(curl -s https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz | wc -c)
@@ -236,8 +241,40 @@ while test $# -gt 0; do
       exit 1
       fi
       ;;
-     -Dep)
-       
+     -Depcheck)
+      $2=dep
+      if [[ command -v apt = /usr/bin/apt ]] ; then
+        dpkg -s $dep
+        if [[ $? -eq 0 ]] ; then
+            echo "$dep exists... skipping"
+        else
+            sudo pacstall -Depinstall $dep
+        fi
+      else
+          rpm -q $dep
+          if [[ $? -eq 0 ]] ; then
+              echo "$dep exists... skipping"
+            else
+                sudo pacstall -Depinstall $dep
+            fi
+      fi
+      ;;
+     -Depinstall)
+      repo=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
+      cd /tmp/pacstall
+      if wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$dep/$dep.tar.xz ; then
+          echo "tar.xz detected"
+          echo -e "${RED}extracting...${NC}"
+          sudo tar -xf $dep.tar.xz
+      else
+          echo "tar.xz not detected... trying zip"
+          wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$dep/$dep.zip
+          echo -e "${RED}extracting...${NC}"
+          sudo unzip /tmp/pacstall/$dep.zip
+      fi
+      cd $dep*
+      wget -q https://raw.githubusercontent.com/$repo/pacstall/master/packages/$dep/install.sh | bash
+      echo "done installing $dep"
       ;;
      *)
       break
