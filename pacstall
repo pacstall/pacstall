@@ -21,12 +21,14 @@ while test $# -gt 0; do
       then echo "Please run as root"
       exit
       fi
-      if [[ $(grep -c "ascii_art: true" /usr/share/pacstall/config.conf -eq 1) ]] ; then
+      grep -c -q "ascii_art: true" /usr/share/pacstall/config.conf
+      if [[ $? -eq 1 ]]
       curl https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/pacstallascii.txt
       fi
       package=$2
       repo=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-      if [[ $(grep -c "pacstall_color: true" /usr/share/pacstall/config.conf -eq 1) ]] ; then
+      grep -c -q "pacstall_color: true" /usr/share/pacstall/config.conf
+      if [[ $? -eq 1 ]] ; then
       RED='\033[0;31m'
       CYAN='\033[0;36m'
       NC='\033[0m' # No Color
@@ -50,7 +52,8 @@ while test $# -gt 0; do
       if wget -q "$url" >/dev/null 2>&1 ; then
 
           #Finds package size and prompts for installation
-          if [[ $(grep -c "packagealerts: true" /usr/share/pacstall/config.conf -eq 1) ]] ; then
+          grep -c -q "packagealerts: true" /usr/share/pacstall/config.conf
+	  if [[ $? -eq 1 ]] ; then
           wget -qO- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/alerts.sh | bash
           fi
           alertserror=$?
