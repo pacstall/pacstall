@@ -22,7 +22,7 @@ while test $# -gt 0; do
       exit
       fi
       grep -c -q "ascii_art: true" /usr/share/pacstall/config.conf
-      if [[ $? -eq 1 ]]
+      if [[ $? -eq 1 ]] ; then
       curl https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/pacstallascii.txt
       fi
       package=$2
