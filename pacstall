@@ -23,7 +23,7 @@ while test $# -gt 0; do
       fi
       if [[ $(grep -c "ascii_art: true" /usr/share/pacstall/config.conf -eq 1) ]] ; then
       curl https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/pacstallascii.txt
-      if
+      fi
       package=$2
       repo=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       if [[ $(grep -c "pacstall_color: true" /usr/share/pacstall/config.conf -eq 1) ]] ; then
@@ -52,7 +52,7 @@ while test $# -gt 0; do
           #Finds package size and prompts for installation
           if [[ $(grep -c "packagealerts: true" /usr/share/pacstall/config.conf -eq 1) ]] ; then
           wget -qO- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/alerts.sh | bash
-          if
+          fi
           alertserror=$?
 	  if wget -q --spider https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz ; then
           pkgsize=$(curl -s https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz | wc -c)
@@ -243,7 +243,7 @@ while test $# -gt 0; do
       ;;
      -Depcheck)
       $2=dep
-      if [[ command -v apt = /usr/bin/apt ]] ; then
+      if [[ $(command -v apt) = /usr/bin/apt ]] ; then
         dpkg -s $dep
         if [[ $? -eq 0 ]] ; then
             echo "$dep exists... skipping"
