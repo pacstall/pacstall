@@ -41,7 +41,7 @@ while test $# -gt 0; do
 	  mkdir -p /tmp/pacstall;
       fi
       #This is the part where it searches your package on all repos and puts it in /tmp
-      echo -e "cleaning ${YELLOW}/tmp/pacstall${NC}"
+      echo -e "Preparing ${YELLOW}/tmp/pacstall${NC}"
       sudo rm -rf /tmp/pacstall
       sudo mkdir /tmp/pacstall
       cd /tmp/pacstall/ || exit
@@ -70,11 +70,11 @@ while test $# -gt 0; do
         exit 0
       fi
       if wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz ; then
-          echo "tar.xz detected"
+          echo "file found"
           echo -e "${RED}extracting...${NC}"
           sudo tar -xf "$package".tar.xz
       else
-          echo "tar.xz not detected... trying zip"
+          echo "file found"
           wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.zip
           echo -e "${RED}extracting...${NC}"
           sudo unzip /tmp/pacstall/$package.zip
@@ -92,36 +92,36 @@ while test $# -gt 0; do
   
       installerror=$?
        
-      echo -e "${GREEN}Cleaning up...${NC}"
+      echo -e "${GREEN}Cleaning up${NC}"
       cd /tmp/pacstall || exit
       rm -rf "$package"*
       echo " "
-      echo "Checking for Errors..."
+      echo "Checking for any errors"
       if [[ $alertserror = 0 ]]
       then
         echo -e "${GREEN}No errors in alerts.sh${NC}"
       else
-      echo -e "${RED}Error with alerts.sh, this may be that there is no alerts.sh file, or if there was a syntax error${NC}"
+      echo -e "${RED}Detected alerts error, this may be that there are no alerts for $package, or if there was a syntax error${NC}"
       fi
        
       if [[ $dependserror = 0 ]]
       then
-        echo -e "${GREEN}No errors in depends.sh${NC}"
+        echo -e "${GREEN}No errors in dependencies${NC}"
       else
-        echo -e "${RED}Error with depends.sh, if you try to launch $package and it works, you can ignore this error. If not, contact $package maintainer${NC}"
+        echo -e "${RED}Detected dependency error, if you try to launch $package and it works, you can ignore this error, but you may not get all the features of $package. If not, contact $package maintainer${NC}"
       fi
       
       if [[ $installerror = 0 ]]
       then
         echo -e "${GREEN}No errors in install.sh${NC}"
       else
-        echo -e "${RED}Error in install.sh, if you try to launch $package and it works, you can ignore this error. If not, contact $package maintainer${NC}"
+        echo -e "${RED}Detected installing error, if you try to launch $package and it works, you can ignore this error. If not, contact $package maintainer${NC}"
       fi
       echo "Indexing..."
       echo "$package" >> /var/log/pacstall_installed
       exit 0
       else
-      echo "$package does not exist in the $repo repository. Check your spelling or choose a different repo"
+      echo "$package does not exist in the $repo repository. Check your spelling or choose a different repository with ${RED}sudo pacstall -C${NC}"
       exit 1
       fi
       ;;
@@ -130,7 +130,7 @@ while test $# -gt 0; do
      repo=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
      wget -q --spider https://github.com/"$repo"/pacstall/tree/master/packages/$search/
      if [ $? -eq 0 ]; then
-        read -p "${GREEN}$search${NC} is available in the ${PURPLE}$repo${NC} repository. Do you want to see the readme?" answer
+        read -p "${GREEN}$search${NC} is available in the ${PURPLE}$repo${NC} repository. Do you want to view the readme?" answer
 	if [[ $answer = y ]] ; then
 	pandoc -t plain https://raw.githubusercontent.com/$repo/pacstall/master/packages/$search/README.md | less
 	exit 0
@@ -138,7 +138,7 @@ while test $# -gt 0; do
 	exit 0
         fi
      else
-        echo $search is not available. Add another repo or check your spelling
+        echo "$search is not available. Add another repo or check your spelling"
 	exit 1
      fi
       ;;
@@ -199,6 +199,7 @@ while test $# -gt 0; do
     -U|--update)
       sudo wget -q https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall -O /bin/pacstall
       echo "Updating complete"
+      echo "You are at version $(pacstall -V)"
       exit 0
       ;;
     -L|--list)
