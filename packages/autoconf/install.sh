@@ -1,4 +1,4 @@
 #!/bin/bash
 ./configure
 make -j$(nproc)
-make install
+sudo paco -lp autoconf "make install"
