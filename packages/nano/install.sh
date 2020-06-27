@@ -1,5 +1,4 @@
 #!/bin/bash
 ./configure
-cpu=$(grep -c ^prcessor /proc/cpuinfo)
-make -j$cpu
-sudo make install
+make -j$(nproc)
+sudo paco -lp nano "make install"
