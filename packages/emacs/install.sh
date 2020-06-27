@@ -4,4 +4,4 @@ tar -xf emacs.tar.xz
 cd emacs-26.3
 ./configure
 make -j$(nproc)
-sudo paco -lp emacs "make install"
+sudo porg -lp emacs "make install"
