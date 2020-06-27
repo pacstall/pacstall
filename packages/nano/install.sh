@@ -1,4 +1,4 @@
 #!/bin/bash
 ./configure
 make -j$(nproc)
-sudo paco -lp nano "make install"
+sudo porg -lp nano "make install"
