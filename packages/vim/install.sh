@@ -1,3 +1,3 @@
 #!/bin/bash
 make -j$(nproc)
-sudo paco -lp vim "make install"
+sudo porg -lp vim "make install"
