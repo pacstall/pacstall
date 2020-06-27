@@ -1,2 +1,2 @@
-#!/binbash
+#!/bin/bash
 cabal-install
