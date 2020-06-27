@@ -1,4 +1,4 @@
 #!/bin/bash
 ./configure
-make -j4
+make -j$(nproc)
 make install
