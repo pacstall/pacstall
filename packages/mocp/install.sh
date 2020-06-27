@@ -2,4 +2,4 @@
 autoreconf -if
 ./configure
 make -j$(nproc)
-sudo paco -lp mocp "make install"
+sudo porg -lp mocp "make install"
