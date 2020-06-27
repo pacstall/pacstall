@@ -1,4 +1,4 @@
 #!/bin/bash
 make -j$(nproc)
 cmake
-sudo make install
+sudo paco -lp "make install"
