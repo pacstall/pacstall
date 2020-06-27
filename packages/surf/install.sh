@@ -1,2 +1,2 @@
 #!/bin/bash
-sudo paco -lp surf "make install"
+sudo porg -lp surf "make install"
