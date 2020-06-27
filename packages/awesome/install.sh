@@ -1,4 +1,4 @@
 #!/bin/bash
-make
+make -j$(nproc)
 cmake
 sudo make install
