@@ -1,4 +1,4 @@
 #!/bin/bash
 ./configure
 make -j$(nproc)
-sudo paco -lp glibc "make install"
+sudo porg -lp glibc "make install"
