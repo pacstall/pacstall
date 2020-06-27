@@ -1,4 +1,4 @@
 #!/bin/bash
 ./configure
-make -j4
-make install
+make -j$(nproc)
+sudo paco -lp glibc "make install"
