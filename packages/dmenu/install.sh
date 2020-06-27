@@ -1,2 +1,2 @@
 #!/bin/bash
-sudo paco -lp dmenu "make install"
+sudo porg -lp dmenu "make install"
