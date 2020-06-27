@@ -1,3 +1,3 @@
 #!/bin/bash
 cmake .
-make install
+sudo porg -lp catimg "make install"
