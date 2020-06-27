@@ -1,4 +1,4 @@
 #!/bin/bash
 ./bootstrap
-make -j4
-sudo make install
+make -j$(nproc)
+sudo porg -lp "make install"
