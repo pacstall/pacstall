@@ -2,4 +2,4 @@
 ./autogen.sh
 ./configure
 make -j$(nproc)
-sudo porg -lp awf "make install"
+sudo paco -lp awf "make install"
