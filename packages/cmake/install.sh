@@ -1,4 +1,4 @@
 #!/bin/bash
 ./bootstrap
 make -j$(nproc)
-sudo paco -lp "make install"
+sudo porg -lp cmake "make install"
