@@ -17,6 +17,13 @@ while test $# -gt 0; do
       exit 0
       ;;
     -I|--install) 
+      function trap_ctrlc ()
+      {
+          echo "Ctrl-C caught...performing clean up"
+          rm -rf /tmp/pacstall/*
+          exit 2
+      }
+      trap "trap_ctrlc" 2
       if [ "$EUID" -ne 0 ]
       then echo "Please run as root"
       exit
@@ -85,11 +92,7 @@ while test $# -gt 0; do
       dependserror=$?
       echo -e "${CYAN}Downloading and running install script for ${GREEN}$package...${NC}"
 	  
-      wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/install.sh
-      sed -i 's/sudo make install/sudo porg -lp $package "make install"/g' install.sh
-      sed -i 's/make install/porg -lp $package "make install"/g' install.sh
-      sh install.sh
-  
+      wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/install.sh | bash
       installerror=$?
        
       echo -e "${GREEN}Cleaning up${NC}"
