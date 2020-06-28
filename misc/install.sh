@@ -8,5 +8,5 @@ echo "retrieving pacstall"
 sudo wget -q https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall -O /bin/pacstall
 sudo chmod a+x /bin/pacstall
 echo "retrieving default config file"
-
+sudo wget -q https://raw.githubusercontent.com/Henryws/pacstall/master/misc/config.conf -O /usr/share/pacstall/config.conf
 sudo echo "Henryws" >> /usr/share/pacstall/repo/pacstallrepo.txt
