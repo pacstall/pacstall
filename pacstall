@@ -26,7 +26,14 @@ while test $# -gt 0; do
       trap "trap_ctrlc" 2
       if [ "$EUID" -ne 0 ]
       then echo "Please run as root"
-      exit
+      exit 1
+      fi
+      support=grep -E "Ubuntu|Fedora" /etc/lsb_release
+      if [[ $support -eq 1 ]] ; then
+      	  RED='\033[0;31m'
+	  NC='\033[0m'
+	  echo -e "${RED}Unsupported Distrobution${NC}"
+	  exit 1
       fi
       grep -c -q "ascii_art: true" /usr/share/pacstall/config.conf
       if [[ $? -eq 1 ]] ; then
