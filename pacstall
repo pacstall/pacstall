@@ -36,7 +36,7 @@ while test $# -gt 0; do
 	  echo -e "${RED}Unsupported Distrobution${NC}"
 	  exit 1
       fi
-      grep -c -q "ascii_art: true" /usr/share/pacstall/config.conf
+      grep -c -q "ascii_art: true" /usr/share/pacstall/config.conf || curl https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/pacstallascii.txt
       if [[ $? -eq 1 ]] ; then
       curl https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/pacstallascii.txt
       fi
@@ -47,8 +47,6 @@ while test $# -gt 0; do
 	  sudo pacstall -C
       fi
       repo=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-      grep -c -q "pacstall_color: true" /usr/share/pacstall/config.conf
-      if [[ $? -eq 1 ]] ; then
       RED='\033[0;31m'
       CYAN='\033[0;36m'
       NC='\033[0m' # No Color
@@ -56,7 +54,6 @@ while test $# -gt 0; do
       PURPLE='\033[0;35m'
       YELLOW='\033[1;33m'
       BLUE='\033[0;34m'
-      fi
       if [ ! -d /tmp/pacstall ]; then
 	  mkdir -p /tmp/pacstall;
       fi
@@ -72,10 +69,7 @@ while test $# -gt 0; do
       if wget -q "$url" >/dev/null 2>&1 ; then
 
           #Finds package size and prompts for installation
-          grep -c -q "packagealerts: true" /usr/share/pacstall/config.conf
-	  if [[ $? -eq 1 ]] ; then
           wget -qO- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/alerts.sh | bash
-          fi
           alertserror=$?
 	  if wget -q --spider https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz ; then
           pkgsize=$(curl -s https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz | wc -c)
