@@ -29,12 +29,15 @@ while test $# -gt 0; do
       then echo "Please run as root"
       exit 1
       fi
-      support=$(grep -E "Ubuntu|Fedora" /etc/lsb-release)
-      if [[ $? -eq 1 ]] ; then
+      support=$(lsb_release --id --short)
+      if [[ $support != "Ubuntu" ]] ; then
       	  RED='\033[0;31m'
 	  NC='\033[0m'
+	  if [[ $support != "Fedora" ]] ; then
+	  else
 	  echo -e "${RED}Unsupported Distrobution${NC}"
 	  exit 1
+	  fi
       fi
       grep -c -q "ascii_art: true" /usr/share/pacstall/config.conf || curl https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/pacstallascii.txt
       if [[ $? -eq 1 ]] ; then
