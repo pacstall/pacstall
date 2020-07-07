@@ -35,7 +35,7 @@ while test $# -gt 0; do
 	  NC='\033[0m'
 	  if [[ $support != "Fedora" ]] ; then
 	  else
-	  echo -e "${RED}Unsupported Distrobution${NC}"
+	  echo -e "${RED}Unsupported Distribution${NC}"
 	  exit 1
 	  fi
       fi
