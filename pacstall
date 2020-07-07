@@ -29,7 +29,7 @@ while test $# -gt 0; do
       then echo "Please run as root"
       exit 1
       fi
-      support=grep -E "Ubuntu|Fedora" /etc/lsb_release
+      support=$(grep -E "Ubuntu|Fedora" /etc/lsb_release)
       if [[ $support -eq 1 ]] ; then
       	  RED='\033[0;31m'
 	  NC='\033[0m'
