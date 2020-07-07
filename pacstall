@@ -30,7 +30,7 @@ while test $# -gt 0; do
       exit 1
       fi
       support=$(grep -E "Ubuntu|Fedora" /etc/lsb-release)
-      if [[ $support -eq 1 ]] ; then
+      if [[ $? -eq 1 ]] ; then
       	  RED='\033[0;31m'
 	  NC='\033[0m'
 	  echo -e "${RED}Unsupported Distrobution${NC}"
