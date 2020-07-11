@@ -101,12 +101,13 @@ while test $# -gt 0; do
       cd $PACKAGE || exit 1
       
       echo "Generating dependency list"
-      echo $(curl -s https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends) >> /tmp/pacstall/deps/$PACKAGE-deplist
-      DEPNUMBER=1
+      touch /tmp/pacstall/deps/$PACKAGE
+      echo $(curl -s https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends) >> /tmp/pacstall/deps/$PACKAGE
+      DEPNUMBER=1 || echo "depends not found" && exit 1
       
-      for i in $(head -n $DEPNUMBER /tmp/pacstall/deps/$PACKAGE-deplist);
+      for i in $(head -n $DEPNUMBER /tmp/pacstall/deps/$PACKAGE);
       do
-      echo "Retrieving $(head -n $DEPNUMBER /tmp/pacstall/deps/$PACKAGE-deplist)"
+      echo "Retrieving $(head -n $DEPNUMBER /tmp/pacstall/deps/$PACKAGE)"
       wget -q -r --no-parent -A '*.tar.xz' https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/
       DEPNUMBER=$((DEPNUMBER+1))
       done
