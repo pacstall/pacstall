@@ -84,7 +84,7 @@ while test $# -gt 0; do
           pkgsize=$(curl -s https://github.com/$REPO/pacstall/raw/master/packages/$PACKAGE/$PACKAGE.zip | wc -c)
 	      echo "$PACKAGE will take up $pkgsize" && echo " "
 	  fi	  
-	  printf 'Proceed to install? [y/n] : '
+	  printf 'Proceed to install [y/n] : '
       read -r yesorno
       if [[ "$yesorno" =~ ^([n/N])$ ]] ; then
         exit 0
@@ -107,7 +107,8 @@ while test $# -gt 0; do
       for i in $(head -n $DEPNUMBER $BUILDDIR/deps/$PACKAGE);
       do
       echo "Retrieving $(head -n $DEPNUMBER $BUILDDIR/deps/$PACKAGE)"
-      wget -q -r --no-parent -A '*.tar.xz' https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/
+      wget -q https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$(head -n $DEPNUMBER $BUILDDIR/deps/$PACKAGE)/$(head -n $DEPNUMBER $BUILDDIR/deps/$PACKAGE).tar.xz
+      echo $(curl -s https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$(head -n $DEPNUMBER $BUILDDIR/deps/$PACKAGE)/depends) >> $BUILDDIR/deps/$PACKAGE
       DEPNUMBER=$((DEPNUMBER+1))
       done
       
