@@ -19,7 +19,7 @@ while test $# -gt 0; do
     -I|--install) 
       function trap_ctrlc ()
       {
-          echo "Ctrl-C caught...performing clean up"
+          echo "cleaning up"
           rm -rf /tmp/pacstall/*
 	  echo "the installation of $2 was interrupted, removing files"
           exit 2
@@ -99,7 +99,19 @@ while test $# -gt 0; do
           sudo unzip /tmp/pacstall/$PACKAGE.zip
       fi
       cd $PACKAGE || exit 1
-      wget -O- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends.sh | bash
+      
+      echo "Generating dependency list"
+      echo $(curl -s https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends) >> /tmp/pacstall/deps/$PACKAGE-deplist
+      DEPNUMBER=1
+      
+      for i in $(head -n $DEPNUMBER /tmp/pacstall/deps/$PACKAGE-deplist);
+      do
+      echo "Retrieving $(head -n $DEPNUMBER /tmp/pacstall/deps/$PACKAGE-deplist)"
+      wget -q -r --no-parent -A '*.tar.xz' https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/
+      DEPNUMBER=$((DEPNUMBER+1))
+      done
+      
+      # wget -O- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends.sh | bash
       
       dependserror=$?
       echo -e "${CYAN}Downloading and running install script for ${GREEN}$PACKAGE...${NC}"
