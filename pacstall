@@ -34,6 +34,8 @@ while test $# -gt 0; do
       	  RED='\033[0;31m'
 	  NC='\033[0m'
 	  if [[ $SUPPORT != "Fedora" ]] ; then
+	  RED='\033[0;31m'
+	  NC='\033[0m'  
 	  else
 	  echo -e "${RED}Unsupported Distribution${NC}"
 	  exit 1
@@ -79,7 +81,7 @@ while test $# -gt 0; do
 	      echo "$PACKAGE will take up $pkgsize" && echo " "
           else    
           pkgsize=$(curl -s https://github.com/$REPO/pacstall/raw/master/packages/$PACKAGE/$PACKAGE.zip | wc -c)
-	      echo "$package will take up $pkgsize" && echo " "
+	      echo "$PACKAGE will take up $pkgsize" && echo " "
 	  fi	  
 	  printf 'Proceed to install? [y/n] : '
       read -r yesorno
@@ -141,7 +143,7 @@ while test $# -gt 0; do
     -S|--search)
      SEARCH=$2
      REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-     wget -q --spider https://github.com/"$repo"/pacstall/tree/master/packages/$search/
+     wget -q --spider https://github.com/"$REPO"/pacstall/tree/master/packages/$SEARCH/
      if [ $? -eq 0 ]; then
         read -p "${GREEN}$SEARCH${NC} is available in the ${PURPLE}$REPO${NC} repository. Do you want to view the readme? " answer
 	if [[ $answer = y ]] ; then
@@ -182,7 +184,7 @@ while test $# -gt 0; do
                2 "Option 2" off
                3 "Option 3" off
                4 "Option 4" off)
-      choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
+      CHOICE=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
       clear
       for choice in $CHOICE
       do
@@ -262,7 +264,7 @@ while test $# -gt 0; do
       fi
       ;;
      -Depcheck)
-      $2=dep
+      dep=$2
       if [[ $(command -v apt) = /usr/bin/apt ]] ; then
         dpkg -s $dep
         if [[ $? -eq 0 ]] ; then
