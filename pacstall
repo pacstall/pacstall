@@ -29,11 +29,11 @@ while test $# -gt 0; do
       then echo "Please run as root"
       exit 1
       fi
-      support=$(lsb_release --id --short)
-      if [[ $support != "Ubuntu" ]] ; then
+      SUPPORT=$(lsb_release --id --short)
+      if [[ $SUPPORT != "Ubuntu" ]] ; then
       	  RED='\033[0;31m'
 	  NC='\033[0m'
-	  if [[ $support != "Fedora" ]] ; then
+	  if [[ $SUPPORT != "Fedora" ]] ; then
 	  else
 	  echo -e "${RED}Unsupported Distribution${NC}"
 	  exit 1
@@ -43,13 +43,13 @@ while test $# -gt 0; do
       if [[ $? -eq 1 ]] ; then
       curl https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/pacstallascii.txt
       fi
-      package=$2
+      PACKAGE=$2
       if [[ ! -e /usr/share/pacstall/repo/ ]]; then
           mkdir -p /usr/share/pacstall/repo
           touch /usr/share/pacstall/repo/pacstallrepo.txt
 	  sudo pacstall -C
       fi
-      repo=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
+      REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       RED='\033[0;31m'
       CYAN='\033[0;36m'
       NC='\033[0m' # No Color
@@ -65,20 +65,20 @@ while test $# -gt 0; do
       sudo rm -rf /tmp/pacstall
       sudo mkdir /tmp/pacstall
       cd /tmp/pacstall/ || exit
-      echo "cleaning $package build directory"
-      sudo rm -rf "$package"
+      echo "cleaning $PACKAGE build directory"
+      sudo rm -rf "$PACKAGE"
       # This is where pacstall will alert the user of anything they might need to know that could affect the installation of there package
-      url=https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/install.sh
-      if wget -q "$url" >/dev/null 2>&1 ; then
+      URL=https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/install.sh
+      if wget -q "$URL" >/dev/null 2>&1 ; then
 
           #Finds package size and prompts for installation
-          wget -qO- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/alerts.sh | bash
+          wget -qO- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/alerts.sh | bash
           alertserror=$?
-	  if wget -q --spider https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz ; then
-          pkgsize=$(curl -s https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz | wc -c)
-	      echo "$package will take up $pkgsize" && echo " "
+	  if wget -q --spider https://github.com/$REPO/pacstall/raw/master/packages/$PACKAGE/$PACKAGE.tar.xz ; then
+          pkgsize=$(curl -s https://github.com/$REPO/pacstall/raw/master/packages/$PACKAGE/$PACKAGE.tar.xz | wc -c)
+	      echo "$PACKAGE will take up $pkgsize" && echo " "
           else    
-          pkgsize=$(curl -s https://github.com/$repo/pacstall/raw/master/packages/$package/$package.zip | wc -c)
+          pkgsize=$(curl -s https://github.com/$REPO/pacstall/raw/master/packages/$PACKAGE/$PACKAGE.zip | wc -c)
 	      echo "$package will take up $pkgsize" && echo " "
 	  fi	  
 	  printf 'Proceed to install? [y/n] : '
@@ -86,82 +86,82 @@ while test $# -gt 0; do
       if [[ "$yesorno" =~ ^([n/N])$ ]] ; then
         exit 0
       fi
-      if wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz ; then
+      if wget -q --show-progress --progress=bar:force:noscroll https://github.com/$REPO/pacstall/raw/master/packages/$PACKAGE/$PACKAGE.tar.xz ; then
           echo "file found"
           echo -e "${RED}extracting...${NC}"
-          sudo tar -xf "$package".tar.xz
+          sudo tar -xf "$PACKAGE".tar.xz
       else
           echo "file found"
-          wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.zip
+          wget -q --show-progress --progress=bar:force:noscroll https://github.com/$REPO/pacstall/raw/master/packages/$PACKAGE/$PACKAGE.zip
           echo -e "${RED}extracting...${NC}"
-          sudo unzip /tmp/pacstall/$package.zip
+          sudo unzip /tmp/pacstall/$PACKAGE.zip
       fi
-      cd $package || exit
-      wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/depends.sh | bash
+      cd $PACKAGE || exit 1
+      wget -O- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends.sh | bash
       
       dependserror=$?
-      echo -e "${CYAN}Downloading and running install script for ${GREEN}$package...${NC}"
+      echo -e "${CYAN}Downloading and running install script for ${GREEN}$PACKAGE...${NC}"
 	  
-      wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/install.sh | bash
+      wget -O- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/install.sh | bash
       installerror=$?
        
       echo -e "${GREEN}Cleaning up${NC}"
-      cd /tmp/pacstall || exit
-      rm -rf "$package"*
+      cd /tmp/pacstall || exit 1
+      rm -rf "$PACKAGE"*
       echo " "
       echo "Checking for any errors"
       if [[ $alertserror = 0 ]]
       then
         echo -e "${GREEN}No errors in alerts.sh${NC}"
       else
-      echo -e "${RED}Detected alerts error, this may be that there are no alerts for $package, or if there was a syntax error${NC}"
+      echo -e "${RED}Detected alerts error, this may be that there are no alerts for $PACKAGE, or if there was a syntax error${NC}"
       fi
        
       if [[ $dependserror = 0 ]]
       then
         echo -e "${GREEN}No errors in dependencies${NC}"
       else
-        echo -e "${RED}Detected dependency error, if you try to launch $package and it works, you can ignore this error, but you may not get all the features of $package. If not, contact $package maintainer${NC}"
+        echo -e "${RED}Detected dependency error, if you try to launch $PACKAGE and it works, you can ignore this error, but you may not get all the features of $PACKAGE. If not, contact $PACKAGE maintainer${NC}"
       fi
       
       if [[ $installerror = 0 ]]
       then
         echo -e "${GREEN}No errors in install.sh${NC}"
       else
-        echo -e "${RED}Detected installing error, if you try to launch $package and it works, you can ignore this error. If not, contact $package maintainer${NC}"
+        echo -e "${RED}Detected installing error, if you try to launch $PACKAGE and it works, you can ignore this error. If not, contact $PACKAGE maintainer${NC}"
       fi
       echo "Indexing..."
-      echo "$package" >> /var/log/pacstall_installed
+      echo "$PACKAGE" >> /var/log/pacstall_installed
       exit 0
       else
-      echo "$package does not exist in the $repo repository. Check your spelling or choose a different repository with ${RED}sudo pacstall -C${NC}"
+      echo "$PACKAGE does not exist in the $REPO repository. Check your spelling or choose a different repository with ${RED}sudo pacstall -C${NC}"
       exit 1
       fi
       ;;
     -S|--search)
-     search=$2
-     repo=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
+     SEARCH=$2
+     REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
      wget -q --spider https://github.com/"$repo"/pacstall/tree/master/packages/$search/
      if [ $? -eq 0 ]; then
-        read -p "${GREEN}$search${NC} is available in the ${PURPLE}$repo${NC} repository. Do you want to view the readme? " answer
+        read -p "${GREEN}$SEARCH${NC} is available in the ${PURPLE}$REPO${NC} repository. Do you want to view the readme? " answer
 	if [[ $answer = y ]] ; then
-	pandoc -t plain https://raw.githubusercontent.com/$repo/pacstall/master/packages/$search/README.md | less
+	pandoc -t plain https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$SEARCH/README.md | less
 	exit 0
 	else
 	exit 0
         fi
      else
-        echo "$search is not available. Add another repo or check your spelling"
+        echo "$SEARCH is not available. Add another repo or check your spelling"
 	exit 1
      fi
       ;;
     -R|--remove)
-      package=$2
-      sudo rm $(cat /var/lib/porg/$package | sed -n 's/|\(.*\)//;/^#\(.*\)/d;p')
+      PACKAGE=$2
+      sudo rm $(cat /var/lib/porg/$PACKAGE | sed -n 's/|\(.*\)//;/^#\(.*\)/d;p')
       if [ $? -eq 0 ]; then
-        echo "Removed $package"
+        echo "Removed $PACKAGE"
 	echo "Indexing..."
-	sed -i "/\b\($package\)\b/d" /var/log/pacstall_installed
+	sed -i "/\b\($PACKAGE\)\b/d" /var/log/pacstall_installed
 	if [ $? -eq 0 ]; then
 	  echo "Index successful"
 	  exit 0
@@ -171,7 +171,7 @@ while test $# -gt 0; do
 	fi
 	exit 0
       else
-        echo "Failed to remove $package"
+        echo "Failed to remove $PACKAGE"
 	exit 1
       fi
       ;;
@@ -184,9 +184,9 @@ while test $# -gt 0; do
                4 "Option 4" off)
       choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
       clear
-      for choice in $choices
+      for choice in $CHOICE
       do
-          case $choice in
+          case $CHOICE in
               1)
                   echo -e "${PURPLE}Henryws${NC} repository selected" && echo Henryws > /usr/share/pacstall/repo/pacstallrepo.txt
                   exit
@@ -222,26 +222,26 @@ while test $# -gt 0; do
       ;;
     -DL|--download-local)
       cd /var/cache/pacstall/
-      package=$2
-      repo=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-      if wget -q --show-progress:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.tar.xz ; then
-      sudo tar -xf $package.tar.xz
-      cd $package
-      wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/install.sh
+      PACKAGE=$2
+      REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
+      if wget -q --show-progress:force:noscroll https://github.com/$REPO/pacstall/raw/master/packages/$PACKAGE/$PACKAGE.tar.xz ; then
+      sudo tar -xf $PACKAGE.tar.xz
+      cd $PACKAGE
+      wget -O- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/install.sh
       cd ..
-      tar cfJ $package.tar.xz $package
+      tar cfJ $PACKAGE.tar.xz $PACKAGE
       if [[ $? -eq 0 ]] ; then
       exit 0
       else
       exit 1
       fi
       else 
-      wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$package/$package.zip
-      unzip $package.zip
-      cd $package
-      wget -O- https://raw.githubusercontent.com/$repo/pacstall/master/packages/$package/install.sh
+      wget -q --show-progress --progress=bar:force:noscroll https://github.com/$REPO/pacstall/raw/master/packages/$PACKAGE/$PACKAGE.zip
+      unzip $PACKAGE.zip
+      cd $PACKAGE
+      wget -O- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/install.sh
       cd ..
-      tar cfJ $package.tar.xz $package
+      tar cfJ $PACKAGE.tar.xz $PACKAGE
       if [[ $? -eq 0 ]] ; then
       exit 0
       else
@@ -250,14 +250,14 @@ while test $# -gt 0; do
       fi
       ;;
     -IL|--install-local)
-      package=$2
-      tar xf $package.tar.xz
-      cd $package
+      PACKAGE=$2
+      tar xf $PACKAGE.tar.xz
+      cd $PACKAGE
       sudo ./install.sh
       if [[ $? -eq 0 ]] ; then
       exit 0
       else
-      echo "Failed to install $package"
+      echo "Failed to install $PACKAGE"
       exit 1
       fi
       ;;
@@ -280,20 +280,20 @@ while test $# -gt 0; do
       fi
       ;;
      -Depinstall)
-      repo=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
+      REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       cd /tmp/pacstall
-      if wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$dep/$dep.tar.xz ; then
+      if wget -q --show-progress --progress=bar:force:noscroll https://github.com/$REPO/pacstall/raw/master/packages/$dep/$dep.tar.xz ; then
           echo "tar.xz detected"
           echo -e "${RED}extracting...${NC}"
           sudo tar -xf $dep.tar.xz
       else
           echo "tar.xz not detected... trying zip"
-          wget -q --show-progress --progress=bar:force:noscroll https://github.com/$repo/pacstall/raw/master/packages/$dep/$dep.zip
+          wget -q --show-progress --progress=bar:force:noscroll https://github.com/$REPO/pacstall/raw/master/packages/$dep/$dep.zip
           echo -e "${RED}extracting...${NC}"
           sudo unzip /tmp/pacstall/$dep.zip
       fi
       cd $dep*
-      wget -q https://raw.githubusercontent.com/$repo/pacstall/master/packages/$dep/install.sh | bash
+      wget -q https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$dep/install.sh | bash
       echo "done installing $dep"
       ;;
      *)
