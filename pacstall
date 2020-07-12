@@ -41,10 +41,6 @@ while test $# -gt 0; do
 	  exit 1
 	  fi
       fi
-      grep -c -q "ascii_art: true" /usr/share/pacstall/config.conf || curl https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/pacstallascii.txt
-      if [[ $? -eq 1 ]] ; then
-      curl https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/pacstallascii.txt
-      fi
       PACKAGE=$2
       if [[ ! -e /usr/share/pacstall/repo/ ]]; then
           mkdir -p /usr/share/pacstall/repo
@@ -60,8 +56,8 @@ while test $# -gt 0; do
       YELLOW='\033[1;33m'
       BLUE='\033[0;34m'
       BUILDDIR=/tmp/pacstall
-      if [ ! -d /tmp/pacstall ]; then
-	  mkdir -p /tmp/pacstall;
+      if [ ! -d $BUILDDIR ]; then
+	  mkdir -p $BUILDDIR;
       fi
       #This is the part where it searches your package on all repos and puts it in /tmp
       echo -e "Preparing ${YELLOW}/tmp/pacstall${NC}"
@@ -70,7 +66,6 @@ while test $# -gt 0; do
       cd $BUILDDIR || exit
       echo "cleaning $PACKAGE build directory"
       sudo rm -rf "$PACKAGE"
-      # This is where pacstall will alert the user of anything they might need to know that could affect the installation of there package
       URL=https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/install.sh
       if wget -q "$URL" >/dev/null 2>&1 ; then
 
@@ -102,15 +97,16 @@ while test $# -gt 0; do
       echo "Generating dependency list"
       mkdir $BUILDDIR/deps && touch $BUILDDIR/deps/$PACKAGE
       echo $(curl -s https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends) >> $BUILDDIR/deps/$PACKAGE
-      DEPNUMBER=1 || echo "depends not found" && exit 1
+      DEPNUMBER=1 || echo "depends file not found." && exit 1
       
       for i in $(head -n $DEPNUMBER $BUILDDIR/deps/$PACKAGE);
       do
-      echo "Retrieving $(head -n $DEPNUMBER $BUILDDIR/deps/$PACKAGE)"
-      wget -q https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$(head -n $DEPNUMBER $BUILDDIR/deps/$PACKAGE)/$(head -n $DEPNUMBER $BUILDDIR/deps/$PACKAGE).tar.xz
       echo $(curl -s https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$(head -n $DEPNUMBER $BUILDDIR/deps/$PACKAGE)/depends) >> $BUILDDIR/deps/$PACKAGE
       DEPNUMBER=$((DEPNUMBER+1))
       done
+      echo "Retrieving packages"
+      sed -i -e 's#^#https://raw.githubusercontent.com/'"$REPO"'/''pacstall/master/packages/#' $BUILDDIR/deps/$PACKAGE && sed -i 's/$/.tar.xz/' $BUILDDIR/deps/$PACKAGE
+      wget -i $BUILDDIR/deps/$PACKAGE 1> /dev/null
       
       # wget -O- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends.sh | bash
       
@@ -275,41 +271,6 @@ while test $# -gt 0; do
       echo "Failed to install $PACKAGE"
       exit 1
       fi
-      ;;
-     -Depcheck)
-      dep=$2
-      if [[ $(command -v apt) = /usr/bin/apt ]] ; then
-        dpkg -s $dep
-        if [[ $? -eq 0 ]] ; then
-            echo "$dep exists... skipping"
-        else
-            sudo pacstall -Depinstall $dep
-        fi
-      else
-          rpm -q $dep
-          if [[ $? -eq 0 ]] ; then
-              echo "$dep exists... skipping"
-            else
-                sudo pacstall -Depinstall $dep
-            fi
-      fi
-      ;;
-     -Depinstall)
-      REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-      cd /tmp/pacstall
-      if wget -q --show-progress --progress=bar:force:noscroll https://github.com/$REPO/pacstall/raw/master/packages/$dep/$dep.tar.xz ; then
-          echo "tar.xz detected"
-          echo -e "${RED}extracting...${NC}"
-          sudo tar -xf $dep.tar.xz
-      else
-          echo "tar.xz not detected... trying zip"
-          wget -q --show-progress --progress=bar:force:noscroll https://github.com/$REPO/pacstall/raw/master/packages/$dep/$dep.zip
-          echo -e "${RED}extracting...${NC}"
-          sudo unzip /tmp/pacstall/$dep.zip
-      fi
-      cd $dep*
-      wget -q https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$dep/install.sh | bash
-      echo "done installing $dep"
       ;;
      *)
       break
