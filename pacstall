@@ -97,7 +97,7 @@ while test $# -gt 0; do
       echo "generating dependency list"
       mkdir $BUILDDIR/deps && touch $BUILDDIR/deps/$PACKAGE
       echo $(curl -s https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends) >> $BUILDDIR/deps/$PACKAGE
-      DEPNUMBER=1 || echo "depends file not found." && exit 1
+      DEPNUMBER=1
       
       for i in $(head -n $DEPNUMBER $BUILDDIR/deps/$PACKAGE);
       do
