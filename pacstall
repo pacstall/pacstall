@@ -234,6 +234,10 @@ while test $# -gt 0; do
       echo "You are at version $(pacstall -V)"
       exit 0
       ;;
+    -Ud|--update-dev)
+      UPDATEBRANCH="1.0.3-Brandeis"
+      sudo sed -i 's/master/'"$UPDATEBRANCH"'/g' /bin/pacstall
+      ;;
     -L|--list)
       wc -l /var/log/pacstall_installed
       cat /var/log/pacstall_installed
