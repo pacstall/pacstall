@@ -21,7 +21,7 @@ while test $# -gt 0; do
       {
           echo "cleaning up"
           rm -rf /tmp/pacstall/*
-	  echo "the installation of $2 was interrupted, removing files"
+	  echo "the installation of $2 was interrupted, removed files"
           exit 2
       }
       trap "trap_ctrlc" 2
@@ -94,7 +94,7 @@ while test $# -gt 0; do
       fi
       cd $PACKAGE || exit 1
       
-      echo "Generating dependency list"
+      echo "generating dependency list"
       mkdir $BUILDDIR/deps && touch $BUILDDIR/deps/$PACKAGE
       echo $(curl -s https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends) >> $BUILDDIR/deps/$PACKAGE
       DEPNUMBER=1 || echo "depends file not found." && exit 1
@@ -104,9 +104,13 @@ while test $# -gt 0; do
       echo $(curl -s https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$(head -n $DEPNUMBER $BUILDDIR/deps/$PACKAGE)/depends) >> $BUILDDIR/deps/$PACKAGE
       DEPNUMBER=$((DEPNUMBER+1))
       done
-      echo "Retrieving packages"
+      echo "retrieving packages"
+      cp $BUILDDIR/deps/$PACKAGE $BUILDDIR/deps/$PACKAGE-orig
       sed -i -e 's#^#https://raw.githubusercontent.com/'"$REPO"'/''pacstall/master/packages/#' $BUILDDIR/deps/$PACKAGE && sed -i 's/$/.tar.xz/' $BUILDDIR/deps/$PACKAGE
       wget --input-file=$BUILDDIR/deps/$PACKAGE --continue --directory-prefix=$BUILDDIR/deps
+      echo $BUILDDIR/deps/$PACKAGE-orig | awk -F'/' '{print $2}' > $BUILDDIR/deps/$PACKAGE-orig
+      echo "decompressing files"
+      for a in `ls -1 *.tar.xz`; do tar -xf $a; done
       
       # wget -O- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends.sh | bash
       
