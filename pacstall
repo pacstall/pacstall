@@ -106,7 +106,7 @@ while test $# -gt 0; do
       done
       echo "Retrieving packages"
       sed -i -e 's#^#https://raw.githubusercontent.com/'"$REPO"'/''pacstall/master/packages/#' $BUILDDIR/deps/$PACKAGE && sed -i 's/$/.tar.xz/' $BUILDDIR/deps/$PACKAGE
-      wget -i $BUILDDIR/deps/$PACKAGE 1> /dev/null
+      wget --input-file=$BUILDDIR/deps/$PACKAGE --continue --directory-prefix=$BUILDDIR/deps
       
       # wget -O- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends.sh | bash
       
