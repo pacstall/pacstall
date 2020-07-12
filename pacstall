@@ -111,11 +111,15 @@ while test $# -gt 0; do
       echo $BUILDDIR/deps/$PACKAGE-orig | awk -F'/' '{print $2}' > $BUILDDIR/deps/$PACKAGE-orig
       echo "decompressing files"
       for a in `ls -1 *.tar.xz`; do tar -xf $a; done
-      
       # wget -O- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends.sh | bash
-      
+      DEPNUMBER=1
+      for i in $(head -n $DEPNUMBER $BUILDDIR/deps/$PACKAGE-orig);
+      do
+      cd $(head -n $DEPNUMBER $BUILDDIR/deps/$PACKAGE-orig)
+      sudo wget -q https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$(head -n $DEPNUMBER $BUILDDIR/deps/$PACKAGE-orig)/install.sh | bash
+      done
       dependserror=$?
-      echo -e "${CYAN}Downloading and running install script for ${GREEN}$PACKAGE...${NC}"
+      echo -e "${CYAN}downloading and running install script for ${GREEN}$PACKAGE...${NC}"
 	  
       wget -O- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/install.sh | bash
       installerror=$?
