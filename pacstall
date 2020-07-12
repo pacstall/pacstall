@@ -235,8 +235,9 @@ while test $# -gt 0; do
       exit 0
       ;;
     -Ud|--update-dev)
-      UPDATEBRANCH="1.0.3-Brandeis"
+      UPDATEBRANCH=1.0.3-Brandeis
       sudo sed -i 's/master/'"$UPDATEBRANCH"'/g' /bin/pacstall
+      exit
       ;;
     -L|--list)
       wc -l /var/log/pacstall_installed
