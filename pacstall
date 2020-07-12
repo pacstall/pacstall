@@ -99,7 +99,7 @@ while test $# -gt 0; do
       echo $(curl -s https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends) >> $BUILDDIR/deps/$PACKAGE
       DEPNUMBER=1
       
-      for i in $(head -n $DEPNUMBER $BUILDDIR/deps/$PACKAGE);
+      for i in $(wc -l $BUILDDIR/deps/$PACKAGE | awk '{ print $1 }');
       do
       echo $(curl -s https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$(head -n $DEPNUMBER $BUILDDIR/deps/$PACKAGE)/depends) >> $BUILDDIR/deps/$PACKAGE
       DEPNUMBER=$((DEPNUMBER+1))
