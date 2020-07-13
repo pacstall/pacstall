@@ -96,7 +96,7 @@ while test $# -gt 0; do
       
       echo "generating dependency list"
       mkdir $BUILDDIR/deps && touch $BUILDDIR/deps/$PACKAGE
-      echo $(curl -s https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends) >> $BUILDDIR/deps/$PACKAGE
+      wget -q https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends -P $BUILDDIR/deps/$PACKAGE
       DEPNUMBER=1
       
       for i in $(wc -l $BUILDDIR/deps/$PACKAGE | awk '{ print $1 }');
