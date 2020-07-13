@@ -151,6 +151,7 @@ while test $# -gt 0; do
       fi
       echo "Indexing..."
       echo "$PACKAGE" >> /var/log/pacstall_installed
+      cat -n /var/log/pacstall_installed | sort -uk2 | sort -nk1 | cut -f2- > /var/log/pacstall_installed
       exit 0
       else
       echo "$PACKAGE does not exist in the $REPO repository. Check your spelling or choose a different repository with ${RED}sudo pacstall -C${NC}"
