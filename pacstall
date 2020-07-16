@@ -59,6 +59,10 @@ while test $# -gt 0; do
       if [ ! -d $BUILDDIR ]; then
 	  mkdir -p $BUILDDIR;
       fi
+      if [ ! -d /var/log/pacstall/deps ]; then
+      	 mkdir -p /var/log/pacstall/deps;
+      fi
+
       #This is the part where it searches your package on all repos and puts it in /tmp
       echo -e "Preparing ${YELLOW}/tmp/pacstall${NC}"
       sudo rm -rf $BUILDDIR
@@ -94,30 +98,15 @@ while test $# -gt 0; do
       fi
       cd $PACKAGE || exit 1
       
-      echo "generating dependency list"
+      echo "getting dependency list"
       mkdir $BUILDDIR/deps && touch $BUILDDIR/deps/$PACKAGE
       wget -q https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends -P $BUILDDIR/deps/$PACKAGE
-      DEPNUMBER=1
       
-      for i in $(wc -l $BUILDDIR/deps/$PACKAGE | awk '{ print $1 }');
-      do
-      echo $(curl -s https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$(head -n $DEPNUMBER $BUILDDIR/deps/$PACKAGE)/depends) >> $BUILDDIR/deps/$PACKAGE
-      DEPNUMBER=$((DEPNUMBER+1))
-      done
-      echo "retrieving packages"
-      cp $BUILDDIR/deps/$PACKAGE $BUILDDIR/deps/$PACKAGE-orig
-      sed -i -e 's#^#https://raw.githubusercontent.com/'"$REPO"'/''pacstall/master/packages/#' $BUILDDIR/deps/$PACKAGE && sed -i 's/$/.tar.xz/' $BUILDDIR/deps/$PACKAGE
       wget --input-file=$BUILDDIR/deps/$PACKAGE --continue --directory-prefix=$BUILDDIR/deps
-      echo $BUILDDIR/deps/$PACKAGE-orig | awk -F'/' '{print $2}' > $BUILDDIR/deps/$PACKAGE-orig
-      echo "decompressing files"
-      for a in `ls -1 *.tar.xz`; do tar -xf $a; done
-      # wget -O- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends.sh | bash
-      DEPNUMBER=1
-      for i in $(head -n $DEPNUMBER $BUILDDIR/deps/$PACKAGE-orig);
-      do
-      cd $(head -n $DEPNUMBER $BUILDDIR/deps/$PACKAGE-orig)
-      sudo wget -q https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$(head -n $DEPNUMBER $BUILDDIR/deps/$PACKAGE-orig)/install.sh | bash
-      done
+      for f in *.tar.xz; do tar -xf "$f"; done
+      unzip \*.zip
+      for f in *.tar.gz; do tar -xvf "$f"; done
+      for d in ./*/ ; do (cd "$d" && ./run.sh); done
       dependserror=$?
       echo -e "${CYAN}downloading and running install script for ${GREEN}$PACKAGE...${NC}"
 	  
