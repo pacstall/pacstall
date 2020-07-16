@@ -1,3 +1,2 @@
-qtbase
-
-qtsvg
+qtbase/qtbase
+qtsvg/qtsvg
