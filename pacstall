@@ -99,18 +99,30 @@ while test $# -gt 0; do
       fi
       cd $PACKAGE || exit 1
       
-      
-      dependserror=$?
-      echo -e "${CYAN}downloading and running install script for ${GREEN}$PACKAGE...${NC}"
+      echo -e "${CYAN}downloading and running depends script for ${GREEN}$PACKAGE...${NC}"
 	  
-      wget -O- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/install.sh -P /tmp/pacstall/$PACKAGE-install.sh
-      grep '^'$SUPPORT'' install.sh > /tmp/tmppacstallfile
+      wget -O- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends.sh -P /tmp/pacstall/$PACKAGE-depends.sh
+      if [[ $? -eq 1 ]] ; then
+        echo "$PACKAGE doesn't seem to have an depends file"
+      grep '^'$SUPPORT'' $PACKAGE-depends.sh > /tmp/tmppacstallfile
+      if [[ $? -eq 1 ]] ; then
+        echo "This script either doesn't have your distribution in its depends file. Do you want to view the file (v) or quit (q)"
+	read QUIT
+	if [[ $QUIT = v ]] ; then
+	  echo "You want to look for $SUPPORT:" && echo ""
+	  curl https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends.sh
+	  exit 1
+        else
+	  exit 1
+	fi
+      fi
       cut -d' ' -f2- /tmp/tmppacstallfile > /tmp/tmppacstallfile
       sed -i 's~[^[:alnum:]/]\+~~g' /tmp/tmppacstallfile
       cd /tmp/pacstall
       sudo $PACPREFIX $(echo /tmp/tmppacstallfile)
+      dependserror=$?
+      sudo wget -O- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/install.sh | bash
       installerror=$?
-       
       echo -e "${GREEN}Cleaning up${NC}"
       cd $BUILDDIR || exit 1
       rm -rf "$PACKAGE"*
