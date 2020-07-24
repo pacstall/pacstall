@@ -41,6 +41,7 @@ while test $# -gt 0; do
 	  exit 1
 	  fi
       fi
+      PACPREFIX="apt install -y "
       PACKAGE=$2
       if [[ ! -e /usr/share/pacstall/repo/ ]]; then
           mkdir -p /usr/share/pacstall/repo
@@ -98,19 +99,16 @@ while test $# -gt 0; do
       fi
       cd $PACKAGE || exit 1
       
-      echo "getting dependency list"
-      mkdir $BUILDDIR/deps && touch $BUILDDIR/deps/$PACKAGE
-      wget -q https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends -P $BUILDDIR/deps/$PACKAGE
       
-      wget --input-file=$BUILDDIR/deps/$PACKAGE --continue --directory-prefix=$BUILDDIR/deps
-      for f in *.tar.xz; do tar -xf "$f"; done
-      unzip \*.zip
-      for f in *.tar.gz; do tar -xvf "$f"; done
-      for d in ./*/ ; do (cd "$d" && ./run.sh); done
       dependserror=$?
       echo -e "${CYAN}downloading and running install script for ${GREEN}$PACKAGE...${NC}"
 	  
-      wget -O- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/install.sh | bash
+      wget -O- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/install.sh -P /tmp/pacstall/$PACKAGE-install.sh
+      grep '^'$SUPPORT'' install.sh > /tmp/tmppacstallfile
+      cut -d' ' -f2- /tmp/tmppacstallfile > /tmp/tmppacstallfile
+      sed -i 's~[^[:alnum:]/]\+~~g' /tmp/tmppacstallfile
+      cd /tmp/pacstall
+      sudo $PACPREFIX $(echo /tmp/tmppacstallfile)
       installerror=$?
        
       echo -e "${GREEN}Cleaning up${NC}"
