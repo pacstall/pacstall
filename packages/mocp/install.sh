@@ -1,5 +1,5 @@
 #!/bin/bash
 autoreconf -if
 ./configure
-make
+make -j$(nproc)
 sudo porg -lp mocp "make install"

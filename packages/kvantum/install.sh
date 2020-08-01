@@ -1,5 +1,5 @@
 #!/bin/bash
 mkdir build && cd build
 cmake ..
-make -j4
+make -j$(nproc)
 sudo porg -lp kvantum "make install"
