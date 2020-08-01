@@ -15,8 +15,9 @@ This is a small project that aims to install dependencies with your package mana
 
 ### Installing
 
-You can grab the deb or rpm files [here](https://github.com/Henryws/pacstall/releases). If thats not your thing you can run these commands:
+You can grab the deb or rpm files [here](https://github.com/Henryws/pacstall/releases/latest). If that's not your thing you can run this command:
 
-`sudo wget -q https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall -O /bin/pacstall`
+`sudo wget -q https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall -O /bin/pacstall && sudo echo "Henryws" >> /usr/share/pacstall/repo/pacstallrepo.txt`
 
-`sudo echo "Henryws" >> /usr/share/pacstall/repo/pacstallrepo.txt`
+DO NOT CLONE THIS REPOSITORY!!
+This serves as the scripts home and the packages. If you clone this repository, you will download all the packages currently available in this repository

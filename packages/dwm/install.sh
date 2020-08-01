@@ -1,2 +1,2 @@
 #!/bin/bash
-sudo porg -lp dwm "make install"
+sudo porg -lp dwm "sudo make install"
