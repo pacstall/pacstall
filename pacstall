@@ -225,7 +225,7 @@ while test $# -gt 0; do
     -V|--version)
       COLOR='\e[0;34m'
       NC='\033[0m' # No Color
-      echo -e "version 1.0.3 ${COLOR}Brandeis${NC} Developer"
+      echo -e "1.0.3 ${COLOR}Brandeis${NC} Developer"
       exit 0
       ;;
     -U|--update)
