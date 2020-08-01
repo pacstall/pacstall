@@ -2,5 +2,5 @@
 mkdir build
 cd build
 cmake ..
-sudo make -j4
+sudo make -j$(nproc)
 sudo porg -lp conky "make install"

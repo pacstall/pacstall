@@ -1,4 +1,4 @@
 #!/bin/bash
 ./configure 
-make 
+make -j$(nproc)
 sudo porg -lp synaptic "make install"
