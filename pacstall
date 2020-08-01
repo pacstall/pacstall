@@ -64,13 +64,7 @@ while test $# -gt 0; do
       if [ ! -d /var/log/pacstall/deps ]; then
       	 mkdir -p /var/log/pacstall/deps;
       fi
-      if (( $(pacstall -V | sed 's/\s.*$//') < $(curl https://raw.githubusercontent.com/Henryws/pacstall/master/version) )); then
-          printf "there is a new version of pacstall available, would you like to update? "
-	  read UPDATE
-	  if [[ $UPDATE = y]] ; then
-	      sudo pacstall -U
-          fi
-      fi
+
       #This is the part where it searches your package on all repos and puts it in /tmp
       echo -e "Preparing ${YELLOW}/tmp/pacstall${NC}"
       sudo rm -rf $BUILDDIR
@@ -83,8 +77,8 @@ while test $# -gt 0; do
       URL=https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/install.sh
 
       if wget -q "$URL" >/dev/null 2>&1 ; then
-          until wc -l $BUILDDIR/list | awk '{ print $1 }' -eq 1
-	  do
+      until wc -l $BUILDDIR/list | awk '{ print $1 }' -eq 1
+      do
 	  OLDPACKAGE=$2
 
 	  PACKAGE=$(head -n 1 $BUILDDIR/list)
