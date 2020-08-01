@@ -109,7 +109,7 @@ while test $# -gt 0; do
       
       echo -e "${CYAN}downloading and running depends script for ${GREEN}$PACKAGE...${NC}"
 	  
-      wget -O- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends.sh -P /tmp/pacstall/$PACKAGE-depends.sh
+      wget -O $PACKAGE-depends.sh https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends.sh
       if [[ $? -eq 1 ]] ; then
         echo "$PACKAGE doesn't seem to have an depends file"
       fi
