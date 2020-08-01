@@ -43,6 +43,7 @@ while test $# -gt 0; do
       fi
       PACPREFIX="apt install -y "
       PACKAGE=$2
+      LIST=$*
       if [[ ! -e /usr/share/pacstall/repo/ ]]; then
           mkdir -p /usr/share/pacstall/repo
           touch /usr/share/pacstall/repo/pacstallrepo.txt
@@ -75,11 +76,18 @@ while test $# -gt 0; do
       sudo rm -rf $BUILDDIR
       sudo mkdir $BUILDDIR
       cd $BUILDDIR || exit
-      echo "cleaning $PACKAGE build directory"
+      echo "cleaning build directory"
       sudo rm -rf "$PACKAGE"
+      echo $LIST | tr " " "\n" > $BUILDDIR/list
+      sed -i '1d' $BUILDDIR/list
       URL=https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/install.sh
-      if wget -q "$URL" >/dev/null 2>&1 ; then
 
+      if wget -q "$URL" >/dev/null 2>&1 ; then
+          until wc -l $BUILDDIR/list | awk '{ print $1 }' -eq 1
+	  do
+	  OLDPACKAGE=$2
+
+	  PACKAGE=$(head -n 1 $BUILDDIR/list)
           #Finds package size and prompts for installation
           wget -qO- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/alerts.sh | bash
           alertserror=$?
@@ -89,7 +97,7 @@ while test $# -gt 0; do
           else    
           pkgsize=$(curl -s https://github.com/$REPO/pacstall/raw/master/packages/$PACKAGE/$PACKAGE.zip | wc -c)
 	      echo "$PACKAGE will take up $pkgsize" && echo " "
-	  fi	  
+	  fi
 	  printf 'Proceed to install [y/n] : '
       read -r yesorno
       if [[ "$yesorno" =~ ^([n/N])$ ]] ; then
@@ -133,7 +141,7 @@ while test $# -gt 0; do
       cd $BUILDDIR || exit 1
       rm -rf "$PACKAGE"*
       echo " "
-      echo "Checking for any errors"
+      echo "#############REPORT#############"
       if [[ $alertserror = 0 ]]
       then
         echo -e "${GREEN}No errors in alerts.sh${NC}"
@@ -154,9 +162,12 @@ while test $# -gt 0; do
       else
         echo -e "${RED}Detected installing error, if you try to launch $PACKAGE and it works, you can ignore this error. If not, contact $PACKAGE maintainer${NC}"
       fi
+      echo "################################"
       echo "Indexing..."
       echo "$PACKAGE" >> /var/log/pacstall_installed
       cat -n /var/log/pacstall_installed | sort -uk2 | sort -nk1 | cut -f2- > /var/log/pacstall_installed
+      tail -n +2 "$BUILDDIR/list" > "list.tmp" && mv "list.tmp" "$BUILDDIR/list"
+      done
       exit 0
       else
       echo "$PACKAGE does not exist in the $REPO repository. Check your spelling or choose a different repository with ${RED}sudo pacstall -C${NC}"
