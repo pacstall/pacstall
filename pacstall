@@ -77,7 +77,8 @@ while test $# -gt 0; do
       URL=https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/install.sh
 
       if wget -q "$URL" >/dev/null 2>&1 ; then
-      while [ $(wc -l $BUILDDIR/list | awk '{ print $1 }') -ne 1 ]
+      NUMBER=$(wc -l $BUILDDIR/list | awk '{ print $1 }')
+      for i in $NUMBER
       do
 	  OLDPACKAGE=$2
 
