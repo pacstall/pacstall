@@ -77,7 +77,7 @@ while test $# -gt 0; do
       URL=https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/install.sh
 
       if wget -q "$URL" >/dev/null 2>&1 ; then
-      until wc -l $BUILDDIR/list | awk '{ print $1 }' -eq 1
+      while [ $(wc -l $BUILDDIR/list | awk '{ print $1 }') -ne 1 ]
       do
 	  OLDPACKAGE=$2
 
@@ -112,6 +112,7 @@ while test $# -gt 0; do
       wget -O- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends.sh -P /tmp/pacstall/$PACKAGE-depends.sh
       if [[ $? -eq 1 ]] ; then
         echo "$PACKAGE doesn't seem to have an depends file"
+      fi
       grep '^'$SUPPORT'' $PACKAGE-depends.sh > /tmp/tmppacstallfile
       if [[ $? -eq 1 ]] ; then
         echo "This script either doesn't have your distribution in its depends file. Do you want to view the file (v) or quit (q)"
