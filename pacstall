@@ -229,9 +229,9 @@ while test $# -gt 0; do
       done
       ;;
     -V|--version)
-      COLOR='\e[0;34m'
+      COLOR='\e[1;36m'
       NC='\033[0m' # No Color
-      echo -e "1.0.3 ${COLOR}Brandeis${NC}"
+      echo -e "1.0.4 ${COLOR}Celeste${NC}"
       exit 0
       ;;
     -U|--update)
@@ -241,7 +241,7 @@ while test $# -gt 0; do
       exit 0
       ;;
     -Ud|--update-dev)
-      UPDATEBRANCH=1.0.3-Brandeis
+      UPDATEBRANCH=1.0.4-Celeste
       sudo sed -i 's/master/'"$UPDATEBRANCH"'/g' /bin/pacstall
       exit
       ;;
