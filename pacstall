@@ -82,7 +82,7 @@ while test $# -gt 0; do
       do
 	  OLDPACKAGE=$2
 
-	  PACKAGE=$(head -n 1 $BUILDDIR/list)
+	  PACKAGE=$(head -n $NUMBER $BUILDDIR/list)
           #Finds package size and prompts for installation
           wget -qO- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/alerts.sh | bash
           alertserror=$?
