@@ -21,7 +21,7 @@ while test $# -gt 0; do
       {
           echo "cleaning up"
           rm -rf /tmp/pacstall/*
-	  echo "the installation of $2 was interrupted, removed files"
+	  echo "the installation of $(cat $BUILDDIR/list) was interrupted, removed files"
           exit 2
       }
       trap "trap_ctrlc" 2
