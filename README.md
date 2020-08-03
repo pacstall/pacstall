@@ -5,7 +5,7 @@
 </p>
 
 <p align="center"><b>PACSTALL</b></p>
-This is a small project that aims to install dependencies with your package manager then installs the actual package from source. I guess one reason you might use it is for those pesky apps that have missing dependencies. If you package an app with pacstall, you could link to those deb or rpm files that allow you to install the app.
+This is a small project that aims to install dependencies with your package manager then installs the actual package from source.
 
 
 
@@ -20,4 +20,4 @@ You can grab the deb or rpm files [here](https://github.com/Henryws/pacstall/rel
 `sudo wget -q https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall -O /bin/pacstall && sudo echo "Henryws" >> /usr/share/pacstall/repo/pacstallrepo.txt`
 
 DO NOT CLONE THIS REPOSITORY!!
-This serves as the scripts home and the packages. If you clone this repository, you will download all the packages currently available in this repository
+This serves as the scripts home and the packages. If you clone this repository, you will download all the packages currently available in this repository (which is a lot)
