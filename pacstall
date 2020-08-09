@@ -29,6 +29,12 @@ while test $# -gt 0; do
       then echo "Please run as root"
       exit 1
       fi
+      if [[ ! -e /tmp/pacstall_lock ]]; then
+          echo "you are currently using pacstall or you have interrupted a pacstall instance"
+	  echo "if you are running another instance of pacstall, wait for that to complete before trying this again"
+	  echo "otherwise, remove /tmp/pacstall_lock"
+	  exit 1
+      fi
       SUPPORT=$(lsb_release --id --short)
       if [[ $SUPPORT != "Ubuntu" ]] ; then
       	  RED='\033[0;31m'
@@ -64,7 +70,7 @@ while test $# -gt 0; do
       if [ ! -d /var/log/pacstall/deps ]; then
       	 mkdir -p /var/log/pacstall/deps;
       fi
-
+      touch /tmp/pacstall_lock
       #This is the part where it searches your package on all repos and puts it in /tmp
       echo -e "Preparing ${YELLOW}/tmp/pacstall${NC}"
       sudo rm -rf $BUILDDIR
@@ -164,6 +170,7 @@ while test $# -gt 0; do
       cat -n /var/log/pacstall_installed | sort -uk2 | sort -nk1 | cut -f2- > /var/log/pacstall_installed
       tail -n +2 "$BUILDDIR/list" > "list.tmp" && mv "list.tmp" "$BUILDDIR/list"
       done
+      rm -rf /tmp/pacstall_lock
       exit 0
       else
       echo "$PACKAGE does not exist in the $REPO repository. Check your spelling or choose a different repository with ${RED}sudo pacstall -C${NC}"
