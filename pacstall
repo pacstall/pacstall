@@ -156,9 +156,9 @@ while test $# -gt 0; do
      REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
      wget -q --spider https://github.com/"$REPO"/pacstall/tree/master/packages/$SEARCH/
      if [ $? -eq 0 ]; then
-        read -p "${GREEN}$SEARCH${NC} is available in the ${PURPLE}$REPO${NC} repository. Do you want to view the readme? " answer
+        read -p "${GREEN}$SEARCH${NC} is available in the ${PURPLE}$REPO${NC} repository. Do you want to view the pacscript? " answer
 	if [[ $answer = y ]] ; then
-	pandoc -t plain https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$SEARCH/README.md | less
+	curl https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/PACSCRIPT
 	exit 0
 	else
 	exit 0
