@@ -97,7 +97,7 @@ while test $# -gt 0; do
 	  	echo -e "$name breaks ${RED}$breaks${NC}"
 		exit 1
 	  fi
-	  printf "$name requires $depends to function. Do you wish to install them: "
+	  printf "$name requires $depends and $build_depends to function. Do you wish to install them: "
 	  read -r dependsinstall
 	  if [[ "$dependsinstall" =~ ^([n/N])$ ]] ; then
 	  	exit 1
@@ -120,7 +120,7 @@ while test $# -gt 0; do
 		unzip $pkgname.zip
 	  fi
 	  $PACPREFIX $depends
-	  cd $pkgname
+	  cd $pkgname*
 	  prepare
 	  if [[ $? -eq 1 ]]; then
 	  	echo "preparing the package failed"
