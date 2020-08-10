@@ -70,7 +70,6 @@ while test $# -gt 0; do
       	 mkdir -p /var/log/pacstall/deps;
       fi
       touch /tmp/pacstall_lock
-      #This is the part where it searches your package on all repos and puts it in /tmp
       echo -e "Preparing ${YELLOW}/tmp/pacstall${NC}"
       sudo rm -rf $BUILDDIR
       sudo mkdir $BUILDDIR
@@ -82,10 +81,22 @@ while test $# -gt 0; do
       if wget -q "$URL" >/dev/null 2>&1 ; then
           cd /tmp/
 	  wget -q https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/PACSCRIPT
-	  #Finds package size and prompts for installation
           source PACSCRIPT
-	  
-	  grep 'breaks' APP
+	  # LICENSE CHECKER HERE
+	  source /usr/share/pacstall/config.conf
+	  if [[ $mylicense != $license ]]; then
+	  	if [[ $mylicense = ANY ]]; then
+			echo " "
+		else
+			echo "$name breaks your chosen license! Exiting..."
+			exit 1
+		fi
+	  fi
+	  echo "checking for conflicting packages"
+	  if grep -q $breaks "/var/log/pacstall_installed"; then
+	  	echo -e "$name breaks ${RED}$breaks${NC}"
+		exit 1
+	  fi
 	  if wget -q --spider https://github.com/$REPO/pacstall/raw/master/packages/$PACKAGE/$PACKAGE.tar.xz ; then
           pkgsize=$(curl -s https://github.com/$REPO/pacstall/raw/master/packages/$PACKAGE/$PACKAGE.tar.xz | wc -c)
 	      echo "$PACKAGE will take up $pkgsize" && echo " "
