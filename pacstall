@@ -47,7 +47,7 @@ while test $# -gt 0; do
 	  exit 1
 	  fi
       fi
-      PACPREFIX="apt install -y "
+      PACPREFIX="apt install -y"
       PACKAGE=$2
       if [[ ! -e /usr/share/pacstall/repo/ ]]; then
           mkdir -p /usr/share/pacstall/repo
@@ -97,83 +97,52 @@ while test $# -gt 0; do
 	  	echo -e "$name breaks ${RED}$breaks${NC}"
 		exit 1
 	  fi
-	  if wget -q --spider https://github.com/$REPO/pacstall/raw/master/packages/$PACKAGE/$PACKAGE.tar.xz ; then
-          pkgsize=$(curl -s https://github.com/$REPO/pacstall/raw/master/packages/$PACKAGE/$PACKAGE.tar.xz | wc -c)
-	      echo "$PACKAGE will take up $pkgsize" && echo " "
-          else    
-          pkgsize=$(curl -s https://github.com/$REPO/pacstall/raw/master/packages/$PACKAGE/$PACKAGE.zip | wc -c)
-	      echo "$PACKAGE will take up $pkgsize" && echo " "
+	  printf "$name requires $depends to function. Do you wish to install them: "
+	  read -r dependsinstall
+	  if [[ "$dependsinstall" =~ ^([n/N])$ ]] ; then
+	  	exit 1
 	  fi
-	  printf 'Proceed to install [y/n] : '
-      read -r yesorno
-      if [[ "$yesorno" =~ ^([n/N])$ ]] ; then
-        exit 0
-      fi
-      if wget -q --show-progress --progress=bar:force:noscroll https://github.com/$REPO/pacstall/raw/master/packages/$PACKAGE/$PACKAGE.tar.xz ; then
-          echo -e "${RED}extracting...${NC}"
-          sudo tar -xf "$PACKAGE".tar.xz
-      else
-          wget -q --show-progress --progress=bar:force:noscroll https://github.com/$REPO/pacstall/raw/master/packages/$PACKAGE/$PACKAGE.zip
-          echo -e "${RED}extracting...${NC}"
-          sudo unzip $BUILDDIR/$PACKAGE.zip
-      fi
-      cd $PACKAGE || exit 1
-      
-      echo -e "${CYAN}downloading and running depends script for ${GREEN}$PACKAGE...${NC}"
-	  
-      wget -O $PACKAGE-depends.sh https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends.sh
-      if [[ $? -eq 1 ]] ; then
-        echo "$PACKAGE doesn't seem to have an depends file"
-      fi
-      grep '^'$SUPPORT'' $PACKAGE-depends.sh > /tmp/tmppacstallfile
-      if [[ $? -eq 1 ]] ; then
-        echo "This script either doesn't have your distribution in its depends file. Do you want to view the file (v) or quit (q)"
-	read QUIT
-	if [[ $QUIT = v ]] ; then
-	  echo "You want to look for $SUPPORT:" && echo ""
-	  curl https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/depends.sh
-	  exit 1
-        else
-	  exit 1
-	fi
-      fi
-      cut -d' ' -f2- /tmp/tmppacstallfile > /tmp/tmppacstallfile
-      sed -i 's~[^[:alnum:]/]\+~~g' /tmp/tmppacstallfile
-      cd /tmp/pacstall
-      sudo $PACPREFIX $(echo /tmp/tmppacstallfile)
-      dependserror=$?
-      sudo wget -O- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/install.sh | bash
-      installerror=$?
+	  if [[ $url == *.git ]]; then
+	  	echo "detected git"
+		cd $BUILDDIR
+		git clone $url
+	  fi
+	  if [[ $url == *.tar.xz ]]; then
+	  	echo "detected tar.xz"
+		cd $BUILDDIR
+		wget -q --show-progress --progress=bar:force:noscroll $url
+		tar -xf $pkgname.tar.xz
+	  fi
+	  if [[ $url == *.zip ]]; then
+	  	echo "detected zip"
+		cd $BUILDDIR
+		wget -q --show-progress --progress=bar:force:noscroll $url
+		unzip $pkgname.zip
+	  fi
+	  $PACPREFIX $depends
+	  cd $pkgname
+	  prepare
+	  if [[ $? -eq 1 ]]; then
+	  	echo "preparing the package failed"
+		exit 1
+	  fi
+	  build
+	  if [[ $? -eq 1 ]]; then
+	  	echo "building the package failed"
+		exit 1
+	  fi
+	  install
+	  if [[ $? -eq 1 ]]; then
+	  	echo "installing the package failed"
+		exit 1
+	  fi
       echo -e "${GREEN}Cleaning up${NC}"
-      cd $BUILDDIR || exit 1
-      rm -rf "$PACKAGE"*
       echo " "
-      echo "#############REPORT#############"
-      if [[ $alertserror = 0 ]]
-      then
-        echo -e "${GREEN}No errors in alerts.sh${NC}"
-      else
-      echo -e "${RED}Detected alerts error, this may be that there are no alerts for $PACKAGE, or if there was a syntax error${NC}"
-      fi
-       
-      if [[ $dependserror = 0 ]]
-      then
-        echo -e "${GREEN}No errors in dependencies${NC}"
-      else
-        echo -e "${RED}Detected dependency error, if you try to launch $PACKAGE and it works, you can ignore this error, but you may not get all the features of $PACKAGE. If not, contact $PACKAGE maintainer${NC}"
-      fi
-      
-      if [[ $installerror = 0 ]]
-      then
-        echo -e "${GREEN}No errors in install.sh${NC}"
-      else
-        echo -e "${RED}Detected installing error, if you try to launch $PACKAGE and it works, you can ignore this error. If not, contact $PACKAGE maintainer${NC}"
-      fi
-      echo "################################"
+      cd /tmp
+      mv APP /var/cache/pacstall/$name-APP
       echo "Indexing..."
-      echo "$PACKAGE" >> /var/log/pacstall_installed
+      echo "$name" >> /var/log/pacstall_installed
       cat -n /var/log/pacstall_installed | sort -uk2 | sort -nk1 | cut -f2- > /var/log/pacstall_installed
-      tail -n +2 "$BUILDDIR/list" > "list.tmp" && mv "list.tmp" "$BUILDDIR/list"
       done
       rm -rf /tmp/pacstall_lock
       exit 0
