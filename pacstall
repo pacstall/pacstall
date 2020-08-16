@@ -19,7 +19,7 @@ while test $# -gt 0; do
       {
           echo "cleaning up"
           rm -rf /tmp/pacstall/*
-	  echo "the installation of $(cat $BUILDDIR/list) was interrupted, removed files"
+	  echo "installation interrupted, removed files"
           exit 2
       }
       trap "trap_ctrlc" 2
@@ -167,6 +167,7 @@ while test $# -gt 0; do
       mv APP /var/cache/pacstall/$name-APP
       echo "Indexing..."
       touch /var/log/pacstall_installed/$name
+      echo "date=$(date)" >> /var/log/pacstall_installed/$name
       done
       rm -rf /tmp/pacstall_lock
       exit 0
@@ -254,6 +255,7 @@ while test $# -gt 0; do
       ;;
     -Ud|--update-dev)
       UPDATEBRANCH=1.0.4-Celeste
+      sudo pacstall -U
       sudo sed -i 's/master/'"$UPDATEBRANCH"'/g' /bin/pacstall
       exit
       ;;
