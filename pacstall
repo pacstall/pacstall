@@ -168,8 +168,7 @@ while test $# -gt 0; do
       cd /tmp
       mv APP /var/cache/pacstall/$name-APP
       echo "Indexing..."
-      echo "$name" >> /var/log/pacstall_installed
-      cat -n /var/log/pacstall_installed | sort -uk2 | sort -nk1 | cut -f2- > /var/log/pacstall_installed
+      touch /var/log/pacstall_installed/$name
       done
       rm -rf /tmp/pacstall_lock
       exit 0
@@ -201,7 +200,7 @@ while test $# -gt 0; do
       if [ $? -eq 0 ]; then
         echo "Removed $PACKAGE"
 	echo "Indexing..."
-	sed -i "/\b\($PACKAGE\)\b/d" /var/log/pacstall_installed
+	rm -rf /var/log/pacstall_installed/$PACKAGE
 	if [ $? -eq 0 ]; then
 	  echo "Index successful"
 	  exit 0
