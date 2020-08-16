@@ -11,8 +11,6 @@ while test $# -gt 0; do
       echo "-U --update, Update script"
       echo "-V --version, Prints pacstall version"
       echo "-L --list, Lists installed packages"
-      echo "-DL --download-local, Downloads PacScript"
-      echo "-IL --install-local, Installs local PacScript"
       echo " "
       exit 0
       ;;
@@ -264,48 +262,8 @@ while test $# -gt 0; do
       cat /var/log/pacstall_installed
       exit 0
       ;;
-    -DL|--download-local)
-      cd /var/cache/pacstall/
-      PACKAGE=$2
-      REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-      if wget -q --show-progress:force:noscroll https://github.com/$REPO/pacstall/raw/master/packages/$PACKAGE/$PACKAGE.tar.xz ; then
-      sudo tar -xf $PACKAGE.tar.xz
-      cd $PACKAGE
-      wget -O- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/install.sh
-      cd ..
-      tar cfJ $PACKAGE.tar.xz $PACKAGE
-      if [[ $? -eq 0 ]] ; then
-      exit 0
-      else
-      exit 1
-      fi
-      else 
-      wget -q --show-progress --progress=bar:force:noscroll https://github.com/$REPO/pacstall/raw/master/packages/$PACKAGE/$PACKAGE.zip
-      unzip $PACKAGE.zip
-      cd $PACKAGE
-      wget -O- https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/install.sh
-      cd ..
-      tar cfJ $PACKAGE.tar.xz $PACKAGE
-      if [[ $? -eq 0 ]] ; then
-      exit 0
-      else
-      exit 1
-      fi
-      fi
-      ;;
-    -IL|--install-local)
-      PACKAGE=$2
-      tar xf $PACKAGE.tar.xz
-      cd $PACKAGE
-      sudo ./install.sh
-      if [[ $? -eq 0 ]] ; then
-      exit 0
-      else
-      echo "Failed to install $PACKAGE"
-      exit 1
-      fi
-      ;;
      *)
+      pacstall -h
       break
       ;;
   esac
