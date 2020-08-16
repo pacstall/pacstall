@@ -64,15 +64,11 @@ while test $# -gt 0; do
       if [ ! -d $BUILDDIR ]; then
 	  mkdir -p $BUILDDIR;
       fi
-      if [ ! -d /var/log/pacstall/deps ]; then
-      	 mkdir -p /var/log/pacstall/deps;
-      fi
+
       touch /tmp/pacstall_lock
-      echo -e "Preparing ${YELLOW}/tmp/pacstall${NC}"
       sudo rm -rf $BUILDDIR
       sudo mkdir $BUILDDIR
       cd $BUILDDIR || exit
-      echo "cleaning build directory"
       sudo rm -rf "$PACKAGE"
       URL=https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/PACSCRIPT
 
@@ -95,11 +91,7 @@ while test $# -gt 0; do
 	  	echo -e "$name breaks ${RED}$breaks${NC}"
 		exit 1
 	  fi
-	  printf "$name requires $depends and $build_depends to function. Do you wish to install them: "
-	  read -r dependsinstall
-	  if [[ "$dependsinstall" =~ ^([n/N])$ ]] ; then
-	  	exit 1
-	  fi
+
 	  if [[ $url == *.git ]]; then
 	  	echo "detected git"
 		cd $BUILDDIR
@@ -115,10 +107,10 @@ while test $# -gt 0; do
 			want to exit (n)
 			want to file a bug report (x)"
 			read -r sha256unmatch
-			if [[ $sha256unmatch = ^([x/X]) ]] ; then
+			if [[ $sha256unmatch = x ]] ; then
 				xdg-open 'https://github.com/Henryws/pacstall/issues/new?assignees=&labels=&template=bug_report.md&title=' &
 			else
-				if [[ $sha256unmatch = ^([n/N]) ]] ; then
+				if [[ $sha256unmatch = n ]] ; then
 					exit 1
 				fi
 			fi
@@ -134,10 +126,10 @@ while test $# -gt 0; do
 			want to exit (n)
 			want to file a bug report (x)"
 			read -r sha256unmatch
-			if [[ $sha256unmatch = ^([x/X]) ]] ; then
+			if [[ $sha256unmatch = x) ]] ; then
 				xdg-open 'https://github.com/Henryws/pacstall/issues/new?assignees=&labels=&template=bug_report.md&title=' &
 			else
-				if [[ $sha256unmatch = ^([n/N]) ]] ; then
+				if [[ $sha256unmatch = n ]] ; then
 					exit 1
 				fi
 			fi
