@@ -192,6 +192,7 @@ while test $# -gt 0; do
         echo "Removed $PACKAGE"
 	echo "Indexing..."
 	rm -rf /var/log/pacstall_installed/$PACKAGE
+	rm -rf /var/cache/pacstall/$PACAKGE-APP
 	if [ $? -eq 0 ]; then
 	  echo "Index successful"
 	  exit 0
@@ -255,6 +256,12 @@ while test $# -gt 0; do
       wc -l /var/log/pacstall_installed
       cat /var/log/pacstall_installed
       exit 0
+      ;;
+    -Up|--update-programs)
+      BLUE='\033[0;34m'
+      NC='\033[0m'
+      echo "Scanning ${BLUE}/var/cache/pacstall${NC}"
+      exit
       ;;
      *)
       pacstall -h
