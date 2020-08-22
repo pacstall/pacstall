@@ -126,7 +126,7 @@ while test $# -gt 0; do
 			want to exit (n)
 			want to file a bug report (x)"
 			read -r sha256unmatch
-			if [[ $sha256unmatch = x) ]] ; then
+			if [[ $sha256unmatch = x ]] ; then
 				xdg-open 'https://github.com/Henryws/pacstall/issues/new?assignees=&labels=&template=bug_report.md&title=' &
 			else
 				if [[ $sha256unmatch = n ]] ; then
