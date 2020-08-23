@@ -33,18 +33,6 @@ while test $# -gt 0; do
 	  echo "otherwise, remove /tmp/pacstall_lock"
 	  exit 1
       fi
-      SUPPORT=$(lsb_release --id --short)
-      if [[ $SUPPORT != "Ubuntu" ]] ; then
-      	  RED='\033[0;31m'
-	  NC='\033[0m'
-	  if [[ $SUPPORT != "Fedora" ]] ; then
-	  RED='\033[0;31m'
-	  NC='\033[0m'  
-	  else
-	  echo -e "${RED}Unsupported Distribution${NC}"
-	  exit 1
-	  fi
-      fi
       PACPREFIX="apt install -y"
       PACKAGE=$2
       if [[ ! -e /usr/share/pacstall/repo/ ]]; then
@@ -70,11 +58,11 @@ while test $# -gt 0; do
       sudo mkdir $BUILDDIR
       cd $BUILDDIR || exit
       sudo rm -rf "$PACKAGE"
-      URL=https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/PACSCRIPT
+      URL=https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/PACSCRIPT
 
       if wget -q "$URL" >/dev/null 2>&1 ; then
           cd /tmp/
-	  wget -q https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/PACSCRIPT
+	  wget -q https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/PACSCRIPT
           source PACSCRIPT
 	  # LICENSE CHECKER HERE
 	  source /usr/share/pacstall/config.conf
@@ -171,11 +159,11 @@ while test $# -gt 0; do
     -S|--search)
      SEARCH=$2
      REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-     wget -q --spider https://github.com/"$REPO"/pacstall/tree/master/packages/$SEARCH/
+     wget -q --spider https://github.com/"$REPO"/tree/master/packages/$SEARCH/
      if [ $? -eq 0 ]; then
         read -p "${GREEN}$SEARCH${NC} is available in the ${PURPLE}$REPO${NC} repository. Do you want to view the pacscript? " answer
 	if [[ $answer = y ]] ; then
-	curl https://raw.githubusercontent.com/$REPO/pacstall/master/packages/$PACKAGE/PACSCRIPT
+	curl https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/PACSCRIPT
 	exit 0
 	else
 	exit 0
@@ -219,7 +207,7 @@ while test $# -gt 0; do
       do
           case $CHOICE in
               1)
-                  echo -e "${PURPLE}Henryws${NC} repository selected" && echo Henryws > /usr/share/pacstall/repo/pacstallrepo.txt
+                  echo -e "${PURPLE}Henryws${NC} repository selected" && echo Henryws/pacstall-programs > /usr/share/pacstall/repo/pacstallrepo.txt
                   exit
                   ;;
               2)
