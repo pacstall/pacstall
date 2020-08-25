@@ -245,7 +245,7 @@ while test $# -gt 0; do
       cat /var/log/pacstall_installed
       exit 0
       ;;
-    -Up|--update-programs)
+    -Iu|--install-updates)
       BLUE='\033[0;34m'
       NC='\033[0m'
       echo "Scanning ${BLUE}/var/cache/pacstall${NC}"
