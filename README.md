@@ -20,4 +20,4 @@ You can grab the deb files [here](https://github.com/Henryws/pacstall/releases/l
 `sudo wget -q https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall -O /bin/pacstall && sudo echo "Henryws" >> /usr/share/pacstall/repo/pacstallrepo.txt`
 
 DO NOT CLONE THIS REPOSITORY!!
-This serves as the scripts home and the packages. If you clone this repository, you will download all the packages currently available in this repository (which is a lot)
+This serves as the scripts home and the packages (_outdated_). If you clone this repository, you will download all the packages currently available in this repository (which is a lot)
