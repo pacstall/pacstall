@@ -144,7 +144,11 @@ while test $# -gt 0; do
       echo -e "${GREEN}Cleaning up${NC}"
       echo " "
       cd /tmp
-      mv APP /var/cache/pacstall/$name-APP
+      echo "do you want this to update when you run ${BLUE}sudo pacstall -IU${NC}?" AUTO_UPDATE
+      if [[ $AUTO_UPDATE = y ]] ; then
+      cp PACSCRIPT /var/cache/pacstall/auto
+      fi
+      mv PACSCRIPT /var/cache/pacstall/$name-$version
       echo "Indexing..."
       touch /var/log/pacstall_installed/$name
       echo "date=$(date)" >> /var/log/pacstall_installed/$name
@@ -248,7 +252,8 @@ while test $# -gt 0; do
     -Iu|--install-updates)
       BLUE='\033[0;34m'
       NC='\033[0m'
-      echo "Scanning ${BLUE}/var/cache/pacstall${NC}"
+      echo "Scanning ${BLUE}/var/cache/pacstall/auto${NC}"
+      sudo pacstall -Il $(/bin/ls /var/cache/pacstall/auto/*)
       exit
       ;;
      *)
