@@ -34,4 +34,5 @@ echo "Henryws/pacstall-programs" > /usr/share/pacstall/repo/pacstallrepo.txt
 touch /var/log/pacstall_installed
 touch /var/cache/pacstall/
 echo "pulling pacstall from https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/pacstall"
-wget
+sudo wget -O /bin/pacstall https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/pacstall
+sudo chmod +x /bin/pacstall
