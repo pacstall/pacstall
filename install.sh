@@ -22,7 +22,7 @@ echo "this will do:
 * Check for ${BLUE}curl${NC} and ${BLUE}wget${NC}
 * Install ${BLUE}Pacstall${NC}
   -- Create necessary directories
-  -- ${BLUE}Wget${NC} into ${PURPLE}/bin/pacstall${NC}"
+  -- Pull ${BLUE}Pacstall${NC} with ${BLUE}wget${NC} from the ${YELLOW}$BRANCH${NC} branch into ${PURPLE}/bin/pacstall${NC}"
 
 echo "checking for ${BLUE}curl${NC} and ${BLUE}wget${NC}"
 
