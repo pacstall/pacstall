@@ -2,7 +2,7 @@
 BRANCH="1.0.4-Celeste"
 banner() {
 echo "|------------------------|"
-echo "|---Pacstall installer---|"
+echo "|---${GREEN}Pacstall Installer${NC}---|"
 echo "|------------------------|"
 echo " "
 }
