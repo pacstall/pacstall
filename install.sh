@@ -10,6 +10,13 @@ echo " "
 # Colors
 
 banner
+
+echo "this will do:
+* Check for curl and wget
+* Install Pacstall
+  -- Create necessary directories
+  -- Wget into /bin/pacstall"
+
 echo "checking for curl and wget"
 
 if [[ $(command -v curl) != "/usr/bin/curl" ]] ; then
