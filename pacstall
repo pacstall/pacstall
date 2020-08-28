@@ -253,7 +253,8 @@ while test $# -gt 0; do
       BLUE='\033[0;34m'
       NC='\033[0m'
       echo "Scanning ${BLUE}/var/cache/pacstall/auto${NC}"
-      sudo pacstall -I $(cat /var/cache/pacstall/auto)
+      UPDATES=$(cat /var/cache/pacstall/auto | tr "\n" " ")
+      sudo pacstall -I $UPDATES
       exit
       ;;
      *)
