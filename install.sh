@@ -10,7 +10,7 @@ echo " "
 # Colors
 RED='\033[0;31m'
 CYAN='\033[0;36m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 GREEN='\033[0;32m'
 PURPLE='\033[0;35m'
 YELLOW='\033[1;33m'
