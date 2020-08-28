@@ -146,7 +146,7 @@ while test $# -gt 0; do
       cd /tmp
       echo "do you want this to update when you run ${BLUE}sudo pacstall -IU${NC}?" AUTO_UPDATE
       if [[ $AUTO_UPDATE = y ]] ; then
-      cp PACSCRIPT /var/cache/pacstall/auto
+      echo "$name" > /var/cache/pacstall/auto
       fi
       mv PACSCRIPT /var/cache/pacstall/$name-$version
       echo "Indexing..."
@@ -253,7 +253,7 @@ while test $# -gt 0; do
       BLUE='\033[0;34m'
       NC='\033[0m'
       echo "Scanning ${BLUE}/var/cache/pacstall/auto${NC}"
-      sudo pacstall -Il $(/bin/ls /var/cache/pacstall/auto/*)
+      sudo pacstall -I $(cat /var/cache/pacstall/auto)
       exit
       ;;
      *)
