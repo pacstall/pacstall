@@ -11,6 +11,7 @@ while test $# -gt 0; do
       echo "-U --update, Update script"
       echo "-V --version, Prints pacstall version"
       echo "-L --list, Lists installed packages"
+      echo "-P --plug, Install specific package from any website"
       echo " "
       exit 0
       ;;
@@ -34,6 +35,11 @@ while test $# -gt 0; do
 	  exit 1
       fi
       PACPREFIX="apt install -y"
+      if [[ $2 == *"*http"* ]] ; then
+      	cd $BUILDDIR
+	wget -q --show-progress --progress=bar:force:noscroll $2
+        source PACSCRIPT
+      fi
       PACKAGE=$2
       if [[ ! -e /usr/share/pacstall/repo/ ]]; then
           mkdir -p /usr/share/pacstall/repo
