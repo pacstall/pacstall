@@ -35,10 +35,66 @@ while test $# -gt 0; do
 	  exit 1
       fi
       PACPREFIX="apt install -y"
-      if [[ $2 == *"*http"* ]] ; then
+	  DOWNLOAD() {
+	  if [[ $url == *.git ]]; then
+	  	echo "detected git"
+		cd $BUILDDIR
+		git clone $url
+	  fi
+	  if [[ $url == *.tar.xz ]]; then
+	  	echo "detected tar.xz"
+		cd $BUILDDIR
+		wget -q --show-progress --progress=bar:force:noscroll $url
+		if [[ $sha256 != $(sha256sum $pkgname.tar.xz) ]] ; then
+			echo "sha256sum's do not match! Do you:
+			want to continue (y)
+			want to exit (n)
+			want to file a bug report (x)"
+			read -r sha256unmatch
+			if [[ $sha256unmatch = x ]] ; then
+				xdg-open 'https://github.com/Henryws/pacstall/issues/new?assignees=&labels=&template=bug_report.md&title=' &
+			else
+				if [[ $sha256unmatch = n ]] ; then
+					exit 1
+				fi
+			fi
+		tar -xf $pkgname.tar.xz
+	  fi
+	  if [[ $url == *.zip ]]; then
+	  	echo "detected zip"
+		cd $BUILDDIR
+		wget -q --show-progress --progress=bar:force:noscroll $url
+		if [[ $sha256 != $(sha256sum $pkgname.zip) ]] ; then
+			echo "sha256sum's do not match! Do you:
+			want to continue (y)
+			want to exit (n)
+			want to file a bug report (x)"
+			read -r sha256unmatch
+			if [[ $sha256unmatch = x ]] ; then
+				xdg-open 'https://github.com/Henryws/pacstall/issues/new?assignees=&labels=&template=bug_report.md&title=' &
+			else
+				if [[ $sha256unmatch = n ]] ; then
+					exit 1
+				fi
+			fi
+		unzip $pkgname.zip
+	  fi
+	  }
+       if [[ $2 == *"*http"* ]] ; then
       	cd $BUILDDIR
 	wget -q --show-progress --progress=bar:force:noscroll $2
-        source PACSCRIPT
+	if [[ $? = 1 ]] ; then
+		echo "Invalid URL"
+		exit 1
+	else
+	source -
+	$PACPREFIX $depends
+	DOWNLOAD
+	cd $pkgname*
+	prepare
+	build
+	install
+	fi
       fi
       PACKAGE=$2
       if [[ ! -e /usr/share/pacstall/repo/ ]]; then
@@ -85,7 +141,7 @@ while test $# -gt 0; do
 	  	echo -e "$name breaks ${RED}$breaks${NC}"
 		exit 1
 	  fi
-
+	  DOWNLOAD() {
 	  if [[ $url == *.git ]]; then
 	  	echo "detected git"
 		cd $BUILDDIR
@@ -129,7 +185,8 @@ while test $# -gt 0; do
 			fi
 		unzip $pkgname.zip
 	  fi
-	  
+	  }
+	  DOWNLOAD
 	  $PACPREFIX $depends
 	  cd $pkgname*
 	  prepare
