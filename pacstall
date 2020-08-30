@@ -203,17 +203,7 @@ while test $# -gt 0; do
 	  	echo "installing the package failed"
 		exit 1
 	  fi
-      echo -e "${GREEN}Cleaning up${NC}"
       echo " "
-      cd /tmp
-      echo "do you want this to update when you run ${BLUE}sudo pacstall -IU${NC}?" AUTO_UPDATE
-      if [[ $AUTO_UPDATE = y ]] ; then
-      echo "$name" >> /var/cache/pacstall/auto
-      fi
-      mv PACSCRIPT /var/cache/pacstall/$name-$version
-      echo "Indexing..."
-      touch /var/log/pacstall_installed/$name
-      echo "date=$(date)" >> /var/log/pacstall_installed/$name
       done
       rm -rf /tmp/pacstall_lock
       exit 0
@@ -241,24 +231,7 @@ while test $# -gt 0; do
       ;;
     -R|--remove)
       PACKAGE=$2
-      sudo rm $(cat /var/lib/porg/$PACKAGE | sed -n 's/|\(.*\)//;/^#\(.*\)/d;p')
-      if [ $? -eq 0 ]; then
-        echo "Removed $PACKAGE"
-	echo "Indexing..."
-	rm -rf /var/log/pacstall_installed/$PACKAGE
-	rm -rf /var/cache/pacstall/$PACAKGE-APP
-	if [ $? -eq 0 ]; then
-	  echo "Index successful"
-	  exit 0
-	else
-	  echo "Index failed"
-	  exit 1
-	fi
-	exit 0
-      else
-        echo "Failed to remove $PACKAGE"
-	exit 1
-      fi
+      sudo apt remove $PACKAGE
       ;;
     -C|--change-repo)
       echo "repo changer"
