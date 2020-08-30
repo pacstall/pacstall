@@ -17,9 +17,9 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 
 banner
-printf "Checking for internet access "
+printf "Checking for internet access: "
 
-wget -q --tries=10 --timeout=20 --spider https://github.com
+wget -q --tries=10 --timeout=20 --spider https://github.com &
 PID=$!
 i=1
 sp="/-\|"
