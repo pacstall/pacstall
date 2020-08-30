@@ -5,8 +5,7 @@
 </p>
 
 <p align="center"><b>PACSTALL</b></p>
-This is a small project that aims to install dependencies with your package manager then installs the actual package from source.
-
+<p align="center">Will attempt to be the AUR Ubuntu never had, building from source, then making a deb from it</p>
 
 
 <p align="center">
