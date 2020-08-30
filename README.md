@@ -12,7 +12,7 @@
 <a href="https://github.com/Henryws/pacstall"><img src="https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/ezgif.com-video-to-gif.gif"></a>
 </p>
 
-* ### Installing
+### Installing
 
 You can grab the deb files [here](https://github.com/Henryws/pacstall/releases/latest). If that's not your thing you can run this command:
 ```bash
