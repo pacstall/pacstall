@@ -23,7 +23,10 @@ echo -e "this will do:
 * Install ${BLUE}Pacstall${NC}
   -- Create necessary directories
   -- Pull ${BLUE}Pacstall${NC} with ${BLUE}wget${NC} from the ${YELLOW}$BRANCH${NC} branch into ${PURPLE}/bin/pacstall${NC}"
-
+printf "Does this look good: " answer
+if [[ $answer = n ]] ; then
+  exit 1
+fi
 echo -e "checking for ${BLUE}curl${NC} and ${BLUE}wget${NC}"
 
 if [[ $(command -v curl) != "/usr/bin/curl" ]] ; then
