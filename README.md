@@ -16,7 +16,7 @@
 
 You can grab the deb files [here](https://github.com/Henryws/pacstall/releases/latest). If that's not your thing you can run this command:
 ```bash
-sudo bash -c "$(https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/install.sh)"
+sudo bash -c "$(curl -fsSL https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/install.sh)"
 ```
 DO NOT CLONE THIS REPOSITORY!!
 This serves as the scripts home and the packages (_outdated_). If you clone this repository, you will download all the packages currently available in this repository (which is a lot)
