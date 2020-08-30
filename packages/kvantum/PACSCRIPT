@@ -18,5 +18,5 @@ build() {
 }
 
 install() {
-          sudo porg -lp $name "make install"
+          sudo checkinstall
 }
