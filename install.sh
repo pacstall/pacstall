@@ -18,26 +18,26 @@ BLUE='\033[0;34m'
 
 banner
 
-echo "this will do:
+echo -e "this will do:
 * Check for ${BLUE}curl${NC} and ${BLUE}wget${NC}
 * Install ${BLUE}Pacstall${NC}
   -- Create necessary directories
   -- Pull ${BLUE}Pacstall${NC} with ${BLUE}wget${NC} from the ${YELLOW}$BRANCH${NC} branch into ${PURPLE}/bin/pacstall${NC}"
 
-echo "checking for ${BLUE}curl${NC} and ${BLUE}wget${NC}"
+echo -e "checking for ${BLUE}curl${NC} and ${BLUE}wget${NC}"
 
 if [[ $(command -v curl) != "/usr/bin/curl" ]] ; then
-  echo "You seem to not have ${BLUE}curl${NC} installed"
+  echo -e "You seem to not have ${BLUE}curl${NC} installed"
   exit 1
 fi
 
 if [[ $(command -v wget) != "/usr/bin/wget" ]] ; then
-  echo "You seem to not have ${BLUE}wget${NC} installed"
+  echo -e "You seem to not have ${BLUE}wget${NC} installed"
   exit 1
 fi
 
 if [[ $(command -v porg) != "/usr/bin/porg" ]] ; then
-  echo "You seem to not have ${BLUE}porg${NC} installed"
+  echo -e "You seem to not have ${BLUE}porg${NC} installed"
   exit 1
 fi
 
@@ -47,6 +47,6 @@ touch /usr/share/pacstall/repo/pacstallrepo.txt
 echo "Henryws/pacstall-programs" > /usr/share/pacstall/repo/pacstallrepo.txt
 touch /var/log/pacstall_installed
 touch /var/cache/pacstall/
-echo "pulling ${BLUE}pacstall${NC} from ${RED}https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/pacstall${NC}"
+echo -e "pulling ${BLUE}pacstall${NC} from ${RED}https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/pacstall${NC}"
 sudo wget -O /bin/pacstall https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/pacstall
 sudo chmod +x /bin/pacstall
