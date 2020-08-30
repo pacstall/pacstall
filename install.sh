@@ -17,7 +17,22 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 
 banner
+echo -e "Checking for internet access"
 
+wget -q --tries=10 --timeout=20 --spider http://github.com
+PID=$!
+i=1
+sp="/-\|"
+echo -n ' '
+while [ -d /proc/$PID ]
+do
+  sleep 0.1
+  printf "\b${sp:i++%${#sp}:1}"
+done
+if [[ $? -eq 1 ]] ; then
+  echo "You seem to be offline"
+  exit 1
+fi
 echo -e "this will do:
 * Check for ${BLUE}curl${NC} and ${BLUE}wget${NC}
 * Install ${BLUE}Pacstall${NC}
