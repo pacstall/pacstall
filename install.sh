@@ -1,9 +1,9 @@
 #!/bin/bash
 BRANCH="1.0.4-Celeste"
 banner() {
-echo "|------------------------|"
-echo "|---${GREEN}Pacstall Installer${NC}---|"
-echo "|------------------------|"
+echo -e "|------------------------|"
+echo -e "|---${GREEN}Pacstall Installer${NC}---|"
+echo -e "|------------------------|"
 echo " "
 }
 
