@@ -46,18 +46,33 @@ fi
 echo -e "checking for ${BLUE}curl${NC} and ${BLUE}wget${NC}"
 
 if [[ $(command -v curl) != "/usr/bin/curl" ]] ; then
-  echo -e "You seem to not have ${BLUE}curl${NC} installed"
-  exit 1
+  echo -e "You seem to not have ${BLUE}curl${NC} installed. Do you want to install it now? "
+  read -r curl
+  if [[ $curl = y ]] ; then
+    sudo apt install -y curl
+  else
+    exit 1
+  fi
 fi
 
 if [[ $(command -v wget) != "/usr/bin/wget" ]] ; then
-  echo -e "You seem to not have ${BLUE}wget${NC} installed"
-  exit 1
+  echo -e "You seem to not have ${BLUE}wget${NC} installed. Do you want to install it now? "
+  read -r wget
+  if [[ $wget = y ]] ; then
+    sudo apt install -y wget
+  else
+    exit 1
+  fi
 fi
 
 if [[ $(command -v porg) != "/usr/bin/porg" ]] ; then
-  echo -e "You seem to not have ${BLUE}porg${NC} installed"
-  exit 1
+  echo -e "You seem to not have ${BLUE}porg${NC} installed. Do you want to install it now? "
+  read -r porg
+  if [[ $porg = y ]] ; then
+    sudo apt install -y porg
+  else
+    exit 1
+  fi
 fi
 
 echo "making directories"
