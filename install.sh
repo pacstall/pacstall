@@ -42,11 +42,11 @@ if [[ $(command -v porg) != "/usr/bin/porg" ]] ; then
 fi
 
 echo "making directories"
-mkdir -p /usr/share/pacstall/repo
-touch /usr/share/pacstall/repo/pacstallrepo.txt
-echo "Henryws/pacstall-programs" > /usr/share/pacstall/repo/pacstallrepo.txt
-touch /var/log/pacstall_installed
-touch /var/cache/pacstall/
+sudo mkdir -p /usr/share/pacstall/repo
+sudo touch /usr/share/pacstall/repo/pacstallrepo.txt
+sudo echo "Henryws/pacstall-programs" > /usr/share/pacstall/repo/pacstallrepo.txt
+sudo touch /var/log/pacstall_installed
+sudo touch /var/cache/pacstall/
 echo -e "pulling ${BLUE}pacstall${NC} from ${RED}https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/pacstall${NC}"
 sudo wget -O /bin/pacstall https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/pacstall
 sudo chmod +x /bin/pacstall
