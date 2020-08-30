@@ -23,7 +23,8 @@ echo -e "this will do:
 * Install ${BLUE}Pacstall${NC}
   -- Create necessary directories
   -- Pull ${BLUE}Pacstall${NC} with ${BLUE}wget${NC} from the ${YELLOW}$BRANCH${NC} branch into ${PURPLE}/bin/pacstall${NC}"
-printf "Does this look good: " answer
+printf "Does this look good: " 
+read -r answer
 if [[ $answer = n ]] ; then
   exit 1
 fi
@@ -45,11 +46,17 @@ if [[ $(command -v porg) != "/usr/bin/porg" ]] ; then
 fi
 
 echo "making directories"
+sudo mkdir -p /usr/share/pacstall
+sudo mkdir -p /usr/share/pacstall/scripts
 sudo mkdir -p /usr/share/pacstall/repo
 sudo touch /usr/share/pacstall/repo/pacstallrepo.txt
 sudo echo "Henryws/pacstall-programs" > /usr/share/pacstall/repo/pacstallrepo.txt
 sudo touch /var/log/pacstall_installed
 sudo touch /var/cache/pacstall/
+echo -e "Pulling scripts from GitHub"
+sudo curl https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/misc/scripts/change-repo.sh > /usr/share/pacstall/scripts/change-repo.sh
+sudo curl https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/misc/scripts/install.sh > /usr/share/pacstall/scripts/install.sh
+sudo curl https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/misc/scripts/search.sh > /usr/share/pacstall/scripts/search.sh
 echo -e "pulling ${BLUE}pacstall${NC} from ${RED}https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/pacstall${NC}"
 sudo wget -O /bin/pacstall https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/pacstall
 sudo chmod +x /bin/pacstall
