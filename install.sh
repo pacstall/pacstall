@@ -74,19 +74,25 @@ if [[ $(command -v porg) != "/usr/bin/porg" ]] ; then
     exit 1
   fi
 fi
-
+printf "Where do you want scripts, config, repo stuff (default /usr/share/pacstall): "
+read -r INSTALL
+if [[ $INSTALL = " " ]] ; then
+  export PACSTALL_DIRECTORY="/usr/share/pacstall"
+else
+  export PACSTALL_DIRECTORY="$(echo $INSTALL)"
+fi
 echo "making directories"
-sudo mkdir -p /usr/share/pacstall
-sudo mkdir -p /usr/share/pacstall/scripts
-sudo mkdir -p /usr/share/pacstall/repo
-sudo touch /usr/share/pacstall/repo/pacstallrepo.txt
-sudo echo "Henryws/pacstall-programs" > /usr/share/pacstall/repo/pacstallrepo.txt
-sudo touch /usr/share/pacstall/config.conf
-sudo echo "lisence="ANY" > /usr/share/pacstall/config.conf
+sudo mkdir -p $PACSTALL_DIRECTORY
+sudo mkdir -p $PACSTALL_DIRECTORY/scripts
+sudo mkdir -p $PACSTALL_DIRECTORY/repo
+sudo touch $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
+sudo echo "Henryws/pacstall-programs" > $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
+sudo touch $PACSTALL_DIRECTORY/config.conf
+sudo echo "lisence="ANY" > $PACSTALL_DIRECTORY/config.conf
 sudo touch /var/log/pacstall_installed
 sudo touch /var/cache/pacstall/
 echo -e "Pulling scripts from GitHub"
-sudo curl https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/misc/scripts/change-repo.sh > /usr/share/pacstall/scripts/change-repo.sh
+sudo curl https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/misc/scripts/change-repo.sh > $PACSTALL_DIRECTORY/scripts/change-repo.sh
 sudo curl https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/misc/scripts/install.sh > /usr/share/pacstall/scripts/install.sh
 sudo curl https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/misc/scripts/search.sh > /usr/share/pacstall/scripts/search.sh
 echo -e "pulling ${BLUE}pacstall${NC} from ${RED}https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/pacstall${NC}"
