@@ -81,6 +81,8 @@ sudo mkdir -p /usr/share/pacstall/scripts
 sudo mkdir -p /usr/share/pacstall/repo
 sudo touch /usr/share/pacstall/repo/pacstallrepo.txt
 sudo echo "Henryws/pacstall-programs" > /usr/share/pacstall/repo/pacstallrepo.txt
+sudo touch /usr/share/pacstall/config.conf
+sudo echo "lisence="ANY" > /usr/share/pacstall/config.conf
 sudo touch /var/log/pacstall_installed
 sudo touch /var/cache/pacstall/
 echo -e "Pulling scripts from GitHub"
