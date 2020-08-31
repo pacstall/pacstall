@@ -93,8 +93,8 @@ sudo touch /var/log/pacstall_installed
 sudo touch /var/cache/pacstall/
 echo -e "Pulling scripts from GitHub"
 sudo curl https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/misc/scripts/change-repo.sh > $PACSTALL_DIRECTORY/scripts/change-repo.sh
-sudo curl https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/misc/scripts/install.sh > /usr/share/pacstall/scripts/install.sh
-sudo curl https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/misc/scripts/search.sh > /usr/share/pacstall/scripts/search.sh
+sudo curl https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/misc/scripts/install.sh > $PACSTALL_DIRECTORY/scripts/install.sh
+sudo curl https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/misc/scripts/search.sh > $PACSTALL_DIRECTORY/scripts/search.sh
 echo -e "pulling ${BLUE}pacstall${NC} from ${RED}https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/pacstall${NC}"
 sudo wget -O /bin/pacstall https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/pacstall
 sudo chmod +x /bin/pacstall
