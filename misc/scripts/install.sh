@@ -29,19 +29,6 @@ if [[ $url == *.tar.xz ]] ; then
 	echo "detected tar.xz"
 	cd $BUILDDIR
 	wget -q --show-progress --progress=bar:force:noscroll $url
-	if [[ $sha256 != $(sha256sum $pkgname.tar.xz) ]] ; then
-		echo "sha256sum's do not match! Do you:
-		want to continue (y)
-		want to exit (n)
-		want to file a bug report (x)"
-		read -r sha256unmatch
-		if [[ $sha256unmatch = x ]] ; then
-			xdg-open 'https://github.com/Henryws/pacstall/issues/new?assignees=&labels=&template=bug_report.md&title=' &
-		else
-			if [[ $sha256unmatch = n ]] ; then
-				exit 1
-			fi
-		fi
 	tar -xf $pkgname.tar.xz
 	fi
 fi
@@ -49,21 +36,7 @@ if [[ $url == *.zip ]]; then
 	echo "detected zip"
 	cd $BUILDDIR
 	wget -q --show-progress --progress=bar:force:noscroll $url
-	if [[ $sha256 != $(sha256sum $pkgname.zip) ]] ; then
-		echo "sha256sum's do not match! Do you:
-		want to continue (y)
-		want to exit (n)
-		want to file a bug report (x)"
-		read -r sha256unmatch
-		if [[ $sha256unmatch = x ]] ; then
-			xdg-open 'https://github.com/Henryws/pacstall/issues/new?assignees=&labels=&template=bug_report.md&title=' &
-		else
-			if [[ $sha256unmatch = n ]] ; then
-				exit 1
-			fi
-		fi
-		unzip $pkgname.zip
-	  fi
+	unzip $pkgname.zip
 fi
 	  }
 if [[ $2 == *"*http"* ]] ; then
