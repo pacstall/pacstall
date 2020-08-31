@@ -2,7 +2,9 @@
 <a href="./LICENSE.md"><img src="https://img.shields.io/badge/license-GPL-blue.svg?style=flat-square&logo"></a>
 <a href="https://github.com/Henryws/pacstall/releases/latest"><img src="https://img.shields.io/github/v/release/Henryws/pacstall?color=red&style=flat-square"></a>
 <a href="https://www.gnu.org/software/bash/"><img src="https://img.shields.io/badge/bash-v5-brightgreen?style=flat-square&logo" alt="Bash v5"></a>
+<img src="https://img.shields.io/github/issues/Henryws/pacstall?style=flat-square">
 </p>
+
 
 <p align="center"><b>PACSTALL</b></p>
 <p align="center">Will attempt to be the AUR Ubuntu never had, building from source, then making a deb from it</p>
