@@ -14,7 +14,11 @@ while test $# -gt 0; do
       echo " "
       exit 0
       ;;
-    -I|--install) 
+    -I|--install)
+      if [[ $PACSTALL_DIRECTORY = " " ]] ; then
+        echo "It seems you've unset your pacstall config directory"
+        exit 1
+      fi
       source /usr/share/pacstall/scripts/install.sh
       ;;
     -S|--search)
