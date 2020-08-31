@@ -82,8 +82,14 @@ if [[ $2 == *"*http"* ]] ; then
 	install
 	fi
 fi
-
-PACKAGE=$2
+echo $* | tr "\n" " " > /tmp/installlist
+sed '1d' /tmp/installlist > /tmp/installlist
+while [ $(wc -l /tmp/installlist | awk '{ print $1 }') -ne 0 ]
+do
+if [[ $(wc -l /tmp/installlist | awk '{ print $1 }') -eq 0 ]] ; then
+	break
+fi
+PACKAGE=$(head -n 1 /tmp/installlist)
 if [[ ! -e /usr/share/pacstall/repo/ ]]; then
 	mkdir -p /usr/share/pacstall/repo
 	touch /usr/share/pacstall/repo/pacstallrepo.txt
@@ -146,7 +152,10 @@ if [[ $? -eq 1 ]]; then
 	echo "installing the package failed"
 	exit 1
 fi
+tail -n +2 "/tmp/installlist" > "/tmp/installlist.tmp" && mv "/tmp/installlist.tmp" "/tmp/installlist"
+done
 echo " "
+rm -rf /tmp/installlist
 rm -rf /tmp/pacstall_lock
 exit 0
 else
