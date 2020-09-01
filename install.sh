@@ -80,11 +80,15 @@ echo "making directories"
 sudo mkdir -p $PACSTALL_DIRECTORY
 sudo mkdir -p $PACSTALL_DIRECTORY/scripts
 sudo mkdir -p $PACSTALL_DIRECTORY/repo
+sudo rm $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
 sudo touch $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
 sudo echo "Henryws/pacstall-programs" > $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
+sudo rm $PACSTALL_DIRECTORY/config.conf
 sudo touch $PACSTALL_DIRECTORY/config.conf
 sudo echo "lisence="ANY" > $PACSTALL_DIRECTORY/config.conf"
+sudo rm /var/log/pacstall_installed
 sudo touch /var/log/pacstall_installed
+sudo rm -rf /var/cache/pacstall
 sudo touch /var/cache/pacstall/
 echo Pulling scripts from GitHub
 sudo curl https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/misc/scripts/change-repo.sh > $PACSTALL_DIRECTORY/scripts/change-repo.sh
