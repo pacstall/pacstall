@@ -21,17 +21,17 @@ while test $# -gt 0; do
       exit 0
       ;;
     -I|--install)
-      source /usr/share/pacstall/scripts/install.sh
+      . /usr/share/pacstall/scripts/install.sh
       ;;
     -S|--search)
-      source /usr/share/pacstall/scripts/search.sh
+      . /usr/share/pacstall/scripts/search.sh
       ;;
     -R|--remove)
       PACKAGE=$2
       sudo apt remove $PACKAGE
       ;;
     -C|--change-repo)
-      source /usr/share/pacstall/scripts/change-repo.sh
+      . /usr/share/pacstall/scripts/change-repo.sh
       ;;
     -V|--version)
       COLOR='\e[1;36m'
