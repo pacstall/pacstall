@@ -8,8 +8,8 @@ function trap_ctrlc ()
       }
 trap "trap_ctrlc" 2
       
-if [ "$EUID" -ne 0 ]
-	then echo "Please run as root"
+if [ "$EUID" -ne 0 ] ; then
+	echo "Please run as root"
 	exit 1
 fi
 
