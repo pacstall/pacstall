@@ -73,7 +73,7 @@ if [[ $(command -v porg) != "/usr/bin/porg" ]] ; then
     exit 1
   fi
 fi
-
+unset PACSTALL_DIRECTORY
 export PACSTALL_DIRECTORY="/usr/share/pacstall"
 
 echo "making directories"
