@@ -25,7 +25,6 @@ if [[ $url == *.tar.xz ]] ; then
 	cd $BUILDDIR
 	wget -q --show-progress --progress=bar:force:noscroll $url
 	tar -xf $pkgname.tar.xz
-	fi
 fi
 if [[ $url == *.zip ]]; then
 	echo "detected zip"
@@ -33,27 +32,10 @@ if [[ $url == *.zip ]]; then
 	wget -q --show-progress --progress=bar:force:noscroll $url
 	unzip $pkgname.zip
 fi
-	  }
-if [[ $2 == *"*http"* ]] ; then
-	cd $BUILDDIR
-	wget -q --show-progress --progress=bar:force:noscroll $2
-	if [[ $? = 1 ]] ; then
-		echo "Invalid URL"
-		exit 1
-	else
-	source -
-	$PACPREFIX $depends
-	DOWNLOAD
-	cd $pkgname*
-	prepare
-	build
-	install
-	fi
-fi
+}
 echo $* | tr "\n" " " > /tmp/installlist
 sed '1d' /tmp/installlist > /tmp/installlist
-while [ $(wc -l /tmp/installlist | awk '{ print $1 }') -ne 0 ]
-do
+while [ $(wc -l /tmp/installlist | awk '{ print $1 }') -ne 0 ]; do
 if [[ $(wc -l /tmp/installlist | awk '{ print $1 }') -eq 0 ]] ; then
 	break
 fi
@@ -83,6 +65,7 @@ sudo rm -rf "$PACKAGE"
 URL=https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/PACSCRIPT
 
 if wget -q "$URL" >/dev/null 2>&1 ; then
+
 	cd /tmp/
 	wget -q https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/PACSCRIPT
 	source PACSCRIPT
@@ -120,11 +103,8 @@ if [[ $? -eq 1 ]]; then
 	exit 1
 fi
 tail -n +2 "/tmp/installlist" > "/tmp/installlist.tmp" && mv "/tmp/installlist.tmp" "/tmp/installlist"
-done
+fi
 echo " "
 rm -rf /tmp/installlist
 exit 0
-else
-	echo "$PACKAGE does not exist in the $REPO repository. Check your spelling or choose a different repository with ${RED}sudo pacstall -C${NC}"
-exit 1
-fi
+done
