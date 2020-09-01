@@ -9,7 +9,6 @@ echo " "
 
 # Colors
 RED='\033[0;31m'
-CYAN='\033[0;36m'
 NC='\033[0m'
 GREEN='\033[0;32m'
 PURPLE='\033[0;35m'
@@ -84,10 +83,10 @@ sudo mkdir -p $PACSTALL_DIRECTORY/repo
 sudo touch $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
 sudo echo "Henryws/pacstall-programs" > $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
 sudo touch $PACSTALL_DIRECTORY/config.conf
-sudo echo "lisence="ANY" > $PACSTALL_DIRECTORY/config.conf
+sudo echo "lisence="ANY" > $PACSTALL_DIRECTORY/config.conf"
 sudo touch /var/log/pacstall_installed
 sudo touch /var/cache/pacstall/
-echo -e "Pulling scripts from GitHub"
+echo Pulling scripts from GitHub
 sudo curl https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/misc/scripts/change-repo.sh > $PACSTALL_DIRECTORY/scripts/change-repo.sh
 sudo curl https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/misc/scripts/install.sh > $PACSTALL_DIRECTORY/scripts/install.sh
 sudo curl https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/misc/scripts/search.sh > $PACSTALL_DIRECTORY/scripts/search.sh
