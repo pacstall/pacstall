@@ -12,12 +12,7 @@ if [ "$EUID" -ne 0 ]
 	then echo "Please run as root"
 	exit 1
 fi
-if [[ ! -e /tmp/pacstall_lock ]]; then
-	echo "you are currently using pacstall or you have interrupted a pacstall instance"
-	echo "if you are running another instance of pacstall, wait for that to complete before trying this again"
-	echo "otherwise, remove /tmp/pacstall_lock"
-	exit 1
-fi
+
 PACPREFIX="apt install -y"
 DOWNLOAD() {
 if [[ $url == *.git ]]; then
@@ -81,7 +76,6 @@ if [ ! -d $BUILDDIR ]; then
 	mkdir -p $BUILDDIR;
 fi
 
-touch /tmp/pacstall_lock
 sudo rm -rf $BUILDDIR
 sudo mkdir $BUILDDIR
 cd $BUILDDIR || exit
@@ -129,7 +123,6 @@ tail -n +2 "/tmp/installlist" > "/tmp/installlist.tmp" && mv "/tmp/installlist.t
 done
 echo " "
 rm -rf /tmp/installlist
-rm -rf /tmp/pacstall_lock
 exit 0
 else
 	echo "$PACKAGE does not exist in the $REPO repository. Check your spelling or choose a different repository with ${RED}sudo pacstall -C${NC}"
