@@ -74,13 +74,9 @@ if [[ $(command -v porg) != "/usr/bin/porg" ]] ; then
     exit 1
   fi
 fi
-printf "Where do you want scripts, config, repo stuff (default /usr/share/pacstall): "
-read -r INSTALL
-if [[ $INSTALL = " " ]] ; then
-  export PACSTALL_DIRECTORY="/usr/share/pacstall"
-else
-  export PACSTALL_DIRECTORY="$(echo $INSTALL)"
-fi
+
+export PACSTALL_DIRECTORY="/usr/share/pacstall"
+
 echo "making directories"
 sudo mkdir -p $PACSTALL_DIRECTORY
 sudo mkdir -p $PACSTALL_DIRECTORY/scripts
