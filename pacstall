@@ -22,8 +22,7 @@ while test $# -gt 0; do
       ;;
     -I|--install)
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-      echo $* | tr "\n" " " > /tmp/installlist
-      sed '1d' /tmp/installlist > /tmp/installlist
+      PACKAGES=$(echo $*)
       for i in $(tmp/installlist)
       do
         wget -O /tmp/PACSCRIPT-$i https://raw.githubusercontent.com/$REPO/master/packages/$i/PACSCRIPT
@@ -77,6 +76,9 @@ while test $# -gt 0; do
       UPDATES=$(cat /var/cache/pacstall/auto | tr "\n" " ")
       sudo pacstall -I $UPDATES
       exit
+      ;;
+    -D|--download)
+      
       ;;
      *)
       pacstall -h
