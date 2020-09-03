@@ -33,13 +33,7 @@ if [[ $url == *.zip ]]; then
 	unzip $pkgname.zip
 fi
 }
-#echo $* | tr "\n" " " > /tmp/installlist
-#sed '1d' /tmp/installlist > /tmp/installlist
-while [ $(wc -l /tmp/installlist | awk '{ print $1 }') -ne 0 ]; do
-if [[ $(wc -l /tmp/installlist | awk '{ print $1 }') -eq 0 ]] ; then
-	break
-fi
-#PACKAGE=$(head -n 1 /tmp/installlist)
+PACKAGE=$2
 if [[ ! -e /usr/share/pacstall/repo/ ]]; then
 	mkdir -p /usr/share/pacstall/repo
 	touch /usr/share/pacstall/repo/pacstallrepo.txt
@@ -102,9 +96,7 @@ if [[ $? -eq 1 ]]; then
 	echo "installing the package failed"
 	exit 1
 fi
-tail -n +2 "/tmp/installlist" > "/tmp/installlist.tmp" && mv "/tmp/installlist.tmp" "/tmp/installlist"
 fi
 echo " "
 rm -rf /tmp/installlist
 exit 0
-done
