@@ -21,15 +21,7 @@ while test $# -gt 0; do
       exit 0
       ;;
     -I|--install)
-      REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-      PACKAGES=$(echo $*)
-      for i in $(tmp/installlist)
-      do
-        wget -O /tmp/PACSCRIPT-$i https://raw.githubusercontent.com/$REPO/master/packages/$i/PACSCRIPT
-      done
-      export PACKAGE=$(head -n 1 /tmp/installlist)
       sudo bash /usr/share/pacstall/scripts/install.sh
-      unset PACKAGE
       ;;
     -S|--search)
       . /usr/share/pacstall/scripts/search.sh
