@@ -7,7 +7,7 @@
 
 
 <p align="center"><b>PACSTALL</b></p>
-<p align="center">Will attempt to be the AUR Ubuntu never had, building from source, then making a deb from it</p>
+<p align="center">Will attempt to be the AUR Ubuntu never had</p>
 
 
 <p align="center">
