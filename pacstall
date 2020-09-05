@@ -70,7 +70,9 @@ while test $# -gt 0; do
       exit
       ;;
     -D|--download)
-      
+      PACKAGE=$1
+      REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
+      . /usr/share/pacstall/scripts/download.sh
       ;;
      *)
       pacstall -h
