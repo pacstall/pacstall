@@ -14,6 +14,10 @@ source PACSCRIPT
 echo "installing ${BLUE}$pkgname${NC} version: ${BLUE}$version${NC}"
 echo "running checks"
 checks
+if [[ $? -eq 1 ]] ; then
+  echo "! There was an error checking the script!"
+  exit 1
+fi
 echo "${BLUE}$pkgname${NC} requires $(echo $build_depends) to install"
 echo "do you want to remove them after installing ${BLUE}$pkgname${NC} [y/n] "
 read -r REMOVE_DEPENDS
@@ -21,4 +25,16 @@ dpkg-query -l $breaks >/dev/null 2>&1
 if [[ $? -eq 1 ]] ; then
   echo "! ${RED}$pkgname${NC} breaks $breaks"
   exit 1
+fi
+echo ":: Retrieving packages..."
+cd /tmp/
+if [[ $url = *.git ]] ; then
+  git clone $url
+else
+  wget --progress=bar:force $url
+  if [[ $url = *.zip ]] ; then
+    unzip -
+  else
+    tar -xf -
+  fi
 fi
