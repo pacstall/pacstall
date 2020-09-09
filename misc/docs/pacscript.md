@@ -9,9 +9,6 @@ build_depends="vim gcc"
 depends="neofetch plasma"
 gives="libfoo"
 breaks="libfoo-git"
-rootprepare="false"
-rootbuild="false"
-rootinstall="true"
 
 prepare() {
           command -v $depends
