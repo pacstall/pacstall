@@ -36,6 +36,7 @@ if grep -q @ /tmp/pacstalling; then
     PACKAGE=$(cut -d@ -f1 /tmp/pacstalling)
     VERSION=$(cut -d@ -f2- /tmp/pacstalling)
 else
+    PACKAGE=$INPUT
     VERSION=master
 fi
 REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
