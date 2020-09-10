@@ -21,7 +21,19 @@ while test $# -gt 0; do
       exit 0
       ;;
     -I|--install)
-      sudo bash /usr/share/pacstall/scripts/install.sh
+      INPUT=$1
+      echo $INPUT > /tmp/pacstalling
+      if grep -q @ /tmp/pacstalling; then
+          PACKAGE=$(cut -d@ -f1 /tmp/pacstalling)
+          VERSION=$(cut -d@ -f2- /tmp/pacstalling)
+      else
+          PACKAGE=$INPUT
+          VERSION=master
+      fi
+      REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
+      URL="https://raw.githubusercontent.com/$REPO/1.0.4-Celeste/packages/$PACKAGE/$VERSION/PACSCRIPT"
+      sudo bash /usr/share/pacstall/scripts/download.sh
+      
       ;;
     -S|--search)
       . /usr/share/pacstall/scripts/search.sh
