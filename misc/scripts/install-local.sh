@@ -11,7 +11,7 @@ if apt-cache search $depends >/dev/null 2>&1 ; then
 fi
 }
 source PACSCRIPT
-echo "installing ${BLUE}$pkgname${NC} version: ${BLUE}$version${NC}"
+echo ":: Installing ${BLUE}$pkgname${NC} version: ${BLUE}$version${NC}"
 echo "running checks"
 checks
 if [[ $? -eq 1 ]] ; then
@@ -38,3 +38,8 @@ else
     tar -xf -
   fi
 fi
+cd $name
+prepare
+build
+install
+echo ":: Done installing $name"
