@@ -1,4 +1,4 @@
-name: sh-checker
+name: sh
 on:
   - push
 jobs:
@@ -12,3 +12,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SHELLCHECK_OPTS: -e SC1004 # It is posible to exclude some shellcheck warnings.
         with:
+          sh_checker_comment: true
+          sh_checker_exclude: ".github"
