@@ -5,19 +5,22 @@ flying in and out in a terminal like as seen in "The Matrix" movie. It can
 scroll lines all at the same rate or asynchronously and at a user-defined
 speed.
 
-CMatrix by default operates in **eye candy** mode.  It must be aborted with
-control-c (Ctrl+C) or by pressing q.  If you wish for more of a screen saver
+CMatrix by default operates in **eye candy** mode. It must be aborted with
+control-c (Ctrl+C) or by pressing q. If you wish for more of a screen saver
 effect, you must specify `-s` on the command line. For usage info, use `cmatrix -h`.
 
 [![Build Status](https://travis-ci.org/abishekvashok/cmatrix.svg?branch=master)](https://travis-ci.org/abishekvashok/cmatrix)
 
 ### Dependencies
+
 You'll probably need a decent ncurses library (or PDCurses on native Windows) to get this to work.
 
 ### Building and installing cmatrix
+
 To install cmatrix, use either of the following methods from within the cmatrix directory.
 
 #### Using `configure` (recommended for most linux user)
+
 ```
 autoreconf -i  # skip if using released tarball
 ./configure
@@ -26,8 +29,10 @@ make install
 ```
 
 #### Using CMake
+
 Here we also show an out-of-source build in the sub directory "build".
 Don't use CMake if you want to use PDCurses, it won't work (for now).
+
 ```
 mkdir -p build
 cd build
@@ -40,12 +45,14 @@ make install
 ```
 
 ### Running cmatrix
+
 After you have installed cmatrix just run `cmatrix` to run cmatrix :)
 
 _To get the program to look most like the movie, use `cmatrix -lba`_
 _To get the program to look most like the Win/Mac screensaver, use `cmatrix -ol`_
 
 ### Valuable information
+
 If you have any suggestions/flames/patches to send, please feel free to
 open issues and if possible solve them in PRs via Github.
 
@@ -63,12 +70,14 @@ _Note: cmatrix is probably not particularly portable or efficient, but it wont h
 ![Movie-Like Cast](data/img/capture_orig.gif?raw=true "cmatrix -xba")
 
 ### Maintainers
+
 - Abishek V Ashok (@abishekvashok) <abishekvashok@gmail.com> [Core]
 
 ### Thanks to:
+
 - Chris Allegretta <chrisa@asty.org> for writing cmatrix up in a fornight and giving us
   the responsibility to further improve it.
-- Krisjon Hanson and Bjoern Ganslandt for helping with bold support and 
+- Krisjon Hanson and Bjoern Ganslandt for helping with bold support and
   Bjoern again for the cursor removal code, helping with the `-u` and `-l`
   modes/flags, and Makefile improvements.
 - Adam Gurno for multi-color support.
@@ -85,8 +94,10 @@ _Note: cmatrix is probably not particularly portable or efficient, but it wont h
 - Everyone who has opened issues and PRs on the github repository.
 
 ### License
+
 This software is provided under the GNU GPL v3.
 
 ### Disclaimer
+
 We are in no way affiliated in any way with the movie "The Matrix", "Warner Bros" nor
 any of its affiliates in any way, just fans.
