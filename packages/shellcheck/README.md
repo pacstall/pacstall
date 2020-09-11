@@ -8,45 +8,45 @@ ShellCheck is a GPLv3 tool that gives warnings and suggestions for bash/sh shell
 
 The goals of ShellCheck are
 
-* To point out and clarify typical beginner's syntax issues that cause a shell
+- To point out and clarify typical beginner's syntax issues that cause a shell
   to give cryptic error messages.
 
-* To point out and clarify typical intermediate level semantic problems that
+- To point out and clarify typical intermediate level semantic problems that
   cause a shell to behave strangely and counter-intuitively.
 
-* To point out subtle caveats, corner cases and pitfalls that may cause an
+- To point out subtle caveats, corner cases and pitfalls that may cause an
   advanced user's otherwise working script to fail under future circumstances.
 
 See [the gallery of bad code](README.md#user-content-gallery-of-bad-code) for examples of what ShellCheck can help you identify!
 
 ## Table of Contents
 
-* [How to use](#how-to-use)
-  * [On the web](#on-the-web)
-  * [From your terminal](#from-your-terminal)
-  * [In your editor](#in-your-editor)
-  * [In your build or test suites](#in-your-build-or-test-suites)
-* [Installing](#installing)
-* [Compiling from source](#compiling-from-source)
-  * [Installing Cabal](#installing-cabal)
-  * [Compiling ShellCheck](#compiling-shellcheck)
-  * [Running tests](#running-tests)
-* [Gallery of bad code](#gallery-of-bad-code)
-  * [Quoting](#quoting)
-  * [Conditionals](#conditionals)
-  * [Frequently misused commands](#frequently-misused-commands)
-  * [Common beginner's mistakes](#common-beginners-mistakes)
-  * [Style](#style)
-  * [Data and typing errors](#data-and-typing-errors)
-  * [Robustness](#robustness)
-  * [Portability](#portability)
-  * [Miscellaneous](#miscellaneous)
-* [Testimonials](#testimonials)
-* [Ignoring issues](#ignoring-issues)
-* [Reporting bugs](#reporting-bugs)
-* [Contributing](#contributing)
-* [Copyright](#copyright)
-* [Other Resources](#other-resources)
+- [How to use](#how-to-use)
+  - [On the web](#on-the-web)
+  - [From your terminal](#from-your-terminal)
+  - [In your editor](#in-your-editor)
+  - [In your build or test suites](#in-your-build-or-test-suites)
+- [Installing](#installing)
+- [Compiling from source](#compiling-from-source)
+  - [Installing Cabal](#installing-cabal)
+  - [Compiling ShellCheck](#compiling-shellcheck)
+  - [Running tests](#running-tests)
+- [Gallery of bad code](#gallery-of-bad-code)
+  - [Quoting](#quoting)
+  - [Conditionals](#conditionals)
+  - [Frequently misused commands](#frequently-misused-commands)
+  - [Common beginner's mistakes](#common-beginners-mistakes)
+  - [Style](#style)
+  - [Data and typing errors](#data-and-typing-errors)
+  - [Robustness](#robustness)
+  - [Portability](#portability)
+  - [Miscellaneous](#miscellaneous)
+- [Testimonials](#testimonials)
+- [Ignoring issues](#ignoring-issues)
+- [Reporting bugs](#reporting-bugs)
+- [Contributing](#contributing)
+- [Copyright](#copyright)
+- [Other Resources](#other-resources)
 
 ## How to use
 
@@ -66,21 +66,21 @@ Run `shellcheck yourscript` in your terminal for instant output, as seen above.
 
 You can see ShellCheck suggestions directly in a variety of editors.
 
-* Vim, through [ALE](https://github.com/w0rp/ale), [Neomake](https://github.com/neomake/neomake), or [Syntastic](https://github.com/scrooloose/syntastic):
+- Vim, through [ALE](https://github.com/w0rp/ale), [Neomake](https://github.com/neomake/neomake), or [Syntastic](https://github.com/scrooloose/syntastic):
 
 ![Screenshot of Vim showing inlined shellcheck feedback](doc/vim-syntastic.png).
 
-* Emacs, through [Flycheck](https://github.com/flycheck/flycheck) or [Flymake](https://github.com/federicotdn/flymake-shellcheck):
+- Emacs, through [Flycheck](https://github.com/flycheck/flycheck) or [Flymake](https://github.com/federicotdn/flymake-shellcheck):
 
 ![Screenshot of emacs showing inlined shellcheck feedback](doc/emacs-flycheck.png).
 
-* Sublime, through [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter-shellcheck).
+- Sublime, through [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter-shellcheck).
 
-* Atom, through [Linter](https://github.com/AtomLinter/linter-shellcheck).
+- Atom, through [Linter](https://github.com/AtomLinter/linter-shellcheck).
 
-* VSCode, through [vscode-shellcheck](https://github.com/timonwong/vscode-shellcheck).
+- VSCode, through [vscode-shellcheck](https://github.com/timonwong/vscode-shellcheck).
 
-* Most other editors, through [GCC error compatibility](shellcheck.1.md#user-content-formats).
+- Most other editors, through [GCC error compatibility](shellcheck.1.md#user-content-formats).
 
 ### In your build or test suites
 
@@ -105,15 +105,15 @@ script:
 
 Services and platforms that have ShellCheck pre-installed and ready to use:
 
-* [Travis CI](https://travis-ci.org/)
-* [Codacy](https://www.codacy.com/)
-* [Code Climate](https://codeclimate.com/)
-* [Code Factor](https://www.codefactor.io/)
-* [Github](https://github.com/features/actions)(only Linux)
+- [Travis CI](https://travis-ci.org/)
+- [Codacy](https://www.codacy.com/)
+- [Code Climate](https://codeclimate.com/)
+- [Code Factor](https://www.codefactor.io/)
+- [Github](https://github.com/features/actions)(only Linux)
 
 Services and platforms with third party plugins:
 
-* [SonarQube](https://www.sonarqube.org/) through [sonar-shellcheck-plugin](https://github.com/emerald-squad/sonar-shellcheck-plugin)
+- [SonarQube](https://www.sonarqube.org/) through [sonar-shellcheck-plugin](https://github.com/emerald-squad/sonar-shellcheck-plugin)
 
 Most other services, including [GitLab](https://about.gitlab.com/), let you install
 ShellCheck yourself, either through the system's package manager (see [Installing](#installing)),
@@ -211,17 +211,18 @@ docker run --rm -v "$PWD:/mnt" koalaman/shellcheck:stable myscript
 or use `koalaman/shellcheck-alpine` if you want a larger Alpine Linux based image to extend. It works exactly like a regular Alpine image, but has shellcheck preinstalled.
 
 Using the [nix package manager](https://nixos.org/nix):
+
 ```sh
 nix-env -iA nixpkgs.shellcheck
 ```
 
 Alternatively, you can download pre-compiled binaries for the latest release here:
 
-* [Linux, x86_64](https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.linux.x86_64.tar.xz) (statically linked)
-* [Linux, armv6hf](https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.linux.armv6hf.tar.xz), i.e. Raspberry Pi (statically linked)
-* [Linux, aarch64](https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.linux.aarch64.tar.xz) aka ARM64 (statically linked)
-* [MacOS, x86_64](https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.darwin.x86_64.tar.xz)
-* [Windows, x86](https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.zip)
+- [Linux, x86_64](https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.linux.x86_64.tar.xz) (statically linked)
+- [Linux, armv6hf](https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.linux.armv6hf.tar.xz), i.e. Raspberry Pi (statically linked)
+- [Linux, aarch64](https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.linux.aarch64.tar.xz) aka ARM64 (statically linked)
+- [MacOS, x86_64](https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.darwin.x86_64.tar.xz)
+- [Windows, x86](https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.zip)
 
 or see the [GitHub Releases](https://github.com/koalaman/shellcheck/releases) for other releases
 (including the [latest](https://github.com/koalaman/shellcheck/releases/tag/latest) meta-release for daily git builds).
@@ -517,5 +518,5 @@ Happy ShellChecking!
 
 ## Other Resources
 
-* The wiki has [long form descriptions](https://github.com/koalaman/shellcheck/wiki/Checks) for each warning, e.g. [SC2221](https://github.com/koalaman/shellcheck/wiki/SC2221).
-* ShellCheck does not attempt to enforce any kind of formatting or indenting style, so also check out [shfmt](https://github.com/mvdan/sh)!
+- The wiki has [long form descriptions](https://github.com/koalaman/shellcheck/wiki/Checks) for each warning, e.g. [SC2221](https://github.com/koalaman/shellcheck/wiki/SC2221).
+- ShellCheck does not attempt to enforce any kind of formatting or indenting style, so also check out [shfmt](https://github.com/mvdan/sh)!
