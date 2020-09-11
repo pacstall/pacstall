@@ -31,7 +31,7 @@ while test $# -gt 0; do
           VERSION=master
       fi
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-      URL="https://raw.githubusercontent.com/$REPO/1.0.4-Celeste/packages/$PACKAGE/$VERSION/PACSCRIPT"
+      URL="https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/$VERSION/PACSCRIPT"
       sudo bash /usr/share/pacstall/scripts/download.sh
       
       ;;
