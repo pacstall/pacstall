@@ -5,10 +5,8 @@
 <img src="https://img.shields.io/github/issues/Henryws/pacstall?style=flat-square">
 </p>
 
-
 <p align="center"><b>PACSTALL</b></p>
 <p align="center">Will attempt to be the AUR Ubuntu never had</p>
-
 
 <p align="center">
 <a href="https://github.com/Henryws/pacstall"><img src="https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/ezgif.com-video-to-gif.gif"></a>
@@ -17,8 +15,10 @@
 ### Installing
 
 You can grab the deb files [here](https://github.com/Henryws/pacstall/releases/latest). If that's not your thing you can run this command:
+
 ```bash
 sudo bash -c "$(curl -fsSL https://git.io/JUCie)"
 ```
+
 DO NOT CLONE THIS REPOSITORY!!
 This serves as the scripts home and the packages (_outdated_). If you clone this repository, you will download all the packages currently available in this repository (which is a lot)

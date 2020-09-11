@@ -1,4 +1,3 @@
-
           GNU nano -- an enhanced clone of the Pico text editor
 
 Overview
