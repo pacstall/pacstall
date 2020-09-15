@@ -1,10 +1,5 @@
 #!/bin/bash
-guard() {
-if [[ $PACSTALL_DIRECTORY = " " ]] ; then
-  echo "It seems you've unset your pacstall config directory"
-  exit 1
-fi
-}
+export LC_ALL = C
 while test $# -gt 0; do
   case "$1" in
     -h|--help)
