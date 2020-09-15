@@ -26,13 +26,15 @@ while test $# -gt 0; do
       if grep -q @ /tmp/pacstalling; then
           PACKAGE=$(cut -d@ -f1 /tmp/pacstalling)
           VERSION=$(cut -d@ -f2- /tmp/pacstalling)
+          REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
+          URL="https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/$VERSION/PACSCRIPT"
+          sudo bash /usr/share/pacstall/scripts/download.sh
       else
           PACKAGE=$INPUT
-          VERSION=master
+          REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
+          URL="https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/PACSCRIPT"
+          sudo bash /usr/share/pacstall/scripts/download.sh
       fi
-      REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-      URL="https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/$VERSION/PACSCRIPT"
-      sudo bash /usr/share/pacstall/scripts/download.sh
       
       ;;
     -S|--search)
