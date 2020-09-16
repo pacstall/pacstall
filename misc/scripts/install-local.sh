@@ -38,7 +38,6 @@ else
     tar -xf -
   fi
 fi
-cd $name
 prepare
 build
 install
