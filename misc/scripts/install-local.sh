@@ -42,4 +42,7 @@ cd $name
 prepare
 build
 install
+if [[ $REMOVE_DEPENDS = y ]] ; then
+  sudo apt remove $build_depends
+fi
 echo ":: Done installing $name"
