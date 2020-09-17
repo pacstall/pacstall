@@ -45,6 +45,6 @@ sudo . /usr/share/pacstall/scripts/install-local.sh
 if curl --output /dev/null --silent --head --fail "$URL" ; then
   download
 else
-  echo "the file you want to download does not exists"
+  echo "! the file you want to download does not exist"
   exit 1
 fi
