@@ -24,6 +24,7 @@ while test $# -gt 0; do
       ;;
     -I|--install)
       INPUT=$1
+      INSTALLING=1
       echo $INPUT > /tmp/pacstalling
       if grep -q @ /tmp/pacstalling; then
           PACKAGE=$(cut -d@ -f1 /tmp/pacstalling)
@@ -43,8 +44,10 @@ while test $# -gt 0; do
       . /usr/share/pacstall/scripts/search.sh
       ;;
     -R|--remove)
-      PACKAGE=$2
-      sudo apt remove $PACKAGE
+      PACKAGE=$*
+      for i in $PACKAGE ; do
+      sudo rm $(cat /var/lib/porg/$i | sed -n 's/|\(.*\)//;/^#\(.*\)/d;p')
+      done
       ;;
     -C|--change-repo)
       . /usr/share/pacstall/scripts/change-repo.sh
@@ -87,6 +90,7 @@ while test $# -gt 0; do
       ;;
     -D|--download)
       PACKAGE=$1
+      INSTALLING=0
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       . /usr/share/pacstall/scripts/download.sh
       ;;
