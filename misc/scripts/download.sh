@@ -28,7 +28,9 @@ cd ~/.cache/pacstall/
 mkdir -p $PACKAGE
 cd $PACKAGE
 wget --progress=bar:force $URL 2>&1 | progressfilt
-sudo . /usr/share/pacstall/scripts/install-local.sh
+if [[ $INSTALLING -eq 1 ]] ; then
+    sudo . /usr/share/pacstall/scripts/install-local.sh
+fi
 }
 
 #INPUT=$1
