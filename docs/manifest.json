@@ -1,0 +1,18 @@
+{
+  "lang": "en",
+  "dir": "ltr",
+  "name": "Pacstall",
+  "short_name": "Pacstall",
+  "icons": [
+    {
+      "src": "\/assets\/images\/touch\/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image\/png"
+    }
+  ],
+  "theme_color": "#1a1a1a",
+  "background_color": "#1a1a1a",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "natural"
+}
