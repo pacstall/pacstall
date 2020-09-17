@@ -1,3 +1,5 @@
+<link rel="manifest" href="manifest.json">
+
 # Welcome to Pacstall!
 ![Code](https://img.shields.io/github/languages/top/Henryws/pacstall?color=Red) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/Henryws/pacstall/master)
 
