@@ -5,7 +5,7 @@
   "short_name": "Pacstall",
   "icons": [
     {
-      "src": "\/assets\/images\/touch\/android-chrome-192x192.png",
+      "src": "\/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image\/png"
     }
