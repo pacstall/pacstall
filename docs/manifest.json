@@ -12,7 +12,7 @@
   ],
   "theme_color": "#1a1a1a",
   "background_color": "#1a1a1a",
-  "start_url": "/",
+  "start_url": "/index.md",
   "display": "standalone",
   "orientation": "natural"
 }
