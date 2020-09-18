@@ -10,7 +10,7 @@ if apt-cache search $depends >/dev/null 2>&1 ; then
   echo "dependencies exist in repos"
 fi
 }
-source PACSCRIPT
+source $PACKAGE.pacscript
 echo ":: Installing ${BLUE}$pkgname${NC} version: ${BLUE}$version${NC}"
 echo "running checks"
 checks
