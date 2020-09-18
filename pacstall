@@ -93,10 +93,6 @@ while test $# -gt 0; do
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       . /usr/share/pacstall/scripts/download.sh
       ;;
-    -X|--x)
-      echo "${RED}::${NC} Scanning script for malicious code"
-      exit
-      ;;
      *)
       pacstall -h
       break
