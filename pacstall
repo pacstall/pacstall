@@ -23,7 +23,8 @@ while test $# -gt 0; do
       PURPLE='\033[0;35m'
       YELLOW='\033[1;33m'
       BLUE='\033[0;34m'
-      INPUT=$1
+      export HOMEDIR=$HOME
+      INPUT=$2
       INSTALLING=1
       echo $INPUT > /tmp/pacstalling
       if grep -q @ /tmp/pacstalling; then
