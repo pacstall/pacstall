@@ -8,7 +8,8 @@ gives="kvantum"
 breaks="qt5-style-kvantum"
 
 prepare() {
-          cd Kvantum*
+          cd Kvantum-$version
+          cd Kvantum
           mkdir build && cd build
 }
 
