@@ -19,5 +19,5 @@ build() {
 }
 
 install() {
-          sudo porg -lp "make install"
+          sudo porg -lp kvantum "make install"
 }
