@@ -1,12 +1,4 @@
 #!/bin/bash
-export LC_ALL=C
-RED='\033[0;31m'
-CYAN='\033[0;36m'
-NC='\033[0m'
-GREEN='\033[0;32m'
-PURPLE='\033[0;35m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
 while test $# -gt 0; do
   case "$1" in
     -h|--help)
@@ -23,25 +15,33 @@ while test $# -gt 0; do
       exit 0
       ;;
     -I|--install)
+      export LC_ALL=C
+      RED='\033[0;31m'
+      CYAN='\033[0;36m'
+      NC='\033[0m'
+      GREEN='\033[0;32m'
+      PURPLE='\033[0;35m'
+      YELLOW='\033[1;33m'
+      BLUE='\033[0;34m'
       INPUT=$1
       INSTALLING=1
       echo $INPUT > /tmp/pacstalling
       if grep -q @ /tmp/pacstalling; then
-          PACKAGE=$(cut -d@ -f1 /tmp/pacstalling)
-          REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-          URL="https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/$(cat /tmp/pacstalling).pacscript"
-          sudo bash /usr/share/pacstall/scripts/download.sh
+          export PACKAGE=$(cut -d@ -f1 /tmp/pacstalling)
+          export REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
+          export URL="https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/$(cat /tmp/pacstalling).pacscript"
+          source /usr/share/pacstall/scripts/download.sh
       else
-          PACKAGE=$INPUT
-          REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-          URL="https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/$PACKAGE.pacscript"
-          sudo bash /usr/share/pacstall/scripts/download.sh
+          export PACKAGE=$INPUT
+          export REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
+          export URL="https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/$PACKAGE.pacscript"
+          source /usr/share/pacstall/scripts/download.sh
           exit $(echo $?)
       fi
       
       ;;
     -S|--search)
-      . /usr/share/pacstall/scripts/search.sh
+      source /usr/share/pacstall/scripts/search.sh
       ;;
     -R|--remove)
       PACKAGE=$*
