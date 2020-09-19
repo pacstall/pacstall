@@ -23,16 +23,16 @@ progressfilt ()
 }
 
 download() {
-mkdir -p ~/.cache/pacstall/
-cd ~/.cache/pacstall/
+mkdir -p $HOMEDIR/.cache/pacstall/
+cd $HOMEDIR/.cache/pacstall/
 mkdir -p $PACKAGE
 cd $PACKAGE
 wget --progress=bar:force $URL 2>&1 | progressfilt
 if [[ $INSTALLING -eq 1 ]] ; then
-    sudo . /usr/share/pacstall/scripts/install-local.sh
+    source /usr/share/pacstall/scripts/install-local.sh
 fi
 }
-
+source <(cat /tmp/pacvariables)
 #INPUT=$1
 #echo $INPUT > /tmp/pacstalling
 #if grep -q @ /tmp/pacstalling; then
