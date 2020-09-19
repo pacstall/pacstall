@@ -3,7 +3,7 @@ pkgname="kvantum"
 version="0.16.1"
 url="https://github.com/tsujan/Kvantum/archive/V0.16.1.zip"
 license="GPL"
-build_depends="g++ libx11-dev qtbase5-dev libqt5svg5-dev libqt5x11extras5-dev libkf5windowsystem-dev"
+build_depends="g++ libx11-dev qtbase5-dev libqt5svg5-dev libqt5x11extras5-dev libkf5windowsystem-dev cmake"
 gives="kvantum"
 breaks="qt5-style-kvantum"
 
@@ -18,5 +18,5 @@ build() {
 }
 
 install() {
-          sudo checkinstall
+          sudo porg -lp "make install"
 }
