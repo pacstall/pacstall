@@ -36,6 +36,7 @@ while test $# -gt 0; do
           REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
           URL="https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/$PACKAGE.pacscript"
           sudo bash /usr/share/pacstall/scripts/download.sh
+          exit $(echo $?)
       fi
       
       ;;
