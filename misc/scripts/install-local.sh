@@ -1,4 +1,28 @@
 #!/bin/bash
+
+progressfilt ()
+{
+    local flag=false c count cr=$'\r' nl=$'\n'
+    while IFS='' read -d '' -rn 1 c
+    do
+        if $flag
+        then
+            printf '%s' "$c"
+        else
+            if [[ $c != $cr && $c != $nl ]]
+            then
+                count=0
+            else
+                ((count++))
+                if ((count > 1))
+                then
+                    flag=true
+                fi
+            fi
+        fi
+    done
+}
+
 checks() {
 if curl --output /dev/null --silent --head --fail "$url" ; then
   echo -e "url exists"
@@ -39,7 +63,7 @@ cd /tmp/
 if [[ $url = *.git ]] ; then
   git clone $url
 else
-  wget --progress=bar:force $url
+  wget --progress=bar:force $url 2>&1 | progressfilt
   if [[ $url = *.zip ]] ; then
     unzip $(echo ${url##*/})
   else
