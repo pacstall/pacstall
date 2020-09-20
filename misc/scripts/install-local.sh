@@ -33,6 +33,7 @@ if [[ $? -eq 0 ]] ; then
   exit 1
 fi
 sudo apt install $build_depends
+sudo apt install -y $depends
 echo -e ":: Retrieving packages..."
 cd /tmp/
 if [[ $url = *.git ]] ; then
