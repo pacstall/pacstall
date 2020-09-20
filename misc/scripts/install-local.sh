@@ -34,7 +34,7 @@ if apt-cache search $depends >/dev/null 2>&1 ; then
   echo -e "dependencies exist in repos"
 fi
 }
-prinf "${CYAN}??${NC} Do you want to view the pacscript first "
+printf "${CYAN}??${NC} Do you want to view the pacscript first "
 read -r READ
 if [[ $READ = y ]] ; then
   less $PACKAGE.pacscript
