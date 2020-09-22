@@ -1,4 +1,12 @@
 #!/bin/bash
+function trap_ctrlc ()
+      {
+          echo "! cleaning up"
+          rm -rf /tmp/pacstall/*
+	  echo "installation interrupted, removed files"
+          exit 2
+      }
+trap "trap_ctrlc" 2
 
 # Minimalistic progress bar for wget
 progressfilt ()
@@ -61,7 +69,8 @@ fi
 sudo apt install $build_depends
 sudo apt install -y $depends
 echo -e ":: Retrieving packages..."
-cd /tmp/
+mkdir -p /tmp/pacstall
+cd /tmp/pacstall
 if [[ $url = *.git ]] ; then
   git clone $url
 else
