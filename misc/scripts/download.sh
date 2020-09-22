@@ -1,4 +1,6 @@
 #!/bin/bash
+
+# Minimalistic progress bar wget
 progressfilt ()
 {
     local flag=false c count cr=$'\r' nl=$'\n'
@@ -33,17 +35,7 @@ if [[ $INSTALLING -eq 1 ]] ; then
 fi
 }
 source <(cat /tmp/pacvariables)
-#INPUT=$1
-#echo $INPUT > /tmp/pacstalling
-#if grep -q @ /tmp/pacstalling; then
-#    PACKAGE=$(cut -d@ -f1 /tmp/pacstalling)
-#    VERSION=$(cut -d@ -f2- /tmp/pacstalling)
-#else
-#    PACKAGE=$INPUT
-#    VERSION=master
-#fi
-#REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-#URL="https://raw.githubusercontent.com/$REPO/1.0.4-Celeste/packages/$PACKAGE/$VERSION/PACSCRIPT"
+
 if curl --output /dev/null --silent --head --fail "$URL" ; then
   download
 else
