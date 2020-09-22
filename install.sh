@@ -1,5 +1,4 @@
 #!/bin/bash
-BRANCH="1.0.4-Celeste"
 banner() {
 echo -e "|------------------------|"
 echo -e "|---${GREEN}Pacstall Installer${NC}---|"
@@ -36,7 +35,7 @@ echo -e "this will do:
 * Check for ${BLUE}curl${NC} and ${BLUE}wget${NC}
 * Install ${BLUE}Pacstall${NC}
   -- Create necessary directories
-  -- Pull ${BLUE}Pacstall${NC} with ${BLUE}wget${NC} from the ${YELLOW}$BRANCH${NC} branch into ${PURPLE}/bin/pacstall${NC}"
+  -- Pull ${BLUE}Pacstall${NC} with ${BLUE}wget${NC} from the ${YELLOW}1.0.4-Celeste${NC} branch into ${PURPLE}/bin/pacstall${NC}"
 printf "Does this look good: " 
 read -r answer
 if [[ $answer = n ]] ; then
@@ -91,12 +90,12 @@ sudo touch /var/log/pacstall_installed
 sudo rm -rf /var/cache/pacstall
 sudo touch /var/cache/pacstall/
 echo Pulling scripts from GitHub
-sudo curl https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/misc/scripts/change-repo.sh > $PACSTALL_DIRECTORY/scripts/change-repo.sh
-sudo curl https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/misc/scripts/install.sh > $PACSTALL_DIRECTORY/scripts/install.sh
-sudo curl https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/misc/scripts/search.sh > $PACSTALL_DIRECTORY/scripts/search.sh
-sudo curl https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/misc/scripts/download.sh > $PACSTALL_DIRECTORY/scripts/download.sh
-sudo curl https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/misc/scripts/install-local.sh > $PACSTALL_DIRECTORY/scripts/install-local.sh
+sudo curl https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/change-repo.sh > $PACSTALL_DIRECTORY/scripts/change-repo.sh
+sudo curl https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/install.sh > $PACSTALL_DIRECTORY/scripts/install.sh
+sudo curl https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/search.sh > $PACSTALL_DIRECTORY/scripts/search.sh
+sudo curl https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/download.sh > $PACSTALL_DIRECTORY/scripts/download.sh
+sudo curl https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/install-local.sh > $PACSTALL_DIRECTORY/scripts/install-local.sh
 
-echo -e "pulling ${BLUE}pacstall${NC} from ${RED}https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/pacstall${NC}"
-sudo wget -O /bin/pacstall https://raw.githubusercontent.com/Henryws/pacstall/$BRANCH/pacstall
+echo -e "pulling ${BLUE}pacstall${NC} from ${RED}https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/pacstall${NC}"
+sudo wget -O /bin/pacstall https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/pacstall
 sudo chmod +x /bin/pacstall
