@@ -77,4 +77,4 @@ if [[ $REMOVE_DEPENDS = y ]] ; then
   sudo apt remove $build_depends
 fi
 echo -e ":: Done installing $name"
-cd $HOMEDIR/.cache/$PACKAGE && cp $PACKAGE.pacscript /var/log/pacstall_installed
+cd $HOMEDIR/.cache/$PACKAGE && ln -s $PACKAGE.pacscript /var/log/pacstall_installed/$PACKAGE.pacscript
