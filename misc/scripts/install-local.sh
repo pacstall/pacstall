@@ -61,7 +61,9 @@ fi
 echo -e "${BLUE}$pkgname${NC} requires ${CYAN}$(echo -e $build_depends)${NC} to install"
 printf "do you want to remove them after installing ${BLUE}$pkgname${NC} [y/n] "
 read -r REMOVE_DEPENDS
+if [[ $depends != " " ]] ; then
 dpkg-query -l $breaks >/dev/null 2>&1
+fi
 if [[ $? -eq 0 ]] ; then
   echo -e "! ${RED}$pkgname${NC} breaks $breaks"
   exit 1
