@@ -1,4 +1,5 @@
 #!/bin/bash
+#DEPRECATED
 function trap_ctrlc ()
       {
           echo "cleaning up"
