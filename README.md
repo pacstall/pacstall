@@ -20,5 +20,4 @@ You can grab the deb files [here](https://github.com/Henryws/pacstall/releases/l
 sudo bash -c "$(curl -fsSL https://git.io/JUCie)"
 ```
 
-DO NOT CLONE THIS REPOSITORY!!
-This serves as the scripts home and the packages (_outdated_). If you clone this repository, you will download all the packages currently available in this repository (which is a lot)
+This is not the repository for pacscripts (PKGBUILD). They are [here](https://github.com/Henryws/pacstall-programs). Even though there are packages here, they are for testing pacstall, so I don't have to jump back and forth between repo's
