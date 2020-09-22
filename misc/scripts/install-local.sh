@@ -83,6 +83,7 @@ else
 fi
 prepare
 build
+trap - SIGINT
 install
 if [[ $REMOVE_DEPENDS = y ]] ; then
   sudo apt remove $build_depends
