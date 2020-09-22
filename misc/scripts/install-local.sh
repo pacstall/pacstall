@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Minimalistic progress bar for wget
 progressfilt ()
 {
     local flag=false c count cr=$'\r' nl=$'\n'
@@ -23,6 +24,7 @@ progressfilt ()
     done
 }
 
+# run checks to verify script works
 checks() {
 if curl --output /dev/null --silent --head --fail "$url" ; then
   echo -e "url exists"
