@@ -94,6 +94,15 @@ while test $# -gt 0; do
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       . /usr/share/pacstall/scripts/download.sh
       ;;
+    -Ra|--remove-all)
+      PACKAGE=$*
+      for i in $PACKAGE ; do
+        source /var/log/pacstall_installed/$i.pacscript
+        sudo apt remove $depends
+        sudo pacstall -R $i
+        rm -rf /var/log/pacstall_installed/$i.pacscript
+      done
+      ;;
      *)
       pacstall -h
       break
