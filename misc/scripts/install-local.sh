@@ -85,7 +85,7 @@ else
 fi
 prepare
 # Check if build function exists
-type -t build
+type -t build > /dev/null 2>&1
 if [[ $? -eq 0 ]] ; then
   build
 fi
