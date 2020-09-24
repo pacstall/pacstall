@@ -58,17 +58,26 @@ if [[ $? -eq 1 ]] ; then
   echo -e "! There was an error checking the script!"
   exit 1
 fi
-echo -e "${BLUE}$pkgname${NC} requires ${CYAN}$(echo -e $build_depends)${NC} to install"
-printf "do you want to remove them after installing ${BLUE}$pkgname${NC} [y/n] "
-read -r REMOVE_DEPENDS
-if [[ $depends != " " ]] ; then
-dpkg-query -l $breaks >/dev/null 2>&1
+
+if echo $build_depends; then
+    echo -e "${BLUE}$pkgname${NC} requires ${CYAN}$(echo -e $build_depends)${NC} to install"
+    printf "do you want to remove them after installing ${BLUE}$pkgname${NC} [y/n] "
+    read -r REMOVE_DEPENDS
+    NOBUILDDEP=0
+else
+    NOBUILDDEP=1
 fi
+echo $depends > /dev/null 2>&1
 if [[ $? -eq 0 ]] ; then
-  echo -e "! ${RED}$pkgname${NC} breaks $breaks"
-  exit 1
+    dpkg-query -l $breaks >/dev/null 2>&1
+    if [[ $? -eq 0 ]] ; then
+      echo -e "! ${RED}$pkgname${NC} breaks $breaks"
+      exit 1
+    fi
 fi
-sudo apt install $build_depends
+if [[ $NOBUILDDEP -eq 0 ]] ; then
+    sudo apt install $build_depends
+fi
 sudo apt install -y $depends
 echo -e ":: Retrieving packages..."
 mkdir -p /tmp/pacstall
