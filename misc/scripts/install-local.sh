@@ -84,7 +84,12 @@ else
   fi
 fi
 prepare
-build
+# Check if build function exists
+type -t build
+if [[ $? -eq 0 ]] ; then
+  build
+fi
+
 trap - SIGINT
 install
 if [[ $REMOVE_DEPENDS = y ]] ; then
