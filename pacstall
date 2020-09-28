@@ -16,7 +16,8 @@ while test $# -gt 0; do
       echo " "
       exit 0
       ;;
-    -I|--install) 
+    -I|--install)
+      
       function trap_ctrlc ()
       {
           echo "cleaning up"
@@ -49,6 +50,9 @@ while test $# -gt 0; do
 	  sudo pacstall -C
       fi
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
+      # complete -W "$(curl -s https://raw.githubusercontent.com/$REPO/master/complete | sed ':a;N;$!ba;s/\n/ /g')"
+      _pacstall_packages_options=$(curl -s https://raw.githubusercontent.com/$REPO/master/complete | sed ':a;N;$!ba;s/\n/ /g')
+      complete -W "${_pacstall_packages_options}" 'pacstall -I'
       RED='\033[0;31m'
       CYAN='\033[0;36m'
       NC='\033[0m' # No Color
