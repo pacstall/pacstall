@@ -103,6 +103,10 @@ while test $# -gt 0; do
         rm -rf /var/log/pacstall_installed/$i.pacscript
       done
       ;;
+    -Xc)
+      REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
+      echo $(curl -s https://raw.githubusercontent.com/$REPO/master/complete | sed ':a;N;$!ba;s/\n/ /g')
+      ;;
      *)
       pacstall -h
       break
