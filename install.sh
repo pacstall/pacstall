@@ -90,11 +90,12 @@ sudo touch /var/log/pacstall_installed
 sudo rm -rf /var/cache/pacstall
 sudo touch /var/cache/pacstall/
 echo Pulling scripts from GitHub
-sudo curl https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/change-repo.sh > $PACSTALL_DIRECTORY/scripts/change-repo.sh
-sudo curl https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/install.sh > $PACSTALL_DIRECTORY/scripts/install.sh
-sudo curl https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/search.sh > $PACSTALL_DIRECTORY/scripts/search.sh
-sudo curl https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/download.sh > $PACSTALL_DIRECTORY/scripts/download.sh
-sudo curl https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/install-local.sh > $PACSTALL_DIRECTORY/scripts/install-local.sh
+sudo curl -s https://github.com/Henryws/pacstall/raw/1.0.4-Celeste/misc/pacstall > /etc/bash.completion.d/pacstall
+sudo curl -s https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/change-repo.sh > $PACSTALL_DIRECTORY/scripts/change-repo.sh
+sudo curl -s https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/install.sh > $PACSTALL_DIRECTORY/scripts/install.sh
+sudo curl -s https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/search.sh > $PACSTALL_DIRECTORY/scripts/search.sh
+sudo curl -s https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/download.sh > $PACSTALL_DIRECTORY/scripts/download.sh
+sudo curl -s https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/install-local.sh > $PACSTALL_DIRECTORY/scripts/install-local.sh
 
 echo -e "pulling ${BLUE}pacstall${NC} from ${RED}https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/pacstall${NC}"
 sudo wget -O /bin/pacstall https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/pacstall
