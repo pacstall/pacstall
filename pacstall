@@ -30,18 +30,6 @@ while test $# -gt 0; do
       then echo "Please run as root"
       exit 1
       fi
-      SUPPORT=$(lsb_release --id --short)
-      if [[ $SUPPORT != "Ubuntu" ]] ; then
-      	  RED='\033[0;31m'
-	  NC='\033[0m'
-	  if [[ $SUPPORT != "Fedora" ]] ; then
-	  RED='\033[0;31m'
-	  NC='\033[0m'  
-	  else
-	  echo -e "${RED}Unsupported Distribution${NC}"
-	  exit 1
-	  fi
-      fi
       PACPREFIX="apt install -y "
       PACKAGE=$2
       if [[ ! -e /usr/share/pacstall/repo/ ]]; then
