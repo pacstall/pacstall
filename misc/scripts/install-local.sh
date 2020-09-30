@@ -7,7 +7,7 @@ function trap_ctrlc ()
           exit 2
       }
 trap "trap_ctrlc" 2
-
+MAKE=$(shini -f /usr/share/pacstall/config.toml || echo "-j$(nproc)")
 # Minimalistic progress bar for wget
 progressfilt ()
 {
