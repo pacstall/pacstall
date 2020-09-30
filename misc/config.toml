@@ -1,0 +1,2 @@
+[makeflags]
+makeflags = "-j$(nproc)
