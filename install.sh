@@ -85,7 +85,7 @@ sudo touch $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
 sudo echo "Henryws/pacstall-programs" > $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
 sudo rm $PACSTALL_DIRECTORY/config.toml
 sudo touch $PACSTALL_DIRECTORY/config.toml
-sudo curl -s https://github.com/Henryws/pacstall/raw/1.0.4-Celeste/misc/config.toml > /usr/share/pacstall/config.toml
+sudo curl -s https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/config.toml > /usr/share/pacstall/config.toml
 sudo rm /var/log/pacstall_installed
 sudo touch /var/log/pacstall_installed
 sudo rm -rf /var/cache/pacstall
