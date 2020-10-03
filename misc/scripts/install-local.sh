@@ -101,7 +101,8 @@ if [[ $? -eq 0 ]] ; then
 fi
 
 trap - SIGINT
-install
+echo ":: Installing"
+install 1> /dev/null
 if [[ $REMOVE_DEPENDS = y ]] ; then
   sudo apt remove $build_depends
 fi
