@@ -91,7 +91,7 @@ sudo touch /var/log/pacstall_installed
 sudo rm -rf /var/cache/pacstall
 sudo touch /var/cache/pacstall/
 echo Pulling scripts from GitHub
-sudo curl -s https://github.com/Henryws/pacstall/raw/1.0.4-Celeste/misc/shini > /usr/bin/shini
+go get -u github.com/5nord/shini
 sudo curl -s https://github.com/Henryws/pacstall/raw/1.0.4-Celeste/misc/pacstall > /etc/bash.completion.d/pacstall
 sudo curl -s https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/change-repo.sh > $PACSTALL_DIRECTORY/scripts/change-repo.sh
 sudo curl -s https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/install.sh > $PACSTALL_DIRECTORY/scripts/install.sh
