@@ -80,6 +80,7 @@ echo "making directories"
 sudo mkdir -p $PACSTALL_DIRECTORY
 sudo mkdir -p $PACSTALL_DIRECTORY/scripts
 sudo mkdir -p $PACSTALL_DIRECTORY/repo
+sudo mkdir -p /var/log/pacstall_orphaned
 sudo rm $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
 sudo touch $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
 sudo echo "Henryws/pacstall-programs" > $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
@@ -87,7 +88,7 @@ sudo rm $PACSTALL_DIRECTORY/config.toml
 sudo touch $PACSTALL_DIRECTORY/config.toml
 sudo curl -s https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/config.toml > /usr/share/pacstall/config.toml
 sudo rm /var/log/pacstall_installed
-sudo touch /var/log/pacstall_installed
+sudo mkdir /var/log/pacstall_installed
 sudo rm -rf /var/cache/pacstall
 sudo touch /var/cache/pacstall/
 echo Pulling scripts from GitHub
