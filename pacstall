@@ -48,6 +48,7 @@ while test $# -gt 0; do
       PACKAGE=$*
       for i in $PACKAGE ; do
       sudo rm $(cat /var/lib/porg/$i | sed -n 's/|\(.*\)//;/^#\(.*\)/d;p')
+      sudo rm -rf /var/log/pacstall_orphaned/$PACKAGE
       done
       ;;
     -C|--change-repo)
