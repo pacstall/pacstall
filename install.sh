@@ -32,7 +32,7 @@ if [[ $? -eq 1 ]] ; then
   exit 1
 fi
 echo -e "this will do:
-* Check for ${BLUE}curl${NC} and ${BLUE}wget${NC}
+* Check for ${BLUE}curl${NC}, ${BLUE}golang${NC}, and ${BLUE}wget${NC}
 * Install ${BLUE}Pacstall${NC}
   -- Create necessary directories
   -- Pull ${BLUE}Pacstall${NC} with ${BLUE}wget${NC} from the ${YELLOW}1.0.4-Celeste${NC} branch into ${PURPLE}/bin/pacstall${NC}"
@@ -72,6 +72,7 @@ if [[ $(command -v porg) != "/usr/bin/porg" ]] ; then
     exit 1
   fi
 fi
+sudo apt install -y golang-go
 unset PACSTALL_DIRECTORY
 export PACSTALL_DIRECTORY="/usr/share/pacstall"
 
