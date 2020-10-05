@@ -85,8 +85,12 @@ while test $# -gt 0; do
       ;;
     -L|--list)
       wc -l /var/log/pacstall_installed
-      cat /var/log/pacstall_installed
+      /bin/ls /var/log/pacstall_installed
       exit 0
+      ;;
+    -Lo|--list-orphaned)
+      wc -l /var/log/pacstall_orphaned
+      /bin/ls /var/log/pacstall_orphaned
       ;;
     -Iu|--install-updates)
       BLUE='\033[0;34m'
