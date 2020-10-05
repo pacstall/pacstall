@@ -47,8 +47,16 @@ while test $# -gt 0; do
     -R|--remove)
       PACKAGE=$*
       for i in $PACKAGE ; do
+      if [ -f /var/log/pacstall_installed/$i ] ; then
+          LOCATION=installed
+        else
+          if [ -f /var/log/pacstall_orphaned/$i ] ; then
+            LOCATION=orphaned
+          fi
+      fi
       sudo rm $(cat /var/lib/porg/$i | sed -n 's/|\(.*\)//;/^#\(.*\)/d;p')
-      sudo rm -rf /var/log/pacstall_orphaned/$PACKAGE
+      sudo rm -rf /var/log/pacstall_$LOCATION/$i.pacscript
+      sudo rm -rf /var/log/pacstall_$LOCATION/$i.pacscript
       done
       ;;
     -C|--change-repo)
@@ -98,10 +106,17 @@ while test $# -gt 0; do
     -Ra|--remove-all)
       PACKAGE=$*
       for i in $PACKAGE ; do
-        source /var/log/pacstall_installed/$i.pacscript
+        if [ -f /var/log/pacstall_installed/$i ] ; then
+          LOCATION=installed
+        else
+          if [ -f /var/log/pacstall_orphaned/$i ] ; then
+            LOCATION=orphaned
+          fi
+        fi
+        source /var/log/pacstall_$lOCATION/$i.pacscript
         sudo apt remove $depends
         sudo pacstall -R $i
-        rm -rf /var/log/pacstall_installed/$i.pacscript
+        rm -rf /var/log/pacstall_$LOCATION/$i.pacscript
       done
       ;;
      *)
