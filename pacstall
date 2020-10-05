@@ -56,7 +56,6 @@ while test $# -gt 0; do
       fi
       sudo rm $(cat /var/lib/porg/$i | sed -n 's/|\(.*\)//;/^#\(.*\)/d;p')
       sudo rm -rf /var/log/pacstall_$LOCATION/$i.pacscript
-      sudo rm -rf /var/log/pacstall_$LOCATION/$i.pacscript
       done
       ;;
     -C|--change-repo)
