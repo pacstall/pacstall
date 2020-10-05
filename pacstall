@@ -92,14 +92,6 @@ while test $# -gt 0; do
       wc -l /var/log/pacstall_orphaned
       /bin/ls /var/log/pacstall_orphaned
       ;;
-    -Iu|--install-updates)
-      BLUE='\033[0;34m'
-      NC='\033[0m'
-      echo "Scanning ${BLUE}/var/cache/pacstall/auto${NC}"
-      UPDATES=$(cat /var/cache/pacstall/auto | tr "\n" " ")
-      sudo pacstall -I $UPDATES
-      exit
-      ;;
     -D|--download)
       PACKAGE=$1
       INSTALLING=0
