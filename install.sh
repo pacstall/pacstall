@@ -31,6 +31,7 @@ if [[ $? -eq 1 ]] ; then
   echo "You seem to be offline"
   exit 1
 fi
+echo ""
 echo -e "this will do:
 * Check for ${BLUE}curl${NC}, ${BLUE}golang${NC}, and ${BLUE}wget${NC}
 * Install ${BLUE}Pacstall${NC}
