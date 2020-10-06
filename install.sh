@@ -91,7 +91,7 @@ sudo rm -rf /var/cache/pacstall
 sudo touch /var/cache/pacstall/
 echo "Pulling scripts from GitHub "
 for i in {change-repo.sh,search.sh,download.sh,install-local.sh}; do 
-sudo wget -q https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/$i -P /usr/share/pacstall/scripts
+sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/$i -P /usr/share/pacstall/scripts
 done &
 PID=$!
 i=1
