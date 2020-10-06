@@ -7,8 +7,6 @@ function trap_ctrlc ()
           exit 2
       }
 trap "trap_ctrlc" 2
-MAKE=$(shini -f /usr/share/pacstall/config.toml makeflags.makeflags || echo "-j$(nproc)")
-PACPREFIX=$(shini -f /usr/share/pacstall/config.toml pacprefix || echo "apt install -y")
 # Minimalistic progress bar for wget
 progressfilt ()
 {
@@ -77,7 +75,7 @@ if [[ $? -eq 0 ]] ; then
     fi
 fi
 if [[ $NOBUILDDEP -eq 0 ]] ; then
-    sudo $PACPREFIX $build_depends
+    sudo apt install -y $build_depends
 fi
 sudo apt install -y $depends
 echo -e ":: Retrieving packages..."
