@@ -33,7 +33,7 @@ if [[ $? -eq 1 ]] ; then
 fi
 echo ""
 echo -e "this will do:
-* Check for ${BLUE}curl${NC}, ${BLUE}golang${NC}, and ${BLUE}wget${NC}
+* Check for ${BLUE}curl${NC}, and ${BLUE}wget${NC}
 * Install ${BLUE}Pacstall${NC}
   -- Create necessary directories
   -- Pull ${BLUE}Pacstall${NC} with ${BLUE}wget${NC} from the ${YELLOW}1.0.4-Celeste${NC} branch into ${PURPLE}/bin/pacstall${NC}"
@@ -73,7 +73,6 @@ if [[ $(command -v porg) != "/usr/bin/porg" ]] ; then
     exit 1
   fi
 fi
-sudo apt install -y golang-go
 unset PACSTALL_DIRECTORY
 export PACSTALL_DIRECTORY="/usr/share/pacstall"
 
@@ -85,25 +84,24 @@ sudo mkdir -p /var/log/pacstall_orphaned
 sudo rm $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
 sudo touch $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
 sudo echo "Henryws/pacstall-programs" > $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
-sudo rm $PACSTALL_DIRECTORY/config.toml
-sudo touch $PACSTALL_DIRECTORY/config.toml
 sudo curl -s https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/config.toml > /usr/share/pacstall/config.toml
 sudo rm /var/log/pacstall_installed
 sudo mkdir /var/log/pacstall_installed
 sudo rm -rf /var/cache/pacstall
 sudo touch /var/cache/pacstall/
-echo Pulling scripts from GitHub
-cd /tmp && git clone https://github.com/5nord/shini
-cd shini
-go build
-sudo mv shini /usr/bin/
-sudo curl -s https://github.com/Henryws/pacstall/raw/1.0.4-Celeste/misc/pacstall > /etc/bash.completion.d/pacstall
-sudo curl -s https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/change-repo.sh > $PACSTALL_DIRECTORY/scripts/change-repo.sh
-sudo curl -s https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/install.sh > $PACSTALL_DIRECTORY/scripts/install.sh
-sudo curl -s https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/search.sh > $PACSTALL_DIRECTORY/scripts/search.sh
-sudo curl -s https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/download.sh > $PACSTALL_DIRECTORY/scripts/download.sh
-sudo curl -s https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/install-local.sh > $PACSTALL_DIRECTORY/scripts/install-local.sh
-
+echo "Pulling scripts from GitHub "
+for i in {change-repo.sh,search.sh,download.sh,install-local.sh}; do 
+sudo wget -q https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/$i -P /usr/share/pacstall/scripts
+done &
+PID=$!
+i=1
+sp="/-\|"
+echo -n ' '
+while [ -d /proc/$PID ]
+do
+  sleep 0.1
+  printf "\b${sp:i++%${#sp}:1}"
+done
 echo -e "pulling ${BLUE}pacstall${NC} from ${RED}https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/pacstall${NC}"
 sudo wget -O /bin/pacstall https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/pacstall
 sudo chmod +x /bin/pacstall
