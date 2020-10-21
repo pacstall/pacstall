@@ -15,7 +15,30 @@ while test $# -gt 0; do
       exit 0
       ;;
     -I|--install)
+
       export LC_ALL=C
+
+      
+      function trap_ctrlc ()
+      {
+          echo "cleaning up"
+          rm -rf /tmp/pacstall/*
+	  echo "the installation of $2 was interrupted, removed files"
+          exit 2
+      }
+      trap "trap_ctrlc" 2
+      if [ "$EUID" -ne 0 ]
+      then echo "Please run as root"
+      exit 1
+      fi
+      PACPREFIX="apt install -y "
+      PACKAGE=$2
+      if [[ ! -e /usr/share/pacstall/repo/ ]]; then
+          mkdir -p /usr/share/pacstall/repo
+          touch /usr/share/pacstall/repo/pacstallrepo.txt
+	  sudo pacstall -C
+      fi
+      REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       RED='\033[0;31m'
       CYAN='\033[0;36m'
       NC='\033[0m'
