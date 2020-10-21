@@ -30,7 +30,6 @@ instance:
 
     CMAKE_ARGS="-DCMAKE_INSTALL_PREFIX=/opt/awesome" make
 
-
 ### Installing current git master as a package receipts
 
 #### Arch Linux AUR
@@ -51,7 +50,6 @@ cd awesome
 make package
 sudo apt install *.deb
 ```
-
 
 ### Build dependencies
 
@@ -161,9 +159,11 @@ You can join us in the `#awesome` channel on the [OFTC](http://www.oftc.net/) IR
 [IRC Webchat](https://webchat.oftc.net/?channels=awesome)
 
 #### Stack Overflow
+
 You can ask questions on [Stack Overflow](http://stackoverflow.com/questions/tagged/awesome-wm).
 
 #### Reddit
+
 We also have a [awesome subreddit](https://www.reddit.com/r/awesomewm/) where you can share your work and ask questions.
 
 ## Reporting issues
@@ -176,6 +176,7 @@ You can submit pull requests on the [github repository](https://github.com/aweso
 Please read the [contributing guide](https://github.com/awesomeWM/awesome/blob/master/docs/02-contributing.md) for any coding, documentation or patch guidelines.
 
 ## Status
+
 [![Build Status](https://travis-ci.com/awesomeWM/awesome.svg?branch=master)](https://travis-ci.com/awesomeWM/awesome)
 
 ## Documentation
