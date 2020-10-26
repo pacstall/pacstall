@@ -83,12 +83,15 @@ mkdir -p /tmp/pacstall
 cd /tmp/pacstall
 if [[ $url = *.git ]] ; then
   git clone $url
+  cd *
 else
   wget --progress=bar:force $url 2>&1 | progressfilt
   if [[ $url = *.zip ]] ; then
     unzip $(echo ${url##*/})
+    cd *
   else
     tar -xf $(echo ${url##*/})
+    cd *
   fi
 fi
 prepare
