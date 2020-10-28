@@ -15,10 +15,7 @@ while test $# -gt 0; do
       exit 0
       ;;
     -I|--install)
-
       export LC_ALL=C
-
-      
       function trap_ctrlc ()
       {
           echo "cleaning up"
@@ -61,8 +58,7 @@ while test $# -gt 0; do
           export URL="https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/$PACKAGE.pacscript"
           source /usr/share/pacstall/scripts/download.sh
           exit $(echo $?)
-      fi
-      
+      fi   
       ;;
     -S|--search)
       source /usr/share/pacstall/scripts/search.sh
@@ -142,4 +138,4 @@ while test $# -gt 0; do
       break
       ;;
   esac
-done 
+done
