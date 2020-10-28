@@ -37,42 +37,10 @@ echo -e "this will do:
 * Install ${BLUE}Pacstall${NC}
   -- Create necessary directories
   -- Pull ${BLUE}Pacstall${NC} with ${BLUE}wget${NC} from the ${YELLOW}1.0.4-Celeste${NC} branch into ${PURPLE}/bin/pacstall${NC}"
-printf "Does this look good: " 
-read -r answer
-if [[ $answer = n ]] ; then
-  exit 1
-fi
 echo -e "checking for ${BLUE}curl${NC} and ${BLUE}wget${NC}"
-
-if [[ $(command -v curl) != "/usr/bin/curl" ]] ; then
-  printf "You seem to not have ${BLUE}curl${NC} installed. Do you want to install it now? "
-  read -r curl
-  if [[ $curl = y ]] ; then
-    sudo apt install -y curl
-  else
-    exit 1
-  fi
-fi
-
-if [[ $(command -v wget) != "/usr/bin/wget" ]] ; then
-  printf "You seem to not have ${BLUE}wget${NC} installed. Do you want to install it now? "
-  read -r wget
-  if [[ $wget = y ]] ; then
-    sudo apt install -y wget
-  else
-    exit 1
-  fi
-fi
-
-if [[ $(command -v porg) != "/usr/bin/porg" ]] ; then
-  printf "You seem to not have ${BLUE}porg${NC} installed. Do you want to install it now? "
-  read -r porg
-  if [[ $porg = y ]] ; then
-    sudo apt install -y porg
-  else
-    exit 1
-  fi
-fi
+sudo apt install -y curl
+sudo apt install -y wget
+sudo apt install -y porg
 unset PACSTALL_DIRECTORY
 export PACSTALL_DIRECTORY="/usr/share/pacstall"
 
