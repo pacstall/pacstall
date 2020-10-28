@@ -1,0 +1,12 @@
+name: test
+on: [push]
+jobs:
+  test:
+    runs-on: [ubuntu-20.04]
+    steps:
+      - name: remote-bash
+        uses: shinhwagk/remote-bash@0.0.1
+        with:
+          args:
+        env:
+          REMOTE_BASH_URL: https://raw.githubusercontent.com/Henryws/pacstall/master/install.sh
