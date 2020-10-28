@@ -1,4 +1,4 @@
-name: test
+name: test install script
 on: [push]
 jobs:
   test:
