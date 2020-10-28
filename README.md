@@ -46,3 +46,8 @@ This will search for foo in repositories
 sudo pacstall -C
 ```
 This will open a window where you can choose a repository
+
+```bash
+sudo pacstall -U
+```
+This will update pacstall
