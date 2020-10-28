@@ -23,3 +23,26 @@ sudo bash -c "$(curl -fsSL https://git.io/JUCie)"
 
 ### Warning
 This is not the repository for pacscripts (PKGBUILD). They are [here](https://github.com/Henryws/pacstall-programs). Even though there are packages here, they are for testing pacstall, so I don't have to jump back and forth between repo's
+
+
+## Basic Commands
+
+```bash
+sudo pacstall -I foo
+``` 
+This will install foo
+
+```bash
+sudo pacstall -R foo
+```
+This will remove foo
+
+```bash
+sudo pacstall -S foo
+```
+This will search for foo in repositories
+
+```bash
+sudo pacstall -C
+```
+This will open a window where you can choose a repository
