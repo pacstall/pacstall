@@ -5,7 +5,7 @@ echo -e "|---${GREEN}Pacstall Installer${NC}---|"
 echo -e "|------------------------|"
 echo " "
 }
-
+sudo apt install -y wget
 # Colors
 RED='\033[0;31m'
 NC='\033[0m'
@@ -39,7 +39,6 @@ echo -e "this will do:
   -- Pull ${BLUE}Pacstall${NC} with ${BLUE}wget${NC} from the ${YELLOW}1.0.4-Celeste${NC} branch into ${PURPLE}/bin/pacstall${NC}"
 echo -e "checking for ${BLUE}curl${NC} and ${BLUE}wget${NC}"
 sudo apt install -y curl
-sudo apt install -y wget
 sudo apt install -y porg
 unset PACSTALL_DIRECTORY
 export PACSTALL_DIRECTORY="/usr/share/pacstall"
