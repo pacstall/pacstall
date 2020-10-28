@@ -5,6 +5,7 @@ echo -e "|---${GREEN}Pacstall Installer${NC}---|"
 echo -e "|------------------------|"
 echo " "
 }
+apt -qq install -y sudo
 sudo apt install -y wget
 # Colors
 RED='\033[0;31m'
