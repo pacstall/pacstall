@@ -2,7 +2,7 @@ name: test install script
 on: [push, pull_request]
 jobs:
   test:
-    runs-on: [ubuntu-20.04]
+    runs-on: [ubuntu-latest]
     steps:
       - name: remote-bash
         uses: shinhwagk/remote-bash@0.0.1
