@@ -37,7 +37,7 @@ echo -e "this will do:
 * Check for ${BLUE}curl${NC}, and ${BLUE}wget${NC}
 * Install ${BLUE}Pacstall${NC}
   -- Create necessary directories
-  -- Pull ${BLUE}Pacstall${NC} with ${BLUE}wget${NC} from the ${YELLOW}1.0.4-Celeste${NC} branch into ${PURPLE}/bin/pacstall${NC}"
+  -- Pull ${BLUE}Pacstall${NC} with ${BLUE}wget${NC} from the ${YELLOW}Master${NC} branch into ${PURPLE}/bin/pacstall${NC}"
 echo -e "checking for ${BLUE}curl${NC} and ${BLUE}wget${NC}"
 sudo apt install -y curl
 sudo apt install -y porg
@@ -52,14 +52,14 @@ sudo mkdir -p /var/log/pacstall_orphaned
 sudo rm $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
 sudo touch $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
 sudo echo "Henryws/pacstall-programs" > $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
-sudo curl -s https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/config.toml > /usr/share/pacstall/config.toml
+sudo curl -s https://raw.githubusercontent.com/Henryws/pacstall/master/misc/config.toml > /usr/share/pacstall/config.toml
 sudo rm /var/log/pacstall_installed
 sudo mkdir /var/log/pacstall_installed
 sudo rm -rf /var/cache/pacstall
 sudo touch /var/cache/pacstall/
 echo "Pulling scripts from GitHub "
 for i in {change-repo.sh,search.sh,download.sh,install-local.sh}; do 
-sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/misc/scripts/$i -P /usr/share/pacstall/scripts
+sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/$i -P /usr/share/pacstall/scripts
 done &
 PID=$!
 i=1
@@ -70,6 +70,6 @@ do
   sleep 0.1
   printf "\b${sp:i++%${#sp}:1}"
 done
-echo -e "pulling ${BLUE}pacstall${NC} from ${RED}https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/pacstall${NC}"
-sudo wget -O /bin/pacstall https://raw.githubusercontent.com/Henryws/pacstall/1.0.4-Celeste/pacstall
+echo -e "pulling ${BLUE}pacstall${NC} from ${RED}https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall${NC}"
+sudo wget -O /bin/pacstall https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall
 sudo chmod +x /bin/pacstall
