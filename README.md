@@ -7,7 +7,7 @@
 </p>
 
 <p align="center"><b>PACSTALL</b></p>
-<p align="center">Will attempt to be the AUR Ubuntu never had</p>
+<p align="center"><b>Will attempt to be the AUR Ubuntu never had</b></p>
 
 <p align="center">
 <a href="https://github.com/Henryws/pacstall"><img src="https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/ezgif.com-video-to-gif.gif"></a>
