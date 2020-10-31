@@ -47,8 +47,6 @@ printf "${CYAN}??${NC} Do you want to view the pacscript first "
 read -r READ
 if [[ $READ = y ]] ; then
   less $PACKAGE.pacscript
-else
-  exit 1
 fi
 source $PACKAGE.pacscript
 echo -e "running checks"
