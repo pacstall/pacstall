@@ -11,6 +11,6 @@ if [ $? -eq 0 ]; then
 	exit 0
 	fi
 else
-	echo "$SEARCH is not available. Add another repo or check your spelling"
+	fancy_message error "$SEARCH is not available. Add another repo or check your spelling"
 	exit 1
 fi
