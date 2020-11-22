@@ -34,8 +34,6 @@ if [[ $INSTALLING -eq 1 ]] ; then
     source /usr/share/pacstall/scripts/install-local.sh
 fi
 }
-source <(cat /tmp/pacvariables)
-
 if curl --output /dev/null --silent --head --fail "$URL" ; then
   download
 else
