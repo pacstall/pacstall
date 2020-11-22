@@ -1,9 +1,9 @@
 #!/bin/bash
 function trap_ctrlc ()
       {
-          echo "! cleaning up"
+          fancy_message warn "Cleaning up"
           rm -rf /tmp/pacstall/*
-	  echo "installation interrupted, removed files"
+	  fancy_message info "installation interrupted, removed files"
           exit 2
       }
 trap "trap_ctrlc" 2
@@ -34,13 +34,13 @@ progressfilt ()
 # run checks to verify script works
 checks() {
 if curl --output /dev/null --silent --head --fail "$url" ; then
-  echo -e "url exists"
+  fancy_message info "URL exists"
 fi
 if apt-cache search $build_depends >/dev/null 2>&1 ; then
-  echo -e "build depends exists in repos"
+  fancy_message info "Build depends exists in repos"
 fi
 if apt-cache search $depends >/dev/null 2>&1 ; then
-  echo -e "dependencies exist in repos"
+  fancy_message info "Dependencies exist in repos"
 fi
 }
 printf "${CYAN}??${NC} Do you want to view the pacscript first "
@@ -49,7 +49,7 @@ if [[ $READ = y ]] ; then
   less $PACKAGE.pacscript
 fi
 source $PACKAGE.pacscript
-echo -e "running checks"
+fancy_message info "Running checks"
 checks
 if [[ $? -eq 1 ]] ; then
   echo -e "! There was an error checking the script!"
@@ -57,7 +57,7 @@ if [[ $? -eq 1 ]] ; then
 fi
 
 if echo $build_depends; then
-    echo -e "${BLUE}$pkgname${NC} requires ${CYAN}$(echo -e $build_depends)${NC} to install"
+    fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}$(echo -e $build_depends)${NC} to install"
     printf "do you want to remove them after installing ${BLUE}$pkgname${NC} [y/n] "
     read -r REMOVE_DEPENDS
     NOBUILDDEP=0
@@ -76,7 +76,7 @@ if [[ $NOBUILDDEP -eq 0 ]] ; then
     sudo apt install -y $build_depends
 fi
 sudo apt install -y $depends
-echo -e ":: Retrieving packages..."
+fancy_message info "Retrieving packages"
 mkdir -p /tmp/pacstall
 cd /tmp/pacstall
 if [[ $url = *.git ]] ; then
@@ -100,10 +100,10 @@ if [[ $? -eq 0 ]] ; then
 fi
 
 trap - SIGINT
-echo ":: Installing"
+fancy_message info "Installing"
 install 1> /dev/null
 if [[ $REMOVE_DEPENDS = y ]] ; then
   sudo apt remove $build_depends
 fi
-echo -e ":: Done installing $name"
+fancy_message info "Done installing $name"
 sudo touch /var/log/pacstall_installed/$PACKAGE
