@@ -5,6 +5,29 @@ echo -e "|---${GREEN}Pacstall Installer${NC}---|"
 echo -e "|------------------------|"
 echo " "
 }
+
+progressfilt() {
+    local flag=false c count cr=$'\r' nl=$'\n'
+    while IFS='' read -d '' -rn 1 c
+    do
+        if $flag
+        then
+            printf '%s' "$c"
+        else
+            if [[ $c != $cr && $c != $nl ]]
+            then
+                count=0
+            else
+                ((count++))
+                if ((count > 1))
+                then
+                    flag=true
+                fi
+            fi
+        fi
+    done
+}
+
 apt install -y sudo wget
 # Colors
 RED='\033[0;31m'
@@ -54,9 +77,9 @@ sudo echo "Henryws/pacstall-programs" > $PACSTALL_DIRECTORY/repo/pacstallrepo.tx
 sudo rm -rf /var/log/pacstall_installed
 sudo mkdir /var/log/pacstall_installed
 sudo rm -rf /var/cache/pacstall
-echo "Pulling scripts from GitHub "
+printf "Pulling scripts from GitHub "
 for i in {change-repo.sh,search.sh,download.sh,install-local.sh}; do 
-sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/$i -P /usr/share/pacstall/scripts 1>/dev/null
+sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/$i -P /usr/share/pacstall/scripts 1>/dev/null | progressfilt
 done &
 PID=$!
 i=1
@@ -69,5 +92,5 @@ do
 done
 echo ""
 echo -e "pulling ${BLUE}pacstall${NC} from ${RED}https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall${NC}"
-sudo wget -O /bin/pacstall https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall
+sudo wget --progress=bar:force -O /bin/pacstall https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall 2>&1 | progressfilt
 sudo chmod +x /bin/pacstall
