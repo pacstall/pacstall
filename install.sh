@@ -63,9 +63,9 @@ echo -e "this will do:
 echo ""
 echo -e "checking for ${BLUE}curl${NC} and ${BLUE}wget${NC}"
 echo "Installing curl" &
-sudo apt install -y curl 2>&1
+sudo apt install -y curl 1>&1
 echo "Installing porg" &
-sudo apt install -y porg 2>&1
+sudo apt install -y porg 1>&1
 unset PACSTALL_DIRECTORY
 export PACSTALL_DIRECTORY="/usr/share/pacstall"
 
