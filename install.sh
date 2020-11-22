@@ -60,9 +60,12 @@ echo -e "this will do:
 * Install ${BLUE}Pacstall${NC}
   -- Create necessary directories
   -- Pull ${BLUE}Pacstall${NC} with ${BLUE}wget${NC} from the ${YELLOW}Master${NC} branch into ${PURPLE}/bin/pacstall${NC}"
+echo ""
 echo -e "checking for ${BLUE}curl${NC} and ${BLUE}wget${NC}"
-sudo apt install -y curl > /dev/null
-sudo apt install -y porg > /dev/null
+echo "Installing curl" &
+sudo apt install -y curl 2>&1
+echo "Installing porg" &
+sudo apt install -y porg 2>&1
 unset PACSTALL_DIRECTORY
 export PACSTALL_DIRECTORY="/usr/share/pacstall"
 
