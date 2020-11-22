@@ -59,7 +59,7 @@ sudo rm -rf /var/cache/pacstall
 sudo touch /var/cache/pacstall/
 echo "Pulling scripts from GitHub "
 for i in {change-repo.sh,search.sh,download.sh,install-local.sh}; do 
-sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/$i -P /usr/share/pacstall/scripts
+sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/$i -P /usr/share/pacstall/scripts 1>/dev/null
 done &
 PID=$!
 i=1
@@ -70,6 +70,7 @@ do
   sleep 0.1
   printf "\b${sp:i++%${#sp}:1}"
 done
+echo ""
 echo -e "pulling ${BLUE}pacstall${NC} from ${RED}https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall${NC}"
 sudo wget -O /bin/pacstall https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall
 sudo chmod +x /bin/pacstall
