@@ -10,7 +10,7 @@
 <p align="center"><b>Will attempt to be the AUR Ubuntu never had</b></p>
 
 <p align="center">
-<a href="https://github.com/Henryws/pacstall"><img src="https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/ezgif.com-video-to-gif.gif"></a>
+<a href="https://github.com/Henryws/pacstall"><img src="https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/example.gif"></a>
 </p>
 
 ### Installing
@@ -21,7 +21,7 @@ You can grab the deb files [here](https://github.com/Henryws/pacstall/releases/l
 sudo bash -c "$(curl -fsSL https://git.io/JfHDM)"
 ```
 
-### Warning
+### Info
 This is not the repository for pacscripts (PKGBUILD). They are [here](https://github.com/Henryws/pacstall-programs). Even though there are packages here, they are for testing pacstall, so I don't have to jump back and forth between repo's
 
 
