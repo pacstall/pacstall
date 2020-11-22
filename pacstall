@@ -1,4 +1,30 @@
 #!/bin/bash
+function fancy_message() {
+    # $1 = type , $2 = message
+    # Message types
+    # 0 - info
+    # 1 - warning
+    # 2 - error
+    if [ -z "${1}" ] || [ -z "${2}" ]; then
+      return
+    fi
+
+    local RED="\e[31m"
+    local GREEN="\e[32m"
+    local YELLOW="\e[33m"
+    local RESET="\e[0m"
+    local MESSAGE_TYPE=""
+    local MESSAGE=""
+    MESSAGE_TYPE="${1}"
+    MESSAGE="${2}"
+    
+    case ${MESSAGE_TYPE} in
+      info) echo -e "[${GREEN}+${RESET}] INFO: ${MESSAGE}";; # Previously "0"
+      warn) echo -e "[${YELLOW}*${RESET}] WARNING: ${MESSAGE}";; # Previously "1"
+      error) echo -e "[${RED}!${RESET}] ERROR: ${MESSAGE}";; # Previously "2"
+      *) echo -e "[?] UNKNOWN: ${MESSAGE}";;
+    esac
+}
 while test $# -gt 0; do
   case "$1" in
     -h|--help)
@@ -20,12 +46,12 @@ while test $# -gt 0; do
       {
           echo "cleaning up"
           rm -rf /tmp/pacstall/*
-	  echo "the installation of $2 was interrupted, removed files"
+	  fancy_message warn "the installation of $2 was interrupted, removed files"
           exit 2
       }
       trap "trap_ctrlc" 2
       if [ "$EUID" -ne 0 ]
-      then echo "Please run as root"
+      then fancy_message error "Please run as root"
       exit 1
       fi
       PACPREFIX="apt install -y "
@@ -92,7 +118,7 @@ while test $# -gt 0; do
       sudo wget -q https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/search.sh -O /usr/share/pacstall/scripts/search.sh
       sudo wget -q https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/change-repo.sh -O /usr/share/pacstall/scripts/change-repo.sh
       sudo wget -q https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/install-local.sh -O /usr/share/pacstall/scripts/install-local.sh
-      echo "Updating complete"
+      fancy_message info "Updating complete"
       echo "You are at version $(pacstall -V)"
       exit 0
       ;;
@@ -115,7 +141,7 @@ while test $# -gt 0; do
       PACKAGE=$1
       INSTALLING=0
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-      . /usr/share/pacstall/scripts/download.sh
+      source /usr/share/pacstall/scripts/download.sh
       ;;
     -Ra|--remove-all)
       PACKAGE=$*
