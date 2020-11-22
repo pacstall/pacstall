@@ -61,8 +61,8 @@ echo -e "this will do:
   -- Create necessary directories
   -- Pull ${BLUE}Pacstall${NC} with ${BLUE}wget${NC} from the ${YELLOW}Master${NC} branch into ${PURPLE}/bin/pacstall${NC}"
 echo -e "checking for ${BLUE}curl${NC} and ${BLUE}wget${NC}"
-sudo apt install -y curl
-sudo apt install -y porg
+sudo apt install -y curl > /dev/null
+sudo apt install -y porg > /dev/null
 unset PACSTALL_DIRECTORY
 export PACSTALL_DIRECTORY="/usr/share/pacstall"
 
@@ -79,7 +79,7 @@ sudo mkdir /var/log/pacstall_installed
 sudo rm -rf /var/cache/pacstall
 printf "Pulling scripts from GitHub "
 for i in {change-repo.sh,search.sh,download.sh,install-local.sh}; do 
-sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/$i -P /usr/share/pacstall/scripts 1>/dev/null | progressfilt
+sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/$i -P /usr/share/pacstall/scripts 2>/dev/null | progressfilt
 done &
 PID=$!
 i=1
