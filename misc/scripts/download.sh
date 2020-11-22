@@ -38,9 +38,9 @@ if curl --output /dev/null --silent --head --fail "$URL" ; then
   download
 else
   echo $URL
-  echo "! the file you want to download does not exist"
+  fancy_message warn "The file you want to download does not exist"
   if [ -f "/var/log/pacstall_installed/$PACKAGE" ]; then
-    echo ":: It seems you have a copy of $PACKAGE on your system but no longer exists in the repos"
+    fancy_message warn "It seems you have a copy of $PACKAGE on your system but no longer exists in the repos"
     sudo touch /var/log/pacstall_orphaned/$PACKAGE
     printf "do you want to uninstall $PACKAGE "
     if [[ $? = y ]] ; then
