@@ -5,8 +5,7 @@ echo -e "|---${GREEN}Pacstall Installer${NC}---|"
 echo -e "|------------------------|"
 echo " "
 }
-apt -qq install -y sudo
-sudo apt install -y wget
+apt install -y sudo wget
 # Colors
 RED='\033[0;31m'
 NC='\033[0m'
@@ -52,11 +51,9 @@ sudo mkdir -p /var/log/pacstall_orphaned
 sudo rm $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
 sudo touch $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
 sudo echo "Henryws/pacstall-programs" > $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
-sudo curl -s https://raw.githubusercontent.com/Henryws/pacstall/master/misc/config.toml > /usr/share/pacstall/config.toml
-sudo rm /var/log/pacstall_installed
+sudo rm -rf /var/log/pacstall_installed
 sudo mkdir /var/log/pacstall_installed
 sudo rm -rf /var/cache/pacstall
-sudo touch /var/cache/pacstall/
 echo "Pulling scripts from GitHub "
 for i in {change-repo.sh,search.sh,download.sh,install-local.sh}; do 
 sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/$i -P /usr/share/pacstall/scripts 1>/dev/null
