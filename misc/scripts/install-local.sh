@@ -36,10 +36,10 @@ checks() {
 if curl --output /dev/null --silent --head --fail "$url" ; then
   fancy_message info "URL exists"
 fi
-if apt-cache search $build_depends >/dev/null 2>&1 ; then
+if apt-cache search $build_depends &> /dev/null ; then
   fancy_message info "Build depends exists in repos"
 fi
-if apt-cache search $depends >/dev/null 2>&1 ; then
+if apt-cache search $depends &> /dev/null ; then
   fancy_message info "Dependencies exist in repos"
 fi
 }
@@ -106,4 +106,6 @@ if [[ $REMOVE_DEPENDS = y ]] ; then
   sudo apt remove $build_depends
 fi
 fancy_message info "Done installing $name"
+fancy_message info "Cleaning up"
+sudo rm -rf /tmp/pacstall/*
 sudo touch /var/log/pacstall_installed/$PACKAGE
