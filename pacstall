@@ -45,9 +45,8 @@ while test $# -gt 0; do
       export LC_ALL=C
       function trap_ctrlc ()
       {
-          echo "cleaning up"
-          rm -rf /tmp/pacstall/*
-	  fancy_message warn "the installation of $2 was interrupted, removed files"
+	  fancy_message warn "the installation of $2 was interrupted, removing files"
+	  rm -rf /tmp/pacstall/*
           exit 2
       }
       trap "trap_ctrlc" 2
@@ -112,11 +111,12 @@ while test $# -gt 0; do
       sudo wget -q https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/change-repo.sh -O /usr/share/pacstall/scripts/change-repo.sh
       sudo wget -q https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/install-local.sh -O /usr/share/pacstall/scripts/install-local.sh
       fancy_message info "Updating complete"
-      echo "You are at version $(pacstall -V)"
+      fancy_message info "You are at version $(pacstall -V)"
       exit 0
       ;;
     -Ud|--update-dev)
       UPDATEBRANCH=1.0.4-Celeste
+      fancy_message warn "You may experience severe bugs"
       sudo pacstall -U
       sudo sed -i 's/master/'"$UPDATEBRANCH"'/g' /bin/pacstall
       exit
