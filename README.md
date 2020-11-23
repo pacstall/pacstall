@@ -27,6 +27,7 @@ sudo bash -c "$(curl -fsSL https://git.io/JfHDM)"
 ### Info
 This is not the repository for pacscripts (PKGBUILD). They are [here](https://github.com/Henryws/pacstall-programs). Even though there are packages here, they are for testing pacstall, so I don't have to jump back and forth between repo's
 
+---
 
 ## Basic Commands
 
