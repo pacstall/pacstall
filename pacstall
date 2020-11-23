@@ -90,7 +90,7 @@ while test $# -gt 0; do
       source /usr/share/pacstall/scripts/search.sh
       ;;
     -R|--remove)
-      PACKAGE=$*
+      PACKAGE=$2
       for i in $PACKAGE ; do
       if [ -f /var/log/pacstall_installed/$i ] ; then
           LOCATION=installed
