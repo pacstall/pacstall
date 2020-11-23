@@ -1,4 +1,5 @@
 #!/bin/bash
+[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && sudo apt update
 function fancy_message() {
     # $1 = type , $2 = message
     # Message types
