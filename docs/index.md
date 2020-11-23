@@ -4,7 +4,7 @@
 This is an AUR like system, but for Ubuntu. It uses PKGBUILD like files so it makes it easier to adapt a PKGBUILD to work with Pacstall. 
 
 <p align="center">
-<a href="https://github.com/Henryws/pacstall"><img src="https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/ezgif.com-video-to-gif.gif"></a>
+<a href="https://github.com/Henryws/pacstall"><img src="https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/example.gif"></a>
 </p>
 
 
