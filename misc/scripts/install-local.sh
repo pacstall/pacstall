@@ -52,7 +52,7 @@ source $PACKAGE.pacscript
 fancy_message info "Running checks"
 checks
 if [[ $? -eq 1 ]] ; then
-  echo -e "! There was an error checking the script!"
+  fancy_message error "There was an error checking the script!"
   exit 1
 fi
 
@@ -85,10 +85,10 @@ if [[ $url = *.git ]] ; then
 else
   wget --progress=bar:force $url 2>&1 | progressfilt
   if [[ $url = *.zip ]] ; then
-    unzip -q $(echo ${url##*/})
+    unzip -q $(echo ${url##*/}) 1>&1
     cd $(/bin/ls -d */|head -n 1)
   else
-    tar -xf $(echo ${url##*/})
+    tar -xf $(echo ${url##*/}) 1>&1
     cd $(/bin/ls -d */|head -n 1)
   fi
 fi
