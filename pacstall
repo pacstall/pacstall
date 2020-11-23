@@ -91,17 +91,8 @@ while test $# -gt 0; do
       ;;
     -R|--remove)
       PACKAGE=$2
-      for i in $PACKAGE ; do
-      if [ -f /var/log/pacstall_installed/$i ] ; then
-          LOCATION=installed
-        else
-          if [ -f /var/log/pacstall_orphaned/$i ] ; then
-            LOCATION=orphaned
-          fi
-      fi
-      sudo rm $(cat /var/lib/porg/$i | sed -n 's/|\(.*\)//;/^#\(.*\)/d;p')
-      sudo rm -rf /var/log/pacstall_$LOCATION/$i.pacscript
-      done
+      sudo rm $(cat /var/lib/porg/$PACKAGE | sed -n 's/|\(.*\)//;/^#\(.*\)/d;p')
+      sudo rm -rf /var/log/pacstall_installed/$PACKAGE.pacscript
       ;;
     -C|--change-repo)
       . /usr/share/pacstall/scripts/change-repo.sh
