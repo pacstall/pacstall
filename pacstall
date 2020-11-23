@@ -94,6 +94,7 @@ while test $# -gt 0; do
       PACKAGE=$2
       sudo rm $(cat /var/lib/porg/$PACKAGE | sed -n 's/|\(.*\)//;/^#\(.*\)/d;p')
       sudo rm -rf /var/log/pacstall_installed/$PACKAGE.pacscript
+      exit
       ;;
     -C|--change-repo)
       . /usr/share/pacstall/scripts/change-repo.sh
