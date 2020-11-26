@@ -132,10 +132,11 @@ while test $# -gt 0; do
       /bin/ls /var/log/pacstall_orphaned
       ;;
     -D|--download)
-      PACKAGE=$1
+      PACKAGE=$2
       INSTALLING=0
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       source /usr/share/pacstall/scripts/download.sh
+      exit
       ;;
     -Ra|--remove-all)
       PACKAGE=$*
