@@ -39,4 +39,4 @@ The `$version`
 
 self explanitory
 
-And the most important thing is to prepare build and install with all cores if possible. For instance, `make` has an option to build with all cores. To use that, replace `make` with `make -j$(nproc)`. That will take the output of `nproc` which tells you how many cores your system has and build with that many cores.
+And the most important thing is to prepare, build, and install with all cores if possible for the fastest install time. For instance, `make` has an option to build with all cores. To use that, replace `make` with `make -j$(nproc)`. That will take the output of `nproc` which tells you how many cores your system has and build with that many cores.
