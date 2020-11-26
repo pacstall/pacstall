@@ -5,7 +5,7 @@ wget -q --spider https://github.com/"$REPO"/tree/master/packages/$SEARCH/
 if [ $? -eq 0 ]; then
 	read -p "${GREEN}$SEARCH${NC} is available in the ${PURPLE}$REPO${NC} repository. Do you want to view the pacscript? " answer
 	if [[ $answer = y ]] ; then
-		curl https://raw.githubusercontent.com/$REPO/master/packages/$SEARCH/$SEARCH.pacscript | less -R
+		curl -s https://raw.githubusercontent.com/$REPO/master/packages/$SEARCH/$SEARCH.pacscript | less -R
 		exit 0
 	else
 	exit 0
