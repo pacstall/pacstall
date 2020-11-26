@@ -124,9 +124,8 @@ while test $# -gt 0; do
       exit
       ;;
     -L|--list)
-      wc -l /var/log/pacstall_installed
       /bin/ls /var/log/pacstall_installed
-      exit 0
+      exit
       ;;
     -Lo|--list-orphaned)
       wc -l /var/log/pacstall_orphaned
