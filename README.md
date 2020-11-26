@@ -18,7 +18,7 @@
 
 ### Installing
 
-You can grab the deb files [here](https://github.com/Henryws/pacstall/releases/latest). If that's not your thing you can run this command:
+You can grab the deb file [here](https://github.com/Henryws/pacstall/releases/latest). If that's not your thing you can run this command:
 
 ```bash
 sudo bash -c "$(curl -fsSL https://git.io/JfHDM)"
