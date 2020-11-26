@@ -83,7 +83,7 @@ while test $# -gt 0; do
           export REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
           export URL="https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/$PACKAGE.pacscript"
           source /usr/share/pacstall/scripts/download.sh
-          exit $(echo $?)
+          exit
       fi   
       ;;
     -S|--search)
