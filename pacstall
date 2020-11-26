@@ -93,6 +93,8 @@ while test $# -gt 0; do
       PACKAGE=$2
       sudo rm $(cat /var/lib/porg/$PACKAGE | sed -n 's/|\(.*\)//;/^#\(.*\)/d;p')
       sudo rm -rf /var/log/pacstall_installed/$PACKAGE.pacscript
+      sudo rm /var/lib/porg/$PACKAGE
+      fancy_message info "Done removing $PACKAGE"
       exit
       ;;
     -C|--change-repo)
