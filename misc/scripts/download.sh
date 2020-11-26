@@ -34,6 +34,7 @@ if [[ $INSTALLING -eq 1 ]] ; then
     source /usr/share/pacstall/scripts/install-local.sh
 fi
 }
+URL=https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/$PACKAGE.pacscript
 if curl --output /dev/null --silent --head --fail "$URL" ; then
   download
 else
