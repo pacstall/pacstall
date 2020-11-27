@@ -51,7 +51,7 @@ while test $# -gt 0; do
       }
       trap "trap_ctrlc" 2
       if [ "$EUID" -ne 0 ]; then 
-      fancy_message error "Please run as root"
+      fancy_message error "Run as root"
       exit 1
       fi
       PACPREFIX="apt install -y "
