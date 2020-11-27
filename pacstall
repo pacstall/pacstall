@@ -154,6 +154,18 @@ while test $# -gt 0; do
         rm -rf /var/log/pacstall_$LOCATION/$i.pacscript
       done
       ;;
+    -Qd|--query-depends)
+      PACKAGE=$2
+      REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt) 
+      source <(curl -s https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/$PACKAGE.pacscript) >/dev/null 2>&1
+      if [[ $? -eq 1 ]]; then
+        fancy_message error "$PACKAGE doesn't seem to exist"
+        exit 1
+      fi
+      echo "build_depends=\"$build_depends\""
+      echo "depends=\"$depends\""
+      exit
+      ;;
      *)
       pacstall -h
       break
