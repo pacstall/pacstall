@@ -1,4 +1,11 @@
 #!/bin/bash
+RED='\033[0;31m'
+CYAN='\033[0;36m'
+NC='\033[0m'
+GREEN='\033[0;32m'
+PURPLE='\033[0;35m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
 [ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && sudo apt update
 function fancy_message() {
     # $1 = type , $2 = message
