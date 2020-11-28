@@ -100,6 +100,7 @@ while test $# -gt 0; do
           INPUT=${INPUT%.pacscript}
           PACKAGE=$(echo $INPUT | sed 's|.*/||')
         else
+          # If input doesn't end in .pacscript and is relative
           if [[ $INPUT != *".pacscript" ]]; then
             PACKAGE=$INPUT
           fi
