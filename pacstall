@@ -8,11 +8,6 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 [ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && sudo apt update
 function fancy_message() {
-    # $1 = type , $2 = message
-    # Message types
-    # 0 - info
-    # 1 - warning
-    # 2 - error
     if [ -z "${1}" ] || [ -z "${2}" ]; then
       return
     fi
