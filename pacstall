@@ -107,11 +107,9 @@ while test $# -gt 0; do
       exit 0
       ;;
     -U|--update)
-      sudo wget -q https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall -O /bin/pacstall &
-      sudo wget -q https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/download.sh -O /usr/share/pacstall/scripts/download.sh &
-      sudo wget -q https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/search.sh -O /usr/share/pacstall/scripts/search.sh &
-      sudo wget -q https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/change-repo.sh -O /usr/share/pacstall/scripts/change-repo.sh &
-      sudo wget -q https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/install-local.sh -O /usr/share/pacstall/scripts/install-local.sh
+      for i in {change-repo.sh,search.sh,download.sh,install-local.sh}; do
+        sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/$i -P /usr/share/pacstall/scripts 2>/dev/null
+      done
       fancy_message info "Updating complete"
       fancy_message info "You are at version $(pacstall -V)"
       exit 0
