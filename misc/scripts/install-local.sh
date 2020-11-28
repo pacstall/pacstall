@@ -48,6 +48,7 @@ read -r READ
 if [[ $READ = y ]] ; then
   less $PACKAGE.pacscript
 fi
+fancy_message info "Sourcing pacscript"
 source $PACKAGE.pacscript
 fancy_message info "Running checks"
 checks
