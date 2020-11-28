@@ -94,7 +94,7 @@ while test $# -gt 0; do
         PACKAGE=${INPUT%.pacscript}
       else
         # If input is a full path
-        if [[ echo ${INPUT:0:1} = / ]]; then
+        if [[ $(echo ${INPUT:0:1}) == *\/* ]]; then
           DIR=$(echo $INPUT | sed 's|\(.*\)/.*|\1|')
           cd $DIR
           INPUT=${INPUT%.pacscript}
