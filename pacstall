@@ -20,9 +20,9 @@ function fancy_message() {
     MESSAGE_TYPE="${1}"
     MESSAGE="${2}"
     case ${MESSAGE_TYPE} in
-      info) echo -e "[${GREEN}+${RESET}] INFO: ${MESSAGE}";; # Previously "0"
-      warn) echo -e "[${YELLOW}*${RESET}] WARNING: ${MESSAGE}";; # Previously "1"
-      error) echo -e "[${RED}!${RESET}] ERROR: ${MESSAGE}";; # Previously "2"
+      info) echo -e "[${GREEN}+${RESET}] INFO: ${MESSAGE}";;
+      warn) echo -e "[${YELLOW}*${RESET}] WARNING: ${MESSAGE}";;
+      error) echo -e "[${RED}!${RESET}] ERROR: ${MESSAGE}";;
       *) echo -e "[?] UNKNOWN: ${MESSAGE}";;
     esac
 }
@@ -108,7 +108,7 @@ while test $# -gt 0; do
       ;;
     -U|--update)
       for i in {change-repo.sh,search.sh,download.sh,install-local.sh}; do
-        sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/$i -P /usr/share/pacstall/scripts 2>/dev/null
+        sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/$i -P /usr/share/pacstall/scripts 2>/dev/null 
       done
       fancy_message info "Updating complete"
       fancy_message info "You are at version $(pacstall -V)"
