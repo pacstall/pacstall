@@ -43,7 +43,7 @@ if apt-cache search $depends &> /dev/null ; then
   fancy_message info "Dependencies exist in repos"
 fi
 }
-printf "${CYAN}??${NC} Do you want to view the pacscript first "
+printf "Do you want to view the pacscript first "
 read -r READ
 if [[ $READ = y ]] ; then
   less $PACKAGE.pacscript
