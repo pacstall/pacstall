@@ -6,7 +6,7 @@ GREEN='\033[0;32m'
 PURPLE='\033[0;35m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7 >/dev/null 2>&1)" ] && sudo apt update 2> /dev/null
+[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && sudo apt update 2> /dev/null
 function fancy_message() {
     if [ -z "${1}" ] || [ -z "${2}" ]; then
       return
