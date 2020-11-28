@@ -86,6 +86,12 @@ while test $# -gt 0; do
           exit
       fi   
       ;;
+    -Il|--install-local)
+      REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt) 
+      PACKAGE=$2
+      source /usr/share/pacstall/scripts/install-local.sh
+      exit
+      ;;
     -S|--search)
       source /usr/share/pacstall/scripts/search.sh
       ;;
