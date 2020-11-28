@@ -116,6 +116,7 @@ while test $# -gt 0; do
       for i in {change-repo.sh,search.sh,download.sh,install-local.sh}; do
         sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/$i -P /usr/share/pacstall/scripts 2>/dev/null 
       done
+      sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall -P /bin 2>/dev/null
       fancy_message info "Updating complete"
       fancy_message info "You are at version $(pacstall -V)"
       exit 0
