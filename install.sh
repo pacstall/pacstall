@@ -97,3 +97,5 @@ echo ""
 echo -e "pulling ${BLUE}pacstall${NC} from ${RED}https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall${NC}"
 sudo wget --progress=bar:force -O /bin/pacstall https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall 2>&1 | progressfilt
 sudo chmod +x /bin/pacstall
+echo -e "Installing ${BLUE}Manpage${NC}"
+wget --progress=bar:force -O /usr/share/man/man8/pacstall.8.gz https://raw.githubusercontent.com/Henryws/pacstall/master/misc/pacstall.8.gz 2>&1 | progressfilt
