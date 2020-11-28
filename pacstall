@@ -99,6 +99,10 @@ while test $# -gt 0; do
           cd $DIR
           INPUT=${INPUT%.pacscript}
           PACKAGE=$(echo $INPUT | sed 's|.*/||')
+        else
+          if [[ $INPUT != *".pacscript" ]]; then
+            PACKAGE=$INPUT
+          fi
         fi
       fi
       source /usr/share/pacstall/scripts/install-local.sh
