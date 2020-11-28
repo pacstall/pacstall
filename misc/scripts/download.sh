@@ -33,6 +33,7 @@ wget --progress=bar:force $URL -O $PACKAGE.pacscript 2>&1 | progressfilt
 if [[ $INSTALLING -eq 1 ]] ; then
     source /usr/share/pacstall/scripts/install-local.sh
 fi
+fancy_message info "Your script is in $HOME/.cache/pacstall/$PACKAGE"
 }
 URL=https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/$PACKAGE.pacscript
 if curl --output /dev/null --silent --head --fail "$URL" ; then
