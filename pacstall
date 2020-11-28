@@ -11,7 +11,6 @@ function fancy_message() {
     if [ -z "${1}" ] || [ -z "${2}" ]; then
       return
     fi
-
     local RED="\e[31m"
     local GREEN="\e[32m"
     local YELLOW="\e[33m"
@@ -20,7 +19,6 @@ function fancy_message() {
     local MESSAGE=""
     MESSAGE_TYPE="${1}"
     MESSAGE="${2}"
-    
     case ${MESSAGE_TYPE} in
       info) echo -e "[${GREEN}+${RESET}] INFO: ${MESSAGE}";; # Previously "0"
       warn) echo -e "[${YELLOW}*${RESET}] WARNING: ${MESSAGE}";; # Previously "1"
