@@ -146,7 +146,7 @@ while test $# -gt 0; do
       exit
       ;;
     -L|--list)
-      tr ' ' '\n' <(/bin/ls /var/log/pacstall_installed)
+      /bin/ls /var/log/pacstall_installed | tr ' ' '\n'
       exit
       ;;
     -Lo|--list-orphaned)
