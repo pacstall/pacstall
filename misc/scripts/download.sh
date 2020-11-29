@@ -32,6 +32,7 @@ cd $PACKAGE
 wget --progress=bar:force $URL -O $PACKAGE.pacscript 2>&1 | progressfilt
 if [[ $INSTALLING -eq 1 ]] ; then
     source /usr/share/pacstall/scripts/install-local.sh
+    exit
 fi
 fancy_message info "Your script is in ${GREEN}$HOME/.cache/pacstall/$PACKAGE${NC}"
 }
