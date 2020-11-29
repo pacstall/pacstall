@@ -202,7 +202,7 @@ while test $# -gt 0; do
       ;;
      *)
       pacstall -h
-      break
+      exit 1
       ;;
   esac
 done
