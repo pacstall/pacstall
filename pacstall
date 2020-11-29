@@ -114,11 +114,16 @@ while test $# -gt 0; do
       ;;
     -R|--remove)
       PACKAGE=$2
+      if test -f "/var/lib/porg/$PACKAGE"; then
       sudo rm $(cat /var/lib/porg/$PACKAGE | sed -n 's/|\(.*\)//;/^#\(.*\)/d;p')
       sudo rm -rf /var/log/pacstall_installed/$PACKAGE.pacscript
       sudo rm /var/lib/porg/$PACKAGE
       fancy_message info "Done removing $PACKAGE"
       exit
+      else
+      fancy_message error "$PACKAGE does not exist"
+      exit 1
+      fi
       ;;
     -C|--change-repo)
       . /usr/share/pacstall/scripts/change-repo.sh
