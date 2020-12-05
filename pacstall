@@ -161,7 +161,7 @@ while test $# -gt 0; do
       exit
       ;;
     -L|--list)
-      /bin/ls /var/log/pacstall_installed | tr ' ' '\n'
+      /bin/ls --color=auto /var/log/pacstall_installed | tr ' ' '\n'
       exit
       ;;
     -Lo|--list-orphaned)
