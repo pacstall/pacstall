@@ -4,7 +4,7 @@
 # Welcome to Pacstall!
 ![Code](https://img.shields.io/github/languages/top/Henryws/pacstall?color=Red?style=flat-square) ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/Henryws/pacstall/master?style=flat-square)
 
-This is an AUR like system, but for Ubuntu. It uses PKGBUILD like files so it makes it easier to adapt a PKGBUILD to work with Pacstall. 
+This is an AUR like system, but for Ubuntu. 
 
 <p align="center">
 <a href="https://github.com/Henryws/pacstall"><img src="https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/example.gif"></a>
