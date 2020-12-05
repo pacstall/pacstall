@@ -38,7 +38,6 @@ URL=https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/$PACKAGE.pa
 if curl --output /dev/null --silent --head --fail "$URL" ; then
   download
 else
-  echo $URL
   fancy_message warn "The file you want to download does not exist"
   if [ -f "/var/log/pacstall_installed/$PACKAGE" ]; then
     fancy_message warn "It seems you have a copy of $PACKAGE on your system but no longer exists in the repos"
