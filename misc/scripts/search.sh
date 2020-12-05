@@ -1,6 +1,9 @@
 #!/bin/bash
 SEARCH=$2
-[ "$SEARCH" ] || fancy_message error "No package specified" && exit 1
+if [[ -z "$SEARCH" ]]; then
+	fancy_message error "You failed to specify a package"
+	exit 1
+fi
 REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
 wget -q --spider https://github.com/"$REPO"/tree/master/packages/$SEARCH/
 if [ $? -eq 0 ]; then
