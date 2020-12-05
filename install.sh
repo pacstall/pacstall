@@ -5,7 +5,6 @@ echo -e "|---${GREEN}Pacstall Installer${NC}---|"
 echo -e "|------------------------|"
 echo " "
 }
-
 progressfilt() {
     local flag=false c count cr=$'\r' nl=$'\n'
     while IFS='' read -d '' -rn 1 c
@@ -27,7 +26,6 @@ progressfilt() {
         fi
     done
 }
-
 apt install -y sudo wget
 # Colors
 RED='\033[0;31m'
@@ -36,10 +34,8 @@ GREEN='\033[0;32m'
 PURPLE='\033[0;35m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-
 banner
 printf "Checking for internet access: "
-
 wget -q --tries=10 --timeout=20 --spider https://github.com &
 PID=$!
 i=1
@@ -68,7 +64,6 @@ echo "Installing porg" &
 sudo apt install -y porg 1>&1
 unset PACSTALL_DIRECTORY
 export PACSTALL_DIRECTORY="/usr/share/pacstall"
-
 echo "making directories"
 sudo mkdir -p $PACSTALL_DIRECTORY
 sudo mkdir -p $PACSTALL_DIRECTORY/scripts
