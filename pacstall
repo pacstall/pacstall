@@ -63,6 +63,10 @@ while test $# -gt 0; do
       fi
       PACPREFIX="apt install -y "
       PACKAGE=$2
+      if [[ -z "$PACKAGE" ]]; then
+        fancy_message error "You failed to specify a package"
+        exit 1
+      fi
       if [[ ! -e /usr/share/pacstall/repo/ ]]; then
           mkdir -p /usr/share/pacstall/repo
           touch /usr/share/pacstall/repo/pacstallrepo.txt
@@ -127,7 +131,12 @@ while test $# -gt 0; do
       fi
       ;;
     -C|--change-repo)
+      if [[ -z "$2" ]]; then
       . /usr/share/pacstall/scripts/change-repo.sh
+      else
+      echo "$2" | sudo tee /usr/share/pacstall/repo/pacstallrepo.txt >/dev/null 2>&1
+      exit
+      fi
       ;;
     -V|--version)
       COLOR='\e[1;36m'
@@ -161,6 +170,10 @@ while test $# -gt 0; do
       ;;
     -D|--download)
       PACKAGE=$2
+      if [[ -z "$PACKAGE" ]]; then
+        fancy_message error "You failed to specify a package"
+        exit 1
+      fi
       INSTALLING=0
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       source /usr/share/pacstall/scripts/download.sh
