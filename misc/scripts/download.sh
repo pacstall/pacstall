@@ -1,6 +1,4 @@
 #!/bin/bash
-
-# Minimalistic progress bar wget
 progressfilt ()
 {
     local flag=false c count cr=$'\r' nl=$'\n'
