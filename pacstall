@@ -122,7 +122,7 @@ while test $# -gt 0; do
       sudo rm $(cat /var/lib/porg/$PACKAGE | sed -n 's/|\(.*\)//;/^#\(.*\)/d;p')
       sudo rm -rf /var/log/pacstall_installed/$PACKAGE.pacscript
       sudo rm /var/lib/porg/$PACKAGE
-      sudo rm /var/log/pacstall_installed/$PACKAGE
+      sudo rm /var/log/pacstall_installed/$PACKAGE-*
       fancy_message info "Done removing $PACKAGE"
       exit
       else
@@ -140,7 +140,7 @@ while test $# -gt 0; do
       ;;
     -V|--version)
       COLOR='\e[1;36m'
-      NC='\033[0m' # No Color
+      NC='\033[0m'
       echo -e "1.0.4 ${COLOR}Celeste${NC}"
       exit 0
       ;;
@@ -161,12 +161,8 @@ while test $# -gt 0; do
       exit
       ;;
     -L|--list)
-      /bin/ls --color=auto /var/log/pacstall_installed | tr ' ' '\n'
+      /bin/ls -1 --color=auto /var/log/pacstall_installed | tr '-' ' '
       exit
-      ;;
-    -Lo|--list-orphaned)
-      wc -l /var/log/pacstall_orphaned
-      /bin/ls /var/log/pacstall_orphaned
       ;;
     -D|--download)
       PACKAGE=$2

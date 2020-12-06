@@ -102,11 +102,11 @@ fi
 
 trap - SIGINT
 fancy_message info "Installing"
-install 1> /dev/null
+install
 if [[ $REMOVE_DEPENDS = y ]] ; then
   sudo apt remove $build_depends
 fi
 fancy_message info "Done installing $name"
 fancy_message info "Cleaning up"
 sudo rm -rf /tmp/pacstall/*
-sudo touch /var/log/pacstall_installed/$PACKAGE
+sudo touch /var/log/pacstall_installed/$PACKAGE-$version
