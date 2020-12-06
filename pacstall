@@ -145,8 +145,13 @@ while test $# -gt 0; do
         echo -e "1.0.4 ${COLOR}Celeste${NC}"
         exit 0
       else
-        echo $(pacstall -L | grep '$2' | cut -d' ' -f2-)
-        exit 1
+        if [[ $(pacstall -L | grep "$2" | cut -d' ' -f2-) ]]; then
+          pacstall -L | grep "$2" | cut -d' ' -f2-
+          exit
+        else
+          fancy_message error "$2 doesn't exist"
+          exit 1
+        fi
       fi
       ;;
     -U|--update)
