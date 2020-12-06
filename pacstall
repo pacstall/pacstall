@@ -145,7 +145,12 @@ while test $# -gt 0; do
         echo -e "1.0.4 ${COLOR}Celeste${NC}"
         exit 0
       else
-        echo $(pacstall -L | grep '$2' | cut -d' ' -f2-)
+        if [[ $(echo $(pacstall -L | grep '$2' | cut -d' ' -f2-)) ]]; then
+          exit
+        else
+          fancy_message error "Invalid input"
+          exit 1
+        fi
       fi
       ;;
     -U|--update)
