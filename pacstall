@@ -168,8 +168,9 @@ while test $# -gt 0; do
       printf "Do you want to continue? [y/N] "
       read -r input
       if [[ $input = y ]]; then
-        sudo pacstall -U
+        sudo pacstall -U > /dev/null
         sudo sed -i 's/master/'"$UPDATEBRANCH"'/g' /bin/pacstall
+        fancy_message info "Switched to dev branch"
         exit
       else
         exit
