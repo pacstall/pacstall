@@ -177,7 +177,7 @@ while test $# -gt 0; do
       fi
       ;;
     -L|--list)
-      /bin/ls -1 --color=auto /var/log/pacstall_installed | tr '-' ' '
+      /bin/ls -1 /var/log/pacstall_installed | tr '-' ' '
       exit
       ;;
     -D|--download)
