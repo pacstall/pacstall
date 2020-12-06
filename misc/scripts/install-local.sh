@@ -107,6 +107,6 @@ if [[ $REMOVE_DEPENDS = y ]] ; then
   sudo apt remove $build_depends
 fi
 fancy_message info "Done installing $name"
-fancy_message info "Cleaning up"
 sudo rm -rf /tmp/pacstall/*
-sudo touch /var/log/pacstall_installed/$PACKAGE-$version
+sudo rm /var/log/pacstall_installed/$PACKAGE*
+echo $(date) | sudo tee /var/log/pacstall_installed/$PACKAGE-$version > /dev/null
