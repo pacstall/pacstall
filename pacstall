@@ -139,10 +139,14 @@ while test $# -gt 0; do
       fi
       ;;
     -V|--version)
-      COLOR='\e[1;36m'
-      NC='\033[0m'
-      echo -e "1.0.4 ${COLOR}Celeste${NC}"
-      exit 0
+      if [[ -z "$2" ]]; then
+        COLOR='\e[1;36m'
+        NC='\033[0m'
+        echo -e "1.0.4 ${COLOR}Celeste${NC}"
+        exit 0
+      else
+        echo $(pacstall -L | grep '$2' | cut -d' ' -f2-)
+      fi
       ;;
     -U|--update)
       for i in {change-repo.sh,search.sh,download.sh,install-local.sh}; do
