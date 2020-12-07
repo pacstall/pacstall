@@ -165,7 +165,7 @@ while test $# -gt 0; do
     -Ud|--update-dev)
       UPDATEBRANCH=1.0.4-Celeste
       fancy_message warn "You may experience severe bugs"
-      printf "Do you want to continue? [y/N] "
+      printf "${RED}Do you want to continue? [y/N]${NC} "
       read -r input
       if [[ $input = y ]]; then
         sudo pacstall -U > /dev/null
