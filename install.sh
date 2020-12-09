@@ -31,7 +31,6 @@ then
     echo "apt could not be found"
     exit 1
 fi
-
 apt install -y sudo wget
 # Colors
 RED='\033[0;31m'
