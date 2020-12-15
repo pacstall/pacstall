@@ -141,7 +141,7 @@ while test $# -gt 0; do
         exit 0
       else
         if [[ $(pacstall -L | grep "$2" | cut -d' ' -f2-) ]]; then
-          echo =e "${BOLD}${GREEN}pacstall -L | grep "$2" | cut -d' ' -f2-${NORMAL}${NC}"
+          echo -e "${BOLD}${GREEN}pacstall -L | grep "$2" | cut -d' ' -f2-${NORMAL}${NC}"
           exit
         else
           fancy_message error "$2 doesn't exist"
@@ -172,7 +172,7 @@ while test $# -gt 0; do
       fi
       ;;
     -L|--list)
-      /bin/ls -1 /var/log/pacstall_installed | tr '-' ' '
+      echo -e ${BOLD}$(/bin/ls -1 /var/log/pacstall_installed | tr '_' ' ')${NORMAL}
       exit
       ;;
     -D|--download)
