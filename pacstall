@@ -1,4 +1,6 @@
 #!/bin/bash
+BOLD=$(tput bold)
+NORMAL=$(tput sgr0)
 RED='\033[0;31m'
 CYAN='\033[0;36m'
 NC='\033[0m'
@@ -20,10 +22,10 @@ function fancy_message() {
     MESSAGE_TYPE="${1}"
     MESSAGE="${2}"
     case ${MESSAGE_TYPE} in
-      info) echo -e "[${GREEN}+${RESET}] INFO: ${MESSAGE}";;
-      warn) echo -e "[${YELLOW}*${RESET}] WARNING: ${MESSAGE}";;
-      error) echo -e "[${RED}!${RESET}] ERROR: ${MESSAGE}";;
-      *) echo -e "[?] UNKNOWN: ${MESSAGE}";;
+      info) echo -e "[${BOLD}${GREEN}+${RESET}${NORMAL}] INFO: ${MESSAGE}";;
+      warn) echo -e "[${BOLD}${YELLOW}*${RESET}${NORMAL}] WARNING: ${MESSAGE}";;
+      error) echo -e "[${BOLD}${RED}!${RESET}${NORMAL}] ERROR: ${MESSAGE}";;
+      *) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
     esac
 }
 while test $# -gt 0; do
@@ -146,7 +148,7 @@ while test $# -gt 0; do
         exit 0
       else
         if [[ $(pacstall -L | grep "$2" | cut -d' ' -f2-) ]]; then
-          pacstall -L | grep "$2" | cut -d' ' -f2-
+          echo =e "${BOLD}${GREEN}pacstall -L | grep "$2" | cut -d' ' -f2-${NORMAL}${NC}"
           exit
         else
           fancy_message error "$2 doesn't exist"
@@ -221,8 +223,8 @@ while test $# -gt 0; do
           fancy_message error "$PACKAGE doesn't seem to exist"
           exit 1
       fi
-      echo "build_depends=\"$build_depends\""
-      echo "depends=\"$depends\""
+      echo -e "${GREEN}${BOLD}build_depends${NORMAL}${NC}=\"$build_depends\""
+      echo -e "${GREEN}${BOLD}depends${NORMAL}${NC}=\"$depends\""
       exit
       ;;
      *)
