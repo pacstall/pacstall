@@ -44,13 +44,6 @@ while test $# -gt 0; do
       exit 0
       ;;
     -I|--install)
-      RED='\033[0;31m'
-      CYAN='\033[0;36m'
-      NC='\033[0m'
-      GREEN='\033[0;32m'
-      PURPLE='\033[0;35m'
-      YELLOW='\033[1;33m'
-      BLUE='\033[0;34m'
       export LC_ALL=C
       function trap_ctrlc ()
       {
@@ -144,7 +137,7 @@ while test $# -gt 0; do
       if [[ -z "$2" ]]; then
         COLOR='\e[1;36m'
         NC='\033[0m'
-        echo -e "1.0.4 ${COLOR}Celeste${NC}"
+        echo -e "${BOLD}1.0.4 ${COLOR}Celeste${NC}${NORMAL}"
         exit 0
       else
         if [[ $(pacstall -L | grep "$2" | cut -d' ' -f2-) ]]; then
