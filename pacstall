@@ -8,7 +8,6 @@ GREEN='\033[0;32m'
 PURPLE='\033[0;35m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && sudo apt update
 function fancy_message() {
     if [ -z "${1}" ] || [ -z "${2}" ]; then
       return
@@ -28,6 +27,7 @@ function fancy_message() {
       *) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
     esac
 }
+[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && fancy_message info "Updating apt" ; sudo apt update >/dev/null
 while test $# -gt 0; do
   case "$1" in
     -h|--help)
