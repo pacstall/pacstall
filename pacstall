@@ -27,7 +27,7 @@ function fancy_message() {
       *) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
     esac
 }
-[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && fancy_message info "Updating apt" ; sudo apt update >/dev/null
+[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && sudo apt update -qq
 while test $# -gt 0; do
   case "$1" in
     -h|--help)
