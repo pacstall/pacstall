@@ -108,5 +108,5 @@ if [[ $REMOVE_DEPENDS = y ]] ; then
 fi
 fancy_message info "Done installing $name"
 sudo rm -rf /tmp/pacstall/*
-sudo rm /var/log/pacstall_installed/$PACKAGE*
+sudo rm -f /var/log/pacstall_installed/$PACKAGE*
 echo $(date) | sudo tee /var/log/pacstall_installed/$PACKAGE_$version >/dev/null
