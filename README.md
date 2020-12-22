@@ -10,7 +10,6 @@
 <p align="center"><b>The AUR Ubuntu never had</b></p>
 
 <p align="center">
-<a href="https://github.com/Henryws/pacstall"><img src="https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/example.gif"></a>
 <p align="center"><b>Mimics the AUR by installing dependencies from package manager and then building package from source</b></p>
 </p>
 
