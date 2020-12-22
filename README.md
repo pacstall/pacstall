@@ -9,11 +9,9 @@
 <p align="center"><b>PACSTALL</b></p>
 <p align="center"><b>The AUR Ubuntu never had</b></p>
 <a href="https://github.com/Henryws/pacstall">
-  <img src="http://icons.iconarchive.com/icons/google/noto-emoji-objects/1024/62894-package-icon.png" align="right" />
+  <img src="" align="right" />
 </a>
-
-> Mimics the AUR by installing dependencies from apt and then building the package from source
-<p align="center"><b>Mimics the AUR by installing dependencies from package manager and then building package from source</b></p>
+<p align="center">Mimics the AUR by installing dependencies from package manager and then building package from source</p>
 </p>
 
 ---
