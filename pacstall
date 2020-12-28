@@ -86,9 +86,9 @@ function fancy_message() {
     MESSAGE_TYPE="${1}"
     MESSAGE="${2}"
     case ${MESSAGE_TYPE} in
-      info) echo -e "[${BOLD}${GREEN}+${RESET}${NORMAL}] INFO: ${MESSAGE}";;
-      warn) echo -e "[${BOLD}${YELLOW}*${RESET}${NORMAL}] WARNING: ${MESSAGE}";;
-      error) echo -e "[${BOLD}${RED}!${RESET}${NORMAL}] ERROR: ${MESSAGE}";;
+      info) echo -e "[${BRed}+${NC}] INFO: ${MESSAGE}";;
+      warn) echo -e "[${BRed}*${NC}] WARNING: ${MESSAGE}";;
+      error) echo -e "[${BRed}!${NC}] ERROR: ${MESSAGE}";;
       *) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
     esac
 }
