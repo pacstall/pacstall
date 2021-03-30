@@ -43,9 +43,7 @@ if apt-cache search $depends &> /dev/null ; then
   fancy_message info "Dependencies exist in repos"
 fi
 }
-printf "Do you want to view the pacscript first "
-read -r READ
-if [[ $READ = y ]] ; then
+if ask "Do you want to view the pacscript first" Y; then
   less $PACKAGE.pacscript
 fi
 fancy_message info "Sourcing pacscript"
@@ -59,9 +57,9 @@ fi
 
 if echo $build_depends; then
     fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}$(echo -e $build_depends)${NC} to install"
-    printf "do you want to remove them after installing ${BLUE}$pkgname${NC} [y/n] "
-    read -r REMOVE_DEPENDS
-    NOBUILDDEP=0
+    if ask "Do you want to remove them after installing ${BLUE}$pkgname${NC}" N;
+    	NOBUILDDEP=0
+	fi
 else
     NOBUILDDEP=1
 fi

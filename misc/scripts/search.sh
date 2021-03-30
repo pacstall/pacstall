@@ -7,9 +7,7 @@ fi
 REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
 wget -q --spider https://github.com/"$REPO"/tree/master/packages/$SEARCH/
 if [ $? -eq 0 ]; then
-	printf "${GREEN}$SEARCH${NC} is available. Do you want to view the pacscript [y/n] "
-	read -r answer
-	if [[ $answer = y ]] ; then
+	if ask "${GREEN}$SEARCH${NC} is available. Do you want to view the pacscript" Y; then
 		curl -s https://raw.githubusercontent.com/$REPO/master/packages/$SEARCH/$SEARCH.pacscript | less -R
 		exit 0
 	else
