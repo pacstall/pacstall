@@ -91,9 +91,9 @@ echo -e "this will do:
 echo ""
 fancy_message info "checking for ${BLUE}curl${NC} and ${BLUE}wget${NC}"
 fancy_message info "Installing curl" &
-sudo apt install -y curl 1>&1
+sudo apt -qq install -y curl 1>&1
 echo "Installing porg" &
-sudo apt install -y porg 1>&1
+sudo apt -qq install -y porg 1>&1
 unset PACSTALL_DIRECTORY
 export PACSTALL_DIRECTORY="/usr/share/pacstall"
 fancy_message info "making directories"
@@ -132,5 +132,5 @@ for i in {add,grab,remove}; do
     sudo chmod +x /bin/$i 
 done
 fancy_message info "Setting up a database"
-echo '[pacstall-db]
-id="$(date +%s | sha1sum | tr '-' ' ' |cut -c1-16)"' | sudo tee /var/db/pacstall.pdb
+echo "[pacstall-db]
+id="$(date +%s | sha1sum | tr '-' ' ' |cut -c1-16)"" | sudo tee /var/db/pacstall.pdb
