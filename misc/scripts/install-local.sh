@@ -57,7 +57,7 @@ fi
 
 if echo $build_depends; then
     fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}$(echo -e $build_depends)${NC} to install"
-    if ask "Do you want to remove them after installing ${BLUE}$pkgname${NC}" N;
+	if ask "Do you want to remove them after installing ${BLUE}$pkgname${NC}" N; then
     	NOBUILDDEP=0
 	fi
 else
