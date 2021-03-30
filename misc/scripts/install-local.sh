@@ -112,5 +112,6 @@ fancy_message info "Done installing $name"
 sudo rm -rf /tmp/pacstall/*
 fancy_message info "Recording to database"
 pdb-remove $pkgname metadata /var/db/pacstall.pdb
+pdb-remove $pkgname files /var/db/pacstall.pdb
 pdb-add $pkgname metadata "`cat $data`" /var/db/pacstall.pdb
-pdb-add $pkgname files "`cat /var/lib/porg/$pkname`" /var/db/pacstall.pdb
+pdb-add $pkgname files "`cat /var/lib/porg/$pkgname`" /var/db/pacstall.pdb
