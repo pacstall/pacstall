@@ -179,7 +179,7 @@ while test $# -gt 0; do
     -R|--remove)
       PACKAGE=$2
       if test -f "/var/lib/porg/$PACKAGE"; then
-        sudo rm $(cat /var/lib/porg/$PACKAGE | sed -n 's/|\(.*\)//;/^#\(.*\)/d;p')
+        sudo rm $(pdb-grab $PACKAGE files /var/db/pacstall.pdb | sed -n 's/|\(.*\)//;/^#\(.*\)/d;p')
         sudo rm -rf /var/log/pacstall_installed/$PACKAGE.pacscript
         sudo rm /var/lib/porg/$PACKAGE
         sudo rm /var/log/pacstall_installed/$PACKAGE*

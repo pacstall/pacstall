@@ -100,6 +100,10 @@ if [[ $? -eq 0 ]] ; then
   build
 fi
 
+echo "url=$(url)
+license=$(license)
+description=$(description)" > /tmp/pacstall-$name-data
+data=/tmp/pacstall-$name-data
 trap - SIGINT
 fancy_message info "Installing"
 install
@@ -108,5 +112,6 @@ if [[ $REMOVE_DEPENDS = y ]] ; then
 fi
 fancy_message info "Done installing $name"
 sudo rm -rf /tmp/pacstall/*
-sudo rm -f /var/log/pacstall_installed/$PACKAGE*
-echo $(date) | sudo tee /var/log/pacstall_installed/$PACKAGE_$version >/dev/null
+fancy_message info "Recording to database"
+pdb-remove $pkgname metadata /var/db/pacstall.pdb
+pdb-add $pkgname metadata "`cat $data`" /var/db/pacstall.pdb
