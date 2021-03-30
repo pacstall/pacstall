@@ -128,7 +128,7 @@ sudo chmod +x /bin/pacstall
 fancy_message info "Installing ${BLUE}Manpage${NC}"
 wget --progress=bar:force -O /usr/share/man/man8/pacstall.8.gz https://raw.githubusercontent.com/Henryws/pacstall/master/misc/pacstall.8.gz 2>&1 | progressfilt
 for i in {pdb-add,pdb-grab,pdb-remove}; do
-    sudo wget -q -O /bin/$i https://raw.githubusercontent.com/Henryws/pdb/master/tools/scripts/$i 2</dev/null | progressfilt
+    sudo wget -q -O /bin/$i https://raw.githubusercontent.com/Henryws/pdb/master/tools/scripts/$i 2>/dev/null | progressfilt
     sudo chmod +x /bin/$i 
 done
 fancy_message info "Setting up a database"
