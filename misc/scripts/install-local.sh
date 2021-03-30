@@ -100,10 +100,10 @@ if [[ $? -eq 0 ]] ; then
   build
 fi
 
-echo "url=$(url)
-license=$(license)
-description=$(description)" > /tmp/pacstall-$name-data
-data=/tmp/pacstall-$name-data
+echo "url=$url
+license=$license
+description=$description" > /tmp/pacstall-$name-data
+data="/tmp/pacstall-$name-data"
 trap - SIGINT
 fancy_message info "Installing"
 install
@@ -114,4 +114,4 @@ fancy_message info "Done installing $name"
 sudo rm -rf /tmp/pacstall/*
 fancy_message info "Recording to database"
 pdb-remove $pkgname metadata /var/db/pacstall.pdb
-pdb-add $pkgname metadata "`cat $data`" /var/db/pacstall.pdb
+pdb-add $pkgname metadata "`cat $data`" /var/db/pacstall/pacstall.pdb
