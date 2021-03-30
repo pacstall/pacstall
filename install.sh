@@ -86,6 +86,7 @@ echo -e "this will do:
 * Check for ${BLUE}curl${NC}, and ${BLUE}wget${NC}
 * Install ${BLUE}Pacstall${NC}
   -- Create necessary directories
+  -- Install pdb (Pacstall DataBase)
   -- Pull ${BLUE}Pacstall${NC} with ${BLUE}wget${NC} from the ${YELLOW}Master${NC} branch into ${PURPLE}/bin/pacstall${NC}"
 echo ""
 fancy_message info "checking for ${BLUE}curl${NC} and ${BLUE}wget${NC}"
@@ -126,6 +127,9 @@ sudo wget --progress=bar:force -O /bin/pacstall https://raw.githubusercontent.co
 sudo chmod +x /bin/pacstall
 fancy_message info "Installing ${BLUE}Manpage${NC}"
 wget --progress=bar:force -O /usr/share/man/man8/pacstall.8.gz https://raw.githubusercontent.com/Henryws/pacstall/master/misc/pacstall.8.gz 2>&1 | progressfilt
+for i in {pdb-add,pdb-grab,pdb-remove}; do
+    sudo wget -q -O /bin/$i https://raw.githubusercontent.com/Henryws/pdb/master/tools/scripts/$i 2</dev/null | progressfilt
+done
 fancy_message info "Setting up a database"
 echo '[pacstall-db]
 id="$(date +%s | sha1sum | tr '-' ' ' |cut -c1-16)"' | sudo tee /var/db/pacstall/pacstall-db.pdb
