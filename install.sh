@@ -106,6 +106,7 @@ sudo echo "Henryws/pacstall-programs" > $PACSTALL_DIRECTORY/repo/pacstallrepo.tx
 sudo rm -rf /var/log/pacstall_installed
 sudo mkdir /var/log/pacstall_installed
 sudo rm -rf /var/cache/pacstall
+sudo mkdir -p /var/db/pacstall
 fancy_message info "Pulling scripts from GitHub "
 for i in {change-repo.sh,search.sh,download.sh,install-local.sh}; do 
 sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/$i -P /usr/share/pacstall/scripts 2>/dev/null | progressfilt
@@ -125,3 +126,6 @@ sudo wget --progress=bar:force -O /bin/pacstall https://raw.githubusercontent.co
 sudo chmod +x /bin/pacstall
 fancy_message info "Installing ${BLUE}Manpage${NC}"
 wget --progress=bar:force -O /usr/share/man/man8/pacstall.8.gz https://raw.githubusercontent.com/Henryws/pacstall/master/misc/pacstall.8.gz 2>&1 | progressfilt
+fancy_message info "Setting up a database"
+echo '[pacstall-db]
+id="$(date +%s | sha1sum | tr '-' ' ' |cut -c1-16)"' | sudo tee /var/db/pacstall/pacstall-db.pdb
