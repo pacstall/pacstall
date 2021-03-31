@@ -109,7 +109,7 @@ sudo mkdir /var/log/pacstall_installed
 sudo rm -rf /var/cache/pacstall
 sudo mkdir -p /var/db/pacstall
 fancy_message info "Pulling scripts from GitHub "
-for i in {change-repo.sh,search.sh,download.sh,install-local.sh}; do 
+for i in {change-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh}; do 
 sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/$i -P /usr/share/pacstall/scripts 2>/dev/null | progressfilt
 done &
 PID=$!
