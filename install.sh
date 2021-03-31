@@ -71,7 +71,7 @@ wget -q --tries=10 --timeout=20 --spider https://github.com &
 PID=$!
 i=1
 sp="/-\|"
-echo -n ' '
+printf ' '
 while [ -d /proc/$PID ]
 do
   sleep 0.1
@@ -92,7 +92,7 @@ echo ""
 fancy_message info "checking for ${BLUE}curl${NC} and ${BLUE}wget${NC}"
 fancy_message info "Installing curl" &
 sudo apt-get install -qq -o=Dpkg::Use-Pty=0 -y curl
-echo "Installing porg" &
+fancy_message info "Installing porg" &
 sudo apt-get install -qq -o=Dpkg::Use-Pty=0 -y porg
 unset PACSTALL_DIRECTORY
 export PACSTALL_DIRECTORY="/usr/share/pacstall"
