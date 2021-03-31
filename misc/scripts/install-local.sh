@@ -100,7 +100,8 @@ fi
 
 echo "url="$url"
 license="$license"
-description="$description"" > /tmp/pacstall-$name-data
+description="$description"
+version="$version"" > /tmp/pacstall-$name-data
 data="/tmp/pacstall-$name-data"
 trap - SIGINT
 fancy_message info "Installing"
