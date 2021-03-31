@@ -272,7 +272,7 @@ while test $# -gt 0; do
       fi
       ;;
     -L|--list)
-      echo -e ${BOLD}$(/bin/ls -1 /var/log/pacstall_installed | tr '_' ' ')${NORMAL}
+      awk -F\BEGIN '{print $2"="$3, $4"="$5}' /var/db/pacstall.pdb | tr '= =' '\n' | sed -r '/^\s*$/d' | cut -d '*' -f 2 | sed -r '/^\s*$/d' | sort -u | sed "s/^_//" | sed "s/_/ /" | sed s/'\w*$'// | sort -u
       exit
       ;;
     -D|--download)
