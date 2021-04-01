@@ -347,4 +347,5 @@ while test $# -gt 0; do
       pacstall -h
       exit 1
       ;;
-  esac
+esac
+done
