@@ -141,6 +141,9 @@ while test $# -gt 0; do
       echo "-U --update, Update script"
       echo "-V --version, Prints pacstall version"
       echo "-L --list, Lists installed packages"
+      echo "-Up --upgrade, Upgrades packages"
+      echo "-Qd --query-depends, Get dependencies of package"
+      echo "-Qi --query-info, Get package info"
       echo " "
       exit 0
       ;;
@@ -250,7 +253,7 @@ while test $# -gt 0; do
       fi
       ;;
     -U|--update)
-      for i in {change-repo.sh,search.sh,download.sh,install-local.sh}; do
+      for i in {change-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh}; do
         sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/$i -P /usr/share/pacstall/scripts 2>/dev/null 
       done
       sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall -P /bin 2>/dev/null
@@ -272,6 +275,7 @@ while test $# -gt 0; do
       fi
       ;;
     -L|--list)
+      export LC_ALL=C
       awk -F\BEGIN '{print $2"="$3, $4"="$5}' /var/db/pacstall.pdb | tr '= =' '\n' | sed -r '/^\s*$/d' | cut -d '*' -f 2 | sed -r '/^\s*$/d' | sort -u | sed "s/^_//" | sed "s/_/ /" | sed s/'\w*$'// | sort -u
       exit
       ;;
@@ -335,6 +339,7 @@ while test $# -gt 0; do
       exit
       ;;
     -Up|--upgrade)
+      export LC_ALL=C
       . /usr/share/pacstall/scripts/upgrade.sh
       exit
       ;;
@@ -343,4 +348,3 @@ while test $# -gt 0; do
       exit 1
       ;;
   esac
-done
