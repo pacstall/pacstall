@@ -19,6 +19,9 @@ for i in "${list[@]}"; do
     if version_gt "$remotever" "$localver" ; then
         echo $i >> /tmp/pacstall-up-list
     fi
+    if [ "$remotever" == "$localver" ]; then
+        sed -i "/$i/d" /tmp/pacstall-up-list
+    fi
 done
 for i in `sed ':a;N;$!ba;s/\n/,/g' /tmp/pacstall-up-list` ; do
     sudo pacstall -I $i
