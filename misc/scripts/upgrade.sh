@@ -4,7 +4,7 @@ function version_gt() {
 }
 
 list=( $(pacstall -L) )
-sudo truncate -s 0 /tmp/pacstall-up-list
+rm /tmp/pacstall-up-list
 touch /tmp/pacstall-up-list
 for i in "${list[@]}"; do
     localver=$(pdb-grab $i metadata /var/db/pacstall.pdb | sed -n -e 's/version=//p' | tr -d \")
