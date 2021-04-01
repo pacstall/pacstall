@@ -325,7 +325,7 @@ while test $# -gt 0; do
       exit 1
       ;;
   -Up|--upgrade)
-      source /usr/share/pacstall/scripts/upgrade.sh
+      . /usr/share/pacstall/scripts/upgrade.sh
       exit
       ;;
   esac
