@@ -74,7 +74,7 @@ fi
 if [[ $NOBUILDDEP -eq 0 ]] ; then
     sudo apt install -y $build_depends
 fi
-sudo apt install -y $depends
+sudo apt-get install -qq -y $depends
 fancy_message info "Retrieving packages"
 mkdir -p /tmp/pacstall
 cd /tmp/pacstall
