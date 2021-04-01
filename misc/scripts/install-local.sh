@@ -81,9 +81,10 @@ if [[ $? -eq 0 ]] ; then
     fi
 fi
 if [[ $NOBUILDDEP -eq 0 ]] ; then
-    sudo apt install -y $build_depends
+    sudo apt-get install -y -qq $build_depends
 fi
-sudo apt-get install -qq -y $depends
+fancy_message info "Installing dependencies"
+sudo apt-get install -y -qq $depends
 fancy_message info "Retrieving packages"
 mkdir -p /tmp/pacstall
 cd /tmp/pacstall
