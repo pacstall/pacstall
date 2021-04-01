@@ -122,7 +122,7 @@ function fancy_message() {
     MESSAGE_TYPE="${1}"
     MESSAGE="${2}"
     case ${MESSAGE_TYPE} in
-      info) echo -e "[${BRed}+${NC}] INFO: ${MESSAGE}";;
+      info) echo -e "[${BGreen}+${NC}] INFO: ${MESSAGE}";;
       warn) echo -e "[${BRed}*${NC}] WARNING: ${MESSAGE}";;
       error) echo -e "[${BRed}!${NC}] ERROR: ${MESSAGE}";;
       *) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
