@@ -320,13 +320,27 @@ while test $# -gt 0; do
       echo -e "${GREEN}${BOLD}depends${NORMAL}${NC}=\"$depends\""
       exit
       ;;
+    -Qi|--query-info)
+      package=$2
+      if test -f "/var/lib/porg/$package"; then
+          echo -e "${BBlue}Name:${NC} $package"
+          echo -e "${BBlue}Version:${NC} "$(pdb-grab $package metadata /var/db/pacstall.pdb | sed -n -e 's/version=//p' | tr -d \")""
+          echo -e "${BBlue}Description:${NC} "$(pdb-grab $package metadata /var/db/pacstall.pdb | sed -n -e 's/description=//p')""
+          echo -e "${BBlue}URL:${NC} "$(pdb-grab $package metadata /var/db/pacstall.pdb | sed -n -e 's/url=//p')""
+          echo -e "${BBlue}Install Size:${NC} $(porg -s $package | cut -d ' ' -f 1)"
+      else
+          fancy_message error "$package does not exist"
+          exit 1
+      fi
+      exit
+      ;;
+    -Up|--upgrade)
+      . /usr/share/pacstall/scripts/upgrade.sh
+      exit
+      ;;
      *)
       pacstall -h
       exit 1
-      ;;
-  -Up|--upgrade)
-      . /usr/share/pacstall/scripts/upgrade.sh
-      exit
       ;;
   esac
 done
