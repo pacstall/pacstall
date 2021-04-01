@@ -34,25 +34,34 @@ progressfilt ()
 # run checks to verify script works
 checks() {
 if curl --output /dev/null --silent --head --fail "$url" ; then
-  fancy_message info "URL exists"
+    fancy_message info "URL exists"
+else
+	fancy_message error "URL doesn't exist"
+	exit 1
 fi
-if apt-cache search $build_depends &> /dev/null ; then
-  fancy_message info "Build depends exists in repos"
+if dpkg-query -l $build_depends >/dev/null ; then
+    fancy_message info "Build depends exists in repos"
+else
+	fancy_message error "Something went wrong! Something in $depends is missing"
+	exit 1
 fi
-if apt-cache search $depends &> /dev/null ; then
-  fancy_message info "Dependencies exist in repos"
+if dpkg-query -l $depends >/dev/null ; then
+    fancy_message info "Dependencies exist in repos"
+else
+	fancy_message error "Something went wrong! Something in $depends is missing"
+	exit 1
 fi
 }
 if ask "Do you want to view the pacscript first" Y; then
-  less $PACKAGE.pacscript
+    less $PACKAGE.pacscript
 fi
 fancy_message info "Sourcing pacscript"
 source $PACKAGE.pacscript
 fancy_message info "Running checks"
 checks
 if [[ $? -eq 1 ]] ; then
-  fancy_message error "There was an error checking the script!"
-  exit 1
+    fancy_message error "There was an error checking the script!"
+    exit 1
 fi
 
 if echo $build_depends; then
