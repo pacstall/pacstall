@@ -11,9 +11,9 @@ function version_gt() {
     test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"; 
 }
 
-list=$(pacstall -L | sed ':a;N;$!ba;s/\n/,/g')
-for i in {"$list"}; do
-    Local=$(pdb-grab $i metadata /var/db/pacstall.pdb | sed -n -e 's/description=//p')
+list=("$(pacstall -L)")
+for i in "${list[@]}"; do
+    Local=$(pdb-grab $i metadata /var/db/pacstall.pdb | sed -n -e 's/version=//p')
     Curl=$(curl -s https://raw.githubusercontent.com/Henryws/pacstall-programs/master/packages/$i/$i.pacscript | sed -n -e 's/version=//p')
     if version_gt "$Curl" "$Local" ; then
         echo "Upgradable"
@@ -21,7 +21,7 @@ for i in {"$list"}; do
     if [[ $? == "Upgradable" ]] ; then
         echo $i >> /tmp/pacstall-up-list
     fi
-
-for i in "$(cat /tmp/pacstall-up-list | sed ':a;N;$!ba;s/\n/,/g')" ; do
+done
+for i in "`cat /tmp/pacstall-up-list | sed ':a;N;$!ba;s/\n/,/g'`" ; do
     sudo pacstall -I $i
 done
