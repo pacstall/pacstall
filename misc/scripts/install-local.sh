@@ -39,18 +39,6 @@ else
 	fancy_message error "URL doesn't exist"
 	exit 1
 fi
-if dpkg-query -l $build_depends >/dev/null ; then
-    fancy_message info "Build depends exists in repos"
-else
-	fancy_message error "Something went wrong! Something in $depends is missing"
-	exit 1
-fi
-if dpkg-query -l $depends >/dev/null ; then
-    fancy_message info "Dependencies exist in repos"
-else
-	fancy_message error "Something went wrong! Something in $depends is missing"
-	exit 1
-fi
 }
 if ask "Do you want to view the pacscript first" Y; then
     less $PACKAGE.pacscript
@@ -64,7 +52,7 @@ if [[ $? -eq 1 ]] ; then
     exit 1
 fi
 
-if echo $build_depends; then
+if echo $build_depends >/dev/null; then
     fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}$(echo -e $build_depends)${NC} to install"
 	if ask "Do you want to remove them after installing ${BLUE}$pkgname${NC}" N; then
     	NOBUILDDEP=0
@@ -121,6 +109,7 @@ if [[ $REMOVE_DEPENDS = y ]] ; then
 fi
 fancy_message info "Done installing $name"
 sudo rm -rf /tmp/pacstall/*
+cd $HOME
 fancy_message info "Recording to database"
 pdb-remove $pkgname metadata /var/db/pacstall.pdb
 pdb-remove $pkgname files /var/db/pacstall.pdb
