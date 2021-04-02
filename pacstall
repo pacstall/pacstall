@@ -128,6 +128,7 @@ function fancy_message() {
       *) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
     esac
 }
+# run sudo apt update if it's been more than a week
 [ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && sudo apt update -qq
 while test $# -gt 0; do
   case "$1" in
@@ -166,6 +167,7 @@ while test $# -gt 0; do
         fancy_message error "You failed to specify a package"
         exit 1
       fi
+      # Make the directory if not exist
       if [[ ! -e /usr/share/pacstall/repo/ ]]; then
           mkdir -p /usr/share/pacstall/repo
           touch /usr/share/pacstall/repo/pacstallrepo.txt
