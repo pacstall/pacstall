@@ -52,7 +52,7 @@ if [[ $? -eq 1 ]] ; then
     exit 1
 fi
 
-if echo $build_depends >/dev/null; then
+if [[ -n "$build_depends" ]]; then
     fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}$(echo -e $build_depends)${NC} to install"
 	if ask "Do you want to remove them after installing ${BLUE}$pkgname${NC}" N; then
     	NOBUILDDEP=0
@@ -60,7 +60,7 @@ if echo $build_depends >/dev/null; then
 else
     NOBUILDDEP=1
 fi
-echo $depends > /dev/null 2>&1
+echo -n $depends > /dev/null 2>&1
 if [[ $? -eq 0 ]] ; then
     dpkg-query -l $breaks >/dev/null 2>&1
     if [[ $? -eq 0 ]] ; then
