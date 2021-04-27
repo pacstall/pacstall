@@ -220,7 +220,7 @@ while test $# -gt 0; do
     -R|--remove)
       PACKAGE=$2
       if test -f "/var/lib/porg/$PACKAGE"; then
-        sudo rm -rf $(pdb-grab $PACKAGE files /var/db/pacstall.pdb | sed -n 's/|\(.*\)//;/^#\(.*\)/d;p')
+        sudo rm -rf $(cat /var/lib/porg/$PACKAGE sed -n 's/|\(.*\)//;/^#\(.*\)/d;p')
         sudo rm -rf /var/log/pacstall_installed/$PACKAGE.pacscript
         sudo rm /var/lib/porg/$PACKAGE
         fancy_message info "Done removing $PACKAGE"
@@ -278,7 +278,7 @@ while test $# -gt 0; do
       ;;
     -L|--list)
       export LC_ALL=C
-      awk -F\BEGIN '{print $2"="$3, $4"="$5}' /var/db/pacstall.pdb | tr '= =' '\n' | sed -r '/^\s*$/d' | cut -d '*' -f 2 | sed -r '/^\s*$/d' | sort -u | sed "s/^_//" | sed "s/_/ /" | sed s/'\w*$'// | sort -u
+      echo -e ${BOLD}$(/bin/ls -1 /var/log/pacstall_installed | tr '_' ' ')${NORMAL}
       exit
       ;;
     -D|--download)
@@ -324,20 +324,6 @@ while test $# -gt 0; do
       fi
       echo -e "${GREEN}${BOLD}build_depends${NORMAL}${NC}=\"$build_depends\""
       echo -e "${GREEN}${BOLD}depends${NORMAL}${NC}=\"$depends\""
-      exit
-      ;;
-    -Qi|--query-info)
-      package=$2
-      if test -f "/var/lib/porg/$package"; then
-          echo -e "${BBlue}Name:${NC} $package"
-          echo -e "${BBlue}Version:${NC} "$(pdb-grab $package metadata /var/db/pacstall.pdb | sed -n -e 's/version=//p' | tr -d \")""
-          echo -e "${BBlue}Description:${NC} "$(pdb-grab $package metadata /var/db/pacstall.pdb | sed -n -e 's/description=//p')""
-          echo -e "${BBlue}URL:${NC} "$(pdb-grab $package metadata /var/db/pacstall.pdb | sed -n -e 's/url=//p')""
-          echo -e "${BBlue}Install Size:${NC} $(porg -s $package | cut -d ' ' -f 1)"
-      else
-          fancy_message error "$package does not exist"
-          exit 1
-      fi
       exit
       ;;
     -Up|--upgrade)
