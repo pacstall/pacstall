@@ -109,7 +109,11 @@ if [[ $REMOVE_DEPENDS = y ]] ; then
 fi
 sudo rm -rf /tmp/pacstall/*
 cd $HOME
-fancy_message info "Recording to database"
 echo $(date) | sudo tee /var/log/pacstall_installed/$PACKAGE_$version >/dev/null
-fancy_message info "Symlinking files to PATH"
-ln -s $destdir/$PACKAGE/$bindir/* /usr/local/bin
+# Check if package has binaries
+if [[ -v bindir ]] ; then
+    fancy_message info "Symlinking files to ${GREEN}/usr/local/bin${NC}"
+    sudo ln -s $destdir/$bindir/* /usr/local/bin
+else
+    fancy_message warn "$PACKAGE does not have binaries available (This may be because it is a theme, or just configuration files, etc)"
+fi
