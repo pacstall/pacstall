@@ -107,11 +107,9 @@ install
 if [[ $REMOVE_DEPENDS = y ]] ; then
   sudo apt remove $build_depends
 fi
-fancy_message info "Done installing $name"
 sudo rm -rf /tmp/pacstall/*
 cd $HOME
 fancy_message info "Recording to database"
-pdb-remove $pkgname metadata /var/db/pacstall.pdb
-pdb-remove $pkgname files /var/db/pacstall.pdb
-pdb-add $pkgname metadata "`cat $data`" /var/db/pacstall.pdb
-pdb-add $pkgname files "`cat /var/lib/porg/$pkgname`" /var/db/pacstall.pdb
+echo $(date) | sudo tee /var/log/pacstall_installed/$PACKAGE_$version >/dev/null
+fancy_message info "Symlinking files to PATH"
+ln -s $destdir/$PACKAGE/$bindir/* /usr/local/bin
