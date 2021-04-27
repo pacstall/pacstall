@@ -113,7 +113,7 @@ echo $(date) | sudo tee /var/log/pacstall_installed/$PACKAGE_$version >/dev/null
 # Check if package has binaries
 if [[ -v bindir ]] ; then
     fancy_message info "Symlinking files to ${GREEN}/usr/local/bin${NC}"
-    sudo ln -s $destdir/$bindir/* /usr/local/bin
+    sudo ln -sf "$destdir"/"$bindir"/* /usr/local/bin
 else
     fancy_message warn "$PACKAGE does not have binaries available (This may be because it is a theme, or just configuration files, etc)"
 fi
