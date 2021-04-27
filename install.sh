@@ -86,7 +86,6 @@ echo -e "this will do:
 * Check for ${BLUE}curl${NC}, and ${BLUE}wget${NC}
 * Install ${BLUE}Pacstall${NC}
   -- Create necessary directories
-  -- Install pdb (Pacstall DataBase)
   -- Pull ${BLUE}Pacstall${NC} with ${BLUE}wget${NC} from the ${YELLOW}Master${NC} branch into ${PURPLE}/bin/pacstall${NC}"
 echo ""
 fancy_message info "checking for ${BLUE}curl${NC} and ${BLUE}wget${NC}"
@@ -127,9 +126,11 @@ sudo wget --progress=bar:force -O /bin/pacstall https://raw.githubusercontent.co
 sudo chmod +x /bin/pacstall
 fancy_message info "Installing ${BLUE}Manpage${NC}"
 wget --progress=bar:force -O /usr/share/man/man8/pacstall.8.gz https://raw.githubusercontent.com/Henryws/pacstall/master/misc/pacstall.8.gz 2>&1 | progressfilt
-for i in {add,grab,remove}; do
-    sudo wget --progress=bar:force -O /bin/pdb-$i https://raw.githubusercontent.com/Henryws/pdb/master/tools/pdb-$i 2>/dev/null | progressfilt
-    sudo chmod +x /bin/$i 
-done
-fancy_message info "Setting up a database"
-sudo touch /var/db/pacstall.pdb
+
+if [[ ":$PATH:" == *":/usr/local/bin:"* ]]; then
+    true
+else
+    fancy_message warn "Your path is missing /usr/local/bin, you will need to add to use most programs"
+    fancy_message warn 'You can run export PATH="/usr/local/bin:${PATH}" and add it to your .bashrc/.zshrc'
+fi
+
