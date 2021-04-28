@@ -77,7 +77,7 @@ fancy_message info "Retrieving packages"
 mkdir -p /tmp/pacstall
 cd /tmp/pacstall
 if [[ $url = *.git ]] ; then
-  git clone $url
+  git clone --depth=1 $url
   cd $(/bin/ls -d */|head -n 1)
 else
   wget --progress=bar:force $url 2>&1 | progressfilt
