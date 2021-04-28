@@ -81,18 +81,10 @@ if [[ $? -eq 1 ]] ; then
   fancy_message warn "You seem to be offline"
   exit 1
 fi
-echo ""
-echo -e "this will do:
-* Check for ${BLUE}curl${NC}, and ${BLUE}wget${NC}
-* Install ${BLUE}Pacstall${NC}
-  -- Create necessary directories
-  -- Pull ${BLUE}Pacstall${NC} with ${BLUE}wget${NC} from the ${YELLOW}Master${NC} branch into ${PURPLE}/bin/pacstall${NC}"
-echo ""
-fancy_message info "checking for ${BLUE}curl${NC} and ${BLUE}wget${NC}"
-fancy_message info "Installing curl" &
-sudo apt-get install -qq -o=Dpkg::Use-Pty=0 -y curl
-fancy_message info "Installing porg" &
-sudo apt-get install -qq -o=Dpkg::Use-Pty=0 -y porg
+
+fancy_message info "Installing packages"
+sudo apt-get install -qq -o=Dpkg::Use-Pty=0 -y {curl,wget,stow}
+
 unset PACSTALL_DIRECTORY
 export PACSTALL_DIRECTORY="/usr/share/pacstall"
 fancy_message info "making directories"
@@ -126,11 +118,3 @@ sudo wget --progress=bar:force -O /bin/pacstall https://raw.githubusercontent.co
 sudo chmod +x /bin/pacstall
 fancy_message info "Installing ${BLUE}Manpage${NC}"
 wget --progress=bar:force -O /usr/share/man/man8/pacstall.8.gz https://raw.githubusercontent.com/Henryws/pacstall/master/misc/pacstall.8.gz 2>&1 | progressfilt
-
-if [[ ":$PATH:" == *":/usr/local/bin:"* ]]; then
-    true
-else
-    fancy_message warn "Your path is missing /usr/local/bin, you will need to add to use most programs"
-    fancy_message warn 'You can run export PATH="/usr/local/bin:${PATH}" and add it to your .bashrc/.zshrc'
-fi
-

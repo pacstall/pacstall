@@ -219,12 +219,11 @@ while test $# -gt 0; do
       ;;
     -R|--remove)
       PACKAGE=$2
-      if test -f "/var/lib/porg/$PACKAGE"; then
-        sudo rm -rf $(cat /var/lib/porg/$PACKAGE | sed -n 's/|\(.*\)//;/^#\(.*\)/d;p')
-        sudo rm -rf /var/log/pacstall_installed/$PACKAGE.pacscript
-        sudo rm /var/lib/porg/$PACKAGE
-        fancy_message info "Here are some broken symlinks in ${GREEN}/usr/local/bin${NC} that may be because of uninstallation"
-        find -L /usr/local/bin -maxdepth 1 -type l -delete
+      if test -f "/usr/src/pacstall/$PACKAGE"; then
+        fancy_message info "Removing symlinks"
+        sudo stow -D $PACKAGE
+        fancy_message info "Remove package"
+        sudo rm -rf /usr/src/pacstall/$PACKAGE
         fancy_message info "Done removing $PACKAGE"
         exit
       else

@@ -77,7 +77,7 @@ fancy_message info "Retrieving packages"
 mkdir -p /tmp/pacstall
 cd /tmp/pacstall
 if [[ $url = *.git ]] ; then
-  git clone --depth=1 $url
+  git clone --quiet --depth=1 $url
   cd $(/bin/ls -d */|head -n 1)
 else
   wget --progress=bar:force $url 2>&1 | progressfilt
@@ -110,10 +110,6 @@ fi
 sudo rm -rf /tmp/pacstall/*
 cd $HOME
 echo $(date) | sudo tee /var/log/pacstall_installed/$PACKAGE_$version >/dev/null
-# Check if package has binaries
-if [[ -v bindir ]] ; then
-    fancy_message info "Symlinking files to ${GREEN}/usr/local/bin${NC}"
-    sudo ln -sf "$destdir"/"$bindir"/* /usr/local/bin
-else
-    fancy_message warn "$PACKAGE does not have binaries available (This may be because it is a theme, or just configuration files, etc)"
-fi
+fancy_message info "Symlinking files with ${GREEN}stow${NC}"
+cd /usr/src/pacstall/
+sudo stow --target="/" $PACKAGE
