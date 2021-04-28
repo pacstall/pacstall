@@ -221,9 +221,9 @@ while test $# -gt 0; do
       PACKAGE=$2
       if test -f "/usr/src/pacstall/$PACKAGE"; then
         fancy_message info "Removing symlinks"
-        sudo stow -D $PACKAGE
+        sudo stow -D "$PACKAGE"
         fancy_message info "Remove package"
-        sudo rm -rf /usr/src/pacstall/$PACKAGE
+        sudo rm -rf /usr/src/pacstall/"$PACKAGE"
         fancy_message info "Done removing $PACKAGE"
         exit
       else
