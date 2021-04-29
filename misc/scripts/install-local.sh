@@ -113,3 +113,7 @@ echo $(date) | sudo tee /var/log/pacstall_installed/$PACKAGE_$version >/dev/null
 fancy_message info "Symlinking files"
 cd /usr/src/pacstall/
 sudo stow --target="/" "$PACKAGE"
+if [[ $? -eq 1 ]]; then
+    fancy_message error "Package contains links to files that exist on the system"
+    exit 1
+fi
