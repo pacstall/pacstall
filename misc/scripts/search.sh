@@ -7,11 +7,6 @@ if [[ -z "$SEARCH" ]]; then
 	exit 1
 fi
 
-# Test if pygmentize is installed and will run it for colored output if installed and if it's not installed, then run it without
-pygmentize_function() {
-  command -v pygmentize >/dev/null && command pygmentize "$@"
-}
-
 REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
 wget -q --spider https://github.com/"$REPO"/tree/master/packages/$SEARCH/
 if [ $? -eq 0 ]; then
