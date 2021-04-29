@@ -150,16 +150,15 @@ while test $# -gt 0; do
       ;;
     -I|--install)
       export LC_ALL=C
-      function trap_ctrlc ()
-      {
-	  fancy_message warn "the installation of $2 was interrupted, removing files"
-	  rm -rf /tmp/pacstall/*
-          exit 2
+      function trap_ctrlc () {
+	    fancy_message warn "the installation of $2 was interrupted, removing files"
+	    rm -rf /tmp/pacstall/*
+        exit 2
       }
       trap "trap_ctrlc" 2
       if [ "$EUID" -ne 0 ]; then 
-      fancy_message error "Run as root"
-      exit 1
+        fancy_message error "Run as root"
+        exit 1
       fi
       PACPREFIX="apt install -y "
       PACKAGE=$2
@@ -169,26 +168,18 @@ while test $# -gt 0; do
       fi
       # Make the directory if not exist
       if [[ ! -e /usr/share/pacstall/repo/ ]]; then
-          mkdir -p /usr/share/pacstall/repo
-          touch /usr/share/pacstall/repo/pacstallrepo.txt
+        mkdir -p /usr/share/pacstall/repo
+        touch /usr/share/pacstall/repo/pacstallrepo.txt
 	  sudo pacstall -C
       fi
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       export HOMEDIR=$HOME
-      INPUT=$2
+      PACAKGE=$2
       INSTALLING=1
-      echo $INPUT > /tmp/pacstalling
-      if grep -q @ /tmp/pacstalling; then
-          export PACKAGE=$(cut -d@ -f1 /tmp/pacstalling)
-          export REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-          export URL="https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/$(cat /tmp/pacstalling).pacscript"
-          source /usr/share/pacstall/scripts/download.sh
-      else
-          export PACKAGE=$INPUT
-          export REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-          export URL="https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/$PACKAGE.pacscript"
-          source /usr/share/pacstall/scripts/download.sh
-          exit
+      export REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
+      export URL="https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/$PACKAGE.pacscript"
+      source /usr/share/pacstall/scripts/download.sh
+      exit
       fi   
       ;;
     -Il|--install-local)
@@ -221,8 +212,8 @@ while test $# -gt 0; do
       PACKAGE=$2
       # Check if $2 is filled (not empty) because if not, stow will remove every package
       if [[ -z "$PACKAGE" ]]; then
-          fancy_message error "You did not specify a package to remove"
-          exit 1
+        fancy_message error "You did not specify a package to remove"
+        exit 1
       fi
       if [ -d "/usr/src/pacstall/$PACKAGE" ]; then
         fancy_message info "Removing symlinks"
@@ -240,8 +231,8 @@ while test $# -gt 0; do
       if [[ -z "$2" ]]; then
       . /usr/share/pacstall/scripts/change-repo.sh
       else
-      echo "$2" | sudo tee /usr/share/pacstall/repo/pacstallrepo.txt >/dev/null 2>&1
-      exit
+        echo "$2" | sudo tee /usr/share/pacstall/repo/pacstallrepo.txt >/dev/null 2>&1
+        exit
       fi
       ;;
     -V|--version)
@@ -266,23 +257,9 @@ while test $# -gt 0; do
       fancy_message info "You are at version $(pacstall -V)"
       exit 0
       ;;
-    -Ud|--update-dev)
-      UPDATEBRANCH=1.0.4-Celeste
-      fancy_message warn "You may experience severe bugs"
-      printf "${RED}Do you want to continue? [y/N]${NC} "
-      read -r input
-      if [[ $input = y ]]; then
-        sudo pacstall -U > /dev/null
-        sudo sed -i 's/master/'"$UPDATEBRANCH"'/g' /bin/pacstall
-        fancy_message info "Switched to dev branch"
-        exit
-      else
-        exit
-      fi
-      ;;
     -L|--list)
       export LC_ALL=C
-      echo -e ${BOLD}$(/bin/ls -1 /usr/src/pacstall)${NORMAL}
+      echo -e ${BOLD}$(/bin/ls -1a /usr/src/pacstall)${NORMAL}
       exit
       ;;
     -D|--download)
@@ -296,35 +273,19 @@ while test $# -gt 0; do
       source /usr/share/pacstall/scripts/download.sh
       exit
       ;;
-    -Ra|--remove-all)
-      PACKAGE=$*
-      for i in $PACKAGE ; do
-        if [ -f /var/log/pacstall_installed/$i ] ; then
-          LOCATION=installed
-        else
-          if [ -f /var/log/pacstall_orphaned/$i ] ; then
-            LOCATION=orphaned
-          fi
-        fi
-        source /var/log/pacstall_$lOCATION/$i.pacscript
-        sudo apt remove $depends
-        sudo pacstall -R $i
-        rm -rf /var/log/pacstall_$LOCATION/$i.pacscript
-      done
-      ;;
     -Qd|--query-depends)
       PACKAGE=$2
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       URL="https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/$PACKAGE.pacscript"
       if [[ -z "$PACKAGE" ]]; then
-          fancy_message error "You failed to specify a package"
-          exit 1
+        fancy_message error "You failed to specify a package"
+        exit 1
       fi
       if curl --output /dev/null --silent --head --fail "$URL"; then
-          source <(curl -s $URL) >/dev/null 2>&1
+        source <(curl -s $URL) >/dev/null 2>&1
       else
-          fancy_message error "$PACKAGE doesn't seem to exist"
-          exit 1
+        fancy_message error "$PACKAGE doesn't seem to exist"
+        exit 1
       fi
       echo -e "${GREEN}${BOLD}build_depends${NORMAL}${NC}=\"$build_depends\""
       echo -e "${GREEN}${BOLD}depends${NORMAL}${NC}=\"$depends\""
