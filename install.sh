@@ -83,7 +83,7 @@ if [[ $? -eq 1 ]] ; then
 fi
 
 fancy_message info "Installing packages"
-sudo apt-get install -qq -o=Dpkg::Use-Pty=0 -y {curl,wget,stow}
+sudo apt-get install -qq -o=Dpkg::Use-Pty=0 -y {curl,wget,stow,python3-pygments}
 
 unset PACSTALL_DIRECTORY
 export PACSTALL_DIRECTORY="/usr/share/pacstall"
