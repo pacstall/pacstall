@@ -110,6 +110,6 @@ fi
 sudo rm -rf /tmp/pacstall/*
 cd $HOME
 echo $(date) | sudo tee /var/log/pacstall_installed/$PACKAGE_$version >/dev/null
-fancy_message info "Symlinking files with ${GREEN}stow${NC}"
+fancy_message info "Symlinking files"
 cd /usr/src/pacstall/
 sudo stow --target="/" $PACKAGE
