@@ -219,7 +219,7 @@ while test $# -gt 0; do
       ;;
     -R|--remove)
       PACKAGE=$2
-      if test -f "/usr/src/pacstall/$PACKAGE"; then
+      if [[ -h "/usr/src/pacstall/$PACKAGE" ]]; then
         fancy_message info "Removing symlinks"
         sudo stow -D "$PACKAGE"
         fancy_message info "Remove package"
@@ -227,7 +227,7 @@ while test $# -gt 0; do
         fancy_message info "Done removing $PACKAGE"
         exit
       else
-        fancy_message error "$PACKAGE does not exist"
+        fancy_message error "$PACKAGE does not exist or not properly symlinked"
         exit 1
       fi
       ;;
