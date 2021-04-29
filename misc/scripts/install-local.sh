@@ -1,11 +1,11 @@
 #!/bin/bash
-function trap_ctrlc ()
-      {
-          fancy_message warn "Cleaning up"
-          rm -rf /tmp/pacstall/*
-	  fancy_message info "installation interrupted, removed files"
-          exit 2
-      }
+function trap_ctrlc () {
+    fancy_message warn "Cleaning up"
+    rm -rf /tmp/pacstall/*
+	fancy_message info "installation interrupted, removed files"
+    exit 2
+}
+
 trap "trap_ctrlc" 2
 # Minimalistic progress bar for wget
 progressfilt ()
@@ -33,6 +33,7 @@ progressfilt ()
 
 # run checks to verify script works
 checks() {
+# curl url to check it exists
 if curl --output /dev/null --silent --head --fail "$url" ; then
     fancy_message info "URL exists"
 else
@@ -76,6 +77,8 @@ sudo apt-get install -y -qq $depends
 fancy_message info "Retrieving packages"
 mkdir -p /tmp/pacstall
 cd /tmp/pacstall
+
+# Detects if url ends in .git (in that case git clone it), or ends in .zip, or just assume that the url can be uncompressed with tar. Then cd into them
 if [[ $url = *.git ]] ; then
   git clone --quiet --depth=1 --jobs=10 $url
   cd $(/bin/ls -d */|head -n 1)
@@ -96,11 +99,11 @@ if [[ $? -eq 0 ]] ; then
   build
 fi
 
-echo "url="$url"
-license="$license"
-description="$description"
-version="$version"" > /tmp/pacstall-$name-data
-data="/tmp/pacstall-$name-data"
+#echo "url="$url"
+#license="$license"
+#description="$description"
+#version="$version"" > /tmp/pacstall-$name-data
+#data="/tmp/pacstall-$name-data"
 trap - SIGINT
 fancy_message info "Installing"
 install
@@ -109,10 +112,12 @@ if [[ $REMOVE_DEPENDS = y ]] ; then
 fi
 sudo rm -rf /tmp/pacstall/*
 cd $HOME
-echo $(date) | sudo tee /var/log/pacstall_installed/$PACKAGE_$version >/dev/null
+# (DEPRECATED) echo $(date) | sudo tee /var/log/pacstall_installed/$PACKAGE_$version >/dev/null
 fancy_message info "Symlinking files"
 cd /usr/src/pacstall/
+# By default (I think), stow symlinks to the directory behind it (..), but we want to symlink to /, or in other words, symlink files from pkg/usr to /usr
 sudo stow --target="/" "$PACKAGE"
+# stow will fail to symlink packages if files already exist on the system; this is just an error
 if [[ $? -eq 1 ]]; then
     fancy_message error "Package contains links to files that exist on the system"
     exit 1
