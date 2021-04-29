@@ -219,7 +219,12 @@ while test $# -gt 0; do
       ;;
     -R|--remove)
       PACKAGE=$2
-      if [[ -h "/usr/src/pacstall/$PACKAGE" ]]; then
+      # Check if $2 is filled (not empty) because if not, stow will remove every package
+      if [[ -z "$PACKAGE" ]]; then
+          fancy_message error "You did not specify a package to remove"
+          exit 1
+      fi
+      if [ -d "/usr/src/pacstall/$PACKAGE" ]; then
         fancy_message info "Removing symlinks"
         sudo stow -D "$PACKAGE"
         fancy_message info "Remove package"
@@ -279,7 +284,7 @@ while test $# -gt 0; do
       ;;
     -L|--list)
       export LC_ALL=C
-      echo -e ${BOLD}$(/bin/ls -1 /var/log/pacstall_installed | tr '_' ' ')${NORMAL}
+      echo -e ${BOLD}$(/bin/ls -1 /usr/src/pacstall)${NORMAL}
       exit
       ;;
     -D|--download)
