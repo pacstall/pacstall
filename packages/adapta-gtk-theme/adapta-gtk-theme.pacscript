@@ -17,5 +17,5 @@ build() {
 }
 
 install() {
-          sudo porg -lp $pkgname "make install"
+          sudo make install DESTDIR=/usr/src/pacstall/adapta-gtk-theme
 }
