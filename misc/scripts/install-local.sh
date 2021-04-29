@@ -112,4 +112,4 @@ cd $HOME
 echo $(date) | sudo tee /var/log/pacstall_installed/$PACKAGE_$version >/dev/null
 fancy_message info "Symlinking files"
 cd /usr/src/pacstall/
-sudo stow --target="/" $PACKAGE
+sudo stow --target="/" "$PACKAGE"
