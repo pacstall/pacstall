@@ -265,7 +265,7 @@ while test $# -gt 0; do
       ;;
     -L|--list)
       export LC_ALL=C
-      echo -e ${BOLD}$(/bin/ls -1a /usr/src/pacstall)${NORMAL}
+      echo -e ${BOLD}$(/bin/ls -1aA /usr/src/pacstall)${NORMAL}
       exit
       ;;
     -D|--download)
