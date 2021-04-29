@@ -236,7 +236,7 @@ while test $# -gt 0; do
       ;;
     -V|--version)
       if [[ -z "$2" ]]; then
-        echo -e "1.0.4 ${On_Black}Onyx${NC}"
+        echo -e "1.1 ${On_Black}Onyx${NC}"
         exit 0
       else
         if [[ $(pacstall -L | grep "$2" | cut -d' ' -f2-) ]]; then
