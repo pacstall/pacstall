@@ -128,6 +128,15 @@ function fancy_message() {
       *) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
     esac
 }
+historydir="~/.local/log/pacstall"
+logdate=$(date +%s)
+mkdir -p $historydir
+historyfile=${historydir}/$(logdate).log
+logthis() {
+    echo "$(date): $@" >> "$historyfile"
+    "$@" 2>> "$historyfile"
+}
+
 # run sudo apt update if it's been more than a week
 [ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && sudo apt update -qq
 while test $# -gt 0; do
@@ -170,7 +179,7 @@ while test $# -gt 0; do
       if [[ ! -e /usr/share/pacstall/repo/ ]]; then
         mkdir -p /usr/share/pacstall/repo
         touch /usr/share/pacstall/repo/pacstallrepo.txt
-	  sudo pacstall -C
+	    sudo pacstall -C
       fi
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       export HOMEDIR=$HOME
