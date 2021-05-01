@@ -40,7 +40,11 @@ else
 	fancy_message error "URL doesn't exist"
 	exit 1
 fi
+if [[ -z "$hash" ]]; then
+    fancy_message warn "Package does not contain a hash"
+fi
 }
+
 if ask "Do you want to view the pacscript first" Y; then
     less $PACKAGE.pacscript
 fi
@@ -61,6 +65,7 @@ if [[ -n "$build_depends" ]]; then
 else
     NOBUILDDEP=1
 fi
+
 echo -n $depends > /dev/null 2>&1
 if [[ $? -eq 0 ]] ; then
     dpkg-query -l $breaks >/dev/null 2>&1
@@ -69,9 +74,22 @@ if [[ $? -eq 0 ]] ; then
       exit 1
     fi
 fi
+
 if [[ $NOBUILDDEP -eq 0 ]] ; then
     sudo apt-get install -y -qq $build_depends
 fi
+
+hashcheck() {
+    inputHash=$hash
+    fileHash=($(sha256sum $1 | sed 's/\s.*$//'))
+
+    if [ $inputHash = $fileHash ]; then
+        fancy_message info "Hashes matched"
+    else
+        fancy_message error "Hashes don't match"
+        exit 1
+    fi
+}
 fancy_message info "Installing dependencies"
 sudo apt-get install -y -qq $depends
 fancy_message info "Retrieving packages"
@@ -85,9 +103,11 @@ if [[ $url = *.git ]] ; then
 else
   wget --progress=bar:force $url 2>&1 | progressfilt
   if [[ $url = *.zip ]] ; then
+    hashcheck $(echo ${url##*/}) 
     unzip -q $(echo ${url##*/}) 1>&1
     cd $(/bin/ls -d */|head -n 1)
-  else
+else
+    hashcheck $(echo ${url##*/})
     tar -xf $(echo ${url##*/}) 1>&1
     cd $(/bin/ls -d */|head -n 1)
   fi
