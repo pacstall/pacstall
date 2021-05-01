@@ -128,12 +128,6 @@ function fancy_message() {
       *) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
     esac
 }
-mkdir -p ~/.local/log/pacstall
-logdate="$(date +%s)"
-logthis() {
-    echo "$(date): $@" >> "~/.local/log/pacstall/$logdate.log"
-    "$@" 2>> "~/.local/log/pacstall/$logdate.log"
-}
 
 # run sudo apt update if it's been more than a week
 [ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && sudo apt update -qq
@@ -223,6 +217,7 @@ while test $# -gt 0; do
       fi
       if [ -d "/usr/src/pacstall/$PACKAGE" ]; then
         fancy_message info "Removing symlinks"
+        cd /usr/src/pacstall
         sudo stow -D "$PACKAGE"
         fancy_message info "Remove package"
         sudo rm -rf /usr/src/pacstall/"$PACKAGE"
