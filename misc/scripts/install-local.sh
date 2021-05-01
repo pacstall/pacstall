@@ -34,7 +34,7 @@ progressfilt ()
 # run checks to verify script works
 checks() {
 # curl url to check it exists
-if logthis curl --output /dev/null --silent --head --fail "$url" ; then
+if curl --output /dev/null --silent --head --fail "$url" ; then
     fancy_message info "URL exists"
 else
 	fancy_message error "URL doesn't exist"
@@ -47,7 +47,7 @@ fi
 fancy_message info "Sourcing pacscript"
 source $PACKAGE.pacscript
 fancy_message info "Running checks"
-logthis checks
+checks
 if [[ $? -eq 1 ]] ; then
     fancy_message error "There was an error checking the script!"
     exit 1
@@ -80,34 +80,34 @@ cd /tmp/pacstall
 
 # Detects if url ends in .git (in that case git clone it), or ends in .zip, or just assume that the url can be uncompressed with tar. Then cd into them
 if [[ $url = *.git ]] ; then
-  logthis git clone --quiet --depth=1 --jobs=10 $url
-  logthis cd $(/bin/ls -d */|head -n 1)
+  git clone --quiet --depth=1 --jobs=10 $url
+  cd $(/bin/ls -d */|head -n 1)
 else
-  logthis wget --progress=bar:force $url 2>&1 | progressfilt
+  wget --progress=bar:force $url 2>&1 | progressfilt
   if [[ $url = *.zip ]] ; then
-    logthis unzip -q $(echo ${url##*/}) 1>&1
-    logthis cd $(/bin/ls -d */|head -n 1)
+    unzip -q $(echo ${url##*/}) 1>&1
+    cd $(/bin/ls -d */|head -n 1)
   else
-    logthis tar -xf $(echo ${url##*/}) 1>&1
-    logthis cd $(/bin/ls -d */|head -n 1)
+    tar -xf $(echo ${url##*/}) 1>&1
+    cd $(/bin/ls -d */|head -n 1)
   fi
 fi
-logthis prepare
+prepare
 # Check if build function exists
 type -t build > /dev/null 2>&1
 if [[ $? -eq 0 ]] ; then
-  logthis build
+  build
 fi
 
 trap - SIGINT
 fancy_message info "Installing"
-logthis install
+install
 if [[ $REMOVE_DEPENDS = y ]] ; then
   sudo apt remove $build_depends
 fi
 sudo rm -rf /tmp/pacstall/*
 cd $HOME
-echo $(version) | sudo tee /var/log/pacstall_installed/$PACKAGE >/dev/null
+echo $version | sudo tee /var/log/pacstall_installed/$PACKAGE >/dev/null
 fancy_message info "Symlinking files"
 cd /usr/src/pacstall/
 # By default (I think), stow symlinks to the directory behind it (..), but we want to symlink to /, or in other words, symlink files from pkg/usr to /usr
