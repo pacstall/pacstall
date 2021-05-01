@@ -1,8 +1,8 @@
 #!/bin/bash
 function trap_ctrlc () {
-    fancy_message warn "Cleaning up"
+    echo ""
+    fancy_message warn "Interupted, cleaning up"
     rm -rf /tmp/pacstall/*
-	fancy_message info "installation interrupted, removed files"
     exit 2
 }
 
