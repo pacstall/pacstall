@@ -128,13 +128,11 @@ function fancy_message() {
       *) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
     esac
 }
-historydir="~/.local/log/pacstall"
-logdate=$(date +%s)
-mkdir -p $historydir
-historyfile=${historydir}/$(logdate).log
+mkdir -p ~/.local/log/pacstall
+logdate="$(date +%s)"
 logthis() {
-    echo "$(date): $@" >> "$historyfile"
-    "$@" 2>> "$historyfile"
+    echo "$(date): $@" >> "~/.local/log/pacstall/$logdate.log"
+    "$@" 2>> "~/.local/log/pacstall/$logdate.log"
 }
 
 # run sudo apt update if it's been more than a week
