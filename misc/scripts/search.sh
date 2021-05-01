@@ -8,7 +8,7 @@ if [[ -z "$SEARCH" ]]; then
 fi
 
 REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-logthis wget -q --spider https://github.com/"$REPO"/tree/master/packages/$SEARCH/
+wget -q --spider https://github.com/"$REPO"/tree/master/packages/$SEARCH/
 if [ $? -eq 0 ]; then
 	if ask "${GREEN}$SEARCH${NC} is available. Do you want to view the pacscript" Y; then
         curl -s https://raw.githubusercontent.com/$REPO/master/packages/$SEARCH/$SEARCH.pacscript | pygmentize -l bash | less -R
