@@ -251,6 +251,9 @@ while test $# -gt 0; do
       fi
       ;;
     -U|--update)
+      if ask "Do you want to update pacstall?" N; then
+          exit 1
+      else
       for i in {change-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh}; do
         sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/$i -P /usr/share/pacstall/scripts 2>/dev/null 
       done
@@ -264,6 +267,7 @@ while test $# -gt 0; do
 '
       fancy_message info "You are at version $(pacstall -V)"
       exit 0
+      fi
       ;;
     -L|--list)
       export LC_ALL=C
