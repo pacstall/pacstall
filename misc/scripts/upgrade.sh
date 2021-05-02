@@ -37,3 +37,4 @@ ${BOLD}$(cat /tmp/pacstall-up-list | tr '\n' ' ')${NORMAL}"
         sudo pacstall -I $i
     done
 fi
+rm /tmp/pacstall-up-list
