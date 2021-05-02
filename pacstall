@@ -251,7 +251,7 @@ while test $# -gt 0; do
       fi
       ;;
     -U|--update)
-      if ask "Do you want to update pacstall?" Y; then
+      if ask "Are you sure you want to update pacstall?" N; then
           exit 1
       else
       for i in {change-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh}; do
