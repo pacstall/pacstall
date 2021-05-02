@@ -1,35 +1,13 @@
 #!/bin/bash
 
 # This script downloads pacscripts from the interwebs
-progressfilt ()
-{
-    local flag=false c count cr=$'\r' nl=$'\n'
-    while IFS='' read -d '' -rn 1 c
-    do
-        if $flag
-        then
-            printf '%s' "$c"
-        else
-            if [[ $c != $cr && $c != $nl ]]
-            then
-                count=0
-            else
-                ((count++))
-                if ((count > 1))
-                then
-                    flag=true
-                fi
-            fi
-        fi
-    done
-}
 
 download() {
 mkdir -p $HOME/.cache/pacstall/
 cd $HOME/.cache/pacstall/
 mkdir -p $PACKAGE
 cd $PACKAGE
-wget --progress=bar:force $URL -O $PACKAGE.pacscript 2>&1 | progressfilt
+wget -q --show-progress --progress=bar:force $URL -O $PACKAGE.pacscript 2>&1
 if [[ $INSTALLING -eq 1 ]] ; then
     source /usr/share/pacstall/scripts/install-local.sh
     exit
