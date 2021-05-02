@@ -251,7 +251,7 @@ while test $# -gt 0; do
       fi
       ;;
     -U|--update)
-      if ask "Do you want to update pacstall?" N; then
+      if ask "Do you want to update pacstall?" Y; then
           exit 1
       else
       for i in {change-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh}; do
@@ -318,8 +318,8 @@ while test $# -gt 0; do
       echo "name: $PACKAGE"
       echo "version: $version"
       echo "size: $(du -sh /usr/src/pacstall/$PACKAGE | awk '{print $1}')"
-      echo "description: $description"
-      echo "date installed: $date"
+      echo "description: "$description""
+      echo "date installed: "$date""
       exit
       ;;
      *)
