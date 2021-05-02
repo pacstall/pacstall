@@ -61,7 +61,7 @@ hashcheck() {
     fileHash=($(sha256sum $1 | sed 's/\s.*$//'))
 
     if [ $inputHash = $fileHash ]; then
-        fancy_message info "Hashes match"
+        true
     else
         fancy_message error "Hashes don't match"
         exit 1
