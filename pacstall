@@ -309,7 +309,7 @@ while test $# -gt 0; do
       exit
       ;;
     -Qi|--query-info)
-      PACAKGE=$2
+      PACKAGE=$2
       if [[ -z "$PACKAGE" ]]; then
           fancy_message error "You failed to specify a package"
           exit 1
