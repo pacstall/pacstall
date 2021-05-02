@@ -33,8 +33,12 @@ else
     echo -e "Upgradable: $(wc -l /tmp/pacstall-up-list | awk '{ print $1 }')
 ${BOLD}$(cat /tmp/pacstall-up-list | tr '\n' ' ')${NORMAL}"
     echo ""
-    for i in `sed ':a;N;$!ba;s/\n/,/g' /tmp/pacstall-up-list` ; do
-        sudo pacstall -I $i
-    done
+    if ask "Do you want to continue?" Y; then
+        for i in `sed ':a;N;$!ba;s/\n/,/g' /tmp/pacstall-up-list` ; do
+            sudo pacstall -I $i
+        done
+    else
+        exit 1
+    fi
 fi
 rm /tmp/pacstall-up-list
