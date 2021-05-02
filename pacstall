@@ -193,8 +193,7 @@ while test $# -gt 0; do
         if [[ $(echo ${INPUT:0:1}) == *\/* ]]; then
           DIR=$(echo $INPUT | sed 's|\(.*\)/.*|\1|')
           cd $DIR
-          INPUT=${INPUT%.pacscript}
-          PACKAGE=$(echo $INPUT | sed 's|.*/||')
+          PACKAGE=$(echo "${INPUT##*/}")
         else
           # If input doesn't end in .pacscript and is relative
           if [[ $INPUT != *".pacscript" ]]; then
