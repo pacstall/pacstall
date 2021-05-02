@@ -7,13 +7,25 @@ list=( $(pacstall -L) )
 rm /tmp/pacstall-up-list
 touch /tmp/pacstall-up-list
 REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
+fancy_message info "Getting lists, this may take a while"
 for i in "${list[@]}"; do
     localver=$(cat /var/log/pacstall_installed/$i)
     remotever=$(curl -s https://raw.githubusercontent.com/"$REPO"/master/packages/$i/$i.pacscript | sed -n -e 's/version=//p' | tr -d \")
     if version_gt "$remotever" "$localver" ; then
         echo $i >> /tmp/pacstall-up-list
     fi
+done &
+
+PID=$!
+i=1
+sp="/-\|"
+echo -n ' '
+while [ -d /proc/$PID ]
+do
+  sleep 0.2
+  printf "\b${sp:i++%${#sp}:1}"
 done
+
 fancy_message info "These can be upgraded:"
 echo "Upgradable: $(wc -l /tmp/pacstall-up-list)
 $(cat /tmp/pacstall-up-list | tr '\n' ' ')"
