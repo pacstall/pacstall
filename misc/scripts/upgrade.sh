@@ -29,9 +29,10 @@ echo ""
 if [[ $(wc -l /tmp/pacstall-up-list | awk '{ print $1 }') -eq 0 ]] ; then
     fancy_message info "Nothing to upgrade"
 else
-    fancy_message info "These can be upgraded:"
-    echo "Upgradable: $(wc -l /tmp/pacstall-up-list | awk '{ print $1 }')
-$(cat /tmp/pacstall-up-list | tr '\n' ' ')"
+    fancy_message info "Packages can be upgraded"
+    echo -e "Upgradable: $(wc -l /tmp/pacstall-up-list | awk '{ print $1 }')
+${BOLD}$(cat /tmp/pacstall-up-list | tr '\n' ' ')${NORMAL}"
+    echo ""
     if ask "Do you want to continue?" Y; then
         for i in `sed ':a;N;$!ba;s/\n/,/g' /tmp/pacstall-up-list` ; do
             sudo pacstall -I $i
