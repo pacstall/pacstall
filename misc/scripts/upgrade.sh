@@ -14,6 +14,13 @@ for i in "${list[@]}"; do
         echo $i >> /tmp/pacstall-up-list
     fi
 done
-for i in `sed ':a;N;$!ba;s/\n/,/g' /tmp/pacstall-up-list` ; do
-    sudo pacstall -I $i
-done
+fancy_message info "These can be upgraded:"
+echo $(cat /tmp/pacstall-up-list | tr '\n' ' ')
+if ask "Do you want to continue?" Y; then
+    for i in `sed ':a;N;$!ba;s/\n/,/g' /tmp/pacstall-up-list` ; do
+        sudo pacstall -I $i
+    done
+else
+    fancy_message error "Aborted"
+    exit 1
+fi
