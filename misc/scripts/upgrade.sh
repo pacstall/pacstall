@@ -25,14 +25,18 @@ do
   sleep 0.2
   printf "\b${sp:i++%${#sp}:1}"
 done
-
-fancy_message info "These can be upgraded:"
-echo "Upgradable: $(wc -l /tmp/pacstall-up-list)
-$(cat /tmp/pacstall-up-list | tr '\n' ' ')"
-if ask "Do you want to continue?" Y; then
-    for i in `sed ':a;N;$!ba;s/\n/,/g' /tmp/pacstall-up-list` ; do
-        sudo pacstall -I $i
-    done
+echo ""
+if [[ $(wc -l /tmp/pacstall-up-list | awk '{ print $1 }') -eq 0 ]] ; then
+    fancy_message info "Nothing to upgrade"
 else
-    exit 1
+    fancy_message info "These can be upgraded:"
+    echo "Upgradable: $(wc -l /tmp/pacstall-up-list | awk '{ print $1 }')
+$(cat /tmp/pacstall-up-list | tr '\n' ' ')"
+    if ask "Do you want to continue?" Y; then
+        for i in `sed ':a;N;$!ba;s/\n/,/g' /tmp/pacstall-up-list` ; do
+            sudo pacstall -I $i
+        done
+    else
+        exit 1
+    fi
 fi
