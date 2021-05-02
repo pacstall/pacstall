@@ -308,6 +308,20 @@ while test $# -gt 0; do
       . /usr/share/pacstall/scripts/upgrade.sh
       exit
       ;;
+    -Qi|--query-info)
+      PACAKGE=$2
+      if [[ -z "$PACKAGE" ]]; then
+          fancy_message error "You failed to specify a package"
+          exit 1
+      fi
+      source /var/log/pacstall_installed/$PACKAGE
+      echo "name: $PACKAGE"
+      echo "version: $version"
+      echo "size: $(du -sh /usr/src/pacstall/$PACKAGE | awk '{print $1}')"
+      echo "description: $description"
+      echo "date installed: $date"
+      exit
+      ;;
      *)
       pacstall -h
       exit 1
