@@ -104,9 +104,9 @@ if [[ $REMOVE_DEPENDS = y ]] ; then
 fi
 sudo rm -rf /tmp/pacstall/*
 cd $HOME
-echo "version=$version" | sudo tee /var/log/pacstall_installed/$PACKAGE >/dev/null
-echo "description="$description"" | sudo tee -a /var/log/pacstall_installed/$PACKAGE >/dev/null
-echo "date="$(date)"" | sudo tee -a /var/log/pacstall_installed/$PACKAGE >/dev/null
+echo "version=\"$version\"" | sudo tee /var/log/pacstall_installed/$PACKAGE >/dev/null
+echo "description=\"$description\"" | sudo tee -a /var/log/pacstall_installed/$PACKAGE >/dev/null
+echo "date=\"$(date)\"" | sudo tee -a /var/log/pacstall_installed/$PACKAGE >/dev/null
 fancy_message info "Symlinking files"
 cd /usr/src/pacstall/
 # By default (I think), stow symlinks to the directory behind it (..), but we want to symlink to /, or in other words, symlink files from pkg/usr to /usr
