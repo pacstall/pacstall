@@ -185,12 +185,16 @@ while test $# -gt 0; do
     -Il|--install-local)
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt) 
       INPUT=$2
-      cd $(pwd)
-      parentdir="$(dirname "$INPUT")"
-      eval dir=$parentdir
-      cd $dir
-      PACKAGE=$(basename $dir)
-      PACKAGE=$(echo $PACKAGE | sed 's/\..*$//')
+      if [[ "$string" == *\/* ]] || [[ "$string" == *\\* ]] ; then
+        cd $(pwd)
+        parentdir="$(dirname "$INPUT")"
+        eval dir=$parentdir
+        cd $dir
+        PACKAGE=$(basename $dir)
+        PACKAGE=$(echo $PACKAGE | sed 's/\..*$//')
+      else
+          PACKAGE=$(echo $INPUT | sed 's/:.*//')
+      fi
       source /usr/share/pacstall/scripts/install-local.sh
       exit
       ;;
