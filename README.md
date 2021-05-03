@@ -55,3 +55,9 @@ This will open a window where you can choose a repository
 sudo pacstall -U
 ```
 This will update pacstall
+
+```bash
+sudo pacstall -Up
+```
+
+This will update packages
