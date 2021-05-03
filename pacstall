@@ -185,17 +185,10 @@ while test $# -gt 0; do
     -Il|--install-local)
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt) 
       INPUT=$2
-      # If input is relative and ends in .pacscript
-      if [[ $(echo ${INPUT:0:1}) == *\/* ]]; then
-        DIR=$(echo $INPUT | sed 's|\(.*\)/.*|\1|')
-        cd $DIR
-        PACKAGE=$(echo "${INPUT##*/}")
-      else
-        # If input doesn't end in .pacscript and is relative
-        if [[ $INPUT != *".pacscript" ]]; then
-          PACKAGE=$INPUT
-        fi
-      fi
+      cd $(pwd)
+      parentdir="$(dirname "$INPUT")"
+      cd $parentdir
+      INPUT="${INPUT##*/}"
       source /usr/share/pacstall/scripts/install-local.sh
       exit
       ;;
