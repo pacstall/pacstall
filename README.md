@@ -7,7 +7,9 @@
 </p>
 
 <p align="center"><b>PACSTALL</b></p>
-<img align="center" src="website-images/pacstall.png" alt="Pacstall Logo">
+<p align="center">
+<a href="https://github.com/Henryws/pacstall"><img align="center" src="website-images/pacstall.png" alt="Pacstall Logo"></a>
+</p>
 <p align="center"><b>The AUR Ubuntu never had</b></p>
 
 <p align="center">Pacstall will attempt to become the AUR Ubuntu wishes it had. It takes the AUR and puts a spin on it, making it easier to install programs without scouring github repos and the likes</p>
