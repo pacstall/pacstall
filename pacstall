@@ -187,8 +187,10 @@ while test $# -gt 0; do
       INPUT=$2
       cd $(pwd)
       parentdir="$(dirname "$INPUT")"
-      cd $parentdir
-      PACKAGE=echo "${INPUT%%.*}"
+      eval dir=$parentdir
+      cd $dir
+      PACKAGE=$(basename $dir)
+      PACKAGE=$(echo $PACKAGE | sed 's/\..*$//')
       source /usr/share/pacstall/scripts/install-local.sh
       exit
       ;;
