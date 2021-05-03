@@ -188,7 +188,7 @@ while test $# -gt 0; do
       cd $(pwd)
       parentdir="$(dirname "$INPUT")"
       cd $parentdir
-      INPUT="${INPUT##*/}"
+      PACKAGE=echo "${INPUT%%.*}"
       source /usr/share/pacstall/scripts/install-local.sh
       exit
       ;;
