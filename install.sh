@@ -82,6 +82,8 @@ if [[ $? -eq 1 ]] ; then
   exit 1
 fi
 
+fancy_message info "Updating"
+sudo apt-get update
 fancy_message info "Installing packages"
 sudo apt-get install -qq -o=Dpkg::Use-Pty=0 -y {curl,wget,stow,python3-pygments}
 
