@@ -34,17 +34,17 @@ This is not the repository for pacscripts (PKGBUILD). They are [here](https://gi
 ```bash
 sudo pacstall -I foo
 ``` 
-This will install foo
+This will install foo. Equivalent of apt install
 
 ```bash
 sudo pacstall -R foo
 ```
-This will remove foo
+This will remove foo. Equivalent of apt remove
 
 ```bash
 sudo pacstall -S foo
 ```
-This will search for foo in repositories
+This will search for foo in repositories. Equivalent of apt search
 
 ```bash
 sudo pacstall -C
@@ -54,10 +54,10 @@ This will open a window where you can choose a repository
 ```bash
 sudo pacstall -U
 ```
-This will update pacstall
+This will update pacstall's scripts. There is no equivalent of apt update
 
 ```bash
 sudo pacstall -Up
 ```
 
-This will update packages
+This will update packages. Equivalent of apt upgrade
