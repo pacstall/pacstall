@@ -84,8 +84,15 @@ fi
 
 fancy_message info "Updating"
 sudo apt-get update
+# Gets difference between pygments package. 20.04 is python3-pygments and 18.04 is python-pygments
+. /etc/lsb-release
+if [[ $DISTRIB_RELEASE -ge "20.04" ]] ; then
+  pygments="python3-pygments"
+else
+  pygments="python-pygments"
+fi
 fancy_message info "Installing packages"
-sudo apt-get install -qq -o=Dpkg::Use-Pty=0 -y {curl,wget,stow,python-pygments}
+sudo apt-get install -qq -o=Dpkg::Use-Pty=0 -y {curl,wget,stow,$pygments}
 
 unset PACSTALL_DIRECTORY
 export PACSTALL_DIRECTORY="/usr/share/pacstall"
