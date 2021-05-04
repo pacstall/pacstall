@@ -85,7 +85,7 @@ fi
 fancy_message info "Updating"
 sudo apt-get update
 fancy_message info "Installing packages"
-sudo apt-get install -qq -o=Dpkg::Use-Pty=0 -y {curl,wget,stow,python3-pygments}
+sudo apt-get install -qq -o=Dpkg::Use-Pty=0 -y {curl,wget,stow,python-pygments}
 
 unset PACSTALL_DIRECTORY
 export PACSTALL_DIRECTORY="/usr/share/pacstall"
