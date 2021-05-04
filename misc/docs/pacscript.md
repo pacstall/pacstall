@@ -4,7 +4,7 @@ This is a pacscript:
 name="foo"
 pkgname="foo"
 version="1.0"
-url="https://github.com/Henryws/pacstall/foo.git"
+url="https://github.com/Henryws/foo/archive/refs/tags/1.0.zip"
 license="GPL"
 build_depends="vim gcc"
 depends="neofetch plasma"
@@ -17,11 +17,11 @@ prepare() {
 
 build() {
         ./configure
-        make
+        make -j$(nproc)
 }
 
 install() {
-          sudo porg -lp foo "make install DESTDIR=/usr/src/pacstall"
+          sudo make install DESTDIR=/usr/src/pacstall
 }
 ```
 
