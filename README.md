@@ -24,7 +24,7 @@ You can grab the deb file [here](https://github.com/Henryws/pacstall/releases/la
 sudo bash -c "$(curl -fsSL https://git.io/JfHDM)"
 ```
 Or with wget:
-```bash```
+```bash
 sudo bash -c "$(wget -q https://git.io/JfHDM -O -)"
 ```
 ### Info
