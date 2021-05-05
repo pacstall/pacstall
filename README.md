@@ -54,7 +54,7 @@ This will open a window where you can choose a repository
 ```bash
 sudo pacstall -U
 ```
-This will update pacstall's scripts. There is no equivalent of apt update
+This will update pacstall's scripts
 
 ```bash
 sudo pacstall -Up
