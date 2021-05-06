@@ -65,12 +65,7 @@ fancy_message info "Updating"
 sudo apt-get update
 fancy_message info "Installing packages"
 
-grep -q 21.04 /etc/issue
-if [[ "$?" == "0" ]]; then
-  sudo apt-get install -qq -y {curl,wget,stow,python3-pygments}  
-else
-  sudo apt-get install -qq -y {curl,wget,stow,python-pygments}
-fi
+sudo apt-get install -qq -y {curl,wget,stow}
 
 unset PACSTALL_DIRECTORY
 export PACSTALL_DIRECTORY="/usr/share/pacstall"
