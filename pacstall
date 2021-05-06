@@ -215,6 +215,7 @@ while test $# -gt 0; do
         sudo stow -D "$PACKAGE"
         fancy_message info "Remove package"
         sudo rm -rf /usr/src/pacstall/"$PACKAGE"
+        hash -r
 	if [[ $removescript == "yes" ]] ; then
 	   fancy_message info "Running post removal script"
 	   REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
