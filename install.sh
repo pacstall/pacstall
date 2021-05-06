@@ -76,7 +76,7 @@ sudo mkdir -p $PACSTALL_DIRECTORY/repo
 sudo mkdir -p /var/log/pacstall_orphaned
 sudo rm $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
 sudo touch $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
-sudo echo "Henryws/pacstall-programs" > $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
+sudo sh -c "echo 'Henryws/pacstall-programs' > $PACSTALL_DIRECTORY/repo/pacstallrepo.txt"
 sudo rm -rf /var/log/pacstall_installed
 sudo mkdir /var/log/pacstall_installed
 sudo rm -rf /var/cache/pacstall
