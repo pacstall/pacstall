@@ -109,6 +109,9 @@ cd $HOME
 echo "version=\"$version"\" | sudo tee /var/log/pacstall_installed/$PACKAGE >/dev/null
 echo "description=\"$description"\" | sudo tee -a /var/log/pacstall_installed/$PACKAGE >/dev/null
 echo "date=\"$(date)"\" | sudo tee -a /var/log/pacstall_installed/$PACKAGE >/dev/null
+if [[ $removescript == "yes" ]] ; then
+   echo "removescript=\"yes"\" | sudo tee -a /var/log/pacstall_installed/$PACKAGE >/dev/null
+fi
 fancy_message info "Symlinking files"
 cd /usr/src/pacstall/
 # By default (I think), stow symlinks to the directory behind it (..), but we want to symlink to /, or in other words, symlink files from pkg/usr to /usr
@@ -117,4 +120,8 @@ sudo stow --target="/" "$PACKAGE"
 if [[ $? -eq 1 ]]; then
     fancy_message error "Package contains links to files that exist on the system"
     exit 1
+fi
+type -t postinst > /dev/null 2>&1
+if [[ $? -eq 0 ]] ; then
+   postinst
 fi
