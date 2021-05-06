@@ -53,7 +53,16 @@ if [[ $? -eq 0 ]] ; then
     fi
     fi
 fi
-
+if [[ -z $replace ]] ; then
+    dpkg-query -W -f='${Status}' $replace 2>/dev/null | grep -c "ok installed"
+    if [[ $? -eq 1 ]] ; then
+        if ask "This script replaces $replace. Do you want to procide?" N; then
+            sudo apt-get remove -y $replace 
+        else
+            exit 1
+        fi
+    fi
+fi
 if [[ $NOBUILDDEP -eq 0 ]] ; then
     sudo apt-get install -y -qq $build_depends
 fi
