@@ -1,22 +1,21 @@
-name="foo"
+name="foo-git"
 pkgname="foo"
 version="1.0"
 url="https://github.com/Henryws/pacstall/foo.git"
 license="GPL"
-build_depends="vim gcc"
+build_depends="make gcc"
 depends="neofetch plasma"
-gives="libfoo"
 breaks="libfoo-git"
 
 prepare() {
-          command -v $depends
+          command -v {make,gcc}
 }
 
 build() {
         ./configure
-        make
+        make -j$(nproc)
 }
 
 install() {
-          make install
+          sudo make install DESTDIR=/usr/src/pacstall/foo-git
 }
