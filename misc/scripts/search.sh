@@ -8,15 +8,7 @@ if [[ -z "$SEARCH" ]]; then
 fi
 
 REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-wget -q --spider https://github.com/"$REPO"/tree/master/packages/$SEARCH/
-if [ $? -eq 0 ]; then
-	if ask "${GREEN}$SEARCH${NC} is available. Do you want to view the pacscript" Y; then
-        curl -s https://raw.githubusercontent.com/$REPO/master/packages/$SEARCH/$SEARCH.pacscript | less -R
-		exit 0
-	else
-	exit 0
-	fi
-else
-	fancy_message error "$SEARCH doesn't seem to exist"
-	exit 1
+SELECTED=$(curl -s https://raw.githubusercontent.com/"$REPO"/master/packagelist | tr ' ' '\n' | fzf -q $SEARCH)
+if ask "Do you want to view the pacscript?" Y; then
+    curl -s https://raw.githubusercontent.com/$REPO/master/packages/$SELECTED/$SELECTED.pacscript | less -R
 fi
