@@ -11,4 +11,6 @@ REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
 SELECTED=$(curl -s https://raw.githubusercontent.com/"$REPO"/master/packagelist | tr ' ' '\n' | fzf -q $SEARCH)
 if ask "Do you want to view the pacscript?" Y; then
     curl -s https://raw.githubusercontent.com/$REPO/master/packages/$SELECTED/$SELECTED.pacscript | less -R
+    exit
 fi
+exit
