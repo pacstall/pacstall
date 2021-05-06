@@ -129,7 +129,7 @@ if [[ -z $optdepends ]] ; then
     echo "Optional dependencies:"
     echo "$optdepends"
     if ask "Do you want to install them?" Y; then
-        sudo apt-get intall -y $optdepends
+        sudo apt-get install -y $optdepends
     fi
 fi
 fancy_message info "Symlinking files"
