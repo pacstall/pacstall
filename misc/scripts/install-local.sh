@@ -124,6 +124,14 @@ echo "date=\"$(date)"\" | sudo tee -a /var/log/pacstall_installed/$PACKAGE >/dev
 if [[ $removescript == "yes" ]] ; then
    echo "removescript=\"yes"\" | sudo tee -a /var/log/pacstall_installed/$PACKAGE >/dev/null
 fi
+if [[ -z $optdepends ]] ; then
+    fancy_message info "Package has some optional dependencies that can enhance it's functionalities"
+    echo "Optional dependencies:"
+    echo "$optdepends"
+    if ask "Do you want to install them?" Y; then
+        sudo apt-get intall -y $optdepends
+    fi
+fi
 fancy_message info "Symlinking files"
 cd /usr/src/pacstall/
 # By default (I think), stow symlinks to the directory behind it (..), but we want to symlink to /, or in other words, symlink files from pkg/usr to /usr
