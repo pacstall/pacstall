@@ -45,10 +45,12 @@ fi
 
 echo -n $depends > /dev/null 2>&1
 if [[ $? -eq 0 ]] ; then
+    if [[ -n "$breaks" ]]; then
     dpkg-query -l $breaks >/dev/null 2>&1
     if [[ $? -eq 0 ]] ; then
       fancy_message error "${RED}$pkgname${NC} breaks $breaks"
       exit 1
+    fi
     fi
 fi
 
