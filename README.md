@@ -4,6 +4,7 @@
 <a href="https://www.gnu.org/software/bash/"><img src="https://img.shields.io/badge/bash-v5-brightgreen?style=flat-square&logo" alt="Bash v5"></a>
   <a href="https://github.com/Henryws/pacstall/issues"><img src="https://img.shields.io/github/issues/Henryws/pacstall?style=flat-square"></a>
 <a href="https://github.com/Henryws/pacstall/actions?query=workflow%3A%22test+install+script%22"><img src="https://img.shields.io/github/workflow/status/Henryws/pacstall/test%20install%20script?style=flat-square"></a>
+<a href="https://discord.gg/yzrjXJV6K8"><img src="https://img.shields.io/discord/839818021207801878?style=plastic"></a>
 </p>
 
 <p align="center"><b>PACSTALL</b></p>
