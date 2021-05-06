@@ -118,3 +118,7 @@ if [[ $? -eq 1 ]]; then
     fancy_message error "Package contains links to files that exist on the system"
     exit 1
 fi
+type -t postinst > /dev/null 2>&1
+if [[ $? -eq 0 ]] ; then
+   postinst
+fi
