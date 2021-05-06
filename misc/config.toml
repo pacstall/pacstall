@@ -1,4 +1,0 @@
-pacprefix = "apt install -y"
-
-[makeflags]
-makeflags = "-j$(nproc)
