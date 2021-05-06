@@ -97,7 +97,10 @@ type -t build > /dev/null 2>&1
 if [[ $? -eq 0 ]] ; then
   build
 fi
-
+if [[ $? -eq 1 ]] ; then
+  fancy_message error "Something didn't compile right"
+  exit 1
+fi
 trap - SIGINT
 fancy_message info "Installing"
 install
