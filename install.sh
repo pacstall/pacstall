@@ -31,27 +31,6 @@ echo -e "|---${GREEN}Pacstall Installer${NC}---|"
 echo -e "|------------------------|"
 echo " "
 }
-progressfilt() {
-    local flag=false c count cr=$'\r' nl=$'\n'
-    while IFS='' read -d '' -rn 1 c
-    do
-        if $flag
-        then
-            printf '%s' "$c"
-        else
-            if [[ $c != $cr && $c != $nl ]]
-            then
-                count=0
-            else
-                ((count++))
-                if ((count > 1))
-                then
-                    flag=true
-                fi
-            fi
-        fi
-    done
-}
 if ! command -v apt &> /dev/null
 then
     fancy_message error "apt could not be found"
@@ -81,7 +60,7 @@ if [[ $? -eq 1 ]] ; then
   fancy_message warn "You seem to be offline"
   exit 1
 fi
-
+echo ""
 fancy_message info "Updating"
 sudo apt-get update
 fancy_message info "Installing packages"
@@ -109,7 +88,7 @@ sudo rm -rf /var/cache/pacstall
 sudo mkdir -p /var/db/pacstall
 fancy_message info "Pulling scripts from GitHub "
 for i in {change-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh}; do 
-sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/$i -P /usr/share/pacstall/scripts 2>/dev/null | progressfilt
+sudo wget -q --show-progress -N https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/$i -P /usr/share/pacstall/scripts
 done &
 PID=$!
 i=1
@@ -122,7 +101,7 @@ do
 done
 echo ""
 fancy_message info "pulling ${BLUE}pacstall${NC} from ${RED}https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall${NC}"
-sudo wget --progress=bar:force -O /bin/pacstall https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall 2>&1 | progressfilt
+sudo wget -q --show-progress --progress=bar:force -O /bin/pacstall https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall
 sudo chmod +x /bin/pacstall
 fancy_message info "Installing ${BLUE}Manpage${NC}"
-wget --progress=bar:force -O /usr/share/man/man8/pacstall.8.gz https://raw.githubusercontent.com/Henryws/pacstall/master/misc/pacstall.8.gz 2>&1 | progressfilt
+wget -q --show-progress --progress=bar:force -O /usr/share/man/man8/pacstall.8.gz https://raw.githubusercontent.com/Henryws/pacstall/master/misc/pacstall.8.gz
