@@ -65,12 +65,7 @@ fancy_message info "Updating"
 sudo apt-get update
 fancy_message info "Installing packages"
 
-grep -q 21.04 /etc/issue
-if [[ "$?" == "0" ]]; then
-  sudo apt-get install -qq -y {curl,wget,stow,python3-pygments}  
-else
-  sudo apt-get install -qq -y {curl,wget,stow,python-pygments}
-fi
+sudo apt-get install -qq -y {curl,wget,stow}
 
 unset PACSTALL_DIRECTORY
 export PACSTALL_DIRECTORY="/usr/share/pacstall"
@@ -81,7 +76,7 @@ sudo mkdir -p $PACSTALL_DIRECTORY/repo
 sudo mkdir -p /var/log/pacstall_orphaned
 sudo rm $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
 sudo touch $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
-sudo echo "Henryws/pacstall-programs" > $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
+sudo sh -c "echo 'Henryws/pacstall-programs' > $PACSTALL_DIRECTORY/repo/pacstallrepo.txt"
 sudo rm -rf /var/log/pacstall_installed
 sudo mkdir /var/log/pacstall_installed
 sudo rm -rf /var/cache/pacstall
