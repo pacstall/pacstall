@@ -208,12 +208,19 @@ while test $# -gt 0; do
         fancy_message error "You did not specify a package to remove"
         exit 1
       fi
+      source /var/log/pacstall_installed/$PACKAGE
       if [ -d "/usr/src/pacstall/$PACKAGE" ]; then
         fancy_message info "Removing symlinks"
         cd /usr/src/pacstall
         sudo stow -D "$PACKAGE"
         fancy_message info "Remove package"
         sudo rm -rf /usr/src/pacstall/"$PACKAGE"
+	if [[ $removescript == "yes" ]] ; then
+	   fancy_message info "Running post removal script"
+	   REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
+	   source $(curl -q https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/$PACKAGE.pacscript)
+	   removescript
+	fi
         fancy_message info "Done removing $PACKAGE"
         exit
       else
