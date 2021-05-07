@@ -35,8 +35,8 @@ if [[ $? -eq 1 ]] ; then
 fi
 
 if [[ -n "$build_depends" ]]; then
-    fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}$(echo -e $build_depends)${NC} to install"
-    if ask "Do you want to remove them after installing ${BLUE}$pkgname${NC}" N; then
+    fancy_message info "${BLUE}$name${NC} requires ${CYAN}$(echo -e $build_depends)${NC} to install"
+    if ask "Do you want to remove them after installing ${BLUE}$name${NC}" N; then
         NOBUILDDEP=0
 	fi
     else
@@ -48,13 +48,13 @@ if [[ $? -eq 0 ]] ; then
     if [[ -n "$breaks" ]]; then
     dpkg-query -l $breaks >/dev/null 2>&1
     if [[ $? -eq 0 ]] ; then
-      fancy_message error "${RED}$pkgname${NC} breaks $breaks"
+      fancy_message error "${RED}$name${NC} breaks $breaks"
       exit 1
     fi
     fi
     if [[ -n "$breaks" ]] ; then
         if [[ $(pacstall -L) = *$breaks* ]] ; then
-            fancy_message error "${RED}$pkgname${NC} breaks $breaks"
+            fancy_message error "${RED}$name${NC} breaks $breaks"
             exit 1
         fi
     fi
