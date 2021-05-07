@@ -52,6 +52,12 @@ if [[ $? -eq 0 ]] ; then
       exit 1
     fi
     fi
+    if [[ -n "$breaks" ]] ; then
+        if [[ $(pacstall -L) = *$breaks* ]] ; then
+            fancy_message error "${RED}$pkgname${NC} breaks $breaks"
+            exit 1
+        fi
+    fi
 fi
 if [[ -z $replace ]] ; then
     dpkg-query -W -f='${Status}' $replace 2>/dev/null | grep -c "ok installed"
