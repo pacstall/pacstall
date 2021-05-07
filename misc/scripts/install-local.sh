@@ -22,7 +22,7 @@ if [[ -z "$hash" ]]; then
 fi
 }
 
-if ask "Do you want to view the pacscript first" Y; then
+if ask "Do you want to view the pacscript first" N; then
     less $PACKAGE.pacscript
 fi
 fancy_message info "Sourcing pacscript"
@@ -36,12 +36,12 @@ fi
 
 if [[ -n "$build_depends" ]]; then
     fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}$(echo -e $build_depends)${NC} to install"
-	if ask "Do you want to remove them after installing ${BLUE}$pkgname${NC}" N; then
-    	NOBUILDDEP=0
+    if ask "Do you want to remove them after installing ${BLUE}$pkgname${NC}" N; then
+        NOBUILDDEP=0
 	fi
-else
-    NOBUILDDEP=1
-fi
+    else
+        NOBUILDDEP=1
+    fi
 
 echo -n $depends > /dev/null 2>&1
 if [[ $? -eq 0 ]] ; then
