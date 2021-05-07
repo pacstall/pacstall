@@ -130,6 +130,7 @@ echo "date=\"$(date)"\" | sudo tee -a /var/log/pacstall_installed/$PACKAGE >/dev
 if [[ $removescript == "yes" ]] ; then
    echo "removescript=\"yes"\" | sudo tee -a /var/log/pacstall_installed/$PACKAGE >/dev/null
 fi
+echo "maintainer=\"$maintainer"\" | sudo tee -a /var/log/pacstall_installed/$PACKAGE >/dev/null
 # If optdepends exists do this
 if [[ -n $optdepends ]] ; then
     fancy_message info "Package has some optional dependencies that can enhance it's functionalities"
