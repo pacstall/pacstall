@@ -96,6 +96,7 @@ ask() {
         if [[ -z "$DISABLE_PROMPTS" ]]; then
                 read -r reply </dev/tty
         else
+                echo $default
                 reply=$default
         fi
 
@@ -139,7 +140,7 @@ function fancy_message() {
 while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
   case "$1" in
     -P|--disable-prompts)
-      fancy_message warn "prompts are disabled"
+      fancy_message warn "Prompts are disabled"
       DISABLE_PROMPTS=yes
       ;;
     -h|--help)
