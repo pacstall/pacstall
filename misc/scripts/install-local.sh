@@ -11,7 +11,7 @@ trap "trap_ctrlc" 2
 # run checks to verify script works
 checks() {
 # curl url to check it exists
-if curl --output /dev/null --silent --head --fail "$url" ; then
+if curl --output /dev/null --silent --head --fail "$url" >/dev/null; then
     fancy_message info "URL exists"
 else
 	fancy_message error "URL doesn't exist"

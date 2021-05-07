@@ -11,7 +11,7 @@ echo "repo changer"
       do
           case $CHOICE in
               1)
-                  echo -e "${PURPLE}Henryws${NC} repository selected" ; echo -n "Henryws/pacstall-programs" | sudo tee /usr/share/pacstall/repo/pacstallrepo.txt
+                  echo -e "${PURPLE}Henryws${NC} repository selected" ; echo -n "https://raw.githubusercontent.com/Henryws/pacstall-programs/master" | sudo tee /usr/share/pacstall/repo/pacstallrepo.txt
                   exit
                   ;;
               2)
