@@ -161,7 +161,6 @@ while test $# -gt 0; do
         fancy_message error "Run as root"
         exit 1
       fi
-      PACPREFIX="apt install -y "
       PACKAGE=$2
       if [[ -z "$PACKAGE" ]]; then
         fancy_message error "You failed to specify a package"
@@ -185,14 +184,16 @@ while test $# -gt 0; do
     -Il|--install-local)
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt) 
       INPUT=$2
+      # If string is absolute dir
       if [[ "$string" == *\/* ]] || [[ "$string" == *\\* ]] ; then
         cd $(pwd)
         parentdir="$(dirname "$INPUT")"
-        eval dir=$parentdir
+        eval dir="$parentdir"
         cd $dir
-        PACKAGE=$(basename $dir)
-        PACKAGE=$(echo $PACKAGE | sed 's/\..*$//')
+        PACKAGE=$(basename "$dir")
+        PACKAGE="$(echo $PACKAGE | sed 's/\..*$//')"
       else
+          # If it's in pwd
           PACKAGE=$(echo $INPUT | sed 's/:.*//')
       fi
       source /usr/share/pacstall/scripts/install-local.sh
@@ -276,6 +277,7 @@ while test $# -gt 0; do
       exit
       ;;
     -D|--download)
+      export LC_ALL=C
       PACKAGE=$2
       if [[ -z "$PACKAGE" ]]; then
         fancy_message error "You failed to specify a package"
@@ -315,10 +317,10 @@ while test $# -gt 0; do
           fancy_message error "You failed to specify a package"
           exit 1
       fi
-      source /var/log/pacstall_installed/$PACKAGE
+      source /var/log/pacstall_installed/"$PACKAGE"
       echo "name: $PACKAGE"
       echo "version: $version"
-      echo "size: $(du -sh /usr/src/pacstall/$PACKAGE | awk '{print $1}')"
+      echo "size: $(du -sh /usr/src/pacstall/"$PACKAGE" | awk '{print $1}')"
       echo "description: "$description""
       echo "date installed: "$date""
       exit
