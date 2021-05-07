@@ -230,7 +230,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
 	if [[ $removescript == "yes" ]] ; then
 	   fancy_message info "Running post removal script"
 	   REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-	   source <(curl -s $REPO/packages/$PACKAGE/$PACKAGE.pacscript)
+	   source <(curl -s "$REPO"/packages/$PACKAGE/$PACKAGE.pacscript)
 	   removescript
 	fi
         fancy_message info "Done removing $PACKAGE"
