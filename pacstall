@@ -93,7 +93,11 @@ ask() {
         echo -ne "$1 [$prompt] "
 
         # Read the answer (use /dev/tty in case stdin is redirected from somewhere else)
-        read -r reply </dev/tty
+        if [[ -z "$DISABLE_PROMPTS" ]]; then
+                read -r reply </dev/tty
+        else
+                reply=$default
+        fi
 
         # Default?
         if [[ -z $reply ]]; then
@@ -131,8 +135,13 @@ function fancy_message() {
 
 # run sudo apt update if it's been more than a week
 [ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && sudo apt update -qq
-while test $# -gt 0; do
+
+while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
   case "$1" in
+    -P|--disable-prompts)
+      fancy_message warn "prompts are disabled"
+      DISABLE_PROMPTS=yes
+      ;;
     -h|--help)
       echo " "
       echo "options:"
@@ -329,5 +338,6 @@ while test $# -gt 0; do
       pacstall -h
       exit 1
       ;;
-  esac
+  esac; shift
 done
+if [[ "$1" == '--' ]]; then shift; fi
