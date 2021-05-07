@@ -144,19 +144,19 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       DISABLE_PROMPTS=yes
       ;;
     -h|--help)
-      echo " "
-      echo "options:"
-      echo "-I --install, Installs package"
-      echo "-S --search, Search for package"
-      echo "-R --remove, Removes package"
-      echo "-C --change-repo, Chooses repo"
-      echo "-U --update, Update script"
-      echo "-V --version, Prints pacstall version"
-      echo "-L --list, Lists installed packages"
-      echo "-Up --upgrade, Upgrades packages"
-      echo "-Qd --query-depends, Get dependencies of package"
-      echo "-Qi --query-info, Get package info"
-      echo " "
+      echo " 
+      options:
+      -I --install, Installs package
+      -S --search, Search for package
+      -R --remove, Removes package
+      -C --change-repo, Chooses repo
+      -U --update, Update script
+      -V --version, Prints pacstall version
+      -L --list, Lists installed packages
+      -Up --upgrade, Upgrades packages
+      -Qd --query-depends, Get dependencies of package
+      -Qi --query-info, Get package info
+       "
       exit 0
       ;;
     -I|--install)
@@ -187,7 +187,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       PACAKGE=$2
       INSTALLING=1
       export REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-      export URL="https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/$PACKAGE.pacscript"
+      export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
       source /usr/share/pacstall/scripts/download.sh
       exit
       ;;
@@ -230,7 +230,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
 	if [[ $removescript == "yes" ]] ; then
 	   fancy_message info "Running post removal script"
 	   REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-	   source <(curl -s https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/$PACKAGE.pacscript)
+	   source <(curl -s $REPO/packages/$PACKAGE/$PACKAGE.pacscript)
 	   removescript
 	fi
         fancy_message info "Done removing $PACKAGE"
@@ -301,7 +301,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
     -Qd|--query-depends)
       PACKAGE=$2
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-      URL="https://raw.githubusercontent.com/$REPO/master/packages/$PACKAGE/$PACKAGE.pacscript"
+      URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
       if [[ -z "$PACKAGE" ]]; then
         fancy_message error "You failed to specify a package"
         exit 1
