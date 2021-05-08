@@ -121,7 +121,7 @@ trap - SIGINT
 fancy_message info "Installing"
 install
 if [[ $REMOVE_DEPENDS = y ]] ; then
-  sudo apt remove "$build_depends"
+  sudo apt remove $build_depends
 fi
 sudo rm -rf /tmp/pacstall/*
 cd "$HOME"
