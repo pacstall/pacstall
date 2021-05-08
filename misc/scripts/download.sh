@@ -3,11 +3,11 @@
 # This script downloads pacscripts from the interwebs
 
 download() {
-mkdir -p $HOME/.cache/pacstall/
-cd $HOME/.cache/pacstall/
-mkdir -p $PACKAGE
-cd $PACKAGE
-wget -q --show-progress --progress=bar:force $URL -O $PACKAGE.pacscript 2>&1
+mkdir -p "$HOME"/.cache/pacstall/
+cd "$HOME"/.cache/pacstall/
+mkdir -p "$PACKAGE"
+cd "$PACKAGE"
+wget -q --show-progress --progress=bar:force "$URL" -O "$PACKAGE".pacscript 2>&1
 if [[ $INSTALLING -eq 1 ]] ; then
     source /usr/share/pacstall/scripts/install-local.sh
     exit
