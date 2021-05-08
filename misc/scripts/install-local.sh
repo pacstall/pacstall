@@ -154,3 +154,6 @@ type -t postinst > /dev/null 2>&1
 if [[ $? -eq 0 ]] ; then
    postinst
 fi
+fancy_message info "Storing pacscript"
+sudo mkdir -p /var/cache/pacstall/$PACKAGE/$version
+\cp "$PACKAGE".pacscript /var/cache/pacstall/$PACKAGE/$version/
