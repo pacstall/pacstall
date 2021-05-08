@@ -9,10 +9,10 @@ touch /tmp/pacstall-up-list
 REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
 fancy_message info "Getting local/remote versions, this may take a while"
 for i in "${list[@]}"; do
-    localver=$(cat /var/log/pacstall_installed/$i | sed -n -e 's/version=//p' | tr -d \")
-    remotever=$(curl -s "$REPO"/packages/$i/$i.pacscript | sed -n -e 's/version=//p' | tr -d \")
+    localver=$(cat /var/log/pacstall_installed/"$i" | sed -n -e 's/version=//p' | tr -d \")
+    remotever=$(curl -s "$REPO"/packages/"$i"/"$i".pacscript | sed -n -e 's/version=//p' | tr -d \")
     if version_gt "$remotever" "$localver" ; then
-        echo $i >> /tmp/pacstall-up-list
+        echo "$i" >> /tmp/pacstall-up-list
     fi
 done &
 
@@ -35,7 +35,7 @@ ${BOLD}$(cat /tmp/pacstall-up-list | tr '\n' ' ')${NORMAL}"
     echo ""
     if ask "Do you want to continue?" Y; then
         for i in `sed ':a;N;$!ba;s/\n/,/g' /tmp/pacstall-up-list` ; do
-            sudo pacstall -I $i
+            sudo pacstall -I "$i"
         done
     else
         exit 1
