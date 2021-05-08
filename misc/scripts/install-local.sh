@@ -158,4 +158,4 @@ fi
 fancy_message info "Storing pacscript"
 sudo mkdir -p /var/cache/pacstall/$PACKAGE/$version
 cd $DIR
-\cp "$PACKAGE".pacscript /var/cache/pacstall/$PACKAGE/$version/
+sudo \cp "$PACKAGE".pacscript /var/cache/pacstall/$PACKAGE/$version/
