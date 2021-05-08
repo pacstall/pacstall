@@ -62,7 +62,7 @@ fi
 if [[ -z $replace ]] ; then
     dpkg-query -W -f='${Status}' $replace 2>/dev/null | grep -c "ok installed"
     if [[ $? -eq 1 ]] ; then
-        if ask "This script replaces $replace. Do you want to procide?" N; then
+        if ask "This script replaces $replace. Do you want to proceed?" N; then
             sudo apt-get remove -y $replace 
         else
             exit 1
