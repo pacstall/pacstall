@@ -86,7 +86,7 @@ hashcheck() {
     fi
 }
 fancy_message info "Installing dependencies"
-sudo apt-get install -y -qq "$depends"
+sudo apt-get install -y -qq $depends
 fancy_message info "Retrieving packages"
 mkdir -p /tmp/pacstall
 cd /tmp/pacstall
