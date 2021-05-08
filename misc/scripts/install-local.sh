@@ -71,7 +71,7 @@ if [[ -z $replace ]] ; then
     fi
 fi
 if [[ $NOBUILDDEP -eq 0 ]] ; then
-    sudo apt-get install -y -qq $build_depends
+    sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $build_depends
 fi
 
 hashcheck() {
@@ -86,7 +86,7 @@ hashcheck() {
     fi
 }
 fancy_message info "Installing dependencies"
-sudo apt-get install -y -qq $depends
+sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $depends
 fancy_message info "Retrieving packages"
 mkdir -p /tmp/pacstall
 cd /tmp/pacstall
@@ -121,7 +121,7 @@ trap - SIGINT
 fancy_message info "Installing"
 install
 if [[ $REMOVE_DEPENDS = y ]] ; then
-  sudo apt remove $build_depends
+  sudo apt-get remove $build_depends
 fi
 sudo rm -rf /tmp/pacstall/*
 cd "$HOME"
@@ -138,7 +138,7 @@ if [[ -n $optdepends ]] ; then
     echo "Optional dependencies:"
     echo "$optdepends"
     if ask "Do you want to install them?" Y; then
-        sudo apt-get install -y $optdepends
+        sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $optdepends
     fi
 fi
 fancy_message info "Symlinking files"
