@@ -98,12 +98,12 @@ if [[ $url = *.git ]] ; then
 else
   wget -q --show-progress --progress=bar:force "$url" 2>&1
   if [[ $url = *.zip ]] ; then
-    hashcheck $(echo "${url##*/}") 
-    unzip -q $(echo "${url##*/}") 1>&1
+    hashcheck "${url##*/}"
+    unzip -q "${url##*/}" 1>&1
     cd $(/bin/ls -d */|head -n 1)
 else
-    hashcheck $(echo "${url##*/}")
-    tar -xf $(echo "${url##*/}") 1>&1
+    hashcheck "${url##*/}"
+    tar -xf "${url##*/}" 1>&1
     cd $(/bin/ls -d */|head -n 1)
   fi
 fi
