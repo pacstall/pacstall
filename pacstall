@@ -96,7 +96,7 @@ ask() {
         if [[ -z "$DISABLE_PROMPTS" ]]; then
                 read -r reply </dev/tty
         else
-                echo $default
+                echo "$default"
                 reply=$default
         fi
 
@@ -199,12 +199,12 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         cd $(pwd)
         parentdir="$(dirname "$INPUT")"
         eval dir="$parentdir"
-        cd $dir
+        cd "$dir"
         PACKAGE=$(basename "$dir")
-        PACKAGE="$(echo $PACKAGE | sed 's/\..*$//')"
+        PACKAGE="$(echo "$PACKAGE" | sed 's/\..*$//')"
       else
           # If it's in pwd
-          PACKAGE=$(echo $INPUT | sed 's/:.*//')
+          PACKAGE=$(echo "$INPUT" | sed 's/:.*//')
       fi
       source /usr/share/pacstall/scripts/install-local.sh
       exit
@@ -219,7 +219,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         fancy_message error "You did not specify a package to remove"
         exit 1
       fi
-      source /var/log/pacstall_installed/$PACKAGE
+      source /var/log/pacstall_installed/"$PACKAGE"
       if [ -d "/usr/src/pacstall/$PACKAGE" ]; then
         fancy_message info "Removing symlinks"
         cd /usr/src/pacstall
@@ -230,7 +230,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
 	if [[ $removescript == "yes" ]] ; then
 	   fancy_message info "Running post removal script"
 	   REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-	   source <(curl -s "$REPO"/packages/$PACKAGE/$PACKAGE.pacscript)
+	   source <(curl -s "$REPO"/packages/"$PACKAGE"/"$PACKAGE".pacscript)
 	   removescript
 	fi
         fancy_message info "Done removing $PACKAGE"
@@ -254,7 +254,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         exit 0
       else
         if [[ $(pacstall -L | grep "$2" | cut -d' ' -f2-) ]]; then
-          echo -e "${BOLD}${GREEN}pacstall -L | grep "$2" | cut -d' ' -f2-${NORMAL}${NC}"
+          echo -e "${BOLD}${GREEN}pacstall -L | grep ""$2"" | cut -d' ' -f2-${NORMAL}${NC}"
           exit
         else
           fancy_message error "$2 doesn't exist"
@@ -265,7 +265,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
     -U|--update)
       if ask "Are you sure you want to update pacstall?" Y; then
         for i in {change-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh}; do
-            sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/$i -P /usr/share/pacstall/scripts 2>/dev/null 
+            sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/"$i" -P /usr/share/pacstall/scripts 2>/dev/null 
         done
         sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall -P /bin 2>/dev/null
         echo '
@@ -307,7 +307,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         exit 1
       fi
       if curl --output /dev/null --silent --head --fail "$URL"; then
-        source <(curl -s $URL) >/dev/null 2>&1
+        source <(curl -s "$URL") >/dev/null 2>&1
       else
         fancy_message error "$PACKAGE doesn't seem to exist"
         exit 1
@@ -331,9 +331,9 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       echo "name: $PACKAGE"
       echo "version: $version"
       echo "size: $(du -sh /usr/src/pacstall/"$PACKAGE" | awk '{print $1}')"
-      echo "description: "$description""
-      echo "date installed: "$date""
-      echo "maintainer: "$maintainer""
+      echo "description: ""$description"""
+      echo "date installed: ""$date"""
+      echo "maintainer: ""$maintainer"""
       exit
       ;;
      *)
