@@ -26,6 +26,7 @@ if ask "Do you want to view the pacscript first" N; then
     less "$PACKAGE".pacscript
 fi
 fancy_message info "Sourcing pacscript"
+DIR=$(pwd)
 source "$PACKAGE".pacscript
 fancy_message info "Running checks"
 checks
@@ -156,4 +157,5 @@ if [[ $? -eq 0 ]] ; then
 fi
 fancy_message info "Storing pacscript"
 sudo mkdir -p /var/cache/pacstall/$PACKAGE/$version
+cd $DIR
 \cp "$PACKAGE".pacscript /var/cache/pacstall/$PACKAGE/$version/
