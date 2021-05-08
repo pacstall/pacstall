@@ -23,10 +23,10 @@ fi
 }
 
 if ask "Do you want to view the pacscript first" N; then
-    less $PACKAGE.pacscript
+    less "$PACKAGE".pacscript
 fi
 fancy_message info "Sourcing pacscript"
-source $PACKAGE.pacscript
+source "$PACKAGE".pacscript
 fancy_message info "Running checks"
 checks
 if [[ $? -eq 1 ]] ; then
@@ -35,7 +35,7 @@ if [[ $? -eq 1 ]] ; then
 fi
 
 if [[ -n "$build_depends" ]]; then
-    fancy_message info "${BLUE}$name${NC} requires ${CYAN}$(echo -e $build_depends)${NC} to install"
+    fancy_message info "${BLUE}$name${NC} requires ${CYAN}$(echo -e "$build_depends")${NC} to install"
     if ask "Do you want to remove them after installing ${BLUE}$name${NC}" N; then
         NOBUILDDEP=0
 	fi
@@ -43,10 +43,10 @@ if [[ -n "$build_depends" ]]; then
         NOBUILDDEP=1
     fi
 
-echo -n $depends > /dev/null 2>&1
+echo -n "$depends" > /dev/null 2>&1
 if [[ $? -eq 0 ]] ; then
     if [[ -n "$breaks" ]]; then
-    dpkg-query -l $breaks >/dev/null 2>&1
+    dpkg-query -l "$breaks" >/dev/null 2>&1
     if [[ $? -eq 0 ]] ; then
       fancy_message error "${RED}$name${NC} breaks $breaks"
       exit 1
@@ -60,24 +60,24 @@ if [[ $? -eq 0 ]] ; then
     fi
 fi
 if [[ -z $replace ]] ; then
-    dpkg-query -W -f='${Status}' $replace 2>/dev/null | grep -c "ok installed"
+    dpkg-query -W -f='${Status}' "$replace" 2>/dev/null | grep -c "ok installed"
     if [[ $? -eq 1 ]] ; then
         if ask "This script replaces $replace. Do you want to procide?" N; then
-            sudo apt-get remove -y $replace 
+            sudo apt-get remove -y "$replace" 
         else
             exit 1
         fi
     fi
 fi
 if [[ $NOBUILDDEP -eq 0 ]] ; then
-    sudo apt-get install -y -qq $build_depends
+    sudo apt-get install -y -qq "$build_depends"
 fi
 
 hashcheck() {
     inputHash=$hash
-    fileHash=($(sha256sum $1 | sed 's/\s.*$//'))
+    fileHash=($(sha256sum "$1" | sed 's/\s.*$//'))
 
-    if [ $inputHash = $fileHash ]; then
+    if [ "$inputHash" = "$fileHash" ]; then
         true
     else
         fancy_message error "Hashes don't match"
@@ -85,24 +85,24 @@ hashcheck() {
     fi
 }
 fancy_message info "Installing dependencies"
-sudo apt-get install -y -qq $depends
+sudo apt-get install -y -qq "$depends"
 fancy_message info "Retrieving packages"
 mkdir -p /tmp/pacstall
 cd /tmp/pacstall
 
 # Detects if url ends in .git (in that case git clone it), or ends in .zip, or just assume that the url can be uncompressed with tar. Then cd into them
 if [[ $url = *.git ]] ; then
-  git clone --quiet --depth=1 --jobs=10 $url
+  git clone --quiet --depth=1 --jobs=10 "$url"
   cd $(/bin/ls -d */|head -n 1)
 else
-  wget -q --show-progress --progress=bar:force $url 2>&1
+  wget -q --show-progress --progress=bar:force "$url" 2>&1
   if [[ $url = *.zip ]] ; then
-    hashcheck $(echo ${url##*/}) 
-    unzip -q $(echo ${url##*/}) 1>&1
+    hashcheck $(echo "${url##*/}") 
+    unzip -q $(echo "${url##*/}") 1>&1
     cd $(/bin/ls -d */|head -n 1)
 else
-    hashcheck $(echo ${url##*/})
-    tar -xf $(echo ${url##*/}) 1>&1
+    hashcheck $(echo "${url##*/}")
+    tar -xf $(echo "${url##*/}") 1>&1
     cd $(/bin/ls -d */|head -n 1)
   fi
 fi
@@ -120,24 +120,24 @@ trap - SIGINT
 fancy_message info "Installing"
 install
 if [[ $REMOVE_DEPENDS = y ]] ; then
-  sudo apt remove $build_depends
+  sudo apt remove "$build_depends"
 fi
 sudo rm -rf /tmp/pacstall/*
-cd $HOME
-echo "version=\"$version"\" | sudo tee /var/log/pacstall_installed/$PACKAGE >/dev/null
-echo "description=\"$description"\" | sudo tee -a /var/log/pacstall_installed/$PACKAGE >/dev/null
-echo "date=\"$(date)"\" | sudo tee -a /var/log/pacstall_installed/$PACKAGE >/dev/null
+cd "$HOME"
+echo "version=\"$version"\" | sudo tee /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+echo "description=\"$description"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+echo "date=\"$(date)"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 if [[ $removescript == "yes" ]] ; then
-   echo "removescript=\"yes"\" | sudo tee -a /var/log/pacstall_installed/$PACKAGE >/dev/null
+   echo "removescript=\"yes"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
-echo "maintainer=\"$maintainer"\" | sudo tee -a /var/log/pacstall_installed/$PACKAGE >/dev/null
+echo "maintainer=\"$maintainer"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 # If optdepends exists do this
 if [[ -n $optdepends ]] ; then
     fancy_message info "Package has some optional dependencies that can enhance it's functionalities"
     echo "Optional dependencies:"
     echo "$optdepends"
     if ask "Do you want to install them?" Y; then
-        sudo apt-get install -y $optdepends
+        sudo apt-get install -y "$optdepends"
     fi
 fi
 fancy_message info "Symlinking files"
