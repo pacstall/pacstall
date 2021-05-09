@@ -139,12 +139,13 @@ echo "dependencies=\"$depends"\" | sudo tee -a /var/log/pacstall_installed/"$PAC
 
 # If optdepends exists do this
 if [[ -n $optdepends ]] ; then
+    sudo rm /tmp/pacstall-optdepends
     fancy_message info "Package has some optional dependencies that can enhance it's functionalities"
     echo "Optional dependencies:"
     printf '    %s\n' "${optdepends[@]}"
     if ask "Do you want to install them?" Y; then
-        for i in ${optdepends[*]} do
-            printf "%s\n" $item | cut -d: -f1 | tr '\n' ' ' | cut -d% -f1 >> /tmp/pacstall-optdepends
+        for items in "${optdepends[*]}"; do
+            printf "%s\n" "$items" | cut -d: -f1 | tr '\n' ' ' | cut -d% -f1 >> /tmp/pacstall-optdepends
             sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $(cat /tmp/pacstall-optdepends)
         done
     fi
