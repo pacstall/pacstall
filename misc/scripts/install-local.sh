@@ -3,6 +3,7 @@ function trap_ctrlc () {
     echo ""
     fancy_message warn "Interupted, cleaning up"
     rm -rf /tmp/pacstall/*
+    rm /tmp/pacstall-optdepends
     exit 2
 }
 
@@ -125,6 +126,8 @@ if [[ $REMOVE_DEPENDS = y ]] ; then
 fi
 sudo rm -rf /tmp/pacstall/*
 cd "$HOME"
+
+# Metadata writing
 echo "version=\"$version"\" | sudo tee /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 echo "description=\"$description"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 echo "date=\"$(date)"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
@@ -132,13 +135,18 @@ if [[ $removescript == "yes" ]] ; then
    echo "removescript=\"yes"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
 echo "maintainer=\"$maintainer"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+echo "dependencies=\"$depends"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" > /dev/null
+
 # If optdepends exists do this
 if [[ -n $optdepends ]] ; then
     fancy_message info "Package has some optional dependencies that can enhance it's functionalities"
     echo "Optional dependencies:"
-    echo "$optdepends"
+    printf '    %s\n' "${optdepends[@]}"
     if ask "Do you want to install them?" Y; then
-        sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $optdepends
+        for i in ${optdepends[*]} do
+            printf "%s\n" $item | cut -d: -f1 | tr '\n' ' ' | cut -d% -f1 >> /tmp/pacstall-optdepends
+            sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $(cat /tmp/pacstall-optdepends)
+        done
     fi
 fi
 fancy_message info "Symlinking files"
