@@ -62,7 +62,7 @@ if [[ $? -eq 1 ]] ; then
 fi
 echo ""
 fancy_message info "Updating"
-sudo apt-get update
+sudo apt-get -q update
 fancy_message info "Installing packages"
 
 sudo apt-get install -qq -y {curl,wget,stow,build-essential,unzip,fzf}
