@@ -1,7 +1,7 @@
 - uses: kentik/pkg@v1
-    with:
-        name: pacstall
-        version: 1.1
-        arch: x86_64
-        format: deb
-        package: package.yaml
+  with:
+    name: pacstall
+    version: 1.1
+    arch: x86_64
+    format: deb
+    package: package.yaml
