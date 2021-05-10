@@ -5,6 +5,8 @@ url="https://github.com/Henryws/pacstall/foo.git"
 license="GPL"
 build_depends="make gcc"
 depends="neofetch plasma"
+optdepends=("foo: not bar"
+"alacritty: a blazing fast terminal")
 breaks="libfoo-git"
 
 prepare() {
