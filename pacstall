@@ -251,7 +251,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       ;;
     -V|--version)
       if [[ -z "$2" ]]; then
-        echo -e "1.1 ${On_Black}Onyx${NC}"
+        echo -e "1.2 ${On_Black}Sangria${NC}"
         exit 0
       else
         if [[ $(pacstall -L | grep "$2" | cut -d' ' -f2-) ]]; then
