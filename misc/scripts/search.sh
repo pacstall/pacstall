@@ -14,8 +14,8 @@ FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 --color=info:#af87ff,prompt:#5fff87,pointer:#ff87d7,marker:#ff87d7,spinner:#ff87d7
 '
 SELECTED=$(curl -s "$REPO"/packagelist | tr ' ' '\n' | fzf -q "$SEARCH" --preview="curl -s "$REPO"/packages/{}/{}.pacscript")
-if ask "Do you want to view the pacscript?" N; then
-    curl -s "$REPO"/packages/$SELECTED/$SELECTED.pacscript | less -R
+if ask "Do you want to install $SELECTED?" Y; then
+    sudo pacstall -I "$SELECTED"
     exit
 fi
 unset FZF_DEFAULT_OPTS
