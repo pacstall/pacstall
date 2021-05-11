@@ -139,7 +139,7 @@ echo "dependencies=\"$depends"\" | sudo tee -a /var/log/pacstall_installed/"$PAC
 
 # If optdepends exists do this
 if [[ -n $optdepends ]] ; then
-    sudo rm /tmp/pacstall-optdepends
+    sudo rm -f /tmp/pacstall-optdepends
     fancy_message info "Package has some optional dependencies that can enhance it's functionalities"
     echo "Optional dependencies:"
     printf '    %s\n' "${optdepends[@]}"
