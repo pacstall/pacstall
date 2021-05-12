@@ -41,4 +41,4 @@ ${BOLD}$(cat /tmp/pacstall-up-list | tr '\n' ' ')${NORMAL}"
         exit 1
     fi
 fi
-rm /tmp/pacstall-up-list
+rm -f /tmp/pacstall-up-list
