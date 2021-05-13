@@ -26,7 +26,9 @@ function version_gt() {
 }
 
 list=( $(pacstall -L) )
-rm /tmp/pacstall-up-list
+if [ -f /tmp/pacstall-up-list ]; then
+    rm /tmp/pacstall-up-list
+fi
 touch /tmp/pacstall-up-list
 REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
 fancy_message info "Getting local/remote versions, this may take a while"
