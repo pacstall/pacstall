@@ -5,7 +5,7 @@
 # / ____/ /_/ / /__(__  ) /_/ /_/ / / /
 #/_/    \__,_/\___/____/\__/\__,_/_/_/
 #
-#    Copyright (C) DATE WHEN THE PROJECT 2020-2021
+#    Copyright (C) 2020-2021
 #
 #       This file is part of Pacstall
 #
