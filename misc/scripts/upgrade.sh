@@ -31,7 +31,7 @@ if [ -f /tmp/pacstall-up-list ]; then
 fi
 touch /tmp/pacstall-up-list
 REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-fancy_message info "Getting local/remote versions, this may take a while"
+fancy_message info "Getting local/remote versions"
 for i in "${list[@]}"; do
     localver=$(cat /var/log/pacstall_installed/"$i" | sed -n -e 's/version=//p' | tr -d \")
     remotever=$(curl -s "$REPO"/packages/"$i"/"$i".pacscript | sed -n -e 's/version=//p' | tr -d \")
