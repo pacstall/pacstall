@@ -50,6 +50,17 @@ fi
 if ask "Do you want to view the pacscript first" N; then
     less "$PACKAGE".pacscript
 fi
+if ask "Do you want to edit the pacscript" N; then
+    if [[ -n $PACSTALL_EDITOR ]]; then
+        $PACSTALL_EDITOR "$PACKAGE".pacscript
+    elif [[ -n $EDITOR ]]; then
+        $EDITOR "$PACKAGE".pacscript
+    elif [[ -n $VISUAL ]]; then
+        $VISUAL "$PACKAGE".pacscript
+    else
+        nano "$PACKAGE".pacscript
+    fi
+fi
 fancy_message info "Sourcing pacscript"
 DIR=$(pwd)
 source "$PACKAGE".pacscript
@@ -88,7 +99,7 @@ fi
 if ! [[ -z $replace ]] ; then
     dpkg-query -W -f='${Status}' $replace 2>/dev/null | grep -q "ok installed"
     if [[ $? -eq 1 ]] ; then
-        if ask "This script replaces $replace. Do you want to proceed?" N; then
+        if ask "This script replaces $replace. Do you want to proceed" N; then
             sudo apt-get remove -y $replace
         else
             exit 1
@@ -167,7 +178,7 @@ if [[ -n $optdepends ]] ; then
     fancy_message info "Package has some optional dependencies that can enhance it's functionalities"
     echo "Optional dependencies:"
     printf '    %s\n' "${optdepends[@]}"
-    if ask "Do you want to install them?" Y; then
+    if ask "Do you want to install them" Y; then
         for items in "${optdepends[*]}"; do
             printf "%s\n" "$items" | cut -d: -f1 | tr '\n' ' ' | cut -d% -f1 >> /tmp/pacstall-optdepends
             sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $(cat /tmp/pacstall-optdepends)
