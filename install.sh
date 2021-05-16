@@ -98,6 +98,7 @@ echo ""
 fancy_message info "pulling ${BLUE}pacstall${NC} from ${RED}https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall${NC}"
 sudo wget -q --show-progress --progress=bar:force -O /bin/pacstall https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall
 sudo chmod +x /bin/pacstall
-fancy_message info "Installing ${BLUE}Manpage${NC}"
 sudo mkdir -p /usr/share/man/man8/
 wget -q --show-progress --progress=bar:force -O /usr/share/man/man8/pacstall.8.gz https://raw.githubusercontent.com/Henryws/pacstall/master/misc/pacstall.8.gz
+sudo mkdir -p /usr/share/bash-completion/completions
+sudo wget -q --show-progress --progress=bar:force -O /usr/share/bash-completion/completions/pacstall https://raw.githubusercontent.com/Henryws/pacstall/master/misc/completions/bash
