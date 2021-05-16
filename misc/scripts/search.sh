@@ -29,5 +29,8 @@ if [[ -z "$SEARCH" ]]; then
 fi
 
 REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-curl -s "$REPO"/packagelist | tr ' ' '\n' | \grep --color=always "$SEARCH"
+if command -v rg &> /dev/null; then
+    curl -s "$REPO"/packagelist | tr ' ' '\n' | rg "$SEARCH"
+else
+    curl -s "$REPO"/packagelist | tr ' ' '\n' | \grep --color=always "$SEARCH"
 exit
