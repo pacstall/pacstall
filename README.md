@@ -66,3 +66,13 @@ sudo pacstall -Up
 ```
 
 This will update packages. Equivalent of apt upgrade
+
+
+#### Misc
+##### Zsh auto completion
+Zsh can emulate bash completion scripts by default so all you have to do is add these to your `.zshrc` or wherever you source things:
+```bash
+autoload bashcompinit
+bashcompinit
+source /usr/share/bash-completion/completions/pacstall
+```
