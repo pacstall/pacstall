@@ -32,16 +32,20 @@ _pacstall()
 	     COMPREPLY=( $( compgen -W "$(/bin/ls -1aA /var/log/pacstall_installed)" -- $cur ) )
 	    return
 	    ;;
+    -Il|--install-local)
+         COMPREPLY=( $( compgen -W "$(\ls | grep -i -E ".pacscript" | sed 's/.pacscript//g')" -- "$cur" ) )
+         return
+        ;;
+    *)
+            _filedir
+            ;;
     esac
 
     case "$cur" in
         -*)
             COMPREPLY=( $( compgen -W '$( _parse_help "$1" )' -- "$cur" ) )
             ;;
-
-        *)
-            _filedir
-            ;;
+    
     esac
 } &&
 complete -o filenames -o bashdefault -F _pacstall pacstall
