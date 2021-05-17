@@ -123,6 +123,13 @@ hashcheck() {
 }
 fancy_message info "Installing dependencies"
 sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $depends
+
+if [[ -n "$ppa" ]]; then
+  for i in "${ppa[@]}"; do
+      sudo add-apt-repository ppa:"$i"
+  done
+fi
+
 fancy_message info "Retrieving packages"
 mkdir -p /tmp/pacstall
 cd /tmp/pacstall
