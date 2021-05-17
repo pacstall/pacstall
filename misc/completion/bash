@@ -36,16 +36,15 @@ _pacstall()
          COMPREPLY=( $( compgen -W "$(\ls | grep -i -E ".pacscript" | sed 's/.pacscript//g')" -- "$cur" ) )
          return
         ;;
-    *)
-            _filedir
-            ;;
     esac
 
     case "$cur" in
         -*)
             COMPREPLY=( $( compgen -W '$( _parse_help "$1" )' -- "$cur" ) )
             ;;
-    
+    *)
+        _filedir
+        ;;
     esac
 } &&
 complete -o filenames -o bashdefault -F _pacstall pacstall
