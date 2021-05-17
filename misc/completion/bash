@@ -28,23 +28,25 @@ _pacstall()
             return
             ;;
 
-	-Qi|--query-info)
-	     COMPREPLY=( $( compgen -W "$(/bin/ls -1aA /var/log/pacstall_installed)" -- $cur ) )
-	    return
-	    ;;
-    -Il|--install-local)
-         COMPREPLY=( $( compgen -W "$(\ls | grep -i -E ".pacscript" | sed 's/.pacscript//g')" -- "$cur" ) )
-         return
-        ;;
+	    -Qi|--query-info)
+	         COMPREPLY=( $( compgen -W "$(/bin/ls -1aA /var/log/pacstall_installed)" -- $cur ) )
+	        return
+	        ;;
+        -Il|--install-local)
+             COMPREPLY=( $( compgen -W "$(\ls | grep -i -E ".pacscript" | sed 's/.pacscript//g')" -- "$cur" ) )
+            return
+            ;;
     esac
 
     case "$cur" in
         -*)
-            COMPREPLY=( $( compgen -W '$( _parse_help "$1" )' -- "$cur" ) )
-            ;;
+         COMPREPLY=( $( compgen -W '$( _parse_help "$1" )' -- "$cur" ) )
+         return
+         ;;
     *)
-        _filedir
-        ;;
+         COMPREPLY=( $( compgen -W "-I -S -R -C -U -V -L -Up -Qd -Qi" "$cur" ) )
+         return
+         ;;
     esac
 } &&
 complete -o filenames -o bashdefault -F _pacstall pacstall
