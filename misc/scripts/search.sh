@@ -33,4 +33,4 @@ if command -v rg &> /dev/null; then
     curl -s "$REPO"/packagelist | tr ' ' '\n' | rg "$SEARCH"
 else
     curl -s "$REPO"/packagelist | tr ' ' '\n' | \grep --color=always "$SEARCH"
-exit
+fi
