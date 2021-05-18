@@ -248,15 +248,17 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         cd /usr/src/pacstall
         sudo stow -D "$PACKAGE"
         fancy_message info "Remove package"
+        source /var/log/pacstall_installed/"$PACKAGE"
         sudo rm -rf /usr/src/pacstall/"$PACKAGE"
         hash -r
-	if [[ $removescript == "yes" ]] ; then
-	   fancy_message info "Running post removal script"
-	   REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-       # Sources the output of /var/cache/pacstall/pkg/version/pkg.pacscript so we don't have to download scripts from the repo
-       source <(cat /var/cache/pacstall/"$PACKAGE"/$(pacstall -Qi "$PACKAGE" | sed 's/: /=/g' | sed -n -e 's/version=//p')/"$PACKAGE".pacscript)
-	   removescript
-	fi
+	    if [[ $removescript == "yes" ]] ; then
+	        fancy_message info "Running post removal script"
+	        REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
+            # Sources the output of /var/cache/pacstall/pkg/version/pkg.pacscript so we don't have to download scripts from the repo
+            source <(cat /var/cache/pacstall/"$PACKAGE"/$(pacstall -Qi "$PACKAGE" | sed 's/: /=/g' | sed -n -e 's/version=//p')/"$PACKAGE".pacscript)
+	        removescript
+        fi
+        fancy_message info "You may want to remove ${BLUE}$dependencies${NC}"
         fancy_message info "Done removing $PACKAGE"
         exit
       else
