@@ -123,7 +123,10 @@ fi
 if [[ $NOBUILDDEP -eq 0 ]] ; then
     sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $build_depends
 fi
-
+if $? -eq 1 ]] ; then
+    fancy_message error "Failed to install build dependencies"
+    exit 1
+fi
 hashcheck() {
     inputHash=$hash
     fileHash=($(sha256sum "$1" | sed 's/\s.*$//'))
@@ -137,6 +140,10 @@ hashcheck() {
 }
 fancy_message info "Installing dependencies"
 sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $depends
+if [[ $? -eq 1 ]]; then
+    fancy_message error "Failed to install dependencies"
+    exit 1
+fi
 
 fancy_message info "Retrieving packages"
 mkdir -p /tmp/pacstall
