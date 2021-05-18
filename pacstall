@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #     ____                  __        ____
 #    / __ \____ ___________/ /_____ _/ / /
 #   / /_/ / __ `/ ___/ ___/ __/ __ `/ / /
@@ -19,8 +21,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
-
-#!/bin/bash
 
 BOLD=$(tput bold)
 NORMAL=$(tput sgr0)
