@@ -194,7 +194,7 @@ if [[ -n $optdepends ]] ; then
     fi
 fi
 fancy_message info "Symlinking files"
-cd /usr/src/pacstall/ || sudo mkdir -p /usr/src/pacstall
+cd /usr/src/pacstall/ || sudo mkdir -p /usr/src/pacstall && cd /usr/src/pacstall
 # By default (I think), stow symlinks to the directory behind it (..), but we want to symlink to /, or in other words, symlink files from pkg/usr to /usr
 sudo stow --target="/" "$PACKAGE"
 # stow will fail to symlink packages if files already exist on the system; this is just an error
