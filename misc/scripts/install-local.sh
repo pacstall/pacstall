@@ -80,6 +80,14 @@ if [[ -n "$build_depends" ]]; then
         NOBUILDDEP=1
     fi
 
+if [[ -n "$pacdeps" ]]; then
+    for i in "${pacdeps[@]}"
+    do
+        fancy_message info "Installing $i"
+        sudo pacstall -P -I $i
+    done
+fi
+
 echo -n "$depends" > /dev/null 2>&1
 if [[ $? -eq 0 ]] ; then
     if [[ -n "$breaks" ]]; then
