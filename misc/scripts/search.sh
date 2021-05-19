@@ -24,6 +24,7 @@
 
 # This script searches for packages
 
+export LC_ALL=C
 SEARCH=$2
 if [[ -z "$SEARCH" ]]; then
 	fancy_message error "You failed to specify a package"
@@ -32,7 +33,7 @@ fi
 
 REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
 if command -v rg &> /dev/null; then
-    curl -s "$REPO"/packagelist | tr ' ' '\n' | rg "$SEARCH"
+    curl -s "$REPO"/packagelist | tr ' ' '\n' | rg --no-config --color=never -N "$SEARCH"
 else
-    curl -s "$REPO"/packagelist | tr ' ' '\n' | \grep --color=always "$SEARCH"
+    curl -s "$REPO"/packagelist | tr ' ' '\n' | \grep --color=never "$SEARCH"
 fi

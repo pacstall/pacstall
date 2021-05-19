@@ -83,7 +83,7 @@ if [[ -n "$pacdeps" ]]; then
     for i in "${pacdeps[@]}"
     do
         fancy_message info "Installing $i"
-        sudo pacstall -P -I $i
+        sudo pacstall -P -I "$i"
     done
 fi
 
