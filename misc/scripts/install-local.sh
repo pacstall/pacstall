@@ -165,6 +165,16 @@ else
     cd $(/bin/ls -d */|head -n 1)
   fi
 fi
+
+if [[ -n $patch ]] ; then
+  for i in "${patch[@]}"; do
+    fancy_message info "Downloading patches"
+    mkdir -p PACSTALL_patchesdir
+    wget -q "$i" -P PACSTALL_patchesdir
+    export PACPATCH=$(pwd)/PACSTALL_patchesdir
+  done
+fi
+
 prepare
 # Check if build function exists
 type -t build > /dev/null 2>&1
