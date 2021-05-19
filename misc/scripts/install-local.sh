@@ -121,8 +121,8 @@ if [[ -n "$ppa" ]]; then
 fi
 
 if [[ $NOBUILDDEP -eq 0 ]] ; then
-    sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $build_depends
-    if $? -ne 0 ]] ; then
+    sudo apt install -y -qq $build_depends
+    if [[ $? -ne 0 ]] ; then
         fancy_message error "Failed to install build dependencies"
         exit 1
     fi
