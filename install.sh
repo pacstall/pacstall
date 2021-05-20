@@ -59,7 +59,7 @@ then
     fancy_message error "apt could not be found"
     exit 1
 fi
-apt install -y sudo wget
+apt-get install -y sudo wget
 # Colors
 RED='\033[0;31m'
 NC='\033[0m'
