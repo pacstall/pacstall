@@ -158,7 +158,7 @@ function fancy_message() {
 }
 
 # run sudo apt update if it's been more than a week
-[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && sudo apt update -qq
+[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && sudo apt-get update -qq
 
 while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
   case "$1" in
@@ -258,7 +258,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
             source <(cat /var/cache/pacstall/"$PACKAGE"/$(pacstall -Qi "$PACKAGE" | sed 's/: /=/g' | sed -n -e 's/version=//p')/"$PACKAGE".pacscript)
 	        removescript
         fi
-        if [ -z "$dependencies"]; then
+        if [ -z "$dependencies" ]; then
             fancy_message info "You may want to remove ${BLUE}$dependencies${NC}"
         fi
         fancy_message info "Done removing $PACKAGE"
