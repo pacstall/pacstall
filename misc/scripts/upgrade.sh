@@ -66,4 +66,6 @@ ${BOLD}$(cat /tmp/pacstall-up-list | tr '\n' ' ')${NORMAL}"
         exit 1
     fi
 fi
-rm -f /tmp/pacstall-up-list
+if test -f "/tmp/pacstall-up-list"; then
+    rm -f /tmp/pacstall-up-list
+fi
