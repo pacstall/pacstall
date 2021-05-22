@@ -92,13 +92,13 @@ if [[ $? -eq 0 ]] ; then
     if [[ -n "$breaks" ]]; then
     dpkg-query -l "$breaks" >/dev/null 2>&1
     if [[ $? -eq 0 ]] ; then
-      fancy_message error "${RED}$name${NC} breaks $breaks"
+      fancy_message error "${RED}$name${NC} breaks $breaks, which is currently installed by apt"
       exit 1
     fi
     fi
     if [[ -n "$breaks" ]] ; then
-        if [[ $(pacstall -L) = *$breaks* ]] ; then
-            fancy_message error "${RED}$name${NC} breaks $breaks"
+        if [[ $(pacstall -L) == *$breaks* ]] ; then
+            fancy_message error "${RED}$name${NC} breaks $breaks, which is currently installed by pacstall"
             exit 1
         fi
     fi
@@ -171,8 +171,8 @@ if [[ -n $patch ]] ; then
     fancy_message info "Downloading patches"
     mkdir -p PACSTALL_patchesdir
     wget -q "$i" -P PACSTALL_patchesdir
-    export PACPATCH=$(pwd)/PACSTALL_patchesdir
   done
+export PACPATCH=$(pwd)/PACSTALL_patchesdir
 fi
 
 prepare
