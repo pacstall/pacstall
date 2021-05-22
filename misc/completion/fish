@@ -1,0 +1,25 @@
+#!/usr/bin/env fish
+
+set -l pacstall_commands -I -S -R -C -U -V -L -Up -Qd -Qi
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -I -d 'Install package'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -S -d 'Search for package'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -R -d 'Remove package'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -C -d 'Change repository'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -U -d 'Update pacstall scripts'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -V -d 'Print pacstall version'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -L -d 'List packages installed'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -Up -d 'Upgrade packages'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -Qd -d 'Query the dependencies of a package'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -Qi -d 'Get package info'
+
+# Completion for the -I flag
+complete -f --command pacstall -n "__fish_seen_subcommand_from -I" -a "(curl -s (cat /usr/share/pacstall/repo/pacstallrepo.txt)/packagelist | tr ' ' '\n')"
+
+# Completion for the -S flag
+complete -f --command pacstall -n "__fish_seen_subcommand_from -S" -a "(curl -s (cat /usr/share/pacstall/repo/pacstallrepo.txt)/packagelist | tr ' ' '\n')"
+
+# Completion for the -R flag
+complete -f --command pacstall -n "__fish_seen_subcommand_from -R" -a "(/bin/ls -1aA /usr/src/pacstall/ | tr ' ' '\n')"
+
+# Completion for the -Qi flag
+complete -f --command pacstall -n "__fish_seen_subcommand_from -Qi" -a "(ls -1aA /var/log/pacstall_installed | tr ' ' '\n')"
