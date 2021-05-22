@@ -125,3 +125,6 @@ sudo mkdir -p /usr/share/man/man8/
 wget -q --show-progress --progress=bar:force -O /usr/share/man/man8/pacstall.8.gz https://raw.githubusercontent.com/Henryws/pacstall/master/misc/pacstall.8.gz
 sudo mkdir -p /usr/share/bash-completion/completions
 sudo wget -q --show-progress --progress=bar:force -O /usr/share/bash-completion/completions/pacstall https://raw.githubusercontent.com/Henryws/pacstall/master/misc/completion/bash
+if command -v fish &>/dev/null; then
+    sudo wget -q --show-progress --progress=bar:force -O /usr/share/fish/vendor_completions.d/pacstall.fish https://raw.githubusercontent.com/Henryws/pacstall/master/misc/completion/fish
+fi
