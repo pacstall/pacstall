@@ -41,11 +41,11 @@ URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 wget -q --tries=10 --timeout=20 --spider https://github.com 
 if [[ $? -eq 1 ]]; then
     fancy_message error "Not connected to internet"
-    exit 1
+    exit 6
 fi
 if curl --output /dev/null --silent --head --fail "$URL" ; then
   download
 else
   fancy_message warn "The file you want to download does not exist"
-  exit 1
+  exit 6
 fi
