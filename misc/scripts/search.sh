@@ -28,7 +28,7 @@ export LC_ALL=C
 SEARCH=$2
 if [[ -z "$SEARCH" ]]; then
 	fancy_message error "You failed to specify a package"
-	exit 1
+	exit 3
 fi
 
 REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
