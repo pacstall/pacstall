@@ -46,6 +46,16 @@ if [[ -z "$hash" ]]; then
 fi
 }
 
+cget() {
+    URL="$1"
+    BRANCH="$2"
+    # If BRANCH was not specified, default to master
+    if [[ -n $BRANCH ]]; then
+        BRANCH=master
+    fi
+    git ls-remote "$URL" "$BRANCH" | sed "s/refs\/heads\/.*//"
+}
+
 if ask "Do you want to view the pacscript first" N; then
     less "$PACKAGE".pacscript
 fi
@@ -63,6 +73,12 @@ fi
 fancy_message info "Sourcing pacscript"
 DIR=$(pwd)
 source "$PACKAGE".pacscript
+
+type -t pkgver > /dev/null 2>&1
+if [[ $? -eq 0 ]] ; then
+  pkgver
+fi
+
 fancy_message info "Running checks"
 checks
 if [[ $? -eq 1 ]] ; then
@@ -234,4 +250,4 @@ fi
 fancy_message info "Storing pacscript"
 sudo mkdir -p /var/cache/pacstall/$PACKAGE/$version
 cd $DIR
-sudo \cp "$PACKAGE".pacscript /var/cache/pacstall/$PACKAGE/$version/
+sudo \cp -r "$PACKAGE".pacscript /var/cache/pacstall/$PACKAGE/$version
