@@ -64,7 +64,7 @@ else
 ${BOLD}$(cat /tmp/pacstall-up-list | tr '\n' ' ')${NORMAL}"
     echo ""
     if ask "Do you want to continue?" Y; then
-        for i in `sed ':a;N;$!ba;s/\n/,/g' /tmp/pacstall-up-list` ; do
+        for i in `sed ':a;N;$!ba;s/\n/,/g' /tmp/pacstall-up-list`; do
             sudo pacstall -I "$i"
         done
     else
