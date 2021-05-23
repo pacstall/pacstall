@@ -32,10 +32,15 @@ if [ -f /tmp/pacstall-up-list ]; then
 fi
 touch /tmp/pacstall-up-list
 REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-fancy_message info "Getting local/remote versions"
+fancy_message info "Checking for updates"
 for i in "${list[@]}"; do
     localver=$(cat /var/log/pacstall_installed/"$i" | sed -n -e 's/version=//p' | tr -d \")
-    remotever=$(curl -s "$REPO"/packages/"$i"/"$i".pacscript | sed -n -e 's/version=//p' | tr -d \")
+    remotever=$(source <(curl -s "$REPO"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo $version)
+    if [[ type -t pkgver ]]; then
+        if [[ $remotever != $localver ]]; then
+            echo "$i" >> /tmp/pacstall-up-list
+        fi
+    fi
     if version_gt "$remotever" "$localver" ; then
         echo "$i" >> /tmp/pacstall-up-list
     fi
