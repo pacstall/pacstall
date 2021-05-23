@@ -35,7 +35,7 @@ REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
 fancy_message info "Getting local/remote versions"
 for i in "${list[@]}"; do
     localver=$(cat /var/log/pacstall_installed/"$i" | sed -n -e 's/version=//p' | tr -d \")
-    remotever=$(curl -s "$REPO"/packages/"$i"/"$i".pacscript | sed -n -e 's/version=//p' | tr -d \")
+    remotever=$(source <(curl -s "$REPO"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo $version)
     if version_gt "$remotever" "$localver" ; then
         echo "$i" >> /tmp/pacstall-up-list
     fi
