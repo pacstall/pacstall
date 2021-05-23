@@ -295,6 +295,11 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
             sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/"$i" -P /usr/share/pacstall/scripts 2>/dev/null 
         done
         sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall -P /bin 2>/dev/null
+        sudo mkdir -p /usr/share/bash-completion/completions
+        sudo wget -q -O /usr/share/bash-completion/completions/pacstall https://raw.githubusercontent.com/Henryws/pacstall/master/misc/completion/bash 2>/dev/null
+        if command -v fish &>/dev/null; then
+            sudo wget -q -O /usr/share/fish/vendor_completions.d/pacstall.fish https://raw.githubusercontent.com/Henryws/pacstall/master/misc/completion/fish 2>/dev/null
+        fi
         echo '
     ____                  __        ____
    / __ \____ ___________/ /_____ _/ / /
