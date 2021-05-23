@@ -371,7 +371,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       ;;
      *)
       pacstall -h
-      exit 1
+      exit 3
       ;;
   esac; shift
 done
