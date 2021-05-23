@@ -41,7 +41,7 @@ if curl --output /dev/null --silent --head --fail "$url" >/dev/null; then
     fancy_message info "URL exists"
 else
 	fancy_message error "URL doesn't exist"
-	exit 1
+	exit 6
 fi
 if [[ -z "$hash" ]]; then
     fancy_message warn "Package does not contain a hash"
@@ -75,6 +75,10 @@ fi
 fancy_message info "Sourcing pacscript"
 DIR=$(pwd)
 source "$PACKAGE".pacscript
+if [[ $? -eq 1 ]]; then
+    fancy_message error "Couldn't parse pacscript"
+    exit 12
+fi
 
 type -t pkgver >/dev/null 2>&1
 if [[ $? -eq 0 ]] ; then
@@ -142,7 +146,7 @@ if [[ $NOBUILDDEP -eq 0 ]] ; then
     sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $build_depends
     if [[ $? -ne 0 ]] ; then
         fancy_message error "Failed to install build dependencies"
-        exit 1
+        exit 8
     fi
 fi
 hashcheck() {
@@ -160,7 +164,7 @@ fancy_message info "Installing dependencies"
 sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $depends
 if [[ $? -eq 1 ]]; then
     fancy_message error "Failed to install dependencies"
-    exit 1
+    exit 8
 fi
 
 fancy_message info "Retrieving packages"
@@ -177,7 +181,7 @@ else
     hashcheck "${url##*/}"
     unzip -q "${url##*/}" 1>&1
     cd $(/bin/ls -d */|head -n 1)
-else
+  else
     hashcheck "${url##*/}"
     tar -xf "${url##*/}" 1>&1
     cd $(/bin/ls -d */|head -n 1)
@@ -201,7 +205,7 @@ if [[ $? -eq 0 ]] ; then
 fi
 if [[ $? -eq 1 ]] ; then
   fancy_message error "Something didn't compile right"
-  exit 1
+  exit 5
 fi
 trap - SIGINT
 fancy_message info "Installing"
@@ -220,7 +224,7 @@ if [[ $removescript == "yes" ]] ; then
    echo "removescript=\"yes"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
 echo "maintainer=\"$maintainer"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
-echo "dependencies=\"$depends"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" > /dev/null
+echo "dependencies=\"$depends"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 
 # If optdepends exists do this
 if [[ -n $optdepends ]] ; then
@@ -242,7 +246,7 @@ sudo stow --target="/" "$PACKAGE"
 # stow will fail to symlink packages if files already exist on the system; this is just an error
 if [[ $? -eq 1 ]]; then
     fancy_message error "Package contains links to files that exist on the system"
-    exit 1
+    exit 14
 fi
 hash -r
 type -t postinst >/dev/null 2>&1
