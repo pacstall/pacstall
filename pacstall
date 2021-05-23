@@ -247,7 +247,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         fancy_message info "Removing symlinks"
         cd /usr/src/pacstall
         sudo stow -D "$PACKAGE"
-        fancy_message info "Remove package"
+        fancy_message info "Removing package"
         source /var/log/pacstall_installed/"$PACKAGE"
         sudo rm -rf /usr/src/pacstall/"$PACKAGE"
         hash -r
@@ -261,7 +261,6 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         if [ -z "$dependencies" ]; then
             fancy_message info "You may want to remove ${BLUE}$dependencies${NC}"
         fi
-        fancy_message info "Done removing $PACKAGE"
         exit
       else
         fancy_message error "$PACKAGE does not exist or not properly symlinked"
