@@ -237,7 +237,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       ;;
     -R|--remove)
       PACKAGE=$2
-      # Check if $2 is filled (not empty) because if not, stow will remove every package
+      # Check if $2 is filled (not empty) because if not, stow will remove every package (from experience, oof)
       if [[ -z "$PACKAGE" ]]; then
         fancy_message error "You did not specify a package to remove"
         exit 1
@@ -308,7 +308,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
 /_/    \__,_/\___/____/\__/\__,_/_/_/
 '
         fancy_message info "You are at version $(pacstall -V)"
-	fancy_message warn "Be sure to check our GitHub release page to make sure you have no incompatible code"
+    	fancy_message warn "Be sure to check our GitHub release page to make sure you have no incompatible code"
         exit 0
       else
         exit 1
@@ -332,6 +332,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       exit
       ;;
     -Qd|--query-depends)
+      export LC_ALL=C
       PACKAGE=$2
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
@@ -355,6 +356,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       exit
       ;;
     -Qi|--query-info)
+      export LC_ALL=C
       PACKAGE=$2
       if [[ -z "$PACKAGE" ]]; then
           fancy_message error "You failed to specify a package"
