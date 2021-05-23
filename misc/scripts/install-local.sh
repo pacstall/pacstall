@@ -74,7 +74,7 @@ fancy_message info "Sourcing pacscript"
 DIR=$(pwd)
 source "$PACKAGE".pacscript
 
-type -t pkgver > /dev/null 2>&1
+type -t pkgver >/dev/null 2>&1
 if [[ $? -eq 0 ]] ; then
   pkgver
 fi
