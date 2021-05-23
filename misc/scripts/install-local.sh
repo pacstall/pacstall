@@ -26,7 +26,9 @@ function trap_ctrlc () {
     echo ""
     fancy_message warn "Interupted, cleaning up"
     rm -rf /tmp/pacstall/*
-    rm /tmp/pacstall-optdepends
+    if [ -f /tmp/pacstall-optdepends ]; then
+        rm /tmp/pacstall-optdepends
+    fi
     exit 2
 }
 
@@ -193,7 +195,7 @@ fi
 
 prepare
 # Check if build function exists
-type -t build > /dev/null 2>&1
+type -t build >/dev/null 2>&1
 if [[ $? -eq 0 ]] ; then
   build
 fi
@@ -243,7 +245,7 @@ if [[ $? -eq 1 ]]; then
     exit 1
 fi
 hash -r
-type -t postinst > /dev/null 2>&1
+type -t postinst >/dev/null 2>&1
 if [[ $? -eq 0 ]] ; then
    postinst
 fi
