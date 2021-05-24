@@ -80,7 +80,7 @@ if [[ $? -eq 1 ]]; then
     exit 12
 fi
 
-type -t pkgver >/dev/null 2>&1
+type pkgver >/dev/null 2>&1
 if [[ $? -eq 0 ]] ; then
   pkgver
 fi
