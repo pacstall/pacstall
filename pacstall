@@ -172,6 +172,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       -I --install, Installs package
       -S --search, Search for package
       -R --remove, Removes package
+      -D --download, Downloads script
       -C --change-repo, Chooses repo
       -U --update, Update script
       -V --version, Prints pacstall version
@@ -239,7 +240,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       PACKAGE=$2
       # Check if $2 is filled (not empty) because if not, stow will remove every package (from experience, oof)
       if [[ -z "$PACKAGE" ]]; then
-        fancy_message error "You did not specify a package to remove"
+        fancy_message error "You failed to specify a package"
         exit 1
       fi
       source /var/log/pacstall_installed/"$PACKAGE"
