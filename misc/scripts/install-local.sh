@@ -82,7 +82,7 @@ fi
 
 type pkgver >/dev/null 2>&1
 if [[ $? -eq 0 ]] ; then
-  pkgver
+    version=$(pkgver) >/dev/null
 fi
 
 fancy_message info "Running checks"
