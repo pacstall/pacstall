@@ -74,7 +74,7 @@ if ask "Do you want to edit the pacscript" N; then
 fi
 fancy_message info "Sourcing pacscript"
 DIR=$(pwd)
-source "$PACKAGE".pacscript
+source "$PACKAGE".pacscript >/dev/null
 if [[ $? -eq 1 ]]; then
     fancy_message error "Couldn't parse pacscript"
     exit 12
