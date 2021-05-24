@@ -99,14 +99,14 @@ sudo mkdir -p $PACSTALL_DIRECTORY/repo
 sudo mkdir -p /var/log/pacstall_orphaned
 sudo rm $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
 sudo touch $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
-sudo sh -c "echo 'https://raw.githubusercontent.com/Henryws/pacstall-programs/master' > $PACSTALL_DIRECTORY/repo/pacstallrepo.txt"
+sudo sh -c "echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > $PACSTALL_DIRECTORY/repo/pacstallrepo.txt"
 sudo rm -rf /var/log/pacstall_installed
 sudo mkdir /var/log/pacstall_installed
 sudo rm -rf /var/cache/pacstall
 sudo mkdir -p /var/db/pacstall
 fancy_message info "Pulling scripts from GitHub "
 for i in {change-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh}; do 
-sudo wget -q --show-progress -N https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/"$i" -P /usr/share/pacstall/scripts
+sudo wget -q --show-progress -N https://raw.githubusercontent.com/pacstall/pacstall/master/misc/scripts/"$i" -P /usr/share/pacstall/scripts
 done &
 PID=$!
 i=1
@@ -118,13 +118,13 @@ do
   printf "\b${sp:i++%${#sp}:1}"
 done
 echo ""
-fancy_message info "pulling ${BLUE}pacstall${NC} from ${RED}https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall${NC}"
-sudo wget -q --show-progress --progress=bar:force -O /bin/pacstall https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall
+fancy_message info "pulling ${BLUE}pacstall${NC} from ${RED}https://raw.githubusercontent.com/pacstall/pacstall/master/pacstall${NC}"
+sudo wget -q --show-progress --progress=bar:force -O /bin/pacstall https://raw.githubusercontent.com/pacstall/pacstall/master/pacstall
 sudo chmod +x /bin/pacstall
 sudo mkdir -p /usr/share/man/man8/
-wget -q --show-progress --progress=bar:force -O /usr/share/man/man8/pacstall.8.gz https://raw.githubusercontent.com/Henryws/pacstall/master/misc/pacstall.8.gz
+wget -q --show-progress --progress=bar:force -O /usr/share/man/man8/pacstall.8.gz https://raw.githubusercontent.com/pacstall/pacstall/master/misc/pacstall.8.gz
 sudo mkdir -p /usr/share/bash-completion/completions
-sudo wget -q --show-progress --progress=bar:force -O /usr/share/bash-completion/completions/pacstall https://raw.githubusercontent.com/Henryws/pacstall/master/misc/completion/bash
+sudo wget -q --show-progress --progress=bar:force -O /usr/share/bash-completion/completions/pacstall https://raw.githubusercontent.com/pacstall/pacstall/master/misc/completion/bash
 if command -v fish &>/dev/null; then
-    sudo wget -q --show-progress --progress=bar:force -O /usr/share/fish/vendor_completions.d/pacstall.fish https://raw.githubusercontent.com/Henryws/pacstall/master/misc/completion/fish
+    sudo wget -q --show-progress --progress=bar:force -O /usr/share/fish/vendor_completions.d/pacstall.fish https://raw.githubusercontent.com/pacstall/pacstall/master/misc/completion/fish
 fi

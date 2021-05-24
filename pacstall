@@ -292,13 +292,13 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
     -U|--update)
       if ask "Are you sure you want to update pacstall?" Y; then
         for i in {change-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh}; do
-            sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/misc/scripts/"$i" -P /usr/share/pacstall/scripts 2>/dev/null 
+            sudo wget -q -N https://raw.githubusercontent.com/pacstall/pacstall/master/misc/scripts/"$i" -P /usr/share/pacstall/scripts 2>/dev/null 
         done
-        sudo wget -q -N https://raw.githubusercontent.com/Henryws/pacstall/master/pacstall -P /bin 2>/dev/null
+        sudo wget -q -N https://raw.githubusercontent.com/pacstall/pacstall/master/pacstall -P /bin 2>/dev/null
         sudo mkdir -p /usr/share/bash-completion/completions
-        sudo wget -q -O /usr/share/bash-completion/completions/pacstall https://raw.githubusercontent.com/Henryws/pacstall/master/misc/completion/bash 2>/dev/null
+        sudo wget -q -O /usr/share/bash-completion/completions/pacstall https://raw.githubusercontent.com/pacstall/pacstall/master/misc/completion/bash 2>/dev/null
         if command -v fish &>/dev/null; then
-            sudo wget -q -O /usr/share/fish/vendor_completions.d/pacstall.fish https://raw.githubusercontent.com/Henryws/pacstall/master/misc/completion/fish 2>/dev/null
+            sudo wget -q -O /usr/share/fish/vendor_completions.d/pacstall.fish https://raw.githubusercontent.com/pacstall/pacstall/master/misc/completion/fish 2>/dev/null
         fi
         echo '
     ____                  __        ____
@@ -308,7 +308,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
 /_/    \__,_/\___/____/\__/\__,_/_/_/
 '
         fancy_message info "You are at version $(pacstall -V)"
-    	fancy_message warn "Be sure to check our GitHub release page to make sure you have no incompatible code: https://github.com/Henryws/pacstall"
+    	fancy_message warn "Be sure to check our GitHub release page to make sure you have no incompatible code: https://github.com/pacstall/pacstall"
         exit 0
       else
         exit 1
