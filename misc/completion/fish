@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-set -l pacstall_commands -I -S -R -C -U -V -L -Up -Qd -Qi
+set -l pacstall_commands -I -S -R -C -U -V -L -Up -Qd -Qi -D
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -I -d 'Install package'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -S -d 'Search for package'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -R -d 'Remove package'
@@ -33,6 +33,7 @@ complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_com
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -Up -d 'Upgrade packages'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -Qd -d 'Query the dependencies of a package'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -Qi -d 'Get package info'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -D -d 'Downloads package'
 
 # Completion for the -I flag
 complete -f --command pacstall -n "__fish_seen_subcommand_from -I" -a "(curl -s (cat /usr/share/pacstall/repo/pacstallrepo.txt)/packagelist | tr ' ' '\n')"
@@ -45,3 +46,6 @@ complete -f --command pacstall -n "__fish_seen_subcommand_from -R" -a "(/bin/ls 
 
 # Completion for the -Qi flag
 complete -f --command pacstall -n "__fish_seen_subcommand_from -Qi" -a "(/bin/ls -1aA /var/log/pacstall_installed | tr ' ' '\n')"
+
+# Completion for the -D flag
+complete -f --command pacstall -n "__fish_seen_subcommand_from -D" -a "(curl -s (cat /usr/share/pacstall/repo/pacstallrepo.txt)/packagelist | tr ' ' '\n')"
