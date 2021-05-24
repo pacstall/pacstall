@@ -59,6 +59,9 @@ _pacstall()
              COMPREPLY=( $( compgen -W "$(\ls | grep -i -E ".pacscript" | sed 's/.pacscript//g')" -- "$cur" ) )
             return
             ;;
+
+        -D|--download)
+             COMPREPLY=( $( compgen -W "$(curl -s $(cat /usr/share/pacstall/repo/pacstallrepo.txt)/packagelist)" -- $cur ) )
     esac
 
     case "$cur" in
