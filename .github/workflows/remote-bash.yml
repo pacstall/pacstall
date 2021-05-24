@@ -9,4 +9,4 @@ jobs:
         with:
           args:
         env:
-          REMOTE_BASH_URL: https://raw.githubusercontent.com/Henryws/pacstall/master/install.sh
+          REMOTE_BASH_URL: https://raw.githubusercontent.com/pacstall/pacstall/master/install.sh
