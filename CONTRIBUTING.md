@@ -9,3 +9,5 @@ I know my code can be sloppy (working on it), but please document code. If your 
  `“Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live”`
 
 John Woods
+
+We use [git flow](https://danielkummer.github.io/git-flow-cheatsheet/) to manage pacstall. Make sure that you are familiar with it before attempting to make changes
