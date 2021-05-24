@@ -346,8 +346,8 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         fancy_message error "$PACKAGE doesn't seem to exist"
         exit 1
       fi
-      echo -e "${GREEN}${BOLD}build_depends${NORMAL}${NC}=\"$build_depends\""
-      echo -e "${GREEN}${BOLD}depends${NORMAL}${NC}=\"$depends\""
+      echo -e "${GREEN}${BOLD}build_depends${NORMAL}${NC}: \"$build_depends\""
+      echo -e "${GREEN}${BOLD}depends${NORMAL}${NC}: \"$depends\""
       exit
       ;;
     -Up|--upgrade)
