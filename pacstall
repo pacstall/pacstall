@@ -281,8 +281,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         echo -e "1.2 ${BIBlue}Capri${NC}"
         exit 0
       else
-        if [[ $(pacstall -L | grep "$2" | cut -d' ' -f2-) ]]; then
-          echo -e "${BOLD}${GREEN}pacstall -L | grep ""$2"" | cut -d' ' -f2-${NORMAL}${NC}"
+        if pacstall -Qi "$2" | grep 'version' | cut -d ":" -f2 | sed 's/ //g'; then
           exit
         else
           fancy_message error "$2 doesn't exist"
