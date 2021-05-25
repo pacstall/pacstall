@@ -109,8 +109,7 @@ if [[ -n "$pacdeps" ]]; then
     done
 fi
 
-echo -n "$depends" > /dev/null 2>&1
-if [[ $? -eq 0 ]] ; then
+if echo -n "$depends" > /dev/null 2>&1; then
     if [[ -n "$breaks" ]]; then
         if dpkg-query -l "$breaks" >/dev/null 2>&1; then
             fancy_message error "${RED}$name${NC} breaks $breaks, which is currently installed by apt"
