@@ -112,11 +112,10 @@ fi
 echo -n "$depends" > /dev/null 2>&1
 if [[ $? -eq 0 ]] ; then
     if [[ -n "$breaks" ]]; then
-    dpkg-query -l "$breaks" >/dev/null 2>&1
-    if [[ $? -eq 0 ]] ; then
-      fancy_message error "${RED}$name${NC} breaks $breaks, which is currently installed by apt"
-      exit 1
-    fi
+        if dpkg-query -l "$breaks" >/dev/null 2>&1; then
+            fancy_message error "${RED}$name${NC} breaks $breaks, which is currently installed by apt"
+            exit 1
+        fi
     fi
     if [[ -n "$breaks" ]] ; then
         if [[ $(pacstall -L) == *$breaks* ]] ; then
