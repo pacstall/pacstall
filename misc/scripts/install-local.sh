@@ -170,17 +170,17 @@ cd /tmp/pacstall
 # Detects if url ends in .git (in that case git clone it), or ends in .zip, or just assume that the url can be uncompressed with tar. Then cd into them
 if [[ $url = *.git ]] ; then
   git clone --quiet --depth=1 --jobs=10 "$url"
-  cd $(/bin/ls -d */|head -n 1)
+  cd $(/bin/ls -d -- */|head -n 1)
 else
   wget -q --show-progress --progress=bar:force "$url" 2>&1
   if [[ $url = *.zip ]] ; then
     hashcheck "${url##*/}"
     unzip -q "${url##*/}" 1>&1
-    cd $(/bin/ls -d */|head -n 1)
+    cd $(/bin/ls -d -- */|head -n 1)
   else
     hashcheck "${url##*/}"
     tar -xf "${url##*/}" 1>&1
-    cd $(/bin/ls -d */|head -n 1)
+    cd $(/bin/ls -d -- */|head -n 1)
   fi
 fi
 
