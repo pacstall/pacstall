@@ -199,11 +199,9 @@ fi
 
 prepare
 # Check if build function exists
-type -t build >/dev/null 2>&1
-if [[ $? -eq 0 ]] ; then
+if type -t build >/dev/null 2>&1; then
   build
-fi
-if [[ $? -eq 1 ]] ; then
+else
   fancy_message error "Something didn't compile right"
   exit 5
 fi
