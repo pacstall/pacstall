@@ -281,8 +281,8 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         echo -e "1.2 ${BIBlue}Capri${NC}"
         exit 0
       else
-        if [[ $(pacstall -Qi "$2" | grep 'version' | cut -d ":" -f2 | sed 's/ //g') ]]; then
-          \pacstall -Qi "$2" | grep 'version' | cut -d ":" -f2 | sed 's/ //g'
+        if [[ $(pacstall -L | grep "$2" | cut -d' ' -f2-) ]]; then
+          echo -e "${BOLD}${GREEN}pacstall -L | grep ""$2"" | cut -d' ' -f2-${NORMAL}${NC}"
           exit
         else
           fancy_message error "$2 doesn't exist"
@@ -363,19 +363,14 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
           fancy_message error "You failed to specify a package"
           exit 1
       fi
-      if [ -f /var/log/pacstall_installed/"$PACKAGE" ]; then
-          source /var/log/pacstall_installed/"$PACKAGE"
-          echo "name: $PACKAGE"
-          echo "version: $version"
-          echo "size: $(du -sh /usr/src/pacstall/"$PACKAGE" | awk '{print $1}')"
-          echo "description: ""$description"""
-          echo "date installed: ""$date"""
-          echo "maintainer: ""$maintainer"""
-          exit
-      else
-          fancy_message error "Package does not exist"
-          exit 1
-      fi
+      source /var/log/pacstall_installed/"$PACKAGE"
+      echo "name: $PACKAGE"
+      echo "version: $version"
+      echo "size: $(du -sh /usr/src/pacstall/"$PACKAGE" | awk '{print $1}')"
+      echo "description: ""$description"""
+      echo "date installed: ""$date"""
+      echo "maintainer: ""$maintainer"""
+      exit
       ;;
      *)
       pacstall -h
