@@ -171,6 +171,7 @@ cd /tmp/pacstall
 if [[ $url = *.git ]] ; then
   git clone --quiet --depth=1 --jobs=10 "$url"
   cd $(/bin/ls -d -- */|head -n 1)
+  git fsck --full
 else
   wget -q --show-progress --progress=bar:force "$url" 2>&1
   if [[ $url = *.zip ]] ; then
