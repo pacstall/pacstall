@@ -34,7 +34,7 @@ touch /tmp/pacstall-up-list
 REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
 fancy_message info "Checking for updates"
 for i in "${list[@]}"; do
-    localver=$(cat /var/log/pacstall_installed/"$i" | sed -n -e 's/version=//p' | tr -d \")
+    localver=$(sed -n -e 's/version=//p' /var/log/pacstall_installed/"$i" | tr -d \")
     remotever=$(source <(curl -s "$REPO"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo $version) >/dev/null
     if [[ $remotever != $localver ]]; then
         echo "$i" >> /tmp/pacstall-up-list
@@ -56,10 +56,10 @@ if [[ $(wc -l /tmp/pacstall-up-list | awk '{ print $1 }') -eq 0 ]] ; then
 else
     fancy_message info "Packages can be upgraded"
     echo -e "Upgradable: $(wc -l /tmp/pacstall-up-list | awk '{ print $1 }')
-${BOLD}$(cat /tmp/pacstall-up-list | tr '\n' ' ')${NORMAL}"
+${BOLD}$(tr '\n' ' ' < /tmp/pacstall-up-list)${NORMAL}"
     echo ""
     if ask "Do you want to continue?" Y; then
-        for i in `sed ':a;N;$!ba;s/\n/,/g' /tmp/pacstall-up-list`; do
+        for i in $(sed ':a;N;$!ba;s/\n/,/g' /tmp/pacstall-up-list); do
             sudo pacstall -I "$i"
         done
     else
