@@ -61,7 +61,8 @@ _pacstall()
             ;;
 
         -D|--download)
-             COMPREPLY=( $( compgen -W "$(curl -s $(cat /usr/share/pacstall/repo/pacstallrepo.txt)/packagelist)" -- $cur ) )
+             COMPREPLY=( $( compgen -W "$(curl -s $(cat /usr/share/pacstall/repo/pacstallrepo.txt)/packagelist)" -- "$cur" ) )
+             return
     esac
 
     case "$cur" in
