@@ -56,7 +56,7 @@ if [[ $(wc -l /tmp/pacstall-up-list | awk '{ print $1 }') -eq 0 ]] ; then
 else
     fancy_message info "Packages can be upgraded"
     echo -e "Upgradable: $(wc -l /tmp/pacstall-up-list | awk '{ print $1 }')
-${BOLD}$(cat /tmp/pacstall-up-list | tr '\n' ' ')${NORMAL}"
+${BOLD}$(tr '\n' ' ' < /tmp/pacstall-up-list)${NORMAL}"
     echo ""
     if ask "Do you want to continue?" Y; then
         for i in $(sed ':a;N;$!ba;s/\n/,/g' /tmp/pacstall-up-list); do
