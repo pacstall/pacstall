@@ -80,8 +80,7 @@ if [[ $? -eq 1 ]]; then
     exit 12
 fi
 
-type pkgver >/dev/null 2>&1
-if [[ $? -eq 0 ]] ; then
+if type pkgver >/dev/null 2>&1; then
     version=$(pkgver) >/dev/null
 fi
 
@@ -109,14 +108,12 @@ if [[ -n "$pacdeps" ]]; then
     done
 fi
 
-echo -n "$depends" > /dev/null 2>&1
-if [[ $? -eq 0 ]] ; then
+if echo -n "$depends" > /dev/null 2>&1; then
     if [[ -n "$breaks" ]]; then
-    dpkg-query -l "$breaks" >/dev/null 2>&1
-    if [[ $? -eq 0 ]] ; then
-      fancy_message error "${RED}$name${NC} breaks $breaks, which is currently installed by apt"
-      exit 1
-    fi
+        if dpkg-query -l "$breaks" >/dev/null 2>&1; then
+            fancy_message error "${RED}$name${NC} breaks $breaks, which is currently installed by apt"
+            exit 1
+        fi
     fi
     if [[ -n "$breaks" ]] ; then
         if [[ $(pacstall -L) == *$breaks* ]] ; then
@@ -143,8 +140,7 @@ if [[ -n "$ppa" ]]; then
 fi
 
 if [[ $NOBUILDDEP -eq 0 ]] ; then
-    sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $build_depends
-    if [[ $? -ne 0 ]] ; then
+    if ! sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $build_depends; then
         fancy_message error "Failed to install build dependencies"
         exit 8
     fi
@@ -174,17 +170,17 @@ cd /tmp/pacstall
 # Detects if url ends in .git (in that case git clone it), or ends in .zip, or just assume that the url can be uncompressed with tar. Then cd into them
 if [[ $url = *.git ]] ; then
   git clone --quiet --depth=1 --jobs=10 "$url"
-  cd $(/bin/ls -d */|head -n 1)
+  cd $(/bin/ls -d -- */|head -n 1)
 else
   wget -q --show-progress --progress=bar:force "$url" 2>&1
   if [[ $url = *.zip ]] ; then
     hashcheck "${url##*/}"
     unzip -q "${url##*/}" 1>&1
-    cd $(/bin/ls -d */|head -n 1)
+    cd $(/bin/ls -d -- */|head -n 1)
   else
     hashcheck "${url##*/}"
     tar -xf "${url##*/}" 1>&1
-    cd $(/bin/ls -d */|head -n 1)
+    cd $(/bin/ls -d -- */|head -n 1)
   fi
 fi
 
@@ -199,11 +195,9 @@ fi
 
 prepare
 # Check if build function exists
-type -t build >/dev/null 2>&1
-if [[ $? -eq 0 ]] ; then
+if type -t build >/dev/null 2>&1; then
   build
-fi
-if [[ $? -eq 1 ]] ; then
+else
   fancy_message error "Something didn't compile right"
   exit 5
 fi
@@ -256,4 +250,4 @@ fi
 fancy_message info "Storing pacscript"
 sudo mkdir -p /var/cache/pacstall/$PACKAGE/$version
 cd $DIR
-sudo \cp -r "$PACKAGE".pacscript /var/cache/pacstall/$PACKAGE/$version
+sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/$PACKAGE/$version
