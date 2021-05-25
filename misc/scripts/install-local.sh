@@ -228,7 +228,7 @@ if [[ -n $optdepends ]] ; then
     echo "Optional dependencies:"
     printf '    %s\n' "${optdepends[@]}"
     if ask "Do you want to install them" Y; then
-        for items in "${optdepends[*]}"; do
+        for items in ${optdepends[*]}; do
             printf "%s\n" "$items" | cut -d: -f1 | tr '\n' ' ' | cut -d% -f1 >> /tmp/pacstall-optdepends
             sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $(cat /tmp/pacstall-optdepends)
         done
