@@ -69,7 +69,7 @@ if ask "Do you want to edit the pacscript" N; then
     elif [[ -n $VISUAL ]]; then
         $VISUAL "$PACKAGE".pacscript
     else
-        nano "$PACKAGE".pacscript
+        editor "$PACKAGE".pacscript
     fi
 fi
 fancy_message info "Sourcing pacscript"
