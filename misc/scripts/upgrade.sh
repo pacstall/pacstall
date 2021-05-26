@@ -59,7 +59,11 @@ else
 ${BOLD}$(tr '\n' ' ' < /tmp/pacstall-up-list)${NORMAL}"
     echo ""
     if ask "Do you want to continue?" Y; then
-        for i in $(sed ':a;N;$!ba;s/\n/,/g' /tmp/pacstall-up-list); do
+        upgrade=()
+        while IFS= read -r line; do
+            upgrade+=("$line")
+        done < /tmp/pacstall-up-list
+        for i in "${upgrade[@]}"; do
             sudo pacstall -I "$i"
         done
     else
