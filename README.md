@@ -25,10 +25,6 @@ You can grab the deb file [here](https://github.com/pacstall/pacstall/releases/l
 ```bash
 sudo bash -c "$(curl -fsSL https://git.io/JsADh || wget -q https://git.io/JsADh -O -)"
 ```
-### Info
-This is not the repository for pacscripts (PKGBUILD). They are [here](https://github.com/pacstall/pacstall-programs). Even though there are packages here, they are for testing pacstall, so I don't have to jump back and forth between repo's.
-
-
 ---
 
 ## Basic Commands
