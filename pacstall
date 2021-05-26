@@ -293,7 +293,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       USER="$2"
       BRANCH="$3"
       if [[ -n "$BRANCH" ]]; then
-          BRANCH=master
+          BRANCH="master"
       fi
       if [[ -n "$USER" ]]; then
           USER="pacstall"
