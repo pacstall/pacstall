@@ -377,6 +377,9 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       echo "description: ""$description"""
       echo "date installed: ""$date"""
       echo "maintainer: ""$maintainer"""
+      if [[ -n $pacdepslist ]]; then
+          echo "pacstall dependencies: ""${pacdepslist[*]}"""
+      fi
       exit
       ;;
      *)
