@@ -1,0 +1,16 @@
+name: "Auto labeler"
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Naturalclar/issue-action@v2.0.2
+        with:
+          title-or-body: "both"
+          parameters: '[ {"keywords": ["bug", "error"], "labels": ["bug"], "assignees": ["henryws"]}, {"keywords": ["help", "guidance"], "labels": ["help-wanted"], "assignees": ["wizard-28"]}]'
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
