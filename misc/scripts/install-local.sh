@@ -223,7 +223,7 @@ fi
 echo "maintainer=\"$maintainer"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 echo "dependencies=\"$depends"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 if [[ -n $pacdepslist ]]; then
-    echo "pacdeps=\"${pacdepslist[@]}"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+    echo "pacdeps=\"${pacdepslist[*]}"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
 
 # If optdepends exists do this
