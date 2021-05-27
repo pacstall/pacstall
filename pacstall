@@ -259,7 +259,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
             source <(cat /var/cache/pacstall/"$PACKAGE"/$(pacstall -Qi "$PACKAGE" | sed 's/: /=/g' | sed -n -e 's/version=//p')/"$PACKAGE".pacscript)
 	        removescript
         fi
-        if [ -z "$dependencies" ]; then
+        if [ -n "$dependencies" ]; then
             fancy_message info "You may want to remove ${BLUE}$dependencies${NC}"
         fi
         exit
