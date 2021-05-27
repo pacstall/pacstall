@@ -101,10 +101,12 @@ if [[ -n "$build_depends" ]]; then
     fi
 
 if [[ -n "$pacdeps" ]]; then
+    declare -a pacdepslist
     for i in "${pacdeps[@]}"
     do
         fancy_message info "Installing $i"
         sudo pacstall -P -I "$i"
+        pacdepslist+=($i)
     done
 fi
 
@@ -220,6 +222,9 @@ if [[ $removescript == "yes" ]] ; then
 fi
 echo "maintainer=\"$maintainer"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 echo "dependencies=\"$depends"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+if [[ -n $pacdepslist ]]; then
+    echo "pacdeps=\"$pacdepslist"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+fi
 
 # If optdepends exists do this
 if [[ -n $optdepends ]] ; then
