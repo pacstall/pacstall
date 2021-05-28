@@ -380,6 +380,12 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       if [[ -n $pacdepslist ]]; then
           echo "pacstall dependencies: ""${pacdepslist[*]}"""
       fi
+      if [[ -n $dependencies ]]; then
+          echo "dependencies: ""$dependencies"""
+      fi
+      if [[ -n $build_dependencies ]]; then
+          echo "build dependencies: ""$build_dependencies"""
+      fi
       exit
       ;;
      *)
