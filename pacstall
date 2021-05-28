@@ -376,7 +376,9 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       echo "size: $(du -sh /usr/src/pacstall/"$PACKAGE" | awk '{print $1}')"
       echo "description: ""$description"""
       echo "date installed: ""$date"""
-      echo "maintainer: ""$maintainer"""
+      if [[ -n $maintainer ]]; then
+        echo "maintainer: ""$maintainer"""
+      fi
       if [[ -n $pacdepslist ]]; then
           echo "pacstall dependencies: ""${pacdepslist[*]}"""
       fi
