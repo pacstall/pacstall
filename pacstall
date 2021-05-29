@@ -371,6 +371,10 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
           fancy_message error "You failed to specify a package"
           exit 1
       fi
+      if [ ! -f /var/log/pacstall_installed/"$PACKAGE" ]; then
+          fancy_message error "Package does not exist"
+          exit 1
+      fi
       source /var/log/pacstall_installed/"$PACKAGE"
       echo "name: $PACKAGE"
       echo "version: $version"
