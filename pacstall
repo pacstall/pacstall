@@ -263,6 +263,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         if [ -n "$dependencies" ]; then
             fancy_message info "You may want to remove ${BLUE}$dependencies${NC}"
         fi
+        sudo rm -f /var/log/pacstall_installed/"$PACKAGE"
         exit
       else
         fancy_message error "$PACKAGE does not exist or not properly symlinked"
