@@ -4,6 +4,7 @@
 <a href="https://www.gnu.org/software/bash/"><img src="https://img.shields.io/badge/bash-v5-brightgreen?style=flat-square&logo" alt="Bash v5"></a>
   <a href="https://github.com/pacstall/pacstall/issues"><img src="https://img.shields.io/github/issues/pacstall/pacstall?style=flat-square"></a>
 <a href="https://github.com/pacstall/pacstall/actions?query=workflow%3A%22test+install+script%22"><img src="https://img.shields.io/github/workflow/status/pacstall/pacstall/test%20install%20script?style=flat-square"></a>
+<a href="https://www.codefactor.io/repository/github/pacstall/pacstall"><img src="https://img.shields.io/codefactor/grade/github/pacstall/pacstall/develop?style=flat-square"></a>
 <a href="https://discord.gg/yzrjXJV6K8"><img src="https://img.shields.io/discord/839818021207801878?style=flat-square"></a>
 </p>
 
@@ -24,10 +25,6 @@ You can grab the deb file [here](https://github.com/pacstall/pacstall/releases/l
 ```bash
 sudo bash -c "$(curl -fsSL https://git.io/JsADh || wget -q https://git.io/JsADh -O -)"
 ```
-### Info
-This is not the repository for pacscripts (PKGBUILD). They are [here](https://github.com/pacstall/pacstall-programs). Even though there are packages here, they are for testing pacstall, so I don't have to jump back and forth between repo's.
-
-
 ---
 
 ## Basic Commands
@@ -63,7 +60,7 @@ sudo pacstall -Up
 
 This will update packages. Equivalent of apt upgrade
 
-
+These are the basic commands, for more info, run `pacstall -h`
 #### Misc
 ##### Zsh auto completion
 Zsh can emulate bash completion scripts by default so all you have to do is add these to your `.zshrc` or wherever you source things:
