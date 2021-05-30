@@ -56,12 +56,13 @@ _pacstall()
 	        return
 	        ;;
         -Il|--install-local)
-             COMPREPLY=( $( compgen -W "$(\ls | grep -i -E ".pacscript" | sed 's/.pacscript//g')" -- "$cur" ) )
+             COMPREPLY=( $( compgen -W "$(find -- *.pacscript* | sed 's/.pacscript//g')" -- "$cur" ) )
             return
             ;;
 
         -D|--download)
-             COMPREPLY=( $( compgen -W "$(curl -s $(cat /usr/share/pacstall/repo/pacstallrepo.txt)/packagelist)" -- $cur ) )
+             COMPREPLY=( $( compgen -W "$(curl -s $(cat /usr/share/pacstall/repo/pacstallrepo.txt)/packagelist)" -- "$cur" ) )
+             return
     esac
 
     case "$cur" in
