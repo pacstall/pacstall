@@ -262,6 +262,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         if [ -n "$dependencies" ]; then
             fancy_message info "You may want to remove ${BLUE}$dependencies${NC}"
         fi
+        sudo rm -f /var/log/pacstall_installed/"$PACKAGE"
         exit
       else
         fancy_message error "$PACKAGE does not exist or not properly symlinked"
@@ -278,7 +279,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       ;;
     -V|--version)
       if [[ -z "$2" ]]; then
-        echo -e "1.2 ${BIBlue}Capri${NC}"
+        echo -e "1.3 ${BIPurple}Amaranth${NC}"
         exit 0
       else
         if pacstall -Qi "$2" | grep 'version' | cut -d ":" -f2 | sed 's/ //g'; then
@@ -370,13 +371,19 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
           fancy_message error "You failed to specify a package"
           exit 1
       fi
+      if [ ! -f /var/log/pacstall_installed/"$PACKAGE" ]; then
+          fancy_message error "Package does not exist"
+          exit 1
+      fi
       source /var/log/pacstall_installed/"$PACKAGE"
       echo "name: $PACKAGE"
       echo "version: $version"
       echo "size: $(du -sh /usr/src/pacstall/"$PACKAGE" | awk '{print $1}')"
       echo "description: ""$description"""
       echo "date installed: ""$date"""
-      echo "maintainer: ""$maintainer"""
+      if [[ -n $maintainer ]]; then
+        echo "maintainer: ""$maintainer"""
+      fi
       if [[ -n $pacdepslist ]]; then
           echo "pacstall dependencies: ""${pacdepslist[*]}"""
       fi
