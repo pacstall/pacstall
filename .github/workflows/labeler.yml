@@ -6,7 +6,7 @@ on:
     types: [opened]
 
 jobs:
-  test:
+  labeler:
     runs-on: ubuntu-latest
     steps:
       - uses: Naturalclar/issue-action@v2.0.2
