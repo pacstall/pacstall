@@ -395,6 +395,16 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       fi
       exit
       ;;
+    -T|--tree)
+      LC_ALL=C
+      PACKAGE="$2"
+      if [ -d "/usr/src/pacstall/$PACKAGE" ]; then
+          tree -C /usr/src/pacstall/"$PACKAGE" | sed "s/\/usr\/src\/pacstall\/$PACKAGE/\//g"
+      else
+          fancy_message error "Package does not exist"
+          exit 1
+      fi
+      ;;
      *)
       pacstall -h
       exit 3
