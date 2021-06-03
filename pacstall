@@ -316,8 +316,8 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
  / ____/ /_/ / /__(__  ) /_/ /_/ / / /
 /_/    \__,_/\___/____/\__/\__,_/_/_/
 '
-      fancy_message info "You are at version $(pacstall -V)"
-      fancy_message warn "Be sure to check our GitHub release page to make sure you have no incompatible code: https://github.com/$USERNAME/pacstall/tree/$BRANCH"
+        fancy_message info "You are at version $(pacstall -V)"
+        fancy_message warn "Be sure to check our GitHub release page to make sure you have no incompatible code: https://github.com/$USERNAME/pacstall/tree/$BRANCH"
         exit 0
       else
         exit 1
