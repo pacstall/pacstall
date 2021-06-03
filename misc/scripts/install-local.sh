@@ -247,6 +247,9 @@ fi
 fancy_message info "Symlinking files"
 cd /usr/src/pacstall/ || sudo mkdir -p /usr/src/pacstall && cd /usr/src/pacstall
 # By default (I think), stow symlinks to the directory behind it (..), but we want to symlink to /, or in other words, symlink files from pkg/usr to /usr
+if ! command -v stow >/dev/null; then
+    sudo apt-get install stow -y
+fi
 sudo stow --target="/" "$PACKAGE"
 # stow will fail to symlink packages if files already exist on the system; this is just an error
 if [[ $? -eq 1 ]]; then
