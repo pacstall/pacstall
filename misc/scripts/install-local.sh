@@ -124,7 +124,7 @@ if echo -n "$depends" > /dev/null 2>&1; then
         fi
     fi
 fi
-if ! [[ -z $replace ]] ; then
+if [[ -n $replace ]] ; then
     dpkg-query -W -f='${Status}' $replace 2>/dev/null | grep -q "ok installed"
     if [[ $(dpkg-query -W -f='${Status}' $replace 2>/dev/null | grep -q "ok installed") -eq 0 ]] ; then
         if ask "This script replaces $replace. Do you want to proceed" N; then
