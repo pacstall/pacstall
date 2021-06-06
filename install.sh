@@ -97,7 +97,7 @@ sudo mkdir -p $PACSTALL_DIRECTORY
 sudo mkdir -p $PACSTALL_DIRECTORY/scripts
 sudo mkdir -p $PACSTALL_DIRECTORY/repo
 sudo mkdir -p /var/log/pacstall_orphaned
-sudo rm $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
+sudo rm -f $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
 sudo touch $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
 sudo sh -c "echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > $PACSTALL_DIRECTORY/repo/pacstallrepo.txt"
 sudo rm -rf /var/log/pacstall_installed
