@@ -126,7 +126,7 @@ if echo -n "$depends" > /dev/null 2>&1; then
 fi
 if ! [[ -z $replace ]] ; then
     dpkg-query -W -f='${Status}' $replace 2>/dev/null | grep -q "ok installed"
-    if [[ $? -eq 1 ]] ; then
+    if [[ $? -eq 0 ]] ; then
         if ask "This script replaces $replace. Do you want to proceed" N; then
             sudo apt-get remove -y $replace
         else
