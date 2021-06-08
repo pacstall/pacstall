@@ -1,5 +1,4 @@
 <p align="center">
-<a href="https://choosealicense.com/licenses/gpl-3.0/"><img src="https://img.shields.io/badge/license-GPL-blue.svg?style=flat-square&logo"></a>
 <a href="https://github.com/pacstall/pacstall/releases/latest"><img src="https://img.shields.io/github/v/release/pacstall/pacstall?color=red&style=flat-square"></a>
 <a href="https://www.gnu.org/software/bash/"><img src="https://img.shields.io/badge/bash-v5-brightgreen?style=flat-square&logo" alt="Bash v5"></a>
   <a href="https://github.com/pacstall/pacstall/issues"><img src="https://img.shields.io/github/issues/pacstall/pacstall?style=flat-square"></a>
@@ -68,4 +67,22 @@ Zsh can emulate bash completion scripts by default so all you have to do is add 
 autoload bashcompinit
 bashcompinit
 source /usr/share/bash-completion/completions/pacstall
+```
+
+
+### License
+---
+![GPLv3](https://www.gnu.org/graphics/gplv3-with-text-136x68.png)
+```
+Pacstall is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, version 3 of the License
+
+Pacstall is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 ```
