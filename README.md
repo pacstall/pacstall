@@ -21,7 +21,8 @@
 
 ### Installing
 
-You can grab the deb file [here](https://github.com/pacstall/pacstall/releases/latest) although they aren't as up to date as running one of the commands below. If that's not your thing you can run this command:
+You can run the command below to install Pacstall.
+You can also grab the deb file [here](https://github.com/pacstall/pacstall/releases/latest) but it may be a bit older.
 ```bash
 sudo bash -c "$(curl -fsSL https://git.io/JsADh || wget -q https://git.io/JsADh -O -)"
 ```
