@@ -32,10 +32,7 @@ cd "$PACKAGE"
 wget -q --show-progress --progress=bar:force "$URL" -O "$PACKAGE".pacscript 2>&1
 if [[ $INSTALLING -eq 1 ]] ; then
     source /usr/share/pacstall/scripts/install-local.sh
-    exit
 fi
-fancy_message info "Your script is in ${GREEN}$HOME/.cache/pacstall/$PACKAGE${NC}"
-fancy_message info "cd into it and run sudo pacstall -Il <pkg> to install it"
 }
 URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 wget -q --tries=10 --timeout=20 --spider https://github.com 

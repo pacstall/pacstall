@@ -195,7 +195,9 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         fancy_message error "Run as root"
         exit 1
       fi
-      PACKAGE=$2
+      PACKAGE="$@"
+      PACKAGE=$(echo $PACKAGE | cut -dI -f2- | sed 's/ //')
+      for PACKAGE in $PACKAGE; do
       if [[ -z "$PACKAGE" ]]; then
         fancy_message error "You failed to specify a package"
         exit 1
@@ -231,6 +233,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
           PACKAGE=$(echo "$INPUT" | sed 's/:.*//')
       fi
       source /usr/share/pacstall/scripts/install-local.sh
+      done
       exit
       ;;
     -S|--search)
