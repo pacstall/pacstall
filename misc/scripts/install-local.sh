@@ -84,7 +84,6 @@ if type pkgver >/dev/null 2>&1; then
     version=$(pkgver) >/dev/null
 fi
 
-fancy_message info "Running checks"
 checks
 if [[ $? -eq 1 ]] ; then
     fancy_message error "There was an error checking the script!"
