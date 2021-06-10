@@ -1,9 +1,10 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: ""
-labels: ""
-assignees: ""
+title: ''
+labels: bug
+assignees: wizard-28
+
 ---
 
 **Describe the bug**
@@ -30,7 +31,7 @@ If applicable, add screenshots to help explain your problem.
 **Desktop (please complete the following information):**
 
 - OS + version: [e.g. Ubuntu 20.04]
-- Pacstall Version [e.g. 1.1]
+- Pacstall Version + branch: [e.g. 1.1 master]
 
 **Additional context**
 Add any other context about the problem here.
