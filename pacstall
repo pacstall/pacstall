@@ -170,6 +170,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       echo " 
       options:
       -I --install, Installs package
+      -Il --install-local, Installs a local package
       -S --search, Search for package
       -R --remove, Removes package
       -D --download, Downloads script
