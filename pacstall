@@ -241,7 +241,9 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       source /usr/share/pacstall/scripts/search.sh
       ;;
     -R|--remove)
-      PACKAGE=$2
+      PACAKGE="$@"
+      PACKAGE=$(echo $PACKAGE | cut -dR -f2- | sed 's/ //')
+      for PACKAGE in $PACKAGE; do
       # Check if $2 is filled (not empty) because if not, stow will remove every package (from experience, oof)
       if [[ -z "$PACKAGE" ]]; then
         fancy_message error "You failed to specify a package"
@@ -267,11 +269,11 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
             fancy_message info "You may want to remove ${BLUE}$dependencies${NC}"
         fi
         sudo rm -f /var/log/pacstall_installed/"$PACKAGE"
-        exit
       else
         fancy_message error "$PACKAGE does not exist or not properly symlinked"
         exit 1
       fi
+      done
       ;;
     -C|--change-repo)
       if [[ -z "$2" ]]; then
@@ -334,7 +336,9 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       ;;
     -D|--download)
       export LC_ALL=C
-      PACKAGE=$2
+      PACKAGE="$@"
+      PACKAGE=$(echo $PACKAGE | cut -dD -f2- | sed 's/ //')
+      for PACKAGE in $PACKAGE; do
       if [[ -z "$PACKAGE" ]]; then
         fancy_message error "You failed to specify a package"
         exit 1
@@ -342,7 +346,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       INSTALLING=0
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       source /usr/share/pacstall/scripts/download.sh
-      exit
+      done
       ;;
     -Qd|--query-depends)
       export LC_ALL=C
@@ -370,7 +374,9 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       ;;
     -Qi|--query-info)
       export LC_ALL=C
-      PACKAGE=$2
+      PACKAGE="$@"
+      PACKAGE=$(echo $PACKAGE | cut -di -f2- | sed 's/ //')
+      for PACKAGE in $PACKAGE; do
       if [[ -z "$PACKAGE" ]]; then
           fancy_message error "You failed to specify a package"
           exit 1
@@ -397,7 +403,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       if [[ -n $build_dependencies ]]; then
           echo "build dependencies: ""$build_dependencies"""
       fi
-      exit
+      done
       ;;
     -T|--tree)
       LC_ALL=C
