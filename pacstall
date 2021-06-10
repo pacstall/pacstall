@@ -216,6 +216,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       export REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
       source /usr/share/pacstall/scripts/download.sh
+      done
       exit
       ;;
     -Il|--install-local)
@@ -234,7 +235,6 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
           PACKAGE=$(echo "$INPUT" | sed 's/:.*//')
       fi
       source /usr/share/pacstall/scripts/install-local.sh
-      done
       exit
       ;;
     -S|--search)
