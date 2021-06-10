@@ -263,3 +263,4 @@ fancy_message info "Storing pacscript"
 sudo mkdir -p /var/cache/pacstall/$PACKAGE/$version
 cd $DIR
 sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/$PACKAGE/$version
+unset {name,version,url,build_depends,depends,breaks,replace,description,hash,removescript,optdepends,ppa,maintainer,pacdeps,patch,prepare,build,install} >/dev/null
