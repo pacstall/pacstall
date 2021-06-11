@@ -70,7 +70,6 @@ bashcompinit
 source /usr/share/bash-completion/completions/pacstall
 ```
 
-
 ### License
 ---
 ![GPLv3](https://www.gnu.org/graphics/gplv3-with-text-136x68.png)
