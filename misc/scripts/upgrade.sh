@@ -35,7 +35,7 @@ REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
 fancy_message info "Checking for updates"
 for i in "${list[@]}"; do
     localver=$(sed -n -e 's/version=//p' /var/log/pacstall_installed/"$i" | tr -d \")
-    remotever=$(source <(curl -s "$REPO"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo $version) >/dev/null
+    remotever=$(source <(curl -s "$REPO"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
     if [[ $remotever != $localver ]]; then
         echo "$i" >> /tmp/pacstall-up-list
     fi
