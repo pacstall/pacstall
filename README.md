@@ -27,8 +27,7 @@ sudo bash -c "$(curl -fsSL https://git.io/JsADh || wget -q https://git.io/JsADh 
 ```
 ---
 
-## Basic Commands
-
+### Basic Commands
 ```bash
 sudo pacstall -I foo
 ``` 
@@ -61,8 +60,11 @@ sudo pacstall -Up
 This will update packages. Equivalent of apt upgrade
 
 These are the basic commands, for more info, run `pacstall -h`
-#### Misc
-##### Zsh auto completion
+
+---
+### Auto completions
+Pacstall has fully supported auto completions for the `bash`, and `fish` shells. For the `ZSH` shell you can emulate the complitions using the following commands.
+#### Zsh auto completion
 Zsh can emulate bash completion scripts by default so all you have to do is add these to your `.zshrc` or wherever you source things:
 ```bash
 autoload bashcompinit
