@@ -73,7 +73,7 @@ source /usr/share/bash-completion/completions/pacstall
 ### License
 ---
 ![GPLv3](https://www.gnu.org/graphics/gplv3-with-text-136x68.png)
-```
+```monospace
 Pacstall is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, version 3 of the License
