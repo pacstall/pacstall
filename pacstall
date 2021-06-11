@@ -296,7 +296,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       BRANCH="$3"
       if [[ -z "$BRANCH" ]]; then
           if test -f "/usr/share/pacstall/repo/update"; then
-            BRANCH=$(cat /usr/share/pacstall/repo/update | sed 's/.*\ //')
+            BRANCH=$(sed 's/.*\ //' /usr/share/pacstall/repo/update)
           else 
             BRANCH="master"
           fi
