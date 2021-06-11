@@ -303,7 +303,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       fi
       if [[ -z "$USERNAME" ]]; then
           if test -f "/usr/share/pacstall/repo/update"; then
-              USERNAME=$(cat /usr/share/pacstall/repo/update | sed 's/\s.*$//')
+            USERNAME=$(cat /usr/share/pacstall/repo/update | sed 's/\s.*$//')
           else
             USERNAME="pacstall"
           fi
