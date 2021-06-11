@@ -327,7 +327,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
 '
         fancy_message info "You are at version $(pacstall -V)"
         fancy_message warn "Be sure to check our GitHub release page to make sure you have no incompatible code: https://github.com/$USERNAME/pacstall/tree/$BRANCH"
-        echo "$USERNAME $BRANCH" | sudo tee /usr/share/pacstall/repo/update
+        echo "$USERNAME $BRANCH" | sudo tee /usr/share/pacstall/repo/update >/dev/null
         exit 0
       else
         exit 1
