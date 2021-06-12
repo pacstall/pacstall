@@ -295,10 +295,18 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       USERNAME="$2"
       BRANCH="$3"
       if [[ -z "$BRANCH" ]]; then
-          BRANCH="master"
+          if test -f "/usr/share/pacstall/repo/update"; then
+            BRANCH=$(sed 's/.*\ //' /usr/share/pacstall/repo/update)
+          else 
+            BRANCH="master"
+          fi
       fi
       if [[ -z "$USERNAME" ]]; then
-          USERNAME="pacstall"
+          if test -f "/usr/share/pacstall/repo/update"; then
+            USERNAME=$(sed 's/\s.*$//' /usr/share/pacstall/repo/update)
+          else
+            USERNAME="pacstall"
+          fi
       fi
       if ask "Are you sure you want to update pacstall?" Y; then
         for i in {change-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh}; do
@@ -319,6 +327,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
 '
         fancy_message info "You are at version $(pacstall -V)"
         fancy_message warn "Be sure to check our GitHub release page to make sure you have no incompatible code: https://github.com/$USERNAME/pacstall/tree/$BRANCH"
+        echo "$USERNAME $BRANCH" | sudo tee /usr/share/pacstall/repo/update >/dev/null
         exit 0
       else
         exit 1
