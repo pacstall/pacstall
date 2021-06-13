@@ -228,7 +228,7 @@ if [[ -n $build_depends ]]; then
     echo "build_dependencies=\"$build_depends"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
 if [[ -n $pacdepslist ]]; then
-    echo "pacdeps=\"${pacdepslist[*]}"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+    echo "pacdeps=\"$pacdepslist"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
 if [[ -n $PACSTALL_DEPENDS ]]; then
     echo "pacstall_depends=\"true"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
