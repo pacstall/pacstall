@@ -403,7 +403,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       if [[ -n $_build_dependencies ]]; then
           echo "build dependencies: ""$_build_dependencies"""
       fi
-      if [[ -n $pacstall_depends ]]; then
+      if [[ -n $_pacstall_depends ]]; then
           echo "install type: installed as dependency"
       else
           echo "install type: explicitly installed"
