@@ -403,6 +403,11 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       if [[ -n $build_dependencies ]]; then
           echo "build dependencies: ""$build_dependencies"""
       fi
+      if [[ -n $pacstall_depends ]]; then
+          echo "install type: installed as dependency"
+      else
+          echo "install type: explicitly installed"
+      fi
       exit
       ;;
     -T|--tree)
