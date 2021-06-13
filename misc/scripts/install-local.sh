@@ -105,11 +105,9 @@ if [[ -n "$pacdeps" ]]; then
     do
         fancy_message info "Installing $i"
         echo "PACSTALL_DEPENDS=true" | sudo tee /tmp/pacstall-pacdeps
-        export PACSTALL_DEPENDS=true
         sudo pacstall -P -I "$i"
         pacdepslist+=($i)
         sudo rm -f /tmp/pacstall-pacdeps
-        unset PACSTALL_DEPENDS
     done
 fi
 
