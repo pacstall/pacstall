@@ -100,13 +100,11 @@ if [[ -n "$build_depends" ]]; then
     fi
 
 if [[ -n "$pacdeps" ]]; then
-    declare -a pacdepslist
     for i in "${pacdeps[@]}"
     do
         fancy_message info "Installing $i"
         echo "PACSTALL_DEPENDS=true" | sudo tee /tmp/pacstall-pacdeps
         sudo pacstall -P -I "$i"
-        pacdepslist+=($i)
         sudo rm -f /tmp/pacstall-pacdeps
     done
 fi
@@ -227,8 +225,8 @@ fi
 if [[ -n $build_depends ]]; then
     echo "build_dependencies=\"$build_depends"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
-if [[ -n $pacdepslist ]]; then
-    echo "pacdeps=\"$pacdepslist"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+if [[ -n $pacdeps ]]; then
+    echo "pacdeps=\"$pacdeps"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
 if test -f /tmp/pacstall-pacdeps; then
     echo "pacstall_depends=\"true"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
