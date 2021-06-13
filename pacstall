@@ -397,7 +397,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       if [[ -n $_pacdeps ]]; then
           echo "pacstall dependencies: ""$_pacdeps"""
       fi
-      if [[ -n $dependencies ]]; then
+      if [[ -n $_dependencies ]]; then
           echo "dependencies: ""$_dependencies"""
       fi
       if [[ -n $_build_dependencies ]]; then
