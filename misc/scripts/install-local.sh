@@ -104,9 +104,11 @@ if [[ -n "$pacdeps" ]]; then
     for i in "${pacdeps[@]}"
     do
         fancy_message info "Installing $i"
+        echo "PACSTALL_DEPENDS=true" | sudo tee /tmp/pacstall-pacdeps
         export PACSTALL_DEPENDS=true
         sudo pacstall -P -I "$i"
         pacdepslist+=($i)
+        sudo rm -f /tmp/pacstall-pacdeps
         unset PACSTALL_DEPENDS
     done
 fi
@@ -230,7 +232,7 @@ fi
 if [[ -n $pacdepslist ]]; then
     echo "pacdeps=\"$pacdepslist"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
-if [[ -n $PACSTALL_DEPENDS ]]; then
+if test -f /tmp/pacstall-pacdeps; then
     echo "pacstall_depends=\"true"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
 
