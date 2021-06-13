@@ -400,7 +400,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       if [[ -n $dependencies ]]; then
           echo "dependencies: ""$_dependencies"""
       fi
-      if [[ -n $build_dependencies ]]; then
+      if [[ -n $_build_dependencies ]]; then
           echo "build dependencies: ""$_build_dependencies"""
       fi
       if [[ -n $pacstall_depends ]]; then
