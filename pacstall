@@ -391,7 +391,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       echo "size: $(du -sh /usr/src/pacstall/"$PACKAGE" | awk '{print $1}')"
       echo "description: ""$_description"""
       echo "date installed: ""$_date"""
-      if [[ -n $maintainer ]]; then
+      if [[ -n $_maintainer ]]; then
         echo "maintainer: ""$_maintainer"""
       fi
       if [[ -n $_pacdeps ]]; then
