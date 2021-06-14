@@ -177,12 +177,12 @@ else
   sudo wget -q --show-progress --progress=bar:force "$url" 2>&1
   if [[ $url = *.zip ]] ; then
     hashcheck "${url##*/}"
-    unzip -q "${url##*/}" 1>&1
+    sudo unzip -q "${url##*/}" 1>&1
     cd $(/bin/ls -d -- */|head -n 1)
     sudo chown -R "$(logname)":"$(logname)" .
   else
     hashcheck "${url##*/}"
-    tar -xf "${url##*/}" 1>&1
+    sudo tar -xf "${url##*/}" 1>&1
     cd $(/bin/ls -d -- */|head -n 1)
     sudo chown -R "$(logname)":"$(logname)" .
   fi
