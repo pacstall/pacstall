@@ -103,9 +103,9 @@ if [[ -n "$pacdeps" ]]; then
     for i in "${pacdeps[@]}"
     do
         fancy_message info "Installing $i"
-        sudo touch /tmp/pacstall-pacdeps
+        sudo touch /tmp/pacstall-pacdeps-$i
         sudo pacstall -P -I "$i"
-        sudo rm -f /tmp/pacstall-pacdeps
+        sudo rm -f /tmp/pacstall-pacdeps-$i
     done
 fi
 
@@ -228,7 +228,7 @@ fi
 if [[ -n $pacdeps ]]; then
     echo "_pacdeps=\"$pacdeps"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
-if test -f /tmp/pacstall-pacdeps; then
+if test -f /tmp/pacstall-pacdeps-$PACKAGE; then
     echo "_pacstall_depends=\"true"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
 
