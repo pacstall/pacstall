@@ -384,7 +384,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       source /var/log/pacstall_installed/"$PACKAGE"
       echo "name: $PACKAGE"
       echo "version: $_version"
-      echo "size: $(du -sh /usr/src/pacstall/"$PACKAGE" | awk '{print $1}')"
+      echo "size: $(du -sh /usr/src/pacstall/"$PACKAGE" 2>/dev/null | awk '{print $1}')"
       echo "description: ""$_description"""
       echo "date installed: ""$_date"""
       if [[ -n $_maintainer ]]; then
