@@ -100,12 +100,12 @@ if [[ -n "$build_depends" ]]; then
     fi
 
 if [[ -n "$pacdeps" ]]; then
-    declare -a pacdepslist
     for i in "${pacdeps[@]}"
     do
         fancy_message info "Installing $i"
+        sudo touch /tmp/pacstall-pacdeps-"$i"
         sudo pacstall -P -I "$i"
-        pacdepslist+=($i)
+        sudo rm -f /tmp/pacstall-pacdeps-"$i"
     done
 fi
 
@@ -212,21 +212,24 @@ sudo rm -rf /tmp/pacstall/*
 cd "$HOME"
 
 # Metadata writing
-echo "version=\"$version"\" | sudo tee /var/log/pacstall_installed/"$PACKAGE" >/dev/null
-echo "description=\"$description"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
-echo "date=\"$(date)"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+echo "_version=\"$version"\" | sudo tee /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+echo "_description=\"$description"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+echo "_date=\"$(date)"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 if [[ $removescript == "yes" ]] ; then
-   echo "removescript=\"yes"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+   echo "_removescript=\"yes"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
-echo "maintainer=\"$maintainer"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+echo "_maintainer=\"$maintainer"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 if [[ -n $depends ]]; then
-    echo "dependencies=\"$depends"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+    echo "_dependencies=\"$depends"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
 if [[ -n $build_depends ]]; then
-    echo "build_dependencies=\"$build_depends"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+    echo "_build_dependencies=\"$build_depends"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
-if [[ -n $pacdepslist ]]; then
-    echo "pacdeps=\"${pacdepslist[*]}"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+if [[ -n $pacdeps ]]; then
+    echo "_pacdeps=\"$pacdeps"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+fi
+if test -f /tmp/pacstall-pacdeps-"$PACKAGE"; then
+    echo "_pacstall_depends=\"true"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
 
 # If optdepends exists do this
