@@ -192,10 +192,6 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         exit 2
       }
       trap "trap_ctrlc" 2
-      if [ "$EUID" -ne 0 ]; then 
-        fancy_message error "Run as root"
-        exit 1
-      fi
       PACKAGE=$2
       if [[ -z "$PACKAGE" ]]; then
         fancy_message error "You failed to specify a package"
@@ -203,8 +199,8 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       fi
       # Make the directory if not exist
       if [[ ! -e /usr/share/pacstall/repo/ ]]; then
-        mkdir -p /usr/share/pacstall/repo
-        touch /usr/share/pacstall/repo/pacstallrepo.txt
+        sudo mkdir -p /usr/share/pacstall/repo
+        sudo touch /usr/share/pacstall/repo/pacstallrepo.txt
 	    sudo pacstall -C
       fi
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
