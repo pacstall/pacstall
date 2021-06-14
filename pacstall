@@ -249,7 +249,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         source /var/log/pacstall_installed/"$PACKAGE"
         sudo rm -rf /usr/src/pacstall/"$PACKAGE"
         hash -r
-	    if [[ $removescript == "yes" ]] ; then
+	    if [[ $_removescript == "yes" ]] ; then
 	        fancy_message info "Running post removal script"
 	        REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
             # Sources the output of /var/cache/pacstall/pkg/version/pkg.pacscript so we don't have to download scripts from the repo
