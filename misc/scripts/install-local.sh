@@ -207,7 +207,7 @@ else
 fi
 trap - SIGINT
 fancy_message info "Installing"
-sudo install
+install
 if [[ $REMOVE_DEPENDS = y ]] ; then
   sudo apt-get remove $build_depends
 fi
