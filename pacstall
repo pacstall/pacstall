@@ -240,7 +240,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         fancy_message error "You failed to specify a package"
         exit 1
       fi
-      source /var/log/pacstall_installed/"$PACKAGE"
+      source /var/log/pacstall_installed/"$PACKAGE" >/dev/null 2>&1
       if [ -d "/usr/src/pacstall/$PACKAGE" ]; then
         fancy_message info "Removing symlinks"
         cd /usr/src/pacstall
