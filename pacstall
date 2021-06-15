@@ -262,7 +262,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         sudo rm -f /var/log/pacstall_installed/"$PACKAGE"
         exit
       else
-        fancy_message error "$PACKAGE does not exist or not properly symlinked"
+        fancy_message error "$PACKAGE is not installed or not properly symlinked"
         exit 1
       fi
       ;;
