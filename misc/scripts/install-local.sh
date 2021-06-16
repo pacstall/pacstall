@@ -25,9 +25,9 @@
 function trap_ctrlc () {
     echo ""
     fancy_message warn "Interupted, cleaning up"
-    rm -rf /tmp/pacstall/*
+    sudo rm -rf /tmp/pacstall/*
     if [ -f /tmp/pacstall-optdepends ]; then
-        rm /tmp/pacstall-optdepends
+        sudo rm /tmp/pacstall-optdepends
     fi
     exit 2
 }
