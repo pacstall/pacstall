@@ -64,7 +64,6 @@ apt-get install -y sudo wget
 RED='\033[0;31m'
 NC='\033[0m'
 GREEN='\033[0;32m'
-PURPLE='\033[0;35m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 banner
@@ -88,7 +87,7 @@ fancy_message info "Updating"
 sudo apt-get -q update
 fancy_message info "Installing packages"
 
-sudo apt-get install -qq -y {curl,wget,stow,build-essential,unzip,fzf}
+sudo apt-get install -qq -y {curl,wget,stow,build-essential,unzip,tree}
 
 unset PACSTALL_DIRECTORY
 export PACSTALL_DIRECTORY="/usr/share/pacstall"
@@ -97,7 +96,7 @@ sudo mkdir -p $PACSTALL_DIRECTORY
 sudo mkdir -p $PACSTALL_DIRECTORY/scripts
 sudo mkdir -p $PACSTALL_DIRECTORY/repo
 sudo mkdir -p /var/log/pacstall_orphaned
-sudo rm $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
+sudo rm -f $PACSTALL_DIRECTORY/repo/pacstallrepo.txt > /dev/null
 sudo touch $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
 sudo sh -c "echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > $PACSTALL_DIRECTORY/repo/pacstallrepo.txt"
 sudo rm -rf /var/log/pacstall_installed
