@@ -2,8 +2,8 @@
 name: Feature request
 about: Suggest an idea for Pacstall
 title: ''
-labels: ''
-assignees: ''
+labels: enhancement
+assignees: Henryws
 
 ---
 
