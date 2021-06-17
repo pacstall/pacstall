@@ -28,16 +28,16 @@ function version_gt() {
 
 list=( $(pacstall -L) )
 if [ -f /tmp/pacstall-up-list ]; then
-    rm /tmp/pacstall-up-list
+    sudo rm /tmp/pacstall-up-list
 fi
-touch /tmp/pacstall-up-list
+sudo touch /tmp/pacstall-up-list
 REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
 fancy_message info "Checking for updates"
 for i in "${list[@]}"; do
-    localver=$(sed -n -e 's/version=//p' /var/log/pacstall_installed/"$i" | tr -d \")
+    localver=$(sed -n -e 's/_version=//p' /var/log/pacstall_installed/"$i" | tr -d \")
     remotever=$(source <(curl -s "$REPO"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
     if [[ $remotever != $localver ]]; then
-        echo "$i" >> /tmp/pacstall-up-list
+      echo "$i" | sudo tee -a /tmp/pacstall-up-list
     fi
 done &
 
@@ -64,12 +64,12 @@ ${BOLD}$(tr '\n' ' ' < /tmp/pacstall-up-list)${NORMAL}"
             upgrade+=("$line")
         done < /tmp/pacstall-up-list
         for i in "${upgrade[@]}"; do
-            sudo pacstall -I "$i"
+            pacstall -I "$i"
         done
     else
         exit 1
     fi
 fi
 if test -f "/tmp/pacstall-up-list"; then
-    rm -f /tmp/pacstall-up-list
+    sudo rm -f /tmp/pacstall-up-list
 fi
