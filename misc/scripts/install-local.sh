@@ -94,10 +94,10 @@ if [[ -n "$build_depends" ]]; then
     fancy_message info "${BLUE}$name${NC} requires ${CYAN}$(echo -e "$build_depends")${NC} to install"
     if ask "Do you want to remove them after installing ${BLUE}$name${NC}" N; then
         NOBUILDDEP=0
-	fi
     else
         NOBUILDDEP=1
     fi
+fi
 
 if [[ -n "$pacdeps" ]]; then
     for i in "${pacdeps[@]}"
@@ -170,6 +170,7 @@ cd /tmp/pacstall
 # Detects if url ends in .git (in that case git clone it), or ends in .zip, or just assume that the url can be uncompressed with tar. Then cd into them
 if [[ $url = *.git ]] ; then
   sudo git clone --quiet --depth=1 --jobs=10 "$url"
+  export srcdir="/tmp/pacstall/$(/bin/ls -d -- */|head -n 1)"
   cd $(/bin/ls -d -- */|head -n 1)
   sudo chown -R "$(logname)":"$(logname)" .
   git fsck --full
@@ -178,11 +179,13 @@ else
   if [[ $url = *.zip ]] ; then
     hashcheck "${url##*/}"
     sudo unzip -q "${url##*/}" 1>&1
+    export srcdir="/tmp/pacstall/$(/bin/ls -d -- */|head -n 1)"
     cd $(/bin/ls -d -- */|head -n 1)
     sudo chown -R "$(logname)":"$(logname)" .
   else
     hashcheck "${url##*/}"
     sudo tar -xf "${url##*/}" 1>&1
+    srcdir="/tmp/pacstall/$(/bin/ls -d -- */|head -n 1)"
     cd $(/bin/ls -d -- */|head -n 1)
     sudo chown -R "$(logname)":"$(logname)" .
   fi
@@ -197,6 +200,7 @@ if [[ -n $patch ]] ; then
 export PACPATCH=$(pwd)/PACSTALL_patchesdir
 fi
 
+export pkgdir="/usr/src/pacstall/$name"
 prepare
 # Check if build function exists
 if type -t build >/dev/null 2>&1; then
