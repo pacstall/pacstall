@@ -35,7 +35,7 @@ if [[ $INSTALLING -eq 1 ]] ; then
     exit
 fi
 fancy_message info "Your script is in ${GREEN}$HOME/.cache/pacstall/$PACKAGE${NC}"
-fancy_message info "cd into it and run sudo pacstall -Il <pkg> to install it"
+fancy_message info "cd into it and run pacstall -Il <pkg> to install it"
 }
 URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 wget -q --tries=10 --timeout=20 --spider https://github.com 
