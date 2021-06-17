@@ -25,9 +25,9 @@
 function trap_ctrlc () {
     echo ""
     fancy_message warn "Interupted, cleaning up"
-    rm -rf /tmp/pacstall/*
+    sudo rm -rf /tmp/pacstall/*
     if [ -f /tmp/pacstall-optdepends ]; then
-        rm /tmp/pacstall-optdepends
+        sudo rm /tmp/pacstall-optdepends
     fi
     exit 2
 }
@@ -84,7 +84,6 @@ if type pkgver >/dev/null 2>&1; then
     version=$(pkgver) >/dev/null
 fi
 
-fancy_message info "Running checks"
 checks
 if [[ $? -eq 1 ]] ; then
     fancy_message error "There was an error checking the script!"
@@ -101,12 +100,12 @@ if [[ -n "$build_depends" ]]; then
     fi
 
 if [[ -n "$pacdeps" ]]; then
-    declare -a pacdepslist
     for i in "${pacdeps[@]}"
     do
         fancy_message info "Installing $i"
+        sudo touch /tmp/pacstall-pacdeps-"$i"
         sudo pacstall -P -I "$i"
-        pacdepslist+=($i)
+        sudo rm -f /tmp/pacstall-pacdeps-"$i"
     done
 fi
 
@@ -124,9 +123,8 @@ if echo -n "$depends" > /dev/null 2>&1; then
         fi
     fi
 fi
-if ! [[ -z $replace ]] ; then
-    dpkg-query -W -f='${Status}' $replace 2>/dev/null | grep -q "ok installed"
-    if [[ $? -eq 1 ]] ; then
+if [[ -n $replace ]] ; then
+    if dpkg-query -W -f='${Status}' $replace 2>/dev/null | grep -q "ok installed" ; then
         if ask "This script replaces $replace. Do you want to proceed" N; then
             sudo apt-get remove -y $replace
         else
@@ -171,19 +169,22 @@ cd /tmp/pacstall
 
 # Detects if url ends in .git (in that case git clone it), or ends in .zip, or just assume that the url can be uncompressed with tar. Then cd into them
 if [[ $url = *.git ]] ; then
-  git clone --quiet --depth=1 --jobs=10 "$url"
+  sudo git clone --quiet --depth=1 --jobs=10 "$url"
   cd $(/bin/ls -d -- */|head -n 1)
+  sudo chown -R "$(logname)":"$(logname)" .
   git fsck --full
 else
-  wget -q --show-progress --progress=bar:force "$url" 2>&1
+  sudo wget -q --show-progress --progress=bar:force "$url" 2>&1
   if [[ $url = *.zip ]] ; then
     hashcheck "${url##*/}"
-    unzip -q "${url##*/}" 1>&1
+    sudo unzip -q "${url##*/}" 1>&1
     cd $(/bin/ls -d -- */|head -n 1)
+    sudo chown -R "$(logname)":"$(logname)" .
   else
     hashcheck "${url##*/}"
-    tar -xf "${url##*/}" 1>&1
+    sudo tar -xf "${url##*/}" 1>&1
     cd $(/bin/ls -d -- */|head -n 1)
+    sudo chown -R "$(logname)":"$(logname)" .
   fi
 fi
 
@@ -214,39 +215,45 @@ sudo rm -rf /tmp/pacstall/*
 cd "$HOME"
 
 # Metadata writing
-echo "version=\"$version"\" | sudo tee /var/log/pacstall_installed/"$PACKAGE" >/dev/null
-echo "description=\"$description"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
-echo "date=\"$(date)"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+echo "_version=\"$version"\" | sudo tee /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+echo "_description=\"$description"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+echo "_date=\"$(date)"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 if [[ $removescript == "yes" ]] ; then
-   echo "removescript=\"yes"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+   echo "_removescript=\"yes"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
-echo "maintainer=\"$maintainer"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+echo "_maintainer=\"$maintainer"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 if [[ -n $depends ]]; then
-    echo "dependencies=\"$depends"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+    echo "_dependencies=\"$depends"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
 if [[ -n $build_depends ]]; then
-    echo "build_dependencies=\"$build_depends"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+    echo "_build_dependencies=\"$build_depends"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
-if [[ -n $pacdepslist ]]; then
-    echo "pacdeps=\"${pacdepslist[*]}"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+if [[ -n $pacdeps ]]; then
+    echo "_pacdeps=\"$pacdeps"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+fi
+if test -f /tmp/pacstall-pacdeps-"$PACKAGE"; then
+    echo "_pacstall_depends=\"true"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
 
 # If optdepends exists do this
 if [[ -n $optdepends ]] ; then
     sudo rm -f /tmp/pacstall-optdepends
-    fancy_message info "Package has some optional dependencies that can enhance it's functionalities"
+    fancy_message info "Package has some optional dependencies that can enhance its functionalities"
     echo "Optional dependencies:"
     printf '    %s\n' "${optdepends[@]}"
     if ask "Do you want to install them" Y; then
         for items in "${optdepends[*]}"; do
-            printf "%s\n" "$items" | cut -d: -f1 | tr '\n' ' ' | cut -d% -f1 >> /tmp/pacstall-optdepends
-            sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $(cat /tmp/pacstall-optdepends)
+	    printf "%s\n" "${optdepends[@]}" | cut -f1 -d":" | tr '\n' ' ' >> /tmp/pacstall-optdepends
+            sudo apt-get install -y -qq $(cat /tmp/pacstall-optdepends)
         done
     fi
 fi
 fancy_message info "Symlinking files"
 cd /usr/src/pacstall/ || sudo mkdir -p /usr/src/pacstall && cd /usr/src/pacstall
 # By default (I think), stow symlinks to the directory behind it (..), but we want to symlink to /, or in other words, symlink files from pkg/usr to /usr
+if ! command -v stow >/dev/null; then
+    sudo apt-get install stow -y
+fi
 sudo stow --target="/" "$PACKAGE"
 # stow will fail to symlink packages if files already exist on the system; this is just an error
 if [[ $? -eq 1 ]]; then
@@ -259,6 +266,6 @@ if [[ $? -eq 0 ]] ; then
    postinst
 fi
 fancy_message info "Storing pacscript"
-sudo mkdir -p /var/cache/pacstall/$PACKAGE/$version
-cd $DIR
-sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/$PACKAGE/$version
+sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
+cd "$DIR"
+sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
