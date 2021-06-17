@@ -205,7 +205,6 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       fi
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       export HOMEDIR=$HOME
-      PACAKGE=$2
       INSTALLING=1
       export REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
