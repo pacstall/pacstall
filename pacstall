@@ -96,7 +96,7 @@ On_IPurple='\033[0;105m'  # Purple
 On_ICyan='\033[0;106m'    # Cyan
 On_IWhite='\033[0;107m'   # White
 
-ask() {
+function ask() {
     local prompt default reply
 
     if [[ ${2:-} = 'Y' ]]; then

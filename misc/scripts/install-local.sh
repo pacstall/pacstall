@@ -35,7 +35,7 @@ function trap_ctrlc () {
 trap "trap_ctrlc" 2
 
 # run checks to verify script works
-checks() {
+function checks() {
 # curl url to check it exists
 if curl --output /dev/null --silent --head --fail "$url" >/dev/null; then
     fancy_message info "URL exists"
@@ -48,7 +48,7 @@ if [[ -z "$hash" ]]; then
 fi
 }
 
-cget() {
+function cget() {
     URL="$1"
     BRANCH="$2"
     # If BRANCH was not specified, default to master
@@ -145,7 +145,7 @@ if [[ $NOBUILDDEP -eq 0 ]] ; then
         exit 8
     fi
 fi
-hashcheck() {
+function hashcheck() {
     inputHash=$hash
     fileHash=($(sha256sum "$1" | sed 's/\s.*$//'))
 

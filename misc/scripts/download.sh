@@ -24,7 +24,7 @@
 
 # This script downloads pacscripts from the interwebs
 
-download() {
+function download() {
 mkdir -p "$HOME"/.cache/pacstall/
 cd "$HOME"/.cache/pacstall/
 mkdir -p "$PACKAGE"

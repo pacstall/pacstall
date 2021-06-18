@@ -48,7 +48,7 @@ function fancy_message() {
       *) echo -e "[?] UNKNOWN: ${MESSAGE}";;
     esac
 }
-banner() {
+function banner() {
 echo -e "|------------------------|"
 echo -e "|---${GREEN}Pacstall Installer${NC}---|"
 echo -e "|------------------------|"
