@@ -97,64 +97,64 @@ On_ICyan='\033[0;106m'    # Cyan
 On_IWhite='\033[0;107m'   # White
 
 function ask() {
-    local prompt default reply
+  local prompt default reply
 
-    if [[ ${2:-} = 'Y' ]]; then
-        prompt="${BIGreen}Y${NC}/${RED}n${NC}"
-        default='Y'
-    elif [[ ${2:-} = 'N' ]]; then
-        prompt="${GREEN}y${NC}/${BIRed}N${NC}"
-        default='N'
+  if [[ ${2:-} = 'Y' ]]; then
+    prompt="${BIGreen}Y${NC}/${RED}n${NC}"
+    default='Y'
+  elif [[ ${2:-} = 'N' ]]; then
+    prompt="${GREEN}y${NC}/${BIRed}N${NC}"
+    default='N'
+  else
+    prompt="${GREEN}y${NC}/${RED}n${NC}"
+    default=''
+  fi
+
+  while true; do
+    # Ask the question (not using "read -p" as it uses stderr not stdout)
+    echo -ne "$1 [$prompt] "
+
+    # Read the answer (use /dev/tty in case stdin is redirected from somewhere else)
+    if [[ -z "$DISABLE_PROMPTS" ]]; then
+      read -r reply </dev/tty
     else
-        prompt="${GREEN}y${NC}/${RED}n${NC}"
-        default=''
+      echo "$default"
+      reply=$default
     fi
 
-    while true; do
+    # Default?
+    if [[ -z $reply ]]; then
+      reply=$default
+    fi
 
-        # Ask the question (not using "read -p" as it uses stderr not stdout)
-        echo -ne "$1 [$prompt] "
-
-        # Read the answer (use /dev/tty in case stdin is redirected from somewhere else)
-        if [[ -z "$DISABLE_PROMPTS" ]]; then
-                read -r reply </dev/tty
-        else
-                echo "$default"
-                reply=$default
-        fi
-
-        # Default?
-        if [[ -z $reply ]]; then
-            reply=$default
-        fi
-
-        # Check if the reply is valid
-        case "$reply" in
-            Y*|y*) return 0 ;;
-            N*|n*) return 1 ;;
-        esac
-
-    done
+    # Check if the reply is valid
+    case "$reply" in
+      Y*|y*) return 0 ;;
+      N*|n*) return 1 ;;
+    esac
+  done
 }
 
 function fancy_message() {
-    if [ -z "${1}" ] || [ -z "${2}" ]; then
-      return
-    fi
-    local RED="\e[31m"
-    local GREEN="\e[32m"
-    local YELLOW="\e[33m"
-    local RESET="\e[0m"
-    local MESSAGE_TYPE=""
-    local MESSAGE=""
-    MESSAGE_TYPE="${1}"
-    MESSAGE="${2}"
-    case ${MESSAGE_TYPE} in
-      info) echo -e "[${BGreen}+${NC}] INFO: ${MESSAGE}";;
-      warn) echo -e "[${BRed}*${NC}] WARNING: ${MESSAGE}";;
-      error) echo -e "[${BRed}!${NC}] ERROR: ${MESSAGE}";;
-      *) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
-    esac
+  if [ -z "${1}" ] || [ -z "${2}" ]; then
+    return
+  fi
+
+  local RED="\e[31m"
+  local GREEN="\e[32m"
+  local YELLOW="\e[33m"
+  local RESET="\e[0m"
+  local MESSAGE_TYPE=""
+  local MESSAGE=""
+  MESSAGE_TYPE="${1}"
+  MESSAGE="${2}"
+
+  case ${MESSAGE_TYPE} in
+    info) echo -e "[${BGreen}+${NC}] INFO: ${MESSAGE}";;
+    warn) echo -e "[${BRed}*${NC}] WARNING: ${MESSAGE}";;
+    error) echo -e "[${BRed}!${NC}] ERROR: ${MESSAGE}";;
+    *) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
+  esac
 }
 
 # run sudo apt update if it's been more than a week
@@ -165,7 +165,8 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
     -P|--disable-prompts)
       fancy_message warn "Prompts are disabled"
       DISABLE_PROMPTS=yes
-      ;;
+    ;;
+
     -h|--help)
       echo " 
       options:
@@ -183,37 +184,46 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       -Qi --query-info, Get package info
        "
       exit 0
-      ;;
+    ;;
+
     -I|--install)
       export LC_ALL=C
+
       function trap_ctrlc () {
-	    fancy_message warn "the installation of $2 was interrupted, removing files"
-	    rm -rf /tmp/pacstall/*
+	      fancy_message warn "the installation of $2 was interrupted, removing files"
+	      rm -rf /tmp/pacstall/*
         exit 2
       }
+
       trap "trap_ctrlc" 2
       PACKAGE=$2
       if [[ -z "$PACKAGE" ]]; then
         fancy_message error "You failed to specify a package"
         exit 1
       fi
+
       # Make the directory if not exist
       if [[ ! -e /usr/share/pacstall/repo/ ]]; then
         sudo mkdir -p /usr/share/pacstall/repo
         sudo touch /usr/share/pacstall/repo/pacstallrepo.txt
-	    sudo pacstall -C
+	      sudo pacstall -C
       fi
-      REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-      export HOMEDIR=$HOME
+
       INSTALLING=1
+      REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
+
+      export HOMEDIR=$HOME
       export REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
+
       source /usr/share/pacstall/scripts/download.sh
       exit
-      ;;
+    ;;
+
     -Il|--install-local)
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt) 
       INPUT=$2
+
       # If string is absolute dir
       if [[ "$string" == */* ]] || [[ "$string" == *\\* ]] ; then
         cd $(pwd)
@@ -222,49 +232,62 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         cd "$dir"
         PACKAGE=$(basename "$dir")
         PACKAGE="$(echo "$PACKAGE" | sed 's/\..*$//')"
+
       else
-          # If it's in pwd
-          PACKAGE=$(echo "$INPUT" | sed 's/:.*//')
+        # If it's in pwd
+        PACKAGE=$(echo "$INPUT" | sed 's/:.*//')
       fi
+
       source /usr/share/pacstall/scripts/install-local.sh
       exit
-      ;;
+    ;;
+
     -S|--search)
       source /usr/share/pacstall/scripts/search.sh
-      ;;
+    ;;
+
     -R|--remove)
       PACKAGE=$2
+      
       # Check if $2 is filled (not empty) because if not, stow will remove every package (from experience, oof)
       if [[ -z "$PACKAGE" ]]; then
         fancy_message error "You failed to specify a package"
         exit 1
       fi
+
       source /var/log/pacstall_installed/"$PACKAGE" >/dev/null 2>&1
+
       if [ -d "/usr/src/pacstall/$PACKAGE" ]; then
         fancy_message info "Removing symlinks"
         cd /usr/src/pacstall
         sudo stow -D "$PACKAGE"
+
         fancy_message info "Removing package"
         source /var/log/pacstall_installed/"$PACKAGE"
         sudo rm -rf /usr/src/pacstall/"$PACKAGE"
         hash -r
-	    if [[ $_removescript == "yes" ]] ; then
+
+	      if [[ $_removescript == "yes" ]] ; then
 	        fancy_message info "Running post removal script"
 	        REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
-            # Sources the output of /var/cache/pacstall/pkg/version/pkg.pacscript so we don't have to download scripts from the repo
-            source <(cat /var/cache/pacstall/"$PACKAGE"/$(pacstall -V "$PACKAGE")/"$PACKAGE".pacscript)
+          # Sources the output of /var/cache/pacstall/pkg/version/pkg.pacscript so we don't have to download scripts from the repo
+          source <(cat /var/cache/pacstall/"$PACKAGE"/$(pacstall -V "$PACKAGE")/"$PACKAGE".pacscript)
 	        removescript
         fi
+
         if [ -n "$dependencies" ]; then
-            fancy_message info "You may want to remove ${BLUE}$dependencies${NC}"
+          fancy_message info "You may want to remove ${BLUE}$dependencies${NC}"
         fi
+
         sudo rm -f /var/log/pacstall_installed/"$PACKAGE"
         exit
+
       else
         fancy_message error "$PACKAGE is not installed or not properly symlinked"
         exit 1
       fi
-      ;;
+    ;;
+
     -C|--change-repo)
       if [[ -z "$2" ]]; then
       . /usr/share/pacstall/scripts/change-repo.sh
@@ -272,11 +295,13 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         echo "$2" | sudo tee /usr/share/pacstall/repo/pacstallrepo.txt >/dev/null 2>&1
         exit
       fi
-      ;;
+    ;;
+
     -V|--version)
       if [[ -z "$2" ]]; then
         echo -e "1.4 ${BICyan}Turkuaz${NC}"
         exit 0
+
       else
         if pacstall -Qi "$2" | grep 'version' | cut -d ":" -f2 | sed 's/ //g'; then
           exit
@@ -285,34 +310,41 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
           exit 1
         fi
       fi
-      ;;
+    ;;
+
     -U|--update)
       USERNAME="$2"
       BRANCH="$3"
+
       if [[ -z "$BRANCH" ]]; then
-          if test -f "/usr/share/pacstall/repo/update"; then
-            BRANCH=$(sed 's/.*\ //' /usr/share/pacstall/repo/update)
-          else 
-            BRANCH="master"
-          fi
+        if test -f "/usr/share/pacstall/repo/update"; then
+           BRANCH=$(sed 's/.*\ //' /usr/share/pacstall/repo/update)
+        else 
+          BRANCH="master"
+        fi
       fi
+
       if [[ -z "$USERNAME" ]]; then
-          if test -f "/usr/share/pacstall/repo/update"; then
-            USERNAME=$(sed 's/\s.*$//' /usr/share/pacstall/repo/update)
-          else
-            USERNAME="pacstall"
-          fi
+        if test -f "/usr/share/pacstall/repo/update"; then
+           USERNAME=$(sed 's/\s.*$//' /usr/share/pacstall/repo/update)
+        else
+           USERNAME="pacstall"
+        fi
       fi
+
       if ask "Are you sure you want to update pacstall?" Y; then
         for i in {change-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh}; do
-            sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/"$i" -P /usr/share/pacstall/scripts 2>/dev/null 
+          sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/"$i" -P /usr/share/pacstall/scripts 2>/dev/null 
         done
+
         sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/pacstall -P /bin 2>/dev/null
         sudo mkdir -p /usr/share/bash-completion/completions
         sudo wget -q -O /usr/share/bash-completion/completions/pacstall https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/completion/bash 2>/dev/null
+
         if command -v fish &>/dev/null; then
-            sudo wget -q -O /usr/share/fish/vendor_completions.d/pacstall.fish https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/completion/fish 2>/dev/null
+          sudo wget -q -O /usr/share/fish/vendor_completions.d/pacstall.fish https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/completion/fish 2>/dev/null
         fi
+
         echo '
     ____                  __        ____
    / __ \____ ___________/ /_____ _/ / /
@@ -322,103 +354,122 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
 '
         fancy_message info "You are at version $(pacstall -V)"
         fancy_message warn "Be sure to check our GitHub release page to make sure you have no incompatible code: https://github.com/$USERNAME/pacstall/tree/$BRANCH"
+
         echo "$USERNAME $BRANCH" | sudo tee /usr/share/pacstall/repo/update >/dev/null
         exit 0
       else
         exit 1
       fi
-      ;;
+    ;;
+
     -L|--list)
       export LC_ALL=C
+
       /bin/ls -1aA /usr/src/pacstall
       exit
-      ;;
+    ;;
+
     -D|--download)
       export LC_ALL=C
       PACKAGE=$2
+
       if [[ -z "$PACKAGE" ]]; then
         fancy_message error "You failed to specify a package"
         exit 1
       fi
+
       INSTALLING=0
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       source /usr/share/pacstall/scripts/download.sh
       exit
-      ;;
+    ;;
+
     -Qd|--query-depends)
       export LC_ALL=C
       PACKAGE=$2
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
+
       if [[ -z "$PACKAGE" ]]; then
         fancy_message error "You failed to specify a package"
         exit 1
       fi
+
       if curl --output /dev/null --silent --head --fail "$URL"; then
         source <(curl -s "$URL") >/dev/null 2>&1
       else
         fancy_message error "$PACKAGE doesn't seem to exist"
         exit 1
       fi
+
       echo -e "${GREEN}${BOLD}build_depends${NORMAL}${NC}: \"$build_depends\""
       echo -e "${GREEN}${BOLD}depends${NORMAL}${NC}: \"$depends\""
       exit
-      ;;
+    ;;
+
     -Up|--upgrade)
       export LC_ALL=C
       . /usr/share/pacstall/scripts/upgrade.sh
       exit
-      ;;
+    ;;
+
     -Qi|--query-info)
       export LC_ALL=C
       PACKAGE=$2
+
       if [[ -z "$PACKAGE" ]]; then
-          fancy_message error "You failed to specify a package"
-          exit 1
+        fancy_message error "You failed to specify a package"
+        exit 1
       fi
+
       if [ ! -f /var/log/pacstall_installed/"$PACKAGE" ]; then
-          fancy_message error "Package does not exist"
-          exit 1
+        fancy_message error "Package does not exist"
+        exit 1
       fi
+
       source /var/log/pacstall_installed/"$PACKAGE"
       echo "name: $PACKAGE"
       echo "version: $_version"
       echo "size: $(du -sh /usr/src/pacstall/"$PACKAGE" 2>/dev/null | awk '{print $1}')"
       echo "description: ""$_description"""
       echo "date installed: ""$_date"""
+
       if [[ -n $_maintainer ]]; then
         echo "maintainer: ""$_maintainer"""
       fi
       if [[ -n $_pacdeps ]]; then
-          echo "pacstall dependencies: ""$_pacdeps"""
+        echo "pacstall dependencies: ""$_pacdeps"""
       fi
       if [[ -n $_dependencies ]]; then
-          echo "dependencies: ""$_dependencies"""
+        echo "dependencies: ""$_dependencies"""
       fi
       if [[ -n $_build_dependencies ]]; then
-          echo "build dependencies: ""$_build_dependencies"""
+        echo "build dependencies: ""$_build_dependencies"""
       fi
       if [[ -n $_pacstall_depends ]]; then
-          echo "install type: installed as dependency"
+        echo "install type: installed as dependency"
       else
-          echo "install type: explicitly installed"
+        echo "install type: explicitly installed"
       fi
       exit
-      ;;
+    ;;
+
     -T|--tree)
       LC_ALL=C
       PACKAGE="$2"
+
       if [ -d "/usr/src/pacstall/$PACKAGE" ]; then
-          tree -C /usr/src/pacstall/"$PACKAGE" | sed "s/\/usr\/src\/pacstall\/$PACKAGE/\//g"
+        tree -C /usr/src/pacstall/"$PACKAGE" | sed "s/\/usr\/src\/pacstall\/$PACKAGE/\//g"
       else
-          fancy_message error "Package does not exist"
-          exit 1
+        fancy_message error "Package does not exist"
+        exit 1
       fi
-      ;;
-     *)
+    ;;
+
+    *)
       pacstall -h
       exit 3
-      ;;
+    ;;
   esac; shift
 done
 if [[ "$1" == '--' ]]; then shift; fi

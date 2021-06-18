@@ -33,7 +33,7 @@ fi
 
 REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
 if command -v rg &> /dev/null; then
-    curl -s "$REPO"/packagelist | tr ' ' '\n' | rg --no-config --color=never -N "$SEARCH"
+  curl -s "$REPO"/packagelist | tr ' ' '\n' | rg --no-config --color=never -N "$SEARCH"
 else
-    curl -s "$REPO"/packagelist | tr ' ' '\n' | \grep --color=never "$SEARCH"
+  curl -s "$REPO"/packagelist | tr ' ' '\n' | \grep --color=never "$SEARCH"
 fi

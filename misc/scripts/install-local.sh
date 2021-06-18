@@ -23,144 +23,150 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 function trap_ctrlc () {
-    echo ""
-    fancy_message warn "Interupted, cleaning up"
-    sudo rm -rf /tmp/pacstall/*
-    if [ -f /tmp/pacstall-optdepends ]; then
-        sudo rm /tmp/pacstall-optdepends
-    fi
-    exit 2
+  echo ""
+  fancy_message warn "Interupted, cleaning up"
+  sudo rm -rf /tmp/pacstall/*
+  if [ -f /tmp/pacstall-optdepends ]; then
+    sudo rm /tmp/pacstall-optdepends
+  fi
+  exit 2
 }
 
 trap "trap_ctrlc" 2
 
 # run checks to verify script works
 function checks() {
-# curl url to check it exists
-if curl --output /dev/null --silent --head --fail "$url" >/dev/null; then
+  # curl url to check it exists
+  if curl --output /dev/null --silent --head --fail "$url" >/dev/null; then
     fancy_message info "URL exists"
-else
-	fancy_message error "URL doesn't exist"
-	exit 6
-fi
-if [[ -z "$hash" ]]; then
+  else
+	  fancy_message error "URL doesn't exist"
+	  exit 6
+  fi
+
+  if [[ -z "$hash" ]]; then
     fancy_message warn "Package does not contain a hash"
-fi
+  fi
 }
 
 function cget() {
-    URL="$1"
-    BRANCH="$2"
-    # If BRANCH was not specified, default to master
-    if [[ -n $BRANCH ]]; then
-        BRANCH=master
-    fi
-    git ls-remote "$URL" "$BRANCH" | sed "s/refs\/heads\/.*//"
+  URL="$1"
+  BRANCH="$2"
+  # If BRANCH was not specified, default to master
+  if [[ -n $BRANCH ]]; then
+    BRANCH=master
+  fi
+  git ls-remote "$URL" "$BRANCH" | sed "s/refs\/heads\/.*//"
 }
 
 if ask "Do you want to view the pacscript first" N; then
-    less "$PACKAGE".pacscript
+  less "$PACKAGE".pacscript
 fi
+
 if ask "Do you want to edit the pacscript" N; then
-    if [[ -n $PACSTALL_EDITOR ]]; then
-        $PACSTALL_EDITOR "$PACKAGE".pacscript
-    elif [[ -n $EDITOR ]]; then
-        $EDITOR "$PACKAGE".pacscript
-    elif [[ -n $VISUAL ]]; then
-        $VISUAL "$PACKAGE".pacscript
-    else
-        sensible-editor "$PACKAGE".pacscript
-    fi
+  if [[ -n $PACSTALL_EDITOR ]]; then
+    $PACSTALL_EDITOR "$PACKAGE".pacscript
+  elif [[ -n $EDITOR ]]; then
+    $EDITOR "$PACKAGE".pacscript
+  elif [[ -n $VISUAL ]]; then
+    $VISUAL "$PACKAGE".pacscript
+  else
+    sensible-editor "$PACKAGE".pacscript
+  fi
 fi
+
 fancy_message info "Sourcing pacscript"
 DIR=$(pwd)
 source "$PACKAGE".pacscript >/dev/null
 if [[ $? -eq 1 ]]; then
-    fancy_message error "Couldn't parse pacscript"
-    exit 12
+  fancy_message error "Couldn't parse pacscript"
+  exit 12
 fi
 
 if type pkgver >/dev/null 2>&1; then
-    version=$(pkgver) >/dev/null
+  version=$(pkgver) >/dev/null
 fi
 
 checks
-if [[ $? -eq 1 ]] ; then
-    fancy_message error "There was an error checking the script!"
-    exit 1
+if [[ $? -eq 1 ]]; then
+  fancy_message error "There was an error checking the script!"
+  exit 1
 fi
 
 if [[ -n "$build_depends" ]]; then
-    fancy_message info "${BLUE}$name${NC} requires ${CYAN}$(echo -e "$build_depends")${NC} to install"
-    if ask "Do you want to remove them after installing ${BLUE}$name${NC}" N; then
-        NOBUILDDEP=0
+  fancy_message info "${BLUE}$name${NC} requires ${CYAN}$(echo -e "$build_depends")${NC} to install"
+  if ask "Do you want to remove them after installing ${BLUE}$name${NC}" N; then
+    NOBUILDDEP=0
 	fi
-    else
-        NOBUILDDEP=1
-    fi
+else
+  NOBUILDDEP=1
+fi
 
 if [[ -n "$pacdeps" ]]; then
-    for i in "${pacdeps[@]}"
-    do
-        fancy_message info "Installing $i"
-        sudo touch /tmp/pacstall-pacdeps-"$i"
-        sudo pacstall -P -I "$i"
-        sudo rm -f /tmp/pacstall-pacdeps-"$i"
-    done
+  for i in "${pacdeps[@]}"; do
+    fancy_message info "Installing $i"
+    sudo touch /tmp/pacstall-pacdeps-"$i"
+    sudo pacstall -P -I "$i"
+    sudo rm -f /tmp/pacstall-pacdeps-"$i"
+  done
 fi
 
 if echo -n "$depends" > /dev/null 2>&1; then
-    if [[ -n "$breaks" ]]; then
-        if dpkg-query -l "$breaks" >/dev/null 2>&1; then
-            fancy_message error "${RED}$name${NC} breaks $breaks, which is currently installed by apt"
-            exit 1
-        fi
+  if [[ -n "$breaks" ]]; then
+    if dpkg-query -l "$breaks" >/dev/null 2>&1; then
+      fancy_message error "${RED}$name${NC} breaks $breaks, which is currently installed by apt"
+      exit 1
     fi
-    if [[ -n "$breaks" ]] ; then
-        if [[ $(pacstall -L) == *$breaks* ]] ; then
-            fancy_message error "${RED}$name${NC} breaks $breaks, which is currently installed by pacstall"
-            exit 1
-        fi
+  fi
+
+  if [[ -n "$breaks" ]]; then
+    if [[ $(pacstall -L) == *$breaks* ]]; then
+      fancy_message error "${RED}$name${NC} breaks $breaks, which is currently installed by pacstall"
+      exit 1
     fi
+  fi
 fi
-if [[ -n $replace ]] ; then
-    if dpkg-query -W -f='${Status}' $replace 2>/dev/null | grep -q "ok installed" ; then
-        if ask "This script replaces $replace. Do you want to proceed" N; then
-            sudo apt-get remove -y $replace
-        else
-            exit 1
-        fi
+
+if [[ -n $replace ]]; then
+  if dpkg-query -W -f='${Status}' $replace 2>/dev/null | grep -q "ok installed" ; then
+    if ask "This script replaces $replace. Do you want to proceed" N; then
+      sudo apt-get remove -y $replace
+    else
+      exit 1
     fi
+  fi
 fi
 
 if [[ -n "$ppa" ]]; then
   for i in "${ppa[@]}"; do
-      sudo add-apt-repository ppa:"$i"
+    sudo add-apt-repository ppa:"$i"
   done
 fi
 
-if [[ $NOBUILDDEP -eq 0 ]] ; then
-    if ! sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $build_depends; then
-        fancy_message error "Failed to install build dependencies"
-        exit 8
-    fi
+if [[ $NOBUILDDEP -eq 0 ]]; then
+  if ! sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $build_depends; then
+    fancy_message error "Failed to install build dependencies"
+    exit 8
+  fi
 fi
-function hashcheck() {
-    inputHash=$hash
-    fileHash=($(sha256sum "$1" | sed 's/\s.*$//'))
 
-    if [ "$inputHash" = "$fileHash" ]; then
-        true
-    else
-        fancy_message error "Hashes don't match"
-        exit 1
-    fi
+function hashcheck() {
+  inputHash=$hash
+  fileHash=($(sha256sum "$1" | sed 's/\s.*$//'))
+
+  if [ "$inputHash" = "$fileHash" ]; then
+    true
+  else
+    fancy_message error "Hashes don't match"
+    exit 1
+  fi
 }
+
 fancy_message info "Installing dependencies"
 sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $depends
 if [[ $? -eq 1 ]]; then
-    fancy_message error "Failed to install dependencies"
-    exit 8
+  fancy_message error "Failed to install dependencies"
+  exit 8
 fi
 
 fancy_message info "Retrieving packages"
@@ -168,18 +174,20 @@ mkdir -p /tmp/pacstall
 cd /tmp/pacstall
 
 # Detects if url ends in .git (in that case git clone it), or ends in .zip, or just assume that the url can be uncompressed with tar. Then cd into them
-if [[ $url = *.git ]] ; then
+if [[ $url = *.git ]]; then
   sudo git clone --quiet --depth=1 --jobs=10 "$url"
   cd $(/bin/ls -d -- */|head -n 1)
   sudo chown -R "$(logname)":"$(logname)" .
   git fsck --full
+
 else
   sudo wget -q --show-progress --progress=bar:force "$url" 2>&1
-  if [[ $url = *.zip ]] ; then
+  if [[ $url = *.zip ]]; then
     hashcheck "${url##*/}"
     sudo unzip -q "${url##*/}" 1>&1
     cd $(/bin/ls -d -- */|head -n 1)
     sudo chown -R "$(logname)":"$(logname)" .
+
   else
     hashcheck "${url##*/}"
     sudo tar -xf "${url##*/}" 1>&1
@@ -188,16 +196,18 @@ else
   fi
 fi
 
-if [[ -n $patch ]] ; then
+if [[ -n $patch ]]; then
   for i in "${patch[@]}"; do
     fancy_message info "Downloading patches"
     mkdir -p PACSTALL_patchesdir
     wget -q "$i" -P PACSTALL_patchesdir
   done
-export PACPATCH=$(pwd)/PACSTALL_patchesdir
+
+  export PACPATCH=$(pwd)/PACSTALL_patchesdir
 fi
 
 prepare
+
 # Check if build function exists
 if type -t build >/dev/null 2>&1; then
   build
@@ -206,11 +216,14 @@ else
   exit 5
 fi
 trap - SIGINT
+
 fancy_message info "Installing"
 install
-if [[ $REMOVE_DEPENDS = y ]] ; then
+
+if [[ $REMOVE_DEPENDS = y ]]; then
   sudo apt-get remove $build_depends
 fi
+
 sudo rm -rf /tmp/pacstall/*
 cd "$HOME"
 
@@ -218,53 +231,58 @@ cd "$HOME"
 echo "_version=\"$version"\" | sudo tee /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 echo "_description=\"$description"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 echo "_date=\"$(date)"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
-if [[ $removescript == "yes" ]] ; then
-   echo "_removescript=\"yes"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+if [[ $removescript == "yes" ]]; then
+  echo "_removescript=\"yes"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
 echo "_maintainer=\"$maintainer"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 if [[ -n $depends ]]; then
-    echo "_dependencies=\"$depends"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+  echo "_dependencies=\"$depends"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
 if [[ -n $build_depends ]]; then
-    echo "_build_dependencies=\"$build_depends"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+  echo "_build_dependencies=\"$build_depends"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
 if [[ -n $pacdeps ]]; then
-    echo "_pacdeps=\"$pacdeps"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+  echo "_pacdeps=\"$pacdeps"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
 if test -f /tmp/pacstall-pacdeps-"$PACKAGE"; then
-    echo "_pacstall_depends=\"true"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+  echo "_pacstall_depends=\"true"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
 fi
 
 # If optdepends exists do this
-if [[ -n $optdepends ]] ; then
-    sudo rm -f /tmp/pacstall-optdepends
-    fancy_message info "Package has some optional dependencies that can enhance its functionalities"
-    echo "Optional dependencies:"
-    printf '    %s\n' "${optdepends[@]}"
-    if ask "Do you want to install them" Y; then
-        for items in "${optdepends[*]}"; do
+if [[ -n $optdepends ]]; then
+  sudo rm -f /tmp/pacstall-optdepends
+
+  fancy_message info "Package has some optional dependencies that can enhance its functionalities"
+  echo "Optional dependencies:"
+  printf '    %s\n' "${optdepends[@]}"
+  if ask "Do you want to install them" Y; then
+    for items in "${optdepends[*]}"; do
 	    printf "%s\n" "${optdepends[@]}" | cut -f1 -d":" | tr '\n' ' ' >> /tmp/pacstall-optdepends
-            sudo apt-get install -y -qq $(cat /tmp/pacstall-optdepends)
-        done
-    fi
+      sudo apt-get install -y -qq $(cat /tmp/pacstall-optdepends)
+    done
+  fi
 fi
+
 fancy_message info "Symlinking files"
 cd /usr/src/pacstall/ || sudo mkdir -p /usr/src/pacstall && cd /usr/src/pacstall
 # By default (I think), stow symlinks to the directory behind it (..), but we want to symlink to /, or in other words, symlink files from pkg/usr to /usr
 if ! command -v stow >/dev/null; then
-    sudo apt-get install stow -y
+  sudo apt-get install stow -y
 fi
+
 sudo stow --target="/" "$PACKAGE"
 # stow will fail to symlink packages if files already exist on the system; this is just an error
 if [[ $? -eq 1 ]]; then
-    fancy_message error "Package contains links to files that exist on the system"
-    exit 14
+  fancy_message error "Package contains links to files that exist on the system"
+  exit 14
 fi
+
 hash -r
 type -t postinst >/dev/null 2>&1
-if [[ $? -eq 0 ]] ; then
-   postinst
+if [[ $? -eq 0 ]]; then
+  postinst
 fi
+
 fancy_message info "Storing pacscript"
 sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
 cd "$DIR"
