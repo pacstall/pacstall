@@ -25,7 +25,7 @@
 BOLD=$(tput bold)
 NORMAL=$(tput sgr0)
 NC='\033[0m'
-# Curtesy of https://stackoverflow.com/a/28938235/13449010
+# From https://stackoverflow.com/a/28938235/13449010
 # Regular Colors
 BLACK='\033[0;30m'        # Black
 RED='\033[0;31m'          # Red
@@ -186,11 +186,13 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       ;;
     -I|--install)
       export LC_ALL=C
-      function trap_ctrlc () {
+      # Traps ctrl-c in case someone tries to stop something from happening
+      function trap_ctrlc() {
 	    fancy_message warn "the installation of $2 was interrupted, removing files"
 	    rm -rf /tmp/pacstall/*
         exit 2
       }
+      # Does the actual trapping
       trap "trap_ctrlc" 2
       PACKAGE=$2
       if [[ -z "$PACKAGE" ]]; then
@@ -203,19 +205,25 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         sudo touch /usr/share/pacstall/repo/pacstallrepo.txt
 	    sudo pacstall -C
       fi
+      # Set repo config
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       export HOMEDIR=$HOME
+      # Specifies that we are installing so that download.sh will trigger -Il
       INSTALLING=1
       export REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
+      # Sets the URL for download.sh
       export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
+      # Magic time, see you in download.sh
       source /usr/share/pacstall/scripts/download.sh
       exit
       ;;
     -Il|--install-local)
+      # Same deal, sets the repo
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt) 
       INPUT=$2
       # If string is absolute dir
       if [[ "$string" == */* ]] || [[ "$string" == *\\* ]] ; then
+        # This is some tricky devilry that figures out how to get the correct package format input since the user might goof it up
         cd $(pwd)
         parentdir="$(dirname "$INPUT")"
         eval dir="$parentdir"
@@ -239,14 +247,18 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         fancy_message error "You failed to specify a package"
         exit 1
       fi
+      # Sources metadata file
       source /var/log/pacstall_installed/"$PACKAGE" >/dev/null 2>&1
+      # Checks if package even exists, so pacstall doesn't go doing things that it shouldn't
       if [ -d "/usr/src/pacstall/$PACKAGE" ]; then
         fancy_message info "Removing symlinks"
         cd /usr/src/pacstall
+        # Unlinks files
         sudo stow -D "$PACKAGE"
         fancy_message info "Removing package"
-        source /var/log/pacstall_installed/"$PACKAGE"
+        # source /var/log/pacstall_installed/"$PACKAGE"
         sudo rm -rf /usr/src/pacstall/"$PACKAGE"
+        # hash -r cleans the program db (I guess). It makes the shell figure out that foo never existed, instead of: Error, /usr/bin/foo doesn't exist
         hash -r
 	    if [[ $_removescript == "yes" ]] ; then
 	        fancy_message info "Running post removal script"
@@ -277,7 +289,8 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       if [[ -z "$2" ]]; then
         echo -e "1.4 ${BICyan}Turkuaz${NC}"
         exit 0
-      else
+    else
+        # Grep the version number of a package from pacstall -Qi
         if pacstall -Qi "$2" | grep 'version' | cut -d ":" -f2 | sed 's/ //g'; then
           exit
         else
@@ -291,6 +304,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       BRANCH="$3"
       if [[ -z "$BRANCH" ]]; then
           if test -f "/usr/share/pacstall/repo/update"; then
+            # The format for persistent updates file looks like this: user branch, so here, we want the branch, so we grep the end of the file (after the space)
             BRANCH=$(sed 's/.*\ //' /usr/share/pacstall/repo/update)
           else 
             BRANCH="master"
@@ -298,6 +312,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       fi
       if [[ -z "$USERNAME" ]]; then
           if test -f "/usr/share/pacstall/repo/update"; then
+            # Same deal here, except we want the beginning of the file
             USERNAME=$(sed 's/\s.*$//' /usr/share/pacstall/repo/update)
           else
             USERNAME="pacstall"
@@ -340,12 +355,14 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         fancy_message error "You failed to specify a package"
         exit 1
       fi
+      # If INSTALLING equals zero, download.sh will quit after downloading
       INSTALLING=0
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       source /usr/share/pacstall/scripts/download.sh
       exit
       ;;
     -Qd|--query-depends)
+      # Queries remote dependencies
       export LC_ALL=C
       PACKAGE=$2
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
