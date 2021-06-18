@@ -37,7 +37,7 @@ for i in "${list[@]}"; do
     localver=$(sed -n -e 's/_version=//p' /var/log/pacstall_installed/"$i" | tr -d \")
     remotever=$(source <(curl -s "$REPO"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
     if [[ $remotever != $localver ]]; then
-      echo "$i" | sudo tee -a /tmp/pacstall-up-list
+      echo "$i" | sudo tee -a /tmp/pacstall-up-list >/dev/null
     fi
 done &
 
