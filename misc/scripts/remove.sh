@@ -13,7 +13,7 @@ if [[ ! -d "$PACKAGE" ]]; then
 fi
 
 # Removal starts from here
-source "$LOGDIR/installed/$PACKAGE" > /dev/null 2>&1
+source "$LOGDIR/$PACKAGE" > /dev/null 2>&1
 
 fancy_message info "Removing symlinks"
 sudo stow -D "$PACKAGE"
@@ -34,5 +34,5 @@ if [ -n "$_dependencies" ]; then
   fancy_message info "You may want to remove ${BLUE}$_dependencies${NC}"
 fi
 
-sudo rm -f "$LOGDIR/installed/$PACKAGE"
+sudo rm -f "$LOGDIR/$PACKAGE"
 exit 0

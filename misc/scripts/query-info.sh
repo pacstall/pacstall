@@ -5,12 +5,12 @@ if [[ -z "$PACKAGE" ]]; then
   exit 1
 fi
 
-if [ ! -f "$LOGDIR/installed/$PACKAGE" ]; then
+if [ ! -f "$LOGDIR/$PACKAGE" ]; then
   fancy_message error "Package does not exist"
   exit 1
 fi
 
-source "$LOGDIR/installed/$PACKAGE"
+source "$LOGDIR/$PACKAGE"
 echo "name: $PACKAGE"
 echo "version: $_version"
 echo "size: $(du -sh "$STOWDIR"/"$PACKAGE" 2> /dev/null | awk '{print $1}')"

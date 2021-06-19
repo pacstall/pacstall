@@ -170,8 +170,8 @@ if [[ $? -eq 1 ]]; then
 fi
 
 fancy_message info "Retrieving packages"
-mkdir -p /tmp/pacstall
-cd /tmp/pacstall
+mkdir -p "$SRCDIR"
+cd "$SRCDIR"
 
 # Detects if url ends in .git (in that case git clone it), or ends in .zip, or just assume that the url can be uncompressed with tar. Then cd into them
 if [[ $url = *.git ]]; then
@@ -224,7 +224,7 @@ if [[ $REMOVE_DEPENDS = y ]]; then
   sudo apt-get remove $build_depends
 fi
 
-sudo rm -rf /tmp/pacstall/*
+sudo rm -rf "${SRCDIR:?}"/*
 cd "$HOME"
 
 # Metadata writing
