@@ -33,7 +33,7 @@ function download() {
 
   if [[ $INSTALLING -eq 1 ]] ; then
     source /usr/share/pacstall/scripts/install-local.sh
-    exit
+    exit 0
   fi
 
   fancy_message info "Your script is in ${GREEN}$HOME/.cache/pacstall/$PACKAGE${NC}"

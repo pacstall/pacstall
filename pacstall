@@ -217,7 +217,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 
       source /usr/share/pacstall/scripts/download.sh
-      exit
+      exit 0
     ;;
 
     -Il|--install-local)
@@ -239,7 +239,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       fi
 
       source /usr/share/pacstall/scripts/install-local.sh
-      exit
+      exit 0
     ;;
 
     -S|--search)
@@ -280,7 +280,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         fi
 
         sudo rm -f /var/log/pacstall_installed/"$PACKAGE"
-        exit
+        exit 0
 
       else
         fancy_message error "$PACKAGE is not installed or not properly symlinked"
@@ -293,7 +293,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       . /usr/share/pacstall/scripts/change-repo.sh
       else
         echo "$2" | sudo tee /usr/share/pacstall/repo/pacstallrepo.txt >/dev/null 2>&1
-        exit
+        exit 0
       fi
     ;;
 
@@ -304,7 +304,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
 
       else
         if pacstall -Qi "$2" | grep 'version' | cut -d ":" -f2 | sed 's/ //g'; then
-          exit
+          exit 0
         else
           fancy_message error "$2 doesn't exist"
           exit 1
@@ -366,7 +366,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       export LC_ALL=C
 
       /bin/ls -1aA /usr/src/pacstall
-      exit
+      exit 0
     ;;
 
     -D|--download)
@@ -381,7 +381,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       INSTALLING=0
       REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
       source /usr/share/pacstall/scripts/download.sh
-      exit
+      exit 0
     ;;
 
     -Qd|--query-depends)
@@ -404,13 +404,13 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
 
       echo -e "${GREEN}${BOLD}build_depends${NORMAL}${NC}: \"$build_depends\""
       echo -e "${GREEN}${BOLD}depends${NORMAL}${NC}: \"$depends\""
-      exit
+      exit 0
     ;;
 
     -Up|--upgrade)
       export LC_ALL=C
       . /usr/share/pacstall/scripts/upgrade.sh
-      exit
+      exit 0
     ;;
 
     -Qi|--query-info)
@@ -451,7 +451,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       else
         echo "install type: explicitly installed"
       fi
-      exit
+      exit 0
     ;;
 
     -T|--tree)
