@@ -207,7 +207,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
       if [[ ! -e "$STGDIR/repo/" ]]; then
         sudo mkdir -p "$STGDIR/repo"
         sudo touch "$STGDIR/repo/pacstallrepo.txt"
-	      sudo pacstall -C
+	  sudo pacstall -C
       fi
 
       INSTALLING=1
