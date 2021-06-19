@@ -7,7 +7,7 @@
 This is an AUR like system, but for Ubuntu. It takes in Pacscripts (PKGBUILD's), and compiles and installs your favorite packages. They're easy to make, and easy to install!
 
 <p align="center">
-<a href="https://github.com/Henryws/pacstall"><img src="https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/example.gif"></a>
+<a href="https://github.com/Henryws/pacstall"><img src="https://raw.githubusercontent.com/Henryws/pacstall/master/website-images/ezgif.com-video-to-gif.gif"></a>
 </p>
 
 
