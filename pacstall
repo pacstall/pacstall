@@ -192,7 +192,7 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
     -I|--install)
       function trap_ctrlc () {
 	      fancy_message warn "the installation of $2 was interrupted, removing files"
-	      rm -rf "${SRCDIR:?}"/* # :? makes bash error out in case SRCDIR is empty, saving us from yonking /* directory by mistake
+	      rm -rf "${SRCDIR:?}"/* # :? makes bash error out in case SRCDIR is empty, saving us from yoinking /* directory by mistake
         exit 2
       }
       trap "trap_ctrlc" 2
