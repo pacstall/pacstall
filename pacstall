@@ -34,6 +34,7 @@ export BOLD=$(tput bold)
 export NORMAL=$(tput sgr0)
 export NC='\033[0m'
 # Curtesy of https://stackoverflow.com/a/28938235/13449010
+
 # Regular Colors
 export BLACK='\033[0;30m'        # Black
 export RED='\033[0;31m'          # Red
