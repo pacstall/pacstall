@@ -34,7 +34,7 @@ clear
 for choice in $CHOICE; do
   case $CHOICE in
     1)
-      fancy_message info "${PURPLE}pacstall${NC} repository selected" ; echo -n "https://raw.githubusercontent.com/pacstall/pacstall-programs/master" | sudo tee /usr/share/pacstall/repo/pacstallrepo.txt
+      fancy_message info "${PURPLE}pacstall${NC} repository selected" ; echo -n "https://raw.githubusercontent.com/pacstall/pacstall-programs/master" | sudo tee "$STGDIR"/repo/pacstallrepo.txt
       exit 0
     ;;
     2)

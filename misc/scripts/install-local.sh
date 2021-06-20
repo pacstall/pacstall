@@ -170,8 +170,8 @@ if [[ $? -eq 1 ]]; then
 fi
 
 fancy_message info "Retrieving packages"
-mkdir -p /tmp/pacstall
-cd /tmp/pacstall
+mkdir -p "$SRCDIR"
+cd "$SRCDIR"
 
 # Detects if url ends in .git (in that case git clone it), or ends in .zip, or just assume that the url can be uncompressed with tar. Then cd into them
 if [[ $url = *.git ]]; then
@@ -224,28 +224,28 @@ if [[ $REMOVE_DEPENDS = y ]]; then
   sudo apt-get remove $build_depends
 fi
 
-sudo rm -rf /tmp/pacstall/*
+sudo rm -rf "${SRCDIR:?}"/*
 cd "$HOME"
 
 # Metadata writing
-echo "_version=\"$version"\" | sudo tee /var/log/pacstall_installed/"$PACKAGE" >/dev/null
-echo "_description=\"$description"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
-echo "_date=\"$(date)"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+echo "_version=\"$version"\" | sudo tee "$LOGDIR"/"$PACKAGE" >/dev/null
+echo "_description=\"$description"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" >/dev/null
+echo "_date=\"$(date)"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" >/dev/null
 if [[ $removescript == "yes" ]]; then
-  echo "_removescript=\"yes"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+  echo "_removescript=\"yes"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" >/dev/null
 fi
-echo "_maintainer=\"$maintainer"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+echo "_maintainer=\"$maintainer"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" >/dev/null
 if [[ -n $depends ]]; then
-  echo "_dependencies=\"$depends"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+  echo "_dependencies=\"$depends"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" >/dev/null
 fi
 if [[ -n $build_depends ]]; then
-  echo "_build_dependencies=\"$build_depends"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+  echo "_build_dependencies=\"$build_depends"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" >/dev/null
 fi
 if [[ -n $pacdeps ]]; then
-  echo "_pacdeps=\"$pacdeps"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+  echo "_pacdeps=\"$pacdeps"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" >/dev/null
 fi
 if test -f /tmp/pacstall-pacdeps-"$PACKAGE"; then
-  echo "_pacstall_depends=\"true"\" | sudo tee -a /var/log/pacstall_installed/"$PACKAGE" >/dev/null
+  echo "_pacstall_depends=\"true"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" >/dev/null
 fi
 
 # If optdepends exists do this
