@@ -94,7 +94,7 @@ fancy_message info "Updating"
 sudo apt-get -q update
 
 fancy_message info "Installing packages"
-sudo apt-get install -qq -y {curl,wget,stow,build-essential,unzip,tree}
+sudo apt-get install -qq -y {curl,wget,stow,build-essential,unzip,tree,dialog}
 
 unset PACSTALL_DIRECTORY
 export PACSTALL_DIRECTORY="/usr/share/pacstall"

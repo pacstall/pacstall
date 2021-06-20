@@ -22,7 +22,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-echo "repo changer"
 cmd=(dialog --separate-output --checklist "Select Repository:" 22 76 16)
 options=(1 "pacstall" on    # any option can be set to default to "on"
          2 "Option 2" off
@@ -31,20 +30,18 @@ options=(1 "pacstall" on    # any option can be set to default to "on"
 CHOICE=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty)
 
 clear
-for choice in $CHOICE; do
-  case $CHOICE in
-    1)
-      fancy_message info "${PURPLE}pacstall${NC} repository selected" ; echo -n "https://raw.githubusercontent.com/pacstall/pacstall-programs/master" | sudo tee "$STGDIR"/repo/pacstallrepo.txt
-      exit 0
-    ;;
-    2)
-      echo "Second Option"
-    ;;
-    3)
-      echo "Third Option"
-    ;;
-    4)
-      echo "Fourth Option"
-    ;;
-  esac
-done
+case $CHOICE in
+  1)
+    fancy_message info "${PURPLE}pacstall${NC} repository selected" ; echo -n "https://raw.githubusercontent.com/pacstall/pacstall-programs/master" | sudo tee "$STGDIR"/repo/pacstallrepo.txt
+    exit 0
+  ;;
+  2)
+    echo "Second Option"
+  ;;
+  3)
+    echo "Third Option"
+  ;;
+  4)
+    echo "Fourth Option"
+  ;;
+esac
