@@ -102,23 +102,15 @@ fancy_message info "making directories"
 sudo mkdir -p $PACSTALL_DIRECTORY
 sudo mkdir -p $PACSTALL_DIRECTORY/scripts
 sudo mkdir -p $PACSTALL_DIRECTORY/repo
-sudo mkdir -p /var/log/pacstall_orphaned
+sudo mkdir -p /var/log/pacstall
 
 sudo rm -f $PACSTALL_DIRECTORY/repo/pacstallrepo.txt > /dev/null
 sudo touch $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
-
 sudo sh -c "echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > $PACSTALL_DIRECTORY/repo/pacstallrepo.txt"
-
-sudo rm -rf /var/log/pacstall_installed
-sudo mkdir /var/log/pacstall_installed
-
-sudo rm -rf /var/cache/pacstall
-sudo mkdir -p /var/db/pacstall
-
 fancy_message info "Pulling scripts from GitHub "
 for i in {change-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do 
-  sudo wget -q --show-progress -N https://raw.githubusercontent.com/pacstall/pacstall/master/misc/scripts/"$i" -P /usr/share/pacstall/scripts
-  sudo chmod +x /usr/share/pacstall/scripts/*
+  sudo wget -q --show-progress -N https://raw.githubusercontent.com/pacstall/pacstall/master/misc/scripts/"$i" -P $PACSTALL_DIRECTORY/scripts
+  sudo chmod +x $PACSTALL_DIRECTORY/scripts/*
 done &
 PID=$!
 i=1
