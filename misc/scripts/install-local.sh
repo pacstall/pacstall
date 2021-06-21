@@ -37,7 +37,7 @@ trap "trap_ctrlc" 2
 # run checks to verify script works
 function checks() {
   # curl url to check it exists
-  if curl --output /dev/null --silent --head --fail "$url" >/dev/null; then
+  if curl --output /dev/null --silent --head --fail "$url" > /dev/null; then
     fancy_message info "URL exists"
   else
 	  fancy_message error "URL doesn't exist"
@@ -77,14 +77,14 @@ fi
 
 fancy_message info "Sourcing pacscript"
 DIR=$(pwd)
-source "$PACKAGE".pacscript >/dev/null
+source "$PACKAGE".pacscript > /dev/null
 if [[ $? -eq 1 ]]; then
   fancy_message error "Couldn't parse pacscript"
   exit 12
 fi
 
-if type pkgver >/dev/null 2>&1; then
-  version=$(pkgver) >/dev/null
+if type pkgver > /dev/null 2>&1; then
+  version=$(pkgver) > /dev/null
 fi
 
 checks
@@ -111,9 +111,9 @@ if [[ -n "$pacdeps" ]]; then
   done
 fi
 
-if echo -n "$depends" > /dev/null 2>&1; then
+if echo -n "$depends" >  /dev/null 2>&1; then
   if [[ -n "$breaks" ]]; then
-    if dpkg-query -l "$breaks" >/dev/null 2>&1; then
+    if dpkg-query -l "$breaks" > /dev/null 2>&1; then
       fancy_message error "${RED}$name${NC} breaks $breaks, which is currently installed by apt"
       exit 1
     fi
@@ -128,7 +128,7 @@ if echo -n "$depends" > /dev/null 2>&1; then
 fi
 
 if [[ -n $replace ]]; then
-  if dpkg-query -W -f='${Status}' $replace 2>/dev/null | grep -q "ok installed" ; then
+  if dpkg-query -W -f='${Status}' $replace 2> /dev/null | grep -q "ok installed" ; then
     if ask "This script replaces $replace. Do you want to proceed" N; then
       sudo apt-get remove -y $replace
     else
@@ -209,7 +209,7 @@ fi
 prepare
 
 # Check if build function exists
-if type -t build >/dev/null 2>&1; then
+if type -t build > /dev/null 2>&1; then
   build
 else
   fancy_message error "Something didn't compile right"
@@ -228,24 +228,24 @@ sudo rm -rf "${SRCDIR:?}"/*
 cd "$HOME"
 
 # Metadata writing
-echo "_version=\"$version"\" | sudo tee "$LOGDIR"/"$PACKAGE" >/dev/null
-echo "_description=\"$description"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" >/dev/null
-echo "_date=\"$(date)"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" >/dev/null
+echo "_version=\"$version"\" | sudo tee "$LOGDIR"/"$PACKAGE" > /dev/null
+echo "_description=\"$description"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+echo "_date=\"$(date)"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 if [[ $removescript == "yes" ]]; then
-  echo "_removescript=\"yes"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" >/dev/null
+  echo "_removescript=\"yes"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 fi
-echo "_maintainer=\"$maintainer"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" >/dev/null
+echo "_maintainer=\"$maintainer"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 if [[ -n $depends ]]; then
-  echo "_dependencies=\"$depends"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" >/dev/null
+  echo "_dependencies=\"$depends"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 fi
 if [[ -n $build_depends ]]; then
-  echo "_build_dependencies=\"$build_depends"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" >/dev/null
+  echo "_build_dependencies=\"$build_depends"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 fi
 if [[ -n $pacdeps ]]; then
-  echo "_pacdeps=\"$pacdeps"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" >/dev/null
+  echo "_pacdeps=\"$pacdeps"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 fi
 if test -f /tmp/pacstall-pacdeps-"$PACKAGE"; then
-  echo "_pacstall_depends=\"true"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" >/dev/null
+  echo "_pacstall_depends=\"true"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 fi
 
 # If optdepends exists do this
@@ -266,7 +266,7 @@ fi
 fancy_message info "Symlinking files"
 cd /usr/src/pacstall/ || sudo mkdir -p /usr/src/pacstall && cd /usr/src/pacstall
 # By default (I think), stow symlinks to the directory behind it (..), but we want to symlink to /, or in other words, symlink files from pkg/usr to /usr
-if ! command -v stow >/dev/null; then
+if ! command -v stow > /dev/null; then
   sudo apt-get install stow -y
 fi
 
@@ -278,7 +278,7 @@ if [[ $? -eq 1 ]]; then
 fi
 
 hash -r
-type -t postinst >/dev/null 2>&1
+type -t postinst > /dev/null 2>&1
 if [[ $? -eq 0 ]]; then
   postinst
 fi

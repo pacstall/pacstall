@@ -24,6 +24,7 @@
 
 # Configuration
 export LC_ALL=C
+export HOMEDIR="/home/$(logname)"
 export LOGDIR="/var/log/pacstall"
 export SRCDIR="/tmp/pacstall"
 export STGDIR="/usr/share/pacstall"
@@ -144,13 +145,6 @@ function ask() {
 }
 
 function fancy_message() {
-  if [ -z "${1}" ] || [ -z "${2}" ]; then
-    return
-  fi
-
-  local RED="\e[31m"
-  local GREEN="\e[32m"
-  local YELLOW="\e[33m"
   local MESSAGE_TYPE="${1}"
   local MESSAGE="${2}"
 
@@ -211,12 +205,11 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         sudo pacstall -C
       fi
 
-      INSTALLING=1
-      HOMEDIR=$HOME
       REPO=$(cat "$STGDIR/repo/pacstallrepo.txt")
       URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 
       source "$STGDIR/scripts/download.sh"
+      source "$STGDIR/scripts/install-local.sh"
       exit 0
     ;;
 
@@ -293,9 +286,9 @@ while [[ "$1" =~ ^- && ! "$1" == "--" ]]; do
         exit 1
       fi
 
-      INSTALLING=0
       REPO=$(cat "$STGDIR/repo/pacstallrepo.txt")
       source "$STGDIR/scripts/download.sh"
+      fancy_message info "$PACKAGE's pacscript is downloaded in ${GREEN}$HOMEDIR/.cache/pacstall/$PACKAGE${NC}"
       exit 0
     ;;
 
