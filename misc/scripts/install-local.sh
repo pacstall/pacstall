@@ -77,6 +77,7 @@ fi
 
 fancy_message info "Sourcing pacscript"
 DIR=$(pwd)
+exoprt homedir="/home/$(logname)"
 source "$PACKAGE".pacscript > /dev/null
 if [[ $? -eq 1 ]]; then
   fancy_message error "Couldn't parse pacscript"
@@ -177,6 +178,7 @@ cd "$SRCDIR"
 if [[ $url = *.git ]]; then
   sudo git clone --quiet --depth=1 --jobs=10 "$url"
   cd $(/bin/ls -d -- */|head -n 1)
+  export srcdir="/tmp/pacstall/$(/bin/ls -d -- */|head -n 1)"
   sudo chown -R "$(logname)":"$(logname)" .
   git fsck --full
 
@@ -186,12 +188,14 @@ else
     hashcheck "${url##*/}"
     sudo unzip -q "${url##*/}" 1>&1
     cd $(/bin/ls -d -- */|head -n 1)
+    export srcdir="/tmp/pacstall/$(/bin/ls -d -- */|head -n 1)"
     sudo chown -R "$(logname)":"$(logname)" .
 
   else
     hashcheck "${url##*/}"
     sudo tar -xf "${url##*/}" 1>&1
     cd $(/bin/ls -d -- */|head -n 1)
+    export srcdir="/tmp/pacstall/$(/bin/ls -d -- */|head -n 1)"
     sudo chown -R "$(logname)":"$(logname)" .
   fi
 fi
@@ -206,6 +210,7 @@ if [[ -n $patch ]]; then
   export PACPATCH=$(pwd)/PACSTALL_patchesdir
 fi
 
+export pkdir="/usr/src/pacstall/$name"
 prepare
 
 # Check if build function exists
