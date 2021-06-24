@@ -36,7 +36,7 @@ REPO=$(cat "$STGDIR"/repo/pacstallrepo.txt)
 fancy_message info "Checking for updates"
 
 for i in "${list[@]}"; do
-    localver=$(sed -n -e 's/_version=//p' /var/log/pacstall_installed/"$i" | tr -d \")
+    localver=$(sed -n -e 's/_version=//p' "$LOGDIR"/"$i" | tr -d \")
     remotever=$(source <(curl -s "$REPO"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
     if [[ $remotever != $localver ]]; then
       echo "$i" | sudo tee -a /tmp/pacstall-up-list >/dev/null
