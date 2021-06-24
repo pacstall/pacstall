@@ -23,16 +23,18 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 function version_gt() { 
-    test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"; 
+  test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"; 
 }
 
 list=( $(pacstall -L) )
 if [ -f /tmp/pacstall-up-list ]; then
-    sudo rm /tmp/pacstall-up-list
+  sudo rm /tmp/pacstall-up-list
 fi
+
 sudo touch /tmp/pacstall-up-list
-REPO=$(cat /usr/share/pacstall/repo/pacstallrepo.txt)
+REPO=$(cat "$STGDIR"/repo/pacstallrepo.txt)
 fancy_message info "Checking for updates"
+
 for i in "${list[@]}"; do
     localver=$(sed -n -e 's/_version=//p' /var/log/pacstall_installed/"$i" | tr -d \")
     remotever=$(source <(curl -s "$REPO"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
@@ -45,31 +47,35 @@ PID=$!
 i=1
 sp=".oO@*"
 echo -n ' '
-while [ -d /proc/$PID ]
-do
+while [ -d /proc/$PID ]; do
   sleep 0.2
   printf "\b${sp:i++%${#sp}:1}"
 done
+
 echo ""
 if [[ $(wc -l /tmp/pacstall-up-list | awk '{ print $1 }') -eq 0 ]] ; then
-    fancy_message info "Nothing to upgrade"
+  fancy_message info "Nothing to upgrade"
+
 else
-    fancy_message info "Packages can be upgraded"
-    echo -e "Upgradable: $(wc -l /tmp/pacstall-up-list | awk '{ print $1 }')
+  fancy_message info "Packages can be upgraded"
+  echo -e "Upgradable: $(wc -l /tmp/pacstall-up-list | awk '{ print $1 }')
 ${BOLD}$(tr '\n' ' ' < /tmp/pacstall-up-list)${NORMAL}"
-    echo ""
-    if ask "Do you want to continue?" Y; then
-        upgrade=()
-        while IFS= read -r line; do
-            upgrade+=("$line")
-        done < /tmp/pacstall-up-list
-        for i in "${upgrade[@]}"; do
-            pacstall -I "$i"
-        done
-    else
-        exit 1
-    fi
+  echo ""
+
+  if ask "Do you want to continue?" Y; then
+    upgrade=()
+    while IFS= read -r line; do
+      upgrade+=("$line")
+    done < /tmp/pacstall-up-list
+
+    for i in "${upgrade[@]}"; do
+      pacstall -I "$i"
+    done
+  else
+    exit 1
+  fi
 fi
+
 if test -f "/tmp/pacstall-up-list"; then
-    sudo rm -f /tmp/pacstall-up-list
+  sudo rm -f /tmp/pacstall-up-list
 fi
