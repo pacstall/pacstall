@@ -77,7 +77,7 @@ fi
 
 fancy_message info "Sourcing pacscript"
 DIR=$(pwd)
-exoprt homedir="/home/$(logname)"
+export homedir="/home/$(logname)"
 source "$PACKAGE".pacscript > /dev/null
 if [[ $? -eq 1 ]]; then
   fancy_message error "Couldn't parse pacscript"
