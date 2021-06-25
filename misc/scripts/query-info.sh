@@ -11,8 +11,8 @@ if [ ! -f "$LOGDIR/$PACKAGE" ]; then
 fi
 
 source "$LOGDIR/$PACKAGE"
-echo "name: $PACKAGE"
-echo "version: $_version"
+echo "${BGreen}name${NORMAL}: $PACKAGE"
+echo "${BGreen}version${NORMAL}: $_version"
 echo "size: $(du -sh "$STOWDIR"/"$PACKAGE" 2> /dev/null | awk '{print $1}')"
 echo "description: ""$_description"""
 echo "date installed: ""$_date"""
