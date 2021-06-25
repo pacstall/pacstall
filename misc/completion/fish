@@ -45,7 +45,7 @@ complete -f --command pacstall -n "__fish_seen_subcommand_from -S" -a "(curl -s 
 complete -f --command pacstall -n "__fish_seen_subcommand_from -R" -a "(/bin/ls -1aA /usr/src/pacstall/ | tr ' ' '\n')"
 
 # Completion for the -Qi flag
-complete -f --command pacstall -n "__fish_seen_subcommand_from -Qi" -a "(/bin/ls -1aA /var/log/pacstall_installed | tr ' ' '\n')"
+complete -f --command pacstall -n "__fish_seen_subcommand_from -Qi" -a "(/bin/ls -1aA /var/log/pacstall | tr ' ' '\n')"
 
 # Completion for the -D flag
 complete -f --command pacstall -n "__fish_seen_subcommand_from -D" -a "(curl -s (cat /usr/share/pacstall/repo/pacstallrepo.txt)/packagelist | tr ' ' '\n')"
