@@ -191,6 +191,12 @@ else
     export srcdir="/tmp/pacstall/$(/bin/ls -d -- */|head -n 1)"
     sudo chown -R "$(logname)":"$(logname)" .
 
+  elif [[ $url = *.deb ]]; then
+  	hashcheck "${url##*/}"
+  	cd $(/bin/ls -d -- */|head -n 1)
+  	sudo apt install -f $(echo "$url" | awk -F "/" '{print $NF}')
+  	exit 0
+
   else
     hashcheck "${url##*/}"
     sudo tar -xf "${url##*/}" 1>&1
