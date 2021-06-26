@@ -194,7 +194,11 @@ else
   elif [[ $url = *.deb ]]; then
   	hashcheck "${url##*/}"
   	cd $(/bin/ls -d -- */|head -n 1)
+  	fancy_message info "Installing"
   	sudo apt install -f $(echo "$url" | awk -F "/" '{print $NF}')
+  	echo "_version=\"$version"\" | sudo tee "$LOGDIR"/"$PACKAGE" > /dev/null
+  	echo "_description=\"$description"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+  	echo "_date=\"$(date)"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
   	exit 0
 
   else
