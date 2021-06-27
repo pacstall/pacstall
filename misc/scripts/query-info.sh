@@ -11,27 +11,27 @@ if [ ! -f "$LOGDIR/$PACKAGE" ]; then
 fi
 
 source "$LOGDIR/$PACKAGE"
-echo "${BGreen}name${NORMAL}: $PACKAGE"
-echo "${BGreen}version${NORMAL}: $_version"
-echo "size: $(du -sh "$STOWDIR"/"$PACKAGE" 2> /dev/null | awk '{print $1}')"
-echo "description: ""$_description"""
-echo "date installed: ""$_date"""
+echo -e "${BGreen}name${NORMAL}: $PACKAGE"
+echo -e "${BGreen}version${NORMAL}: $_version"
+echo -e "${BGreen}size${NORMAL}: $(du -sh "$STOWDIR"/"$PACKAGE" 2> /dev/null | awk '{print $1}')"
+echo -e "${BGreen}description${NORMAL}: ""$_description"""
+echo -e "${BGreen}date installed${NORMAL}: ""$_date"""
 
 if [[ -n $_maintainer ]]; then
-  echo "maintainer: ""$_maintainer"""
+  echo -e "${BGreen}maintainer${NORMAL}: ""$_maintainer"""
 fi
 if [[ -n $_pacdeps ]]; then
-  echo "pacstall dependencies: ""$_pacdeps"""
+  echo -e "${BGreen}pacstall dependencies${NORMAL}: ""$_pacdeps"""
 fi
 if [[ -n $_dependencies ]]; then
-  echo "dependencies: ""$_dependencies"""
+  echo -e "${BGreen}dependencies${NORMAL}: ""$_dependencies"""
 fi
 if [[ -n $_build_dependencies ]]; then
-  echo "build dependencies: ""$_build_dependencies"""
+  echo -e "${BGreen}build dependencies${NORMAL}: ""$_build_dependencies"""
 fi
 if [[ -n $_pacstall_depends ]]; then
-  echo "install type: installed as dependency"
+  echo -e "${BGreen}install type${NORMAL}: installed as dependency"
 else
-  echo "install type: explicitly installed"
+  echo -e "${BGreen}install type${NORMAL}: explicitly installed"
 fi
 exit 0
