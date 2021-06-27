@@ -218,7 +218,7 @@ while [[ ! "$1" == "--" ]]; do
       INPUT="$(echo "$2" | sed 's/\..*$//')" # Removes the .pacscript suffix
 
       # Check if the file exist (both .pacscript and without)
-      if [[ ! -f "$2" && ! -f "$INPUT" ]]; then
+      if [[ ! -f "$2".pacscript && ! -f "$INPUT" ]]; then
         fancy_message error "$2 does not exist"
         exit 1
       fi
