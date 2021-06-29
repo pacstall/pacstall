@@ -194,11 +194,7 @@ else
   elif [[ $url = *.deb ]]; then
   	hashcheck "${url##*/}"
   	fancy_message info "Installing"
-  	sudo apt install -f $(echo "$url" | awk -F "/" '{print $NF}')
-  	echo "_version=\"$version"\" | sudo tee "$LOGDIR"/"$PACKAGE" > /dev/null
-  	echo "_description=\"$description"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-  	echo "_date=\"$(date)"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-  	exit 0
+  	sudo apt install -f $(echo "$url" | awk -F "/" '{print $NF}') && echo "_version=\"$version"\" | sudo tee "$LOGDIR"/"$PACKAGE" > /dev/null && echo "_description=\"$description"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null && echo "_date=\"$(date)"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null && exit 0 || fancy_message error "Something gone wrong, package didn't install." && exit 1
 
   else
     hashcheck "${url##*/}"
