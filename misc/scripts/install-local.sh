@@ -80,7 +80,7 @@ DIR=$(pwd)
 export homedir="/home/$(logname)"
 source "$PACKAGE".pacscript > /dev/null
 if [[ $? -eq 1 ]]; then
-  fancy_message error "Couldn't parse pacscript"
+  fancy_message error "Couldn't source pacscript"
   exit 12
 fi
 
@@ -88,6 +88,7 @@ if type pkgver > /dev/null 2>&1; then
   version=$(pkgver) > /dev/null
 fi
 
+# Run checks function
 checks
 if [[ $? -eq 1 ]]; then
   fancy_message error "There was an error checking the script!"
@@ -106,6 +107,7 @@ fi
 if [[ -n "$pacdeps" ]]; then
   for i in "${pacdeps[@]}"; do
     fancy_message info "Installing $i"
+    # If /tmp/pacstall-pacdeps-"$i" is available, it will trigger the logger to log it as a dependency
     sudo touch /tmp/pacstall-pacdeps-"$i"
     sudo pacstall -P -I "$i"
     sudo rm -f /tmp/pacstall-pacdeps-"$i"
@@ -115,6 +117,7 @@ fi
 if echo -n "$depends" >  /dev/null 2>&1; then
   if [[ -n "$breaks" ]]; then
     if dpkg-query -l "$breaks" > /dev/null 2>&1; then
+      # Check if anything in breaks variable is installed already
       fancy_message error "${RED}$name${NC} breaks $breaks, which is currently installed by apt"
       exit 1
     fi
@@ -122,6 +125,7 @@ if echo -n "$depends" >  /dev/null 2>&1; then
 
   if [[ -n "$breaks" ]]; then
     if [[ $(pacstall -L) == *$breaks* ]]; then
+      # Same thing, but check if anything is installed with pacstall
       fancy_message error "${RED}$name${NC} breaks $breaks, which is currently installed by pacstall"
       exit 1
     fi
@@ -129,6 +133,7 @@ if echo -n "$depends" >  /dev/null 2>&1; then
 fi
 
 if [[ -n $replace ]]; then
+  # Ask user if they want to replace the program
   if dpkg-query -W -f='${Status}' $replace 2> /dev/null | grep -q "ok installed" ; then
     if ask "This script replaces $replace. Do you want to proceed" N; then
       sudo apt-get remove -y $replace
@@ -140,6 +145,7 @@ fi
 
 if [[ -n "$ppa" ]]; then
   for i in "${ppa[@]}"; do
+    # Add ppa, but ppa bad I guess
     sudo add-apt-repository ppa:"$i"
   done
 fi
@@ -153,11 +159,14 @@ fi
 
 function hashcheck() {
   inputHash=$hash
+  # Get hash of file
   fileHash=($(sha256sum "$1" | sed 's/\s.*$//'))
 
   if [ "$inputHash" = "$fileHash" ]; then
+    # If hash equals hash, we good
     true
   else
+    # We bad
     fancy_message error "Hashes don't match"
     exit 1
   fi
@@ -176,22 +185,34 @@ cd "$SRCDIR"
 
 # Detects if url ends in .git (in that case git clone it), or ends in .zip, or just assume that the url can be uncompressed with tar. Then cd into them
 if [[ $url = *.git ]]; then
+  # git clone quietly, with no history, and if submodules are there, download with 10 jobs
   sudo git clone --quiet --depth=1 --jobs=10 "$url"
+  # cd into the directory
   cd $(/bin/ls -d -- */|head -n 1)
+  # The srcdir is /tmp/pacstall/foo
   export srcdir="/tmp/pacstall/$(/bin/ls -d -- */|head -n 1)"
+  # Make the directory available for users
   sudo chown -R "$(logname)":"$(logname)" .
+  # Check the integrity
   git fsck --full
 
 else
+  # Fancy pants simple progress bar
   sudo wget -q --show-progress --progress=bar:force "$url" 2>&1
   if [[ $url = *.zip ]]; then
+    # hash the file
     hashcheck "${url##*/}"
+    # unzip file
     sudo unzip -q "${url##*/}" 1>&1
+    # cd into it
     cd $(/bin/ls -d -- */|head -n 1)
+    # export srcdir
     export srcdir="/tmp/pacstall/$(/bin/ls -d -- */|head -n 1)"
+    # Make the directory available for users
     sudo chown -R "$(logname)":"$(logname)" .
 
   else
+    # I think you get it by now
     hashcheck "${url##*/}"
     sudo tar -xf "${url##*/}" 1>&1
     cd $(/bin/ls -d -- */|head -n 1)
@@ -210,7 +231,7 @@ if [[ -n $patch ]]; then
   export PACPATCH=$(pwd)/PACSTALL_patchesdir
 fi
 
-export pkdir="/usr/src/pacstall/$name"
+export pkgdir="/usr/src/pacstall/$name"
 prepare
 
 # Check if build function exists
@@ -262,8 +283,10 @@ if [[ -n $optdepends ]]; then
   printf '    %s\n' "${optdepends[@]}"
   if ask "Do you want to install them" Y; then
     for items in "${optdepends[*]}"; do
+        # output the name of the apt thing without the description, EI: `foo: not bar` -> `foo`
 	    printf "%s\n" "${optdepends[@]}" | cut -f1 -d":" | tr '\n' ' ' >> /tmp/pacstall-optdepends
-      sudo apt-get install -y -qq $(cat /tmp/pacstall-optdepends)
+        # Install
+        sudo apt-get install -y -qq $(cat /tmp/pacstall-optdepends)
     done
   fi
 fi
@@ -272,9 +295,11 @@ fancy_message info "Symlinking files"
 cd /usr/src/pacstall/ || sudo mkdir -p /usr/src/pacstall && cd /usr/src/pacstall
 # By default (I think), stow symlinks to the directory behind it (..), but we want to symlink to /, or in other words, symlink files from pkg/usr to /usr
 if ! command -v stow > /dev/null; then
+  # If stow failed to install, install it
   sudo apt-get install stow -y
 fi
 
+# Magic time. This installs the package to /, so `/usr/src/pacstall/foo/usr/bin/foo` -> `/usr/bin/foo`
 sudo stow --target="/" "$PACKAGE"
 # stow will fail to symlink packages if files already exist on the system; this is just an error
 if [[ $? -eq 1 ]]; then
@@ -282,6 +307,7 @@ if [[ $? -eq 1 ]]; then
   exit 14
 fi
 
+# `hash -r` updates PATH database
 hash -r
 type -t postinst > /dev/null 2>&1
 if [[ $? -eq 0 ]]; then

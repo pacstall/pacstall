@@ -1,4 +1,6 @@
 #!/bin/bash
+
+# This stuff gives the ability for persistent updates
 if [[ -z "$BRANCH" ]]; then
   if [[ -f "$STGDIR/repo/update" ]]; then
      BRANCH=$(sed 's/.*\ //' "$STGDIR/repo/update")
@@ -28,6 +30,7 @@ if ask "Are you sure you want to update pacstall?" Y; then
     sudo wget -q -O /usr/share/fish/vendor_completions.d/pacstall.fish https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/completion/fish 2> /dev/null
   fi
 
+# Bling Bling update ascii
 echo '
     ____                  __        ____
    / __ \____ ___________/ /_____ _/ / /

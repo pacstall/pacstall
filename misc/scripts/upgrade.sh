@@ -26,6 +26,7 @@ function version_gt() {
   test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"; 
 }
 
+# Get the list of the installed packages
 list=( $(pacstall -L) )
 if [ -f /tmp/pacstall-up-list ]; then
   sudo rm /tmp/pacstall-up-list
@@ -36,8 +37,11 @@ REPO=$(cat "$STGDIR"/repo/pacstallrepo.txt)
 fancy_message info "Checking for updates"
 
 for i in "${list[@]}"; do
+    # localver is the version of the package
     localver=$(sed -n -e 's/_version=//p' "$LOGDIR"/"$i" | tr -d \")
+    # remotever stuff
     remotever=$(source <(curl -s "$REPO"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
+    # if the remotever and localver are different, they are upgradable, EI: 1.4 != 1.2
     if [[ $remotever != $localver ]]; then
       echo "$i" | sudo tee -a /tmp/pacstall-up-list >/dev/null
     fi
