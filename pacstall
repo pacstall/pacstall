@@ -106,6 +106,14 @@ export On_IPurple='\033[0;105m'  # Purple
 export On_ICyan='\033[0;106m'    # Cyan
 export On_IWhite='\033[0;107m'   # White
 
+# This is the ask function. You can source this code block and then run something like
+# if ask "Do you like the color blue? " Y; then
+#   echo "You like blue"
+# else
+#   echo "You don't like blue"
+# fi
+#
+# You can specify {Y,N} or leave it out to prevent entering the default but this is not allowed in pacstall because of the -P flag which gives unattended installs
 function ask() {
   local prompt default reply
 
@@ -144,6 +152,7 @@ function ask() {
   done
 }
 
+# fancy_message allows visually appealing output. Source the code block and run `fancy_message {info,warn,error} "What you want to say"`
 function fancy_message() {
   local MESSAGE_TYPE="${1}"
   local MESSAGE="${2}"
@@ -190,6 +199,7 @@ while [[ ! "$1" == "--" ]]; do
 	      rm -rf "${SRCDIR:?}"/* # :? makes bash error out in case SRCDIR is empty, saving us from yoinking /* directory by mistake
         exit 2
       }
+      # Begin trapping
       trap "trap_ctrlc" 2
 
       PACKAGE=$2
@@ -258,6 +268,7 @@ while [[ ! "$1" == "--" ]]; do
         exit 0
 
       else
+        # If pacstall -V was called with an argument, it's a package, so get the package version (usful for scripting)
         if pacstall -Qi "$PACKAGE" | grep 'version' | cut -d ":" -f2 | sed 's/ //g'; then
           exit 0
         else
