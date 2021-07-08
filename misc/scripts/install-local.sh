@@ -59,6 +59,27 @@ function cget() {
   git ls-remote "$URL" "$BRANCH" | sed "s/refs\/heads\/.*//"
 }
 
+# logging metadata
+function logging_meta() {
+	echo "_version=\"$version"\" | sudo tee "$LOGDIR"/"$PACKAGE" > /dev/null
+	echo "_description=\"$description"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+	echo "_date=\"$(date)"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+	if [[ $removescript == "yes" ]]; then
+	  echo "_removescript=\"yes"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+	fi
+	echo "_maintainer=\"$maintainer"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+}
+
+# function to install .deb packages and check exit code
+funtion install_deb_packages() {
+    sudo apt install -f $(echo "$url" | awk -F "/" '{print $NF}') 2>/dev/null
+    if [[ $? -eq 0 ]]; then
+    	logging_meta
+    else
+    	fancy_message error "Failed to install the package"
+    fi
+}
+
 if ask "Do you want to view the pacscript first" N; then
   less "$PACKAGE".pacscript
 fi
@@ -194,13 +215,7 @@ else
   elif [[ $url = *.deb ]]; then
     hashcheck "${url##*/}"
     fancy_message info "Installing"
-    sudo apt install -f $(echo "$url" | awk -F "/" '{print $NF}') 2>/dev/null
-    elif [[ $? -eq 0 ]]; then
-      echo "_version=\"$version"\" | sudo tee "$LOGDIR"/"$PACKAGE" > /dev/null 
-      echo "_description=\"$description"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null 
-      echo "_date=\"$(date)"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null && exit 0
-    elif [[ $? -gt 0 ]]; then
-      fancy_message error "Something gone wrong, package didn't install." && exit 1
+    install_deb_packages
   else
     hashcheck "${url##*/}"
     sudo tar -xf "${url##*/}" 1>&1
