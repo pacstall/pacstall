@@ -32,6 +32,7 @@ if [[ -z "$SEARCH" ]]; then
 fi
 
 REPO=$(cat "$STGDIR"/repo/pacstallrepo.txt)
+# If ripgrep is installed, grep with ripgrep, else, do grep
 if command -v rg &> /dev/null; then
   curl -s "$REPO"/packagelist | tr ' ' '\n' | rg --no-config --color=never -N "$SEARCH"
 else
