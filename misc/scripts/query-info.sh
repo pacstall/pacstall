@@ -20,6 +20,9 @@ echo -e "${BGreen}date installed${NORMAL}: ""$_date"""
 if [[ -n $_maintainer ]]; then
   echo -e "${BGreen}maintainer${NORMAL}: ""$_maintainer"""
 fi
+if [[ -n $_ppa ]]; then
+  echo -e "${BGreen}ppa${NORMAL}: ""$_ppa"""
+fi
 if [[ -n $_pacdeps ]]; then
   echo -e "${BGreen}pacstall dependencies${NORMAL}: ""$_pacdeps"""
 fi
