@@ -63,7 +63,7 @@ These are the basic commands, for more info, run `pacstall -h`
 
 ---
 ### Auto completions
-Pacstall has fully supported auto completions for the `bash`, and `fish` shells. For the `ZSH` shell you can emulate the complitions using the following commands.
+Pacstall has fully supported auto completions for the `bash`, and `fish` shells. For the `ZSH` shell you can emulate the completions using the following commands.
 #### Zsh auto completion
 Zsh can emulate bash completion scripts by default so all you have to do is add these to your `.zshrc` or wherever you source things:
 ```bash
