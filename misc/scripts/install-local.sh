@@ -59,6 +59,27 @@ function cget() {
   git ls-remote "$URL" "$BRANCH" | sed "s/refs\/heads\/.*//"
 }
 
+# logging metadata
+function loggingMeta() {
+	echo "_version=\"$version"\" | sudo tee "$LOGDIR"/"$PACKAGE" > /dev/null
+	echo "_description=\"$description"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+	echo "_date=\"$(date)"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+	if [[ $removescript == "yes" ]]; then
+	  echo "_removescript=\"yes"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+	fi
+	echo "_maintainer=\"$maintainer"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+}
+
+# function to install .deb packages and check exit code
+funtion installDebPackages() {
+    sudo apt install -f $(echo "$url" | awk -F "/" '{print $NF}') 2>/dev/null
+    if [[ $? -eq 0 ]]; then
+    	loggingMeta
+    else
+    	fancy_message error "Failed to install the package"
+    fi
+}
+
 if ask "Do you want to view the pacscript first" N; then
   less "$PACKAGE".pacscript
 fi
@@ -211,6 +232,10 @@ else
     # Make the directory available for users
     sudo chown -R "$(logname)":"$(logname)" .
 
+  elif [[ $url = *.deb ]]; then
+    hashcheck "${url##*/}"
+    fancy_message info "Installing"
+    installDebPackages
   else
     # I think you get it by now
     hashcheck "${url##*/}"
