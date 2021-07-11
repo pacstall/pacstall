@@ -97,7 +97,7 @@ fancy_message info "Installing packages"
 sudo apt-get install -qq -y {curl,wget,stow,build-essential,unzip,tree,dialog}
 
 unset PACSTALL_DIRECTORY
-export PACSTALL_DIRECTORY="/usr/share/pacstall"
+export PACSTALL_DIRECTORY="/home/$(logname)/.local/share/pacstall/scripts"
 fancy_message info "making directories"
 sudo mkdir -p $PACSTALL_DIRECTORY
 sudo mkdir -p $PACSTALL_DIRECTORY/scripts
