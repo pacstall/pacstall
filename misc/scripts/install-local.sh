@@ -257,9 +257,6 @@ cd "$HOME"
 echo "_version=\"$version"\" | sudo tee "$LOGDIR"/"$PACKAGE" > /dev/null
 echo "_description=\"$description"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 echo "_date=\"$(date)"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-if [[ $removescript == "yes" ]]; then
-  echo "_removescript=\"yes"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-fi
 echo "_maintainer=\"$maintainer"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 if [[ -n $depends ]]; then
   echo "_dependencies=\"$depends"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
