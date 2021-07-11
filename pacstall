@@ -24,7 +24,6 @@
 
 # Configuration
 export LC_ALL=C
-export HOMEDIR="/home/$(logname)"
 export LOGDIR="/var/log/pacstall"
 export SRCDIR="/tmp/pacstall"
 export STGDIR="~/.local/share/pacstall"
