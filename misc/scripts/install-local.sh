@@ -270,6 +270,9 @@ fi
 if [[ -n $pacdeps ]]; then
   echo "_pacdeps=\"$pacdeps"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 fi
+if [[ -n $ppa ]]; then
+  echo "_ppa=\"$ppa"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+fi
 if test -f /tmp/pacstall-pacdeps-"$PACKAGE"; then
   echo "_pacstall_depends=\"true"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 fi
