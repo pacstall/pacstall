@@ -105,11 +105,11 @@ sudo mkdir -p /var/log/pacstall
 
 sudo rm -f $STGDIR/repo/pacstallrepo.txt > /dev/null
 sudo touch $STGDIR/repo/pacstallrepo.txt
-sudo sh -c "echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > $STGDIR/repo/pacstallrepo.txt"
+echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > $STGDIR/repo/pacstallrepo.txt
 fancy_message info "Pulling scripts from GitHub "
 for i in {change-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do 
-  sudo wget -q --show-progress -N https://raw.githubusercontent.com/pacstall/pacstall/master/misc/scripts/"$i" -P $STGDIR/scripts
-  sudo chmod +x $STGDIR/scripts/*
+  wget -q --show-progress -N https://raw.githubusercontent.com/pacstall/pacstall/master/misc/scripts/"$i" -P $STGDIR/scripts
+  chmod +x $STGDIR/scripts/*
 done &
 PID=$!
 i=1
