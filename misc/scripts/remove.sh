@@ -28,7 +28,7 @@ sudo rm -rf "$PACKAGE"
 # Update PATH database
 hash -r
 
-if [[ $(fn_exists removescript && return 0 || return 1) ]] ; then
+if [[ $(fn_exists removescript && return 0 || return 1) -eq 0 ]] ; then
     fancy_message info "Running post removal script"
     REPO=$(cat "$STGDIR/repo/pacstallrepo.txt")
     # Sources the output of /var/cache/pacstall/pkg/version/pkg.pacscript so we don't have to download scripts from the repo
