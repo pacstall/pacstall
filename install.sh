@@ -98,13 +98,13 @@ sudo apt-get install -qq -y {curl,wget,stow,build-essential,unzip,tree,dialog}
 
 export STGDIR="${HOME}/.local/share/pacstall"
 fancy_message info "making directories"
-sudo mkdir -p $STGDIR
-sudo mkdir -p $STGDIR/scripts
-sudo mkdir -p $STGDIR/repo
-sudo mkdir -p /var/log/pacstall
+mkdir -p $STGDIR
+mkdir -p $STGDIR/scripts
+mkdir -p $STGDIR/repo
+mkdir -p /var/log/pacstall
 
-sudo rm -f $STGDIR/repo/pacstallrepo.txt > /dev/null
-sudo touch $STGDIR/repo/pacstallrepo.txt
+rm -f $STGDIR/repo/pacstallrepo.txt > /dev/null
+touch $STGDIR/repo/pacstallrepo.txt
 echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > $STGDIR/repo/pacstallrepo.txt
 fancy_message info "Pulling scripts from GitHub "
 for i in {change-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do 
