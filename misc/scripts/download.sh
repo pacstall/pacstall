@@ -33,7 +33,7 @@ if ! wget -q --tries=10 --timeout=20 --spider https://github.com; then
 fi
 
 if curl --output /dev/null --silent --head --fail "$URL" ; then
-  mkdir -p "$HOMEDIR/.cache/pacstall" && cd "$HOMEDIR"/.cache/pacstall/
+  mkdir -p "$HOME/.cache/pacstall" && cd "$HOME"/.cache/pacstall/
   mkdir -p "$PACKAGE" && cd "$PACKAGE"
 
   wget -q --show-progress --progress=bar:force "$URL" -O "$PACKAGE".pacscript 2>&1
