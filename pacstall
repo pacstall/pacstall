@@ -26,7 +26,7 @@
 export LC_ALL=C
 export LOGDIR="/var/log/pacstall"
 export SRCDIR="/tmp/pacstall"
-export STGDIR="~/.local/share/pacstall"
+export STGDIR="${HOME}/.local/share/pacstall"
 export STOWDIR="/usr/src/pacstall"
 
 # Colors
