@@ -21,7 +21,7 @@ fi
 source "$LOGDIR/$PACKAGE" > /dev/null 2>&1
 
 fancy_message info "Removing symlinks"
-sudo stow -D "$PACKAGE"
+sudo stow --target="/" -D "$PACKAGE"
 
 fancy_message info "Removing package"
 sudo rm -rf "$PACKAGE"
