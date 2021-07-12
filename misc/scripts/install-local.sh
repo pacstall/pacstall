@@ -59,6 +59,16 @@ function cget() {
   git ls-remote "$URL" "$BRANCH" | sed "s/refs\/heads\/.*//"
 }
 
+
+function debpt() {
+    sudo apt install -f "$(echo "$url" | awk -F "/" '{print $NF}')"
+    if [[ $? -eq 0 ]]; then
+    	loggingMeta
+    else
+    	fancy_message error "Failed to install the package"
+    fi
+}
+
 # logging metadata
 function loggingMeta() {
 	echo "_version=\"$version"\" | sudo tee "$LOGDIR"/"$PACKAGE" > /dev/null
@@ -68,16 +78,6 @@ function loggingMeta() {
 	  echo "_removescript=\"yes"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 	fi
 	echo "_maintainer=\"$maintainer"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-}
-
-# function to install .deb packages and check exit code
-funtion installDebPackages() {
-    sudo apt install -f $(echo "$url" | awk -F "/" '{print $NF}') 2>/dev/null
-    if [[ $? -eq 0 ]]; then
-    	loggingMeta
-    else
-    	fancy_message error "Failed to install the package"
-    fi
 }
 
 if ask "Do you want to view the pacscript first" N; then
