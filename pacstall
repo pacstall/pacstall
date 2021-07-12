@@ -26,7 +26,7 @@
 export LC_ALL=C
 export LOGDIR="/var/log/pacstall"
 export SRCDIR="/tmp/pacstall"
-export STGDIR="~/.local/share/pacstall"
+export STGDIR="${HOME}/.local/share/pacstall"
 export STOWDIR="/usr/src/pacstall"
 
 # Colors
@@ -164,6 +164,11 @@ function fancy_message() {
   esac
 }
 
+# Check if root is running, and if so, stop them because when running `sudo pacstall -U pacstall develop`, files will be logged to /root/.local/share/pacstall/scripts but when running a simple command like `pacstall -Qi pkg`, it will want to check `~/.local/share/pacstall/scripts`
+if [[ "$EUID" -ne 0 ]]; then
+    fancy_message error "Run as non-root user"
+    exit 1
+fi
 # run sudo apt update if it's been more than a week
 [ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && sudo apt-get update -qq
 
@@ -194,7 +199,7 @@ while [[ ! "$1" == "--" ]]; do
 
     -I|--install)
       function trap_ctrlc () {
-	      fancy_message warn "the installation of $2 was interrupted, removing files"
+	      fancy_message warn "The installation of $2 was interrupted, removing files"
 	      rm -rf "${SRCDIR:?}"/* # :? makes bash error out in case SRCDIR is empty, saving us from yoinking /* directory by mistake
         exit 2
       }
