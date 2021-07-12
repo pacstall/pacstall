@@ -76,8 +76,10 @@ function debpt() {
     sudo apt install -f "$(echo "$url" | awk -F "/" '{print $NF}')"
     if [[ $? -eq 0 ]]; then
     	loggingMeta
+    	exit 0
     else
     	fancy_message error "Failed to install the package"
+    	exit 1
     fi
 }
 
