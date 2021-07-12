@@ -207,47 +207,48 @@ fancy_message info "Retrieving packages"
 mkdir -p "$SRCDIR"
 cd "$SRCDIR"
 
-# Detects if url ends in .git (in that case git clone it), or ends in .zip, or just assume that the url can be uncompressed with tar. Then cd into them
-if [[ $url = *.git ]]; then
-  # git clone quietly, with no history, and if submodules are there, download with 10 jobs
-  sudo git clone --quiet --depth=1 --jobs=10 "$url"
-  # cd into the directory
-  cd $(/bin/ls -d -- */|head -n 1)
-  # The srcdir is /tmp/pacstall/foo
-  export srcdir="/tmp/pacstall/$(/bin/ls -d -- */|head -n 1)"
-  # Make the directory available for users
-  sudo chown -R "$(logname)":"$(logname)" .
-  # Check the integrity
-  git fsck --full
-
-else
-  # Fancy pants simple progress bar
-  sudo wget -q --show-progress --progress=bar:force "$url" 2>&1
-  if [[ $url = *.zip ]]; then
-    # hash the file
-    hashcheck "${url##*/}"
-    # unzip file
-    sudo unzip -q "${url##*/}" 1>&1
-    # cd into it
-    cd $(/bin/ls -d -- */|head -n 1)
-    # export srcdir
-    export srcdir="/tmp/pacstall/$(/bin/ls -d -- */|head -n 1)"
-    # Make the directory available for users
-    sudo chown -R "$(logname)":"$(logname)" .
-
-  elif [[ $url = *.deb ]]; then
-    hashcheck "${url##*/}"
-    fancy_message info "Installing"
-    debpt
-  else
-    # I think you get it by now
-    hashcheck "${url##*/}"
-    sudo tar -xf "${url##*/}" 1>&1
-    cd $(/bin/ls -d -- */|head -n 1)
-    export srcdir="/tmp/pacstall/$(/bin/ls -d -- */|head -n 1)"
-    sudo chown -R "$(logname)":"$(logname)" .
-  fi
-fi
+case "$url" in
+	*.git)
+		# git clone quietly, with no history, and if submodules are there, download with 10 jobs
+  		sudo git clone --quiet --depth=1 --jobs=10 "$url"
+		# cd into the directory
+		cd $(/bin/ls -d -- */|head -n 1)
+		# The srcdir is /tmp/pacstall/foo
+		export srcdir="/tmp/pacstall/$(/bin/ls -d -- */|head -n 1)"
+		# Make the directory available for users
+		sudo chown -R "$(logname)":"$(logname)" .
+		# Check the integrity
+		git fsck --full
+		;;
+	*.zip)
+		sudo wget -q --show-progress --progress=bar:force "$url" 2>&1
+		# hash the file
+		hashcheck "${url##*/}"
+		# unzip file
+		sudo unzip -q "${url##*/}" 1>&1
+		# cd into it
+		cd $(/bin/ls -d -- */|head -n 1)
+		# export srcdir
+		export srcdir="/tmp/pacstall/$(/bin/ls -d -- */|head -n 1)"
+		# Make the directory available for users
+		sudo chown -R "$(logname)":"$(logname)" .
+		;;
+	*.deb)
+		sudo wget -q --show-progress --progress=bar:force "$url" 2>&1
+		hashcheck "${url##*/}"
+		fancy_message info "Installing"
+		debpt
+		;;
+	*)
+		sudo wget -q --show-progress --progress=bar:force "$url" 2>&1
+		# I think you get it by now
+		hashcheck "${url##*/}"
+		sudo tar -xf "${url##*/}" 1>&1
+		cd $(/bin/ls -d -- */|head -n 1)
+		export srcdir="/tmp/pacstall/$(/bin/ls -d -- */|head -n 1)"
+		sudo chown -R "$(logname)":"$(logname)" .
+		;;
+esac
 
 if [[ -n $patch ]]; then
   for i in "${patch[@]}"; do
