@@ -21,18 +21,19 @@ fi
 source "$LOGDIR/$PACKAGE" > /dev/null 2>&1
 
 fancy_message info "Removing symlinks"
-sudo stow -D "$PACKAGE"
+sudo stow --target="/" -D "$PACKAGE"
 
 fancy_message info "Removing package"
 sudo rm -rf "$PACKAGE"
 # Update PATH database
 hash -r
 
-if [[ $(fn_exists removescript && return 0 || return 1) -eq 0 ]] ; then
+# Sources the output of /var/cache/pacstall/pkg/version/pkg.pacscript so we don't have to download scripts from the repo
+source "/var/cache/pacstall/$PACKAGE/$_version/$PACKAGE.pacscript"
+
+if fn_exists removescript ; then
     fancy_message info "Running post removal script"
     REPO=$(cat "$STGDIR/repo/pacstallrepo.txt")
-    # Sources the output of /var/cache/pacstall/pkg/version/pkg.pacscript so we don't have to download scripts from the repo
-    source <(cat "/var/cache/pacstall/$PACKAGE/$(pacstall -V "$PACKAGE")/$PACKAGE.pacscript")
     removescript
 fi
 
