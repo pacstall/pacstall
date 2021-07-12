@@ -56,12 +56,12 @@ echo -e "|------------------------|"
 echo " "
 }
 
-if ! command -v apt &> /dev/null
-then
+if ! command -v apt &> /dev/null; then
     fancy_message error "apt could not be found"
     exit 1
 fi
-apt-get install -y sudo wget
+# Install wget and sudo (probably already installed but this is important for the tester)
+apt-get install -y -qq sudo wget
 
 # Colors
 RED='\033[0;31m'
@@ -91,26 +91,25 @@ fi
 
 echo ""
 fancy_message info "Updating"
-sudo apt-get -q update
+sudo apt-get -qq update
 
 fancy_message info "Installing packages"
 sudo apt-get install -qq -y {curl,wget,stow,build-essential,unzip,tree,dialog}
 
-unset PACSTALL_DIRECTORY
-export PACSTALL_DIRECTORY="/home/$(logname)/.local/share/pacstall"
+export STGDIR="${HOME}/.local/share/pacstall"
 fancy_message info "making directories"
-sudo mkdir -p $PACSTALL_DIRECTORY
-sudo mkdir -p $PACSTALL_DIRECTORY/scripts
-sudo mkdir -p $PACSTALL_DIRECTORY/repo
-sudo mkdir -p /var/log/pacstall
+mkdir -p $STGDIR
+mkdir -p $STGDIR/scripts
+mkdir -p $STGDIR/repo
+mkdir -p /var/log/pacstall
 
-sudo rm -f $PACSTALL_DIRECTORY/repo/pacstallrepo.txt > /dev/null
-sudo touch $PACSTALL_DIRECTORY/repo/pacstallrepo.txt
-sudo sh -c "echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > $PACSTALL_DIRECTORY/repo/pacstallrepo.txt"
+rm -f $STGDIR/repo/pacstallrepo.txt > /dev/null
+touch $STGDIR/repo/pacstallrepo.txt
+echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > $STGDIR/repo/pacstallrepo.txt
 fancy_message info "Pulling scripts from GitHub "
 for i in {change-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do 
-  sudo wget -q --show-progress -N https://raw.githubusercontent.com/pacstall/pacstall/master/misc/scripts/"$i" -P $PACSTALL_DIRECTORY/scripts
-  sudo chmod +x $PACSTALL_DIRECTORY/scripts/*
+  wget -q --show-progress -N https://raw.githubusercontent.com/pacstall/pacstall/master/misc/scripts/"$i" -P $STGDIR/scripts
+  chmod +x $STGDIR/scripts/*
 done &
 PID=$!
 i=1
