@@ -73,7 +73,7 @@ function loggingMeta() {
 
 #Function to install .deb files
 function debpt() {
-    sudo apt install -f "$(echo "$url" | awk -F "/" '{print $NF}')"
+    sudo apt install -f ./"$(echo "$url" | awk -F "/" '{print $NF}')"
     if [[ $? -eq 0 ]]; then
     	loggingMeta
     	exit 0
