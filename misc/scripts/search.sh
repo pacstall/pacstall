@@ -31,56 +31,77 @@ if [[ -z "$SEARCH" ]]; then
 	exit 3
 fi
 
+# Makes array of packages and array
+# of their respective URL's
 PACKAGELIST=()
 URLLIST=()
-while IFS= read -r  URL; do
+while IFS= read -r URL; do
   PARTIALLIST=($(curl -s "$URL"/packagelist))
-  PACKAGELIST+=(${PARTIALLIST[*]})
-  PACKAGELIST[-1]+=' '
   URLLIST+=("${PARTIALLIST[@]/*/$URL}")
+  PACKAGELIST+=(${PARTIALLIST[*]})
+  PACKAGELIST[-1]+=' ' # Broke while testing
+                       # Added spcase so that
+                       # the last word didn't merge
+                       # with the first in the
+                       # following loop
 done < "$STGDIR/repo/pacstallrepo.txt"
 
+# Gets index of packages that the search returns
 IDXSEARCH=$(echo ${PACKAGELIST[*]} | tr ' ' '\n' | grep -n "$SEARCH" | cut -d : -f1| awk '{print $0"-1"}'|bc)
 LEN=($IDXSEARCH)
 LEN=${#LEN[@]}
 
+# Parses github and gitlab URL's
+# url -> maintaner/repo 
+# Also adds hyperlink for the
+# terminals that support them
 function parseRepo() {
   local REPO="${1}"
   SPLIT=($(echo $REPO | tr "/" "\n"))
   
-  if command echo $REPO |grep "github" &> /dev/null;then
+  if command echo $REPO |grep "github" &> /dev/null; then
     echo -e "\e]8;;https://github.com/${SPLIT[-3]}/${SPLIT[-2]}\a${SPLIT[-3]}\e]8;;\a"
     
-  elif command echo $REPO |grep "gitlab" &> /dev/null;then
+  elif command echo $REPO |grep "gitlab" &> /dev/null; then
     echo -e "\e]8;;https://gitlab.com/${SPLIT[-4]}/${SPLIT[-3]}\a${SPLIT[-4]}\e]8;;\a"
   
   else
-    echo "\e]8;;$REPO\a$REPO\e]8;;\a" 
+    echo "\e]8;;$REPO\a$REPO\e]8;;\a"
   fi
 }
 
-if [ $LEN -eq 0 ];then
+
+#Check if there are results
+if [ $LEN -eq 0 ]; then
   fancy_message warn "There is no package with the name $IRed$SEARCH$NC"
   
-elif [[ -z "$PACKAGE" ]];then
+# Check if its being used for search or intall 
+elif [[ -z "$PACKAGE" ]]; then
+  # Search
   fancy_message info "There are $LEN package(s) with $IGreen$SEARCH$NC in their name:"
   for IDX in $IDXSEARCH ; do
     echo -e "$GREEN${PACKAGELIST[$IDX]}$CYAN @ $(parseRepo ${URLLIST[$IDX]}) $NC"
   done
-  
 else
-  if [ $LEN -eq 1 ];then
+  # Install
+  # If there is only one result, proceed
+  if [ $LEN -eq 1 ]; then
+    PACKAGE=${PACKAGELIST[0]}
     REPO=${URLLIST[0]}
-  else
-    echo "There are $LEN package(s) with $GREEN$SEARCH$NC in their name."
     
-    if ask "Do you want to continue?" N;then
+  # If there are multiple results, ask
+  else
+    echo -e "There are $LEN package(s) with $GREEN$SEARCH$NC in their name."
+    
+    if ask "Do you want to continue?" N; then
       for IDX in $IDXSEARCH ; do
+        # Overwrite last question
         if ask "\e[1A\e[KDo you want to install $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo ${URLLIST[$IDX]})$NC?" N;then
+          PACKAGE=${PACKAGELIST[$IDX]}
           REPO=${URLLIST[$IDX]}
           break
         fi
-      done  
+      done
     else
       exit 1
     fi
