@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/b
 
 #     ____                  __        ____
 #    / __ \____ ___________/ /_____ _/ / /
@@ -24,16 +24,39 @@
 
 REPO=$2
 
-## TODO
-## treat URL for github and gitlab cases
+if echo "$REPO"| grep "github.com" > /dev/null ; then
+  REPO= echo "${REPO/"github.com"/"raw.githubusercontent.com"}"
+  if  ! echo "$REPO" | grep  "/tree/" > /dev/null ; then
+    REPO= echo "$REPO/master"
+    fancy_message "warning" "Assuming that git branch is ${GREEN}master${NC}"
+  else
+    REPO= echo "${REPO/"/tree/"/"/"}"
+  fi
+elif echo "$REPO"| grep "gitlab.com" > /dev/null; then
+  if  ! echo "$REPO" | grep  "/tree/" > /dev/null ; then
+    REPO= echo "$REPO/-/raw/master"
+    fancy_message "warning" "Assuming that git branch is ${GREEN}master${NC}"
+  else
+    REPO= echo "${REPO/"/tree/"/"/raw/"}"
+  fi
+else
+  fancy_message "warning" "The repo link must be the root to the raw files"
+  if ! ask "Do you want to add \"$REPO\" to the repo list?" N; then
+    exit 3
+  fi
+fi
 
-REPOLIST=()
-while IFS= read -r REPOURL; do
-  REPOLIST+=$REPOURL
-done < "$STGDIR/repo/pacstallrepo.txt"
-echo ${REPOLIST[@]}
-REPOLIST+=($REPO)
+if ! curl --output /dev/null --silent --head --fail "$REPO/packagelist"; then
+  fancy_message "error" "Repo does not contain a package list"
+  exit 3
+else
+  REPOLIST=()
+  while IFS= read -r REPOURL; do
+    REPOLIST+=$REPOURL
+  done < "$STGDIR/repo/pacstallrepo.txt"
+  echo ${REPOLIST[@]}
+  REPOLIST+=($REPO)
 
-printf "%s\n" "${REPOLIST[@]}"| sort -u | sudo tee "$STGDIR/repo/pacstallrepo.txt"> /dev/null 2>&1
-
+  printf "%s\n" "${REPOLIST[@]}"| sort -u | sudo tee "$STGDIR/repo/pacstallrepo.txt"> /dev/null 2>&1
+fi
 
