@@ -25,10 +25,15 @@
 # This script searches for packages
 
 export LC_ALL=C
-SEARCH=$2
-if [[ -z "$SEARCH" ]]; then
+
+if [[ -z "$UPGRADE" ]]; then
+  SEARCH=$2
+  if [[ -z "$SEARCH" ]]; then
 	fancy_message error "You failed to specify a package"
 	exit 3
+  fi
+else
+  PACKAGE=$i
 fi
 
 # Makes array of packages and array
@@ -48,9 +53,9 @@ done < "$STGDIR/repo/pacstallrepo.txt"
 
 # Gets index of packages that the search returns
 if [[ -z "$PACKAGE" ]]; then
-  IDXSEARCH=$(echo ${PACKAGELIST[*]} | tr ' ' '\n' | grep -n "${SEARCH}" | cut -d : -f1| awk '{print $0"-1"}'|bc)
+  IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | grep -n "${SEARCH}" | cut -d : -f1| awk '{print $0"-1"}'|bc)
 else
-  IDXSEARCH=$(echo ${PACKAGELIST[*]} | tr ' ' '\n' | grep -n "^${SEARCH}$" | cut -d : -f1| awk '{print $0"-1"}'|bc)
+  IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | grep -n "^${PACKAGE}$" | cut -d : -f1| awk '{print $0"-1"}'|bc)
 fi
 LEN=($IDXSEARCH)
 LEN=${#LEN[@]}
@@ -78,7 +83,14 @@ function parseRepo() {
 #Check if there are results
 if [ $LEN -eq 0 ]; then
   fancy_message warn "There is no package with the name $IRed$SEARCH$NC"
-  
+
+# Check if it's upgrading packages
+elif [[ -z "$UPGRADE" ]]; then
+  REPOS=()
+  for IDX in $IDXSEARCH ; do
+    REPOS+=(${URLLIST[$IDX]})
+  done
+
 # Check if its being used for search or intall 
 elif [[ -z "$PACKAGE" ]]; then
   # Search
@@ -100,7 +112,6 @@ else
       for IDX in $IDXSEARCH ; do
         # Overwrite last question
         if ask "\e[1A\e[KDo you want to install $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo ${URLLIST[$IDX]})$NC?" N;then
-          PACKAGE=${PACKAGELIST[$IDX]}
           REPO=${URLLIST[$IDX]}
           break
         fi

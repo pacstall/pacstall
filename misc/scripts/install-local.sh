@@ -68,6 +68,11 @@ function loggingMeta() {
 	  echo "_removescript=\"yes"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 	fi
 	echo "_maintainer=\"$maintainer"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+	if [[ $local=='no' ]]; then
+	  echo  "_remoterepo=\"$REPO"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+	else
+	  echo  "_remoterepo=\"no"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+	fi
 }
 
 
