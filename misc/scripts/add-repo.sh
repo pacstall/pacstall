@@ -28,11 +28,10 @@ REPO= $2
 ## TODO
 ## treat URL for github and gitlab cases
 
-
 REPOLIST=()
 while IFS= read -r REPOURL; do
   REPOLIST+=REPOURL
-done
+done < "$STGDIR/repo/pacstallrepo.txt"
 REPOURL+=REPO
 
 printf "%s\n" "${e[@]}"| sort -u > "$STGDIR/repo/pacstallrepo.txt"
