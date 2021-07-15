@@ -34,11 +34,16 @@ if [ -f /tmp/pacstall-up-list ]; then
   sudo rm /tmp/pacstall-up-list
 fi
 
+if [ -f /tmp/pacstall-up-print ]; then
+  sudo rm /tmp/pacstall-up-print
+fi
+
 if [ -f /tmp/pacstall-up-urls ]; then
   sudo rm /tmp/pacstall-up-urls
 fi
 
 sudo touch /tmp/pacstall-up-list
+sudo touch /tmp/pacstall-up-print
 sudo touch /tmp/pacstall-up-urls
 
 fancy_message info "Checking for updates"
@@ -54,36 +59,36 @@ for i in "${list[@]}"; do
 
     
     source "$STGDIR/scripts/search.sh"
-    printf "%s\n" "${REPOS}"
     
     # Reverse compatibility
     if [[ -z $remoterepo ]]; then
-      if [[ -z $REPOS ]]; then
+      if [[ ! -z $REPOS ]]; then
         echo  "_remoterepo=\"no"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+        continue
       else
-        echo  "_remoterepo=\"${REPOs[0]}"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+        echo  "_remoterepo=\"${REPOS[0]}"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
       fi
     fi
     
     IDXMATCH=$(printf "%s\n" "${REPOs[@]}"| grep -n "$remoterepo" | cut -d : -f1| awk '{print $0"-1"}'|bc)
     
-    if [[ ! -z IDXMATCH ]]; then
+    if [[ -z IDXMATCH ]]; then
       remotever=$(source <(curl -s "$REPO"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
       remoteurl=$REPO
     else
       remotever="0.0.0"
-      for REPO in "${REPOS[@]}";then
+      for REPO in "${REPOS[@]}"; do
         ver=$(source <(curl -s "$REPO"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
-        if [[ dpkg --compare-versions "$ver" "lt" "$remotever" ]]; then   
+        if  dpkg --compare-versions "$remotever" "lt" "$ver" ; then
           remotever=$ver
           remoteurl=$REPO   
         fi
       done
     fi
-    
-    if [[ dpkg --compare-versions "$localver" "lt" "$remotever" ]]; then
-        echo "$GREEN${$i}$CYAN @ $(parseRepo ${remoteurl}) $NC" | sudo tee -a /tmp/pacstall-up-list >/dev/null
-        echo "$remoteurl" |sudo tee -a /tmp/pacstall-up-ruls >/dev/null
+    if dpkg --compare-versions "$localver" "lt" "$remotever"; then
+        echo "$i" |sudo tee -a /tmp/pacstall-up-list >/dev/null
+        echo "$GREEN$i$CYAN @ $(parseRepo ${remoteurl}) $NC" | sudo tee -a /tmp/pacstall-up-print >/dev/null
+        echo "$remoteurl" |sudo tee -a /tmp/pacstall-up-urls >/dev/null
     fi
 done &
 
@@ -102,8 +107,8 @@ if [[ $(wc -l /tmp/pacstall-up-list | awk '{ print $1 }') -eq 0 ]] ; then
 
 else
   fancy_message info "Packages can be upgraded"
-  echo -e "Upgradable: $(wc -l /tmp/pacstall-up-list | awk '{ print $1 }')
-${BOLD}$(tr '\n' ' ' < /tmp/pacstall-up-list)${NORMAL}"
+  echo -e "Upgradable: $(wc -l /tmp/pacstall-up-print | awk '{ print $1 }')
+${BOLD}$(cat /tmp/pacstall-up-print)${NORMAL}"
   echo ""
 
   if ask "Do you want to continue?" Y; then
@@ -116,8 +121,10 @@ ${BOLD}$(tr '\n' ' ' < /tmp/pacstall-up-list)${NORMAL}"
       remotes+=("$line")
     done < /tmp/pacstall-up-urls
     
-    for i in "${!upgrade[@]}"; do
-      URL="${remotes[$i]}/packages/${upgrade[i]}/${upgrade[i]}.pacscript"
+    for i in "${!upgrade[@]}"; do      
+      PACKAGE=${upgrade[$i]}
+      REPO="${remotes[$i]}"
+      URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
       source "$STGDIR/scripts/download.sh"
       source "$STGDIR/scripts/install-local.sh"
     done
@@ -126,11 +133,15 @@ ${BOLD}$(tr '\n' ' ' < /tmp/pacstall-up-list)${NORMAL}"
   fi
 fi
 
+
 if test -f "/tmp/pacstall-up-list"; then
   sudo rm -f /tmp/pacstall-up-list
+fi
+
+if test -f "/tmp/pacstall-up-print"; then
+  sudo rm -f /tmp/pacstall-up-print
 fi
 
 if test -f "/tmp/pacstall-up-urls"; then
   sudo rm -f /tmp/pacstall-up-urls
 fi
-

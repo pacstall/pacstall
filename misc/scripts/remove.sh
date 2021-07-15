@@ -28,6 +28,7 @@ sudo rm -rf "$PACKAGE"
 # Update PATH database
 hash -r
 
+_version=$(sed -n -e 's/_version=//p' "$LOGDIR"/"$PACKAGE" | tr -d \")
 # Sources the output of /var/cache/pacstall/pkg/version/pkg.pacscript so we don't have to download scripts from the repo
 source "/var/cache/pacstall/$PACKAGE/$_version/$PACKAGE.pacscript"
 

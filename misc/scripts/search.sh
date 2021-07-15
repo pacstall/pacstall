@@ -85,7 +85,7 @@ if [ $LEN -eq 0 ]; then
   fancy_message warn "There is no package with the name $IRed$SEARCH$NC"
 
 # Check if it's upgrading packages
-elif [[ -z "$UPGRADE" ]]; then
+elif [[ ! -z "$UPGRADE" ]]; then
   REPOS=()
   for IDX in $IDXSEARCH ; do
     REPOS+=(${URLLIST[$IDX]})
@@ -101,17 +101,33 @@ else
   # Install
   # If there is only one result, proceed
   if [ $LEN -eq 1 ]; then
-    PACKAGE=${PACKAGELIST[0]}
-    REPO=${URLLIST[0]}
-    
+    PACKAGE=${PACKAGELIST[$IDXSEARCH]}
+    REPO=${URLLIST[$IDXSEARCH]}
   # If there are multiple results, ask
   else
-    echo -e "There are $LEN package(s) with the name $GREEN$SEARCH$NC."
+    echo -e "There are $LEN package(s) with the name $GREEN$SEARCH$NC." 
     
-    if ask "Do you want to continue?" N; then
+    if ask "Do you want to continue?" Y; then
+      # Pacstall repo first
       for IDX in $IDXSEARCH ; do
+        if [ ${URLLIST[$IDX]} == 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' ]; then
+          PACSTALLREPO=$IDX
+          break
+        fi
+      done
+      if [[ ! -z $PACSTALLREPO ]]; then
+        if ask "\e[1A\e[KDo you want to install $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo ${URLLIST[$IDX]})$NC?" Y;then
+          REPO=${URLLIST[$IDX]}
+          break
+        fi
+      fi
+    
+      for IDX in $IDXSEARCH ; do
+        if [[ $IDX == $PACSTALLREPO ]]; then
+          continue
+        fi
         # Overwrite last question
-        if ask "\e[1A\e[KDo you want to install $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo ${URLLIST[$IDX]})$NC?" N;then
+        if ask "\e[1A\e[KDo you want to install $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo ${URLLIST[$IDX]})$NC?" Y;then
           REPO=${URLLIST[$IDX]}
           break
         fi

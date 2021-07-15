@@ -24,9 +24,6 @@
 
 # This script downloads pacscripts from the interwebs
 
-
-URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
-
 if ! wget -q --tries=10 --timeout=20 --spider https://github.com; then
   fancy_message error "Not connected to internet"
   exit 6
