@@ -40,14 +40,18 @@ while IFS= read -r URL; do
   URLLIST+=("${PARTIALLIST[@]/*/$URL}")
   PACKAGELIST+=(${PARTIALLIST[*]})
   PACKAGELIST[-1]+=' ' # Broke while testing
-                       # Added spcase so that
+                       # Added space so that
                        # the last word didn't merge
                        # with the first in the
                        # following loop
 done < "$STGDIR/repo/pacstallrepo.txt"
 
 # Gets index of packages that the search returns
-IDXSEARCH=$(echo ${PACKAGELIST[*]} | tr ' ' '\n' | grep -n "$SEARCH" | cut -d : -f1| awk '{print $0"-1"}'|bc)
+if [[ -z "$PACKAGE" ]]; then
+  IDXSEARCH=$(echo ${PACKAGELIST[*]} | tr ' ' '\n' | grep -n "${SEARCH}" | cut -d : -f1| awk '{print $0"-1"}'|bc)
+else
+  IDXSEARCH=$(echo ${PACKAGELIST[*]} | tr ' ' '\n' | grep -n "^${SEARCH}$" | cut -d : -f1| awk '{print $0"-1"}'|bc)
+fi
 LEN=($IDXSEARCH)
 LEN=${#LEN[@]}
 
@@ -78,7 +82,6 @@ if [ $LEN -eq 0 ]; then
 # Check if its being used for search or intall 
 elif [[ -z "$PACKAGE" ]]; then
   # Search
-  fancy_message info "There are $LEN package(s) with $IGreen$SEARCH$NC in their name:"
   for IDX in $IDXSEARCH ; do
     echo -e "$GREEN${PACKAGELIST[$IDX]}$CYAN @ $(parseRepo ${URLLIST[$IDX]}) $NC"
   done
@@ -91,7 +94,7 @@ else
     
   # If there are multiple results, ask
   else
-    echo -e "There are $LEN package(s) with $GREEN$SEARCH$NC in their name."
+    echo -e "There are $LEN package(s) with the name $GREEN$SEARCH$NC."
     
     if ask "Do you want to continue?" N; then
       for IDX in $IDXSEARCH ; do
