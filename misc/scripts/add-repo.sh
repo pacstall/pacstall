@@ -22,17 +22,18 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-
-REPO= $2
+REPO=$2
 
 ## TODO
 ## treat URL for github and gitlab cases
 
 REPOLIST=()
 while IFS= read -r REPOURL; do
-  REPOLIST+=REPOURL
+  REPOLIST+=$REPOURL
 done < "$STGDIR/repo/pacstallrepo.txt"
-REPOURL+=REPO
+echo ${REPOLIST[@]}
+REPOLIST+=($REPO)
 
-printf "%s\n" "${e[@]}"| sort -u > "$STGDIR/repo/pacstallrepo.txt"
+printf "%s\n" "${REPOLIST[@]}"| sort -u | sudo tee "$STGDIR/repo/pacstallrepo.txt"> /dev/null 2>&1
+
 
