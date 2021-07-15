@@ -85,7 +85,7 @@ if [ $LEN -eq 0 ]; then
   fancy_message warn "There is no package with the name $IRed$SEARCH$NC"
 
 # Check if it's upgrading packages
-elif [[ -z "$UPGRADE" ]]; then
+elif [[ ! -z "$UPGRADE" ]]; then
   REPOS=()
   for IDX in $IDXSEARCH ; do
     REPOS+=(${URLLIST[$IDX]})
