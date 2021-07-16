@@ -123,10 +123,10 @@ ${BOLD}$(cat /tmp/pacstall-up-print)${NORMAL}"
       remotes+=("$line")
     done < /tmp/pacstall-up-urls
     
+    export local='no'
     for i in "${!upgrade[@]}"; do
       PACKAGE=${upgrade[$i]}
-      export local='no'
-      export REPO="${remotes[$i]}"
+      REPO="${remotes[$i]}"
       export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
       source "$STGDIR/scripts/download.sh"
       source "$STGDIR/scripts/install-local.sh"
