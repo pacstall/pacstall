@@ -72,7 +72,7 @@ for i in "${list[@]}"; do
     
     IDXMATCH=$(printf "%s\n" "${REPOs[@]}"| grep -n "$remoterepo" | cut -d : -f1| awk '{print $0"-1"}'|bc)
     
-    if [[ -z IDXMATCH ]]; then
+    if [[ -z $IDXMATCH ]]; then
       remotever=$(source <(curl -s "$REPO"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
       remoteurl=$REPO
     else

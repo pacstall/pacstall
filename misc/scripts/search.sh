@@ -118,20 +118,20 @@ else
       if [[ ! -z $PACSTALLREPO ]]; then
         if ask "\e[1A\e[KDo you want to install $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo ${URLLIST[$IDX]})$NC?" Y;then
           REPO=${URLLIST[$IDX]}
-          break
         fi
       fi
-    
-      for IDX in $IDXSEARCH ; do
-        if [[ $IDX == $PACSTALLREPO ]]; then
-          continue
-        fi
-        # Overwrite last question
-        if ask "\e[1A\e[KDo you want to install $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo ${URLLIST[$IDX]})$NC?" Y;then
-          REPO=${URLLIST[$IDX]}
-          break
-        fi
-      done
+      else
+        for IDX in $IDXSEARCH ; do
+          if [[ $IDX == $PACSTALLREPO ]]; then
+            continue
+          fi
+          # Overwrite last question
+          if ask "\e[1A\e[KDo you want to install $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo ${URLLIST[$IDX]})$NC?" Y;then
+            REPO=${URLLIST[$IDX]}
+            break
+          fi
+        done
+      fi
     else
       exit 1
     fi
