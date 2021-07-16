@@ -66,12 +66,12 @@ LEN=${#LEN[@]}
 # terminals that support them
 function parseRepo() {
   local REPO="${1}"
-  SPLIT=($(echo $REPO | tr "/" "\n"))
+  SPLIT=($(echo "$REPO" | tr "/" "\n"))
   
-  if command echo $REPO |grep "github" &> /dev/null; then
+  if command echo "$REPO" |grep "github" &> /dev/null; then
     echo -e "\e]8;;https://github.com/${SPLIT[-3]}/${SPLIT[-2]}\a${SPLIT[-3]}\e]8;;\a"
     
-  elif command echo $REPO |grep "gitlab" &> /dev/null; then
+  elif command echo "$REPO" |grep "gitlab" &> /dev/null; then
     echo -e "\e]8;;https://gitlab.com/${SPLIT[-4]}/${SPLIT[-3]}\a${SPLIT[-4]}\e]8;;\a"
   
   else
@@ -81,7 +81,7 @@ function parseRepo() {
 
 
 #Check if there are results
-if [ $LEN -eq 0 ]; then
+if [ "$LEN" -eq 0 ]; then
   fancy_message warn "There is no package with the name $IRed$SEARCH$NC"
 
 # Check if it's upgrading packages
@@ -95,12 +95,12 @@ elif [[ ! -z "$UPGRADE" ]]; then
 elif [[ -z "$PACKAGE" ]]; then
   # Search
   for IDX in $IDXSEARCH ; do
-    echo -e "$GREEN${PACKAGELIST[$IDX]}$CYAN @ $(parseRepo ${URLLIST[$IDX]}) $NC"
+    echo -e "$GREEN${PACKAGELIST[$IDX]}$CYAN @ $(parseRepo "${URLLIST[$IDX]}") $NC"
   done
 else
   # Install
   # If there is only one result, proceed
-  if [ $LEN -eq 1 ]; then
+  if [ "$LEN" -eq 1 ]; then
     PACKAGE=${PACKAGELIST[$IDXSEARCH]}
     REPO=${URLLIST[$IDXSEARCH]}
   # If there are multiple results, ask
@@ -110,19 +110,19 @@ else
     if ask "Do you want to continue?" Y; then
       # Pacstall repo first
       for IDX in $IDXSEARCH ; do
-        if [ ${URLLIST[$IDX]} == 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' ]; then
+        if [ "${URLLIST[$IDX]}" == 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' ]; then
           PACSTALLREPO=$IDX
           break
         fi
       done
-      if [[ ! -z $PACSTALLREPO ]]; then
+      if [[ ! -z "$PACSTALLREPO" ]]; then
         if ask "\e[1A\e[KDo you want to install $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo ${URLLIST[$IDX]})$NC?" Y;then
           PACKAGE=${PACKAGELIST[$PACSTALLREPO]}
           REPO=${URLLIST[$PACSTALLREPO]}
         fi
       else
         for IDX in $IDXSEARCH ; do
-          if [[ $IDX == $PACSTALLREPO ]]; then
+          if [[ "$IDX" == "$PACSTALLREPO" ]]; then
             continue
           fi
           # Overwrite last question
