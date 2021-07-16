@@ -126,7 +126,7 @@ else
             continue
           fi
           # Overwrite last question
-          if ask "\e[1A\e[KDo you want to install $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo ${URLLIST[$IDX]})$NC?" Y;then
+          if ask "\e[1A\e[KDo you want to install $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo "${URLLIST[$IDX]}")$NC?" Y;then
             PACKAGE=${PACKAGELIST[$IDX]}
             REPO=${URLLIST[$IDX]}
             break
