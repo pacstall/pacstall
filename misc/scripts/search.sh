@@ -81,7 +81,7 @@ function parseRepo() {
 
 
 #Check if there are results
-if [ "$LEN" -eq 0 ]; then
+if [[ "$LEN" -eq 0 ]]; then
   fancy_message warn "There is no package with the name $IRed$SEARCH$NC"
 
 # Check if it's upgrading packages
@@ -100,7 +100,7 @@ elif [[ -z "$PACKAGE" ]]; then
 else
   # Install
   # If there is only one result, proceed
-  if [ "$LEN" -eq 1 ]; then
+  if [[ "$LEN" -eq 1 ]]; then
     PACKAGE=${PACKAGELIST[$IDXSEARCH]}
     REPO=${URLLIST[$IDXSEARCH]}
   # If there are multiple results, ask
@@ -110,13 +110,13 @@ else
     if ask "Do you want to continue?" Y; then
       # Pacstall repo first
       for IDX in $IDXSEARCH ; do
-        if [ "${URLLIST[$IDX]}" == 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' ]; then
+        if [[ "${URLLIST[$IDX]}" == 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' ]]; then
           PACSTALLREPO=$IDX
           break
         fi
       done
       if [[ ! -z "$PACSTALLREPO" ]]; then
-        if ask "\e[1A\e[KDo you want to install $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo ${URLLIST[$IDX]})$NC?" Y;then
+        if ask "\e[1A\e[KDo you want to install $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo "${URLLIST[$IDX]}")$NC?" Y;then
           PACKAGE=${PACKAGELIST[$PACSTALLREPO]}
           REPO=${URLLIST[$PACSTALLREPO]}
         fi
