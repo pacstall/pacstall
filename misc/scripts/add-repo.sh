@@ -24,15 +24,15 @@
 
 REPO=${2%/}
 
-if echo $REPO| grep "github.com" > /dev/null ; then
+if echo "$REPO" | grep "github.com" > /dev/null ; then
   REPO="${REPO/'github.com'/'raw.githubusercontent.com'}" 
-  if  ! echo $REPO | grep  "/tree/" > /dev/null ; then
+  if  ! echo "$REPO" | grep  "/tree/" > /dev/null ; then
     REPO="$REPO/master"
     fancy_message warn "Assuming that git branch is ${GREEN}master${NC}"
   else
     REPO="${URL/'/tree/'/'/'}"
   fi
-elif echo $REPO| grep "gitlab.com" > /dev/null; then
+elif echo "$REPO"| grep "gitlab.com" > /dev/null; then
   if  ! echo "$REPO" | grep  "/tree/" > /dev/null ; then
     REPO="$REPO/-/raw/master"
     fancy_message warn "Assuming that git branch is ${GREEN}master${NC}"
@@ -46,9 +46,9 @@ else
   fi
 fi
 
-TEST=$(wget -q --spider "$REPO/packagelist")
+wget -q --spider "$REPO/packagelist"
 
-if [[ ! $(echo $?) -eq 0 ]]; then
+if [[ ! $? -eq 0 ]]; then
   fancy_message warn "If the URL is a private repo, edit ${CYAN}\e]8;;file://$STGDIR/repo/pacstallrepo.txt\a$STGDIR/repo/pacstallrepo.txt\e]8;;\a${NC}"
   fancy_message error "packagelist file not found"
   exit 3

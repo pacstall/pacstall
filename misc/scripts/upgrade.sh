@@ -26,7 +26,7 @@ function version_gt() {
   test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"; 
 }
 
-UPGRADE="yes"
+export UPGRADE="yes"
 
 # Get the list of the installed packages
 list=( $(pacstall -L) )
@@ -87,7 +87,7 @@ for i in "${list[@]}"; do
     fi
     if dpkg --compare-versions "$localver" "lt" "$remotever"; then
         echo "$i" |sudo tee -a /tmp/pacstall-up-list >/dev/null
-        echo "$GREEN$i$CYAN @ $(parseRepo ${remoteurl}) $NC" | sudo tee -a /tmp/pacstall-up-print >/dev/null
+        echo "${GREEN}${i}${CYAN} @ $(parseRepo "${remoteurl}") ${NC}" | sudo tee -a /tmp/pacstall-up-print >/dev/null
         echo "$remoteurl" |sudo tee -a /tmp/pacstall-up-urls >/dev/null
     fi
 done &
@@ -121,10 +121,10 @@ ${BOLD}$(cat /tmp/pacstall-up-print)${NORMAL}"
       remotes+=("$line")
     done < /tmp/pacstall-up-urls
     
-    for i in "${!upgrade[@]}"; do      
+    for i in "${!upgrade[@]}"; do
       PACKAGE=${upgrade[$i]}
       REPO="${remotes[$i]}"
-      URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
+      export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
       source "$STGDIR/scripts/download.sh"
       source "$STGDIR/scripts/install-local.sh"
     done
