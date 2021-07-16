@@ -18,7 +18,7 @@ echo -e "${BGreen}description${NORMAL}: ""$_description"""
 echo -e "${BGreen}date installed${NORMAL}: ""$_date"""
 
 if [[ -n $_remoterepo ]]; then
-  echo -e "${BGreen}Remote repo${NORMAL}: ""$_remoterepo"""
+  echo -e "${BGreen}remote repo${NORMAL}: ""$_remoterepo"""
 fi
 if [[ -n $_maintainer ]]; then
   echo -e "${BGreen}maintainer${NORMAL}: ""$_maintainer"""
