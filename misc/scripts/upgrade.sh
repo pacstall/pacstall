@@ -49,10 +49,21 @@ sudo touch /tmp/pacstall-up-urls
 fancy_message info "Checking for updates"
 
 for i in "${list[@]}"; do
-    remoterepo=$(sed -n -e 's/_remoterepo=//p' "$LOGDIR"/"$i" | tr -d \")
-    if [[ $remoterepo == 'no' ]]; then
+    source "$LOGDIR/$i"
+
+    if [[ -z ${_remoterepo} ]]; then
       continue
-    fi    
+    fi
+    
+    if echo "${_remoterepo}" | grep "github.com" > /dev/null ; then
+      remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}" 
+    elif echo "${_remoterepo}"| grep "gitlab.com" > /dev/null; then
+      remoterepo="${_remoterepo}/-/raw/${_remotebranch}"
+    else
+      remoterepo=${_remoterepo}
+    fi
+
+    unset _remoterepo
     
     # localver is the version of the package
     localver=$(sed -n -e 's/_version=//p' "$LOGDIR"/"$i" | tr -d \")
@@ -60,17 +71,8 @@ for i in "${list[@]}"; do
     
     source "$STGDIR/scripts/search.sh"
     
-    # Reverse compatibility
-    if [[ -z $remoterepo ]]; then
-      if [[ ! -z $REPOS ]]; then
-        echo  "_remoterepo=\"no"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-        continue
-      else
-        echo  "_remoterepo=\"${REPOS[0]}"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-      fi
-    fi
     
-    IDXMATCH=$(printf "%s\n" "${REPOs[@]}"| grep -n "$remoterepo" | cut -d : -f1| awk '{print $0"-1"}'|bc)
+    IDXMATCH=$(printf "%s\n" "${REPOS[@]}"| grep -n "$remoterepo" | cut -d : -f1| awk '{print $0"-1"}'|bc)
     
     if [[ -z $IDXMATCH ]]; then
       remotever=$(source <(curl -s "$REPO"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
@@ -123,7 +125,8 @@ ${BOLD}$(cat /tmp/pacstall-up-print)${NORMAL}"
     
     for i in "${!upgrade[@]}"; do
       PACKAGE=${upgrade[$i]}
-      REPO="${remotes[$i]}"
+      export local='no'
+      export REPO="${remotes[$i]}"
       export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
       source "$STGDIR/scripts/download.sh"
       source "$STGDIR/scripts/install-local.sh"

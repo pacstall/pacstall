@@ -59,6 +59,22 @@ function cget() {
   git ls-remote "$URL" "$BRANCH" | sed "s/refs\/heads\/.*//"
 }
 
+if [[ $local == 'no' ]]; then
+  if echo "$REPO" | grep "github" > /dev/null ; then
+    pURL="${REPO/'raw.githubusercontent.com'/'github.com'}" 
+    pURL="${pURL%/*}"
+    pBRANCH="${REPO##*/}"
+    branch="yes"
+  elif echo "$REPO"| grep "gitlab" > /dev/null; then
+    pURL="${REPO%/-/raw/*}"
+    pBRANCH="${REPO##*/-/raw/}"
+    branch="yes"
+  else
+    pURL=$REPO
+    branch="no"
+  fi
+fi
+
 # logging metadata
 function loggingMeta() {
 	echo "_version=\"$version"\" | sudo tee "$LOGDIR"/"$PACKAGE" > /dev/null
@@ -69,7 +85,10 @@ function loggingMeta() {
 	fi
 	echo "_maintainer=\"$maintainer"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 	if [[ $local == 'no' ]]; then
-	  echo  "_remoterepo=\"$REPO"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+	  echo  "_remoterepo=\"$pURL"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+	  if [[ $branch == "yes" ]]; then
+        echo  "_remotebranch=\"$pBRANCH"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+	  fi
 	fi
 }
 
@@ -306,7 +325,10 @@ if test -f /tmp/pacstall-pacdeps-"$PACKAGE"; then
   echo "_pacstall_depends=\"true"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 fi
 if [[ $local == 'no' ]]; then
-  echo  "_remoterepo=\"$REPO"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+  echo  "_remoterepo=\"$pURL"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+fi
+if [[ $local == 'no' ]]; then
+  echo  "_remotebranch=\"$pBRANCH"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 fi
 
 # If optdepends exists do this
