@@ -41,6 +41,7 @@ elif echo "$REPO"| grep "gitlab.com" > /dev/null; then
   fi
 else
   fancy_message warn "The repo link must be the root to the raw files"
+  fancy_message warn "Make sure the repo contains a package list"
   if ! ask "Do you want to add \"$REPO\" to the repo list?" N; then
     exit 3
   fi
