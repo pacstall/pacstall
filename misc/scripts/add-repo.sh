@@ -60,6 +60,6 @@ else
   done < "$STGDIR/repo/pacstallrepo.txt"
   REPOLIST+=($REPO)
   
-  echo "${REPOLIST[@]}"|tr -s ' ' '\n'| sort -u | sudo tee "$STGDIR/repo/pacstallrepo.txt"> /dev/null 2>&1
+  echo "${REPOLIST[@]}"|tr -s ' ' '\n'| sort -u > "$STGDIR/repo/pacstallrepo.txt"
 fi
 

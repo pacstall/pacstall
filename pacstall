@@ -252,7 +252,7 @@ while [[ ! "$1" == "--" ]]; do
       REPO="$2"
 
       if [ ! -f "$STGDIR/repo/pacstallrepo.txt" ]; then
-        echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' | sudo tee "$STGDIR/repo/pacstallrepo.txt" > /dev/null 2>&1
+        echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > "$STGDIR/repo/pacstallrepo.txt"
       fi
       if [ ! -z $REPO ]; then
         source "$STGDIR/scripts/add-repo.sh"
