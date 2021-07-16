@@ -1,4 +1,4 @@
-#!/bin/b
+#!/bin/bash
 
 #     ____                  __        ____
 #    / __ \____ ___________/ /_____ _/ / /
@@ -22,41 +22,43 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-REPO=$2
+REPO=${2%/}
 
-if echo "$REPO"| grep "github.com" > /dev/null ; then
-  REPO= echo "${REPO/"github.com"/"raw.githubusercontent.com"}"
-  if  ! echo "$REPO" | grep  "/tree/" > /dev/null ; then
-    REPO= echo "$REPO/master"
-    fancy_message "warning" "Assuming that git branch is ${GREEN}master${NC}"
+if echo $REPO| grep "github.com" > /dev/null ; then
+  REPO="${REPO/'github.com'/'raw.githubusercontent.com'}" 
+  if  ! echo $REPO | grep  "/tree/" > /dev/null ; then
+    REPO="$REPO/master"
+    fancy_message warn "Assuming that git branch is ${GREEN}master${NC}"
   else
-    REPO= echo "${REPO/"/tree/"/"/"}"
+    REPO="${URL/'/tree/'/'/'}"
   fi
-elif echo "$REPO"| grep "gitlab.com" > /dev/null; then
+elif echo $REPO| grep "gitlab.com" > /dev/null; then
   if  ! echo "$REPO" | grep  "/tree/" > /dev/null ; then
-    REPO= echo "$REPO/-/raw/master"
-    fancy_message "warning" "Assuming that git branch is ${GREEN}master${NC}"
+    REPO="$REPO/-/raw/master"
+    fancy_message warn "Assuming that git branch is ${GREEN}master${NC}"
   else
-    REPO= echo "${REPO/"/tree/"/"/raw/"}"
+    REPO="${REPO/"/tree/"/"/raw/"}"
   fi
 else
-  fancy_message "warning" "The repo link must be the root to the raw files"
+  fancy_message warn "The repo link must be the root to the raw files"
   if ! ask "Do you want to add \"$REPO\" to the repo list?" N; then
     exit 3
   fi
 fi
 
-if ! curl --output /dev/null --silent --head --fail "$REPO/packagelist"; then
-  fancy_message "error" "Repo does not contain a package list"
+TEST=$(wget -q --spider "$REPO/packagelist")
+
+if [[ ! $(echo $?) -eq 0 ]]; then
+  fancy_message warn "If the URL is a private repo, edit ${CYAN}\e]8;;file://$STGDIR/repo/pacstallrepo.txt\a$STGDIR/repo/pacstallrepo.txt\e]8;;\a${NC}"
+  fancy_message error "packagelist file not found"
   exit 3
 else
   REPOLIST=()
   while IFS= read -r REPOURL; do
-    REPOLIST+=$REPOURL
+    REPOLIST+="${REPOURL} "
   done < "$STGDIR/repo/pacstallrepo.txt"
-  echo ${REPOLIST[@]}
   REPOLIST+=($REPO)
-
-  printf "%s\n" "${REPOLIST[@]}"| sort -u | sudo tee "$STGDIR/repo/pacstallrepo.txt"> /dev/null 2>&1
+  
+  echo "${REPOLIST[@]}"|tr -s ' ' '\n'| sort -u | sudo tee "$STGDIR/repo/pacstallrepo.txt"> /dev/null 2>&1
 fi
 
