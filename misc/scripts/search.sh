@@ -119,8 +119,12 @@ else
         if ask "\e[1A\e[KDo you want to install $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo "${URLLIST[$IDX]}")$NC?" Y;then
           PACKAGE=${PACKAGELIST[$PACSTALLREPO]}
           REPO=${URLLIST[$PACSTALLREPO]}
+          DEFAULT='yes'
+        else
+          DEFAULT='no'
         fi
-      else
+      fi
+      if [[ "$DEFAULT" == "no" ]] || [[ -z "$PACSTALLREPO" ]]; then
         for IDX in $IDXSEARCH ; do
           if [[ "$IDX" == "$PACSTALLREPO" ]]; then
             continue
