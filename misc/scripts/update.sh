@@ -18,7 +18,7 @@ if [[ -z "$USERNAME" ]]; then
 fi
 
 if ask "Are you sure you want to update pacstall?" Y; then
-  for i in {change-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh}; do
+  for i in {add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}}; do
     sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/"$i" -P "$STGDIR/scripts" 2> /dev/null 
   done
 

@@ -158,7 +158,7 @@ function fancy_message() {
 
   case ${MESSAGE_TYPE} in
     info) echo -e "[${BGreen}+${NC}] INFO: ${MESSAGE}";;
-    warn) echo -e "[${BRed}*${NC}] WARNING: ${MESSAGE}";;
+    warn) echo -e "[${BYellow}*${NC}] WARNING: ${MESSAGE}";;
     error) echo -e "[${BRed}!${NC}] ERROR: ${MESSAGE}";;
     *) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
   esac
@@ -182,7 +182,7 @@ while [[ ! "$1" == "--" ]]; do
       -S --search, Search for package
       -R --remove, Removes package
       -D --download, Downloads script
-      -C --change-repo, Chooses repo
+      -A --add-repo, Adds repo to your repo list
       -U --update, Update script
       -V --version, Prints pacstall version
       -L --list, Lists installed packages
@@ -201,7 +201,7 @@ while [[ ! "$1" == "--" ]]; do
       # Begin trapping
       trap "trap_ctrlc" 2
 
-      PACKAGE=$2
+      export PACKAGE=$2
       if [[ -z "$PACKAGE" ]]; then
         fancy_message error "You failed to specify a package"
         exit 1
@@ -214,18 +214,21 @@ while [[ ! "$1" == "--" ]]; do
         sudo pacstall -C
       fi
 
-      REPO=$(cat "$STGDIR/repo/pacstallrepo.txt")
-      URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
+      export type="install"
+      export local="no"
+      source "$STGDIR/scripts/search.sh"
 
+      URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
       source "$STGDIR/scripts/download.sh"
+      export REPO
       source "$STGDIR/scripts/install-local.sh"
       exit 0
     ;;
 
     -Il|--install-local)
-      REPO=$(cat "$STGDIR/repo/pacstallrepo.txt") 
+      REPO="local"
       INPUT="$(echo "$2" | sed 's/\..*$//')" # Removes the .pacscript suffix
-
+      export local="yes"
       # Check if the file exist (both .pacscript and without)
       if [[ ! -f "$2".pacscript && ! -f "$INPUT" ]]; then
         fancy_message error "$2 does not exist"
@@ -233,7 +236,7 @@ while [[ ! "$1" == "--" ]]; do
       fi
 
       cd "$(dirname "$INPUT")" || (fancy_message error "The directory does not exist"; exit 1)
-      PACKAGE="$(basename "$INPUT")"
+      export PACKAGE="$(basename "$INPUT")"
 
       source "$STGDIR/scripts/install-local.sh"
       exit 0
@@ -248,14 +251,17 @@ while [[ ! "$1" == "--" ]]; do
       source "$STGDIR/scripts/remove.sh"
     ;;
 
-    -C|--change-repo)
+    -A|--add-repo)
       REPO="$2"
 
-      if [[ -z "$REPO" ]]; then
-        source "$STGDIR/scripts/change-repo.sh"
-      else
-        echo "$REPO" | sudo tee "$STGDIR/repo/pacstallrepo.txt" > /dev/null 2>&1
+      if [ ! -f "$STGDIR/repo/pacstallrepo.txt" ]; then
+        echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > "$STGDIR/repo/pacstallrepo.txt"
+      fi
+      if [ ! -z $REPO ]; then
+        source "$STGDIR/scripts/add-repo.sh"
         exit 0
+      else
+        fancy_message error "You failed to specify a repo to add"
       fi
     ;;
 
@@ -295,8 +301,10 @@ while [[ ! "$1" == "--" ]]; do
         fancy_message error "You failed to specify a package"
         exit 1
       fi
-
-      REPO=$(cat "$STGDIR/repo/pacstallrepo.txt")
+      
+      export type="download"
+      source "$STGDIR/scripts/search.sh"
+      export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
       source "$STGDIR/scripts/download.sh"
       fancy_message info "$PACKAGE's pacscript is downloaded in ${GREEN}$HOMEDIR/.cache/pacstall/$PACKAGE${NC}"
       exit 0
@@ -330,3 +338,4 @@ while [[ ! "$1" == "--" ]]; do
   esac; shift
 done
 if [[ "$1" == '--' ]]; then shift; fi
+

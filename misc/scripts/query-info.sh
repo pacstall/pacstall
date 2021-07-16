@@ -17,6 +17,9 @@ echo -e "${BGreen}size${NORMAL}: $(du -sh "$STOWDIR"/"$PACKAGE" 2> /dev/null | a
 echo -e "${BGreen}description${NORMAL}: ""$_description"""
 echo -e "${BGreen}date installed${NORMAL}: ""$_date"""
 
+if [[ -n $_remoterepo ]]; then
+  echo -e "${BGreen}remote repo${NORMAL}: ""$_remoterepo"""
+fi
 if [[ -n $_maintainer ]]; then
   echo -e "${BGreen}maintainer${NORMAL}: ""$_maintainer"""
 fi
