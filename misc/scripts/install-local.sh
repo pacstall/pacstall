@@ -61,6 +61,7 @@ function cget() {
 
 # logging metadata
 function loggingMeta() {
+    echo "LOGGING"
 	echo "_version=\"$version"\" | sudo tee "$LOGDIR"/"$PACKAGE" > /dev/null
 	echo "_description=\"$description"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 	echo "_date=\"$(date)"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
@@ -306,6 +307,11 @@ if [[ -n $ppa ]]; then
 fi
 if test -f /tmp/pacstall-pacdeps-"$PACKAGE"; then
   echo "_pacstall_depends=\"true"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+fi
+if [[ $local=='no' ]]; then
+  echo  "_remoterepo=\"$REPO"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+else
+  echo  "_remoterepo=\"no"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 fi
 
 # If optdepends exists do this
