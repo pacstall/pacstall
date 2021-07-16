@@ -70,8 +70,6 @@ function loggingMeta() {
 	echo "_maintainer=\"$maintainer"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 	if [[ $local == 'no' ]]; then
 	  echo  "_remoterepo=\"$REPO"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-	else
-	  echo  "_remoterepo=\"no"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 	fi
 }
 
@@ -309,8 +307,6 @@ if test -f /tmp/pacstall-pacdeps-"$PACKAGE"; then
 fi
 if [[ $local == 'no' ]]; then
   echo  "_remoterepo=\"$REPO"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-else
-  echo  "_remoterepo=\"no"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 fi
 
 # If optdepends exists do this

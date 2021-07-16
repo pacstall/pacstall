@@ -101,8 +101,8 @@ else
   # Install
   # If there is only one result, proceed
   if [[ "$LEN" -eq 1 ]]; then
-    PACKAGE=${PACKAGELIST[$IDXSEARCH]}
-    REPO=${URLLIST[$IDXSEARCH]}
+    export PACKAGE=${PACKAGELIST[$IDXSEARCH]}
+    export REPO=${URLLIST[$IDXSEARCH]}
   # If there are multiple results, ask
   else
     echo -e "There are $LEN package(s) with the name $GREEN$SEARCH$NC." 
@@ -116,9 +116,9 @@ else
         fi
       done
       if [[ ! -z "$PACSTALLREPO" ]]; then
-        if ask "\e[1A\e[KDo you want to install $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo "${URLLIST[$IDX]}")$NC?" Y;then
-          PACKAGE=${PACKAGELIST[$PACSTALLREPO]}
-          REPO=${URLLIST[$PACSTALLREPO]}
+        if ask "\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo "${URLLIST[$IDX]}")$NC?" Y;then
+          export PACKAGE=${PACKAGELIST[$PACSTALLREPO]}
+          export REPO=${URLLIST[$PACSTALLREPO]}
           DEFAULT='yes'
         else
           DEFAULT='no'
@@ -130,9 +130,9 @@ else
             continue
           fi
           # Overwrite last question
-          if ask "\e[1A\e[KDo you want to install $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo "${URLLIST[$IDX]}")$NC?" Y;then
-            PACKAGE=${PACKAGELIST[$IDX]}
-            REPO=${URLLIST[$IDX]}
+          if ask "\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo "${URLLIST[$IDX]}")$NC?" Y;then
+            export PACKAGE=${PACKAGELIST[$IDX]}
+            export REPO=${URLLIST[$IDX]}
             break
           fi
         done

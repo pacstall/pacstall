@@ -201,7 +201,7 @@ while [[ ! "$1" == "--" ]]; do
       # Begin trapping
       trap "trap_ctrlc" 2
 
-      PACKAGE=$2
+      export PACKAGE=$2
       if [[ -z "$PACKAGE" ]]; then
         fancy_message error "You failed to specify a package"
         exit 1
@@ -214,18 +214,21 @@ while [[ ! "$1" == "--" ]]; do
         sudo pacstall -C
       fi
 
+      export type="install"
+      export local="no"
       source "$STGDIR/scripts/search.sh"
 
       URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
       source "$STGDIR/scripts/download.sh"
+      export REPO
       source "$STGDIR/scripts/install-local.sh"
       exit 0
     ;;
 
     -Il|--install-local)
-      REPO=$(cat "$STGDIR/repo/pacstallrepo.txt") 
+      REPO="local"
       INPUT="$(echo "$2" | sed 's/\..*$//')" # Removes the .pacscript suffix
-
+      export local="yes"
       # Check if the file exist (both .pacscript and without)
       if [[ ! -f "$2".pacscript && ! -f "$INPUT" ]]; then
         fancy_message error "$2 does not exist"
@@ -233,7 +236,7 @@ while [[ ! "$1" == "--" ]]; do
       fi
 
       cd "$(dirname "$INPUT")" || (fancy_message error "The directory does not exist"; exit 1)
-      PACKAGE="$(basename "$INPUT")"
+      export PACKAGE="$(basename "$INPUT")"
 
       source "$STGDIR/scripts/install-local.sh"
       exit 0
@@ -298,8 +301,10 @@ while [[ ! "$1" == "--" ]]; do
         fancy_message error "You failed to specify a package"
         exit 1
       fi
-
-      REPO=$(cat "$STGDIR/repo/pacstallrepo.txt")
+      
+      export type="download"
+      source "$STGDIR/scripts/search.sh"
+      export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
       source "$STGDIR/scripts/download.sh"
       fancy_message info "$PACKAGE's pacscript is downloaded in ${GREEN}$HOMEDIR/.cache/pacstall/$PACKAGE${NC}"
       exit 0
