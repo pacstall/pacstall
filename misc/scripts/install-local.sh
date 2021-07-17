@@ -269,7 +269,7 @@ case "$url" in
 	*.deb)
 		aria2
 		hashcheck "${url##*/}"    
-                sudo apt install -f ./"$(echo "$url" | awk -F "/" '{print $NF}')"
+                sudo apt install -f ./"$(echo "$url" | awk -F "/" '{print $NF}')" 2>/dev/null
                 if [[ $? -eq 0 ]]; then
     	           loggingMeta
     	           exit 0
