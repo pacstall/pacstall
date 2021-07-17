@@ -40,8 +40,8 @@ function checks() {
   if curl --output /dev/null --silent --head --fail "$url" > /dev/null; then
     fancy_message info "URL exists"
   else
-	  fancy_message error "URL doesn't exist"
-	  exit 6
+      fancy_message error "URL doesn't exist"
+      exit 6
   fi
 
   if [[ -z "$hash" ]]; then
@@ -156,7 +156,7 @@ if [[ -n "$build_depends" ]]; then
   fancy_message info "${BLUE}$name${NC} requires ${CYAN}$(echo -e "$build_depends")${NC} to install"
   if ask "Do you want to remove them after installing ${BLUE}$name${NC}" N; then
     NOBUILDDEP=0
-	fi
+    fi
 else
   NOBUILDDEP=1
 fi
@@ -241,52 +241,52 @@ mkdir -p "$SRCDIR"
 cd "$SRCDIR"
 
 case "$url" in
-	*.git)
-		# git clone quietly, with no history, and if submodules are there, download with 10 jobs
-  		sudo git clone --quiet --depth=1 --jobs=10 "$url"
-		# cd into the directory
-		cd */
-		# The srcdir is /tmp/pacstall/foo
-		export srcdir="/tmp/pacstall/$PWD"
-		# Make the directory available for users
-		sudo chown -R "$(logname)":"$(logname)" . 2>/dev/null
-		# Check the integrity
-		git fsck --full
-		;;
-	*.zip)
-		aria2
-		# hash the file
-		hashcheck "${url##*/}"
-		# unzip file
-		sudo unzip -q "${url##*/}" 1>&1 2>/dev/null
-		# cd into it
-		cd */
-		# export srcdir
-		export srcdir="/tmp/pacstall/$PWD"
-		# Make the directory available for users
-		sudo chown -R "$(logname)":"$(logname)" . 2>/dev/null
-		;;
-	*.deb)
-		aria2
-		hashcheck "${url##*/}"    
+    *.git)
+        # git clone quietly, with no history, and if submodules are there, download with 10 jobs
+          sudo git clone --quiet --depth=1 --jobs=10 "$url"
+        # cd into the directory
+        cd */
+        # The srcdir is /tmp/pacstall/foo
+        export srcdir="/tmp/pacstall/$PWD"
+        # Make the directory available for users
+        sudo chown -R "$(logname)":"$(logname)" . 2>/dev/null
+        # Check the integrity
+        git fsck --full
+        ;;
+    *.zip)
+        aria2
+        # hash the file
+        hashcheck "${url##*/}"
+        # unzip file
+        sudo unzip -q "${url##*/}" 1>&1 2>/dev/null
+        # cd into it
+        cd */
+        # export srcdir
+        export srcdir="/tmp/pacstall/$PWD"
+        # Make the directory available for users
+        sudo chown -R "$(logname)":"$(logname)" . 2>/dev/null
+        ;;
+    *.deb)
+        aria2
+        hashcheck "${url##*/}"    
          sudo apt install -y -f ./"${url##*/}" 2>/dev/null
         if [[ $? -eq 0 ]]; then
-    	    loggingMeta
-    	    exit 0
+            loggingMeta
+            exit 0
         else
-    	    fancy_message error "Failed to install the package"
-    	    exit 1
+            fancy_message error "Failed to install the package"
+            exit 1
         fi
-		;;
-	*)
-		aria2
-		# I think you get it by now
-		hashcheck "${url##*/}"
-		sudo tar -xf "${url##*/}" 1>&1 2>/dev/null
-		cd */ 2>/dev/null
-		export srcdir="/tmp/pacstall/$PWD"
-		sudo chown -R "$(logname)":"$(logname)" . 2>/dev/null
-		;;
+        ;;
+    *)
+        aria2
+        # I think you get it by now
+        hashcheck "${url##*/}"
+        sudo tar -xf "${url##*/}" 1>&1 2>/dev/null
+        cd */ 2>/dev/null
+        export srcdir="/tmp/pacstall/$PWD"
+        sudo chown -R "$(logname)":"$(logname)" . 2>/dev/null
+        ;;
 esac
 
 if [[ -n $patch ]]; then
@@ -334,7 +334,7 @@ if [[ -n $optdepends ]]; then
   if ask "Do you want to install them" Y; then
     for items in "${optdepends[*]}"; do
         # output the name of the apt thing without the description, EI: `foo: not bar` -> `foo`
-	    printf "%s\n" "${optdepends[@]}" | cut -f1 -d":" | tr '\n' ' ' >> /tmp/pacstall-optdepends
+        printf "%s\n" "${optdepends[@]}" | cut -f1 -d":" | tr '\n' ' ' >> /tmp/pacstall-optdepends
         # Install
         sudo apt-get install -y -qq $(cat /tmp/pacstall-optdepends)
     done
