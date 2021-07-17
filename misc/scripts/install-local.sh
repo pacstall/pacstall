@@ -59,6 +59,22 @@ function cget() {
   git ls-remote "$URL" "$BRANCH" | sed "s/refs\/heads\/.*//"
 }
 
+if [[ $local == 'no' ]]; then
+  if echo "$REPO" | grep "github" > /dev/null ; then
+    pURL="${REPO/'raw.githubusercontent.com'/'github.com'}" 
+    pURL="${pURL%/*}"
+    pBRANCH="${REPO##*/}"
+    branch="yes"
+  elif echo "$REPO"| grep "gitlab" > /dev/null; then
+    pURL="${REPO%/-/raw/*}"
+    pBRANCH="${REPO##*/-/raw/}"
+    branch="yes"
+  else
+    pURL=$REPO
+    branch="no"
+  fi
+fi
+
 # logging metadata
 function loggingMeta() {
 	echo "_version=\"$version"\" | sudo tee "$LOGDIR"/"$PACKAGE" > /dev/null
@@ -68,12 +84,18 @@ function loggingMeta() {
 	  echo "_removescript=\"yes"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 	fi
 	echo "_maintainer=\"$maintainer"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+	if [[ $local == 'no' ]]; then
+	  echo  "_remoterepo=\"$pURL"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+	  if [[ $branch == "yes" ]]; then
+        echo  "_remotebranch=\"$pBRANCH"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+	  fi
+	fi
 }
 
 
 #Function to install .deb files
 function debpt() {
-    sudo apt install -f "$(echo "$url" | awk -F "/" '{print $NF}')"
+    sudo apt install -f ./"$(echo "$url" | awk -F "/" '{print $NF}')"
     if [[ $? -eq 0 ]]; then
     	loggingMeta
     	exit 0
@@ -302,12 +324,18 @@ fi
 if test -f /tmp/pacstall-pacdeps-"$PACKAGE"; then
   echo "_pacstall_depends=\"true"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 fi
+if [[ $local == 'no' ]]; then
+  echo  "_remoterepo=\"$pURL"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+fi
+if [[ $local == 'no' ]]; then
+  echo  "_remotebranch=\"$pBRANCH"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+fi
 
 # If optdepends exists do this
 if [[ -n $optdepends ]]; then
   sudo rm -f /tmp/pacstall-optdepends
 
-  fancy_message info "Package has some optional dependencies that can enhance its functionalities"
+  fancy_message info "$name has optional dependencies that can enhance its functionalities"
   echo "Optional dependencies:"
   printf '    %s\n' "${optdepends[@]}"
   if ask "Do you want to install them" Y; then
