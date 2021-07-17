@@ -94,7 +94,7 @@ function loggingMeta() {
 function aria2 {
 fancy_message info "Downloading the package"
 if which aria2c >/dev/null; then
-aria2c --download-result=hide -q -o "/tmp/pacstall/${url##*/}" "$url"
+aria2c --download-result=hide -q -o "${url##*/}" "$url"
 else
 sudo wget -q --show-progress --progress=bar:force "$url" 2>&1
 fi
