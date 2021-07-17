@@ -94,7 +94,7 @@ function loggingMeta() {
 function aria2 {
 fancy_message info "Downloading the package"
 if which aria2c >/dev/null; then
-sudo aria2c --download-result=hide --quiet true -o "$(echo "$url" | awk -F "/" '{print $NF}')" "$url"
+sudo aria2c --download-result=hide --quiet true --out="$(echo "$url" | awk -F "/" '{print $NF}')" --console-log-level=info "$url"
 else
 sudo wget -q --show-progress --progress=bar:force "$url" 2>&1
 fi
