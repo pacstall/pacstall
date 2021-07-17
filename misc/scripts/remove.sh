@@ -4,6 +4,21 @@ function fn_exists() {
   declare -F "$1" > /dev/null;
 }
 
+
+source "/var/cache/pacstall/$PACKAGE/$_version/$PACKAGE.pacscript"
+
+case "$url" in
+*.deb)
+sudo apt remove "$gives" 2>/dev/null
+if [[ $? -eq 0 ]]; then
+exit 0
+else
+fancy_message warn "Failed to remove the package"
+exit 1
+fi
+;;
+
+*)
 cd "$STOWDIR" || (sudo mkdir -p "$STOWDIR"; cd "$STOWDIR")
 
 # Run preliminary checks
@@ -28,9 +43,6 @@ sudo rm -rf "$PACKAGE"
 # Update PATH database
 hash -r
 
-# Sources the output of /var/cache/pacstall/pkg/version/pkg.pacscript so we don't have to download scripts from the repo
-source "/var/cache/pacstall/$PACKAGE/$_version/$PACKAGE.pacscript"
-
 if fn_exists removescript ; then
     fancy_message info "Running post removal script"
     REPO=$(cat "$STGDIR/repo/pacstallrepo.txt")
@@ -43,3 +55,7 @@ fi
 
 sudo rm -f "$LOGDIR/$PACKAGE"
 exit 0
+;;
+esac
+
+exit

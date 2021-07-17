@@ -59,6 +59,47 @@ function cget() {
   git ls-remote "$URL" "$BRANCH" | sed "s/refs\/heads\/.*//"
 }
 
+# logging metadata
+function loggingMeta() {
+# Metadata writing
+  echo "_version=\"$version"\" | sudo tee "$LOGDIR"/"$PACKAGE" > /dev/null
+  echo "_description=\"$description"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+  echo "_date=\"$(date)"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+  echo "_maintainer=\"$maintainer"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+  if [[ -n $depends ]]; then
+    echo "_dependencies=\"$depends"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+  fi
+  if [[ -n $build_depends ]]; then
+    echo "_build_dependencies=\"$build_depends"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+  fi
+  if [[ -n $pacdeps ]]; then
+    echo "_pacdeps=\"$pacdeps"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+  fi
+  if [[ -n $ppa ]]; then
+    echo "_ppa=\"$ppa"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+  fi
+  if test -f /tmp/pacstall-pacdeps-"$PACKAGE"; then
+    echo "_pacstall_depends=\"true"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+  fi
+  if [[ $local == 'no' ]]; then
+    echo  "_remoterepo=\"$pURL"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+    if [[ $branch == 'yes' ]]; then
+      echo  "_remotebranch=\"$pBRANCH"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+    fi
+  fi
+}
+
+
+
+function aria2 {
+fancy_message info "Downloading the package"
+if which aria2c >/dev/null; then
+aria2c --download-result=hide -q -o "${url##*/}" "$url"
+else
+sudo wget -q --show-progress --progress=bar:force "$url" 2>&1
+fi
+}
+
 if [[ $local == 'no' ]]; then
   if echo "$REPO" | grep "github" > /dev/null ; then
     pURL="${REPO/'raw.githubusercontent.com'/'github.com'}" 
@@ -74,36 +115,6 @@ if [[ $local == 'no' ]]; then
     branch="no"
   fi
 fi
-
-# logging metadata
-function loggingMeta() {
-	echo "_version=\"$version"\" | sudo tee "$LOGDIR"/"$PACKAGE" > /dev/null
-	echo "_description=\"$description"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-	echo "_date=\"$(date)"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-	if [[ $removescript == "yes" ]]; then
-	  echo "_removescript=\"yes"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-	fi
-	echo "_maintainer=\"$maintainer"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-	if [[ $local == 'no' ]]; then
-	  echo  "_remoterepo=\"$pURL"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-	  if [[ $branch == "yes" ]]; then
-        echo  "_remotebranch=\"$pBRANCH"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-	  fi
-	fi
-}
-
-
-#Function to install .deb files
-function debpt() {
-    sudo apt install -f ./"$(echo "$url" | awk -F "/" '{print $NF}')"
-    if [[ $? -eq 0 ]]; then
-    	loggingMeta
-    	exit 0
-    else
-    	fancy_message error "Failed to install the package"
-    	exit 1
-    fi
-}
 
 if ask "Do you want to view the pacscript first" N; then
   less "$PACKAGE".pacscript
@@ -243,7 +254,7 @@ case "$url" in
 		git fsck --full
 		;;
 	*.zip)
-		sudo wget -q --show-progress --progress=bar:force "$url" 2>&1
+		aria2
 		# hash the file
 		hashcheck "${url##*/}"
 		# unzip file
@@ -256,13 +267,19 @@ case "$url" in
 		sudo chown -R "$(logname)":"$(logname)" .
 		;;
 	*.deb)
-		sudo wget -q --show-progress --progress=bar:force "$url" 2>&1
-		hashcheck "${url##*/}"
-		fancy_message info "Installing"
-		debpt
+		aria2
+		hashcheck "${url##*/}"    
+                sudo apt install -y -f ./"${url##*/}" 2>/dev/null
+                if [[ $? -eq 0 ]]; then
+    	           loggingMeta
+    	           exit 0
+                else
+    	           fancy_message error "Failed to install the package"
+    	           exit 1
+                fi
 		;;
 	*)
-		sudo wget -q --show-progress --progress=bar:force "$url" 2>&1
+		aria2
 		# I think you get it by now
 		hashcheck "${url##*/}"
 		sudo tar -xf "${url##*/}" 1>&1
@@ -305,31 +322,7 @@ sudo rm -rf "${SRCDIR:?}"/*
 cd "$HOME"
 
 # Metadata writing
-echo "_version=\"$version"\" | sudo tee "$LOGDIR"/"$PACKAGE" > /dev/null
-echo "_description=\"$description"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-echo "_date=\"$(date)"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-echo "_maintainer=\"$maintainer"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-if [[ -n $depends ]]; then
-  echo "_dependencies=\"$depends"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-fi
-if [[ -n $build_depends ]]; then
-  echo "_build_dependencies=\"$build_depends"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-fi
-if [[ -n $pacdeps ]]; then
-  echo "_pacdeps=\"$pacdeps"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-fi
-if [[ -n $ppa ]]; then
-  echo "_ppa=\"$ppa"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-fi
-if test -f /tmp/pacstall-pacdeps-"$PACKAGE"; then
-  echo "_pacstall_depends=\"true"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-fi
-if [[ $local == 'no' ]]; then
-  echo  "_remoterepo=\"$pURL"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-fi
-if [[ $local == 'no' ]]; then
-  echo  "_remotebranch=\"$pBRANCH"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-fi
+loggingMeta
 
 # If optdepends exists do this
 if [[ -n $optdepends ]]; then
