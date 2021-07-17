@@ -93,7 +93,7 @@ function loggingMeta() {
 
 function aria2 {
 fancy_message info "Downloading the package"
-if where aria2c; then
+if which aria2c; then
 sudo aria2c -c --download-result=hide "$url"
 else
 sudo wget -q --show-progress --progress=bar:force "$url" 2>&1
