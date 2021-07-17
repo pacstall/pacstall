@@ -93,7 +93,7 @@ function loggingMeta() {
 
 function aria2 {
 fancy_message info "Downloading the package"
-if which aria2c; then
+if which aria2c >/dev/null; then
 sudo aria2c --download-result=hide "$url"
 else
 sudo wget -q --show-progress --progress=bar:force "$url" 2>&1
@@ -256,7 +256,7 @@ case "$url" in
 	*.zip)
 		aria2
 		# hash the file
-		hashcheck "${url##*/}"
+		#hashcheck "${url##*/}"
 		# unzip file
 		sudo unzip -q "${url##*/}" 1>&1
 		# cd into it
@@ -268,7 +268,7 @@ case "$url" in
 		;;
 	*.deb)
 		aria2
-		hashcheck "${url##*/}"    
+		#hashcheck "${url##*/}"    
                 sudo apt install -f ./"$(echo "$url" | awk -F "/" '{print $NF}')" 2>/dev/null
                 if [[ $? -eq 0 ]]; then
     	           loggingMeta
@@ -281,7 +281,7 @@ case "$url" in
 	*)
 		aria2
 		# I think you get it by now
-		hashcheck "${url##*/}"
+		#hashcheck "${url##*/}"
 		sudo tar -xf "${url##*/}" 1>&1
 		cd $(/bin/ls -d -- */|head -n 1)
 		export srcdir="/tmp/pacstall/$(/bin/ls -d -- */|head -n 1)"
