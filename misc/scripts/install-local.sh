@@ -245,11 +245,11 @@ case "$url" in
 		# git clone quietly, with no history, and if submodules are there, download with 10 jobs
   		sudo git clone --quiet --depth=1 --jobs=10 "$url"
 		# cd into the directory
-		cd $(/bin/ls -d -- */|head -n 1)
+		cd */
 		# The srcdir is /tmp/pacstall/foo
-		export srcdir="/tmp/pacstall/$(/bin/ls -d -- */|head -n 1)"
+		export srcdir="/tmp/pacstall/$PWD"
 		# Make the directory available for users
-		sudo chown -R "$(logname)":"$(logname)" .
+		sudo chown -R "$(logname)":"$(logname)" . 2>/dev/null
 		# Check the integrity
 		git fsck --full
 		;;
@@ -258,34 +258,34 @@ case "$url" in
 		# hash the file
 		hashcheck "${url##*/}"
 		# unzip file
-		sudo unzip -q "${url##*/}" 1>&1
+		sudo unzip -q "${url##*/}" 1>&1 2>/dev/null
 		# cd into it
-		cd $(/bin/ls -d -- */|head -n 1)
+		cd */
 		# export srcdir
-		export srcdir="/tmp/pacstall/$(/bin/ls -d -- */|head -n 1)"
+		export srcdir="/tmp/pacstall/$PWD"
 		# Make the directory available for users
-		sudo chown -R "$(logname)":"$(logname)" .
+		sudo chown -R "$(logname)":"$(logname)" . 2>/dev/null
 		;;
 	*.deb)
 		aria2
 		hashcheck "${url##*/}"    
-                sudo apt install -y -f ./"${url##*/}" 2>/dev/null
-                if [[ $? -eq 0 ]]; then
-    	           loggingMeta
-    	           exit 0
-                else
-    	           fancy_message error "Failed to install the package"
-    	           exit 1
-                fi
+         sudo apt install -y -f ./"${url##*/}" 2>/dev/null
+        if [[ $? -eq 0 ]]; then
+    	    loggingMeta
+    	    exit 0
+        else
+    	    fancy_message error "Failed to install the package"
+    	    exit 1
+        fi
 		;;
 	*)
 		aria2
 		# I think you get it by now
 		hashcheck "${url##*/}"
-		sudo tar -xf "${url##*/}" 1>&1
-		cd $(/bin/ls -d -- */|head -n 1)
-		export srcdir="/tmp/pacstall/$(/bin/ls -d -- */|head -n 1)"
-		sudo chown -R "$(logname)":"$(logname)" .
+		sudo tar -xf "${url##*/}" 1>&1 2>/dev/null
+		cd */ 2>/dev/null
+		export srcdir="/tmp/pacstall/$PWD"
+		sudo chown -R "$(logname)":"$(logname)" . 2>/dev/null
 		;;
 esac
 
