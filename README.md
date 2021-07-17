@@ -44,9 +44,9 @@ sudo pacstall -S foo
 This will search for foo in repositories. Equivalent of apt search
 
 ```bash
-sudo pacstall -C
+sudo pacstall -A
 ```
-This will open a window where you can choose a repository
+Run this command with a github/gitlab url to add a repo
 
 ```bash
 sudo pacstall -U
