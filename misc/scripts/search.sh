@@ -83,7 +83,7 @@ function parseRepo() {
 #Check if there are results
 if [[ "$LEN" -eq 0 ]]; then
   fancy_message warn "There is no package with the name $IRed$SEARCH$NC"
-
+  exit 1
 # Check if it's upgrading packages
 elif [[ ! -z "$UPGRADE" ]]; then
   REPOS=()
