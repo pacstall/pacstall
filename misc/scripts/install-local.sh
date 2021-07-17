@@ -245,7 +245,7 @@ case "$url" in
         # git clone quietly, with no history, and if submodules are there, download with 10 jobs
           sudo git clone --quiet --depth=1 --jobs=10 "$url"
         # cd into the directory
-        cd */
+        cd ./*/
         # The srcdir is /tmp/pacstall/foo
         export srcdir="/tmp/pacstall/$PWD"
         # Make the directory available for users
@@ -260,7 +260,7 @@ case "$url" in
         # unzip file
         sudo unzip -q "${url##*/}" 1>&1 2>/dev/null
         # cd into it
-        cd */
+        cd ./*/
         # export srcdir
         export srcdir="/tmp/pacstall/$PWD"
         # Make the directory available for users
@@ -269,7 +269,7 @@ case "$url" in
     *.deb)
         aria2
         hashcheck "${url##*/}"    
-         sudo apt install -y -f ./"${url##*/}" 2>/dev/null
+        sudo apt install -y -f ./"${url##*/}" 2>/dev/null
         if [[ $? -eq 0 ]]; then
             loggingMeta
             exit 0
@@ -283,7 +283,7 @@ case "$url" in
         # I think you get it by now
         hashcheck "${url##*/}"
         sudo tar -xf "${url##*/}" 1>&1 2>/dev/null
-        cd */ 2>/dev/null
+        cd ./*/ 2>/dev/null
         export srcdir="/tmp/pacstall/$PWD"
         sudo chown -R "$(logname)":"$(logname)" . 2>/dev/null
         ;;
