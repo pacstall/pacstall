@@ -273,7 +273,7 @@ while [[ ! "$1" == "--" ]]; do
       PACKAGE="$2"
 
       if [[ -z "$PACKAGE" ]]; then
-        echo -e "1.5.1 ${BIPurple}Twilight${NC}"
+        echo -e "1.5.1 ${BIPurple}Moonlight${NC}"
         exit 0
 
       else
