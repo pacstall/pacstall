@@ -97,6 +97,7 @@ elif [[ -z "$PACKAGE" ]]; then
   for IDX in $IDXSEARCH ; do
     echo -e "$GREEN${PACKAGELIST[$IDX]}$CYAN @ $(parseRepo "${URLLIST[$IDX]}") $NC"
   done
+  exit 1
 else
   # Install
   # If there is only one result, proceed
