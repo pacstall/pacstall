@@ -244,11 +244,13 @@ while [[ ! "$1" == "--" ]]; do
 
     -S|--search)
       source "$STGDIR/scripts/search.sh"
+      exit 0
     ;;
 
     -R|--remove)
       PACKAGE=$2
       source "$STGDIR/scripts/remove.sh"
+      exit 0
     ;;
 
     -A|--add-repo)
@@ -262,6 +264,7 @@ while [[ ! "$1" == "--" ]]; do
         exit 0
       else
         fancy_message error "You failed to specify a repo to add"
+	exit 1
       fi
     ;;
 
@@ -287,6 +290,7 @@ while [[ ! "$1" == "--" ]]; do
       USERNAME="$2"
       BRANCH="$3"
       source "$STGDIR/scripts/update.sh"
+      exit 0
     ;;
 
     -L|--list)
@@ -318,6 +322,7 @@ while [[ ! "$1" == "--" ]]; do
     -Qi|--query-info)
       PACKAGE=$2
       source "$STGDIR/scripts/query-info.sh"
+      exit 0
     ;;
 
     -T|--tree)
@@ -329,6 +334,7 @@ while [[ ! "$1" == "--" ]]; do
       fi
 
       tree -C "$STOWDIR/$PACKAGE" | sed "s/\/usr\/src\/pacstall\/$PACKAGE/\//g"
+      exit 0
     ;;
 
     *)
