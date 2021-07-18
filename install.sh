@@ -96,7 +96,7 @@ sudo apt-get -qq update
 fancy_message info "Installing packages"
 sudo apt-get install -qq -y {curl,wget,stow,build-essential,unzip,tree,dialog}
 
-export STGDIR="${HOME}/.local/share/pacstall"
+export STGDIR="${LOGNAME}/.local/share/pacstall"
 fancy_message info "making directories"
 mkdir -p $STGDIR
 mkdir -p $STGDIR/scripts
