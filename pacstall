@@ -26,7 +26,7 @@
 export LC_ALL=C
 export LOGDIR="/var/log/pacstall"
 export SRCDIR="/tmp/pacstall"
-export STGDIR="${HOME}/.local/share/pacstall"
+export STGDIR="/usr/share/pacstall"
 export STOWDIR="/usr/src/pacstall"
 
 # Colors
@@ -264,6 +264,7 @@ while [[ ! "$1" == "--" ]]; do
         exit 0
       else
         fancy_message error "You failed to specify a repo to add"
+	exit 1
       fi
       exit 1
     ;;
@@ -289,6 +290,23 @@ while [[ ! "$1" == "--" ]]; do
     -U|--update)
       USERNAME="$2"
       BRANCH="$3"
+      # This stuff gives the ability for persistent updates
+      if [[ -z "$BRANCH" ]]; then
+        if [[ -f "$STGDIR/repo/update" ]]; then
+           BRANCH=$(sed 's/.*\ //' "$STGDIR/repo/update")
+        else 
+          BRANCH="master"
+        fi
+      fi
+      if [[ -z "$USERNAME" ]]; then
+        if [[ -f "$STGDIR/repo/update" ]]; then
+          USERNAME=$(sed 's/\s.*$//' "$STGDIR/repo/update")
+        else
+          USERNAME="pacstall"
+        fi
+      fi
+
+      sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/update.sh -P "$STGDIR/scripts" 2> /dev/null
       source "$STGDIR/scripts/update.sh"
       exit 0
     ;;
