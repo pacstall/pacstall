@@ -1,22 +1,5 @@
 #!/bin/bash
 
-# This stuff gives the ability for persistent updates
-if [[ -z "$BRANCH" ]]; then
-  if [[ -f "$STGDIR/repo/update" ]]; then
-     BRANCH=$(sed 's/.*\ //' "$STGDIR/repo/update")
-  else 
-    BRANCH="master"
-  fi
-fi
-
-if [[ -z "$USERNAME" ]]; then
-  if [[ -f "$STGDIR/repo/update" ]]; then
-     USERNAME=$(sed 's/\s.*$//' "$STGDIR/repo/update")
-  else
-     USERNAME="pacstall"
-  fi
-fi
-
 if ask "Are you sure you want to update pacstall?" Y; then
   for i in {add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}}; do
     sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/"$i" -P "$STGDIR/scripts" 2> /dev/null 
