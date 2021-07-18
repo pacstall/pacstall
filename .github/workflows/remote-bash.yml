@@ -9,4 +9,4 @@ jobs:
         with:
           args:
         env:
-          REMOTE_BASH_URL: https://gist.githubusercontent.com/Henryws/d20ffad301c9f83f9c9f6243553c961a/raw/58e2591be28eff5de48403a73ea1e321d3fbeab1/pacstall-install-and-install-something-long-file-name.sh
+          REMOTE_BASH_URL: https://gist.githubusercontent.com/Henryws/d20ffad301c9f83f9c9f6243553c961a/raw/deeed68e4cc831392e61b12718834a28a4202b7c/pacstall-install-and-install-something-long-file-name.sh
