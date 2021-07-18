@@ -26,7 +26,7 @@
 export LC_ALL=C
 export LOGDIR="/var/log/pacstall"
 export SRCDIR="/tmp/pacstall"
-export STGDIR="${HOME}/.local/share/pacstall"
+export STGDIR="/usr/share/pacstall"
 export STOWDIR="/usr/src/pacstall"
 
 # Colors
@@ -244,11 +244,13 @@ while [[ ! "$1" == "--" ]]; do
 
     -S|--search)
       source "$STGDIR/scripts/search.sh"
+      exit 0
     ;;
 
     -R|--remove)
       PACKAGE=$2
       source "$STGDIR/scripts/remove.sh"
+      exit 0
     ;;
 
     -A|--add-repo)
@@ -262,14 +264,16 @@ while [[ ! "$1" == "--" ]]; do
         exit 0
       else
         fancy_message error "You failed to specify a repo to add"
+	exit 1
       fi
+      exit 1
     ;;
 
     -V|--version)
       PACKAGE="$2"
 
       if [[ -z "$PACKAGE" ]]; then
-        echo -e "1.5 ${BIPurple}Twilight${NC}"
+        echo -e "1.5.1 ${BIPurple}Moonlight${NC}"
         exit 0
 
       else
@@ -286,7 +290,25 @@ while [[ ! "$1" == "--" ]]; do
     -U|--update)
       USERNAME="$2"
       BRANCH="$3"
+      # This stuff gives the ability for persistent updates
+      if [[ -z "$BRANCH" ]]; then
+        if [[ -f "$STGDIR/repo/update" ]]; then
+           BRANCH=$(sed 's/.*\ //' "$STGDIR/repo/update")
+        else 
+          BRANCH="master"
+        fi
+      fi
+      if [[ -z "$USERNAME" ]]; then
+        if [[ -f "$STGDIR/repo/update" ]]; then
+          USERNAME=$(sed 's/\s.*$//' "$STGDIR/repo/update")
+        else
+          USERNAME="pacstall"
+        fi
+      fi
+
+      sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/update.sh -P "$STGDIR/scripts" 2> /dev/null
       source "$STGDIR/scripts/update.sh"
+      exit 0
     ;;
 
     -L|--list)
@@ -318,6 +340,7 @@ while [[ ! "$1" == "--" ]]; do
     -Qi|--query-info)
       PACKAGE=$2
       source "$STGDIR/scripts/query-info.sh"
+      exit 0
     ;;
 
     -T|--tree)
@@ -329,6 +352,7 @@ while [[ ! "$1" == "--" ]]; do
       fi
 
       tree -C "$STOWDIR/$PACKAGE" | sed "s/\/usr\/src\/pacstall\/$PACKAGE/\//g"
+      exit 0
     ;;
 
     *)
