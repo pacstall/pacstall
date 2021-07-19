@@ -94,7 +94,7 @@ fancy_message info "Updating"
 sudo apt-get -qq update
 
 fancy_message info "Installing packages"
-sudo apt-get install -qq -y {curl,wget,stow,build-essential,unzip,tree,dialog}
+sudo apt-get install -qq -y {curl,wget,stow,build-essential,unzip,tree,dialog,bc}
 
 
 export STGDIR="/usr/share/pacstall"
