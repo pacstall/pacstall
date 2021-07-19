@@ -23,57 +23,57 @@
 
 _pacstall()
 {
-    cur=${COMP_WORDS[COMP_CWORD]}
-    prev=${COMP_WORDS[COMP_CWORD-1]}
+	cur=${COMP_WORDS[COMP_CWORD]}
+	prev=${COMP_WORDS[COMP_CWORD-1]}
 
-    case "$prev" in
-        -'?'|--help|-v|--version)
-            return
-            ;;
+	case "$prev" in
+		-'?'|--help|-v|--version)
+			return
+		;;
 
-        -S|--search)
-	    COMPREPLY=( $( compgen -W "$(curl -s "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packagelist")" -- "$cur" ) )
-            return
-            ;;
+		-S|--search)
+			COMPREPLY=( $( compgen -W "$(curl -s "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packagelist")" -- "$cur" ) )
+			return
+		;;
 
-        -I|--install)
- 	    COMPREPLY=( $( compgen -W "$(curl -s "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packagelist")" -- "$cur" ) )
-            return
-            ;;
+		-I|--install)
+			COMPREPLY=( $( compgen -W "$(curl -s "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packagelist")" -- "$cur" ) )
+			return
+		;;
 
-        -R|--remove)
-	    COMPREPLY=( $( compgen -W "$(/bin/ls -1aA /usr/src/pacstall)" -- $cur ) )
-            return
-            ;;
+		-R|--remove)
+			COMPREPLY=( $( compgen -W "$(/bin/ls -1aA /usr/src/pacstall)" -- $cur ) )
+			return
+		;;
 
-        -Qd|--query-depends)
-             COMPREPLY=( $( compgen -W "$(curl -s "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packagelist")" -- $cur ) )
-            return
-            ;;
+		-Qd|--query-depends)
+			COMPREPLY=( $( compgen -W "$(curl -s "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packagelist")" -- $cur ) )
+			return
+		;;
 
-	    -Qi|--query-info)
-	         COMPREPLY=( $( compgen -W "$(/bin/ls -1aA /var/log/pacstall/)" -- $cur ) )
-	        return
-	        ;;
-        -Il|--install-local)
-             COMPREPLY=( $( compgen -W "$(find -- *.pacscript* | sed 's/.pacscript//g')" -- "$cur" ) )
-            return
-            ;;
+		-Qi|--query-info)
+			COMPREPLY=( $( compgen -W "$(/bin/ls -1aA /var/log/pacstall/)" -- $cur ) )
+			return
+		;;
+		-Il|--install-local)
+			COMPREPLY=( $( compgen -W "$(find -- *.pacscript* | sed 's/.pacscript//g')" -- "$cur" ) )
+			return
+		;;
 
-        -D|--download)
-             COMPREPLY=( $( compgen -W "$(curl -s "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packagelist")" -- "$cur" ) )
-             return
-    esac
+		-D|--download)
+			COMPREPLY=( $( compgen -W "$(curl -s "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packagelist")" -- "$cur" ) )
+			return
+	esac
 
-    case "$cur" in
-        -*)
-         COMPREPLY=( $( compgen -W '$( _parse_help "$1" )' -- "$cur" ) )
-         return
-         ;;
-    *)
-         COMPREPLY=( $( compgen -W "-I -S -R -C -U -V -L -Up -Qd -Qi" "$cur" ) )
-         return
-         ;;
-    esac
-} &&
-complete -o filenames -o bashdefault -F _pacstall pacstall
+	case "$cur" in
+		-*)
+			COMPREPLY=( $( compgen -W '$( _parse_help "$1" )' -- "$cur" ) )
+			return
+		;;
+		*)
+			COMPREPLY=( $( compgen -W "-I -S -R -C -U -V -L -Up -Qd -Qi" "$cur" ) )
+			return
+		;;
+	esac
+} && complete -o filenames -o bashdefault -F _pacstall pacstall
+# vim:set ft=sh ts=4 sw=4 noet:
