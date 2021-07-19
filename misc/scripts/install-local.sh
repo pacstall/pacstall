@@ -92,9 +92,13 @@ function loggingMeta() {
 
 
 function aria2 {
+Parallel=$nproc + 5
+if [[ -f "$HOME/.config/pacstall/pacstall.cfg ]]
+  source "$HOME/.config/pacstall/pacstall.cfg
+fi
 fancy_message info "Downloading the package"
 if which aria2c >/dev/null; then
-aria2c --download-result=hide -q -o "${url##*/}" "$url"
+aria2c --download-result=hide -q -o -x "$Parallel" "${url##*/}" "$url"
 else
 sudo wget -q --show-progress --progress=bar:force "$url" 2>&1
 fi
