@@ -92,7 +92,7 @@ function loggingMeta() {
 
 
 function aria2 {
-Parallel=$nproc + 5
+Parallel=$(($nproc + 5))
 if [[ -f "$STGDIR/repo/pacstallrepo.txt" ]]; then
   source "$STGDIR/repo/pacstallrepo.txt"
 fi
