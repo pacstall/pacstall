@@ -93,8 +93,8 @@ function loggingMeta() {
 
 function aria2 {
 Parallel=$nproc + 5
-if [[ -f "$HOME/.config/pacstall/pacstall.cfg" ]]
-  source "$HOME/.config/pacstall/pacstall.cfg"
+if [[ -f "$STGDIR/repo/pacstallrepo.txt" ]]; then
+  source "$STGDIR/repo/pacstallrepo.txt"
 fi
 fancy_message info "Downloading the package"
 if which aria2c >/dev/null; then
