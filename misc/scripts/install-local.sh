@@ -94,7 +94,7 @@ function loggingMeta() {
 function download {
 	fancy_message info "Downloading the package"
 	if command -v axel > /dev/null; then
-		axel -n $(($(nproc) + 5)) -a "$url"
+		axel -n $(($(nproc) + 5)) -ao "${url##*/}" "$url"
 	else
 		sudo wget -q --show-progress --progress=bar:force "$url" 2>&1
 	fi
