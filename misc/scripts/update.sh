@@ -1,5 +1,7 @@
 #!/bin/bash
-if ask "Are you sure you want to update pacstall?" N; then
+
+ask "Are you sure you want to update pacstall?" N
+if [[ $answer -eq 0 ]]; then
 	exit 1;
 fi
 
