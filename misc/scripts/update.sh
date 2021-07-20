@@ -5,7 +5,8 @@
 
 echo -ne "Are you sure you want to update pacstall? ${GREEN}y${NC}/${BIRed}N${NC}"
 read -r reply < /dev/tty
-if case $reply in N*|n*) ;; *) false;; esac; then
+
+if [[ -z $reply ]] || [[ $reply == "N"* ]] || [[ $reply == "n"* ]]; then
     exit 1
 fi
 
