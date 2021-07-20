@@ -94,7 +94,7 @@ elif [[ -z "$PACKAGE" ]]; then
 	for IDX in $IDXSEARCH ; do
 		echo -e "$GREEN${PACKAGELIST[$IDX]}$CYAN @ $(parseRepo "${URLLIST[$IDX]}") $NC"
 	done
-	exit 1
+	exit 0
 else
 	# Install
 	# If there is only one result, proceed
@@ -103,9 +103,10 @@ else
 		export REPO=${URLLIST[$IDXSEARCH]}
 		# If there are multiple results, ask
 	else
-		echo -e "There are $LEN package(s) with the name $GREEN$SEARCH$NC." 
-
-		if ask "Do you want to continue?" Y; then
+		echo -e "There are $LEN package(s) with the name $GREEN$SEARCH$NC."
+		
+		ask "Do you want to continue?" Y
+		if [[ $answer -eq 1 ]]; then
 			# Pacstall repo first
 			for IDX in $IDXSEARCH ; do
 				if [[ "${URLLIST[$IDX]}" == 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' ]]; then
@@ -114,7 +115,8 @@ else
 				fi
 			done
 			if [[ -n "$PACSTALLREPO" ]]; then
-				if ask "\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo "${URLLIST[$IDX]}")$NC?" Y;then
+				ask "\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo "${URLLIST[$IDX]}")$NC?" Y
+				if [[ $answer -eq 1 ]];then
 					export PACKAGE=${PACKAGELIST[$PACSTALLREPO]}
 					export REPO=${URLLIST[$PACSTALLREPO]}
 					DEFAULT='yes'
@@ -128,7 +130,8 @@ else
 						continue
 					fi
 					# Overwrite last question
-					if ask "\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo "${URLLIST[$IDX]}")$NC?" Y;then
+					ask "\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo "${URLLIST[$IDX]}")$NC?" Y
+					if [[ $answer -eq 1 ]];then
 						export PACKAGE=${PACKAGELIST[$IDX]}
 						export REPO=${URLLIST[$IDX]}
 						break

@@ -105,13 +105,15 @@ export On_IPurple='\033[0;105m'  # Purple
 export On_ICyan='\033[0;106m'    # Cyan
 export On_IWhite='\033[0;107m'   # White
 
-# This is the ask function. You can source this code block and then run something like
-# if ask "Do you like the color blue? " Y; then
+# This is the ask function. You can source this code block and then run something like:
+# ask "Do you like the color blue? " Y
+# if [[ $answer -eq 1 ]]; then
 #   echo "You like blue"
 # else
 #   echo "You don't like blue"
 # fi
 #
+# Y=1 and N=0
 # You can specify {Y,N} or leave it out to prevent entering the default but this is not allowed in pacstall because of the -P flag which gives unattended installs
 function ask() {
 	local prompt default reply
@@ -125,33 +127,48 @@ function ask() {
 	else
 		prompt="${GREEN}y${NC}/${RED}n${NC}"
 	fi
+	
+	# Ask the question (not using "read -p" as it uses stderr not stdout)
+	echo -ne "$1 [$prompt] "
+
+	# Read the answer (use /dev/tty in case stdin is redirected from somewhere else)
+	if [[ -z "$DISABLE_PROMPTS" ]]; then
+		read -r reply < /dev/tty
+	else
+		echo "$default"
+		reply=$default
+	fi
+
+	# Default?
+	if [[ -z $reply ]]; then
+		reply=$default
+	fi
 
 	while true; do
-		# Ask the question (not using "read -p" as it uses stderr not stdout)
-		echo -ne "$1 [$prompt] "
-
-		# Read the answer (use /dev/tty in case stdin is redirected from somewhere else)
-		if [[ -z "$DISABLE_PROMPTS" ]]; then
-			read -r reply < /dev/tty
-		else
-			echo "$default"
-			reply=$default
-		fi
-
-		# Default?
-		if [[ -z $reply ]]; then
-			reply=$default
-		fi
-
 		# Check if the reply is valid
 		case "$reply" in
-			Y*|y*) return 0 ;;
-			N*|n*) return 1 ;;
+			Y*|y*)
+				export answer=1
+				return 0	#return code for backwards compatibility
+				break
+			;;
+			N*|n*)
+				export answer=0
+				return 1	#return code
+				break
+			;;
+			*)
+				echo -ne "$1 [$prompt] "
+				read -r reply < /dev/tty
+			;;	
 		esac
 	done
 }
 
-# fancy_message allows visually appealing output. Source the code block and run `fancy_message {info,warn,error} "What you want to say"`
+# fancy_message allows visually appealing output.
+# Source the code block and run:
+#
+# `fancy_message {info,warn,error} "What you want to say"`
 function fancy_message() {
 	local MESSAGE_TYPE="${1}"
 	local MESSAGE="${2}"
@@ -164,202 +181,205 @@ function fancy_message() {
 	esac
 }
 
-# run sudo apt update if it's been more than a week
-[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && sudo apt-get update -qq
+if [[ -n $update ]]; then 
+	# run sudo apt update if it's been more than a week
+	[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && sudo apt-get update -qq
 
-while [[ ! "$1" == "--" ]]; do
-	case "$1" in
-		-P|--disable-prompts)
-			fancy_message warn "Prompts are disabled"
-			DISABLE_PROMPTS=yes
-		;;
+	while [[ ! "$1" == "--" ]]; do
+		case "$1" in
+			-P|--disable-prompts)
+				fancy_message warn "Prompts are disabled"
+				DISABLE_PROMPTS=yes
+			;;
 
-		-h|--help)
-			echo " 
-			options:
-			-I --install, Installs package
-			-Il --install-local, Installs a local package
-			-S --search, Search for package
-			-R --remove, Removes package
-			-D --download, Downloads script
-			-A --add-repo, Adds repo to your repo list
-			-U --update, Update script
-			-V --version, Prints pacstall version
-			-L --list, Lists installed packages
-			-Up --upgrade, Upgrades packages
-			-Qi --query-info, Get package info
-			"
-			exit 0
-		;;
-
-		-I|--install)
-			function trap_ctrlc () {
-				fancy_message warn "The installation of $2 was interrupted, removing files"
-				rm -rf "${SRCDIR:?}"/* # :? makes bash error out in case SRCDIR is empty, saving us from yoinking /* directory by mistake
-				exit 2
-			}
-			# Begin trapping
-			trap "trap_ctrlc" 2
-
-			export PACKAGE=$2
-			if [[ -z "$PACKAGE" ]]; then
-				fancy_message error "You failed to specify a package"
-				exit 1
-			fi
-
-	  		# Make the directory if not exist
-	  		if [[ ! -e "$STGDIR/repo/" ]]; then
-				sudo mkdir -p "$STGDIR/repo"
-				sudo touch "$STGDIR/repo/pacstallrepo.txt"
-				sudo pacstall -C
-			fi
-
-			export type="install"
-	  		export local="no"
-	  		source "$STGDIR/scripts/search.sh"
-
-	  		URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
-	  		source "$STGDIR/scripts/download.sh"
-	  		export REPO
-	  		source "$STGDIR/scripts/install-local.sh"
-	  		exit 0
-	  	;;
-
-		-Il|--install-local)
-			REPO="local"
-			INPUT="$(echo "$2" | sed 's/\..*$//')" # Removes the .pacscript suffix
-			export local="yes"
-			# Check if the file exist (both .pacscript and without)
-			if [[ ! -f "$2".pacscript && ! -f "$INPUT" ]]; then
-				fancy_message error "$2 does not exist"
-				exit 1
-			fi
-
-			cd "$(dirname "$INPUT")" || (fancy_message error "The directory does not exist"; exit 1)
-			export PACKAGE="$(basename "$INPUT")"
-
-			source "$STGDIR/scripts/install-local.sh"
-			exit 0
-		;;
-
-		-S|--search)
-			source "$STGDIR/scripts/search.sh"
-			exit 0
-		;;
-
-		-R|--remove)
-			PACKAGE=$2
-			source "$STGDIR/scripts/remove.sh"
-			exit 0
-		;;
-
-		-A|--add-repo)
-			REPO="$2"
-
-			if [ ! -f "$STGDIR/repo/pacstallrepo.txt" ]; then
-				echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > "$STGDIR/repo/pacstallrepo.txt"
-			fi
-
-			if [ ! -z $REPO ]; then
-				source "$STGDIR/scripts/add-repo.sh"
+			-h|--help)
+				echo " 
+				options:
+				-I --install, Installs package
+				-Il --install-local, Installs a local package
+				-S --search, Search for package
+				-R --remove, Removes package
+				-D --download, Downloads script
+				-A --add-repo, Adds repo to your repo list
+				-U --update, Update script
+				-V --version, Prints pacstall version
+				-L --list, Lists installed packages
+				-Up --upgrade, Upgrades packages
+				-Qi --query-info, Get package info
+				"
 				exit 0
-			else
-				fancy_message error "You failed to specify a repo to add"
-				exit 1
-			fi
-		;;
+			;;
 
-		-V|--version)
-			PACKAGE="$2"
+			-I|--install)
+				function trap_ctrlc () {
+					fancy_message warn "The installation of $2 was interrupted, removing files"
+					rm -rf "${SRCDIR:?}"/* # :? makes bash error out in case SRCDIR is empty, saving us from yoinking /* directory by mistake
+					exit 2
+				}
+				# Begin trapping
+				trap "trap_ctrlc" 2
 
-			if [[ -z "$PACKAGE" ]]; then
-				echo -e "1.5.1 ${BIPurple}Moonlight${NC}"
-				exit 0
-			else
-				# If pacstall -V was called with an argument, it's a package, so get the package version (usful for scripting)
-				if pacstall -Qi "$PACKAGE" | grep 'version' | cut -d ":" -f2 | sed 's/ //g'; then
-					exit 0
-				else
-					fancy_message error "$PACKAGE doesn't exist"
+				export PACKAGE=$2
+				if [[ -z "$PACKAGE" ]]; then
+					fancy_message error "You failed to specify a package"
 					exit 1
 				fi
-			fi
-		;;
 
-		-U|--update)
-			USERNAME="$2"
-			BRANCH="$3"
-			# This stuff gives the ability for persistent updates
-			if [[ -z "$BRANCH" ]]; then
-				if [[ -f "$STGDIR/repo/update" ]]; then
-					BRANCH=$(sed 's/.*\ //' "$STGDIR/repo/update")
-				else 
-					BRANCH="master"
+		  		# Make the directory if not exist
+		  		if [[ ! -e "$STGDIR/repo/" ]]; then
+					sudo mkdir -p "$STGDIR/repo"
+					sudo touch "$STGDIR/repo/pacstallrepo.txt"
+					sudo pacstall -C
 				fi
-			fi
-			if [[ -z "$USERNAME" ]]; then
-				if [[ -f "$STGDIR/repo/update" ]]; then
-					USERNAME=$(sed 's/\s.*$//' "$STGDIR/repo/update")
+
+				export type="install"
+		  		export local="no"
+		  		source "$STGDIR/scripts/search.sh"
+
+		  		URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
+		  		source "$STGDIR/scripts/download.sh"
+		  		export REPO
+		  		source "$STGDIR/scripts/install-local.sh"
+		  		exit 0
+		  	;;
+
+			-Il|--install-local)
+				REPO="local"
+				INPUT="$(echo "$2" | sed 's/\..*$//')" # Removes the .pacscript suffix
+				export local="yes"
+				# Check if the file exist (both .pacscript and without)
+				if [[ ! -f "$2".pacscript && ! -f "$INPUT" ]]; then
+					fancy_message error "$2 does not exist"
+					exit 1
+				fi
+
+				cd "$(dirname "$INPUT")" || (fancy_message error "The directory does not exist"; exit 1)
+				export PACKAGE="$(basename "$INPUT")"
+
+				source "$STGDIR/scripts/install-local.sh"
+				exit 0
+			;;
+
+			-S|--search)
+				source "$STGDIR/scripts/search.sh"
+				exit 0
+			;;
+
+			-R|--remove)
+				PACKAGE=$2
+				source "$STGDIR/scripts/remove.sh"
+				exit 0
+			;;
+
+			-A|--add-repo)
+				REPO="$2"
+
+				if [ ! -f "$STGDIR/repo/pacstallrepo.txt" ]; then
+					echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > "$STGDIR/repo/pacstallrepo.txt"
+				fi
+
+				if [ ! -z $REPO ]; then
+					source "$STGDIR/scripts/add-repo.sh"
+					exit 0
 				else
-					USERNAME="pacstall"
+					fancy_message error "You failed to specify a repo to add"
+					exit 1
 				fi
-			fi
+			;;
 
-			sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/update.sh -P "$STGDIR/scripts" 2> /dev/null
-			source "$STGDIR/scripts/update.sh"
-			exit 0
-		;;
+			-V|--version)
+				PACKAGE="$2"
 
-		-L|--list)
-			/bin/ls -1aA "$STOWDIR"
-			exit 0
-		;;
+				if [[ -z "$PACKAGE" ]]; then
+					echo -e "1.5.1 ${BIPurple}Moonlight${NC}"
+					exit 0
+				else
+					# If pacstall -V was called with an argument, it's a package, so get the package version (usful for scripting)
+					if pacstall -Qi "$PACKAGE" | grep 'version' | cut -d ":" -f2 | sed 's/ //g'; then
+						exit 0
+					else
+						fancy_message error "$PACKAGE doesn't exist"
+						exit 1
+					fi
+				fi
+			;;
 
-		-D|--download)
-			PACKAGE=$2
+			-U|--update)
+				export update="yes"
+				USERNAME="$2"
+				BRANCH="$3"
+				# This stuff gives the ability for persistent updates
+				if [[ -z "$BRANCH" ]]; then
+					if [[ -f "$STGDIR/repo/update" ]]; then
+						BRANCH=$(sed 's/.*\ //' "$STGDIR/repo/update")
+					else 
+						BRANCH="master"
+					fi
+				fi
+				if [[ -z "$USERNAME" ]]; then
+					if [[ -f "$STGDIR/repo/update" ]]; then
+						USERNAME=$(sed 's/\s.*$//' "$STGDIR/repo/update")
+					else
+						USERNAME="pacstall"
+					fi
+				fi
 
-			if [[ -z "$PACKAGE" ]]; then
-				fancy_message error "You failed to specify a package"
-				exit 1
-			fi
+				sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/update.sh -P "$STGDIR/scripts" 2> /dev/null
+				source "$STGDIR/scripts/update.sh"
+				exit 0
+			;;
 
-			export type="download"
-			source "$STGDIR/scripts/search.sh"
-			export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
-			source "$STGDIR/scripts/download.sh"
-			fancy_message info "$PACKAGE's pacscript is downloaded in ${GREEN}$HOMEDIR/.cache/pacstall/$PACKAGE${NC}"
-			exit 0
-		;;
+			-L|--list)
+				/bin/ls -1aA "$STOWDIR"
+				exit 0
+			;;
 
-		-Up|--upgrade)
-			source "$STGDIR/scripts/upgrade.sh"
-			exit 0
-		;;
+			-D|--download)
+				PACKAGE=$2
 
-		-Qi|--query-info)
-			PACKAGE=$2
-			source "$STGDIR/scripts/query-info.sh"
-			exit 0
-		;;
+				if [[ -z "$PACKAGE" ]]; then
+					fancy_message error "You failed to specify a package"
+					exit 1
+				fi
 
-		-T|--tree)
-			PACKAGE="$2"
+				export type="download"
+				source "$STGDIR/scripts/search.sh"
+				export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
+				source "$STGDIR/scripts/download.sh"
+				fancy_message info "$PACKAGE's pacscript is downloaded in ${GREEN}$HOMEDIR/.cache/pacstall/$PACKAGE${NC}"
+				exit 0
+			;;
 
-			if [[ ! -d "$STOWDIR/$PACKAGE" ]]; then
-				fancy_message error "$PACKAGE does not exist"
-				exit 1
-			fi
+			-Up|--upgrade)
+				source "$STGDIR/scripts/upgrade.sh"
+				exit 0
+			;;
 
-			tree -C "$STOWDIR/$PACKAGE" | sed "s/\/usr\/src\/pacstall\/$PACKAGE/\//g"
-			exit 0
-		;;
+			-Qi|--query-info)
+				PACKAGE=$2
+				source "$STGDIR/scripts/query-info.sh"
+				exit 0
+			;;
 
-		*)
-			pacstall -h
-			exit 3
-		;;
-	esac
-	shift
-done
-if [[ "$1" == '--' ]]; then shift; fi
+			-T|--tree)
+				PACKAGE="$2"
+
+				if [[ ! -d "$STOWDIR/$PACKAGE" ]]; then
+					fancy_message error "$PACKAGE does not exist"
+					exit 1
+				fi
+
+				tree -C "$STOWDIR/$PACKAGE" | sed "s/\/usr\/src\/pacstall\/$PACKAGE/\//g"
+				exit 0
+			;;
+
+			*)
+				pacstall -h
+				exit 3
+			;;
+		esac
+		shift
+	done
+	if [[ "$1" == '--' ]]; then shift; fi
+fi
 # vim:set ft=sh ts=4 sw=4 noet:
