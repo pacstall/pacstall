@@ -61,5 +61,5 @@ while IFS= read -r REPOURL; do
 done < "$STGDIR/repo/pacstallrepo.txt"
 REPOLIST+=($REPO)
 
-echo "${REPOLIST[@]}"|tr -s ' ' '\n'| sort -u > "$STGDIR/repo/pacstallrepo.txt"
+echo "${REPOLIST[@]}"|tr -s ' ' '\n'| sort -u | sudo tee "$STGDIR/repo/pacstallrepo.txt" > /dev/null
 # vim:set ft=sh ts=4 sw=4 noet:
