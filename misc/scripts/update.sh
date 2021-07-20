@@ -3,7 +3,7 @@
 # Update should be self-contained and should use mutable functions or variables
 # Color variables are ok, while "$USERNAME" and "$BRANCH" are needed
 
-echo -ne "Are you sure you want to update pacstall? ${GREEN}y${NC}/${BIRed}N${NC}"
+echo -ne "Are you sure you want to update pacstall? [${GREEN}y${NC}/${BIRed}N${NC}] "
 read -r reply < /dev/tty
 
 if [[ -z $reply ]] || [[ $reply == "N"* ]] || [[ $reply == "n"* ]]; then
