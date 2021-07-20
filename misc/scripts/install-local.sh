@@ -91,10 +91,10 @@ function loggingMeta() {
 
 
 
-function aria2 {
+function download {
 	fancy_message info "Downloading the package"
-	if command -v aria2c >/dev/null; then
-		aria2c --download-result=hide -q -o "${url##*/}" "$url"
+	if command -v axel > /dev/null; then
+		axel -n $(($(nproc) + 5)) -a "$url"
 	else
 		sudo wget -q --show-progress --progress=bar:force "$url" 2>&1
 	fi
@@ -251,7 +251,7 @@ case "$url" in
 		git fsck --full
 	;;
 	*.zip)
-		aria2
+		download
 		# hash the file
 		hashcheck "${url##*/}"
 		# unzip file
@@ -264,7 +264,7 @@ case "$url" in
 		sudo chown -R "$(logname)":"$(logname)" . 2>/dev/null
 	;;
 	*.deb)
-		aria2
+		download
 		hashcheck "${url##*/}"    
 		sudo apt install -y -f ./"${url##*/}" 2>/dev/null
 		if [[ $? -eq 0 ]]; then
@@ -276,7 +276,7 @@ case "$url" in
 		fi
 	;;
 	*)
-		aria2
+		download
 		# I think you get it by now
 		hashcheck "${url##*/}"
 		sudo tar -xf "${url##*/}" 1>&1 2>/dev/null
