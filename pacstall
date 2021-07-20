@@ -144,10 +144,18 @@ function ask() {
     fi
 
     # Check if the reply is valid
+    
+  if [[ ${2:-} = 'Y' ]]; then
     case "$reply" in
       Y*|y*) return 0 ;;
       N*|n*) return 1 ;;
     esac
+  elif [[ ${2:-} = 'N' ]]; then
+    case "$reply" in
+      Y*|y*) return 1 ;;
+      N*|n*) return 0 ;;
+    esac
+  fi
   done
 }
 
