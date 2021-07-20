@@ -1,11 +1,16 @@
 #!/bin/bash
 
+sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/scripts/functions.sh -P /tmp 2> /dev/null
+if [[ -f /tmp/functions.sh ]]; then
+	source /tmp/functions.sh
+fi
+
 ask "Are you sure you want to update pacstall?" N
 if [[ $answer -eq 0 ]]; then
 	exit 1;
 fi
 
-for i in {add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}}; do
+for i in {add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh,functions.sh}}; do
 	sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/"$i" -P "$STGDIR/scripts" 2> /dev/null 
 done
 
