@@ -1,10 +1,10 @@
 #!/bin/bash
 
-#     ____                  __        ____
+#     ____	            __	      ____
 #    / __ \____ ___________/ /_____ _/ / /
 #   / /_/ / __ `/ ___/ ___/ __/ __ `/ / /
 #  / ____/ /_/ / /__(__  ) /_/ /_/ / / /
-# /_/    \__,_/\___/____/\__/\__,_/_/_/
+# /_/	 \__,_/\___/____/\__/\__,_/_/_/
 #
 # Copyright (C) 2020-2021
 #
@@ -23,42 +23,42 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 function fancy_message() {
-  # $1 = type , $2 = message
-  # Message types
-  # 0 - info
-  # 1 - warning
-  # 2 - error
-  if [ -z "${1}" ] || [ -z "${2}" ]; then
-    return
-  fi
+	# $1 = type , $2 = message
+	# Message types
+	# 0 - info
+	# 1 - warning
+	# 2 - error
+	if [ -z "${1}" ] || [ -z "${2}" ]; then
+		return
+	fi
 
-  local RED="\e[31m"
-  local GREEN="\e[32m"
-  local YELLOW="\e[33m"
-  local RESET="\e[0m"
-  local MESSAGE_TYPE=""
-  local MESSAGE=""
-  MESSAGE_TYPE="${1}"
-  MESSAGE="${2}"
+	local RED="\e[31m"
+	local GREEN="\e[32m"
+	local YELLOW="\e[33m"
+	local RESET="\e[0m"
+	local MESSAGE_TYPE=""
+	local MESSAGE=""
+	MESSAGE_TYPE="${1}"
+	MESSAGE="${2}"
 
-  case ${MESSAGE_TYPE} in
-    info) echo -e "[${GREEN}+${RESET}] INFO: ${MESSAGE}";;
-    warn) echo -e "[${YELLOW}*${RESET}] WARNING: ${MESSAGE}";;
-    error) echo -e "[${RED}!${RESET}] ERROR: ${MESSAGE}";;
-    *) echo -e "[?] UNKNOWN: ${MESSAGE}";;
-  esac
+	case ${MESSAGE_TYPE} in
+		info) echo -e "[${GREEN}+${RESET}] INFO: ${MESSAGE}";;
+		warn) echo -e "[${YELLOW}*${RESET}] WARNING: ${MESSAGE}";;
+		error) echo -e "[${RED}!${RESET}] ERROR: ${MESSAGE}";;
+		*) echo -e "[?] UNKNOWN: ${MESSAGE}";;
+	esac
 }
 
 function banner() {
-echo -e "|------------------------|"
-echo -e "|---${GREEN}Pacstall Installer${NC}---|"
-echo -e "|------------------------|"
-echo " "
+	echo -e "|------------------------|"
+	echo -e "|---${GREEN}Pacstall Installer${NC}---|"
+	echo -e "|------------------------|"
+	echo " "
 }
 
 if ! command -v apt &> /dev/null; then
-    fancy_message error "apt could not be found"
-    exit 1
+	fancy_message error "apt could not be found"
+	exit 1
 fi
 # Install wget and sudo (probably already installed but this is important for the tester)
 apt-get install -y -qq sudo wget
@@ -81,12 +81,12 @@ sp="/-\|"
 printf ' '
 while [ -d /proc/$PID ]
 do
-  sleep 0.1
-  printf "\b${sp:i++%${#sp}:1}"
+	sleep 0.1
+	printf "\b${sp:i++%${#sp}:1}"
 done
 if [[ $? -eq 1 ]] ; then
-  fancy_message warn "You seem to be offline"
-  exit 1
+	fancy_message warn "You seem to be offline"
+	exit 1
 fi
 
 echo ""
@@ -110,8 +110,8 @@ touch $STGDIR/repo/pacstallrepo.txt
 echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > $STGDIR/repo/pacstallrepo.txt
 fancy_message info "Pulling scripts from GitHub "
 for i in {add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do 
-  wget -q --show-progress -N https://raw.githubusercontent.com/pacstall/pacstall/master/misc/scripts/"$i" -P $STGDIR/scripts
-  chmod +x $STGDIR/scripts/*
+	wget -q --show-progress -N https://raw.githubusercontent.com/pacstall/pacstall/master/misc/scripts/"$i" -P $STGDIR/scripts
+	chmod +x $STGDIR/scripts/*
 done &
 PID=$!
 i=1
@@ -119,8 +119,8 @@ sp="/-\|"
 echo -n ' '
 while [ -d /proc/$PID ]
 do
-  sleep 0.1
-  printf "\b${sp:i++%${#sp}:1}"
+	sleep 0.1
+	printf "\b${sp:i++%${#sp}:1}"
 done
 echo ""
 
@@ -136,5 +136,6 @@ sudo mkdir -p /usr/share/bash-completion/completions
 sudo wget -q --show-progress --progress=bar:force -O /usr/share/bash-completion/completions/pacstall https://raw.githubusercontent.com/pacstall/pacstall/master/misc/completion/bash
 
 if command -v fish &>/dev/null; then
-  sudo wget -q --show-progress --progress=bar:force -O /usr/share/fish/vendor_completions.d/pacstall.fish https://raw.githubusercontent.com/pacstall/pacstall/master/misc/completion/fish
+	sudo wget -q --show-progress --progress=bar:force -O /usr/share/fish/vendor_completions.d/pacstall.fish https://raw.githubusercontent.com/pacstall/pacstall/master/misc/completion/fish
 fi
+# vim:set ft=sh ts=4 sw=4 noet:
