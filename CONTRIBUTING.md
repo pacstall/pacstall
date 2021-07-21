@@ -99,7 +99,7 @@ echo "$var"
 
 #### Shebang
 Always place the shebang at the start of the files.
-`#!/bin/env bash`
+`#!/bin/bash`
 
 #### GPL boilerplate
 Paste this boilerplate in the beginning of every file.
