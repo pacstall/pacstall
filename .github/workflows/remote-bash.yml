@@ -9,4 +9,4 @@ jobs:
         with:
           args:
         env:
-          REMOTE_BASH_URL: https://gist.githubusercontent.com/NarutoXY/818205142cf018f0dadf25b59a8ce512/raw/138f9da7fdf7e3b62a19953d3004d1c27c8ed586/remote-bash-test.sh
+          REMOTE_BASH_URL: https://gist.github.com/NarutoXY/818205142cf018f0dadf25b59a8ce512/raw/32c067460470bbb6d84daf5a5034d22318e0ea86/remote-bash-test.sh
