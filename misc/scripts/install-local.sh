@@ -60,7 +60,7 @@ function cget() {
 }
 
 # logging metadata
-function log {
+function log() {
 	# Metadata writing
 	echo "_version=\"$version"\" | sudo tee "$LOGDIR"/"$PACKAGE" #> /dev/null
 	echo "_description=\"$description"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" #> /dev/null
