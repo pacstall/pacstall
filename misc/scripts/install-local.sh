@@ -109,11 +109,13 @@ if [[ $local == 'no' ]]; then
 	fi
 fi
 
-if ask "Do you want to view the pacscript first" N; then
+ask "Do you want to view the pacscript first" N
+if [[ $answer -eq 1 ]]; then
 	less "$PACKAGE".pacscript
 fi
 
-if ask "Do you want to edit the pacscript" N; then
+ask "Do you want to edit the pacscript" N
+if [[ $answer -eq 1 ]]; then
 	if [[ -n $PACSTALL_EDITOR ]]; then
 		$PACSTALL_EDITOR "$PACKAGE".pacscript
 	elif [[ -n $EDITOR ]]; then
@@ -147,7 +149,8 @@ fi
 
 if [[ -n "$build_depends" ]]; then
 	fancy_message info "${BLUE}$name${NC} requires ${CYAN}$(echo -e "$build_depends")${NC} to install"
-	if ask "Do you want to remove them after installing ${BLUE}$name${NC}" N; then
+	ask "Do you want to remove them after installing ${BLUE}$name${NC}" N
+	if [[ $answer -eq 1 ]]; then
 		NOBUILDDEP=0
 	fi
 else
@@ -185,7 +188,8 @@ fi
 if [[ -n $replace ]]; then
 	# Ask user if they want to replace the program
 	if dpkg-query -W -f='${Status}' $replace 2> /dev/null | grep -q "ok installed" ; then
-		if ! ask "This script replaces $replace. Do you want to proceed" N; then
+		ask "This script replaces $replace. Do you want to proceed" N
+		if [[ $answer -eq 0 ]]; then
 			exit 1
 		fi
 		sudo apt-get remove -y $replace
@@ -321,7 +325,8 @@ if [[ -n $optdepends ]]; then
 	fancy_message info "$name has optional dependencies that can enhance its functionalities"
 	echo "Optional dependencies:"
 	printf '    %s\n' "${optdepends[@]}"
-	if ask "Do you want to install them" Y; then
+	ask "Do you want to install them" Y
+	if [[ $answer -eq 1 ]]; then
 		for items in "${optdepends[*]}"; do
 			# output the name of the apt thing without the description, EI: `foo: not bar` -> `foo`
 			printf "%s\n" "${optdepends[@]}" | cut -f1 -d":" | tr '\n' ' ' >> /tmp/pacstall-optdepends

@@ -105,13 +105,15 @@ export On_IPurple='\033[0;105m'  # Purple
 export On_ICyan='\033[0;106m'    # Cyan
 export On_IWhite='\033[0;107m'   # White
 
-# This is the ask function. You can source this code block and then run something like
-# if ask "Do you like the color blue? " Y; then
+# This is the ask function. You can source this code block and then run something like:
+# ask "Do you like the color blue? " Y
+# if [[ $answer -eq 1 ]]; then
 #   echo "You like blue"
 # else
 #   echo "You don't like blue"
 # fi
 #
+# Y=1 and N=0
 # You can specify {Y,N} or leave it out to prevent entering the default but this is not allowed in pacstall because of the -P flag which gives unattended installs
 function ask() {
 	local prompt default reply
@@ -125,33 +127,48 @@ function ask() {
 	else
 		prompt="${GREEN}y${NC}/${RED}n${NC}"
 	fi
+	
+	# Ask the question (not using "read -p" as it uses stderr not stdout)
+	echo -ne "$1 [$prompt] "
+
+	# Read the answer (use /dev/tty in case stdin is redirected from somewhere else)
+	if [[ -z "$DISABLE_PROMPTS" ]]; then
+		read -r reply < /dev/tty
+	else
+		echo "$default"
+		reply=$default
+	fi
+
+	# Default?
+	if [[ -z $reply ]]; then
+		reply=$default
+	fi
 
 	while true; do
-		# Ask the question (not using "read -p" as it uses stderr not stdout)
-		echo -ne "$1 [$prompt] "
-
-		# Read the answer (use /dev/tty in case stdin is redirected from somewhere else)
-		if [[ -z "$DISABLE_PROMPTS" ]]; then
-			read -r reply < /dev/tty
-		else
-			echo "$default"
-			reply=$default
-		fi
-
-		# Default?
-		if [[ -z $reply ]]; then
-			reply=$default
-		fi
-
 		# Check if the reply is valid
 		case "$reply" in
-			Y*|y*) return 0 ;;
-			N*|n*) return 1 ;;
+			Y*|y*)
+				export answer=1
+				return 0	#return code for backwards compatibility
+				break
+			;;
+			N*|n*)
+				export answer=0
+				return 1	#return code
+				break
+			;;
+			*)
+				echo -ne "$1 [$prompt] "
+				read -r reply < /dev/tty
+			;;	
 		esac
 	done
 }
 
-# fancy_message allows visually appealing output. Source the code block and run `fancy_message {info,warn,error} "What you want to say"`
+# fancy_message allows visually appealing output.
+# Source the code block and run:
+#
+# `fancy_message {info,warn,error} "What you want to say"`
 function fancy_message() {
 	local MESSAGE_TYPE="${1}"
 	local MESSAGE="${2}"
@@ -164,6 +181,7 @@ function fancy_message() {
 	esac
 }
 
+# use axel if avaliable
 function download {
 	fancy_message info "$2"
 	if command -v axel > /dev/null; then
@@ -371,4 +389,5 @@ while [[ ! "$1" == "--" ]]; do
 	shift
 done
 if [[ "$1" == '--' ]]; then shift; fi
+
 # vim:set ft=sh ts=4 sw=4 noet:

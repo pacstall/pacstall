@@ -9,7 +9,7 @@
 
 <p align="center"><b>PACSTALL</b></p>
 <p align="center">
-<a href="https://github.com/pacstall/pacstall"><img align="center" src="website-images/pacstall.png" alt="Pacstall Logo"></a>
+<a href="https://github.com/pacstall/pacstall"><img align="center" src="https://pacstall.dev/image/pacstall.svg" alt="Pacstall Logo"></a>
 </p>
 <p align="center"><b>The AUR Ubuntu never had</b></p>
 
