@@ -169,7 +169,7 @@ function ask() {
 # to use this
 # set url variable to the url
 # then run download function
-function download {
+function download() {
 	fancy_message info "Downloading the package"
 	if command -v axel >/dev/null; then
 		axel -n $(($(nproc) + 5)) -ao "${url##*/}" "$url"
