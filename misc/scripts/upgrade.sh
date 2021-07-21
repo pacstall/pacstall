@@ -110,7 +110,8 @@ else
 	${BOLD}$(cat /tmp/pacstall-up-print)${NORMAL}"
 	echo ""
 
-	if ask "Do you want to continue?" N; then
+	ask "Do you want to continue?" N
+	if [[ $answer -eq 0 ]]; then
 		exit 1;
 	fi
 	upgrade=()
