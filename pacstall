@@ -168,8 +168,8 @@ function ask() {
 # function to install file using axel
 # to use this
 # set url variable to the url
-# then run aria2 function
-function aria2 {
+# then run download function
+function download {
 	fancy_message info "Downloading the package"
 	if command -v axel >/dev/null; then
 		axel -n $(($(nproc) + 5)) -ao "${url##*/}" "$url"
