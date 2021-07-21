@@ -5,8 +5,8 @@ function fn_exists() {
 }
 
 
-# source /var/cache/pacstall/"${PACKAGE}"/"${_version}"/"${PACKAGE}".pacscript
-source <(cat "/var/cache/pacstall/$PACKAGE/$(pacstall -V "$PACKAGE")/$PACKAGE.pacscript")
+source /var/cache/pacstall/"${PACKAGE}"/"${PACKAGE}".pacscript
+# source <(cat "/var/cache/pacstall/$PACKAGE/$(pacstall -V "$PACKAGE")/$PACKAGE.pacscript")
 
 case "$url" in
 	*.deb)
