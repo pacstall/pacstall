@@ -244,7 +244,7 @@ case "$url" in
 		git fsck --full
 	;;
 	*.zip)
-		aria2
+		download
 		# hash the file
 		hashcheck "${url##*/}"
 		# unzip file
@@ -257,7 +257,7 @@ case "$url" in
 		sudo chown -R "$(logname)":"$(logname)" . 2>/dev/null
 	;;
 	*.deb)
-		aria2
+		download
 		hashcheck "${url##*/}"    
 		sudo apt install -y -f ./"${url##*/}" 2>/dev/null
 		if [[ $? -eq 0 ]]; then
@@ -273,7 +273,7 @@ case "$url" in
 		fi
 	;;
 	*)
-		aria2
+		download
 		# I think you get it by now
 		hashcheck "${url##*/}"
 		sudo tar -xf "${url##*/}" 1>&1 2>/dev/null
