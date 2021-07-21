@@ -93,8 +93,8 @@ function log {
 
 function aria2 {
 	fancy_message info "Downloading the package"
-	if command -v aria2c >/dev/null; then
-		aria2c --download-result=hide -q -o "${url##*/}" "$url"
+	if command -v axel >/dev/null; then
+		axel -n $(($(nproc) + 5)) -ao "${url##*/}" "$url"
 	else
 		sudo wget -q --show-progress --progress=bar:force "$url" 2>&1
 	fi
