@@ -276,7 +276,7 @@ case "$url" in
                         fancy_message info "Storing pacscript"
                         sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
                         cd "$DIR"
-                        sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version
+                        sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 			exit 0
 		else
 			fancy_message error "Failed to install the package"
