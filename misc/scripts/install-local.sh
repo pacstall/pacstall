@@ -91,14 +91,7 @@ function loggingMeta() {
 
 
 
-function download {
-	fancy_message info "Downloading the package"
-	if command -v axel > /dev/null; then
-		axel -n $(($(nproc) + 5)) -ao "${url##*/}" "$url"
-	else
-		sudo wget -q --show-progress --progress=bar:force "$url" 2>&1
-	fi
-}
+
 
 if [[ $local == 'no' ]]; then
 	if echo "$REPO" | grep "github" > /dev/null ; then
@@ -251,7 +244,7 @@ case "$url" in
 		git fsck --full
 	;;
 	*.zip)
-		download
+		download "$url"
 		# hash the file
 		hashcheck "${url##*/}"
 		# unzip file
@@ -264,7 +257,7 @@ case "$url" in
 		sudo chown -R "$(logname)":"$(logname)" . 2>/dev/null
 	;;
 	*.deb)
-		download
+		download "$url"
 		hashcheck "${url##*/}"    
 		sudo apt install -y -f ./"${url##*/}" 2>/dev/null
 		if [[ $? -eq 0 ]]; then
@@ -276,7 +269,7 @@ case "$url" in
 		fi
 	;;
 	*)
-		download
+		download "$url"
 		# I think you get it by now
 		hashcheck "${url##*/}"
 		sudo tar -xf "${url##*/}" 1>&1 2>/dev/null
@@ -287,10 +280,10 @@ case "$url" in
 esac
 
 if [[ -n $patch ]]; then
-	for i in "${patch[@]}"; do
 		fancy_message info "Downloading patches"
 		mkdir -p PACSTALL_patchesdir
-		wget -q "$i" -P PACSTALL_patchesdir
+	for i in "${patch[@]}"; do
+		wget -q "$i" -P PACSTALL_patchesdir &
 	done
 
 	export PACPATCH=$(pwd)/PACSTALL_patchesdir
