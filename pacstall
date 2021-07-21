@@ -165,6 +165,20 @@ function ask() {
 	done
 }
 
+# function to install file using axel
+# to use this
+# set url variable to the url
+# then run aria2 function
+function aria2 {
+	fancy_message info "Downloading the package"
+	if command -v axel >/dev/null; then
+		axel -n $(($(nproc) + 5)) -ao "${url##*/}" "$url"
+	else
+		sudo wget -q --show-progress --progress=bar:force "$url" 2>&1
+	fi
+}
+
+
 # fancy_message allows visually appealing output.
 # Source the code block and run:
 #
