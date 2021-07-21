@@ -60,7 +60,7 @@ function cget() {
 }
 
 # logging metadata
-function loggingMeta() {
+function log() {
 	# Metadata writing
 	echo "_version=\"$version"\" | sudo tee "$LOGDIR"/"$PACKAGE" > /dev/null
 	echo "_description=\"$description"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
@@ -272,7 +272,11 @@ case "$url" in
 		hashcheck "${url##*/}"    
 		sudo apt install -y -f ./"${url##*/}" 2>/dev/null
 		if [[ $? -eq 0 ]]; then
-			loggingMeta
+			log
+                        fancy_message info "Storing pacscript"
+                        sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
+                        cd "$DIR"
+                        sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version
 			exit 0
 		else
 			fancy_message error "Failed to install the package"
@@ -323,7 +327,7 @@ sudo rm -rf "${SRCDIR:?}"/*
 cd "$HOME"
 
 # Metadata writing
-loggingMeta
+log
 
 # If optdepends exists do this
 if [[ -n $optdepends ]]; then
