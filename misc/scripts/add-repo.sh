@@ -42,7 +42,9 @@ elif echo "$REPO"| grep "gitlab.com" > /dev/null; then
 else
 	fancy_message warn "The repo link must be the root to the raw files"
 	fancy_message warn "Make sure the repo contains a package list"
-	if ! ask "Do you want to add \"$REPO\" to the repo list?" N; then
+	
+	ask "Do you want to add \"$REPO\" to the repo list?" N
+	if [[ $answer -eq 0 ]]; then
 		exit 3
 	fi
 fi
@@ -59,5 +61,5 @@ while IFS= read -r REPOURL; do
 done < "$STGDIR/repo/pacstallrepo.txt"
 REPOLIST+=($REPO)
 
-echo "${REPOLIST[@]}"|tr -s ' ' '\n'| sort -u > "$STGDIR/repo/pacstallrepo.txt"
+echo "${REPOLIST[@]}"|tr -s ' ' '\n'| sort -u | sudo tee "$STGDIR/repo/pacstallrepo.txt" > /dev/null
 # vim:set ft=sh ts=4 sw=4 noet:
