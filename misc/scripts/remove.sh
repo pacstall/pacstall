@@ -4,7 +4,7 @@ function fn_exists() {
 	declare -F "$1" > /dev/null;
 }
 
-
+source "$LOGDIR/$PACKAGE" > /dev/null 2>&1
 # source /var/cache/pacstall/"${PACKAGE}"/"${PACKAGE}".pacscript
 source /var/cache/pacstall/"${PACKAGE}"/$(pacstall -V "${PACKAGE}")/"${PACKAGE}".pacscript
 
@@ -32,7 +32,7 @@ case "$url" in
 		fi
 
 		# Removal starts from here
-		source "$LOGDIR/$PACKAGE" > /dev/null 2>&1
+		# source "$LOGDIR/$PACKAGE" > /dev/null 2>&1
 
 		fancy_message info "Removing symlinks"
 		sudo stow --target="/" -D "$PACKAGE"
