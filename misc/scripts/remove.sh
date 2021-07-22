@@ -6,7 +6,18 @@ function fn_exists() {
 
 # Removal starts from here
 source "$LOGDIR/$PACKAGE" > /dev/null 2>&1
-source /var/cache/pacstall/"${PACKAGE}"/"${_version}"/"${PACKAGE}".pacscript
+
+if [[ $? -eq 0 ]]; then
+	fancy_message error "$PACKAGE is not installed or not properly symlinked"
+	return 1
+fi
+
+source /var/cache/pacstall/"${PACKAGE}"/"${_version}"/"${PACKAGE}".pacscript > /dev/null 2>&1
+
+if [[ $? -eq 0 ]]; then
+	fancy_message error "$PACKAGE is not installed or not properly symlinked"
+	return 1
+fi
 
 case "$url" in
 	*.deb)
