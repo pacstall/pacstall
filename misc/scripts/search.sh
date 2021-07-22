@@ -83,11 +83,13 @@ elif [[ -n "$UPGRADE" ]]; then
 	for IDX in $IDXSEARCH ; do
 		REPOS+=(${URLLIST[$IDX]})
 	done
+	return 0
 # Check if its being used for search
 elif [[ -z "$PACKAGE" ]]; then
 	for IDX in $IDXSEARCH ; do
 		echo -e "$GREEN${PACKAGELIST[$IDX]}$CYAN @ $(parseRepo "${URLLIST[$IDX]}") $NC"
 	done
+	return 0
 # Options left: install or download
 # Variable $type used for the prompt
 else
@@ -95,6 +97,7 @@ else
 	if [[ "$LEN" -eq 1 ]]; then
 		export PACKAGE=${PACKAGELIST[$IDXSEARCH]}
 		export REPO=${URLLIST[$IDXSEARCH]}
+		return 0
 		# If there are multiple results, ask
 	else
 		echo -e "There are $LEN package(s) with the name $GREEN$SEARCH$NC."
