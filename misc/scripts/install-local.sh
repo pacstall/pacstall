@@ -289,7 +289,7 @@ if [[ -n $patch ]]; then
 	for i in "${patch[@]}"; do
 		wget -q "$i" -P PACSTALL_patchesdir &
 	done
-
+	wait
 	export PACPATCH=$(pwd)/PACSTALL_patchesdir
 fi
 
