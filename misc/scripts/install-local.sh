@@ -276,6 +276,7 @@ case "$url" in
 			cd "$DIR"
 			sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 
+			cleanup
 			return 0
 
 		else
@@ -375,7 +376,9 @@ sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
 cd "$DIR"
 sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 
-fancy_meassage info "Cleaning up"
+fancy_message info "Cleaning up"
 cleanup
+
+return 0
 
 # vim:set ft=sh ts=4 sw=4 noet:

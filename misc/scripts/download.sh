@@ -34,6 +34,7 @@ if curl --output /dev/null --silent --head --fail "$URL" ; then
 	mkdir -p "$PACKAGE" && cd "$PACKAGE"
 
 	download "$URL" > /dev/null 2>&1
+	return 0
 else
 	return 1
 fi

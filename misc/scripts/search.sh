@@ -114,13 +114,11 @@ else
 				if [[ $answer -eq 1 ]];then
 					export PACKAGE=${PACKAGELIST[$PACSTALLREPO]}
 					export REPO=${URLLIST[$PACSTALLREPO]}
-					DEFAULT='yes'
-				else
-					DEFAULT='no'
+					unset $PACSTALLREPO
+					return 0
 				fi
-			fi
 			# If other repos, ask, if Pacstall repo, skip
-			if [[ "$DEFAULT" == "no" ]] || [[ -z "$PACSTALLREPO" ]]; then
+			else
 				for IDX in $IDXSEARCH ; do
 					if [[ "$IDX" == "$PACSTALLREPO" ]]; then
 						continue
@@ -130,7 +128,7 @@ else
 					if [[ $answer -eq 1 ]];then
 						export PACKAGE=${PACKAGELIST[$IDX]}
 						export REPO=${URLLIST[$IDX]}
-						break
+						return 0
 					fi
 				done
 			fi
@@ -139,4 +137,6 @@ else
 		fi
 	fi
 fi
+return 1
+
 # vim:set ft=sh ts=4 sw=4 noet:

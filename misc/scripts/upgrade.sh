@@ -133,7 +133,7 @@ else
 		REPO="${remotes[$i]}"
 		export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 		source "$STGDIR/scripts/download.sh"
-		if $?; then
+		if [[ $? -ne 0 ]]; then
 			fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
 			continue;
 		fi

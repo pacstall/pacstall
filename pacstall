@@ -247,22 +247,27 @@ while [[ ! "$1" == "--" ]]; do
 				export type="install"
 		  		export local="no"
 		  		source "$STGDIR/scripts/search.sh"
+		  		
+		  		if [[ $? -ne 0 ]]; then
+					i++
+					continue
+				fi
 
 		  		URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 		  		source "$STGDIR/scripts/download.sh"
 				
-				if $?; then
+				if [[ $? -ne 0 ]]; then
 					fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
 					i++
-					continue;
+					continue
 				fi
 				
 		  		export REPO
 		  		source "$STGDIR/scripts/install-local.sh"
-				if $?; then
+				if [[ $? -ne 0 ]]; then
 					fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
 					i++
-					continue;
+					continue
 				fi
 		  	done
 			if [[ $i -ne 0 ]]; then
@@ -296,10 +301,10 @@ while [[ ! "$1" == "--" ]]; do
 				
 				export PACKAGE="$(basename "$INPUT")"
 				source "$STGDIR/scripts/install-local.sh"
-				if $?; then
+				if [[ $? -ne 0 ]]; then
 					fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
 					i++
-					continue;
+					continue
 				fi
 				shift
 			done
@@ -407,18 +412,32 @@ while [[ ! "$1" == "--" ]]; do
 		;;
 
 		-D|--download)
-			PACKAGE=$2
-
-			if [[ -z "$PACKAGE" ]]; then
+			
+			if [[ -z "$2" ]]; then
 				fancy_message error "You failed to specify a package"
 				exit 1
 			fi
+			i=0
+			while [[ -n "$2" ]]; do
+				export type="download"
+				source "$STGDIR/scripts/search.sh"
+				
+		  		if [[ $? -ne 0 ]]; then
+					i++
+					continue
+				fi
 
-			export type="download"
-			source "$STGDIR/scripts/search.sh"
-			export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
-			source "$STGDIR/scripts/download.sh"
-			fancy_message info "${GREEN}${PACKAGE}${NC}'s pacscript is downloaded in ${GREEN}$HOMEDIR/.cache/pacstall/$PACKAGE${NC}"
+				export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
+				source "$STGDIR/scripts/download.sh"
+				
+				if [[ $? -ne 0 ]]; then
+					fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
+					i++
+					continue
+				fi
+				
+				fancy_message info "${GREEN}${PACKAGE}${NC}'s pacscript is downloaded in ${GREEN}$HOMEDIR/.cache/pacstall/$PACKAGE${NC}"
+			done
 			exit 0
 		;;
 
