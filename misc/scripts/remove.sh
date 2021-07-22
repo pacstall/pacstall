@@ -11,12 +11,6 @@ if [[ -z "$PACKAGE" ]]; then
 	exit 1
 fi
 
-if [[ ! -d "$PACKAGE" ]]; then
-	fancy_message error "$PACKAGE is not installed or not properly symlinked"
-	exit 1
-fi
-
-
 # Removal starts from here
 source "$LOGDIR/$PACKAGE" > /dev/null 2>&1
 source /var/cache/pacstall/"${PACKAGE}"/"${_version}"/"${PACKAGE}".pacscript
@@ -32,6 +26,11 @@ case "$url" in
 
 	*)
 		cd "$STOWDIR" || (sudo mkdir -p "$STOWDIR"; cd "$STOWDIR")
+
+                if [[ ! -d "$PACKAGE" ]]; then
+	            fancy_message error "$PACKAGE is not installed or not properly symlinked"
+	            exit 1
+                fi
 
 		fancy_message info "Removing symlinks"
 		sudo stow --target="/" -D "$PACKAGE"
