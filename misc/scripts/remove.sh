@@ -27,10 +27,10 @@ case "$url" in
 	*)
 		cd "$STOWDIR" || (sudo mkdir -p "$STOWDIR"; cd "$STOWDIR")
 
-                if [[ ! -d "$PACKAGE" ]]; then
-	            fancy_message error "$PACKAGE is not installed or not properly symlinked"
-	            exit 1
-                fi
+		if [[ ! -d "$PACKAGE" ]]; then
+			fancy_message error "$PACKAGE is not installed or not properly symlinked"
+			exit 1
+		fi
 
 		fancy_message info "Removing symlinks"
 		sudo stow --target="/" -D "$PACKAGE"
