@@ -87,13 +87,70 @@ We use tabs. Period. Only exception is in ASCII art.
 
 #### Quotes
 
-Always use double quotes `""`
+Always use double quotes `""`.
 ```bash
 var="foo bar baz"
 echo "$var"
 ```
 
 ---
+
+#### Commits
+
+We use this style of commit messages.
+```monospace
+Type (scope): Subject
+
+body
+
+footer
+```
+
+##### Types
+
+* `feat`: A new feature.
+* `fix`: A bug fix.
+* `docs`: Changes to documentation.
+* `style`: Formatting etc; no code change.
+* `refactor`: Refactoring code.
+* `test`: Adding tests, refactoring test; no production code change.
+
+##### Scopes
+
+* `main`: Changes to the main file ( `pacstall` ).
+* `installer`: Changes to the installer ( `install.sh` ).
+* `completion`: Changes to the completion files ( `misc/completion `).
+* `scripts`: Changes to the scripts ( `misc/scripts` ).
+* `github`: Changes to GitHub specific files ( `.github` etc ).
+* Your own scope if you feel your changes don't fall under the aforementioned scopes.
+
+##### Subject
+
+Subjects should be no greater than 50 characters, should begin with a capital letter and do not end with a period.
+
+Use an imperative tone to describe what a commit does, rather than what it did. For example, use change; not changed or changes.
+
+##### Body
+
+Not all commits are complex enough to warrant a body, therefore it is optional and only used when a commit requires a bit of explanation and context.
+
+##### Footer
+
+The footer is optional and is used to reference issue tracker IDs.
+
+#### Pull Requests
+
+##### Title prefix of pull request
+
+Pull request titles should contain one of these prefixes:
+
+* `Feat`: Adding new features.
+* `Chan`: Change default behaviors or the existing features.
+* `Fix`: Fix some bugs.
+* `Refactor`: Refactor code.
+* `Style`: Change formatting etc; no production code change.
+* `Remove`: Remove some existing code.
+* `Doc`: Update the help files.
 
 ### Boilerplate
 
@@ -133,7 +190,7 @@ Paste this modeline at the end of each file.
 vim:set ft=sh ts=4 sw=4 noet:
 ```
 
-This automatically sets the `filetype`(`= sh`), `tabstop`(`= 4`), and `shiftwidth`(`= 4`), and most importantly disables `expandtab`
+This automatically sets the `filetype`(`= sh`), `tabstop`(`= 4`), and `shiftwidth`(`= 4`), and most importantly disables `expandtab`.
 
 If your editor is not vim, then make sure your tab settings are as above.
 
