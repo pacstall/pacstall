@@ -83,6 +83,10 @@ esac
 #### Tabs vs Spaces
 We use tabs. Period. Only exception is in ASCII art.
 
+Use `tabstop` = 4, `shiftwidth` = 4, and `noexpandtab`
+
+*Also read [Vim Modeline](#vim-modeline)*
+
 ---
 
 #### Quotes
@@ -152,6 +156,10 @@ Pull request titles should contain one of these prefixes:
 * `Remove`: Remove some existing code.
 * `Doc`: Update the help files.
 
+##### Draft pull requests
+
+All pull requests should start as drafts, only mark them ready for review when you think they are.
+
 ### Boilerplate
 
 #### Shebang
@@ -185,6 +193,7 @@ along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 ```
 
 #### Vim Modeline
+
 Paste this modeline at the end of each file.
 ```monospace
 vim:set ft=sh ts=4 sw=4 noet:
