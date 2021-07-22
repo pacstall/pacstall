@@ -5,7 +5,21 @@ function fn_exists() {
 }
 
 
-source "/var/cache/pacstall/$PACKAGE/$_version/$PACKAGE.pacscript"
+# Run preliminary checks
+if [[ -z "$PACKAGE" ]]; then
+	fancy_message error "You failed to specify a package"
+	exit 1
+fi
+
+if [[ ! -d "$PACKAGE" ]]; then
+	fancy_message error "$PACKAGE is not installed or not properly symlinked"
+	exit 1
+fi
+
+
+# Removal starts from here
+source "$LOGDIR/$PACKAGE" > /dev/null 2>&1
+source /var/cache/pacstall/"${PACKAGE}"/"${_version}"/"${PACKAGE}".pacscript
 
 case "$url" in
 	*.deb)
@@ -18,20 +32,6 @@ case "$url" in
 
 	*)
 		cd "$STOWDIR" || (sudo mkdir -p "$STOWDIR"; cd "$STOWDIR")
-
-		# Run preliminary checks
-		if [[ -z "$PACKAGE" ]]; then
-			fancy_message error "You failed to specify a package"
-			exit 1
-		fi
-
-		if [[ ! -d "$PACKAGE" ]]; then
-			fancy_message error "$PACKAGE is not installed or not properly symlinked"
-			exit 1
-		fi
-
-		# Removal starts from here
-		source "$LOGDIR/$PACKAGE" > /dev/null 2>&1
 
 		fancy_message info "Removing symlinks"
 		sudo stow --target="/" -D "$PACKAGE"
