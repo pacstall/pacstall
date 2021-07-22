@@ -281,7 +281,7 @@ case "$url" in
 	;;
 	*)
 		download "$url"
-		# I think you get it by now 
+		# I think you get it by now
 		hashcheck "${url##*/}"
 		sudo tar -xf "${url##*/}" 1>&1 2>/dev/null
 		cd ./*/ 2>/dev/null
