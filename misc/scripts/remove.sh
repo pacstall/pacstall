@@ -4,34 +4,26 @@ function fn_exists() {
 	declare -F "$1" > /dev/null;
 }
 
-
-source "/var/cache/pacstall/$PACKAGE/$_version/$PACKAGE.pacscript"
+# Removal starts from here
+source "$LOGDIR/$PACKAGE" > /dev/null 2>&1
+source /var/cache/pacstall/"${PACKAGE}"/"${_version}"/"${PACKAGE}".pacscript
 
 case "$url" in
 	*.deb)
 		if ! sudo apt remove "$gives" 2>/dev/null; then
 			fancy_message warn "Failed to remove the package"
-			exit 1
+			return 1
 		fi
-		exit 0
+		return 0
 	;;
 
 	*)
 		cd "$STOWDIR" || (sudo mkdir -p "$STOWDIR"; cd "$STOWDIR")
 
-		# Run preliminary checks
-		if [[ -z "$PACKAGE" ]]; then
-			fancy_message error "You failed to specify a package"
-			exit 1
-		fi
-
 		if [[ ! -d "$PACKAGE" ]]; then
 			fancy_message error "$PACKAGE is not installed or not properly symlinked"
-			exit 1
+			return 1
 		fi
-
-		# Removal starts from here
-		source "$LOGDIR/$PACKAGE" > /dev/null 2>&1
 
 		fancy_message info "Removing symlinks"
 		sudo stow --target="/" -D "$PACKAGE"
@@ -52,9 +44,9 @@ case "$url" in
 		fi
 
 		sudo rm -f "$LOGDIR/$PACKAGE"
-		exit 0
+		return 0
 	;;
 esac
 
-exit
+return 0
 # vim:set ft=sh ts=4 sw=4 noet:

@@ -22,17 +22,20 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-function trap_ctrlc () {
-	echo ""
-	fancy_message warn "Interupted, cleaning up"
+function cleanup () {
+	sudo rm -rf "${SRCDIR:?}"/*
 	sudo rm -rf /tmp/pacstall/*
 	if [ -f /tmp/pacstall-optdepends ]; then
 		sudo rm /tmp/pacstall-optdepends
 	fi
-	exit 2
 }
 
-trap "trap_ctrlc" 2
+function trap_ctrlc () {
+	echo ""
+	fancy_message warn "Interupted, cleaning up"
+	cleanup
+	exit 3
+}
 
 # run checks to verify script works
 function checks() {
@@ -41,7 +44,7 @@ function checks() {
 		fancy_message info "URL exists"
 	else
 		fancy_message error "URL doesn't exist"
-		exit 6
+		return 1
 	fi
 
 	if [[ -z "$hash" ]]; then
@@ -59,8 +62,26 @@ function cget() {
 	git ls-remote "$URL" "$BRANCH" | sed "s/refs\/heads\/.*//"
 }
 
-# logging metadata
-function loggingMeta() {
+# Logging metadata
+function log() {
+	
+	# Origin repo info parsing
+	if [[ $local == 'no' ]]; then
+		if echo "$REPO" | grep "github" > /dev/null ; then
+			pURL="${REPO/'raw.githubusercontent.com'/'github.com'}" 
+			pURL="${pURL%/*}"
+			pBRANCH="${REPO##*/}"
+			branch="yes"
+		elif echo "$REPO"| grep "gitlab" > /dev/null; then
+			pURL="${REPO%/-/raw/*}"
+			pBRANCH="${REPO##*/-/raw/}"
+			branch="yes"
+		else
+			pURL=$REPO
+			branch="no"
+		fi
+	fi
+
 	# Metadata writing
 	echo "_version=\"$version"\" | sudo tee "$LOGDIR"/"$PACKAGE" > /dev/null
 	echo "_description=\"$description"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
@@ -89,33 +110,6 @@ function loggingMeta() {
 	fi
 }
 
-
-
-function aria2 {
-	fancy_message info "Downloading the package"
-	if command -v aria2c >/dev/null; then
-		aria2c --download-result=hide -q -o "${url##*/}" "$url"
-	else
-		sudo wget -q --show-progress --progress=bar:force "$url" 2>&1
-	fi
-}
-
-if [[ $local == 'no' ]]; then
-	if echo "$REPO" | grep "github" > /dev/null ; then
-		pURL="${REPO/'raw.githubusercontent.com'/'github.com'}" 
-		pURL="${pURL%/*}"
-		pBRANCH="${REPO##*/}"
-		branch="yes"
-	elif echo "$REPO"| grep "gitlab" > /dev/null; then
-		pURL="${REPO%/-/raw/*}"
-		pBRANCH="${REPO##*/-/raw/}"
-		branch="yes"
-	else
-		pURL=$REPO
-		branch="no"
-	fi
-fi
-
 ask "Do you want to view the pacscript first" N
 if [[ $answer -eq 1 ]]; then
 	less "$PACKAGE".pacscript
@@ -140,7 +134,7 @@ export homedir="/home/$(logname)"
 source "$PACKAGE".pacscript > /dev/null
 if [[ $? -eq 1 ]]; then
 	fancy_message error "Couldn't source pacscript"
-	exit 12
+	return 3
 fi
 
 if type pkgver > /dev/null 2>&1; then
@@ -151,7 +145,7 @@ fi
 checks
 if [[ $? -eq 1 ]]; then
 	fancy_message error "There was an error checking the script!"
-	exit 1
+	return 1
 fi
 
 if [[ -n "$build_depends" ]]; then
@@ -164,13 +158,16 @@ else
 	NOBUILDDEP=1
 fi
 
+# Trap Crtl+C just before the point cleanup is first needed
+trap "trap_ctrlc" 2
+
+
 if [[ -n "$pacdeps" ]]; then
 	for i in "${pacdeps[@]}"; do
 		fancy_message info "Installing $i"
 		# If /tmp/pacstall-pacdeps-"$i" is available, it will trigger the logger to log it as a dependency
 		sudo touch /tmp/pacstall-pacdeps-"$i"
-		sudo pacstall -P -I "$i"
-		sudo rm -f /tmp/pacstall-pacdeps-"$i"
+		pacstall -P -I "$i"
 	done
 fi
 
@@ -179,7 +176,7 @@ if echo -n "$depends" > /dev/null 2>&1; then
 		if dpkg-query -l "$breaks" > /dev/null 2>&1; then
 			# Check if anything in breaks variable is installed already
 			fancy_message error "${RED}$name${NC} breaks $breaks, which is currently installed by apt"
-			exit 1
+			return 1
 		fi
 	fi
 
@@ -187,7 +184,7 @@ if echo -n "$depends" > /dev/null 2>&1; then
 		if [[ $(pacstall -L) == *$breaks* ]]; then
 			# Same thing, but check if anything is installed with pacstall
 			fancy_message error "${RED}$name${NC} breaks $breaks, which is currently installed by pacstall"
-			exit 1
+			return 1
 		fi
 	fi
 fi
@@ -197,7 +194,7 @@ if [[ -n $replace ]]; then
 	if dpkg-query -W -f='${Status}' $replace 2> /dev/null | grep -q "ok installed" ; then
 		ask "This script replaces $replace. Do you want to proceed" N
 		if [[ $answer -eq 0 ]]; then
-			exit 1
+			return 1
 		fi
 		sudo apt-get remove -y $replace
 	fi
@@ -213,7 +210,7 @@ fi
 if [[ $NOBUILDDEP -eq 0 ]]; then
 	if ! sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $build_depends; then
 		fancy_message error "Failed to install build dependencies"
-		exit 8
+		return 1
 	fi
 fi
 
@@ -225,7 +222,7 @@ function hashcheck() {
 	if [[ "$inputHash" != "$fileHash" ]]; then
 		# We bad
 		fancy_message error "Hashes don't match"
-		exit 1
+		return 3
 	fi
 	true
 }
@@ -234,7 +231,7 @@ fancy_message info "Installing dependencies"
 sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $depends
 if [[ $? -eq 1 ]]; then
 	fancy_message error "Failed to install dependencies"
-	exit 8
+	return 1
 fi
 
 fancy_message info "Retrieving packages"
@@ -255,7 +252,7 @@ case "$url" in
 		git fsck --full
 	;;
 	*.zip)
-		aria2
+		download "$url"
 		# hash the file
 		hashcheck "${url##*/}"
 		# unzip file
@@ -268,19 +265,26 @@ case "$url" in
 		sudo chown -R "$(logname)":"$(logname)" . 2>/dev/null
 	;;
 	*.deb)
-		aria2
-		hashcheck "${url##*/}"    
+		download "$url"
+		hashcheck "${url##*/}"
 		sudo apt install -y -f ./"${url##*/}" 2>/dev/null
 		if [[ $? -eq 0 ]]; then
-			loggingMeta
-			exit 0
+			log
+			
+			fancy_message info "Storing pacscript"
+			sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
+			cd "$DIR"
+			sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
+
+			return 0
+
 		else
 			fancy_message error "Failed to install the package"
-			exit 1
+			return 1
 		fi
 	;;
 	*)
-		aria2
+		download "$url"
 		# I think you get it by now
 		hashcheck "${url##*/}"
 		sudo tar -xf "${url##*/}" 1>&1 2>/dev/null
@@ -291,12 +295,12 @@ case "$url" in
 esac
 
 if [[ -n $patch ]]; then
-	for i in "${patch[@]}"; do
 		fancy_message info "Downloading patches"
 		mkdir -p PACSTALL_patchesdir
-		wget -q "$i" -P PACSTALL_patchesdir
+	for i in "${patch[@]}"; do
+		wget -q "$i" -P PACSTALL_patchesdir &
 	done
-
+	wait
 	export PACPATCH=$(pwd)/PACSTALL_patchesdir
 fi
 
@@ -306,7 +310,7 @@ prepare
 # Check if build function doesn't exist
 if ! type -t build > /dev/null 2>&1; then
 	fancy_message error "Something didn't compile right"
-	exit 5
+	return 5
 fi
 
 build
@@ -323,7 +327,7 @@ sudo rm -rf "${SRCDIR:?}"/*
 cd "$HOME"
 
 # Metadata writing
-loggingMeta
+log
 
 # If optdepends exists do this
 if [[ -n $optdepends ]]; then
@@ -356,7 +360,7 @@ sudo stow --target="/" "$PACKAGE"
 # stow will fail to symlink packages if files already exist on the system; this is just an error
 if [[ $? -eq 1 ]]; then
 	fancy_message error "Package contains links to files that exist on the system"
-	exit 14
+	return 4
 fi
 
 # `hash -r` updates PATH database
@@ -370,4 +374,8 @@ fancy_message info "Storing pacscript"
 sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
 cd "$DIR"
 sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
+
+fancy_meassage info "Cleaning up"
+cleanup
+
 # vim:set ft=sh ts=4 sw=4 noet:

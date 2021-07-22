@@ -22,17 +22,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-# This script searches for packages
+
+# This script searches for packages in all repos saved on pacstallrepo.txt
 
 export LC_ALL=C
 
-if [[ -z "$UPGRADE" ]]; then
-	SEARCH=$2
-	if [[ -z "$SEARCH" ]]; then
-		fancy_message error "You failed to specify a package"
-		exit 3
-	fi
-else
+if [[ -n "$UPGRADE" ]]; then
 	PACKAGE=$i
 fi
 
@@ -81,22 +76,21 @@ function parseRepo() {
 #Check if there are results
 if [[ "$LEN" -eq 0 ]]; then
 	fancy_message warn "There is no package with the name $IRed$SEARCH$NC"
-	exit 1
-	# Check if it's upgrading packages
+	return 1
+# Check if it's upgrading packages
 elif [[ -n "$UPGRADE" ]]; then
 	REPOS=()
 	for IDX in $IDXSEARCH ; do
 		REPOS+=(${URLLIST[$IDX]})
 	done
-# Check if its being used for search or intall 
+# Check if its being used for search
 elif [[ -z "$PACKAGE" ]]; then
-	# Search
 	for IDX in $IDXSEARCH ; do
 		echo -e "$GREEN${PACKAGELIST[$IDX]}$CYAN @ $(parseRepo "${URLLIST[$IDX]}") $NC"
 	done
-	exit 0
+# Options left: install or download
+# Variable $type used for the prompt
 else
-	# Install
 	# If there is only one result, proceed
 	if [[ "$LEN" -eq 1 ]]; then
 		export PACKAGE=${PACKAGELIST[$IDXSEARCH]}
@@ -115,6 +109,7 @@ else
 				fi
 			done
 			if [[ -n "$PACSTALLREPO" ]]; then
+				# Overwrite last question
 				ask "\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo "${URLLIST[$IDX]}")$NC?" Y
 				if [[ $answer -eq 1 ]];then
 					export PACKAGE=${PACKAGELIST[$PACSTALLREPO]}
@@ -124,6 +119,7 @@ else
 					DEFAULT='no'
 				fi
 			fi
+			# If other repos, ask, if Pacstall repo, skip
 			if [[ "$DEFAULT" == "no" ]] || [[ -z "$PACSTALLREPO" ]]; then
 				for IDX in $IDXSEARCH ; do
 					if [[ "$IDX" == "$PACSTALLREPO" ]]; then
@@ -139,7 +135,7 @@ else
 				done
 			fi
 		else
-			exit 1
+			return 1 # No
 		fi
 	fi
 fi

@@ -181,6 +181,15 @@ function fancy_message() {
 	esac
 }
 
+# use axel if avaliable
+function download {
+	fancy_message info "$2"
+	if command -v axel > /dev/null; then
+		sudo axel -n $(($(nproc) + 5)) -ao "${1##*/}" "$1"
+	else
+		sudo wget -q --show-progress --progress=bar:force "$1" 2>&1
+	fi
+}
 
 # run sudo apt update if it's been more than a week
 [ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && sudo apt-get update -qq
@@ -219,55 +228,118 @@ while [[ ! "$1" == "--" ]]; do
 			# Begin trapping
 			trap "trap_ctrlc" 2
 
-			export PACKAGE=$2
-			if [[ -z "$PACKAGE" ]]; then
-				fancy_message error "You failed to specify a package"
-				exit 1
+			i=0
+			while [[ -n "$2" ]]; do
+				export PACKAGE=$2
+		  		shift
+				if [[ -z "$PACKAGE" ]]; then
+					fancy_message error "You failed to specify a package"
+					exit 1
+				fi
+
+		  		# Make the directory if not exist
+		  		if [[ ! -e "$STGDIR/repo/" ]]; then
+					sudo mkdir -p "$STGDIR/repo"
+					sudo touch "$STGDIR/repo/pacstallrepo.txt"
+					sudo pacstall -A
+				fi
+
+				export type="install"
+		  		export local="no"
+		  		source "$STGDIR/scripts/search.sh"
+
+		  		URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
+		  		source "$STGDIR/scripts/download.sh"
+				
+				if $?; then
+					fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
+					i++
+					continue;
+				fi
+				
+		  		export REPO
+		  		source "$STGDIR/scripts/install-local.sh"
+				if $?; then
+					fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
+					i++
+					continue;
+				fi
+		  	done
+			if [[ $i -ne 0 ]]; then
+				exit $i
 			fi
-
-	  		# Make the directory if not exist
-	  		if [[ ! -e "$STGDIR/repo/" ]]; then
-				sudo mkdir -p "$STGDIR/repo"
-				sudo touch "$STGDIR/repo/pacstallrepo.txt"
-				sudo pacstall -C
-			fi
-
-			export type="install"
-	  		export local="no"
-	  		source "$STGDIR/scripts/search.sh"
-
-	  		URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
-	  		source "$STGDIR/scripts/download.sh"
-	  		export REPO
-	  		source "$STGDIR/scripts/install-local.sh"
 	  		exit 0
 	  	;;
 
 		-Il|--install-local)
-			REPO="local"
-			INPUT="$(echo "$2" | sed 's/\..*$//')" # Removes the .pacscript suffix
-			export local="yes"
-			# Check if the file exist (both .pacscript and without)
-			if [[ ! -f "$2".pacscript && ! -f "$INPUT" ]]; then
-				fancy_message error "$2 does not exist"
+			
+			if [[ -z "$2" ]]; then
+				fancy_message error "You failed to specify a package"
 				exit 1
 			fi
-
-			cd "$(dirname "$INPUT")" || (fancy_message error "The directory does not exist"; exit 1)
-			export PACKAGE="$(basename "$INPUT")"
-
-			source "$STGDIR/scripts/install-local.sh"
+			
+			i=0
+			while [[ -n "$2" ]]; do
+				INPUT="$(basename "$2" ".pacscript")" # Removes the suffix
+				export local="yes"
+				
+				# Enter directory if exists
+				if [[ -d "$INPUT" ]]; then
+					cd "$(basename "$INPUT")"
+				fi
+				# Check if the file exist
+				if [[ ! -f "$2".pacscript ]]; then
+					fancy_message error "$2 does not exist"
+					continue
+				fi
+				shift
+				
+				export PACKAGE="$(basename "$INPUT")"
+				source "$STGDIR/scripts/install-local.sh"
+				if $?; then
+					fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
+					i++
+					continue;
+				fi
+				shift
+			done
+			if [[ $i -ne 0 ]]; then
+				exit $i
+			fi
 			exit 0
 		;;
 
 		-S|--search)
+			
+			export SEARCH=$2
+			if [[ -z "$SEARCH" ]]; then
+				fancy_message error "You failed to specify a package"
+				exit 1
+			fi
+			
 			source "$STGDIR/scripts/search.sh"
 			exit 0
 		;;
 
 		-R|--remove)
-			PACKAGE=$2
-			source "$STGDIR/scripts/remove.sh"
+			
+			if [[ -z "$2" ]]; then
+				fancy_message error "You failed to specify a package"
+				exit 1
+			fi
+			i=0
+			while [[ -n "$2" ]]; do
+				PACKAGE=$2
+				shift
+				source "$STGDIR/scripts/remove.sh"
+				if $?; then
+					fancy_message error "Failed to remove ${GREEN}${PACKAGE}${NC}"
+					i++
+				fi
+			done
+			if [[ $i -ne 0 ]]; then
+				exit $i
+			fi
 			exit 0
 		;;
 
@@ -276,6 +348,7 @@ while [[ ! "$1" == "--" ]]; do
 
 			if [ ! -f "$STGDIR/repo/pacstallrepo.txt" ]; then
 				echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > "$STGDIR/repo/pacstallrepo.txt"
+				return 0
 			fi
 
 			if [ ! -z $REPO ]; then
@@ -298,7 +371,7 @@ while [[ ! "$1" == "--" ]]; do
 				if pacstall -Qi "$PACKAGE" | grep 'version' | cut -d ":" -f2 | sed 's/ //g'; then
 					exit 0
 				else
-					fancy_message error "$PACKAGE doesn't exist"
+					fancy_message error "${GREEN}${PACKAGE}${NC} ins not installed"
 					exit 1
 				fi
 			fi
@@ -345,7 +418,7 @@ while [[ ! "$1" == "--" ]]; do
 			source "$STGDIR/scripts/search.sh"
 			export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 			source "$STGDIR/scripts/download.sh"
-			fancy_message info "$PACKAGE's pacscript is downloaded in ${GREEN}$HOMEDIR/.cache/pacstall/$PACKAGE${NC}"
+			fancy_message info "${GREEN}${PACKAGE}${NC}'s pacscript is downloaded in ${GREEN}$HOMEDIR/.cache/pacstall/$PACKAGE${NC}"
 			exit 0
 		;;
 

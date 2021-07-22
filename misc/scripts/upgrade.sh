@@ -126,9 +126,17 @@ else
 	export local='no'
 	for i in "${!upgrade[@]}"; do
 		PACKAGE=${upgrade[$i]}
+		ask "Do you want to upgrade ${GREEN}${PACKAGE}${NC}?" Y
+		if [[ $answer -eq 0 ]]; then
+			continue
+		fi
 		REPO="${remotes[$i]}"
 		export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 		source "$STGDIR/scripts/download.sh"
+		if $?; then
+			fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
+			continue;
+		fi
 		source "$STGDIR/scripts/install-local.sh"
 	done
 fi
