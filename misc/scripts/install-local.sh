@@ -91,14 +91,7 @@ function loggingMeta() {
 
 
 
-function aria2 {
-	fancy_message info "Downloading the package"
-	if command -v aria2c >/dev/null; then
-		aria2c --download-result=hide -q -o "${url##*/}" "$url"
-	else
-		sudo wget -q --show-progress --progress=bar:force "$url" 2>&1
-	fi
-}
+
 
 if [[ $local == 'no' ]]; then
 	if echo "$REPO" | grep "github" > /dev/null ; then
@@ -255,7 +248,7 @@ case "$url" in
 		git fsck --full
 	;;
 	*.zip)
-		aria2
+		download "$url"
 		# hash the file
 		hashcheck "${url##*/}"
 		# unzip file
@@ -268,7 +261,7 @@ case "$url" in
 		sudo chown -R "$(logname)":"$(logname)" . 2>/dev/null
 	;;
 	*.deb)
-		aria2
+		download "$url"
 		hashcheck "${url##*/}"    
 		sudo apt install -y -f ./"${url##*/}" 2>/dev/null
 		if [[ $? -eq 0 ]]; then
@@ -280,7 +273,7 @@ case "$url" in
 		fi
 	;;
 	*)
-		aria2
+		download "$url"
 		# I think you get it by now
 		hashcheck "${url##*/}"
 		sudo tar -xf "${url##*/}" 1>&1 2>/dev/null
@@ -291,12 +284,12 @@ case "$url" in
 esac
 
 if [[ -n $patch ]]; then
-	for i in "${patch[@]}"; do
 		fancy_message info "Downloading patches"
 		mkdir -p PACSTALL_patchesdir
-		wget -q "$i" -P PACSTALL_patchesdir
+	for i in "${patch[@]}"; do
+		wget -q "$i" -P PACSTALL_patchesdir &
 	done
-
+	wait
 	export PACPATCH=$(pwd)/PACSTALL_patchesdir
 fi
 

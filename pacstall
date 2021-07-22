@@ -181,6 +181,15 @@ function fancy_message() {
 	esac
 }
 
+# use axel if avaliable
+function download {
+	fancy_message info "$2"
+	if command -v axel > /dev/null; then
+		sudo axel -n $(($(nproc) + 5)) -ao "${1##*/}" "$1"
+	else
+		sudo wget -q --show-progress --progress=bar:force "$1" 2>&1
+	fi
+}
 
 # run sudo apt update if it's been more than a week
 [ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && sudo apt-get update -qq
