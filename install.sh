@@ -49,6 +49,44 @@ function fancy_message() {
 	esac
 }
 
+function ask() {
+	local prompt default reply
+
+	if [[ ${2:-} = 'Y' ]]; then
+		prompt="${BIGreen}Y${NC}/${RED}n${NC}"
+		default='Y'
+	elif [[ ${2:-} = 'N' ]]; then
+		prompt="${GREEN}y${NC}/${BIRed}N${NC}"
+		default='N'
+	else
+		prompt="${GREEN}y${NC}/${RED}n${NC}"
+	fi
+
+	while true; do
+		# Ask the question (not using "read -p" as it uses stderr not stdout)
+		echo -ne "$1 [$prompt] "
+
+		# Read the answer (use /dev/tty in case stdin is redirected from somewhere else)
+		if [[ -z "$DISABLE_PROMPTS" ]]; then
+			read -r reply < /dev/tty
+		else
+			echo "$default"
+			reply=$default
+		fi
+
+		# Default?
+		if [[ -z $reply ]]; then
+			reply=$default
+		fi
+
+		# Check if the reply is valid
+		case "$reply" in
+			Y*|y*) return 0 ;;
+			N*|n*) return 1 ;;
+		esac
+	done
+}
+
 function banner() {
 	echo -e "|------------------------|"
 	echo -e "|---${GREEN}Pacstall Installer${NC}---|"
@@ -94,6 +132,17 @@ fancy_message info "Updating"
 sudo apt-get -qq update
 
 fancy_message info "Installing packages"
+
+
+ask "Do you want to install axel?" Y
+if [[ "$answer" -eq 1 ]]; then
+    sudo apt-get install -qq -y axel
+fi
+ask "Do you want to install ripgrep?" Y
+if [[ "$answer" -eq 1 ]]; then
+    sudo apt-get install -qq -y ripgrep
+fi
+
 sudo apt-get install -qq -y {curl,wget,stow,build-essential,unzip,tree,dialog,bc}
 
 
@@ -104,15 +153,18 @@ mkdir -p $STGDIR
 mkdir -p $STGDIR/scripts
 mkdir -p $STGDIR/repo
 mkdir -p /var/log/pacstall
+sudo mkdir -p /usr/share/man/man8/
+sudo mkdir -p /usr/share/bash-completion/completions
 
 rm -f $STGDIR/repo/pacstallrepo.txt > /dev/null
 touch $STGDIR/repo/pacstallrepo.txt
 echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > $STGDIR/repo/pacstallrepo.txt
+
 fancy_message info "Pulling scripts from GitHub "
 for i in {add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do 
-	wget -q --show-progress -N https://raw.githubusercontent.com/pacstall/pacstall/master/misc/scripts/"$i" -P $STGDIR/scripts
-	chmod +x $STGDIR/scripts/*
-done &
+	wget -q --show-progress -N https://raw.githubusercontent.com/pacstall/pacstall/master/misc/scripts/"$i" -P $STGDIR/scripts &
+done 
+
 PID=$!
 i=1
 sp="/-\|"
@@ -126,16 +178,16 @@ echo ""
 
 fancy_message info "pulling ${BLUE}pacstall${NC} from ${RED}https://raw.githubusercontent.com/pacstall/pacstall/master/pacstall${NC}"
 
-sudo wget -q --show-progress --progress=bar:force -O /bin/pacstall https://raw.githubusercontent.com/pacstall/pacstall/master/pacstall
-sudo chmod +x /bin/pacstall
-
-sudo mkdir -p /usr/share/man/man8/
-wget -q --show-progress --progress=bar:force -O /usr/share/man/man8/pacstall.8.gz https://raw.githubusercontent.com/pacstall/pacstall/master/misc/pacstall.8.gz
-
-sudo mkdir -p /usr/share/bash-completion/completions
-sudo wget -q --show-progress --progress=bar:force -O /usr/share/bash-completion/completions/pacstall https://raw.githubusercontent.com/pacstall/pacstall/master/misc/completion/bash
+sudo wget -q --show-progress --progress=bar:force -O /bin/pacstall https://raw.githubusercontent.com/pacstall/pacstall/master/pacstall &
+wget -q --show-progress --progress=bar:force -O /usr/share/man/man8/pacstall.8.gz https://raw.githubusercontent.com/pacstall/pacstall/master/misc/pacstall.8.gz &
+sudo wget -q --show-progress --progress=bar:force -O /usr/share/bash-completion/completions/pacstall https://raw.githubusercontent.com/pacstall/pacstall/master/misc/completion/bash &
 
 if command -v fish &>/dev/null; then
-	sudo wget -q --show-progress --progress=bar:force -O /usr/share/fish/vendor_completions.d/pacstall.fish https://raw.githubusercontent.com/pacstall/pacstall/master/misc/completion/fish
+	sudo wget -q --show-progress --progress=bar:force -O /usr/share/fish/vendor_completions.d/pacstall.fish https://raw.githubusercontent.com/pacstall/pacstall/master/misc/completion/fish &
 fi
+
+wait
+
+sudo chmod +x /bin/pacstall
+chmod +x $STGDIR/scripts/*
 # vim:set ft=sh ts=4 sw=4 noet:
