@@ -262,17 +262,17 @@ case "$url" in
 	;;
 	*.deb)
 		download "$url"
-		hashcheck "${url##*/}"    
+		hashcheck "${url##*/}"
 		sudo apt install -y -f ./"${url##*/}" 2>/dev/null
 		if [[ $? -eq 0 ]]; then
 			log
 			
-                        fancy_message info "Storing pacscript"
-                        sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
-                        cd "$DIR"
-                        sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
+			fancy_message info "Storing pacscript"
+			sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
+			cd "$DIR"
+			sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 
-                        exit 0
+			exit 0
 
 		else
 			fancy_message error "Failed to install the package"
