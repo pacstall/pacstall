@@ -100,7 +100,7 @@ else
 		return 0
 		# If there are multiple results, ask
 	else
-		echo -e "There are $LEN package(s) with the name $GREEN$SEARCH$NC."
+		echo -e "There are $LEN package(s) with the name $GREEN$PACKAGE$NC."
 		
 		ask "Do you want to continue?" Y
 		if [[ $answer -eq 1 ]]; then
