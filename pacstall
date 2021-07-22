@@ -295,6 +295,7 @@ while [[ ! "$1" == "--" ]]; do
 				# Check if the file exist
 				if [[ ! -f "$2".pacscript ]]; then
 					fancy_message error "$2 does not exist"
+					shift
 					continue
 				fi
 				shift
