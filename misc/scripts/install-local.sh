@@ -266,11 +266,13 @@ case "$url" in
 		sudo apt install -y -f ./"${url##*/}" 2>/dev/null
 		if [[ $? -eq 0 ]]; then
 			log
-			exit 0
+			
                         fancy_message info "Storing pacscript"
                         sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
                         cd "$DIR"
                         sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
+
+                        exit 0
 
 		else
 			fancy_message error "Failed to install the package"
@@ -279,7 +281,7 @@ case "$url" in
 	;;
 	*)
 		download "$url"
-		# I think you get it by now
+		# I think you get it by now 
 		hashcheck "${url##*/}"
 		sudo tar -xf "${url##*/}" 1>&1 2>/dev/null
 		cd ./*/ 2>/dev/null
