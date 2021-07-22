@@ -2,7 +2,8 @@ name: test install script
 on: [pull_request]
 jobs:
   test:
-    runs-on: [ghcr.io/pacstall/pacstall]
+    runs-on: [unbuntu-20.04]
+        image: ghcr.io/pacstall/pacstall:latest
     steps:
       - name: remote-bash
         uses: shinhwagk/remote-bash@0.0.1
