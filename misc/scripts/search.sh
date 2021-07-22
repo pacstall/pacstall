@@ -75,6 +75,9 @@ function parseRepo() {
 
 #Check if there are results
 if [[ "$LEN" -eq 0 ]]; then
+	if [[ -z "$SEARCH" ]]; then
+		SEARCH=$PACKAGE
+	fi
 	fancy_message warn "There is no package with the name $IRed$SEARCH$NC"
 	return 1
 # Check if it's upgrading packages
