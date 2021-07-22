@@ -249,7 +249,7 @@ while [[ ! "$1" == "--" ]]; do
 		  		source "$STGDIR/scripts/search.sh"
 		  		
 		  		if [[ $? -ne 0 ]]; then
-					i++
+					((i++))
 					continue
 				fi
 
@@ -258,7 +258,7 @@ while [[ ! "$1" == "--" ]]; do
 				
 				if [[ $? -ne 0 ]]; then
 					fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
-					i++
+					((i++))
 					continue
 				fi
 				
@@ -266,7 +266,7 @@ while [[ ! "$1" == "--" ]]; do
 		  		source "$STGDIR/scripts/install-local.sh"
 				if [[ $? -ne 0 ]]; then
 					fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
-					i++
+					((i++))
 					continue
 				fi
 		  	done
@@ -303,7 +303,7 @@ while [[ ! "$1" == "--" ]]; do
 				source "$STGDIR/scripts/install-local.sh"
 				if [[ $? -ne 0 ]]; then
 					fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
-					i++
+					((i++))
 					continue
 				fi
 				shift
@@ -339,7 +339,7 @@ while [[ ! "$1" == "--" ]]; do
 				source "$STGDIR/scripts/remove.sh"
 				if [[ $? -eq 0 ]]; then
 					fancy_message error "Failed to remove ${GREEN}${PACKAGE}${NC}"
-					i++
+					((i++))
 				fi
 			done
 			if [[ $i -ne 0 ]]; then
@@ -425,7 +425,7 @@ while [[ ! "$1" == "--" ]]; do
 				source "$STGDIR/scripts/search.sh"
 				
 		  		if [[ $? -ne 0 ]]; then
-					i++
+					((i++))
 					continue
 				fi
 
@@ -434,7 +434,7 @@ while [[ ! "$1" == "--" ]]; do
 				
 				if [[ $? -ne 0 ]]; then
 					fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
-					i++
+					((i++))
 					continue
 				fi
 				
