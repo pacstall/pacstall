@@ -194,6 +194,8 @@ function download {
 # run sudo apt update if it's been more than a week
 [ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && sudo apt-get update -qq
 
+source "$STGDIR/scripts/error_log.sh"
+
 while [[ ! "$1" == "--" ]]; do
 	case "$1" in
 		-P|--disable-prompts)
@@ -228,53 +230,50 @@ while [[ ! "$1" == "--" ]]; do
 			# Begin trapping
 			trap "trap_ctrlc" 2
 
-			i=0
 			while [[ -n "$2" ]]; do
 				export PACKAGE=$2
-		  		shift
+				shift
 				if [[ -z "$PACKAGE" ]]; then
 					fancy_message error "You failed to specify a package"
 					exit 1
 				fi
 
-		  		# Make the directory if not exist
-		  		if [[ ! -e "$STGDIR/repo/" ]]; then
+				# Make the directory if not exist
+				if [[ ! -e "$STGDIR/repo/" ]]; then
 					sudo mkdir -p "$STGDIR/repo"
 					sudo touch "$STGDIR/repo/pacstallrepo.txt"
 					sudo pacstall -A
 				fi
 
 				export type="install"
-		  		export local="no"
-		  		source "$STGDIR/scripts/search.sh"
-		  		
-		  		if [[ $? -ne 0 ]]; then
-					((i++))
+				export local="no"
+				source "$STGDIR/scripts/search.sh"
+				
+				if [[ $? -ne 0 ]]; then
 					continue
 				fi
 
-		  		URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
-		  		source "$STGDIR/scripts/download.sh"
+				URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
+				source "$STGDIR/scripts/download.sh"
 				
 				if [[ $? -ne 0 ]]; then
 					fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
-					((i++))
 					continue
 				fi
 				
-		  		export REPO
-		  		source "$STGDIR/scripts/install-local.sh"
+				export REPO
+				source "$STGDIR/scripts/install-local.sh"
 				if [[ $? -ne 0 ]]; then
 					fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
-					((i++))
 					continue
 				fi
-		  	done
-			if [[ $i -ne 0 ]]; then
-				exit $i
+			done
+			
+			if [[ -s "LOGFILE" ]]; then
+				exit 1
 			fi
-	  		exit 0
-	  	;;
+				exit 0
+			;;
 
 		-Il|--install-local)
 			
@@ -283,7 +282,6 @@ while [[ ! "$1" == "--" ]]; do
 				exit 1
 			fi
 			
-			i=0
 			while [[ -n "$2" ]]; do
 				INPUT="$(basename "$2" ".pacscript")" # Removes the suffix
 				export local="yes"
@@ -304,13 +302,12 @@ while [[ ! "$1" == "--" ]]; do
 				source "$STGDIR/scripts/install-local.sh"
 				if [[ $? -ne 0 ]]; then
 					fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
-					((i++))
 					continue
 				fi
 				shift
 			done
-			if [[ $i -ne 0 ]]; then
-				exit $i
+			if [[ -s "LOGFILE" ]]; then
+				exit 1
 			fi
 			exit 0
 		;;
@@ -333,18 +330,17 @@ while [[ ! "$1" == "--" ]]; do
 				fancy_message error "You failed to specify a package"
 				exit 1
 			fi
-			i=0
+			
 			while [[ -n "$2" ]]; do
 				PACKAGE=$2
 				shift
 				source "$STGDIR/scripts/remove.sh"
 				if [[ $? -eq 0 ]]; then
 					fancy_message error "Failed to remove ${GREEN}${PACKAGE}${NC}"
-					((i++))
 				fi
 			done
-			if [[ $i -ne 0 ]]; then
-				exit $i
+			if [[ -s "LOGFILE" ]]; then
+				exit 1
 			fi
 			exit 0
 		;;
@@ -362,7 +358,7 @@ while [[ ! "$1" == "--" ]]; do
 				exit 0
 			else
 				fancy_message error "You failed to specify a repo to add"
-				exit 1
+				return 1
 			fi
 		;;
 
@@ -418,14 +414,14 @@ while [[ ! "$1" == "--" ]]; do
 				fancy_message error "You failed to specify a package"
 				exit 1
 			fi
-			i=0
+			
 			while [[ -n "$2" ]]; do
 				PACKAGE=$2
 				shift
 				export type="download"
 				source "$STGDIR/scripts/search.sh"
 				
-		  		if [[ $? -ne 0 ]]; then
+				if [[ $? -ne 0 ]]; then
 					((i++))
 					continue
 				fi
@@ -435,17 +431,24 @@ while [[ ! "$1" == "--" ]]; do
 				
 				if [[ $? -ne 0 ]]; then
 					fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
-					((i++))
 					continue
 				fi
 				
 				fancy_message info "${GREEN}${PACKAGE}${NC}'s pacscript is downloaded in ${GREEN}$HOMEDIR/.cache/pacstall/$PACKAGE${NC}"
 			done
+
+			if [[ -s "LOGFILE" ]]; then
+				exit 1
+			fi
 			exit 0
 		;;
 
 		-Up|--upgrade)
 			source "$STGDIR/scripts/upgrade.sh"
+			
+			if [[ -s "LOGFILE" ]]; then
+				exit 1
+			fi
 			exit 0
 		;;
 

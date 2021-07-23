@@ -38,15 +38,12 @@ URLLIST=()
 while IFS= read -r URL; do
 	PARTIALLIST=($(curl -s "$URL"/packagelist))
 	URLLIST+=("${PARTIALLIST[@]/*/$URL}")
-	PACKAGELIST+=(${PARTIALLIST[*]})
-	PACKAGELIST[-1]+=' ' # Broke while testing
-	# Added space so that
-	# the last word didn't merge
-	# with the first in the
-	# following loop
+	PACKAGELIST+=(${PARTIALLIST[@]})
 done < "$STGDIR/repo/pacstallrepo.txt"
 
 # Gets index of packages that the search returns
+# Complete name if download, upgrade or install
+# Partial word if search
 if [[ -z "$PACKAGE" ]]; then
 	IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | grep -n "${SEARCH}" | cut -d : -f1| awk '{print $0"-1"}'|bc)
 else
@@ -77,6 +74,7 @@ function parseRepo() {
 if [[ "$LEN" -eq 0 ]]; then
 	if [[ -z "$SEARCH" ]]; then
 		fancy_message warn "There is no package with the name $IRed$PACKAGE$NC"
+		error_log 3 "search $PACKAGE"
 	else
 		fancy_message warn "There is no package with the name $IRed$SEARCH$NC"
 	fi
@@ -85,6 +83,7 @@ if [[ "$LEN" -eq 0 ]]; then
 # Check if it's upgrading packages
 elif [[ -n "$UPGRADE" ]]; then
 	REPOS=()
+	# Return list of repos with the package
 	for IDX in $IDXSEARCH ; do
 		REPOS+=(${URLLIST[$IDX]})
 	done
@@ -145,6 +144,8 @@ else
 		fi
 	fi
 fi
+
+error_log 1 "search $PACKAGE"
 return 1
 
 # vim:set ft=sh ts=4 sw=4 noet:
