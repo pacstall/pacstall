@@ -26,24 +26,31 @@ function fn_exists() {
 	declare -F "$1" > /dev/null;
 }
 
-
-# Run preliminary checks
-if [[ -z "$PACKAGE" ]]; then
-	fancy_message error "You failed to specify a package"
-	exit 1
-fi
-
 # Removal starts from here
 source "$LOGDIR/$PACKAGE" > /dev/null 2>&1
-source /var/cache/pacstall/"${PACKAGE}"/"${_version}"/"${PACKAGE}".pacscript
+
+if [[ $? -eq 0 ]]; then
+	fancy_message error "$PACKAGE is not installed or not properly symlinked"
+	error_log 3 "remove $PACKAGE"
+	return 1
+fi
+
+source /var/cache/pacstall/"${PACKAGE}"/"${_version}"/"${PACKAGE}".pacscript > /dev/null 2>&1
+
+if [[ $? -eq 0 ]]; then
+	fancy_message error "$PACKAGE is not installed or not properly symlinked"
+	error_log 1 "remove $PACKAGE"
+	return 1
+fi
 
 case "$url" in
 	*.deb)
 		if ! sudo apt remove "$gives" 2>/dev/null; then
 			fancy_message warn "Failed to remove the package"
-			exit 1
+			error_log 1 "remove $PACKAGE"
+			return 1
 		fi
-		exit 0
+		return 0
 	;;
 
 	*)
@@ -51,7 +58,8 @@ case "$url" in
 
 		if [[ ! -d "$PACKAGE" ]]; then
 			fancy_message error "$PACKAGE is not installed or not properly symlinked"
-			exit 1
+			error_log 1 "remove $PACKAGE"
+			return 1
 		fi
 
 		fancy_message info "Removing symlinks"
@@ -73,9 +81,10 @@ case "$url" in
 		fi
 
 		sudo rm -f "$LOGDIR/$PACKAGE"
-		exit 0
+		return 0
 	;;
 esac
 
-exit
+error_log 1 "remove $PACKAGE"
+return 1
 # vim:set ft=sh ts=4 sw=4 noet:

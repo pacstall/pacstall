@@ -22,17 +22,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-# This script searches for packages
+
+# This script searches for packages in all repos saved on pacstallrepo.txt
 
 export LC_ALL=C
 
-if [[ -z "$UPGRADE" ]]; then
-	SEARCH=$2
-	if [[ -z "$SEARCH" ]]; then
-		fancy_message error "You failed to specify a package"
-		exit 3
-	fi
-else
+if [[ -n "$UPGRADE" ]]; then
 	PACKAGE=$i
 fi
 
@@ -43,15 +38,12 @@ URLLIST=()
 while IFS= read -r URL; do
 	PARTIALLIST=($(curl -s "$URL"/packagelist))
 	URLLIST+=("${PARTIALLIST[@]/*/$URL}")
-	PACKAGELIST+=(${PARTIALLIST[*]})
-	PACKAGELIST[-1]+=' ' # Broke while testing
-	# Added space so that
-	# the last word didn't merge
-	# with the first in the
-	# following loop
+	PACKAGELIST+=(${PARTIALLIST[@]})
 done < "$STGDIR/repo/pacstallrepo.txt"
 
 # Gets index of packages that the search returns
+# Complete name if download, upgrade or install
+# Partial word if search
 if [[ -z "$PACKAGE" ]]; then
 	IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | grep -n "${SEARCH}" | cut -d : -f1| awk '{print $0"-1"}'|bc)
 else
@@ -80,30 +72,39 @@ function parseRepo() {
 
 #Check if there are results
 if [[ "$LEN" -eq 0 ]]; then
-	fancy_message warn "There is no package with the name $IRed$SEARCH$NC"
-	exit 1
-	# Check if it's upgrading packages
+	if [[ -z "$SEARCH" ]]; then
+		fancy_message warn "There is no package with the name $IRed$PACKAGE$NC"
+		error_log 3 "search $PACKAGE"
+	else
+		fancy_message warn "There is no package with the name $IRed$SEARCH$NC"
+	fi
+	
+	return 1
+# Check if it's upgrading packages
 elif [[ -n "$UPGRADE" ]]; then
 	REPOS=()
+	# Return list of repos with the package
 	for IDX in $IDXSEARCH ; do
 		REPOS+=(${URLLIST[$IDX]})
 	done
-# Check if its being used for search or intall 
+	return 0
+# Check if its being used for search
 elif [[ -z "$PACKAGE" ]]; then
-	# Search
 	for IDX in $IDXSEARCH ; do
 		echo -e "$GREEN${PACKAGELIST[$IDX]}$CYAN @ $(parseRepo "${URLLIST[$IDX]}") $NC"
 	done
-	exit 0
+	return 0
+# Options left: install or download
+# Variable $type used for the prompt
 else
-	# Install
 	# If there is only one result, proceed
 	if [[ "$LEN" -eq 1 ]]; then
 		export PACKAGE=${PACKAGELIST[$IDXSEARCH]}
 		export REPO=${URLLIST[$IDXSEARCH]}
+		return 0
 		# If there are multiple results, ask
 	else
-		echo -e "There are $LEN package(s) with the name $GREEN$SEARCH$NC."
+		echo -e "There are $LEN package(s) with the name $GREEN$PACKAGE$NC."
 		
 		ask "Do you want to continue?" Y
 		if [[ $answer -eq 1 ]]; then
@@ -115,16 +116,16 @@ else
 				fi
 			done
 			if [[ -n "$PACSTALLREPO" ]]; then
+				# Overwrite last question
 				ask "\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo "${URLLIST[$IDX]}")$NC?" Y
 				if [[ $answer -eq 1 ]];then
 					export PACKAGE=${PACKAGELIST[$PACSTALLREPO]}
 					export REPO=${URLLIST[$PACSTALLREPO]}
-					DEFAULT='yes'
-				else
-					DEFAULT='no'
+					unset $PACSTALLREPO
+					return 0
 				fi
-			fi
-			if [[ "$DEFAULT" == "no" ]] || [[ -z "$PACSTALLREPO" ]]; then
+			# If other repos, ask, if Pacstall repo, skip
+			else
 				for IDX in $IDXSEARCH ; do
 					if [[ "$IDX" == "$PACSTALLREPO" ]]; then
 						continue
@@ -134,13 +135,17 @@ else
 					if [[ $answer -eq 1 ]];then
 						export PACKAGE=${PACKAGELIST[$IDX]}
 						export REPO=${URLLIST[$IDX]}
-						break
+						return 0
 					fi
 				done
 			fi
 		else
-			exit 1
+			return 1 # No
 		fi
 	fi
 fi
+
+error_log 1 "search $PACKAGE"
+return 1
+
 # vim:set ft=sh ts=4 sw=4 noet:
