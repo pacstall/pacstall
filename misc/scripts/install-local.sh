@@ -139,9 +139,9 @@ if [[ $? -ne 0 ]]; then
 fi
 
 # export all variables from pacscript (fakeroot), and redirect to /dev/null in case of errors (because obviously no pacscript will contain every single available option)
-export {name,version,url,build_depends,depends,replace,description,hash,maintainer,optdepends,ppa,pacdeps,patch} > /dev/null
+export {name,version,url,build_depends,depends,replace,description,hash,maintainer,optdepends,ppa,pacdeps,patch} > /dev/null 2>&1
 # Do the same for functions
-export -f {prepare,build,install,postinst,removescript} > /dev/null
+export -f {prepare,build,install,postinst,removescript} > /dev/null 2>&1
 
 if type pkgver > /dev/null 2>&1; then
 	version=$(pkgver) > /dev/null
