@@ -32,6 +32,10 @@ if [[ -z $reply ]] || [[ $reply == "N"* ]] || [[ $reply == "n"* ]]; then
     exit 1
 fi
 
+sudo rm -rf "/var/log/pacstall/error_log"
+sudo mkdir "/var/log/pacstall/metadata"
+sudo mv "/var/log/pacstall/*" "/var/log/pacstall/metadata" 2>/dev/null
+
 STGDIR="/usr/share/pacstall"
 
 for i in {error_log.sh,add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
