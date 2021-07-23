@@ -22,8 +22,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-if [[ ! -d "$LOGDIR/error_log" ]]; then
-	sudo mkdir -p "$LOGDIR/error_log"
+if [[ ! -d "/var/log/pacstall/error_log" ]]; then
+	sudo mkdir -p "/var/log/pacstall/error_log"
 fi
 
 function error_log() {

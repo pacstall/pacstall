@@ -33,8 +33,9 @@ if [[ -z $reply ]] || [[ $reply == "N"* ]] || [[ $reply == "n"* ]]; then
 fi
 
 sudo rm -rf "/var/log/pacstall/error_log"
-sudo mkdir "/var/log/pacstall/metadata"
+sudo mkdir -p "/var/log/pacstall/metadata"
 sudo mv "/var/log/pacstall/*" "/var/log/pacstall/metadata" 2>/dev/null
+sudo mkdir -p "/var/log/pacstall/error_log"
 
 STGDIR="/usr/share/pacstall"
 
