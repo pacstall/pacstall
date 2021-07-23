@@ -132,7 +132,7 @@ fancy_message info "Sourcing pacscript"
 DIR=$(pwd)
 export homedir="/home/$(logname)"
 source "$PACKAGE".pacscript > /dev/null
-if [[ $? -ne 0 ]]; thenif [[ $? -ne 0 ]]; then
+if [[ $? -ne 0 ]]; then
 	fancy_message error "Couldn't source pacscript"
 	error_log 12 "install $PACKAGE"
 	return 1
