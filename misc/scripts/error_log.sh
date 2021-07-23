@@ -24,7 +24,7 @@
 
 
 
-export LOGFILE="$LOGDIR/error_log/$(date +"%F_%T.log")"
+export L OGFILE="$LOGDIR/error_log/$(date +"%F_%T.log")"
 
 if [[ ! -d "$LOGDIR/error_log" ]]; then
 	mkdir -p "$LOGDIR/error_log"
@@ -103,6 +103,7 @@ function error_log() {
 			echo "[$(date) | $scope ] Error 16 - Specified hash does not exist or failed to sign package." >> "$LOGFILE"
 			return 0
 		;;
+	esac
 }
 
 export -f error_log
