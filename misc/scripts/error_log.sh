@@ -24,7 +24,7 @@
 
 
 
-export L OGFILE="$LOGDIR/error_log/$(date +"%F_%T.log")"
+export LoGFILE="$LOGDIR/error_log/$(date +"%F_%T.log")"
 
 if [[ ! -d "$LOGDIR/error_log" ]]; then
 	mkdir -p "$LOGDIR/error_log"
@@ -34,8 +34,8 @@ function error_log() {
 	local code="${1}"
 	local scope="${2}"
 	
-	if [[ ! -f "LOGFILE" ]]; then
-		
+	if [[ ! -f "$LOGFILE" ]]; then
+		sudo touch "$LOGFILE"
 	fi
 	
 	case "$code" in
