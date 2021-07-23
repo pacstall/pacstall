@@ -152,7 +152,7 @@ fancy_message info "making directories"
 mkdir -p $STGDIR
 mkdir -p $STGDIR/scripts
 mkdir -p $STGDIR/repo
-mkdir -p /var/log/pacstall
+mkdir -p /var/log/pacstall/error_log
 sudo mkdir -p /usr/share/man/man8/
 sudo mkdir -p /usr/share/bash-completion/completions
 
