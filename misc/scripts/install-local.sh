@@ -64,7 +64,7 @@ function cget() {
 
 # Logging metadata
 function log() {
-	
+
 	# Origin repo info parsing
 	if [[ $local == 'no' ]]; then
 		if echo "$REPO" | grep "github" > /dev/null ; then
@@ -137,6 +137,11 @@ if [[ $? -ne 0 ]]; then
 	error_log 12 "install $PACKAGE"
 	return 1
 fi
+
+# export all variables from pacscript (fakeroot), and redirect to /dev/null in case of errors (because obviously no pacscript will contain every single available option)
+export {name,version,url,build_depends,depends,replace,description,hash,maintainer,optdepends,ppa,pacdeps,patch} > /dev/null
+# Do the same for functions
+export -f {prepare,build,install,postinst,removescript} > /dev/null
 
 if type pkgver > /dev/null 2>&1; then
 	version=$(pkgver) > /dev/null
@@ -274,7 +279,7 @@ case "$url" in
 		sudo apt install -y -f ./"${url##*/}" 2>/dev/null
 		if [[ $? -eq 0 ]]; then
 			log
-			
+
 			fancy_message info "Storing pacscript"
 			sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
 			cd "$DIR"
@@ -311,7 +316,7 @@ if [[ -n $patch ]]; then
 fi
 
 export pkgdir="/usr/src/pacstall/$name"
-prepare
+fakeroot -- prepare
 
 # Check if build function doesn't exist
 if ! type -t build > /dev/null 2>&1; then
@@ -320,7 +325,7 @@ if ! type -t build > /dev/null 2>&1; then
 	return 1
 fi
 
-build
+fakeroot -- build
 trap - SIGINT
 
 fancy_message info "Installing"
