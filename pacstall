@@ -28,6 +28,7 @@ export LOGDIR="/var/log/pacstall"
 export LOGFILE="$LOGDIR/error_log/$(date +"%F_%T.log")"
 export SRCDIR="/tmp/pacstall"
 export STGDIR="/usr/share/pacstall"
+export STOWDIR="/usr/src/pacstall"
 
 # Colors
 export BOLD=$(tput bold)
