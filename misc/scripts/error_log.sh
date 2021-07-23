@@ -27,7 +27,7 @@
 export LoGFILE="$LOGDIR/error_log/$(date +"%F_%T.log")"
 
 if [[ ! -d "$LOGDIR/error_log" ]]; then
-	mkdir -p "$LOGDIR/error_log"
+	sudo mkdir -p "$LOGDIR/error_log"
 fi
 
 function error_log() {
