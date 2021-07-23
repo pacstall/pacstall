@@ -132,10 +132,10 @@ fancy_message info "Sourcing pacscript"
 DIR=$(pwd)
 export homedir="/home/$(logname)"
 source "$PACKAGE".pacscript > /dev/null
-if [[ $? -eq 1 ]]; then
+if [[ $? -ne 0 ]]; thenif [[ $? -ne 0 ]]; then
 	fancy_message error "Couldn't source pacscript"
 	error_log 12 "install $PACKAGE"
-	return 3
+	return 1
 fi
 
 if type pkgver > /dev/null 2>&1; then
@@ -144,7 +144,7 @@ fi
 
 # Run checks function
 checks
-if [[ $? -eq 1 ]]; then
+if [[ $? -ne 0	 ]]; then
 	fancy_message error "There was an error checking the script!"
 	error_log 6 "install $PACKAGE"
 	return 1
@@ -232,7 +232,7 @@ function hashcheck() {
 
 fancy_message info "Installing dependencies"
 sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $depends
-if [[ $? -eq 1 ]]; then
+if [[ $? -ne 0	 ]]; then
 	fancy_message error "Failed to install dependencies"
 	error_log 8 "install $PACKAGE"
 	return 1
@@ -365,7 +365,7 @@ fi
 # Magic time. This installs the package to /, so `/usr/src/pacstall/foo/usr/bin/foo` -> `/usr/bin/foo`
 sudo stow --target="/" "$PACKAGE"
 # stow will fail to symlink packages if files already exist on the system; this is just an error
-if [[ $? -eq 1 ]]; then
+if [[ $? -ne 0	 ]]; then
 	fancy_message error "Package contains links to files that exist on the system"
 	error_log 14 "install $PACKAGE"
 	return 1
