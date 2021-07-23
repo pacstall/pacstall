@@ -22,10 +22,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-
-
-export LOGFILE="$LOGDIR/error_log/$(date +"%F_%T.log")"
-
 if [[ ! -d "$LOGDIR/error_log" ]]; then
 	sudo mkdir -p "$LOGDIR/error_log"
 fi
