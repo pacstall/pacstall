@@ -32,7 +32,7 @@ function error_log() {
 	
 	if [[ ! -f "$LOGFILE" ]]; then
 		sudo touch "$LOGFILE"
-		find "$LOGDIR"/error_log/* -type f -ctime +14 -exec sudo rm -rf {} \;
+		find "/var/log/pacstall/error_log/*" -type f -ctime +14 -exec sudo rm -rf {} \;
 	fi
 	
 	case "$code" in
