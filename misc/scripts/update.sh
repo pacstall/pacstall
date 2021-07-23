@@ -36,6 +36,7 @@ sudo rm -rf "/var/log/pacstall/error_log"
 sudo mkdir -p "/var/log/pacstall/metadata"
 sudo mv /var/log/pacstall/* /var/log/pacstall/metadata 2>/dev/null
 sudo mkdir -p "/var/log/pacstall/error_log"
+sudo chown $LOGNAME -R /var/log/pacstall/error_log
 
 STGDIR="/usr/share/pacstall"
 
