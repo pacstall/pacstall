@@ -26,7 +26,8 @@
 
 if ! wget -q --tries=10 --timeout=20 --spider https://github.com; then
 	fancy_message error "Not connected to internet"
-	exit 6
+	error_log 1 "get $PACKAGE pacscript"
+	exit 2
 fi
 
 if curl --output /dev/null --silent --head --fail "$URL" ; then
@@ -34,8 +35,9 @@ if curl --output /dev/null --silent --head --fail "$URL" ; then
 	mkdir -p "$PACKAGE" && cd "$PACKAGE"
 
 	download "$URL" > /dev/null 2>&1
+	return 0
 else
-	fancy_message warn "The file you want to download does not exist"
-	exit 6
+	error_log 1 "get $PACKAGE pacscript"
+	return 1
 fi
 # vim:set ft=sh ts=4 sw=4 noet:
