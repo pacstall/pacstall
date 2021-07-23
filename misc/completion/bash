@@ -51,7 +51,7 @@ _pacstall() {
 		;;
 
 		-Qi|--query-info)
-			COMPREPLY=( $( compgen -W "$(/bin/ls -1aA /var/log/pacstall/)" -- $cur ) )
+			COMPREPLY=( $( compgen -W "$(/bin/ls -1aAp /var/log/pacstall/metadata)" -- $cur ) )
 			return
 		;;
 		-Il|--install-local)
