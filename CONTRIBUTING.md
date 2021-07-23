@@ -116,7 +116,7 @@ footer
 * `fix`: A bug fix.
 * `docs`: Changes to documentation.
 * `style`: Formatting etc; no code change.
-* `refactor`: Refactoring code.
+* `ref`: Refactoring code.
 * `test`: Adding tests, refactoring test; no production code change.
 
 ##### Scopes
@@ -151,7 +151,7 @@ Pull request titles should contain one of these prefixes:
 * `Feat`: Adding new features.
 * `Chan`: Change default behaviors or the existing features.
 * `Fix`: Fix some bugs.
-* `Refactor`: Refactor code.
+* `Ref`: Refactor code.
 * `Style`: Change formatting etc; no production code change.
 * `Remove`: Remove some existing code.
 * `Doc`: Update the help files.
