@@ -55,5 +55,7 @@ case "$url" in
 	;;
 esac
 
+sudo dpkg -r $name-pacstall # removes virtual .deb package
+
 exit
 # vim:set ft=sh ts=4 sw=4 noet:
