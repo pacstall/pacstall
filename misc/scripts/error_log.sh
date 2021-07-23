@@ -24,7 +24,7 @@
 
 
 
-export LoGFILE="$LOGDIR/error_log/$(date +"%F_%T.log")"
+export LOGFILE="$LOGDIR/error_log/$(date +"%F_%T.log")"
 
 if [[ ! -d "$LOGDIR/error_log" ]]; then
 	sudo mkdir -p "$LOGDIR/error_log"
