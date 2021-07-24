@@ -251,7 +251,7 @@ case "$url" in
 		# The srcdir is /tmp/pacstall/foo
 		export srcdir="/tmp/pacstall/$PWD"
 		# Make the directory available for users
-		sudo chown -R "$(logname)":"$(logname)" . 2>/dev/null
+		sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
 		# Check the integrity
 		git fsck --full
 	;;
