@@ -101,6 +101,9 @@ function error_log() {
 			echo "[ $(date) | $scope ] Error 16 - Specified hash does not exist or failed to sign package." >> "$LOGFILE"
 			return 0
 		;;
+		17)
+			echo "[ $(date) | $scope ] Error 17 - Failed to run a function during building process." >> "$LOGFILE"
+			return 0
 	esac
 }
 

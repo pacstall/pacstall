@@ -312,6 +312,11 @@ fi
 
 export pkgdir="/usr/src/pacstall/$name"
 prepare 2>&1 | tee -a "$LOGFILE"
+if [[ $? -ne 0 ]]; then
+	fancy_message error "Failed to prepare $PACKAGE"
+	error_log 17 "run prepare"
+	return 1
+fi
 
 # Check if build function doesn't exist
 if ! type -t build > /dev/null 2>&1; then
@@ -321,6 +326,11 @@ if ! type -t build > /dev/null 2>&1; then
 fi
 
 build 2>&1 | tee -a "$LOGFILE"
+if [[ $? -ne 0 ]]; then
+	fancy_message error "Failed to build $PACKAGE"
+	error_log 17 "run build"
+	return 1
+fi
 trap - SIGINT
 
 fancy_message info "Installing"
