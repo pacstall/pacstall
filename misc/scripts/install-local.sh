@@ -316,8 +316,13 @@ if [[ -n $patch ]]; then
 fi
 
 export pkgdir="/usr/src/pacstall/$name"
+
+# fakeroot is weird but this method works
+# create tmp variable that is the output of what prepare function is (it prints out function)
 tmp_prepare=$(declare -f prepare)
+# We run fakeroot, BUT, we don't actually pass any variables through to fakeroot. In other words, bash works with the tmp_prepare, instead of fakeroot
 fakeroot -- bash -c "$tmp_prepare; prepare"
+# Unset because it's a tmp variable
 unset tmp_prepare
 
 # Check if build function doesn't exist
@@ -331,6 +336,7 @@ tmp_build=$(declare -f build)
 fakeroot -- bash -c "$tmp_build; build"
 unset tmp_build
 
+# Trap so that we can clean up (hopefully without messing up anything)
 trap - SIGINT
 
 fancy_message info "Installing"
