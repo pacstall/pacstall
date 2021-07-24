@@ -316,7 +316,9 @@ if [[ -n $patch ]]; then
 fi
 
 export pkgdir="/usr/src/pacstall/$name"
-fakeroot -- prepare
+tmp_prepare=$(declare -f prepare)
+fakeroot -- bash -c "$tmp_prepare; prepare"
+unset tmp_prepare
 
 # Check if build function doesn't exist
 if ! type -t build > /dev/null 2>&1; then
@@ -325,7 +327,10 @@ if ! type -t build > /dev/null 2>&1; then
 	return 1
 fi
 
-fakeroot -- build
+tmp_build=$(declare -f build)
+fakeroot -- bash -c "$tmp_build; build"
+unset tmp_build
+
 trap - SIGINT
 
 fancy_message info "Installing"
