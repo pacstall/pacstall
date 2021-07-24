@@ -336,7 +336,7 @@ while [[ ! "$1" == "--" ]]; do
 				PACKAGE=$2
 				shift
 				source "$STGDIR/scripts/remove.sh"
-				if [[ $? -eq 0 ]]; then
+				if [[ $? -ne 0 ]]; then
 					fancy_message error "Failed to remove ${GREEN}${PACKAGE}${NC}"
 				fi
 			done
