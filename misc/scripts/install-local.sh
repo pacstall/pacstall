@@ -112,11 +112,11 @@ function log() {
 
 
 function makeVirtualDeb {
-    # creates empty .deb package (with only the control file) for apt integration
-    # implements $(gives) variable
-    # Note: I only put "development" in "Section" because I had to put something there
-    sudo mkdir -p $SRCDIR/$name-pacstall/DEBIAN
-    echo "Package: $name-pacstall
+	# creates empty .deb package (with only the control file) for apt integration
+	# implements $(gives) variable
+	# Note: I only put "development" in "Section" because I had to put something there
+	sudo mkdir -p $SRCDIR/$name-pacstall/DEBIAN
+	echo "Package: $name-pacstall
 Version: $version
 Depends: ${depends//' '/' | '}
 Architecture: all
@@ -129,10 +129,10 @@ Provides: $gives
 Maintainer: $maintainer
 Description: This is a dummy package generated and used by pacstall, please do not delete
  $description" | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control"
-    sudo dpkg-deb -b "$SRCDIR/$name-pacstall"
-    sudo rm -rf "$SRCDIR/$name-pacstall"
-    sudo dpkg -i "$SRCDIR/$name-pacstall.deb"
-    sudo rm "$SRCDIR/$name-pacstall.deb"
+	sudo dpkg-deb -b "$SRCDIR/$name-pacstall"
+	sudo rm -rf "$SRCDIR/$name-pacstall"
+	sudo dpkg -i "$SRCDIR/$name-pacstall.deb"
+	sudo rm "$SRCDIR/$name-pacstall.deb"
 }
 
 
