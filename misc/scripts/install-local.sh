@@ -116,7 +116,7 @@ function makeVirtualDeb {
 	# implements $(gives) variable
 	# Note: I only put "development" in "Section" because I had to put something there
 	sudo mkdir -p $SRCDIR/$name-pacstall/DEBIAN
-	sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" < echo "Package: $name-pacstall
+	echo "Package: $name-pacstall
 Version: $version
 Depends: ${depends//' '/' | '}
 Architecture: all
@@ -128,7 +128,7 @@ Replace: ${replace//' '/', '}
 Provides: $gives
 Maintainer: $maintainer
 Description: This is a dummy package generated and used by pacstall, please do not delete
- $description" > "/dev/null"
+ $description" | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	sudo dpkg-deb -b "$SRCDIR/$name-pacstall" > "/dev/null"
 	sudo rm -rf "$SRCDIR/$name-pacstall"
 	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" > "/dev/null"
