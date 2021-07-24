@@ -204,7 +204,7 @@ fi
 if [[ -n "$ppa" ]]; then
 	for i in "${ppa[@]}"; do
 		# Add ppa, but ppa bad I guess
-		sudo add-apt-repository ppa:"$i"
+		sudo add-apt-repository ppa:"$i" 2>&1 | tee -a "$LOGFILE"
 	done
 fi
 
@@ -311,7 +311,7 @@ if [[ -n $patch ]]; then
 fi
 
 export pkgdir="/usr/src/pacstall/$name"
-prepare
+prepare 2>&1 | tee -a "$LOGFILE"
 
 # Check if build function doesn't exist
 if ! type -t build > /dev/null 2>&1; then
@@ -320,11 +320,11 @@ if ! type -t build > /dev/null 2>&1; then
 	return 1
 fi
 
-build
+build 2>&1 | tee -a "$LOGFILE"
 trap - SIGINT
 
 fancy_message info "Installing"
-install
+install 2>&1 | tee -a "$LOGFILE"
 
 if [[ $REMOVE_DEPENDS = y ]]; then
 	sudo apt-get remove $build_depends
@@ -363,7 +363,7 @@ if ! command -v stow > /dev/null; then
 fi
 
 # Magic time. This installs the package to /, so `/usr/src/pacstall/foo/usr/bin/foo` -> `/usr/bin/foo`
-sudo stow --target="/" "$PACKAGE"
+sudo stow --target="/" "$PACKAGE" 2>&1 | tee -a "$LOGFILE"
 # stow will fail to symlink packages if files already exist on the system; this is just an error
 if [[ $? -ne 0	 ]]; then
 	fancy_message error "Package contains links to files that exist on the system"
@@ -371,11 +371,11 @@ if [[ $? -ne 0	 ]]; then
 	return 1
 fi
 
-# `hash -r` updates PATH database
+# `hash -r` updates PATH database so if you deleted a file in PATH, your shell doesn't complain that the file is missing
 hash -r
 type -t postinst > /dev/null 2>&1
 if [[ $? -eq 0 ]]; then
-	postinst
+	postinst 2>&1 | tee -a "$LOGFILE"
 fi
 
 fancy_message info "Storing pacscript"
@@ -384,7 +384,7 @@ cd "$DIR"
 sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 
 fancy_message info "Cleaning up"
-cleanup
+cleanup 2>&1 | tee -a "$LOGFILE"
 
 return 0
 
