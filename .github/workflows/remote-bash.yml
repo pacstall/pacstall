@@ -3,10 +3,15 @@ on: [pull_request]
 jobs:
   test:
     runs-on: [unbuntu-20.04]
+        container:
+            image: ghcr.io/pacstall/pacstall:latest
+            credentials:
+               username: pacstall
+               password: ${{  secrets.DOCKER_CONTAINER_REGISTRY_TOKEN  }}
     steps:
       - name: remote-bash
-        uses: docker://ghcr.io/pacstall/pacstall
+        uses: shinhwagk/remote-bash@0.0.1
         with:
           args:
         env:
-          REMOTE_BASH_URL: https://gist.githubusercontent.com/Henryws/d20ffad301c9f83f9c9f6243553c961a/raw/24aaa431496ca716ace4646f8354ed7f84349c05/pacstall-install-and-install-something-long-file-name.sh
+          REMOTE_BASH_URL: https://raw.githubusercontent.com/NarutoXY/pacstall/develop/.github/workflows/pacstall_check.sh
