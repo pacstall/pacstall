@@ -6,7 +6,7 @@ jobs:
         container:
             image: ghcr.io/pacstall/pacstall:latest
             credentials:
-               username: pacstall
+               username: narutoxy
                password: ${{  secrets.DOCKER_CONTAINER_REGISTRY_TOKEN  }}
     steps:
       - name: remote-bash
