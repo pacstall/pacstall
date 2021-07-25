@@ -324,6 +324,7 @@ if ! command -v fakeroot > /dev/null; then
 fi
 tmp_prepare=$(declare -f prepare)
 # We run fakeroot, BUT, we don't actually pass any variables through to fakeroot. In other words, bash works with the tmp_prepare, instead of fakeroot
+fancy_message info "Running prepare in fakeroot. Do not enter password if prompted"
 fakeroot -- bash -c "$tmp_prepare; prepare"
 # Unset because it's a tmp variable
 unset tmp_prepare
@@ -339,6 +340,7 @@ if ! command -v fakeroot > /dev/null; then
 	sudo apt-get install fakeroot -y
 fi
 tmp_build=$(declare -f build)
+fancy_message info "Running build in fakeroot. Do not enter password if prompted"
 fakeroot -- bash -c "$tmp_build; build"
 unset tmp_build
 
