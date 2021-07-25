@@ -238,6 +238,24 @@ if [[ $? -ne 0	 ]]; then
 	return 1
 fi
 
+# If optdepends exists do this
+if [[ -n $optdepends ]]; then
+	sudo rm -f /tmp/pacstall-optdepends
+
+	fancy_message info "$name has optional dependencies that can enhance its functionalities"
+	echo "Optional dependencies:"
+	printf '    %s\n' "${optdepends[@]}"
+	ask "Do you want to install them" Y
+	if [[ $answer -eq 1 ]]; then
+		for items in "${optdepends[*]}"; do
+			# output the name of the apt thing without the description, EI: `foo: not bar` -> `foo`
+			printf "%s\n" "${optdepends[@]}" | awk -F': ' '{print $1}' | tr '\n' ' ' >> /tmp/pacstall-optdepends
+			# Install
+			sudo apt-get install -y -qq $(cat /tmp/pacstall-optdepends)
+		done
+	fi
+fi
+
 fancy_message info "Retrieving packages"
 mkdir -p "$SRCDIR"
 cd "$SRCDIR"
@@ -335,24 +353,6 @@ cd "$HOME"
 
 # Metadata writing
 log
-
-# If optdepends exists do this
-if [[ -n $optdepends ]]; then
-	sudo rm -f /tmp/pacstall-optdepends
-
-	fancy_message info "$name has optional dependencies that can enhance its functionalities"
-	echo "Optional dependencies:"
-	printf '    %s\n' "${optdepends[@]}"
-	ask "Do you want to install them" Y
-	if [[ $answer -eq 1 ]]; then
-		for items in "${optdepends[*]}"; do
-			# output the name of the apt thing without the description, EI: `foo: not bar` -> `foo`
-			printf "%s\n" "${optdepends[@]}" | awk -F': ' '{print $1}' | tr '\n' ' ' >> /tmp/pacstall-optdepends
-			# Install
-			sudo apt-get install -y -qq $(cat /tmp/pacstall-optdepends)
-		done
-	fi
-fi
 
 fancy_message info "Symlinking files"
 cd /usr/src/pacstall/ || sudo mkdir -p /usr/src/pacstall && cd /usr/src/pacstall
