@@ -347,7 +347,7 @@ if [[ -n $optdepends ]]; then
 	if [[ $answer -eq 1 ]]; then
 		for items in "${optdepends[*]}"; do
 			# output the name of the apt thing without the description, EI: `foo: not bar` -> `foo`
-			printf "%s\n" "${optdepends[@]}" | cut -f1 -d":" | tr '\n' ' ' >> /tmp/pacstall-optdepends
+			printf "%s\n" "${optdepends[@]}" | awk -F': ' '{print $1}' | tr '\n' ' ' >> /tmp/pacstall-optdepends
 			# Install
 			sudo apt-get install -y -qq $(cat /tmp/pacstall-optdepends)
 		done
