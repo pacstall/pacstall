@@ -152,7 +152,9 @@ fancy_message info "making directories"
 mkdir -p $STGDIR
 mkdir -p $STGDIR/scripts
 mkdir -p $STGDIR/repo
-mkdir -p /var/log/pacstall
+mkdir -p /var/log/pacstall/metadata
+mkdir -p /var/log/pacstall/error_log
+sudo chown $LOGNAME -R /var/log/pacstall/error_log
 sudo mkdir -p /usr/share/man/man8/
 sudo mkdir -p /usr/share/bash-completion/completions
 
@@ -161,7 +163,7 @@ touch $STGDIR/repo/pacstallrepo.txt
 echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > $STGDIR/repo/pacstallrepo.txt
 
 fancy_message info "Pulling scripts from GitHub "
-for i in {add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do 
+for i in {error_log.sh,add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do 
 	wget -q --show-progress -N https://raw.githubusercontent.com/pacstall/pacstall/master/misc/scripts/"$i" -P $STGDIR/scripts &
 done 
 
