@@ -2,7 +2,7 @@ name: test install script
 on: [pull_request]
 jobs:
   test:
-    runs-on: [unbuntu-20.04]
+    runs-on: [ubuntu-20.04]
         container:
             image: ghcr.io/pacstall/pacstall:latest
             credentials:
