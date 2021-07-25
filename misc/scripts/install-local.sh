@@ -125,7 +125,7 @@ Section: development
 Priority: optional
 Conflicts: ${replace//' '/', '}
 Replace: ${replace//' '/', '}
-Provides: ${gives:+name}
+Provides: ${gives:-$name}
 Maintainer: $maintainer
 Description: This is a dummy package generated and used by pacstall, please do not delete
  $description" | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
