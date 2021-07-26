@@ -143,7 +143,7 @@ if [[ "$answer" -eq 1 ]]; then
     sudo apt-get install -qq -y ripgrep
 fi
 
-sudo apt-get install -qq -y curl wget stow build-essential unzip tree dialog bc fakeroot
+sudo apt-get install -qq -y curl wget stow build-essential unzip tree bc fakeroot
 
 
 export STGDIR="/usr/share/pacstall"
