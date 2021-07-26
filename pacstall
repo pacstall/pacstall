@@ -22,11 +22,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-# Error out when run as root
-if [[ "$EUID" -eq 0 ]]; then
-	fancy_message error "Pacstall can't be run as root. Please run as a normal user."
-	exit 1
-fi
 # Configuration
 export LC_ALL=C
 export LOGDIR="/var/log/pacstall/metadata"
@@ -196,6 +191,13 @@ function download() {
 		sudo wget -q --show-progress --progress=bar:force "$1" 2>&1
 	fi
 }
+
+
+# Error out when run as root
+if [[ "$EUID" -eq 0 ]]; then
+	fancy_message error "Pacstall can't be run as root. Please run as a normal user."
+	exit 1
+fi
 
 # run sudo apt update if it's been more than a week
 [ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && sudo apt-get update -qq
