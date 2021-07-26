@@ -28,6 +28,8 @@ function cleanup () {
 	if [ -f /tmp/pacstall-optdepends ]; then
 		sudo rm /tmp/pacstall-optdepends
 	fi
+
+	rm -rf "/tmp/pacstall/pacscripts/"
 }
 
 function trap_ctrlc () {
