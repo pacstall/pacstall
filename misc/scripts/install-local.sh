@@ -375,7 +375,7 @@ fi
 # Magic time. This installs the package to /, so `/usr/src/pacstall/foo/usr/bin/foo` -> `/usr/bin/foo`
 sudo stow --target="/" "$PACKAGE" 2>&1 | tee -a "$LOGFILE"
 # stow will fail to symlink packages if files already exist on the system; this is just an error
-if [[ $? -ne 0	 ]]; then
+if [[ $? -ne 0 ]]; then
 	fancy_message error "Package contains links to files that exist on the system"
 	error_log 14 "install $PACKAGE"
 	return 1
