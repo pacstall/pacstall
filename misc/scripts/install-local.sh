@@ -343,7 +343,8 @@ fi
 tmp_prepare=$(declare -f prepare)
 # We run fakeroot, BUT, we don't actually pass any variables through to fakeroot. In other words, bash works with the tmp_prepare, instead of fakeroot
 fancy_message info "Running prepare in fakeroot. Do not enter password if prompted"
-fakeroot -- bash -c "$tmp_prepare; prepare"
+echo "]===== running prepare function =====[" >/dev/null | tee -a "$LOGFILE"
+fakeroot -- bash -c "$tmp_prepare; prepare" 2>&1 | tee -a "$LOGFILE"
 # Unset because it's a tmp variable
 unset tmp_prepare
 
@@ -359,14 +360,16 @@ if ! command -v fakeroot > /dev/null; then
 fi
 tmp_build=$(declare -f build)
 fancy_message info "Running build in fakeroot. Do not enter password if prompted"
-fakeroot -- bash -c "$tmp_build; build"
+echo "]===== running build function =====[" >/dev/null | tee -a "$LOGFILE"
+fakeroot -- bash -c "$tmp_build; build" 2>&1 | tee -a "$LOGFILE"
 unset tmp_build
 
 # Trap so that we can clean up (hopefully without messing up anything)
 trap - SIGINT
 
 fancy_message info "Installing"
-install
+echo "]===== running install function =====[" >/dev/null | tee -a "$LOGFILE"
+install 2>&1 | tee -a "$LOGFILE"
 
 if [[ $REMOVE_DEPENDS = y ]]; then
 	sudo apt-get remove $build_depends
@@ -387,7 +390,8 @@ if ! command -v stow > /dev/null; then
 fi
 
 # Magic time. This installs the package to /, so `/usr/src/pacstall/foo/usr/bin/foo` -> `/usr/bin/foo`
-sudo stow --target="/" "$PACKAGE"
+echo "]===== stowing =====[" >/dev/null | tee -a "$LOGFILE"
+sudo stow --target="/" "$PACKAGE" 2>&1 | tee -a "$LOGFILE"
 # stow will fail to symlink packages if files already exist on the system; this is just an error
 if [[ $? -ne 0	 ]]; then
 	fancy_message error "Package contains links to files that exist on the system"
@@ -408,7 +412,8 @@ cd "$DIR"
 sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 
 fancy_message info "Cleaning up"
-cleanup
+echo "]===== cleaning up =====[" >/dev/null | tee -a "$LOGFILE"
+cleanup 2>&1 | tee -a "$LOGFILE"
 
 return 0
 
