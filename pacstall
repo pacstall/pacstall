@@ -24,7 +24,7 @@
 
 # Error out when run as root
 if [[ "$EUID" -eq 0 ]]; then
-	echo "Pacstall can't be run as root. Please run as a normal user."
+	fancy_message error "Pacstall can't be run as root. Please run as a normal user."
 	exit 1
 fi
 # Configuration
