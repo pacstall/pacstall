@@ -22,6 +22,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+# Error out when run as root
+if [[ "$EUID" -eq 0 ]]; then
+	echo "Pacstall can't be run as root. Please run as a normal user."
+	exit
+fi
 # Configuration
 export LC_ALL=C
 export LOGDIR="/var/log/pacstall/metadata"
