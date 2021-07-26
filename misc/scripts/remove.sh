@@ -63,7 +63,8 @@ case "$url" in
 		fi
 
 		fancy_message info "Removing symlinks"
-		sudo stow --target="/" -D "$PACKAGE"
+		echo "]===== running stow -D =====[" | tee -a "$LOGFILE" > /dev/null
+		sudo stow --target="/" -D "$PACKAGE" 2>&1 | tee -a "$LOGFILE"
 
 		fancy_message info "Removing package"
 		sudo rm -rf "$PACKAGE"
@@ -73,7 +74,8 @@ case "$url" in
 		if fn_exists removescript ; then
 			fancy_message info "Running post removal script"
 			REPO=$(cat "$STGDIR/repo/pacstallrepo.txt")
-			removescript
+			echo "]===== running removescript function =====[" | tee -a "$LOGFILE" > /dev/null
+			removescript 2>&1 | tee -a "$LOGFILE"
 		fi
 
 		if [ -n "$_dependencies" ]; then
