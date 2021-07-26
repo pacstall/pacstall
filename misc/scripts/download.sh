@@ -31,8 +31,10 @@ if ! wget -q --tries=10 --timeout=20 --spider https://github.com; then
 fi
 
 if curl --output /dev/null --silent --head --fail "$URL" ; then
-	mkdir -p "/tmp/pacstall/pacscripts/" && cd "/tmp/pacstall/pacscripts/"
-	mkdir -p "$PACKAGE" && cd "$PACKAGE"
+	if [[ "$type" = "install" ]]; then
+		mkdir -p "/tmp/pacstall/pacscripts/" && cd "/tmp/pacstall/pacscripts/"
+		mkdir -p "$PACKAGE" && cd "$PACKAGE"
+	fi
 
 	download "$URL" > /dev/null 2>&1
 	return 0
