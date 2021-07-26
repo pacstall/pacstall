@@ -436,7 +436,7 @@ while [[ ! "$1" == "--" ]]; do
 					continue
 				fi
 				
-				fancy_message info "${GREEN}${PACKAGE}${NC}'s pacscript is downloaded in ${GREEN}$HOMEDIR/.cache/pacstall/$PACKAGE${NC}"
+				fancy_message info "${GREEN}${PACKAGE}${NC}'s pacscript is downloaded in ${GREEN}$(pwd)/$PACKAGE${NC}"
 			done
 
 			if [[ -s "LOGFILE" ]]; then
