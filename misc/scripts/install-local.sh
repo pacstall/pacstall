@@ -238,7 +238,7 @@ function hashcheck() {
 
 fancy_message info "Installing dependencies"
 sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $depends 2>&1 | tee -a "$LOGFILE"
-if [[ $? -ne 0	 ]]; then
+if [[ $? -ne 0 ]]; then
 	fancy_message error "Failed to install dependencies"
 	error_log 8 "install $PACKAGE"
 	return 1
