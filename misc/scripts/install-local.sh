@@ -372,7 +372,6 @@ if [[ $REMOVE_DEPENDS = y ]]; then
 	sudo apt-get remove $build_depends
 fi
 
-sudo rm -rf "${SRCDIR:?}"/*
 cd "$HOME"
 
 # Metadata writing
