@@ -72,20 +72,14 @@ for i in "${list[@]}"; do
 
 	IDXMATCH=$(printf "%s\n" "${REPOS[@]}"| grep -n "$remoterepo" | cut -d : -f1| awk '{print $0"-1"}'|bc)
 
-	if [[ -z $IDXMATCH ]]; then
-		remotever=$(source <(curl -s "$REPO"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
-		remoteurl=$REPO
+	if [[ -n $IDXMATCH ]]; then
+		remotever=$(source <(curl -s "$remoterepo"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
+		remoteurl=${REPOS[$IDXMATCH]}
 	else
-		remotever="0.0.0"
-		for REPO in "${REPOS[@]}"; do
-			ver=$(source <(curl -s "$REPO"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
-			if  dpkg --compare-versions "$remotever" "lt" "$ver" ; then
-				remotever=$ver
-				remoteurl=$REPO   
-			fi
-		done
+		sed -i "/_remote/d"  $LOGDIR/$i
+		continue
 	fi
-	if dpkg --compare-versions "$localver" "lt" "$remotever"; then
+	if [[ ! "$localver" == "$remotever" ]]; then
 		echo "$i" |sudo tee -a /tmp/pacstall-up-list >/dev/null
 		echo "${GREEN}${i}${CYAN} @ $(parseRepo "${remoteurl}") ${NC}" | sudo tee -a /tmp/pacstall-up-print >/dev/null
 		echo "$remoteurl" |sudo tee -a /tmp/pacstall-up-urls >/dev/null
