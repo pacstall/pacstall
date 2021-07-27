@@ -22,8 +22,10 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-function version_gt() { 
-	test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"; 
+function ver_compare() { 
+	local first="$(echo ${1} | sed 's/^[^0-9]*//')"
+	local second="$(echo ${1} | sed 's/^[^0-9]*//')"
+	return $(dpkg --compare-version $first "lt" $second)
 }
 
 export UPGRADE="yes"
@@ -50,12 +52,14 @@ fancy_message info "Checking for updates"
 
 for i in "${list[@]}"; do
 	source "$LOGDIR/$i"
+	
+	# localver is the current version of the package
+	localver=$(sed -n -e 's/_version=//p' "$LOGDIR"/"$i" | tr -d \")
 
 	if [[ -z ${_remoterepo} ]]; then
+		#TODO upgrade for local pacscripts 
 		continue
-	fi
-
-	if echo "${_remoterepo}" | grep "github.com" > /dev/null ; then
+	elif echo "${_remoterepo}" | grep "github.com" > /dev/null ; then
 		remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}"
 	elif echo "${_remoterepo}"| grep "gitlab.com" > /dev/null; then
 		remoterepo="${_remoterepo}/-/raw/${_remotebranch}"
@@ -65,9 +69,6 @@ for i in "${list[@]}"; do
 
 	unset _remoterepo
 
-	# localver is the version of the package
-	localver=$(sed -n -e 's/_version=//p' "$LOGDIR"/"$i" | tr -d \")
-
 	source "$STGDIR/scripts/search.sh"
 
 	IDXMATCH=$(printf "%s\n" "${REPOS[@]}"| grep -n "$remoterepo" | cut -d : -f1| awk '{print $0"-1"}'|bc)
@@ -76,13 +77,49 @@ for i in "${list[@]}"; do
 		remotever=$(source <(curl -s "$remoterepo"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
 		remoteurl=${REPOS[$IDXMATCH]}
 	else
+		fancy_message warning "Package ${GREEN}${i}${CYAN} is not on ${CYAN}$(parseRepo "${remoterepo}")${NC} anymore"
 		sed -i "/_remote/d"  $LOGDIR/$i
-		continue
 	fi
-	if [[ ! "$localver" == "$remotever" ]]; then
-		echo "$i" |sudo tee -a /tmp/pacstall-up-list >/dev/null
-		echo "${GREEN}${i}${CYAN} @ $(parseRepo "${remoteurl}") ${NC}" | sudo tee -a /tmp/pacstall-up-print >/dev/null
-		echo "$remoteurl" |sudo tee -a /tmp/pacstall-up-urls >/dev/null
+	
+	if [[ $i != *"-git" ]]; then
+		alterver="0.0.0"
+		for IDX in ${!REPOS[@]}; do
+			if [[ $IDX -eq $IDXMATCH ]]; then
+				continue
+			else 
+				ver=$(source <(curl -s "${REPOS[$IDX]}"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
+				ver_compare $alterver $ver
+				if  [[ $? -ne 0 ]]; then
+					alterver=$ver
+					alterurl=$REPO   
+				fi
+			fi
+		done
+		if [[ -n $remotever ]]; then
+			ver_compare $remotever $alterver
+			if  [[ $? -ne 0 ]]; then
+				echo -e "${GREEN}${i}${CYAN} has a newer version at ${CYAN}$(parseRepo "${alterurl}")${NC}."
+				ask "Keep the package from the current repo?" Y
+				if [[ $answer -eq 0 ]]; then
+					remoterepo=$alterver
+					remoteurl=$alterurl
+				fi
+			fi
+		elif [[ $alterver != "0.0.0" ]]; then
+			remoterepo=$alterver
+			remoteurl=$alterurl
+		fi
+	fi
+
+	
+	if [[ -n $remotever ]]; then
+		ver_compare $localver $remotever
+		up=$?
+		if [[ $i == *"-git" ]] || [[ up -ne 0 ]];; then
+			echo "$i" |sudo tee -a /tmp/pacstall-up-list >/dev/null
+			echo "${GREEN}${i}${CYAN} @ $(parseRepo "${remoteurl}") ${NC}" | sudo tee -a /tmp/pacstall-up-print >/dev/null
+			echo "$remoteurl" |sudo tee -a /tmp/pacstall-up-urls >/dev/null
+		fi
 	fi
 done &
 
