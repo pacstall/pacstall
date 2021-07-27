@@ -32,8 +32,8 @@ function error_log() {
 	local scope="${2}"
 	
 	if [[ ! -f "$LOGFILE" ]]; then
-		touch "$LOGFILE"
 		find /var/log/pacstall/error_log/* -type f -ctime +14 -exec rm -rf {} \;
+		touch "$LOGFILE"
 	fi
 	
 	case "$code" in
