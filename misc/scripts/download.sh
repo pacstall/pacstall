@@ -32,7 +32,7 @@ fi
 
 if curl --output /dev/null --silent --head --fail "$URL" ; then
 	if [[ "$type" = "install" ]]; then
-		mkdir -p "/tmp/pacstall/pacscripts/" && cd "/tmp/pacstall/pacscripts/"
+		mkdir -p "/tmp/pacstall/" && cd "/tmp/pacstall/"
 	fi
 
 	download "$URL" > /dev/null 2>&1
