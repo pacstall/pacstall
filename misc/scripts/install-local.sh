@@ -372,7 +372,6 @@ if [[ $REMOVE_DEPENDS = y ]]; then
 	sudo apt-get remove $build_depends
 fi
 
-sudo rm -rf "${SRCDIR:?}"/*
 cd "$HOME"
 
 # Metadata writing
@@ -405,7 +404,7 @@ fi
 fancy_message info "Storing pacscript"
 sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
 cd "$DIR"
-sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
+sudo cp -r /tmp/pacstall/"$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 
 fancy_message info "Cleaning up"
 cleanup
