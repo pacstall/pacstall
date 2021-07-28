@@ -22,8 +22,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-function version_gt() { 
-	test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"; 
+function version_gt() {
+	test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1";
 }
 
 export UPGRADE="yes"
@@ -81,7 +81,7 @@ for i in "${list[@]}"; do
 			ver=$(source <(curl -s "$REPO"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
 			if  dpkg --compare-versions "$remotever" "lt" "$ver" ; then
 				remotever=$ver
-				remoteurl=$REPO   
+				remoteurl=$REPO
 			fi
 		done
 	fi

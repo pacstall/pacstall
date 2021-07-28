@@ -30,7 +30,7 @@ fi
 function error_log() {
 	local code="${1}"
 	local scope="${2}"
-	
+
 	if [[ ! -f "$LOGFILE" ]]; then
 		find /var/log/pacstall/error_log/* -type f -ctime +14 -exec rm -rf {} \;
 		touch "$LOGFILE"
@@ -38,7 +38,7 @@ function error_log() {
 	else
 		echo "]=====$(date)=====[" >> "$LOGFILE"
 	fi
-	
+
 	case "$code" in
 		1)
 			echo "[ $(date) | $scope ] Error 1 - Unknown cause of failure." >> "$LOGFILE"

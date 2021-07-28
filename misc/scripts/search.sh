@@ -53,7 +53,7 @@ LEN=($IDXSEARCH)
 LEN=${#LEN[@]}
 
 # Parses github and gitlab URL's
-# url -> maintaner/repo 
+# url -> maintaner/repo
 # Also adds hyperlink for the
 # terminals that support them
 function parseRepo() {
@@ -78,7 +78,7 @@ if [[ "$LEN" -eq 0 ]]; then
 	else
 		fancy_message warn "There is no package with the name $IRed$SEARCH$NC"
 	fi
-	
+
 	return 1
 # Check if it's upgrading packages
 elif [[ -n "$UPGRADE" ]]; then
@@ -105,7 +105,7 @@ else
 		# If there are multiple results, ask
 	else
 		echo -e "There are $LEN package(s) with the name $GREEN$PACKAGE$NC."
-		
+
 		ask "Do you want to continue?" Y
 		if [[ $answer -eq 1 ]]; then
 			# Pacstall repo first

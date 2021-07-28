@@ -68,7 +68,7 @@ function log() {
 	# Origin repo info parsing
 	if [[ $local == 'no' ]]; then
 		if echo "$REPO" | grep "github" > /dev/null ; then
-			pURL="${REPO/'raw.githubusercontent.com'/'github.com'}" 
+			pURL="${REPO/'raw.githubusercontent.com'/'github.com'}"
 			pURL="${pURL%/*}"
 			pBRANCH="${REPO##*/}"
 			branch="yes"
