@@ -135,7 +135,7 @@ export homedir="/home/$(logname)"
 source "$PACKAGE".pacscript > /dev/null
 if [[ $? -ne 0 ]]; then
 	fancy_message error "Couldn't source pacscript"
-	error_log 12 "install $PACKAGE"
+	error-log 12 "install $PACKAGE"
 	return 1
 fi
 
@@ -152,7 +152,7 @@ fi
 checks
 if [[ $? -ne 0 ]]; then
 	fancy_message error "There was an error checking the script!"
-	error_log 6 "install $PACKAGE"
+	error-log 6 "install $PACKAGE"
 	return 1
 fi
 
@@ -184,13 +184,13 @@ if echo -n "$depends" > /dev/null 2>&1; then
 		if dpkg-query -l "$breaks" > /dev/null 2>&1; then
 			# Check if anything in breaks variable is installed already
 			fancy_message error "${RED}$name${NC} breaks $breaks, which is currently installed by apt"
-			error_log 13 "install $PACKAGE"
+			error-log 13 "install $PACKAGE"
 			return 1
 		fi
 		if [[ $(pacstall -L) == *$breaks* ]]; then
 			# Same thing, but check if anything is installed with pacstall
 			fancy_message error "${RED}$name${NC} breaks $breaks, which is currently installed by pacstall"
-			error_log 13 "install $PACKAGE"
+			error-log 13 "install $PACKAGE"
 			return 1
 		fi
 	fi
@@ -217,7 +217,7 @@ fi
 if [[ $NOBUILDDEP -eq 0 ]]; then
 	if ! sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $build_depends; then
 		fancy_message error "Failed to install build dependencies"
-		error_log 8 "install $PACKAGE"
+		error-log 8 "install $PACKAGE"
 		return 1
 	fi
 fi
@@ -230,7 +230,7 @@ function hashcheck() {
 	if [[ "$inputHash" != "$fileHash" ]]; then
 		# We bad
 		fancy_message error "Hashes don't match"
-		error_log 16 "install $PACKAGE"
+		error-log 16 "install $PACKAGE"
 		return 1
 	fi
 	true
@@ -240,7 +240,7 @@ fancy_message info "Installing dependencies"
 sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $depends 2>&1 | tee -a "$LOGFILE"
 if [[ $? -ne 0 ]]; then
 	fancy_message error "Failed to install dependencies"
-	error_log 8 "install $PACKAGE"
+	error-log 8 "install $PACKAGE"
 	return 1
 fi
 
@@ -309,7 +309,7 @@ case "$url" in
 
 		else
 			fancy_message error "Failed to install the package"
-			error_log 14 "install $PACKAGE"
+			error-log 14 "install $PACKAGE"
 			return 1
 		fi
 	;;
@@ -352,7 +352,7 @@ unset tmp_prepare
 # Check if build function doesn't exist
 if ! type -t build > /dev/null 2>&1; then
 	fancy_message error "Something didn't compile right"
-	error_log 5 "install $PACKAGE"
+	error-log 5 "install $PACKAGE"
 	return 1
 fi
 
@@ -396,7 +396,7 @@ sudo stow --target="/" "$PACKAGE" 2>&1 | tee -a "$LOGFILE"
 # stow will fail to symlink packages if files already exist on the system; this is just an error
 if [[ $? -ne 0	 ]]; then
 	fancy_message error "Package contains links to files that exist on the system"
-	error_log 14 "install $PACKAGE"
+	error-log 14 "install $PACKAGE"
 	return 1
 fi
 

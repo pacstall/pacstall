@@ -31,7 +31,7 @@ source "$LOGDIR/$PACKAGE" > /dev/null 2>&1
 
 if [[ $? -ne 0 ]]; then
 	fancy_message error "$PACKAGE is not installed or not properly symlinked"
-	error_log 3 "remove $PACKAGE"
+	error-log 3 "remove $PACKAGE"
 	return 1
 fi
 
@@ -39,7 +39,7 @@ source /var/cache/pacstall/"${PACKAGE}"/"${_version}"/"${PACKAGE}".pacscript > /
 
 if [[ $? -ne 0 ]]; then
 	fancy_message error "$PACKAGE is not installed or not properly symlinked"
-	error_log 1 "remove $PACKAGE"
+	error-log 1 "remove $PACKAGE"
 	return 1
 fi
 
@@ -47,7 +47,7 @@ case "$url" in
 	*.deb)
 		if ! sudo apt remove "$gives" 2>/dev/null; then
 			fancy_message warn "Failed to remove the package"
-			error_log 1 "remove $PACKAGE"
+			error-log 1 "remove $PACKAGE"
 			return 1
 		fi
 		return 0
@@ -58,7 +58,7 @@ case "$url" in
 
 		if [[ ! -d "$PACKAGE" ]]; then
 			fancy_message error "$PACKAGE is not installed or not properly symlinked"
-			error_log 1 "remove $PACKAGE"
+			error-log 1 "remove $PACKAGE"
 			return 1
 		fi
 
@@ -87,6 +87,6 @@ case "$url" in
 	;;
 esac
 
-error_log 1 "remove $PACKAGE"
+error-log 1 "remove $PACKAGE"
 return 1
 # vim:set ft=sh ts=4 sw=4 noet:

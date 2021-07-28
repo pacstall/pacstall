@@ -22,17 +22,17 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-if [[ ! -d "/var/log/pacstall/error_log" ]]; then
-	sudo mkdir -p "/var/log/pacstall/error_log"
-	sudo chown $LOGNAME -R /var/log/pacstall/error_log
+if [[ ! -d "/var/log/pacstall/error-log" ]]; then
+	sudo mkdir -p "/var/log/pacstall/error-log"
+	sudo chown $LOGNAME -R /var/log/pacstall/error-log
 fi
 
-function error_log() {
+function error-log() {
 	local code="${1}"
 	local scope="${2}"
 
 	if [[ ! -f "$LOGFILE" ]]; then
-		find /var/log/pacstall/error_log/* -type f -ctime +14 -exec rm -rf {} \;
+		find /var/log/pacstall/error-log/* -type f -ctime +14 -exec rm -rf {} \;
 		touch "$LOGFILE"
 		echo "]=====$(date)=====[" > "$LOGFILE"
 	else
@@ -107,6 +107,6 @@ function error_log() {
 	esac
 }
 
-export -f error_log
+export -f error-log
 
 # vim:set ft=sh ts=4 sw=4 noet:

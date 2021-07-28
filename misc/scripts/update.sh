@@ -32,15 +32,15 @@ if [[ -z $reply ]] || [[ $reply == "N"* ]] || [[ $reply == "n"* ]]; then
     exit 1
 fi
 
-sudo rm -rf "/var/log/pacstall/error_log"
+sudo rm -rf "/var/log/pacstall/error-log"
 sudo mkdir -p "/var/log/pacstall/metadata"
 sudo mv /var/log/pacstall/* /var/log/pacstall/metadata 2>/dev/null
-sudo mkdir -p "/var/log/pacstall/error_log"
-sudo chown $LOGNAME -R /var/log/pacstall/error_log
+sudo mkdir -p "/var/log/pacstall/error-log"
+sudo chown $LOGNAME -R /var/log/pacstall/error-log
 
 STGDIR="/usr/share/pacstall"
 
-for i in {error_log.sh,add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
+for i in {error-log.sh,add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
 	sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/"$i" -P "$STGDIR/scripts" &
 done
 

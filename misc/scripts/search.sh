@@ -74,7 +74,7 @@ function parseRepo() {
 if [[ "$LEN" -eq 0 ]]; then
 	if [[ -z "$SEARCH" ]]; then
 		fancy_message warn "There is no package with the name $IRed$PACKAGE$NC"
-		error_log 3 "search $PACKAGE"
+		error-log 3 "search $PACKAGE"
 	else
 		fancy_message warn "There is no package with the name $IRed$SEARCH$NC"
 	fi
@@ -145,7 +145,7 @@ else
 	fi
 fi
 
-error_log 1 "search $PACKAGE"
+error-log 1 "search $PACKAGE"
 return 1
 
 # vim:set ft=sh ts=4 sw=4 noet:

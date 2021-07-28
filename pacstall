@@ -194,7 +194,7 @@ function download() {
 # run sudo apt update if it's been more than a week
 [ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && sudo apt-get update -qq
 
-source "$STGDIR/scripts/error_log.sh"
+source "$STGDIR/scripts/error-log.sh"
 
 while [[ ! "$1" == "--" ]]; do
 	case "$1" in
@@ -238,7 +238,7 @@ while [[ ! "$1" == "--" ]]; do
 					exit 1
 				fi
 
-				export LOGFILE="/var/log/pacstall/error_log/$PACKAGE.log"
+				export LOGFILE="/var/log/pacstall/error-log/$PACKAGE.log"
 				# Make the directory if not exist
 				if [[ ! -e "$STGDIR/repo/" ]]; then
 					sudo mkdir -p "$STGDIR/repo"
@@ -300,7 +300,7 @@ while [[ ! "$1" == "--" ]]; do
 				shift
 
 				export PACKAGE="$(basename "$INPUT")"
-				export LOGFILE="/var/log/pacstall/error_log/$PACKAGE.log"
+				export LOGFILE="/var/log/pacstall/error-log/$PACKAGE.log"
 				source "$STGDIR/scripts/install-local.sh"
 				if [[ $? -ne 0 ]]; then
 					fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
@@ -335,7 +335,7 @@ while [[ ! "$1" == "--" ]]; do
 
 			while [[ -n "$2" ]]; do
 				PACKAGE=$2
-				export LOGFILE="/var/log/pacstall/error_log/$PACKAGE.log"
+				export LOGFILE="/var/log/pacstall/error-log/$PACKAGE.log"
 				shift
 				source "$STGDIR/scripts/remove.sh"
 				if [[ $? -ne 0 ]]; then
