@@ -34,6 +34,9 @@ function error_log() {
 	if [[ ! -f "$LOGFILE" ]]; then
 		find /var/log/pacstall/error_log/* -type f -ctime +14 -exec rm -rf {} \;
 		touch "$LOGFILE"
+		echo "]=====$(date)=====[" > "$LOGFILE"
+	else
+		echo "]=====$(date)=====[" >> "$LOGFILE"
 	fi
 	
 	case "$code" in
