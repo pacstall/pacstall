@@ -82,7 +82,7 @@ function log() {
 		fi
 	fi
 
-	echo "]===== This is what pacstall logged =====[" | tee -a "$LOGFILE" > /dev/null
+	echo "]===== $(date): This is what pacstall logged =====[" | tee -a "$LOGFILE" > /dev/null
 	# Metadata writing
 	echo "_version=\"$version"\" | sudo tee "$LOGDIR"/"$PACKAGE" "$LOGFILE" > /dev/null
 	echo "_description=\"$description"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" "$LOGFILE" > /dev/null
@@ -344,7 +344,7 @@ fi
 tmp_prepare=$(declare -f prepare)
 # We run fakeroot, BUT, we don't actually pass any variables through to fakeroot. In other words, bash works with the tmp_prepare, instead of fakeroot
 fancy_message info "Running prepare in fakeroot. Do not enter password if prompted"
-echo "]===== running prepare function =====[" | tee -a "$LOGFILE" > /dev/null
+echo "]======= $(date): running prepare function =======[" | tee -a "$LOGFILE" > /dev/null
 fakeroot -- bash -c "$tmp_prepare; prepare" 2>&1 | tee -a "$LOGFILE"
 # Unset because it's a tmp variable
 unset tmp_prepare
@@ -361,7 +361,7 @@ if ! command -v fakeroot > /dev/null; then
 fi
 tmp_build=$(declare -f build)
 fancy_message info "Running build in fakeroot. Do not enter password if prompted"
-echo "]===== running build function =====[" | tee -a "$LOGFILE" > /dev/null
+echo "]======== $(date): running build function ========[" | tee -a "$LOGFILE" > /dev/null
 fakeroot -- bash -c "$tmp_build; build" 2>&1 | tee -a "$LOGFILE"
 unset tmp_build
 
@@ -369,7 +369,7 @@ unset tmp_build
 trap - SIGINT
 
 fancy_message info "Installing"
-echo "]===== running install function =====[" | tee -a "$LOGFILE" > /dev/null
+echo "]======= $(date): running install function =======[" | tee -a "$LOGFILE" > /dev/null
 install 2>&1 | tee -a "$LOGFILE"
 
 if [[ $REMOVE_DEPENDS = y ]]; then
@@ -391,7 +391,7 @@ if ! command -v stow > /dev/null; then
 fi
 
 # Magic time. This installs the package to /, so `/usr/src/pacstall/foo/usr/bin/foo` -> `/usr/bin/foo`
-echo "]===== stowing =====[" | tee -a "$LOGFILE" > /dev/null
+echo "]================ $(date): stowing ================[" | tee -a "$LOGFILE" > /dev/null
 sudo stow --target="/" "$PACKAGE" 2>&1 | tee -a "$LOGFILE"
 # stow will fail to symlink packages if files already exist on the system; this is just an error
 if [[ $? -ne 0	 ]]; then
@@ -413,7 +413,7 @@ cd "$DIR"
 sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 
 fancy_message info "Cleaning up"
-echo "]===== cleaning up =====[" | tee -a "$LOGFILE" > /dev/null
+echo "]============== $(date): cleaning up ==============[" | tee -a "$LOGFILE" > /dev/null
 cleanup 2>&1 | tee -a "$LOGFILE"
 
 return 0
