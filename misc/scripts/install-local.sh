@@ -82,9 +82,9 @@ function log() {
 		fi
 	fi
 
-	echo "]===== This is what pacstall logged =====[" | tee -a "$LOGFILE" > /dev/null
+	echo "]===== This is what pacstall logged =====[" | sudo tee -a "$LOGFILE" > /dev/null
 	# Metadata writing
-	echo "_version=\"$version"\" | sudo tee "$LOGDIR"/"$PACKAGE" "$LOGFILE" > /dev/null
+	echo "_version=\"$version"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" "$LOGFILE" > /dev/null
 	echo "_description=\"$description"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" "$LOGFILE" > /dev/null
 	echo "_date=\"$(date)"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" "$LOGFILE" > /dev/null
 	echo "_maintainer=\"$maintainer"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" "$LOGFILE" > /dev/null

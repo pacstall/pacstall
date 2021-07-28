@@ -24,7 +24,7 @@
 
 if [[ ! -d "/var/log/pacstall/error-log" ]]; then
 	sudo mkdir -p "/var/log/pacstall/error-log"
-	sudo chown $LOGNAME -R /var/log/pacstall/error-log
+	sudo chown $LOGNAME:$LOGNAME -R /var/log/pacstall/error-log
 fi
 
 function error-log() {
@@ -34,9 +34,9 @@ function error-log() {
 	if [[ ! -f "$LOGFILE" ]]; then
 		find /var/log/pacstall/error-log/* -type f -ctime +14 -exec rm -rf {} \;
 		touch "$LOGFILE"
-		echo "]=====$(date)=====[" > "$LOGFILE"
+		echo "]===== $(date) =====[" | tee "$LOGFILE"
 	else
-		echo "]=====$(date)=====[" >> "$LOGFILE"
+		echo "]===== $(date) =====[" | tee -a "$LOGFILE"
 	fi
 
 	case "$code" in
