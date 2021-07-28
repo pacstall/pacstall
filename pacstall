@@ -25,7 +25,6 @@
 # Configuration
 export LC_ALL=C
 export LOGDIR="/var/log/pacstall/metadata"
-export LOGFILE="/var/log/pacstall/error_log/$PACKAGE.log"
 export SRCDIR="/tmp/pacstall"
 export STGDIR="/usr/share/pacstall"
 export STOWDIR="/usr/src/pacstall"
@@ -239,6 +238,7 @@ while [[ ! "$1" == "--" ]]; do
 					exit 1
 				fi
 
+				export LOGFILE="/var/log/pacstall/error_log/$PACKAGE.log"
 				# Make the directory if not exist
 				if [[ ! -e "$STGDIR/repo/" ]]; then
 					sudo mkdir -p "$STGDIR/repo"
@@ -300,6 +300,7 @@ while [[ ! "$1" == "--" ]]; do
 				shift
 
 				export PACKAGE="$(basename "$INPUT")"
+				export LOGFILE="/var/log/pacstall/error_log/$PACKAGE.log"
 				source "$STGDIR/scripts/install-local.sh"
 				if [[ $? -ne 0 ]]; then
 					fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
@@ -334,6 +335,7 @@ while [[ ! "$1" == "--" ]]; do
 
 			while [[ -n "$2" ]]; do
 				PACKAGE=$2
+				export LOGFILE="/var/log/pacstall/error_log/$PACKAGE.log"
 				shift
 				source "$STGDIR/scripts/remove.sh"
 				if [[ $? -ne 0 ]]; then
