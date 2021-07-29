@@ -187,9 +187,9 @@ function download() {
 	fancy_message info "$2"
 	sudo rm -f "${1##*/}"
 	if command -v axel > /dev/null; then
-		sudo axel -n $(($(nproc) + 5)) -ao "${1##*/}" "$1"
+		axel -n $(($(nproc) + 5)) -ao "${1##*/}" "$1"
 	else
-		sudo wget -q --show-progress --progress=bar:force "$1" 2>&1
+		wget -q --show-progress --progress=bar:force "$1" 2>&1
 	fi
 }
 
