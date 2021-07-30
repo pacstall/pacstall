@@ -413,7 +413,12 @@ while [[ ! "$1" == "--" ]]; do
 		;;
 
 		-L|--list)
-			/bin/ls -1aA "$STOWDIR"
+			if ! [ -d "$STOWDIR" ]; then
+				/bin/ls -1aA "$STOWDIR"
+			else
+				fancy_message error "Nothing installed yet"
+				exit 1
+			fi
 			exit 0
 		;;
 
