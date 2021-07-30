@@ -85,7 +85,7 @@ case "$url" in
 	;;
 esac
 
-sudo dpkg -r $name-pacstall # removes virtual .deb package
+sudo dpkg -r "$name-pacstall" # removes virtual .deb package
 
 error_log 1 "remove $PACKAGE"
 return 1
