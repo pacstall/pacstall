@@ -115,7 +115,7 @@ function makeVirtualDeb {
 	# creates empty .deb package (with only the control file) for apt integration
 	# implements $(gives) variable
 	# Note: I only put "development" in "Section" because I had to put something there
-	sudo mkdir -p $SRCDIR/$name-pacstall/DEBIAN
+	sudo mkdir -p "$SRCDIR/$name-pacstall/DEBIAN"
 	echo "Package: $name-pacstall
 Version: $version
 Depends: ${depends//' '/' | '}
