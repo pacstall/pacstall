@@ -119,6 +119,7 @@ function makeVirtualDeb {
 	echo "Package: $name-pacstall
 Version: $version
 Depends: ${depends//' '/' | '}
+Suggests: ${optdepends//' '/' | '}
 Architecture: all
 Essential: yes
 Section: development
@@ -128,9 +129,17 @@ Replace: ${replace//' '/', '}
 Provides: ${gives:-$name}
 Maintainer: $maintainer
 Description: This is a dummy package generated and used by pacstall, please do not delete
- $description" | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+$description" | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	sudo dpkg-deb -b "$SRCDIR/$name-pacstall" > "/dev/null"
 	sudo rm -rf "$SRCDIR/$name-pacstall"
+	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" > "/dev/null"
+	fancy_message info "Installing dependencies"
+	sudo apt-get install -f -y -qq -o=Dpkg::Use-Pty=0
+	if [[ $? -ne 0	 ]]; then
+		fancy_message error "Failed to install dependencies"
+		error_log 8 "install $PACKAGE"
+		return 1
+	fi
 	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" > "/dev/null"
 	sudo rm "$SRCDIR/$name-pacstall.deb"
 }
@@ -242,6 +251,8 @@ if [[ $NOBUILDDEP -eq 0 ]]; then
 	fi
 fi
 
+makeVirtualDeb
+
 function hashcheck() {
 	inputHash=$hash
 	# Get hash of file
@@ -255,14 +266,6 @@ function hashcheck() {
 	fi
 	true
 }
-
-fancy_message info "Installing dependencies"
-sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $depends
-if [[ $? -ne 0	 ]]; then
-	fancy_message error "Failed to install dependencies"
-	error_log 8 "install $PACKAGE"
-	return 1
-fi
 
 fancy_message info "Retrieving packages"
 mkdir -p "$SRCDIR"
@@ -396,8 +399,6 @@ if [[ $? -ne 0	 ]]; then
 	error_log 14 "install $PACKAGE"
 	return 1
 fi
-
-makeVirtualDeb
 
 # `hash -r` updates PATH database
 hash -r
