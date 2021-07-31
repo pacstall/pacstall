@@ -131,7 +131,7 @@ Priority: optional
 Conflicts: ${replace//' '/', '}
 Replace: ${replace//' '/', '}
 Provides: ${gives:-$name}
-Maintainer: ${maintainer:-"Pacstall <pacstall@pm.me>"}
+Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
 Description: This is a dummy package generated and used by pacstall, please do not delete. $description" | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	sudo dpkg-deb -b "$SRCDIR/$name-pacstall" > "/dev/null"
 	sudo rm -rf "$SRCDIR/$name-pacstall"
