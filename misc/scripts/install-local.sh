@@ -255,7 +255,9 @@ if [[ $NOBUILDDEP -eq 0 ]]; then
 	fi
 fi
 
-makeVirtualDeb
+if [[ "$url" != *".deb" ]]; then
+	makeVirtualDeb
+fi
 
 function hashcheck() {
 	inputHash=$hash
