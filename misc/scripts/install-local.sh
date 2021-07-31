@@ -34,6 +34,9 @@ function trap_ctrlc () {
 	echo ""
 	fancy_message warn "Interupted, cleaning up"
 	cleanup
+	if dpkg-query -W -f='${Status}' "$name-pacstall" 2> /dev/null | grep -q "ok installed" ; then
+		sudo dpkg -r "$name-pacstall"
+	fi
 	exit 1
 }
 
@@ -115,6 +118,7 @@ function makeVirtualDeb {
 	# creates empty .deb package (with only the control file) for apt integration
 	# implements $(gives) variable
 	# Note: I only put "development" in "Section" because I had to put something there
+	fancy_message info "Creating dummy package"
 	sudo mkdir -p "$SRCDIR/$name-pacstall/DEBIAN"
 	echo "Package: $name-pacstall
 Version: $version
@@ -262,6 +266,7 @@ function hashcheck() {
 		# We bad
 		fancy_message error "Hashes don't match"
 		error_log 16 "install $PACKAGE"
+		sudo dpkg -r "$name-pacstall"
 		return 1
 	fi
 	true
@@ -315,6 +320,7 @@ case "$url" in
 		else
 			fancy_message error "Failed to install the package"
 			error_log 14 "install $PACKAGE"
+			sudo dpkg -r "$name-pacstall"
 			return 1
 		fi
 	;;
@@ -346,6 +352,7 @@ prepare
 if ! type -t build > /dev/null 2>&1; then
 	fancy_message error "Something didn't compile right"
 	error_log 5 "install $PACKAGE"
+	sudo dpkg -r "$name-pacstall"
 	return 1
 fi
 
@@ -397,6 +404,7 @@ sudo stow --target="/" "$PACKAGE"
 if [[ $? -ne 0	 ]]; then
 	fancy_message error "Package contains links to files that exist on the system"
 	error_log 14 "install $PACKAGE"
+	sudo dpkg -r "$name-pacstall"
 	return 1
 fi
 
