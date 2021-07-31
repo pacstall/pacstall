@@ -185,12 +185,20 @@ function fancy_message() {
 # use axel if avaliable
 function download() {
 	fancy_message info "$2"
+	sudo rm -f "${1##*/}"
 	if command -v axel > /dev/null; then
-		sudo axel -n $(($(nproc) + 5)) -ao "${1##*/}" "$1"
+		axel -n $(($(nproc) + 5)) -ao "${1##*/}" "$1"
 	else
-		sudo wget -q --show-progress --progress=bar:force "$1" 2>&1
+		wget -q --show-progress --progress=bar:force "$1" 2>&1
 	fi
 }
+
+
+# Error out when run as root
+if [[ "$EUID" -eq 0 ]]; then
+	fancy_message error "Pacstall can't be run as root. Please run as a normal user."
+	exit 1
+fi
 
 # run sudo apt update if it's been more than a week
 [ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && sudo apt-get update -qq
@@ -336,7 +344,7 @@ while [[ ! "$1" == "--" ]]; do
 				PACKAGE=$2
 				shift
 				source "$STGDIR/scripts/remove.sh"
-				if [[ $? -eq 0 ]]; then
+				if [[ $? -ne 0 ]]; then
 					fancy_message error "Failed to remove ${GREEN}${PACKAGE}${NC}"
 				fi
 			done
@@ -405,7 +413,12 @@ while [[ ! "$1" == "--" ]]; do
 		;;
 
 		-L|--list)
-			/bin/ls -1aA "$STOWDIR"
+			if ! [ -d "$STOWDIR" ]; then
+				/bin/ls -1aA "$STOWDIR"
+			else
+				fancy_message error "Nothing installed yet"
+				exit 1
+			fi
 			exit 0
 		;;
 
@@ -435,7 +448,7 @@ while [[ ! "$1" == "--" ]]; do
 					continue
 				fi
 				
-				fancy_message info "${GREEN}${PACKAGE}${NC}'s pacscript is downloaded in ${GREEN}$HOMEDIR/.cache/pacstall/$PACKAGE${NC}"
+				fancy_message info "${GREEN}${PACKAGE}${NC}'s pacscript is downloaded in ${GREEN}$(pwd)/$PACKAGE${NC}"
 			done
 
 			if [[ -s "LOGFILE" ]]; then

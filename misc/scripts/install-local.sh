@@ -67,7 +67,7 @@ function cget() {
 
 # Logging metadata
 function log() {
-	
+
 	# Origin repo info parsing
 	if [[ $local == 'no' ]]; then
 		if echo "$REPO" | grep "github" > /dev/null ; then
@@ -176,6 +176,11 @@ if [[ $? -ne 0 ]]; then
 	error_log 12 "install $PACKAGE"
 	return 1
 fi
+
+# export all variables from pacscript (fakeroot), and redirect to /dev/null in case of errors (because obviously no pacscript will contain every single available option)
+export {name,version,url,build_depends,depends,replace,description,hash,maintainer,optdepends,ppa,pacdeps,patch} > /dev/null 2>&1
+# Do the same for functions
+export -f {prepare,build,install,postinst,removescript} > /dev/null 2>&1
 
 if type pkgver > /dev/null 2>&1; then
 	version=$(pkgver) > /dev/null
@@ -287,7 +292,7 @@ case "$url" in
 		# The srcdir is /tmp/pacstall/foo
 		export srcdir="/tmp/pacstall/$PWD"
 		# Make the directory available for users
-		sudo chown -R "$(logname)":"$(logname)" . 2>/dev/null
+		sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
 		# Check the integrity
 		git fsck --full
 	;;
@@ -310,7 +315,7 @@ case "$url" in
 		sudo apt install -y -f ./"${url##*/}" 2>/dev/null
 		if [[ $? -eq 0 ]]; then
 			log
-			
+
 			fancy_message info "Storing pacscript"
 			sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
 			cd "$DIR"
@@ -348,7 +353,18 @@ if [[ -n $patch ]]; then
 fi
 
 export pkgdir="/usr/src/pacstall/$name"
-prepare
+
+# fakeroot is weird but this method works
+# create tmp variable that is the output of what prepare function is (it prints out function)
+if ! command -v fakeroot > /dev/null; then
+	sudo apt-get install fakeroot -y
+fi
+tmp_prepare=$(declare -f prepare)
+# We run fakeroot, BUT, we don't actually pass any variables through to fakeroot. In other words, bash works with the tmp_prepare, instead of fakeroot
+fancy_message info "Running prepare in fakeroot. Do not enter password if prompted"
+fakeroot -- bash -c "$tmp_prepare; prepare"
+# Unset because it's a tmp variable
+unset tmp_prepare
 
 # Check if build function doesn't exist
 if ! type -t build > /dev/null 2>&1; then
@@ -358,7 +374,15 @@ if ! type -t build > /dev/null 2>&1; then
 	return 1
 fi
 
-build
+if ! command -v fakeroot > /dev/null; then
+	sudo apt-get install fakeroot -y
+fi
+tmp_build=$(declare -f build)
+fancy_message info "Running build in fakeroot. Do not enter password if prompted"
+fakeroot -- bash -c "$tmp_build; build"
+unset tmp_build
+
+# Trap so that we can clean up (hopefully without messing up anything)
 trap - SIGINT
 
 fancy_message info "Installing"
@@ -368,29 +392,10 @@ if [[ $REMOVE_DEPENDS = y ]]; then
 	sudo apt-get remove $build_depends
 fi
 
-sudo rm -rf "${SRCDIR:?}"/*
 cd "$HOME"
 
 # Metadata writing
 log
-
-# If optdepends exists do this
-if [[ -n $optdepends ]]; then
-	sudo rm -f /tmp/pacstall-optdepends
-
-	fancy_message info "$name has optional dependencies that can enhance its functionalities"
-	echo "Optional dependencies:"
-	printf '    %s\n' "${optdepends[@]}"
-	ask "Do you want to install them" Y
-	if [[ $answer -eq 1 ]]; then
-		for items in "${optdepends[*]}"; do
-			# output the name of the apt thing without the description, EI: `foo: not bar` -> `foo`
-			printf "%s\n" "${optdepends[@]}" | cut -f1 -d":" | tr '\n' ' ' >> /tmp/pacstall-optdepends
-			# Install
-			sudo apt-get install -y -qq $(cat /tmp/pacstall-optdepends)
-		done
-	fi
-fi
 
 fancy_message info "Symlinking files"
 cd /usr/src/pacstall/ || sudo mkdir -p /usr/src/pacstall && cd /usr/src/pacstall
@@ -420,7 +425,7 @@ fi
 fancy_message info "Storing pacscript"
 sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
 cd "$DIR"
-sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
+sudo cp -r /tmp/pacstall/"$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 
 fancy_message info "Cleaning up"
 cleanup
