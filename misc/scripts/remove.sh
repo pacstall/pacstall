@@ -79,13 +79,14 @@ case "$url" in
 		if [ -n "$_dependencies" ]; then
 			fancy_message info "You may want to remove ${BLUE}$_dependencies${NC}"
 		fi
-
+		
+		fancy_message info "Removing dummy package"
+		sudo dpkg -r "$name-pacstall" # removes virtual .deb package
+		
 		sudo rm -f "$LOGDIR/$PACKAGE"
 		return 0
 	;;
 esac
-
-sudo dpkg -r "$name-pacstall" # removes virtual .deb package
 
 error_log 1 "remove $PACKAGE"
 return 1
