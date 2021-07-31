@@ -55,6 +55,7 @@ case "$url" in
 
 	*)
 		fancy_message error "Currently purge functionality is only available for deb packages."
+		return 1
 	;;
 esac
 
