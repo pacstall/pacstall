@@ -211,6 +211,7 @@ while [[ ! "$1" == "--" ]]; do
 			-Il --install-local, Installs a local package
 			-S --search, Search for package
 			-R --remove, Removes package
+			-Rp --remove-purge, Purges package (currently only deb packages are supported)
 			-D --download, Downloads script
 			-A --add-repo, Adds repo to your repo list
 			-U --update, Update script
@@ -345,6 +346,25 @@ while [[ ! "$1" == "--" ]]; do
 			fi
 			exit 0
 		;;
+
+		-Rp|--remove-purge)
+			if [[ -z "$2" ]]; then
+				fancy_message error "You failed to specify a package"
+				exit 1
+			fi
+			
+			while [[ -n "$2" ]]; do
+				PACKAGE=$2
+				shift
+				source "$STGDIR/scripts/purge.sh"
+				if [[ $? -ne 0 ]]; then
+					fancy_message error "Failed to remove ${GREEN}${PACKAGE}${NC}"
+				fi
+			done
+			if [[ -s "LOGFILE" ]]; then
+				exit 1
+			fi
+			exit 0
 
 		-A|--add-repo)
 			REPO="$2"
