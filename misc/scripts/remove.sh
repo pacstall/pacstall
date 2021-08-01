@@ -81,7 +81,7 @@ case "$url" in
 		fi
 		
 		fancy_message info "Removing dummy package"
-		sudo dpkg -r "$name-pacstall" # removes virtual .deb package
+		sudo dpkg -r --force-all "$name-pacstall" # removes virtual .deb package
 		
 		sudo rm -f "$LOGDIR/$PACKAGE"
 		return 0
