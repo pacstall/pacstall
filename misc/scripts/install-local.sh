@@ -125,7 +125,7 @@ Depends: ${depends//' '/' | '}\n"| sudo tee "$SRCDIR/$name-pacstall/DEBIAN/contr
 	if [[ -v optdepends ]]; then
 		echo -e "Suggests: ${optdepends//' '/' | '}\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
-	echo "Architecture: all
+	printf "Architecture: all
 Essential: yes
 Section: Pacstall
 Priority: optional\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
@@ -133,7 +133,7 @@ Priority: optional\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /d
 		echo -e "Conflicts: ${replace//' '/', '}
 		Replace: ${replace//' '/', '}\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
-	echo "Provides: ${gives:-$name}
+	printf "Provides: ${gives:-$name}
 Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
 Description: This is a dummy package used by pacstall, do not remove with apt or dpkg. $description" | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	sudo dpkg-deb -b "$SRCDIR/$name-pacstall" > "/dev/null"
