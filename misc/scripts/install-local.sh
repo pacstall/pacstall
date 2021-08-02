@@ -119,7 +119,7 @@ function makeVirtualDeb {
 	# implements $(gives) variable
 	fancy_message info "Creating dummy package"
 	sudo mkdir -p "$SRCDIR/$name-pacstall/DEBIAN"
-	echo "Package: $name-pacstall
+	printf "Package: $name-pacstall
 Version: $version
 Depends: ${depends//' '/' | '}\n"| sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	if [[ -v optdepends ]]; then
