@@ -120,10 +120,14 @@ function makeVirtualDeb {
 	fancy_message info "Creating dummy package"
 	sudo mkdir -p "$SRCDIR/$name-pacstall/DEBIAN"
 	printf "Package: $name-pacstall
-Version: $version
-Depends: ${depends//' '/' | '}\n"| sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-	if [[ -v optdepends ]]; then
-		echo -e "Suggests: ${optdepends//' '/' | '}\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+Version: $version\n"| sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	if [[ -n $depends ]]; then
+		printf "Depends: ${depends//' '/' | '}\n"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	fi
+	if [[ -n optdepends ]]; then
+		printf "Suggests:" |sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		printf " %s\n" "${optdepends[@]}" | awk -F': ' '{print $1":any "}' | tr '\n' '|' | head -c -2 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 	printf "Architecture: all
 Essential: yes
@@ -135,12 +139,21 @@ Priority: optional\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /d
 	fi
 	printf "Provides: ${gives:-$name}
 Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
-Description: This is a dummy package used by pacstall, do not remove with apt or dpkg. $description" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+Description: This is a dummy package used by pacstall, do not remove with apt or dpkg. $description\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	sudo dpkg-deb -b "$SRCDIR/$name-pacstall" > "/dev/null"
 	sudo rm -rf "$SRCDIR/$name-pacstall"
 	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" > "/dev/null"
+	
+	fancy_message info "$name has optional dependencies that can enhance its functionalities"
+	echo "Optional dependencies:"
+	printf '    %s\n' "${optdepends[@]}"
+	ask "Do you want to install them" Y
+	if [[ $answer -eq 1 ]]; then
+		optinstall='--install-suggests'
+	fi
+	
 	fancy_message info "Installing dependencies"
-	sudo apt-get install -f -y -qq -o=Dpkg::Use-Pty=0
+	sudo apt-get install $optinstall -f -y -qq -o=Dpkg::Use-Pty=0
 	if [[ $? -ne 0	 ]]; then
 		fancy_message error "Failed to install dependencies"
 		error_log 8 "install $PACKAGE"
