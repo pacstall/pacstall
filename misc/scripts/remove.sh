@@ -89,7 +89,7 @@ case "$url" in
 		fi
 		
 		sudo rm -f "$LOGDIR/$PACKAGE"
-		fancy_message info Package removed successfully"
+		fancy_message info "Package removed successfully"
 		return 0
 	;;
 esac
