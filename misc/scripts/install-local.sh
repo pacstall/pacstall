@@ -135,7 +135,7 @@ Priority: optional\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /d
 	fi
 	printf "Provides: ${gives:-$name}
 Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
-Description: This is a dummy package used by pacstall, do not remove with apt or dpkg. $description" | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+Description: This is a dummy package used by pacstall, do not remove with apt or dpkg. $description" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	sudo dpkg-deb -b "$SRCDIR/$name-pacstall" > "/dev/null"
 	sudo rm -rf "$SRCDIR/$name-pacstall"
 	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" > "/dev/null"
