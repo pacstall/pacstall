@@ -117,22 +117,25 @@ function log() {
 function makeVirtualDeb {
 	# creates empty .deb package (with only the control file) for apt integration
 	# implements $(gives) variable
-	# Note: I only put "development" in "Section" because I had to put something there
 	fancy_message info "Creating dummy package"
 	sudo mkdir -p "$SRCDIR/$name-pacstall/DEBIAN"
 	echo "Package: $name-pacstall
 Version: $version
-Depends: ${depends//' '/' | '}
-Suggests: ${optdepends//' '/' | '}
-Architecture: all
+Depends: ${depends//' '/' | '}\n"| sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	if [[ -v optdepends ]]; then
+		echo -e "Suggests: ${optdepends//' '/' | '}\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	fi
+	echo "Architecture: all
 Essential: yes
-Section: development
-Priority: optional
-Conflicts: ${replace//' '/', '}
-Replace: ${replace//' '/', '}
-Provides: ${gives:-$name}
+Section: Pacstall
+Priority: optional\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	if [[ -v replace ]]; then
+		echo -e "Conflicts: ${replace//' '/', '}
+		Replace: ${replace//' '/', '}\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	fi
+	echo "Provides: ${gives:-$name}
 Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
-Description: This is a dummy package generated and used by pacstall, please do not delete. $description" | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+Description: This is a dummy package used by pacstall, do not remove with apt or dpkg. $description" | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	sudo dpkg-deb -b "$SRCDIR/$name-pacstall" > "/dev/null"
 	sudo rm -rf "$SRCDIR/$name-pacstall"
 	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" > "/dev/null"
