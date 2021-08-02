@@ -141,6 +141,12 @@ Priority: optional\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /d
 Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
 Description: This is a dummy package used by pacstall, do not remove with apt or dpkg. $description\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	sudo dpkg-deb -b "$SRCDIR/$name-pacstall" > "/dev/null"
+	if [[ $? -ne 0 ]]; then
+		fancy_message error "Couldn't create dummy package"
+		error_log 5 "install $PACKAGE"
+		return 1
+	fi
+	
 	sudo rm -rf "$SRCDIR/$name-pacstall"
 	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" > "/dev/null"
 	
@@ -161,6 +167,7 @@ Description: This is a dummy package used by pacstall, do not remove with apt or
 	fi
 	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" > "/dev/null"
 	sudo rm "$SRCDIR/$name-pacstall.deb"
+	return 0
 }
 
 
@@ -277,6 +284,9 @@ fi
 
 if [[ "$url" != *".deb" ]]; then
 	makeVirtualDeb
+	if [[ $? -ne 0 ]]; then
+		return 1
+	fi
 fi
 
 function hashcheck() {
