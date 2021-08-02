@@ -124,7 +124,7 @@ Version: $version\n"| sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/nu
 	if [[ -n $depends ]]; then
 		printf "Depends: ${depends//' '/' | '}\n"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
-	if [[ -n optdepends ]]; then
+	if [[ -n $optdepends ]]; then
 		printf "Suggests:" |sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 		printf " %s\n" "${optdepends[@]}" | awk -F': ' '{print $1":any "}' | tr '\n' '|' | head -c -2 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 		printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
