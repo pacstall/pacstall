@@ -121,7 +121,7 @@ else
 				if [[ $answer -eq 1 ]];then
 					export PACKAGE=${PACKAGELIST[$PACSTALLREPO]}
 					export REPO=${URLLIST[$PACSTALLREPO]}
-					unset $PACSTALLREPO
+					unset PACSTALLREPO
 					return 0
 				fi
 			# If other repos, ask, if Pacstall repo, skip

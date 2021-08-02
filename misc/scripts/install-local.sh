@@ -34,6 +34,9 @@ function trap_ctrlc () {
 	echo ""
 	fancy_message warn "Interupted, cleaning up"
 	cleanup
+	if dpkg-query -W -f='${Status}' "$name-pacstall" 2> /dev/null | grep -q "ok installed" ; then
+		sudo dpkg -r --force-all "$name-pacstall" > /dev/null
+	fi
 	exit 1
 }
 
@@ -110,6 +113,64 @@ function log() {
 		fi
 	fi
 }
+
+
+function makeVirtualDeb {
+	# creates empty .deb package (with only the control file) for apt integration
+	# implements $(gives) variable
+	fancy_message info "Creating dummy package"
+	sudo mkdir -p "$SRCDIR/$name-pacstall/DEBIAN"
+	printf "Package: $name-pacstall
+Version: $version\n"| sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	if [[ -n $depends ]]; then
+		printf "Depends: ${depends//' '/' | '}\n"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	fi
+	if [[ -n $optdepends ]]; then
+		printf "Suggests:" |sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		printf " %s\n" "${optdepends[@]}" | awk -F': ' '{print $1":any "}' | tr '\n' '|' | head -c -2 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	fi
+	printf "Architecture: all
+Essential: yes
+Section: Pacstall
+Priority: optional\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	if [[ -v replace ]]; then
+		echo -e "Conflicts: ${replace//' '/', '}
+		Replace: ${replace//' '/', '}\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	fi
+	printf "Provides: ${gives:-$name}
+Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
+Description: This is a dummy package used by pacstall, do not remove with apt or dpkg. $description\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	sudo dpkg-deb -b "$SRCDIR/$name-pacstall" > "/dev/null"
+	if [[ $? -ne 0 ]]; then
+		fancy_message error "Couldn't create dummy package"
+		error_log 5 "install $PACKAGE"
+		return 1
+	fi
+	
+	sudo rm -rf "$SRCDIR/$name-pacstall"
+	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" > "/dev/null"
+	
+	fancy_message info "$name has optional dependencies that can enhance its functionalities"
+	echo "Optional dependencies:"
+	printf '    %s\n' "${optdepends[@]}"
+	ask "Do you want to install them" Y
+	if [[ $answer -eq 1 ]]; then
+		optinstall='--install-suggests'
+	fi
+	
+	fancy_message info "Installing dependencies"
+	sudo apt-get install $optinstall -f -y -qq -o=Dpkg::Use-Pty=0
+	if [[ $? -ne 0	 ]]; then
+		fancy_message error "Failed to install dependencies"
+		error_log 8 "install $PACKAGE"
+		return 1
+	fi
+	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" > "/dev/null"
+	sudo rm "$SRCDIR/$name-pacstall.deb"
+	return 0
+}
+
 
 ask "Do you want to view the pacscript first" N
 if [[ $answer -eq 1 ]]; then
@@ -222,6 +283,13 @@ if [[ $NOBUILDDEP -eq 0 ]]; then
 	fi
 fi
 
+if [[ "$url" != *".deb" ]]; then
+	makeVirtualDeb
+	if [[ $? -ne 0 ]]; then
+		return 1
+	fi
+fi
+
 function hashcheck() {
 	inputHash=$hash
 	# Get hash of file
@@ -230,7 +298,7 @@ function hashcheck() {
 	if [[ "$inputHash" != "$fileHash" ]]; then
 		# We bad
 		fancy_message error "Hashes don't match"
-		error-log 16 "install $PACKAGE"
+		sudo dpkg -r --force-all "$name-pacstall" > /dev/null
 		return 1
 	fi
 	true
@@ -309,7 +377,8 @@ case "$url" in
 
 		else
 			fancy_message error "Failed to install the package"
-			error-log 14 "install $PACKAGE"
+			error_log 14 "install $PACKAGE"
+			sudo dpkg -r --force-all "$name-pacstall" > /dev/null
 			return 1
 		fi
 	;;
@@ -352,7 +421,8 @@ unset tmp_prepare
 # Check if build function doesn't exist
 if ! type -t build > /dev/null 2>&1; then
 	fancy_message error "Something didn't compile right"
-	error-log 5 "install $PACKAGE"
+	error_log 5 "install $PACKAGE"
+	sudo dpkg -r --force-all "$name-pacstall" > /dev/null
 	return 1
 fi
 
@@ -395,7 +465,8 @@ sudo stow --target="/" "$PACKAGE" 2>&1 | tee -a "$LOGFILE"
 # stow will fail to symlink packages if files already exist on the system; this is just an error
 if [[ $? -ne 0	 ]]; then
 	fancy_message error "Package contains links to files that exist on the system"
-	error-log 14 "install $PACKAGE"
+	error_log 14 "install $PACKAGE"
+	sudo dpkg -r --force-all "$name-pacstall" > /dev/null
 	return 1
 fi
 
@@ -409,7 +480,7 @@ fi
 fancy_message info "Storing pacscript"
 sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
 cd "$DIR"
-sudo cp -r /tmp/pacstall/"$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
+sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 
 fancy_message info "Cleaning up"
 echo "]============== cleaning up ==============[" | tee -a "$LOGFILE" > /dev/null
