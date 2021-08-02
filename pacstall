@@ -184,7 +184,6 @@ function fancy_message() {
 
 # use axel if avaliable
 function download() {
-	fancy_message info "$2"
 	sudo rm -f "${1##*/}"
 	if command -v axel > /dev/null; then
 		axel -n $(($(nproc) + 5)) -ao "${1##*/}" "$1"
