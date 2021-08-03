@@ -145,6 +145,7 @@ Description: This is a symbolic package used by pacstall, may be removed with ap
 	export PACSTALL_REMOVE_APT="true"
 fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 	sudo chmod -x "$SRCDIR/$name-pacstall/DEBIAN/postrm"
+	sudo chmod 755 "$SRCDIR/$name-pacstall/DEBIAN/postrm"
 	sudo dpkg-deb -b "$SRCDIR/$name-pacstall" > "/dev/null"
 	if [[ $? -ne 0 ]]; then
 		fancy_message error "Couldn't create dummy package"
