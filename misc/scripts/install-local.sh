@@ -34,8 +34,8 @@ function trap_ctrlc () {
 	echo ""
 	fancy_message warn "Interupted, cleaning up"
 	cleanup
-	if dpkg-query -W -f='${Status}' "$name-pacstall" 2> /dev/null | grep -q "ok installed" ; then
-		sudo dpkg -r --force-all "$name-pacstall" > /dev/null
+	if dpkg-query -W -f='${Status}' "$name" 2> /dev/null | grep -q "ok installed" ; then
+		sudo dpkg -r --force-all "$name" > /dev/null
 	fi
 	exit 1
 }
@@ -118,42 +118,42 @@ function makeVirtualDeb {
 	# creates empty .deb package (with only the control file) for apt integration
 	# implements $(gives) variable
 	fancy_message info "Creating dummy package"
-	sudo mkdir -p "$SRCDIR/$name-pacstall/DEBIAN"
-	printf "Package: $name-pacstall
-Version: $version\n"| sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	sudo mkdir -p "$SRCDIR/$name-dummy/DEBIAN"
+	printf "Package: $name
+Version: $version\n"| sudo tee "$SRCDIR/$name-dummy/DEBIAN/control" > /dev/null
 	if [[ -n $depends ]]; then
-		printf "Depends: ${depends//' '/' | '}\n"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		printf "Depends: ${depends//' '/' | '}\n"| sudo tee -a "$SRCDIR/$name-dummy/DEBIAN/control" > /dev/null
 	fi
 	if [[ -n $optdepends ]]; then
-		printf "Suggests:" |sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-		printf " %s\n" "${optdepends[@]}" | awk -F': ' '{print $1":any "}' | tr '\n' '|' | head -c -2 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-		printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		printf "Suggests:" |sudo tee -a "$SRCDIR/$name-dummy/DEBIAN/control" > /dev/null
+		printf " %s\n" "${optdepends[@]}" | awk -F': ' '{print $1":any "}' | tr '\n' '|' | head -c -2 | sudo tee -a "$SRCDIR/$name-dummy/DEBIAN/control" > /dev/null
+		printf "\n" | sudo tee -a "$SRCDIR/$name-dummy/DEBIAN/control" > /dev/null
 	fi
 	printf "Architecture: all
 Essential: no
 Section: Pacstall
-Priority: optional\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+Priority: optional\n" | sudo tee -a "$SRCDIR/$name-dummy/DEBIAN/control" > /dev/null
 	if [[ -v replace ]]; then
 		echo -e "Conflicts: ${replace//' '/', '}
-		Replace: ${replace//' '/', '}\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		Replace: ${replace//' '/', '}\n" | sudo tee -a "$SRCDIR/$name-dummy/DEBIAN/control" > /dev/null
 	fi
 	printf "Provides: ${gives:-$name}
 Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
-Description: This is a symbolic package used by pacstall, may be removed with apt or dpkg. $description\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+Description: This is a symbolic package used by pacstall, may be removed with apt or dpkg. $description\n" | sudo tee -a "$SRCDIR/$name-dummy/DEBIAN/control" > /dev/null
 	echo 'if [[ pacstall -Qi $name >"/dev/null" ]] ; then
 	pacstall -R $name
 	export PACSTALL_REMOVE_APT="true"
-fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
-	sudo chmod -x "$SRCDIR/$name-pacstall/DEBIAN/postrm"
-	sudo dpkg-deb -b "$SRCDIR/$name-pacstall" > "/dev/null"
+fi' | sudo tee "$SRCDIR/$name-dummy/DEBIAN/postrm" >"/dev/null"
+	sudo chmod -x "$SRCDIR/$name-dummy/DEBIAN/postrm"
+	sudo dpkg-deb -b "$SRCDIR/$name-dummy" > "/dev/null"
 	if [[ $? -ne 0 ]]; then
 		fancy_message error "Couldn't create dummy package"
 		error_log 5 "install $PACKAGE"
 		return 1
 	fi
 	
-	sudo rm -rf "$SRCDIR/$name-pacstall"
-	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" > "/dev/null"
+	sudo rm -rf "$SRCDIR/$name-dummy"
+	sudo dpkg -i "$SRCDIR/$name-dummy.deb" > "/dev/null"
 	
 	fancy_message info "$name has optional dependencies that can enhance its functionalities"
 	echo "Optional dependencies:"
@@ -170,8 +170,8 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 		error_log 8 "install $PACKAGE"
 		return 1
 	fi
-	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" > "/dev/null"
-	sudo rm "$SRCDIR/$name-pacstall.deb"
+	sudo dpkg -i "$SRCDIR/$name-dummy.deb" > "/dev/null"
+	sudo rm "$SRCDIR/$name-dummy.deb"
 	return 0
 }
 
