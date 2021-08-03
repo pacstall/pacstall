@@ -125,6 +125,13 @@ Version: $version\n"| sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/nu
 		printf "Depends: ${depends//' '/' | '}\n"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 	if [[ -n $optdepends ]]; then
+		fancy_message info "$name has optional dependencies that can enhance its functionalities"
+		echo "Optional dependencies:"
+		printf '    %s\n' "${optdepends[@]}"
+		ask "Do you want to install them" Y
+		if [[ $answer -eq 1 ]]; then
+			optinstall='--install-suggests'
+		fi
 		printf "Suggests:" |sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 		printf " %s\n" "${optdepends[@]}" | awk -F': ' '{print $1":any "}' | tr '\n' '|' | head -c -2 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 		printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
@@ -133,7 +140,7 @@ Version: $version\n"| sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/nu
 Essential: no
 Section: Pacstall
 Priority: optional\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-	if [[ -v replace ]]; then
+	if [[ -n $replace ]]; then
 		echo -e "Conflicts: ${replace//' '/', '}
 		Replace: ${replace//' '/', '}\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
@@ -156,13 +163,6 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 	sudo rm -rf "$SRCDIR/$name-pacstall"
 	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" > "/dev/null"
 	
-	fancy_message info "$name has optional dependencies that can enhance its functionalities"
-	echo "Optional dependencies:"
-	printf '    %s\n' "${optdepends[@]}"
-	ask "Do you want to install them" Y
-	if [[ $answer -eq 1 ]]; then
-		optinstall='--install-suggests'
-	fi
 	
 	fancy_message info "Installing dependencies"
 	sudo apt-get install $optinstall -f -y -qq -o=Dpkg::Use-Pty=0
