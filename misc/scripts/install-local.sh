@@ -130,7 +130,7 @@ Version: $version\n"| sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/nu
 		printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 	printf "Architecture: all
-Essential: yes
+Essential: no
 Section: Pacstall
 Priority: optional\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	if [[ -v replace ]]; then
@@ -139,7 +139,12 @@ Priority: optional\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /d
 	fi
 	printf "Provides: ${gives:-$name}
 Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
-Description: This is a dummy package used by pacstall, do not remove with apt or dpkg. $description\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+Description: This is a symbolic package used by pacstall, may be removed with apt or dpkg. $description\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	echo 'if [[ pacstall -Qi $name >"/dev/null" ]] ; then
+	pacstall -R $name
+	export PACSTALL_REMOVE_APT="true"
+fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
+	sudo chmod -x "$SRCDIR/$name-pacstall/DEBIAN/postrm"
 	sudo dpkg-deb -b "$SRCDIR/$name-pacstall" > "/dev/null"
 	if [[ $? -ne 0 ]]; then
 		fancy_message error "Couldn't create dummy package"
