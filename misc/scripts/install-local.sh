@@ -119,8 +119,8 @@ function makeVirtualDeb {
 	# implements $(gives) variable
 	fancy_message info "Creating dummy package"
 	sudo mkdir -p "$SRCDIR/$name-pacstall/DEBIAN"
-	printf "Package: $name-pacstall\n" | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-	if [[ $version =~ "^[0-9]" ]]; then
+	printf "Package: $name\n" | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	if [[ $version =~ ^[0-9] ]]; then
 		printf "Version: $version\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	else
 		printf "Version: 0-$version\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
@@ -129,21 +129,43 @@ function makeVirtualDeb {
 		printf "Depends: ${depends//' '/' | '}\n"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 	if [[ -n $optdepends ]]; then
+		fancy_message info "$name has optional dependencies that can enhance its functionalities"
+		echo "Optional dependencies:"
+		printf '    %s\n' "${optdepends[@]}"
+		ask "Do you want to install them" Y
+		if [[ $answer -eq 1 ]]; then
+			optinstall='--install-suggests'
+		fi
 		printf "Suggests:" |sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 		printf " %s\n" "${optdepends[@]}" | awk -F': ' '{print $1":any "}' | tr '\n' '|' | head -c -2 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 		printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 	printf "Architecture: all
-Essential: yes
+Essential: no
 Section: Pacstall
 Priority: optional\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-	if [[ -v replace ]]; then
+	if [[ -n $replace ]]; then
 		echo -e "Conflicts: ${replace//' '/', '}
 		Replace: ${replace//' '/', '}\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 	printf "Provides: ${gives:-$name}
 Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
-Description: This is a dummy package used by pacstall, do not remove with apt or dpkg. $description\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+Description: This is a symbolic package used by pacstall, may be removed with apt or dpkg. $description\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	echo '#!/bin/bash
+if [[ PACSTALL_REMOVE != "true" ]]; then
+	source '"$LOGDIR"'/'"$name"' 2>&1 /dev/null
+	cd '"$STOWDIR"' || (sudo mkdir -p '"$STOWDIR"'; cd '"$STOWDIR"')
+	stow --target="/" -D '"$name"' 2> /dev/null
+	rm -rf '"$name"' 2> /dev/null
+	hash -r
+	if declare -F removescript >/dev/null ; then
+		removescript
+	fi
+	rm -f '"$LOGDIR"'/'"$name"'
+else unset PACSTALL_REMOVE
+fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
+	sudo chmod -x "$SRCDIR/$name-pacstall/DEBIAN/postrm"
+	sudo chmod 755 "$SRCDIR/$name-pacstall/DEBIAN/postrm"
 	sudo dpkg-deb -b "$SRCDIR/$name-pacstall" > "/dev/null"
 	if [[ $? -ne 0 ]]; then
 		fancy_message error "Couldn't create dummy package"
@@ -154,13 +176,6 @@ Description: This is a dummy package used by pacstall, do not remove with apt or
 	sudo rm -rf "$SRCDIR/$name-pacstall"
 	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" > "/dev/null"
 	
-	fancy_message info "$name has optional dependencies that can enhance its functionalities"
-	echo "Optional dependencies:"
-	printf '    %s\n' "${optdepends[@]}"
-	ask "Do you want to install them" Y
-	if [[ $answer -eq 1 ]]; then
-		optinstall='--install-suggests'
-	fi
 	
 	fancy_message info "Installing dependencies"
 	sudo apt-get install $optinstall -f -y -qq -o=Dpkg::Use-Pty=0
@@ -302,7 +317,7 @@ function hashcheck() {
 		# We bad
 		fancy_message error "Hashes don't match"
 		error_log 16 "install $PACKAGE"
-		sudo dpkg -r --force-all "$name-pacstall" > /dev/null
+		sudo dpkg -r "$name-pacstall" > /dev/null
 		return 1
 	fi
 	true
@@ -356,7 +371,7 @@ case "$url" in
 		else
 			fancy_message error "Failed to install the package"
 			error_log 14 "install $PACKAGE"
-			sudo dpkg -r --force-all "$name-pacstall" > /dev/null
+			sudo dpkg -r "$name-pacstall" > /dev/null
 			return 1
 		fi
 	;;
@@ -399,7 +414,7 @@ unset tmp_prepare
 if ! type -t build > /dev/null 2>&1; then
 	fancy_message error "Something didn't compile right"
 	error_log 5 "install $PACKAGE"
-	sudo dpkg -r --force-all "$name-pacstall" > /dev/null
+	sudo dpkg -r "$name-pacstall" > /dev/null
 	return 1
 fi
 
@@ -440,7 +455,7 @@ sudo stow --target="/" "$PACKAGE"
 if [[ $? -ne 0	 ]]; then
 	fancy_message error "Package contains links to files that exist on the system"
 	error_log 14 "install $PACKAGE"
-	sudo dpkg -r --force-all "$name-pacstall" > /dev/null
+	sudo dpkg -r "$name-pacstall" > /dev/null
 	return 1
 fi
 
