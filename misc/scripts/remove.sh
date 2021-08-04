@@ -72,7 +72,6 @@ case "$url" in
 
 		if fn_exists removescript ; then
 			fancy_message info "Running post removal script"
-			REPO=$(cat "$STGDIR/repo/pacstallrepo.txt")
 			removescript
 		fi
 
@@ -81,7 +80,9 @@ case "$url" in
 		fi
 		
 		fancy_message info "Removing dummy package"
-		sudo dpkg -r --force-all "$name-pacstall" 2> /dev/null # removes virtual .deb package
+		export PACSTALL_REMOVE="true"
+		sudo dpkg -r "$name" 2> /dev/null # removes virtual .deb package
+        
 		if [[ $? -ne 0 ]]; then
 			fancy_message error "Failed to remove dummy package"
 			error_log 1 "remove $PACKAGE"
