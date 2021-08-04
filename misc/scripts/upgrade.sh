@@ -116,7 +116,7 @@ for i in "${list[@]}"; do
 	if [[ -n $remotever ]]; then
 		ver_compare $localver $remotever
 		up=$?
-		if [[ $i == *"-git" ]] || [[ up -eq 0 ]];; then
+		if [[ $i == *"-git" ]] || [[ up -eq 0 ]]; then
 			echo "$i" |sudo tee -a /tmp/pacstall-up-list >/dev/null
 			echo "${GREEN}${i}${CYAN} @ $(parseRepo "${remoteurl}") ${NC}" | sudo tee -a /tmp/pacstall-up-print >/dev/null
 			echo "$remoteurl" |sudo tee -a /tmp/pacstall-up-urls >/dev/null
