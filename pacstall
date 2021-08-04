@@ -501,7 +501,7 @@ while [[ ! "$1" == "--" ]]; do
 				if [[ -f "$(basename $2)" ]]; then
 					tfile=$(cat "$(basename $2)")
 				else
-					if [[ `wget -S --spider $2  2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+					if [[ $(wget -S --spider $2  2>&1 | grep 'HTTP/1.1 200 OK') ]]; then
 						tfile="$(curl $2)"
 					else
 						fancy_message error "$(basename $2) does not exist"
@@ -543,7 +543,7 @@ while [[ ! "$1" == "--" ]]; do
 				variables=${variables//"\")"/"\""}
 				variables=${variables//"\')"/"\""}
 				variables=${variables//'>'/'>"'}
-				printf "$variables\n$funcs" | tee $(basename "$2" ".PKGBUILD")
+				printf "$variables\n$funcs" | tee $(basename "$2" ".PKGBUILD").pacscript
 				shift
 			done
 			exit 0
