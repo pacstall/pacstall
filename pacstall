@@ -128,7 +128,7 @@ function ask() {
 	else
 		prompt="${GREEN}y${NC}/${RED}n${NC}"
 	fi
-	
+
 	# Ask the question (not using "read -p" as it uses stderr not stdout)
 	echo -ne "$1 [$prompt] "
 
@@ -161,7 +161,7 @@ function ask() {
 			*)
 				echo -ne "$1 [$prompt] "
 				read -r reply < /dev/tty
-			;;	
+			;;
 		esac
 	done
 }
@@ -212,7 +212,7 @@ while [[ ! "$1" == "--" ]]; do
 		;;
 
 		-h|--help)
-			echo " 
+			echo "
 			options:
 			-I --install, Installs package
 			-Il --install-local, Installs a local package
@@ -256,19 +256,19 @@ while [[ ! "$1" == "--" ]]; do
 				export type="install"
 				export local="no"
 				source "$STGDIR/scripts/search.sh"
-				
+
 				if [[ $? -ne 0 ]]; then
 					continue
 				fi
 
 				URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 				source "$STGDIR/scripts/download.sh"
-				
+
 				if [[ $? -ne 0 ]]; then
 					fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
 					continue
 				fi
-				
+
 				export REPO
 				source "$STGDIR/scripts/install-local.sh"
 				if [[ $? -ne 0 ]]; then
@@ -276,7 +276,7 @@ while [[ ! "$1" == "--" ]]; do
 					continue
 				fi
 			done
-			
+
 			if [[ -s "LOGFILE" ]]; then
 				exit 1
 			fi
@@ -284,16 +284,16 @@ while [[ ! "$1" == "--" ]]; do
 			;;
 
 		-Il|--install-local)
-			
+
 			if [[ -z "$2" ]]; then
 				fancy_message error "You failed to specify a package"
 				exit 1
 			fi
-			
+
 			while [[ -n "$2" ]]; do
 				INPUT="$(basename "$2" ".pacscript")" # Removes the suffix
 				export local="yes"
-				
+
 				# Enter directory if exists
 				if [[ -d "$INPUT" ]]; then
 					cd "$(basename "$INPUT")"
@@ -305,7 +305,7 @@ while [[ ! "$1" == "--" ]]; do
 					continue
 				fi
 				shift
-				
+
 				export PACKAGE="$(basename "$INPUT")"
 				source "$STGDIR/scripts/install-local.sh"
 				if [[ $? -ne 0 ]]; then
@@ -321,24 +321,24 @@ while [[ ! "$1" == "--" ]]; do
 		;;
 
 		-S|--search)
-			
+
 			export SEARCH=$2
 			if [[ -z "$SEARCH" ]]; then
 				fancy_message error "You failed to specify a package"
 				exit 1
 			fi
-			
+
 			source "$STGDIR/scripts/search.sh"
 			exit 0
 		;;
 
 		-R|--remove)
-			
+
 			if [[ -z "$2" ]]; then
 				fancy_message error "You failed to specify a package"
 				exit 1
 			fi
-			
+
 			while [[ -n "$2" ]]; do
 				PACKAGE=$2
 				shift
@@ -374,7 +374,7 @@ while [[ ! "$1" == "--" ]]; do
 			PACKAGE="$2"
 
 			if [[ -z "$PACKAGE" ]]; then
-				echo -e "1.5.1 ${BIPurple}Moonlight${NC}"
+				echo -e "1.6 ${BICyan}Celadon${NC}"
 				exit 0
 			else
 				# If pacstall -V was called with an argument, it's a package, so get the package version (usful for scripting)
@@ -394,7 +394,7 @@ while [[ ! "$1" == "--" ]]; do
 			if [[ -z "$BRANCH" ]]; then
 				if [[ -f "$STGDIR/repo/update" ]]; then
 					BRANCH=$(sed 's/.*\ //' "$STGDIR/repo/update")
-				else 
+				else
 					BRANCH="master"
 				fi
 			fi
@@ -422,18 +422,18 @@ while [[ ! "$1" == "--" ]]; do
 		;;
 
 		-D|--download)
-			
+
 			if [[ -z "$2" ]]; then
 				fancy_message error "You failed to specify a package"
 				exit 1
 			fi
-			
+
 			while [[ -n "$2" ]]; do
 				PACKAGE=$2
 				shift
 				export type="download"
 				source "$STGDIR/scripts/search.sh"
-				
+
 				if [[ $? -ne 0 ]]; then
 					((i++))
 					continue
@@ -441,12 +441,12 @@ while [[ ! "$1" == "--" ]]; do
 
 				export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 				source "$STGDIR/scripts/download.sh"
-				
+
 				if [[ $? -ne 0 ]]; then
 					fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
 					continue
 				fi
-				
+
 				fancy_message info "${GREEN}${PACKAGE}${NC}'s pacscript is downloaded in ${GREEN}$(pwd)/$PACKAGE${NC}"
 			done
 
@@ -458,7 +458,7 @@ while [[ ! "$1" == "--" ]]; do
 
 		-Up|--upgrade)
 			source "$STGDIR/scripts/upgrade.sh"
-			
+
 			if [[ -s "LOGFILE" ]]; then
 				exit 1
 			fi
