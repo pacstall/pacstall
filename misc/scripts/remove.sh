@@ -81,7 +81,7 @@ case "$url" in
 		
 		fancy_message info "Removing dummy package"
 		export PACSTALL_REMOVE="true"
-        sudo dpkg -r "$name" 2> /dev/null # removes virtual .deb package
+		sudo dpkg -r "$name" 2> /dev/null # removes virtual .deb package
         
 		if [[ $? -ne 0 ]]; then
 			fancy_message error "Failed to remove dummy package"
