@@ -119,7 +119,7 @@ function makeVirtualDeb {
 	# implements $(gives) variable
 	fancy_message info "Creating dummy package"
 	sudo mkdir -p "$SRCDIR/$name-pacstall/DEBIAN"
-	printf "Package: $name-pacstall
+	printf "Package: $name
 Version: $version\n"| sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	if [[ -n $depends ]]; then
 		printf "Depends: ${depends//' '/' | '}\n"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
@@ -147,9 +147,18 @@ Priority: optional\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /d
 	printf "Provides: ${gives:-$name}
 Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
 Description: This is a symbolic package used by pacstall, may be removed with apt or dpkg. $description\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-	echo 'if [[ pacstall -Qi $name >"/dev/null" ]] ; then
-	pacstall -R $name
-	export PACSTALL_REMOVE_APT="true"
+	echo '#!/bin/bash
+if [[ PACSTALL_REMOVE != "true" ]]; then
+	source '$LOGDIR'/'$name' 2>&1 /dev/null
+	cd '$STOWDIR' || (sudo mkdir -p '$STOWDIR'; cd '$STOWDIR')
+	stow --target="/" -D '$name' 2> /dev/null
+	rm -rf '$name' 2> /dev/null
+	hash -r
+	if declare -F removescript >/dev/null ; then
+		removescript
+	fi
+	rm -f '$LOGDIR'/'$name'
+else unset PACSTALL_REMOVE
 fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 	sudo chmod -x "$SRCDIR/$name-pacstall/DEBIAN/postrm"
 	sudo chmod 755 "$SRCDIR/$name-pacstall/DEBIAN/postrm"
