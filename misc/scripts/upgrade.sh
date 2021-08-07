@@ -25,7 +25,7 @@
 function ver_compare() { 
 	local first="$(echo ${1} | sed 's/^[^0-9]*//')"
 	local second="$(echo ${1} | sed 's/^[^0-9]*//')"
-	return $(dpkg --compare-version $first "lt" $second)
+	return $(dpkg --compare-versions $first "lt" $second)
 }
 
 export UPGRADE="yes"
@@ -97,7 +97,7 @@ for i in "${list[@]}"; do
 		done
 		if [[ -n $remotever ]]; then
 			ver_compare $remotever $alterver
-			if  [[ $? -ne 0 ]]; then
+			if  [[ $? -eq 0 ]]; then
 				echo -e "${GREEN}${i}${CYAN} has a newer version at ${CYAN}$(parseRepo "${alterurl}")${NC}."
 				ask "Keep the package from the current repo?" Y
 				if [[ $answer -eq 0 ]]; then
@@ -109,30 +109,21 @@ for i in "${list[@]}"; do
 			remoterepo=$alterver
 			remoteurl=$alterurl
 		fi
+	elif [[ $remotever == $localver ]]; then
+		continue
 	fi
-
 	
 	if [[ -n $remotever ]]; then
 		ver_compare $localver $remotever
 		up=$?
-		if [[ $i == *"-git" ]] || [[ up -ne 0 ]];; then
+		if [[ $i == *"-git" ]] || [[ up -eq 0 ]]; then
 			echo "$i" |sudo tee -a /tmp/pacstall-up-list >/dev/null
 			echo "${GREEN}${i}${CYAN} @ $(parseRepo "${remoteurl}") ${NC}" | sudo tee -a /tmp/pacstall-up-print >/dev/null
 			echo "$remoteurl" |sudo tee -a /tmp/pacstall-up-urls >/dev/null
 		fi
 	fi
-done &
-
-PID=$!
-i=1
-sp=".oO@*"
-echo -n ' '
-while [ -d /proc/$PID ]; do
-	sleep 0.2
-	printf "\b${sp:i++%${#sp}:1}"
 done
 
-echo ""
 if [[ $(wc -l /tmp/pacstall-up-list | awk '{ print $1 }') -eq 0 ]] ; then
 	fancy_message info "Nothing to upgrade"
 else
