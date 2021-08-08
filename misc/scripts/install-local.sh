@@ -229,7 +229,7 @@ fi
 
 # Run checks function
 checks
-if [[ $? -ne 0	 ]]; then
+if [[ $? -ne 0 ]]; then
 	fancy_message error "There was an error checking the script!"
 	error_log 6 "install $PACKAGE"
 	return 1
