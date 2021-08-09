@@ -150,7 +150,7 @@ sudo apt-get install -qq -y curl wget stow build-essential unzip tree bc fakeroo
 export STGDIR="/usr/share/pacstall"
 export SRCDIR="/tmp/pacstall"
 
-fancy_message info "making directories"
+fancy_message info "Making directories"
 mkdir -p $STGDIR
 mkdir -p $STGDIR/scripts
 mkdir -p $STGDIR/repo
@@ -184,7 +184,7 @@ do
 done
 echo ""
 
-fancy_message info "pulling ${BLUE}pacstall${NC} from ${RED}https://raw.githubusercontent.com/pacstall/pacstall/master/pacstall${NC}"
+fancy_message info "Pulling ${BLUE}pacstall${NC} from ${RED}https://raw.githubusercontent.com/pacstall/pacstall/master/pacstall${NC}"
 
 sudo wget -q --show-progress --progress=bar:force -O /bin/pacstall https://raw.githubusercontent.com/pacstall/pacstall/master/pacstall &
 wget -q --show-progress --progress=bar:force -O /usr/share/man/man8/pacstall.8.gz https://raw.githubusercontent.com/pacstall/pacstall/master/misc/pacstall.8.gz &
