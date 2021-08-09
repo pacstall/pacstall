@@ -147,11 +147,16 @@ sudo apt-get install -qq -y curl wget stow build-essential unzip tree bc fakeroo
 
 
 export STGDIR="/usr/share/pacstall"
+export SRCDIR="/tmp/pacstall"
 
 fancy_message info "making directories"
 mkdir -p $STGDIR
 mkdir -p $STGDIR/scripts
 mkdir -p $STGDIR/repo
+
+mkdir -p $SRCDIR
+sudo chown $LOGNAME -R $SRCDIR
+
 mkdir -p /var/log/pacstall/metadata
 mkdir -p /var/log/pacstall/error_log
 sudo chown $LOGNAME -R /var/log/pacstall/error_log
