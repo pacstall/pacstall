@@ -140,7 +140,7 @@ function makeVirtualDeb {
 		printf " %s\n" "${optdepends[@]}" | awk -F': ' '{print $1":any "}' | tr '\n' '|' | head -c -2 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 		printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
-	printf "Architecture: all
+	printf "Architecture: ${arch:-amd64}
 Essential: no
 Section: Pacstall
 Priority: optional\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
