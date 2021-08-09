@@ -155,11 +155,11 @@ mkdir -p $STGDIR/scripts
 mkdir -p $STGDIR/repo
 
 mkdir -p $SRCDIR
-sudo chown $LOGNAME -R $SRCDIR
+sudo chown $(logname) -R $SRCDIR
 
 mkdir -p /var/log/pacstall/metadata
 mkdir -p /var/log/pacstall/error_log
-sudo chown $LOGNAME -R /var/log/pacstall/error_log
+sudo chown $(logname) -R /var/log/pacstall/error_log
 sudo mkdir -p /usr/share/man/man8/
 sudo mkdir -p /usr/share/bash-completion/completions
 
