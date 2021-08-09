@@ -486,31 +486,24 @@ while [[ ! "$1" == "--" ]]; do
 		;;
 		
 		-C|--convert)
+			
 			if [[ -z "$2" ]]; then
 				fancy_message error "Please specify a package"
 				exit 1
 			fi
-
+			
 			while [[ -n "$2" ]]; do
-
-				# Enter directory if exists
-				if [[ -d "$(dirname $2)" ]]; then
-					cd "$(dirname $2)"
-				fi
-				# Check if the file exist
-				if [[ -f "$(basename $2)" ]]; then
-					tfile=$(cat "$(basename $2)")
+			
+				if [[ $(wget -S --spider "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=$2"  2>&1 | grep 'HTTP/1.1 200 OK') ]]; then
+					tfile="$(curl "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=$2")"
 				else
-					if [[ $(wget -S --spider $2  2>&1 | grep 'HTTP/1.1 200 OK') ]]; then
-						tfile="$(curl $2)"
-					else
-						fancy_message error "$(basename $2) does not exist"
-						shift
-						continue
-					fi
+					fancy_message error "$2 does not exist in the AUR"
+					exit 1
 				fi
+				
 				fancy_message info "--convert will only substitute the names of variables and functions, not the dependencies which needs to be replaced with its corrosponding Ubuntu packages."
-				fancy_message info "Variables such as pkgbase, pkgrel, epoch, arch, license, groups, checkdepends, backup, changelog, url, noextract, validpgpkeys, md5sums, sha1sums sha224sums, sha384sums, sha512sums and b2sums are not currently implemented in Pacstall, they should be removed."
+				fancy_message info "All architectures other than x86_64/amd64 are unsupported in pacstall"
+				fancy_message info "Variables such as pkgbase, pkgrel, epoch, arch, license, groups, checkdepends, backup, changelog, url, noextract, validpgpkeys, source_i686, md5sums, sha1sums sha224sums, sha384sums, sha512sums and b2sums are not currently implemented in Pacstall, they should be removed."
 				fancy_message info "An equivilent to check() is not currently implemented in Pacstall. Its contents should be removed"
 				fancy_message info "Lists such as source and sha256sum are implemented as single strings (url, patch, hash) in pacstall. Please change them to single strings"
 				
@@ -521,6 +514,7 @@ while [[ ! "$1" == "--" ]]; do
 				tfile=${tfile//'pkgdesc='/'description='}
 				tfile=${tfile//'url='/'link='}
 				tfile=${tfile//'source='/'url='}
+				tfile=${tfile//'source_x86_64='/'url='}
 				tfile=${tfile//'makedepends='/'build_depends='}
 				tfile=${tfile//'provides='/'gives='}
 				tfile=${tfile//'sha256sums='/'hash='}
@@ -528,22 +522,32 @@ while [[ ! "$1" == "--" ]]; do
 				tfile=${tfile//'$pkgdir'/'$STOWDIR/$name'}
 				tfile=${tfile//'# Maintainer: '/'maintainer="'}
 				
-				echo $tfile | grep 'prepare() {'
+				printf "$tfile" | grep -q 'prepare() {'
 				if [[ $? -eq 0 ]]; then
-					line=$(echo $tfile | grep -n 'prepare()')
+					line=$(printf "$tfile" | grep -n 'prepare()')
 				else
-					line=$(echo $tfile | grep -n 'build()')
+					line=$(printf "$tfile" | grep -n 'build()')
 				fi
-				linenum=$((${line:0:1}-1))
-				variables=$(echo $tfile | head -$linenum)
-				funcs=$(echo $tfile | tail -$(($linenum - $(echo $tfile | wc -l | awk '{print $1;}'))))
-				variables=${variables//"\' \'"/' '}
+				linenum=$(($(echo $line | cut -d: -f1)-1))
+				printf "$linenum\n"
+				variables=$(printf "$tfile" | head -$linenum)
+				
+				revlinenum=$(($(printf "$tfile" | wc -l)-$linenum+1))
+				printf "$revlinenum\n"
+				funcs=$(printf "$tfile" | tail -$revlinenum)
+
+				variables=${variables//"' '"/" "}
+				variables=${variables//"\" \""/" "}
 				variables=${variables//"(\""/"\""}
-				variables=${variables//"(\'"/"\""}
+				variables=${variables//"('"/"\""}
 				variables=${variables//"\")"/"\""}
-				variables=${variables//"\')"/"\""}
-				variables=${variables//'>'/'>"'}
-				printf "$variables\n$funcs" | tee $(basename "$2" ".PKGBUILD").pacscript
+				variables=${variables//"')"/"\""}
+				variables=${variables//">"/">\""}
+				if [[ -w $(pwd) ]]; then
+					printf "$variables\n$funcs" | tee "$2.pacscript"
+				else
+					printf "$variables\n$funcs" | sudo tee "$2.pacscript"
+				fi
 				shift
 			done
 			exit 0
