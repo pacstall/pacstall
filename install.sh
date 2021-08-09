@@ -39,7 +39,7 @@ function fancy_message() {
 	# 0 - info
 	# 1 - warning
 	# 2 - error
-	if [ -z "${1}" ] || [ -z "${2}" ]; then
+	if [[ -z "${1}" ]] || [[ -z "${2}" ]]; then
 		return
 	fi
 
@@ -69,27 +69,39 @@ function ask() {
 		prompt="${GREEN}y${NC}/${RED}n${NC}"
 	fi
 
+	# Ask the question (not using "read -p" as it uses stderr not stdout)
+	echo -ne "$1 [$prompt] "
+
+	# Read the answer (use /dev/tty in case stdin is redirected from somewhere else)
+	if [[ -z "$DISABLE_PROMPTS" ]]; then
+		read -r reply < /dev/tty
+	else
+		echo "$default"
+		reply=$default
+	fi
+
+	# Default?
+	if [[ -z $reply ]]; then
+		reply=$default
+	fi
+
 	while true; do
-		# Ask the question (not using "read -p" as it uses stderr not stdout)
-		echo -ne "$1 [$prompt] "
-
-		# Read the answer (use /dev/tty in case stdin is redirected from somewhere else)
-		if [[ -z "$DISABLE_PROMPTS" ]]; then
-			read -r reply < /dev/tty
-		else
-			echo "$default"
-			reply=$default
-		fi
-
-		# Default?
-		if [[ -z $reply ]]; then
-			reply=$default
-		fi
-
 		# Check if the reply is valid
 		case "$reply" in
-			Y*|y*) return 0 ;;
-			N*|n*) return 1 ;;
+			Y*|y*)
+				export answer=1
+				return 0	#return code for backwards compatibility
+				break
+				;;
+			N*|n*)
+				export answer=0
+				return 1	#return code
+				break
+				;;
+			*)
+				echo -ne "$1 [$prompt] "
+				read -r reply < /dev/tty
+				;;
 		esac
 	done
 }
@@ -118,10 +130,10 @@ PID=$!
 i=1
 sp="/-\|"
 printf ' '
-while [ -d /proc/$PID ]
+while [[ -d /proc/$PID ]]
 do
 	sleep 0.1
-	printf "\b${sp:i++%${#sp}:1}"
+	printf "\b%s" "${sp:i++%${#sp}:1}"
 done
 if [[ $? -eq 1 ]] ; then
 	fancy_message warn "You seem to be offline"
@@ -156,11 +168,11 @@ mkdir -p $STGDIR/scripts
 mkdir -p $STGDIR/repo
 
 mkdir -p $SRCDIR
-sudo chown $(logname) -R $SRCDIR
+sudo chown "$(logname)" -R $SRCDIR
 
 mkdir -p /var/log/pacstall/metadata
 mkdir -p /var/log/pacstall/error_log
-sudo chown $(logname) -R /var/log/pacstall/error_log
+sudo chown "$(logname)" -R /var/log/pacstall/error_log
 sudo mkdir -p /usr/share/man/man8/
 sudo mkdir -p /usr/share/bash-completion/completions
 
@@ -177,10 +189,10 @@ PID=$!
 i=1
 sp="/-\|"
 echo -n ' '
-while [ -d /proc/$PID ]
+while [[ -d /proc/$PID ]]
 do
 	sleep 0.1
-	printf "\b${sp:i++%${#sp}:1}"
+	printf "\b%s" "${sp:i++%${#sp}:1}"
 done
 echo ""
 
