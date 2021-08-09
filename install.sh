@@ -22,6 +22,17 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+# Colors
+NC="\033[0m"
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+
+BIGreen='\033[1;92m'
+BIRed='\033[1;91m'
+
 function fancy_message() {
 	# $1 = type , $2 = message
 	# Message types
@@ -32,19 +43,15 @@ function fancy_message() {
 		return
 	fi
 
-	local RED="\e[31m"
-	local GREEN="\e[32m"
-	local YELLOW="\e[33m"
-	local RESET="\e[0m"
 	local MESSAGE_TYPE=""
 	local MESSAGE=""
 	MESSAGE_TYPE="${1}"
 	MESSAGE="${2}"
 
 	case ${MESSAGE_TYPE} in
-		info) echo -e "[${GREEN}+${RESET}] INFO: ${MESSAGE}";;
-		warn) echo -e "[${YELLOW}*${RESET}] WARNING: ${MESSAGE}";;
-		error) echo -e "[${RED}!${RESET}] ERROR: ${MESSAGE}";;
+		info) echo -e "[${GREEN}+${NC}] INFO: ${MESSAGE}";;
+		warn) echo -e "[${YELLOW}*${NC}] WARNING: ${MESSAGE}";;
+		error) echo -e "[${RED}!${NC}] ERROR: ${MESSAGE}";;
 		*) echo -e "[?] UNKNOWN: ${MESSAGE}";;
 	esac
 }
@@ -101,12 +108,6 @@ fi
 # Install wget and sudo (probably already installed but this is important for the tester)
 apt-get install -y -qq sudo wget
 
-# Colors
-RED='\033[0;31m'
-NC='\033[0m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
 
 banner
 
