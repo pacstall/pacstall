@@ -529,11 +529,9 @@ while [[ ! "$1" == "--" ]]; do
 					line=$(printf "$tfile" | grep -n 'build()')
 				fi
 				linenum=$(($(echo $line | cut -d: -f1)-1))
-				printf "$linenum\n"
 				variables=$(printf "$tfile" | head -$linenum)
 				
 				revlinenum=$(($(printf "$tfile" | wc -l)-$linenum+1))
-				printf "$revlinenum\n"
 				funcs=$(printf "$tfile" | tail -$revlinenum)
 
 				variables=${variables//"' '"/" "}
