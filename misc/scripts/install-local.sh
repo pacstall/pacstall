@@ -137,7 +137,7 @@ function makeVirtualDeb {
 			optinstall='--install-suggests'
 		fi
 		printf "Suggests:" |sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-		printf " %s\n" "${optdepends[@]}" | awk -F': ' '{print $1":any "}' | tr '\n' '|' | head -c -2 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		printf " %s\n" "${optdepends[@]}" | awk -F': ' '{print $1}' | tr '\n' '|' | head -c -2 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 		printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 	printf "Architecture: all
