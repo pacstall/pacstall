@@ -114,7 +114,7 @@ echo -e "|------------------------|"
 echo -e "|---${GREEN}Pacstall Installer${NC}---|"
 echo -e "|------------------------|"
 
-if ! (command -v nm-onlne -qx || ping -c 1 github.com) > /dev/null; then
+if ! (command -v nm-online -qx > /dev/null || ping -c 1 github.com > /dev/null); then
 	fancy_message warn "You seem to be offline"
 	exit 1
 fi
@@ -169,6 +169,8 @@ done
 wget -q --show-progress --progress=bar:force -O "/bin/pacstall" "https://raw.githubusercontent.com/pacstall/pacstall/master/pacstall" &
 wget -q --show-progress --progress=bar:force -O "/usr/share/man/man8/pacstall.8.gz" "https://raw.githubusercontent.com/pacstall/pacstall/master/misc/pacstall.8.gz" &
 
+mkdir -p "/usr/share/bash-completion/completions"
+mkdir -p "/usr/share/fish/vendor_completions.d"
 wget -q --show-progress --progress=bar:force -O "/usr/share/bash-completion/completions/pacstall" "https://raw.githubusercontent.com/pacstall/pacstall/master/misc/completion/bash" &
 wget -q --show-progress --progress=bar:force -O "/usr/share/fish/vendor_completions.d/pacstall.fish" "https://raw.githubusercontent.com/pacstall/pacstall/master/misc/completion/fish" &
 
