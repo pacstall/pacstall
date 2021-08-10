@@ -114,7 +114,7 @@ echo -e "|------------------------|"
 echo -e "|---${GREEN}Pacstall Installer${NC}---|"
 echo -e "|------------------------|"
 
-if ! nm-online -qx; then
+if ! (command -v nm-onlne -qx || ping -c 1 github.com) > /dev/null; then
 	fancy_message warn "You seem to be offline"
 	exit 1
 fi
