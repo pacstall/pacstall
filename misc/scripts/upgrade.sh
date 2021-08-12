@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 #     ____                  __        ____
 #    / __ \____ ___________/ /_____ _/ / /
@@ -22,7 +23,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-function ver_compare() { 
+function ver_compare() {
 	local first="$(echo ${1} | sed 's/^[^0-9]*//')"
 	local second="$(echo ${1} | sed 's/^[^0-9]*//')"
 	return $(dpkg --compare-versions $first "lt" $second)
@@ -52,12 +53,12 @@ fancy_message info "Checking for updates"
 
 for i in "${list[@]}"; do
 	source "$LOGDIR/$i"
-	
+
 	# localver is the current version of the package
 	localver=$(sed -n -e 's/_version=//p' "$LOGDIR"/"$i" | tr -d \")
 
 	if [[ -z ${_remoterepo} ]]; then
-		#TODO upgrade for local pacscripts 
+		#TODO upgrade for local pacscripts
 		continue
 	elif echo "${_remoterepo}" | grep "github.com" > /dev/null ; then
 		remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}"
@@ -80,18 +81,18 @@ for i in "${list[@]}"; do
 		fancy_message warning "Package ${GREEN}${i}${CYAN} is not on ${CYAN}$(parseRepo "${remoterepo}")${NC} anymore"
 		sed -i "/_remote/d"  $LOGDIR/$i
 	fi
-	
+
 	if [[ $i != *"-git" ]]; then
 		alterver="0.0.0"
 		for IDX in ${!REPOS[@]}; do
 			if [[ $IDX -eq $IDXMATCH ]]; then
 				continue
-			else 
+			else
 				ver=$(source <(curl -s "${REPOS[$IDX]}"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
 				ver_compare $alterver $ver
 				if  [[ $? -ne 0 ]]; then
 					alterver=$ver
-					alterurl=$REPO   
+					alterurl=$REPO
 				fi
 			fi
 		done
@@ -112,7 +113,7 @@ for i in "${list[@]}"; do
 	elif [[ $remotever == $localver ]]; then
 		continue
 	fi
-	
+
 	if [[ -n $remotever ]]; then
 		ver_compare $localver $remotever
 		up=$?
