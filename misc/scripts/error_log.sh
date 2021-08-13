@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 #     ____                  __        ____
 #    / __ \____ ___________/ /_____ _/ / /
@@ -30,12 +31,12 @@ fi
 function error_log() {
 	local code="${1}"
 	local scope="${2}"
-	
+
 	if [[ ! -f "$LOGFILE" ]]; then
 		touch "$LOGFILE"
 		find /var/log/pacstall/error_log/* -type f -ctime +14 -exec rm -rf {} \;
 	fi
-	
+
 	case "$code" in
 		1)
 			echo "[ $(date) | $scope ] Error 1 - Unknown cause of failure." >> "$LOGFILE"

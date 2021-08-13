@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 #     ____                  __        ____
 #    / __ \____ ___________/ /_____ _/ / /
@@ -25,7 +26,7 @@
 REPO=${2%/}
 
 if echo "$REPO" | grep "github.com" > /dev/null ; then
-	REPO="${REPO/'github.com'/'raw.githubusercontent.com'}" 
+	REPO="${REPO/'github.com'/'raw.githubusercontent.com'}"
 	if  ! echo "$REPO" | grep  "/tree/" > /dev/null ; then
 		REPO="$REPO/master"
 		fancy_message warn "Assuming that git branch is ${GREEN}master${NC}"
@@ -42,7 +43,7 @@ elif echo "$REPO"| grep "gitlab.com" > /dev/null; then
 else
 	fancy_message warn "The repo link must be the root to the raw files"
 	fancy_message warn "Make sure the repo contains a package list"
-	
+
 	ask "Do you want to add \"$REPO\" to the repo list?" N
 	if [[ $answer -eq 0 ]]; then
 		exit 3
