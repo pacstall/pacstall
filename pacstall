@@ -487,6 +487,13 @@ while [[ ! "$1" == "--" ]]; do
 		
 		-C|--convert)
 			
+			fancy_message info "--convert will only substitute the names of variables and functions, not the dependencies which needs to be replaced with its corrosponding Ubuntu packages."
+			fancy_message info "All architectures other than x86_64/amd64 are unsupported in pacstall"
+			fancy_message warn "Variables such as pkgbase, pkgrel, epoch, arch, license, groups, checkdepends, backup, changelog, url, noextract, validpgpkeys, source_i686, md5sums, sha1sums sha224sums, sha384sums, sha512sums and b2sums are not currently implemented in Pacstall, they should be removed."
+			fancy_message warn "An equivilent to check() is not currently implemented in Pacstall. Its contents should be removed"
+			fancy_message warn "Equivilents to .install file functions such as pre_install(), pre_upgrade(), post_upgrade(), and pre_remove() are not currently implemented in pacstall. Its contents should be removed"
+			fancy_message warn "Lists such as source and sha256sum are implemented as single strings (url, patch, hash) in pacstall. Please change them to single strings"
+			
 			if [[ -z "$2" ]]; then
 				fancy_message error "Please specify a package"
 				exit 1
@@ -501,11 +508,11 @@ while [[ ! "$1" == "--" ]]; do
 					exit 1
 				fi
 				
-				fancy_message info "--convert will only substitute the names of variables and functions, not the dependencies which needs to be replaced with its corrosponding Ubuntu packages."
-				fancy_message info "All architectures other than x86_64/amd64 are unsupported in pacstall"
-				fancy_message info "Variables such as pkgbase, pkgrel, epoch, arch, license, groups, checkdepends, backup, changelog, url, noextract, validpgpkeys, source_i686, md5sums, sha1sums sha224sums, sha384sums, sha512sums and b2sums are not currently implemented in Pacstall, they should be removed."
-				fancy_message info "An equivilent to check() is not currently implemented in Pacstall. Its contents should be removed"
-				fancy_message info "Lists such as source and sha256sum are implemented as single strings (url, patch, hash) in pacstall. Please change them to single strings"
+				if [[ $(wget -S --spider "https://aur.archlinux.org/cgit/aur.git/plain/$2.install?h=$2"  2>&1 | grep 'HTTP/1.1 200 OK') ]]; then
+					tfile+="\n$(curl "https://aur.archlinux.org/cgit/aur.git/plain/$2.install?h=$2")"
+				else
+					fancy_message info ".install file not found in aur, continuing without"
+				fi
 				
 				tfile=${tfile//'pkgname='/'name='} # names substitution
 				tfile=${tfile//'${pkgname}'/'$name'}
@@ -521,13 +528,25 @@ while [[ ! "$1" == "--" ]]; do
 				tfile=${tfile//'package() {'/'install() {'}
 				tfile=${tfile//'$pkgdir'/'$STOWDIR/$name'}
 				tfile=${tfile//'# Maintainer: '/'maintainer="'}
+				tfile=${tfile//'post_install() {'/'postinst() {'}
+				printf "$tfile" | grep -q 'post_remove() {'
+				if [[ $? -eq 0 ]]; then
+					rmscript=true
+					tfile=${tfile//'post_remove() {'/'removescript() {'}
+				fi
 				
 				printf "$tfile" | grep -q 'prepare() {'
 				if [[ $? -eq 0 ]]; then
 					line=$(printf "$tfile" | grep -n 'prepare()')
 				else
-					line=$(printf "$tfile" | grep -n 'build()')
+					printf "$tfile" | grep -q 'build()'
+					if [[ $? -eq 0 ]]; then
+						line=$(printf "$tfile" | grep -n 'build()')
+					else
+						line=$(printf "$tfile" | grep -n 'install()')
+					fi
 				fi
+				
 				linenum=$(($(echo $line | cut -d: -f1)-1))
 				variables=$(printf "$tfile" | head -$linenum)
 				
@@ -541,10 +560,13 @@ while [[ ! "$1" == "--" ]]; do
 				variables=${variables//"\")"/"\""}
 				variables=${variables//"')"/"\""}
 				variables=${variables//">"/">\""}
+				if [[ -n $rmscript ]]; then
+					variable+="\nremovescript=\"yes\""
+				fi
 				if [[ -w $(pwd) ]]; then
-					printf "$variables\n$funcs" | tee "$2.pacscript"
+					printf "$variables\n$funcs" | tee "$2.pacscript" > "/dev/null"
 				else
-					printf "$variables\n$funcs" | sudo tee "$2.pacscript"
+					printf "$variables\n$funcs" | sudo tee "$2.pacscript" > "/dev/null"
 				fi
 				shift
 			done
