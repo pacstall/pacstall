@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 #     ____                  __        ____
 #    / __ \____ ___________/ /_____ _/ / /
@@ -71,7 +72,7 @@ function log() {
 	# Origin repo info parsing
 	if [[ $local == 'no' ]]; then
 		if echo "$REPO" | grep "github" > /dev/null ; then
-			pURL="${REPO/'raw.githubusercontent.com'/'github.com'}" 
+			pURL="${REPO/'raw.githubusercontent.com'/'github.com'}"
 			pURL="${pURL%/*}"
 			pBRANCH="${REPO##*/}"
 			branch="yes"
@@ -172,11 +173,11 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 		error_log 5 "install $PACKAGE"
 		return 1
 	fi
-	
+
 	sudo rm -rf "$SRCDIR/$name-pacstall"
 	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" > "/dev/null"
-	
-	
+
+
 	fancy_message info "Installing dependencies"
 	sudo apt-get install $optinstall -f -y -qq -o=Dpkg::Use-Pty=0
 	if [[ $? -ne 0	 ]]; then

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 #     ____                  __        ____
 #    / __ \____ ___________/ /_____ _/ / /
@@ -78,17 +79,17 @@ case "$url" in
 		if [ -n "$_dependencies" ]; then
 			fancy_message info "You may want to remove ${BLUE}$_dependencies${NC}"
 		fi
-		
+
 		fancy_message info "Removing dummy package"
 		export PACSTALL_REMOVE="true"
 		sudo dpkg -r "$name" 2> /dev/null # removes virtual .deb package
-        
+
 		if [[ $? -ne 0 ]]; then
 			fancy_message error "Failed to remove dummy package"
 			error_log 1 "remove $PACKAGE"
 			return 1
 		fi
-		
+
 		sudo rm -f "$LOGDIR/$PACKAGE"
 		fancy_message info "Package removed successfully"
 		return 0

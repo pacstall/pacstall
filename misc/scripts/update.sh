@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 #     ____                  __        ____
 #    / __ \____ ___________/ /_____ _/ / /
@@ -29,7 +30,7 @@ echo -ne "Are you sure you want to update pacstall? [${GREEN}y${NC}/${BIRed}N${N
 read -r reply < /dev/tty
 
 if [[ -z $reply ]] || [[ $reply == "N"* ]] || [[ $reply == "n"* ]]; then
-    exit 1
+	exit 1
 fi
 
 sudo rm -rf "/var/log/pacstall/error_log"
@@ -56,7 +57,7 @@ wait
 
 # Bling Bling update ascii
 echo '
-    ____                  __        ____
+	____                  __        ____
    / __ \____ ___________/ /_____ _/ / /
   / /_/ / __ `/ ___/ ___/ __/ __ `/ / /
  / ____/ /_/ / /__(__  ) /_/ /_/ / / /
