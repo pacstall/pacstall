@@ -107,6 +107,19 @@ export On_IPurple='\033[0;105m'  # Purple
 export On_ICyan='\033[0;106m'    # Cyan
 export On_IWhite='\033[0;107m'   # White
 
+# Source the configuration file
+if [[ -f "$HOME/.config/pacstall/pacstall.conf" ]]; then
+	source "$HOME/.config/pacstall/pacstall.conf"
+elif [[ -f "$XDG_CONFIG_DIRS/pacstall/pacstall.conf" ]]; then
+	source "$XDG_CONFIG_DIRS/pacstall/pacstall.conf"
+elif [[ -f "$HOME/.pacstall/pacstal.conf" ]];then
+	source "$HOME/.pacstall/pacstall.conf"
+elif [[ -f "$HOME/.config/pacstall.conf" ]];then
+	source "$HOME/.config/pacstall.conf"
+elif [[ -f "$XDG_CONFIG_DIRS/pacstall.conf" ]]; then
+	source "$XDG_CONFIG_DIRS/pacstall.conf"
+fi
+
 # This is the ask function. You can source this code block and then run something like:
 # ask "Do you like the color blue? " Y
 # if [[ $answer -eq 1 ]]; then
