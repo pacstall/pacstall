@@ -205,6 +205,27 @@ fi
 
 source "$STGDIR/scripts/error_log.sh"
 
+# Separate grouped short options
+argument_list=()
+
+for i in "${@}"; do
+	# Just add argument if doesn't start with '-' or *does* start with '--', as
+	# there's nothing to separate then.
+	if [[ "${i}" =~ ^[^-] || "${i}" =~ ^-- ]]; then
+		argument_list+=("${i}")
+		continue
+	fi
+
+	# Add all arguments to the list of arguments.
+	# We remove the '-' prefix as we'll add it later.
+	for j in $(echo "${i}" | sed 's|^-||' | sed 's|[[:upper:]]| &|g'); do
+		argument_list+=("-${j}")
+	done
+done
+
+# Set the new list of environment variables
+set -- "${argument_list[@]}"
+
 while [[ ! "$1" == "--" ]]; do
 	case "$1" in
 		-P|--disable-prompts)
