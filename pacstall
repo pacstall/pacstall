@@ -209,9 +209,8 @@ source "$STGDIR/scripts/error_log.sh"
 argument_list=()
 
 for i in "${@}"; do
-	# Just add argument if doesn't start with '-' or *does* start with '--', as
-	# there's nothing to separate then.
-	if [[ "${i}" =~ ^[^-] || "${i}" =~ ^-- ]]; then
+	# Just add argument if doesn't start with a single hyphen.
+	if ! [[ "${i}" =~ ^-[^-] ]]; then
 		argument_list+=("${i}")
 		continue
 	fi
@@ -223,8 +222,11 @@ for i in "${@}"; do
 	done
 done
 
-# Set the new list of environment variables
+# Set the new list of arguments
 set -- "${argument_list[@]}"
+
+echo "${@}"
+exit
 
 while [[ ! "$1" == "--" ]]; do
 	case "$1" in
