@@ -154,7 +154,7 @@ Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
 Description: This is a symbolic package used by pacstall, may be removed with apt or dpkg. $description\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	echo '#!/bin/bash
 if [[ PACSTALL_REMOVE != "true" ]]; then
-	source '"$LOGDIR"'/'"$name"' 2>&1 /dev/null
+	source /var/cache/pacstall/'"$name"'/'"$version"'/'"$name"'.pacscript 2>&1 /dev/null
 	cd '"$STOWDIR"' || (sudo mkdir -p '"$STOWDIR"'; cd '"$STOWDIR"')
 	stow --target="/" -D '"$name"' 2> /dev/null
 	rm -rf '"$name"' 2> /dev/null
