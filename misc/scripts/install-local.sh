@@ -29,24 +29,7 @@ function cleanup () {
 	if [ -f /tmp/pacstall-optdepends ]; then
 		sudo rm /tmp/pacstall-optdepends
 	fi
-	unset name
-	unset version
-	unset url
-	unset build_depends
-	unset depends
-	unset breaks
-	unset replace
-	unset description
-	unset hash
-	unset removescript
-	unset optdepends
-	unset ppa
-	unset maintainer
-	unset pacdeps
-	unset patch
-	unset PACPATCH
-	unset NOBUILDDEP
-	unset optinstall
+	unset name version url build_depends depends breaks replace description hash removescript optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall
 }
 
 function trap_ctrlc () {
