@@ -33,10 +33,9 @@ if [[ -z $reply ]] || [[ $reply == "N"* ]] || [[ $reply == "n"* ]]; then
 	exit 1
 fi
 
-sudo rm -rf "/var/log/pacstall/error_log"
 sudo mkdir -p "/var/log/pacstall/metadata"
-sudo mv /var/log/pacstall/* /var/log/pacstall/metadata 2>/dev/null
 sudo mkdir -p "/var/log/pacstall/error_log"
+find /var/log/pacstall/* -maxdepth 1 | grep -v metadata | grep -v error_log | xargs -I{} sudo mv {} /var/log/pacstall/metadata
 sudo chown $LOGNAME -R /var/log/pacstall/error_log
 
 STGDIR="/usr/share/pacstall"
@@ -57,7 +56,7 @@ wait
 
 # Bling Bling update ascii
 echo '
-	____                  __        ____
+    ____                  __        ____
    / __ \____ ___________/ /_____ _/ / /
   / /_/ / __ `/ ___/ ___/ __/ __ `/ / /
  / ____/ /_/ / /__(__  ) /_/ /_/ / / /
@@ -68,7 +67,8 @@ if [[ "$USERNAME" == "pacstall" ]] && [[ "$BRANCH" == "master" ]]; then
 	echo -e "[${BYellow}*${NC}] WARNING: Be sure to check our GitHub release page to make sure you have no incompatible code: https://github.com/pacstall/pacstall/releases"
 else
 	echo -e "[${BYellow}*${NC}] WARNING: You are using a ${RED}development${NC} version of $(pacstall -V)"
-	echo -e "[${BYellow}*${NC}] WARNING: There may be bugs in the code. Please report them to the Pacstall team through \e]8;;https://github.com/pacstall/pacstall/issues\aGitHub\e]8;;\a or \e]8;;https://discord.com/invite/yzrjXJV6K8\aDiscord\e]8;;\a"
+	echo -e "[${BYellow}*${NC}] WARNING: There may be bugs in the code."
+	echo -e "[${BYellow}*${NC}] WARNING: Please report them to the Pacstall team through \e]8;;https://github.com/pacstall/pacstall/issues\aGitHub\e]8;;\a or \e]8;;https://discord.com/invite/yzrjXJV6K8\aDiscord\e]8;;\a"
 
 fi
 echo "$USERNAME $BRANCH" | sudo tee "$STGDIR/repo/update" > /dev/null
