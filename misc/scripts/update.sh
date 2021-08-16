@@ -34,8 +34,10 @@ if [[ -z $reply ]] || [[ $reply == "N"* ]] || [[ $reply == "n"* ]]; then
 fi
 
 sudo rm -rf "/var/log/pacstall/error_log"
+
 sudo mkdir -p "/var/log/pacstall/metadata"
-sudo mv /var/log/pacstall/* /var/log/pacstall/metadata 2>/dev/null
+shopt -s extglob
+sudo mv /var/log/pacstall/!(metadata) /var/log/pacstall/metadata
 sudo mkdir -p "/var/log/pacstall/error_log"
 sudo chown $LOGNAME -R /var/log/pacstall/error_log
 
