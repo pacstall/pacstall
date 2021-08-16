@@ -225,9 +225,6 @@ done
 # Set the new list of arguments
 set -- "${argument_list[@]}"
 
-echo "${@}"
-exit
-
 while [[ ! "$1" == "--" ]]; do
 	case "$1" in
 		-P|--disable-prompts)
