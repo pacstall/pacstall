@@ -33,13 +33,9 @@ if [[ -z $reply ]] || [[ $reply == "N"* ]] || [[ $reply == "n"* ]]; then
 	exit 1
 fi
 
-sudo rm -rf "/var/log/pacstall/error_log"
 sudo mkdir -p "/var/log/pacstall/metadata"
-if [[ $(ls -p "/var/log/pacstall"| grep -v "/") ]]; then
-	shopt -s extglob
-	sudo mv /var/log/pacstall/!(metadata) /var/log/pacstall/metadata
-fi
 sudo mkdir -p "/var/log/pacstall/error_log"
+find /var/log/pacstall/* -maxdepth 1 | grep -v metadata | grep -v error_log | xargs -i sudo mv {} /var/log/pacstall/metadata
 sudo chown $LOGNAME -R /var/log/pacstall/error_log
 
 STGDIR="/usr/share/pacstall"
