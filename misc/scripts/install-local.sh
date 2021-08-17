@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 #     ____                  __        ____
 #    / __ \____ ___________/ /_____ _/ / /
@@ -208,9 +209,13 @@ if [[ $answer -eq 1 ]]; then
 	fi
 fi
 
+if [[ $(logname) ]]; then
+    LOGNAME=$(logname)
+fi
+
 fancy_message info "Sourcing pacscript"
 DIR=$(pwd)
-export homedir="/home/$(logname)"
+export homedir="/home/$LOGNAME"
 source "$PACKAGE".pacscript > /dev/null
 if [[ $? -ne 0 ]]; then
 	fancy_message error "Couldn't source pacscript"
@@ -351,7 +356,7 @@ case "$url" in
 		# export srcdir
 		export srcdir="/tmp/pacstall/$PWD"
 		# Make the directory available for users
-		sudo chown -R "$(logname)":"$(logname)" . 2>/dev/null
+		sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
 	;;
 	*.deb)
 		download "$url"
@@ -382,7 +387,7 @@ case "$url" in
 		sudo tar -xf "${url##*/}" 1>&1 2>/dev/null
 		cd ./*/ 2>/dev/null
 		export srcdir="/tmp/pacstall/$PWD"
-		sudo chown -R "$(logname)":"$(logname)" . 2>/dev/null
+		sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
 	;;
 esac
 
