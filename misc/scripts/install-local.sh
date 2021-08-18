@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 #     ____                  __        ____
 #    / __ \____ ___________/ /_____ _/ / /
@@ -209,7 +208,7 @@ if [[ $answer -eq 1 ]]; then
 	fi
 fi
 
-if [[ $(logname) ]]; then
+if [[ $(logname 2>/dev/null) ]]; then
     LOGNAME=$(logname)
 fi
 
