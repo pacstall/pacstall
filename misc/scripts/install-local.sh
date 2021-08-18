@@ -146,7 +146,7 @@ Section: Pacstall
 Priority: optional\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	if [[ -n $replace ]]; then
 		echo -e "Conflicts: ${replace//' '/', '}
-		Replace: ${replace//' '/', '}\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+Replace: ${replace//' '/', '}\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 	printf "Provides: ${gives:-$name}
 Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
