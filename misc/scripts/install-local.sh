@@ -152,7 +152,7 @@ Replace: ${replace//' '/', '}"
 	control+="Provides: ${gives:-$name}
 Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
 Description: This is a symbolic package used by pacstall, may be removed with apt or dpkg. $description\n"
-	printf $control | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	printf $control | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	echo '#!/bin/bash
 if [[ PACSTALL_REMOVE != "true" ]]; then
 	source /var/cache/pacstall/'"$name"'/'"$version"'/'"$name"'.pacscript 2>&1 /dev/null
