@@ -120,14 +120,14 @@ function makeVirtualDeb {
 	# implements $(gives) variable
 	fancy_message info "Creating dummy package"
 	sudo mkdir -p "$SRCDIR/$name-pacstall/DEBIAN"
-	printf "Package: $name\n" | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	control="Package: $name\n"
 	if [[ $version =~ ^[0-9] ]]; then
-		printf "Version: $version-1\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		control+="Version: $version-1\n"
 	else
-		printf "Version: 0$version-1\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		control+="Version: 0$version-1\n"
 	fi
 	if [[ -n $depends ]]; then
-		printf "Depends: ${depends//' '/' | '}\n"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		control+="Depends: ${depends//' '/' | '}\n"
 	fi
 	if [[ -n $optdepends ]]; then
 		fancy_message info "$name has optional dependencies that can enhance its functionalities"
@@ -137,21 +137,22 @@ function makeVirtualDeb {
 		if [[ $answer -eq 1 ]]; then
 			optinstall='--install-suggests'
 		fi
-		printf "Suggests:" |sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-		printf " %s\n" "${optdepends[@]}" | awk -F': ' '{print $1}' | tr '\n' '|' | head -c -2 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-		printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		control+="Suggests:"
+		control+=$(" %s\n" "${optdepends[@]}" | awk -F': ' '{print $1}' | tr '\n' '|' | head -c -2)
+		control+="\n"
 	fi
-	printf "Architecture: all
+	control+="Architecture: all
 Essential: no
 Section: Pacstall
-Priority: optional\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+Priority: optional\n"
 	if [[ -n $replace ]]; then
-		echo -e "Conflicts: ${replace//' '/', '}
-Replace: ${replace//' '/', '}" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		control+="Conflicts: ${replace//' '/', '}
+Replace: ${replace//' '/', '}"
 	fi
-	printf "Provides: ${gives:-$name}
+	control+="Provides: ${gives:-$name}
 Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
-Description: This is a symbolic package used by pacstall, may be removed with apt or dpkg. $description\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+Description: This is a symbolic package used by pacstall, may be removed with apt or dpkg. $description\n"
+	printf $control | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	echo '#!/bin/bash
 if [[ PACSTALL_REMOVE != "true" ]]; then
 	source /var/cache/pacstall/'"$name"'/'"$version"'/'"$name"'.pacscript 2>&1 /dev/null
