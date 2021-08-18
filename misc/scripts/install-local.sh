@@ -120,14 +120,14 @@ function makeVirtualDeb {
 	# implements $(gives) variable
 	fancy_message info "Creating dummy package"
 	sudo mkdir -p "$SRCDIR/$name-pacstall/DEBIAN"
-	control="Package: $name\n"
+	control=$(printf "Package: $name")
 	if [[ $version =~ ^[0-9] ]]; then
-		control+="Version: $version-1\n"
+		control+=$(printf "\nVersion: $version-1")
 	else
-		control+="Version: 0$version-1\n"
+		control+=$(printf "\nVersion: 0$version-1")
 	fi
 	if [[ -n $depends ]]; then
-		control+="Depends: ${depends//' '/' | '}\n"
+		control+=$(printf "\nDepends: ${depends//' '/' | '}")
 	fi
 	if [[ -n $optdepends ]]; then
 		fancy_message info "$name has optional dependencies that can enhance its functionalities"
@@ -137,21 +137,20 @@ function makeVirtualDeb {
 		if [[ $answer -eq 1 ]]; then
 			optinstall='--install-suggests'
 		fi
-		control+="Suggests:"
+		control+=$(printf "\nSuggests:")
 		control+=$(" %s\n" "${optdepends[@]}" | awk -F': ' '{print $1}' | tr '\n' '|' | head -c -2)
-		control+="\n"
 	fi
-	control+="Architecture: all
+	control+=$(printf "\nArchitecture: all
 Essential: no
 Section: Pacstall
-Priority: optional\n"
+Priority: optional")
 	if [[ -n $replace ]]; then
-		control+="Conflicts: ${replace//' '/', '}
-Replace: ${replace//' '/', '}"
+		control+=$(printf "\nConflicts: ${replace//' '/', '}
+Replace: ${replace//' '/', '}")
 	fi
-	control+="Provides: ${gives:-$name}
+	control+=$(printf "\nProvides: ${gives:-$name}
 Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
-Description: This is a symbolic package used by pacstall, may be removed with apt or dpkg. $description\n"
+Description: This is a symbolic package used by pacstall, may be removed with apt or dpkg. $description")
 	printf $control | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	echo '#!/bin/bash
 if [[ PACSTALL_REMOVE != "true" ]]; then
