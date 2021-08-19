@@ -121,14 +121,17 @@ function makeVirtualDeb {
 	fancy_message info "Creating dummy package"
 	sudo mkdir -p "$SRCDIR/$name-pacstall/DEBIAN"
 	printf "Package: $name\n" | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	
 	if [[ $version =~ ^[0-9] ]]; then
 		printf "Version: $version-1\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	else
 		printf "Version: 0$version-1\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
+	
 	if [[ -n $depends ]]; then
 		printf "Depends: ${depends//' '/' | '}\n"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
+	
 	if [[ -n $optdepends ]]; then
 		fancy_message info "$name has optional dependencies that can enhance its functionalities"
 		echo "Optional dependencies:"
@@ -137,21 +140,26 @@ function makeVirtualDeb {
 		if [[ $answer -eq 1 ]]; then
 			optinstall='--install-suggests'
 		fi
+		
 		printf "Suggests:" |sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 		printf " %s\n" "${optdepends[@]}" | awk -F': ' '{print $1}' | tr '\n' '|' | head -c -2 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 		printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
+	
 	printf "Architecture: all
 Essential: no
 Section: Pacstall
 Priority: optional\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+
 	if [[ -n $replace ]]; then
 		echo -e "Conflicts: ${replace//' '/', '}
 Replace: ${replace//' '/', '}" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
+
 	printf "Provides: ${gives:-$name}
 Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
 Description: This is a symbolic package used by pacstall, may be removed with apt or dpkg. $description\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	
 	echo '#!/bin/bash
 if [[ PACSTALL_REMOVE != "true" ]]; then
 	source /var/cache/pacstall/'"$name"'/'"$version"'/'"$name"'.pacscript 2>&1 /dev/null
@@ -165,9 +173,11 @@ if [[ PACSTALL_REMOVE != "true" ]]; then
 	rm -f '"$LOGDIR"'/'"$name"'
 else unset PACSTALL_REMOVE
 fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
+
 	sudo chmod -x "$SRCDIR/$name-pacstall/DEBIAN/postrm"
 	sudo chmod 755 "$SRCDIR/$name-pacstall/DEBIAN/postrm"
 	sudo dpkg-deb -b "$SRCDIR/$name-pacstall" > "/dev/null"
+
 	if [[ $? -ne 0 ]]; then
 		fancy_message error "Couldn't create dummy package"
 		error_log 5 "install $PACKAGE"
