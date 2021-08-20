@@ -412,9 +412,8 @@ while [[ ! "$1" == "--" ]]; do
 		;;
 
 		-L|--list)
-			if [[ -d "$STOWDIR" ]]; then
-				/bin/ls -1aA "$STOWDIR"
-			else
+			/bin/ls -1aA "$LOGDIR"
+			if [[ $? -ne 0 ]]; then
 				fancy_message error "Nothing installed yet"
 				exit 1
 			fi
