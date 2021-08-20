@@ -211,14 +211,24 @@ argument_list=()
 for i in "${@}"; do
 	# Just add argument if doesn't start with a single hyphen.
 	if ! [[ "${i}" =~ ^-[^-] ]]; then
-		argument_list+=("${i}")
+		# if argument is '-P', add to beginning of argument list.
+		if [[ "${i}" == "-P" ]]; then
+			argument_list=("${i}" "${argument_list[@]}")
+		else
+			argument_list+=("${i}")
+		fi
 		continue
 	fi
 
 	# Add all arguments to the list of arguments.
 	# We remove the '-' prefix as we'll add it later.
 	for j in $(echo "${i}" | sed 's|^-||' | sed 's|[[:upper:]]| &|g'); do
-		argument_list+=("-${j}")
+		# If current string is 'P', add to beginning of argument list.
+		if [[ "${j}" == "P" ]]; then
+			argument_list=("-${j}" "${argument_list[@]}")
+		else
+			argument_list+=("-${j}")
+		fi
 	done
 done
 
