@@ -50,6 +50,8 @@ case "$url" in
 			error_log 1 "remove $PACKAGE"
 			return 1
 		fi
+		
+		sudo rm -f "$LOGDIR/$PACKAGE"
 		return 0
 	;;
 
