@@ -358,6 +358,19 @@ case "$url" in
 		# Make the directory available for users
 		sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
 	;;
+	*.tar*)
+		download "$url"
+		# hash the file
+		hashcheck "${url##*/}"
+		# unzip file
+		sudo tar -xf "${url##*/}" 1>&1 2>/dev/null
+		# cd into it
+		cd ./*/
+		# export srcdir
+		export srcdir="/tmp/pacstall/$PWD"
+		# Make the directory available for users
+		sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
+	;;
 	*.deb)
 		download "$url"
 		hashcheck "${url##*/}"
