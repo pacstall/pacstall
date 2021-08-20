@@ -35,8 +35,8 @@ function trap_ctrlc () {
 	echo ""
 	fancy_message warn "Interupted, cleaning up"
 	cleanup
-	if dpkg-query -W -f='${Status}' "$name-pacstall" 2> /dev/null | grep -q "ok installed" ; then
-		sudo dpkg -r --force-all "$name-pacstall" > /dev/null
+	if dpkg-query -W -f='${Status}' "$name" 2> /dev/null | grep -q "ok installed" ; then
+		sudo dpkg -r --force-all "$name" > /dev/null
 	fi
 	exit 1
 }
@@ -127,7 +127,7 @@ function makeVirtualDeb {
 		printf "Version: 0$version-1\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 	if [[ -n $depends ]]; then
-		printf "Depends: ${depends//' '/' | '}\n"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		printf "Depends: ${depends//' '/' , '}\n"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 	if [[ -n $optdepends ]]; then
 		fancy_message info "$name has optional dependencies that can enhance its functionalities"
@@ -138,7 +138,7 @@ function makeVirtualDeb {
 			optinstall='--install-suggests'
 		fi
 		printf "Suggests:" |sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-		printf " %s\n" "${optdepends[@]}" | awk -F': ' '{print $1}' | tr '\n' '|' | head -c -2 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		printf " %s\n" "${optdepends[@]}" | awk -F': ' '{print $1}' | tr '\n' ',' | head -c -2 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 		printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 	printf "Architecture: all
@@ -175,7 +175,7 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 	fi
 
 	sudo rm -rf "$SRCDIR/$name-pacstall"
-	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" > "/dev/null"
+	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" 2>&1 "/dev/null"
 
 
 	fancy_message info "Installing dependencies"
