@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 #     ____                  __        ____
 #    / __ \____ ___________/ /_____ _/ / /
@@ -29,6 +28,7 @@ function cleanup () {
 	if [ -f /tmp/pacstall-optdepends ]; then
 		sudo rm /tmp/pacstall-optdepends
 	fi
+	unset name version url build_depends depends breaks replace description hash removescript optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall 2>/dev/null
 }
 
 function trap_ctrlc () {
@@ -122,9 +122,9 @@ function makeVirtualDeb {
 	sudo mkdir -p "$SRCDIR/$name-pacstall/DEBIAN"
 	printf "Package: $name\n" | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	if [[ $version =~ ^[0-9] ]]; then
-		printf "Version: $version\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		printf "Version: $version-1\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	else
-		printf "Version: 0-$version\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		printf "Version: 0$version-1\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 	if [[ -n $depends ]]; then
 		printf "Depends: ${depends//' '/' | '}\n"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
@@ -147,14 +147,14 @@ Section: Pacstall
 Priority: optional\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	if [[ -n $replace ]]; then
 		echo -e "Conflicts: ${replace//' '/', '}
-		Replace: ${replace//' '/', '}\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+Replace: ${replace//' '/', '}" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 	printf "Provides: ${gives:-$name}
 Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
 Description: This is a symbolic package used by pacstall, may be removed with apt or dpkg. $description\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	echo '#!/bin/bash
 if [[ PACSTALL_REMOVE != "true" ]]; then
-	source '"$LOGDIR"'/'"$name"' 2>&1 /dev/null
+	source /var/cache/pacstall/'"$name"'/'"$version"'/'"$name"'.pacscript 2>&1 /dev/null
 	cd '"$STOWDIR"' || (sudo mkdir -p '"$STOWDIR"'; cd '"$STOWDIR"')
 	stow --target="/" -D '"$name"' 2> /dev/null
 	rm -rf '"$name"' 2> /dev/null
@@ -209,9 +209,13 @@ if [[ $answer -eq 1 ]]; then
 	fi
 fi
 
+if [[ $(logname 2>/dev/null) ]]; then
+    LOGNAME=$(logname)
+fi
+
 fancy_message info "Sourcing pacscript"
 DIR=$(pwd)
-export homedir="/home/$(logname)"
+export homedir="/home/$LOGNAME"
 source "$PACKAGE".pacscript > /dev/null
 if [[ $? -ne 0 ]]; then
 	fancy_message error "Couldn't source pacscript"
@@ -352,7 +356,7 @@ case "$url" in
 		# export srcdir
 		export srcdir="/tmp/pacstall/$PWD"
 		# Make the directory available for users
-		sudo chown -R "$(logname)":"$(logname)" . 2>/dev/null
+		sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
 	;;
 	*.deb)
 		download "$url"
@@ -383,7 +387,7 @@ case "$url" in
 		sudo tar -xf "${url##*/}" 1>&1 2>/dev/null
 		cd ./*/ 2>/dev/null
 		export srcdir="/tmp/pacstall/$PWD"
-		sudo chown -R "$(logname)":"$(logname)" . 2>/dev/null
+		sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
 	;;
 esac
 
