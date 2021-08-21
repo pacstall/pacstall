@@ -332,7 +332,7 @@ function hashcheck() {
 		# We bad
 		fancy_message error "Hashes don't match"
 		error_log 16 "install $PACKAGE"
-		sudo dpkg -r "$name-pacstall" > /dev/null
+		sudo dpkg -r "$name" > /dev/null
 		return 1
 	fi
 	true
@@ -386,7 +386,7 @@ case "$url" in
 		else
 			fancy_message error "Failed to install the package"
 			error_log 14 "install $PACKAGE"
-			sudo dpkg -r "$name-pacstall" > /dev/null
+			sudo dpkg -r "$name" > /dev/null
 			return 1
 		fi
 	;;
@@ -429,7 +429,7 @@ unset tmp_prepare
 if ! type -t build > /dev/null 2>&1; then
 	fancy_message error "Something didn't compile right"
 	error_log 5 "install $PACKAGE"
-	sudo dpkg -r "$name-pacstall" > /dev/null
+	sudo dpkg -r "$name" > /dev/null
 	return 1
 fi
 
@@ -470,7 +470,7 @@ sudo stow --target="/" "$PACKAGE"
 if [[ $? -ne 0	 ]]; then
 	fancy_message error "Package contains links to files that exist on the system"
 	error_log 14 "install $PACKAGE"
-	sudo dpkg -r "$name-pacstall" > /dev/null
+	sudo dpkg -r "$name" > /dev/null
 	return 1
 fi
 
