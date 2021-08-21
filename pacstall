@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
 #     ____                  __        ____
 #    / __ \____ ___________/ /_____ _/ / /
@@ -218,6 +217,36 @@ fi
 
 source "$STGDIR/scripts/error_log.sh"
 
+# Separate grouped short options
+argument_list=()
+
+for i in "${@}"; do
+	# Just add argument if doesn't start with a single hyphen.
+	if ! [[ "${i}" =~ ^-[^-] ]]; then
+		# if argument is '-P', add to beginning of argument list.
+		if [[ "${i}" == "-P" ]]; then
+			argument_list=("${i}" "${argument_list[@]}")
+		else
+			argument_list+=("${i}")
+		fi
+		continue
+	fi
+
+	# Add all arguments to the list of arguments.
+	# We remove the '-' prefix as we'll add it later.
+	for j in $(echo "${i}" | sed 's|^-||' | sed 's|[[:upper:]]| &|g'); do
+		# If current string is 'P', add to beginning of argument list.
+		if [[ "${j}" == "P" ]]; then
+			argument_list=("-${j}" "${argument_list[@]}")
+		else
+			argument_list+=("-${j}")
+		fi
+	done
+done
+
+# Set the new list of arguments
+set -- "${argument_list[@]}"
+
 while [[ ! "$1" == "--" ]]; do
 	case "$1" in
 		-P|--disable-prompts)
@@ -426,9 +455,8 @@ while [[ ! "$1" == "--" ]]; do
 		;;
 
 		-L|--list)
-			if [[ -d "$STOWDIR" ]]; then
-				/bin/ls -1aA "$STOWDIR"
-			else
+			/bin/ls -1aA "$LOGDIR"
+			if [[ $? -ne 0 ]]; then
 				fancy_message error "Nothing installed yet"
 				exit 1
 			fi
