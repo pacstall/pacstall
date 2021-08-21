@@ -34,10 +34,10 @@ function cleanup () {
 function trap_ctrlc () {
 	echo ""
 	fancy_message warn "Interupted, cleaning up"
-	cleanup
 	if dpkg-query -W -f='${Status}' "$name" 2> /dev/null | grep -q "ok installed" ; then
 		sudo dpkg -r --force-all "$name" > /dev/null
 	fi
+	cleanup
 	exit 1
 }
 
@@ -185,7 +185,7 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 	fi
 
 	sudo rm -rf "$SRCDIR/$name-pacstall"
-	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" > "/dev/null"
+	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" &> "/dev/null"
 
 
 	fancy_message info "Installing dependencies"
@@ -332,7 +332,9 @@ function hashcheck() {
 		# We bad
 		fancy_message error "Hashes don't match"
 		error_log 16 "install $PACKAGE"
-		sudo dpkg -r "$name-pacstall" > /dev/null
+		if [[ "$url" != *".deb" ]]; then
+			sudo dpkg -r "$name" > /dev/null
+		fi
 		return 1
 	fi
 	true
@@ -386,7 +388,7 @@ case "$url" in
 		else
 			fancy_message error "Failed to install the package"
 			error_log 14 "install $PACKAGE"
-			sudo dpkg -r "$name-pacstall" > /dev/null
+			sudo dpkg -r "$name" > /dev/null
 			return 1
 		fi
 	;;
@@ -429,7 +431,7 @@ unset tmp_prepare
 if ! type -t build > /dev/null 2>&1; then
 	fancy_message error "Something didn't compile right"
 	error_log 5 "install $PACKAGE"
-	sudo dpkg -r "$name-pacstall" > /dev/null
+	sudo dpkg -r "$name" > /dev/null
 	return 1
 fi
 
@@ -470,7 +472,7 @@ sudo stow --target="/" "$PACKAGE"
 if [[ $? -ne 0	 ]]; then
 	fancy_message error "Package contains links to files that exist on the system"
 	error_log 14 "install $PACKAGE"
-	sudo dpkg -r "$name-pacstall" > /dev/null
+	sudo dpkg -r "$name" > /dev/null
 	return 1
 fi
 
