@@ -332,7 +332,9 @@ function hashcheck() {
 		# We bad
 		fancy_message error "Hashes don't match"
 		error_log 16 "install $PACKAGE"
-		sudo dpkg -r "$name" > /dev/null
+		if [[ "$url" != *".deb" ]]; then
+			sudo dpkg -r "$name" > /dev/null
+		fi
 		return 1
 	fi
 	true
