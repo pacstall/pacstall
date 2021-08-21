@@ -187,7 +187,7 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 	fi
 
 	sudo rm -rf "$SRCDIR/$name-pacstall"
-	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" &> "/dev/null"
+	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" 2 > "/dev/null"
 
 
 	fancy_message info "Installing dependencies"
