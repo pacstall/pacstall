@@ -35,7 +35,7 @@ if curl --output /dev/null --silent --head --fail "$URL" ; then
 		mkdir -p "/tmp/pacstall/" && cd "/tmp/pacstall/"
 	fi
 
-	download "$URL" > /dev/null 2>&1
+	wget -q --show-progress --progress=bar:force "$URL" > /dev/null 2>&1
 	return 0
 else
 	error_log 1 "get $PACKAGE pacscript"
