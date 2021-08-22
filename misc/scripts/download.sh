@@ -24,7 +24,7 @@
 
 # This script downloads pacscripts from the interwebs
 
-if ! wget -q --tries=10 --timeout=20 --spider https://github.com; then
+if ! (command -v nm-online -qx > /dev/null || ping -c 1 github.com > /dev/null); then
 	fancy_message error "Not connected to internet"
 	error_log 1 "get $PACKAGE pacscript"
 	exit 2
