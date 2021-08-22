@@ -40,17 +40,17 @@ function fancy_message() {
     # 1 - warning
     # 2 - error
     if [[ -z "${1}" ]] || [[ -z "${2}" ]]; then
-	    return
+        return
     fi
 
 	local MESSAGE_TYPE="${1}"
 	local MESSAGE="${2}"
 
 	case ${MESSAGE_TYPE} in
-	    info) echo -e "[${GREEN}+${NC}] INFO: ${MESSAGE}";;
-	    warn) echo -e "[${YELLOW}*${NC}] WARNING: ${MESSAGE}";;
-	    error) echo -e "[${RED}!${NC}] ERROR: ${MESSAGE}";;
-	    *) echo -e "[?] UNKNOWN: ${MESSAGE}";;
+        info) echo -e "[${GREEN}+${NC}] INFO: ${MESSAGE}";;
+        warn) echo -e "[${YELLOW}*${NC}] WARNING: ${MESSAGE}";;
+        error) echo -e "[${RED}!${NC}] ERROR: ${MESSAGE}";;
+        *) echo -e "[?] UNKNOWN: ${MESSAGE}";;
     esac
 }
 
@@ -58,11 +58,11 @@ function ask() {
 	local prompt default reply
 
 	if [[ ${2:-} = 'Y' ]]; then
-	    prompt="${BIGreen}Y${NC}/${RED}n${NC}"
-	    default='Y'
+        prompt="${BIGreen}Y${NC}/${RED}n${NC}"
+        default='Y'
 	elif [[ ${2:-} = 'N' ]]; then
-	    prompt="${GREEN}y${NC}/${BIRed}N${NC}"
-	    default='N'
+        prompt="${GREEN}y${NC}/${BIRed}N${NC}"
+        default='N'
 	else
 	    prompt="${GREEN}y${NC}/${RED}n${NC}"
 	fi
@@ -72,7 +72,7 @@ function ask() {
 
 	# Read the answer (use /dev/tty in case stdin is redirected from somewhere else)
 	if [[ -z "$DISABLE_PROMPTS" ]]; then
-	    read -r reply < /dev/tty
+        read -r reply < /dev/tty
 	else
         echo "$default"
         reply=$default
@@ -119,20 +119,20 @@ if [[ "$answer" -eq 1 ]]; then
         pacstall -P -R "$i"
     done
     # check if directory is empty
-    if find /some/dir -mindepth 1 -maxdepth 1 | read; then
+    if find /usr/src/pacstall -mindepth 1 -maxdepth 1 | read; then
         fancy_message warn "STOWDIR is not empty"
     fi
     # remove logs
-    sudo rm -rfv --preserve-root /var/log/pacstall/
+    sudo rm -rfv /var/log/pacstall/
     # remove cache
-    sudo rm -rfv --preserve-root /var/cache/pacstall
+    sudo rm -rfv /var/cache/pacstall/
 else
     fancy_message info "removing just pacstall"
-    sudo rm -v --preserve-root $(command -v pacstall)
+    sudo rm -v $(command -v pacstall)
     # remove scripts and repos
-    sudo rm -rfv --preserve-root /usr/share/pacstall/
+    sudo rm -rfv /usr/share/pacstall/
     # remove logs
-    sudo rm -rfv --preserve-root /var/log/pacstall
+    sudo rm -rfv /var/log/pacstall/
     fancy_message info "done removing pacstall scripts"
 fi
 
