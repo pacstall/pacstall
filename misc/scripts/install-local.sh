@@ -205,13 +205,7 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 	return 0
 }
 
-
-ask "Do you want to view the pacscript first" N
-if [[ $answer -eq 1 ]]; then
-	less "$PACKAGE".pacscript
-fi
-
-ask "Do you want to edit the pacscript" N
+ask "Do you want to view/edit the pacscript" N
 if [[ $answer -eq 1 ]]; then
 	if [[ -n $PACSTALL_EDITOR ]]; then
 		$PACSTALL_EDITOR "$PACKAGE".pacscript
