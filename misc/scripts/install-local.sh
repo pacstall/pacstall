@@ -34,10 +34,10 @@ function cleanup () {
 function trap_ctrlc () {
 	echo ""
 	fancy_message warn "Interupted, cleaning up"
-	cleanup
-	if dpkg-query -W -f='${Status}' "$name" 2> /dev/null | grep -q "ok installed" ; then
+	if dpkg-query -W -f='${Status}' "$name" 2> /dev/null | grep -q -E "ok installed|ok unpacked" ; then
 		sudo dpkg -r --force-all "$name" > /dev/null
 	fi
+	cleanup
 	exit 1
 }
 
@@ -181,11 +181,13 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 	if [[ $? -ne 0 ]]; then
 		fancy_message error "Couldn't create dummy package"
 		error_log 5 "install $PACKAGE"
+		fancy_message info "Cleaning up"
+		cleanup
 		return 1
 	fi
 
 	sudo rm -rf "$SRCDIR/$name-pacstall"
-	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" > "/dev/null"
+	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" &> "/dev/null"
 
 
 	fancy_message info "Installing dependencies"
@@ -193,6 +195,9 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 	if [[ $? -ne 0	 ]]; then
 		fancy_message error "Failed to install dependencies"
 		error_log 8 "install $PACKAGE"
+		sudo dpkg -r --force-all "$name" > /dev/null
+		fancy_message info "Cleaning up"
+		cleanup
 		return 1
 	fi
 	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" > "/dev/null"
@@ -230,6 +235,8 @@ source "$PACKAGE".pacscript > /dev/null
 if [[ $? -ne 0 ]]; then
 	fancy_message error "Couldn't source pacscript"
 	error_log 12 "install $PACKAGE"
+	fancy_message info "Cleaning up"
+	cleanup
 	return 1
 fi
 
@@ -247,6 +254,8 @@ checks
 if [[ $? -ne 0 ]]; then
 	fancy_message error "There was an error checking the script!"
 	error_log 6 "install $PACKAGE"
+	fancy_message info "Cleaning up"
+	cleanup
 	return 1
 fi
 
@@ -279,12 +288,16 @@ if echo -n "$depends" > /dev/null 2>&1; then
 			# Check if anything in breaks variable is installed already
 			fancy_message error "${RED}$name${NC} breaks $breaks, which is currently installed by apt"
 			error_log 13 "install $PACKAGE"
+			fancy_message info "Cleaning up"
+			cleanup
 			return 1
 		fi
 		if [[ $(pacstall -L) == *$breaks* ]]; then
 			# Same thing, but check if anything is installed with pacstall
 			fancy_message error "${RED}$name${NC} breaks $breaks, which is currently installed by pacstall"
 			error_log 13 "install $PACKAGE"
+			fancy_message info "Cleaning up"
+			cleanup
 			return 1
 		fi
 	fi
@@ -295,6 +308,8 @@ if [[ -n $replace ]]; then
 	if dpkg-query -W -f='${Status}' $replace 2> /dev/null | grep -q "ok installed" ; then
 		ask "This script replaces $replace. Do you want to proceed" N
 		if [[ $answer -eq 0 ]]; then
+			fancy_message info "Cleaning up"
+			cleanup
 			return 1
 		fi
 		sudo apt-get remove -y $replace
@@ -312,6 +327,8 @@ if [[ $NOBUILDDEP -eq 0 ]]; then
 	if ! sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $build_depends; then
 		fancy_message error "Failed to install build dependencies"
 		error_log 8 "install $PACKAGE"
+		fancy_message info "Cleaning up"
+		cleanup
 		return 1
 	fi
 fi
@@ -332,7 +349,12 @@ function hashcheck() {
 		# We bad
 		fancy_message error "Hashes don't match"
 		error_log 16 "install $PACKAGE"
-		sudo dpkg -r "$name-pacstall" > /dev/null
+		if [[ "$url" != *".deb" ]]; then
+			sudo dpkg -r "$name" > /dev/null
+		fi
+		
+		fancy_message info "Cleaning up"
+		cleanup
 		return 1
 	fi
 	true
@@ -359,6 +381,9 @@ case "$url" in
 		download "$url"
 		# hash the file
 		hashcheck "${url##*/}"
+		if [[ $? -ne 0 ]]; then
+			return 1
+		fi
 		# unzip file
 		sudo unzip -q "${url##*/}" 1>&1 2>/dev/null
 		# cd into it
@@ -371,6 +396,9 @@ case "$url" in
 	*.deb)
 		download "$url"
 		hashcheck "${url##*/}"
+		if [[ $? -ne 0 ]]; then
+			return 1
+		fi
 		sudo apt install -y -f ./"${url##*/}" 2>/dev/null
 		if [[ $? -eq 0 ]]; then
 			log
@@ -380,13 +408,16 @@ case "$url" in
 			cd "$DIR"
 			sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 
+			fancy_message info "Cleaning up"
 			cleanup
 			return 0
 
 		else
 			fancy_message error "Failed to install the package"
 			error_log 14 "install $PACKAGE"
-			sudo dpkg -r "$name-pacstall" > /dev/null
+			sudo dpkg -r "$name" > /dev/null
+			fancy_message info "Cleaning up"
+			cleanup
 			return 1
 		fi
 	;;
@@ -394,6 +425,9 @@ case "$url" in
 		download "$url"
 		# I think you get it by now
 		hashcheck "${url##*/}"
+		if [[ $? -ne 0 ]]; then
+			return 1
+		fi
 		sudo tar -xf "${url##*/}" 1>&1 2>/dev/null
 		cd ./*/ 2>/dev/null
 		export srcdir="/tmp/pacstall/$PWD"
@@ -429,7 +463,9 @@ unset tmp_prepare
 if ! type -t build > /dev/null 2>&1; then
 	fancy_message error "Something didn't compile right"
 	error_log 5 "install $PACKAGE"
-	sudo dpkg -r "$name-pacstall" > /dev/null
+	sudo dpkg -r "$name" > /dev/null
+	fancy_message info "Cleaning up"
+	cleanup
 	return 1
 fi
 
@@ -470,7 +506,9 @@ sudo stow --target="/" "$PACKAGE"
 if [[ $? -ne 0	 ]]; then
 	fancy_message error "Package contains links to files that exist on the system"
 	error_log 14 "install $PACKAGE"
-	sudo dpkg -r "$name-pacstall" > /dev/null
+	sudo dpkg -r "$name" > /dev/null
+	fancy_message info "Cleaning up"
+	cleanup
 	return 1
 fi
 
@@ -488,7 +526,6 @@ sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 
 fancy_message info "Cleaning up"
 cleanup
-
 return 0
 
 # vim:set ft=sh ts=4 sw=4 noet:
