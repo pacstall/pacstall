@@ -104,37 +104,57 @@ function ask() {
 	done
 }
 
-# find pacstall binary
+# Check if pacstall is installed
 if ! command -v pacstall &>/dev/null; then
 	fancy_message error "pacstall binary not found in PATH"
 	exit 1
 fi
 
 
-ask "Do you want to remove packages and pacstall (nuke pacstall)" Y
+fancy_message info "Choose what you want:"
+fancy_message info "y. Remove Pacstall and installed packages."
+fancy_message info "n. Remove Pacstall only (Keep installed packages)."
+ask "Your choice"
 if [[ "$answer" -eq 1 ]]; then
-	fancy_message info "cleaning packages and removing pacstall"
-	# for i loop removing packages
+	fancy_message info "Removing Pacstall and installed packages..."
+
+	# Remove packages
+	if [[ -z $(pacstall -L) ]]; then
+		fancy_message warn "Nothing is installed using Pacstall yet."
+		fancy_message warn "Skipping package uninstallation."
+		exit 1
+	fi
+
 	for i in $(pacstall -L); do
 		pacstall -P -R "$i"
 	done
-	# check if directory is empty
-	if find /usr/src/pacstall -mindepth 1 -maxdepth 1 | read; then
-		fancy_message warn "STOWDIR is not empty"
-	fi
-	# remove logs
-	sudo rm -rfv /var/log/pacstall/
-	# remove cache
-	sudo rm -rfv /var/cache/pacstall/
+
+	fancy_message info "Removing Pacstall"
+	sudo rm "$(command -v pacstall)"
+
+	# Remove logs
+	fancy_message info "Removing log files"
+	sudo rm -rf /var/log/pacstall/
+	# Remove cache
+	fancy_message info "Removing cache"
+	sudo rm -rf /var/cache/pacstall/
+	# Remove tmp files
+	fancy_message info "Removing temporary files"
+	sudo rm -rf /tmp/pacstall/
 else
-	fancy_message info "removing just pacstall"
-	sudo rm -v $(command -v pacstall)
-	# remove scripts and repos
-	sudo rm -rfv /usr/share/pacstall/
-	# remove logs
-	sudo rm -rfv /var/log/pacstall/
-	fancy_message info "done removing pacstall scripts"
+	fancy_message info "Only uninstalling Pacstall"
+	sudo rm "$(command -v pacstall)"
+
+	# Remove logs
+	fancy_message info "Removing log files"
+	sudo rm -rf /var/log/pacstall/
+	# Remove cache
+	fancy_message info "Removing cache"
+	sudo rm -rf /var/cache/pacstall/
+	# Remove tmp files
+	fancy_message info "Removing temporary files"
+	sudo rm -rf /tmp/pacstall/
 fi
 
-echo "bye :("
+fancy_message info "Uninstallation complete. Thanks for using Pacstall!"
 # vim:set ft=sh ts=4 sw=4 noet:
