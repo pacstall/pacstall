@@ -106,7 +106,7 @@ function ask() {
 
 # Check if pacstall is installed
 if ! command -v pacstall &>/dev/null; then
-	fancy_message error "pacstall binary not found in PATH"
+	fancy_message error "Pacstall is not installed!"
 	exit 1
 fi
 
@@ -120,8 +120,8 @@ if [[ "$answer" -eq 1 ]]; then
 
 	# Remove packages
 	if [[ -z $(pacstall -L) ]]; then
-		fancy_message warn "Nothing is installed using Pacstall yet."
-		fancy_message warn "Skipping package uninstallation."
+		fancy_message warn "Nothing is installed using Pacstall yet"
+		fancy_message warn "Skipping package uninstallation"
 		exit 1
 	fi
 
@@ -131,6 +131,13 @@ if [[ "$answer" -eq 1 ]]; then
 
 	fancy_message info "Removing Pacstall"
 	sudo rm "$(command -v pacstall)"
+
+	# Remove scripts and repos
+	fancy_message info "Removing scripts and repositories"
+	sudo rm -rf /usr/share/pacstall/
+	# Remove man page
+	fancy_message info "Removing man page"
+	sudo rm /usr/share/man/man8/pacstall.8.gz
 
 	# Remove logs
 	fancy_message info "Removing log files"
@@ -142,8 +149,15 @@ if [[ "$answer" -eq 1 ]]; then
 	fancy_message info "Removing temporary files"
 	sudo rm -rf /tmp/pacstall/
 else
-	fancy_message info "Only uninstalling Pacstall"
+	fancy_message info "Only uninstalling Pacstall..."
 	sudo rm "$(command -v pacstall)"
+
+	# Remove scripts and repos
+	fancy_message info "Removing scripts and repositories"
+	sudo rm -rf /usr/share/pacstall/
+	# Remove man page
+	fancy_message info "Removing man page"
+	sudo rm /usr/share/man/man8/pacstall.8.gz
 
 	# Remove logs
 	fancy_message info "Removing log files"
