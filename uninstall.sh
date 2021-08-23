@@ -122,12 +122,11 @@ if [[ "$answer" -eq 1 ]]; then
 	if [[ -z $(pacstall -L) ]]; then
 		fancy_message warn "Nothing is installed using Pacstall yet"
 		fancy_message warn "Skipping package uninstallation"
-		exit 1
-	fi
 
-	for i in $(pacstall -L); do
-		pacstall -P -R "$i"
-	done
+		for i in $(pacstall -L); do
+			pacstall -P -R "$i"
+		done
+	fi
 
 	fancy_message info "Removing Pacstall"
 	sudo rm "$(command -v pacstall)"
