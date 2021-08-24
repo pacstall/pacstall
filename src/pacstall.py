@@ -14,4 +14,4 @@ def fancy_message(message_type, message):
     elif message_type == "error":
         print(COLORS["RED"], "[!] ERROR:", COLORS["ENDC"], message)
     else:
-        print(COLORS["ENDC"], "UNKNOWN: ", COLORS["ENDC"], message)
+        print(COLORS["ENDC"], "[?] UNKNOWN: ", COLORS["ENDC"], message)
