@@ -6,7 +6,7 @@ COLORS = {
     "ENDC": "\033[0m",
 }
 
-def fancy_message(message_type, message):
+def fancy_message(message_type: str, message: str):
     if message_type == "info":
         print(COLORS["GREEN"], "[+] INFO:", COLORS["ENDC"], message) 
     elif message_type == "warn":
