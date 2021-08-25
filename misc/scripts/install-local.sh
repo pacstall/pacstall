@@ -187,7 +187,7 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 	fi
 
 	sudo rm -rf "$SRCDIR/$name-pacstall"
-	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" &> "/dev/null"
+	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" 2> "/dev/null"
 
 
 	fancy_message info "Installing dependencies"
@@ -205,13 +205,7 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 	return 0
 }
 
-
-ask "Do you want to view the pacscript first" N
-if [[ $answer -eq 1 ]]; then
-	less "$PACKAGE".pacscript
-fi
-
-ask "Do you want to edit the pacscript" N
+ask "Do you want to view/edit the pacscript" N
 if [[ $answer -eq 1 ]]; then
 	if [[ -n $PACSTALL_EDITOR ]]; then
 		$PACSTALL_EDITOR "$PACKAGE".pacscript
