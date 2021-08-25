@@ -31,6 +31,13 @@ You can also grab the deb file [here](https://github.com/pacstall/pacstall/relea
 ```bash
 sudo bash -c "$(curl -fsSL https://git.io/JsADh || wget -q https://git.io/JsADh -O -)"
 ```
+
+### Uninstalling
+
+You can run the command below to uninstall Pacstall.
+```bash
+bash -c "$(curl -fsSL https://git.io/JEZbi || wget -q https://git.io/JEZbi -O -)"
+```
 ---
 
 ### Basic Commands
