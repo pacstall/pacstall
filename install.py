@@ -237,7 +237,7 @@ download(
 Msg.fancy("info", "Done!")
 
 
-Msg.fancy("info", "Downloading map page...")
+Msg.fancy("info", "Downloading man page...")
 download(
     "https://raw.githubusercontent.com/pacstall/pacstall/master/misc/pacstall.8.gz",
     "/usr/share/man/man8/pacstall.8.gz",
