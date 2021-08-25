@@ -94,7 +94,7 @@ class Msg:
         }
 
         prompt = defaults.get(default, f"{GREEN}y{NC}/{RED}n{NC}")
-        reply = input(f"{question} [{prompt}]").upper()
+        reply = input(f"{question} [{prompt}] ").upper()
 
         if not reply:
             reply = default
