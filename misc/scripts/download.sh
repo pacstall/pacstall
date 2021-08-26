@@ -37,7 +37,7 @@ if curl --output /dev/null --silent --head --fail "$URL" ; then
 	
 	case "$URL" in
 		*.pacscript)
-			wget -q --show-progress --progress=bar:force "$URL" > /dev/null 2>&1
+			sudo wget -q --show-progress --progress=bar:force "$URL" > /dev/null 2>&1
 		;;
 		*)
 			download "$URL" > /dev/null 2>&1
