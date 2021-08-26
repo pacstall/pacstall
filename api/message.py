@@ -1,4 +1,6 @@
-from termcolor import colored
+from api.color import Foreground as fg
+from api.color import Style as st
+from os import environ
 
 
 """
@@ -23,11 +25,11 @@ def fancy(type: str, message: str) -> None:
 
     # type: prompt
     types = {
-        "info": f"[{colored('+', 'green', attrs=['bold'])}] INFO:",
-        "warn": f"[{colored('*', 'yellow', attrs=['bold'])}] WARNING:",
-        "error": f"[{colored('!', 'red', attrs=['bold'])}!] ERROR:",
+        "info": f"[{fg.BGreen}+{st.RESET}] INFO:",
+        "warn": f"[{fg.BYellow}*{st.RESET}] WARNING:",
+        "error": f"[{fg.BRed}!{st.RESET}] ERROR:",
     }
-    prompt = types.get(type, f"[{colored('?', attrs=['bold'])}] UNKNOWN:")
+    prompt = types.get(type, f"[{st.BOLD}?{st.RESET}] UNKNOWN:")
     print(f"{prompt} {message}")
 
 
@@ -47,16 +49,21 @@ def ask(question: str, default: str = "nothing") -> str:
     """
     # default: prompt
     defaults = {
-        "Y": f"[{colored('Y', 'green', attrs=['bold'])}/{colored('n', 'red')}]",
-        "N": f"[{colored('y', 'green')}/{colored('N', 'red', attrs=['bold'])}]",
+        "Y": f"[{fg.BIGreen}Y{st.RESET}/{fg.RED}n{st.RESET}]",
+        "N": f"[{fg.GREEN}y{st.RESET}/{fg.BIRed}N{st.RESET}]",
     }
 
-    prompt = defaults.get(default, f"[{colored('y', 'green')}/{colored('n', 'red')}]")
-    print(prompt)
-    reply = input(f"{question} {prompt} ").upper()
+    prompt = defaults.get(default, f"[{fg.GREEN}y{st.RESET}/{fg.RED}n{st.RESET}]")
+    if not environ.get("PACSTALL_DISABLE_PROMPTS"):
+        reply = input(f"{question} {prompt} ").upper()
 
-    if not reply:
+        if not reply:
+            reply = default
+    else:
         reply = default
+
+        if default != "nothing":
+            print(f"{question} {prompt} {default}")
 
     while True:
         if reply == "Y" or reply == "N":
