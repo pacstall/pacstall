@@ -33,6 +33,7 @@ along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 * This project follows the [GitFlow paradigm](https://jointcenterforsatellitedataassimilation-jedi-docs.readthedocs-hosted.com/en/latest/inside/practices/gitflow.html), make sure you are familiar with it.
 * Have knowledge of [bash v5](https://www.gnu.org/software/bash)
 * Check out the [existing issues](https://github.com/pacstall/pacstall/issues) & [pull requests](https://github.com/pacstall/pacstall/pulls) before making a contribution.
+* Always test your patch with [shellcheck](https://github.com/koalaman/shellcheck) before submitting a pull request.
 
 ---
 

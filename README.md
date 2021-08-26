@@ -31,36 +31,43 @@ You can also grab the deb file [here](https://github.com/pacstall/pacstall/relea
 ```bash
 sudo bash -c "$(curl -fsSL https://git.io/JsADh || wget -q https://git.io/JsADh -O -)"
 ```
+
+### Uninstalling
+
+You can run the command below to uninstall Pacstall.
+```bash
+bash -c "$(curl -fsSL https://git.io/JEZbi || wget -q https://git.io/JEZbi -O -)"
+```
 ---
 
 ### Basic Commands
 ```bash
-sudo pacstall -I foo
+pacstall -I foo
 ``` 
 This will install foo. Equivalent of apt install
 
 ```bash
-sudo pacstall -R foo
+pacstall -R foo
 ```
 This will remove foo. Equivalent of apt remove
 
 ```bash
-sudo pacstall -S foo
+pacstall -S foo
 ```
 This will search for foo in repositories. Equivalent of apt search
 
 ```bash
-sudo pacstall -A
+pacstall -A
 ```
 Run this command with a github/gitlab url to add a repo
 
 ```bash
-sudo pacstall -U
+pacstall -U
 ```
 This will update pacstall's scripts
 
 ```bash
-sudo pacstall -Up
+pacstall -Up
 ```
 
 This will update packages. Equivalent of apt upgrade
