@@ -49,9 +49,9 @@ def fancy(type: str, message: str) -> None:
 
     # type: prompt
     types = {
-        "info": f"[{fg.BGreen}+{st.RESET}] INFO:",
-        "warn": f"[{fg.BYellow}*{st.RESET}] WARNING:",
-        "error": f"[{fg.BRed}!{st.RESET}] ERROR:",
+        "info": f"[{fg.BGREEN}+{st.RESET}] INFO:",
+        "warn": f"[{fg.BYELLOW}*{st.RESET}] WARNING:",
+        "error": f"[{fg.BRED}!{st.RESET}] ERROR:",
     }
     prompt = types.get(type, f"[{st.BOLD}?{st.RESET}] UNKNOWN:")
     print(f"{prompt} {message}")
@@ -73,8 +73,8 @@ def ask(question: str, default: str = "nothing") -> str:
     """
     # default: prompt
     defaults = {
-        "Y": f"[{fg.BIGreen}Y{st.RESET}/{fg.RED}n{st.RESET}]",
-        "N": f"[{fg.GREEN}y{st.RESET}/{fg.BIRed}N{st.RESET}]",
+        "Y": f"[{fg.BIGREEN}Y{st.RESET}/{fg.RED}n{st.RESET}]",
+        "N": f"[{fg.GREEN}y{st.RESET}/{fg.BIRED}N{st.RESET}]",
     }
 
     prompt = defaults.get(default, f"[{fg.GREEN}y{st.RESET}/{fg.RED}n{st.RESET}]")
