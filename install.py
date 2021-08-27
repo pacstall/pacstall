@@ -42,68 +42,57 @@ BIGreen = "\033[1;92m"
 BIRed = "\033[1;91m"
 
 
-class Msg:
+def fancy(type: str, message: str) -> None:
     """
-    Pacstall's messaging API
+    Print fancy messages
 
-    Methods
+    Parameters
+    ----------
+    type (str): Type of message - "info" or "warn" or "error".
+    message (str): Message.
+    """
+
+    # type: prompt
+    types = {
+        "info": f"[{GREEN}+{NC}] INFO:",
+        "warn": f"[{YELLOW}*{NC}] WARNING:",
+        "error": f"[{RED}!{NC}] ERROR:",
+    }
+    prompt = types.get(type, f"[?] UNKNOWN:")
+    print(f"{prompt} {message}")
+
+
+def ask(question: str, default: str = "nothing") -> str:
+    """
+    Ask Y/N questions
+
+    Parameters
+    ----------
+    question (str): Question.
+    default="nothing" (str): Default option - "Y" or "N" or nothing.
+
+    Returns
     -------
-    fancy (type, message): Print fancy messages
-    ask (question, default="nothing"): Ask Y/N questions
+    str: Returns the user's reply
+
     """
+    # default: prompt
+    defaults = {
+        "Y": f"{BIGreen}Y{NC}/{RED}n{NC}",
+        "N": f"{GREEN}y{NC}/{BIRed}N{NC}",
+    }
 
-    @classmethod
-    def fancy(cls, type: str, message: str) -> None:
-        """
-        Print fancy messages
+    prompt = defaults.get(default, f"{GREEN}y{NC}/{RED}n{NC}")
+    reply = input(f"{question} [{prompt}] ").upper()
 
-        Parameters
-        ----------
-        type (str): Type of message - "info" or "warn" or "error".
-        message (str): Message.
-        """
+    if not reply:
+        reply = default
 
-        # type: prompt
-        types = {
-            "info": f"[{GREEN}+{NC}] INFO:",
-            "warn": f"[{YELLOW}*{NC}] WARNING:",
-            "error": f"[{RED}!{NC}] ERROR:",
-        }
-        prompt = types.get(type, f"[?] UNKNOWN:")
-        print(f"{prompt} {message}")
-
-    @classmethod
-    def ask(cls, question: str, default: str = "nothing") -> str:
-        """
-        Ask Y/N questions
-
-        Parameters
-        ----------
-        question (str): Question.
-        default="nothing" (str): Default option - "Y" or "N" or nothing.
-
-        Returns
-        -------
-        str: Returns the user's reply
-
-        """
-        # default: prompt
-        defaults = {
-            "Y": f"{BIGreen}Y{NC}/{RED}n{NC}",
-            "N": f"{GREEN}y{NC}/{BIRed}N{NC}",
-        }
-
-        prompt = defaults.get(default, f"{GREEN}y{NC}/{RED}n{NC}")
-        reply = input(f"{question} [{prompt}] ").upper()
-
-        if not reply:
-            reply = default
-
-        while True:
-            if reply == "Y" or reply == "N":
-                return reply
-            else:
-                reply = input(f"{question} [{prompt}] ").upper()
+    while True:
+        if reply == "Y" or reply == "N":
+            return reply
+        else:
+            reply = input(f"{question} [{prompt}] ").upper()
 
 
 def download(url: str, filepath: str = os.getcwd()) -> None:
@@ -117,8 +106,8 @@ def download(url: str, filepath: str = os.getcwd()) -> None:
     """
     data = get(url)
     if not data.status_code == 200:
-        Msg.fancy("error", f"Error occurred while downloading {url}")
-        Msg.fancy("error", f"Error code: {data.status_code}")
+        fancy("error", f"Error occurred while downloading {url}")
+        fancy("error", f"Error code: {data.status_code}")
     else:
         with open(filepath, "wb") as file:
             file.write(data.content)
@@ -132,7 +121,7 @@ print(
 )
 
 if not which("apt"):
-    Msg.fancy("error", "apt is not installed")
+    fancy("error", "apt is not installed")
     exit(1)
 
 try:
@@ -141,7 +130,7 @@ try:
     with create_connection(("www.github.com", 80)) as sock:
         pass
 except OSError:
-    Msg.fancy("error", "Can't reach github. Check your internet connection")
+    fancy("error", "Can't reach github. Check your internet connection")
     exit(1)
 
 if not Popen(
@@ -149,33 +138,33 @@ if not Popen(
     shell=True,
     stdout=PIPE,
 ).stdout:
-    Msg.fancy("info", "Last update was more than one week ago")
-    Msg.fancy("info", "Updating system")
+    fancy("info", "Last update was more than one week ago")
+    fancy("info", "Updating system")
     os.system("sudo apt-get -qq update")
 
 
-Msg.fancy("info", "Installing optional dependencies")
+fancy("info", "Installing optional dependencies")
 
-if Msg.ask("Do you want to install axel (faster downloads)? ", "Y") == "Y":
-    Msg.fancy("info", "Installing axel...")
+if ask("Do you want to install axel (faster downloads)? ", "Y") == "Y":
+    fancy("info", "Installing axel...")
     os.system("sudo apt-get -y install axel > /dev/null")
-    Msg.fancy("info", "Done!")
+    fancy("info", "Done!")
 
-if Msg.ask("Do you want to install ripgrep (faster searches)? ", "Y") == "Y":
-    Msg.fancy("info", "Installing ripgrep...")
+if ask("Do you want to install ripgrep (faster searches)? ", "Y") == "Y":
+    fancy("info", "Installing ripgrep...")
     os.system("sudo apt-get -y install ripgrep > /dev/null")
 
-Msg.fancy("info", "Done!")
-Msg.fancy("info", "Proceeding with Pacstall installation")
-Msg.fancy("info", "Installing dependencies...")
+fancy("info", "Done!")
+fancy("info", "Proceeding with Pacstall installation")
+fancy("info", "Installing dependencies...")
 
 os.system(
     "sudo apt-get -y install sudo wget curl stow build-essential unzip tree bc fakeroot > /dev/null"
 )
-Msg.fancy("info", "Done!")
+fancy("info", "Done!")
 
 
-Msg.fancy("info", "Making directories...")
+fancy("info", "Making directories...")
 LOGDIR = "/var/log/pacstall"  # Logging directory
 STGDIR = "/usr/share/pacstall"  # Storage directory for scripts
 SRCDIR = "/tmp/pacstall"  # Building directory
@@ -193,18 +182,18 @@ chown(f"{LOGDIR}/error_log", os.getlogin())
 os.makedirs("/usr/share/man/man8", exist_ok=True)
 os.makedirs("/usr/share/bash-completion/completions", exist_ok=True)
 os.makedirs("/usr/share/fish/vendor_completions.d", exist_ok=True)
-Msg.fancy("info", "Done!")
+fancy("info", "Done!")
 
 
-Msg.fancy("info", "Resetting repositories...")
+fancy("info", "Resetting repositories...")
 with open(f"{STGDIR}/repo/pacstallrepo.txt", "w") as repo_txt:
     repo_txt.write(
         "https://raw.githubusercontent.com/pacstall/pacstall-programs/master"
     )
-Msg.fancy("info", "Done!")
+fancy("info", "Done!")
 
 
-Msg.fancy("info", "Downloading scripts...")
+fancy("info", "Downloading scripts...")
 scripts = [
     "error_log.sh",
     "add-repo.sh",
@@ -223,29 +212,29 @@ with ThreadPoolExecutor(cpu_count()) as exe:
             f"https://raw.githubusercontent.com/pacstall/pacstall/master/misc/scripts/{script}"
             for script in scripts
         ],
-        [[f"{STGDIR}/scripts/{script}" for script in scripts]],
+        [f"{STGDIR}/scripts/{script}" for script in scripts],
     )
 
-Msg.fancy("info", "Done!")
+fancy("info", "Done!")
 
 
-Msg.fancy("info", "Downloading Pacstall binary...")
+fancy("info", "Downloading Pacstall binary...")
 download(
     "https://raw.githubusercontent.com/pacstall/pacstall/master/pacstall",
     "/bin/pacstall",
 )
-Msg.fancy("info", "Done!")
+fancy("info", "Done!")
 
 
-Msg.fancy("info", "Downloading man page...")
+fancy("info", "Downloading man page...")
 download(
     "https://raw.githubusercontent.com/pacstall/pacstall/master/misc/pacstall.8.gz",
     "/usr/share/man/man8/pacstall.8.gz",
 )
-Msg.fancy("info", "Done!")
+fancy("info", "Done!")
 
 
-Msg.fancy("info", "Downloading auto-completions...")
+fancy("info", "Downloading auto-completions...")
 completions = ["bash", "fish"]
 with ThreadPoolExecutor(cpu_count()) as exe:
     result = exe.map(
@@ -259,12 +248,12 @@ with ThreadPoolExecutor(cpu_count()) as exe:
             "/usr/share/fish/vendor_completions.d/pacstall.fish",
         ],
     )
-Msg.fancy("info", "Done!")
+fancy("info", "Done!")
 
 
-Msg.fancy("info", "Finishing up...")
+fancy("info", "Finishing up...")
 os.chmod("/bin/pacstall", 0o755)
 
 for script in os.listdir(f"{STGDIR}/scripts"):
     os.chmod(script, 0o755)
-Msg.fancy("info", "Pacstall installation complete! Have a great day!")
+fancy("info", "Pacstall installation complete! Have a great day!")
