@@ -27,33 +27,23 @@ from api.color import Style as st
 from os import environ
 
 
-"""
-Pacstall's messaging API
-
-Methods
--------
-fancy (type, message): Print fancy messages
-ask (question, default="nothing"): Ask Y/N questions
-"""
-
-
-def fancy(type: str, message: str) -> None:
+def fancy(message_type: str, message: str) -> None:
     """
     Print fancy messages
 
     Parameters
     ----------
-    type (str): Type of message - "info" or "warn" or "error".
+    message_type (str): Type of message - "info" or "warn" or "error".
     message (str): Message.
     """
 
-    # type: prompt
-    types = {
+    # message_types: prompt
+    message_types = {
         "info": f"[{fg.BGREEN}+{st.RESET}] INFO:",
         "warn": f"[{fg.BYELLOW}*{st.RESET}] WARNING:",
         "error": f"[{fg.BRED}!{st.RESET}] ERROR:",
     }
-    prompt = types.get(type, f"[{st.BOLD}?{st.RESET}] UNKNOWN:")
+    prompt = message_types.get(message_type, f"[{st.BOLD}?{st.RESET}] UNKNOWN:")
     print(f"{prompt} {message}")
 
 

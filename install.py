@@ -23,7 +23,7 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 import os
-from sys import exit
+import sys
 from shutil import chown, which
 from socket import create_connection
 from requests import get
@@ -42,23 +42,23 @@ BIGreen = "\033[1;92m"
 BIRed = "\033[1;91m"
 
 
-def fancy(type: str, message: str) -> None:
+def fancy(message_type: str, message: str) -> None:
     """
     Print fancy messages
 
     Parameters
     ----------
-    type (str): Type of message - "info" or "warn" or "error".
+    message_type (str): Type of message - "info" or "warn" or "error".
     message (str): Message.
     """
 
-    # type: prompt
-    types = {
+    # message_type: prompt
+    message_types = {
         "info": f"[{GREEN}+{NC}] INFO:",
         "warn": f"[{YELLOW}*{NC}] WARNING:",
         "error": f"[{RED}!{NC}] ERROR:",
     }
-    prompt = types.get(type, f"[?] UNKNOWN:")
+    prompt = message_types.get(message_type, "[?] UNKNOWN:")
     print(f"{prompt} {message}")
 
 
@@ -122,7 +122,7 @@ print(
 
 if not which("apt"):
     fancy("error", "apt is not installed")
-    exit(1)
+    sys.exit(1)
 
 try:
     # connect to the host -- tells us if the host is actually
@@ -131,11 +131,10 @@ try:
         pass
 except OSError:
     fancy("error", "Can't reach github. Check your internet connection")
-    exit(1)
+    sys.exit(1)
 
 if not Popen(
-    "find -H /var/lib/apt/lists -maxdepth 0 -mtime -7",
-    shell=True,
+    ["find", "-H", "/var/lib/apt/lists", "-maxdepth", "0", "-mtime", "-7"],
     stdout=PIPE,
 ).stdout:
     fancy("info", "Last update was more than one week ago")
@@ -167,13 +166,9 @@ fancy("info", "Done!")
 fancy("info", "Making directories...")
 LOGDIR = "/var/log/pacstall"  # Logging directory
 STGDIR = "/usr/share/pacstall"  # Storage directory for scripts
-SRCDIR = "/tmp/pacstall"  # Building directory
 
 os.makedirs(f"{STGDIR}/scripts", exist_ok=True)
 os.makedirs(f"{STGDIR}/repo", exist_ok=True)
-
-os.makedirs(SRCDIR, exist_ok=True)
-chown(SRCDIR, os.getlogin())
 
 os.makedirs(f"{LOGDIR}/metadata", exist_ok=True)
 os.makedirs(f"{LOGDIR}/error_log", exist_ok=True)
