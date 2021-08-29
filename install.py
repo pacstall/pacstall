@@ -27,7 +27,7 @@ import sys
 from shutil import chown, which
 from socket import create_connection
 from requests import get
-from subprocess import Popen, PIPE
+from subprocess import check_output
 from multiprocessing import cpu_count
 from concurrent.futures import ThreadPoolExecutor
 
@@ -133,10 +133,8 @@ except OSError:
     fancy("error", "Can't reach github. Check your internet connection")
     sys.exit(1)
 
-if not Popen(
-    ["find", "-H", "/var/lib/apt/lists", "-maxdepth", "0", "-mtime", "-7"],
-    stdout=PIPE,
-).stdout:
+
+if not check_output(["find", "-H", "/var/lib/apt/lists", "-maxdepth", "0", "-mtime", "-7"]):
     fancy("info", "Last update was more than one week ago")
     fancy("info", "Updating system")
     os.system("sudo apt-get -qq update")
