@@ -134,7 +134,7 @@ except OSError:
     sys.exit(1)
 
 
-if not check_output(["find", "-H", "/var/lib/apt/lists", "-maxdepth", "0", "-mtime", "-7"], shell=False):
+if not check_output(["find", "-H", "/var/lib/apt/lists", "-maxdepth", "0", "-mtime", "-7"]):
     fancy("info", "Last update was more than one week ago")
     fancy("info", "Updating system")
     os.system("sudo apt-get -qq update")
