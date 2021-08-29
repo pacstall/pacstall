@@ -30,5 +30,5 @@ STOWDIR = "/usr/src/pacstall"  # Stowing directory
 
 # SRCDIR -> Package source code storage dir
 def SRCDIR() -> str:
-    """Securely generate a SRCDIR to store source code of packages"""
+    """Securely generate a SRCDIR to store source code of packages."""
     return tempfile.mkdtemp()

@@ -1,5 +1,4 @@
-"""
-Pacstall API
+"""Pacstall API
 
 Modules
 -------
