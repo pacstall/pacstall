@@ -23,11 +23,12 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 import os
+from glob import glob
+from time import time
 import sys
 from shutil import chown, which
 from socket import create_connection
 from requests import get
-from subprocess import check_output
 from multiprocessing import cpu_count
 from concurrent.futures import ThreadPoolExecutor
 
@@ -134,7 +135,11 @@ except OSError:
     sys.exit(1)
 
 
-if not check_output(["find", "-H", "/var/lib/apt/lists", "-maxdepth", "0", "-mtime", "-7"]):
+if not [
+    list
+    for list in glob("/var/lib/apt/lists/*")
+    if os.stat(list).st_mtime < time() - 604800
+]:
     fancy("info", "Last update was more than one week ago")
     fancy("info", "Updating system")
     os.system("sudo apt-get -qq update")
