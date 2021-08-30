@@ -248,5 +248,5 @@ fancy("info", "Finishing up...")
 os.chmod("/bin/pacstall", 0o755)
 
 for script in os.listdir(f"{STGDIR}/scripts"):
-    os.chmod(script, 0o755)
+    os.chmod(f"{STGDIR}/scripts/{script}", 0o755)
 fancy("info", "Pacstall installation complete! Have a great day!")
