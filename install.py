@@ -89,7 +89,7 @@ def ask(question: str, default: str = "nothing") -> str:
         reply = default
 
     while True:
-        if reply == "Y" or reply == "N":
+        if reply in ["Y", "N"]:
             return reply
         else:
             reply = input(f"{question} [{prompt}] ").upper()
@@ -105,7 +105,7 @@ def download(url: str, filepath: str = os.getcwd()) -> None:
     filepath=os.getcwd() (str): Location of the local file
     """
     data = get(url)
-    if not data.status_code == 200:
+    if data.status_code != 200:
         fancy("error", f"Error occurred while downloading {url}")
         fancy("error", f"Error code: {data.status_code}")
     else:

@@ -76,11 +76,10 @@ def ask(question: str, default: str = "nothing") -> str:
     else:
         reply = default
 
-        if default != "nothing":
-            print(f"{question} {prompt} {default}")
-
+        if reply != "nothing":
+            print(f'{question} {prompt} {reply}')
     while True:
-        if reply == "Y" or reply == "N":
+        if reply in ["Y", "N"]:
             return reply
         else:
             reply = input(f"{question} {prompt} ").upper()
