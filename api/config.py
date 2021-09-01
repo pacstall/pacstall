@@ -22,7 +22,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+import tempfile
+
 LOGDIR = "/var/log/pacstall"  # Logging directory
-SRCDIR = "/tmp/pacstall"  # Building directory
 STGDIR = "/usr/share/pacstall"  # Scripts storage directory
 STOWDIR = "/usr/src/pacstall"  # Stowing directory
+
+# SRCDIR -> Package source code storage dir
+def SRCDIR() -> str:
+    """Securely generate a SRCDIR to store source code of packages."""
+    return tempfile.mkdtemp()
