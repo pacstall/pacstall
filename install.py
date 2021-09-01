@@ -23,11 +23,12 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 import os
-from sys import exit
+from glob import glob
+from time import time
+import sys
 from shutil import chown, which
 from socket import create_connection
 from requests import get
-from subprocess import Popen, PIPE
 from multiprocessing import cpu_count
 from concurrent.futures import ThreadPoolExecutor
 
@@ -42,23 +43,23 @@ BIGreen = "\033[1;92m"
 BIRed = "\033[1;91m"
 
 
-def fancy(type: str, message: str) -> None:
+def fancy(message_type: str, message: str) -> None:
     """
     Print fancy messages
 
     Parameters
     ----------
-    type (str): Type of message - "info" or "warn" or "error".
+    message_type (str): Type of message - "info" or "warn" or "error".
     message (str): Message.
     """
 
-    # type: prompt
-    types = {
+    # message_type: prompt
+    message_types = {
         "info": f"[{GREEN}+{NC}] INFO:",
         "warn": f"[{YELLOW}*{NC}] WARNING:",
         "error": f"[{RED}!{NC}] ERROR:",
     }
-    prompt = types.get(type, f"[?] UNKNOWN:")
+    prompt = message_types.get(message_type, "[?] UNKNOWN:")
     print(f"{prompt} {message}")
 
 
@@ -89,7 +90,7 @@ def ask(question: str, default: str = "nothing") -> str:
         reply = default
 
     while True:
-        if reply == "Y" or reply == "N":
+        if reply in ["Y", "N"]:
             return reply
         else:
             reply = input(f"{question} [{prompt}] ").upper()
@@ -105,7 +106,7 @@ def download(url: str, filepath: str = os.getcwd()) -> None:
     filepath=os.getcwd() (str): Location of the local file
     """
     data = get(url)
-    if not data.status_code == 200:
+    if data.status_code != 200:
         fancy("error", f"Error occurred while downloading {url}")
         fancy("error", f"Error code: {data.status_code}")
     else:
@@ -122,7 +123,7 @@ print(
 
 if not which("apt"):
     fancy("error", "apt is not installed")
-    exit(1)
+    sys.exit(1)
 
 try:
     # connect to the host -- tells us if the host is actually
@@ -131,13 +132,14 @@ try:
         pass
 except OSError:
     fancy("error", "Can't reach github. Check your internet connection")
-    exit(1)
+    sys.exit(1)
 
-if not Popen(
-    "find -H /var/lib/apt/lists -maxdepth 0 -mtime -7",
-    shell=True,
-    stdout=PIPE,
-).stdout:
+
+if not [
+    list
+    for list in glob("/var/lib/apt/lists/*")
+    if os.stat(list).st_mtime < time() - 604800
+]:
     fancy("info", "Last update was more than one week ago")
     fancy("info", "Updating system")
     os.system("sudo apt-get -qq update")
@@ -167,13 +169,9 @@ fancy("info", "Done!")
 fancy("info", "Making directories...")
 LOGDIR = "/var/log/pacstall"  # Logging directory
 STGDIR = "/usr/share/pacstall"  # Storage directory for scripts
-SRCDIR = "/tmp/pacstall"  # Building directory
 
 os.makedirs(f"{STGDIR}/scripts", exist_ok=True)
 os.makedirs(f"{STGDIR}/repo", exist_ok=True)
-
-os.makedirs(SRCDIR, exist_ok=True)
-chown(SRCDIR, os.getlogin())
 
 os.makedirs(f"{LOGDIR}/metadata", exist_ok=True)
 os.makedirs(f"{LOGDIR}/error_log", exist_ok=True)
@@ -255,5 +253,5 @@ fancy("info", "Finishing up...")
 os.chmod("/bin/pacstall", 0o755)
 
 for script in os.listdir(f"{STGDIR}/scripts"):
-    os.chmod(script, 0o755)
+    os.chmod(f"{STGDIR}/scripts/{script}", 0o755)
 fancy("info", "Pacstall installation complete! Have a great day!")
