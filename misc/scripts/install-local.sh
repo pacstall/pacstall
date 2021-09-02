@@ -440,7 +440,7 @@ if [[ -n $patch ]]; then
 fi
 
 export pkgdir="/usr/src/pacstall/$name"
-sudo chown -R "$USER":"$USER" /usr/src/pacstall >/dev/null
+sudo chown -R "$USER":"$USER" /usr/src/pacstall
 
 # fakeroot is weird but this method works
 # create tmp variable that is the output of what prepare function is (it prints out function)
