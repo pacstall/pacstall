@@ -1,17 +1,17 @@
-# Purpose
+## Purpose
 
-Describe the problem you are fixing or the feature you are adding.
+<!--Describe the problem you are fixing or the feature you are adding.-->
 
-# Approach
+## Approach
 
-How does this address the problem?
+<!--How does this address the problem?-->
 
-# Progress
+## Progress
 
-Make a checklist of your progress
+<!--Make a checklist of your progress-->
 
-- [x] Example checklist
+- [x] Example
 
-# Addendum
+## Addendum
 
-Link any issues with this PR and/or write something that you want to inform us about (optional)
+<!--Link any issues with this PR and/or write something that you want to inform us about (optional)-->
