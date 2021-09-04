@@ -132,10 +132,6 @@ else
 	${BOLD}$(cat /tmp/pacstall-up-print)${NORMAL}"
 	echo ""
 
-	ask "Do you want to continue?" N
-	if [[ $answer -eq 0 ]]; then
-		exit 1;
-	fi
 	upgrade=()
 	while IFS= read -r line; do
 		upgrade+=("$line")
