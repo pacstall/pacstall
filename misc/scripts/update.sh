@@ -25,13 +25,6 @@
 # Update should be self-contained and should use mutable functions or variables
 # Color variables are ok, while "$USERNAME" and "$BRANCH" are needed
 
-echo -ne "Are you sure you want to update pacstall? [${GREEN}y${NC}/${BIRed}N${NC}] "
-read -r reply < /dev/tty
-
-if [[ -z $reply ]] || [[ $reply == "N"* ]] || [[ $reply == "n"* ]]; then
-	exit 1
-fi
-
 sudo mkdir -p "/var/log/pacstall/metadata"
 sudo mkdir -p "/var/log/pacstall/error_log"
 find /var/log/pacstall/* -maxdepth 1 | grep -v metadata | grep -v error_log | xargs -I{} sudo mv {} /var/log/pacstall/metadata
