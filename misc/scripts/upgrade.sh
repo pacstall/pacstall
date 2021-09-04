@@ -24,7 +24,7 @@
 
 function ver_compare() {
 	local first="$(echo ${1} | sed 's/^[^0-9]*//')"
-	local second="$(echo ${1} | sed 's/^[^0-9]*//')"
+	local second="$(echo ${2} | sed 's/^[^0-9]*//')"
 	return $(dpkg --compare-versions $first "lt" $second)
 }
 
