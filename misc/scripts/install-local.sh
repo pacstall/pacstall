@@ -363,7 +363,7 @@ case "$url" in
 		# git clone quietly, with no history, and if submodules are there, download with 10 jobs
 		sudo git clone --quiet --depth=1 --jobs=10 "$url"
 		# cd into the directory
-		cd ./*/
+		cd ./*/ 2> /dev/null
 		# The srcdir is /tmp/pacstall/foo
 		export srcdir="/tmp/pacstall/$PWD"
 		# Make the directory available for users
@@ -381,7 +381,7 @@ case "$url" in
 		# unzip file
 		sudo unzip -q "${url##*/}" 1>&1 2>/dev/null
 		# cd into it
-		cd ./*/
+		cd ./*/ 2> /dev/null
 		# export srcdir
 		export srcdir="/tmp/pacstall/$PWD"
 		# Make the directory available for users
