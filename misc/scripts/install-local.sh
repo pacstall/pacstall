@@ -366,8 +366,6 @@ case "$url" in
 		cd ./*/ 2> /dev/null
 		# The srcdir is /tmp/pacstall/foo
 		readonly srcdir="/tmp/pacstall/$PWD" ; export srcdir
-		# Make the directory available for users
-		sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
 		# Check the integrity
 		git fsck --full
 	;;
@@ -384,8 +382,6 @@ case "$url" in
 		cd ./*/ 2> /dev/null
 		# export srcdir
 		readonly srcdir="/tmp/pacstall/$PWD" ; export srcdir
-		# Make the directory available for users
-		sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
 	;;
 	*.deb)
 		download "$url"
@@ -425,23 +421,20 @@ case "$url" in
 		sudo tar -xf "${url##*/}" 1>&1 2>/dev/null
 		cd ./*/ 2>/dev/null
 		readonly srcdir="/tmp/pacstall/$PWD" ; export srcdir
-		sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
 	;;
 esac
 
 if [[ -n $patch ]]; then
 		fancy_message info "Downloading patches"
-		mkdir -p PACSTALL_patchesdir
+		sudo mkdir -p PACSTALL_patchesdir
 	for i in "${patch[@]}"; do
-		wget -q "$i" -P PACSTALL_patchesdir &
+		sudo wget -q "$i" -P PACSTALL_patchesdir &
 	done
 	wait
 	readonly PACPATCH=$(pwd)/PACSTALL_patchesdir ; export PACKAGE
 fi
 
 readonly pkgdir="/usr/src/pacstall/$name" ; export pkgdir
-sudo chown -R "$USER":"$USER" /usr/src/pacstall
-
 # fakeroot is weird but this method works
 # create tmp variable that is the output of what prepare function is (it prints out function)
 if ! command -v fakeroot > /dev/null; then
