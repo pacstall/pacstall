@@ -21,6 +21,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+#TODO Fix hard coded paths to packagelist
+
 _pacstall() {
 	cur=${COMP_WORDS[COMP_CWORD]}
 	prev=${COMP_WORDS[COMP_CWORD-1]}
@@ -45,11 +47,6 @@ _pacstall() {
 			return
 		;;
 
-		-Qd|--query-depends)
-			COMPREPLY=( $( compgen -W "$(curl -s "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packagelist")" -- $cur ) )
-			return
-		;;
-
 		-Qi|--query-info)
 			COMPREPLY=( $( compgen -W "$(/bin/ls -1aAp /var/log/pacstall/metadata)" -- $cur ) )
 			return
@@ -70,7 +67,7 @@ _pacstall() {
 			return
 		;;
 		*)
-			COMPREPLY=( $( compgen -W "-I -S -R -C -U -V -L -Up -Qd -Qi" "$cur" ) )
+			COMPREPLY=( $( compgen -W "-I -S -R -A -U -V -L -Up -Qi" "$cur" ) )
 			return
 		;;
 	esac

@@ -26,12 +26,11 @@ set -l pacstall_commands -I -S -R -C -U -V -L -Up -Qd -Qi -D
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -I -d 'Install package'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -S -d 'Search for package'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -R -d 'Remove package'
-complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -C -d 'Change repository'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -A -d 'Add repository'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -U -d 'Update pacstall scripts'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -V -d 'Print pacstall version'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -L -d 'List packages installed'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -Up -d 'Upgrade packages'
-complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -Qd -d 'Query the dependencies of a package'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -Qi -d 'Get package info'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -D -d 'Downloads package'
 
