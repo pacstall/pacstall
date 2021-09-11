@@ -24,11 +24,12 @@
 
 # Configuration
 export LC_ALL=C
-export LOGDIR="/var/log/pacstall/metadata"
-export LOGFILE="/var/log/pacstall/error_log/$(date +"%F_%T.log")"
-export SRCDIR="/tmp/pacstall"
-export STGDIR="/usr/share/pacstall"
-export STOWDIR="/usr/src/pacstall"
+readonly LOGDIR="/var/log/pacstall/metadata"
+readonly LOGFILE="/var/log/pacstall/error_log/$(date +"%F_%T.log")"
+readonly SRCDIR="/tmp/pacstall"
+readonly STGDIR="/usr/share/pacstall"
+readonly STOWDIR="/usr/src/pacstall"
+export LOGDIR LOGFILE SRCDIR STGDIR STOWDIR
 
 # Colors
 export BOLD=$(tput bold)
