@@ -121,17 +121,17 @@ function makeVirtualDeb {
 	fancy_message info "Creating dummy package"
 	sudo mkdir -p "$SRCDIR/$name-pacstall/DEBIAN"
 	printf "Package: $name\n" | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-	
+
 	if [[ $version =~ ^[0-9] ]]; then
 		printf "Version: $version-1\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	else
 		printf "Version: 0$version-1\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
-	
+
 	if [[ -n $depends ]]; then
 		printf "Depends: ${depends//' '/' , '}\n"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
-	
+
 	if [[ -n $optdepends ]]; then
 		fancy_message info "$name has optional dependencies that can enhance its functionalities"
 		echo "Optional dependencies:"
@@ -140,12 +140,12 @@ function makeVirtualDeb {
 		if [[ $answer -eq 1 ]]; then
 			optinstall='--install-suggests'
 		fi
-		
+
 		printf "Suggests:" |sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 		printf " %s\n" "${optdepends[@]}" | awk -F': ' '{print $1}' | tr '\n' ',' | head -c -2 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 		printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
-	
+
 	printf "Architecture: all
 Essential: no
 Section: Pacstall
@@ -159,7 +159,7 @@ Replace: ${replace//' '/', '}" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/cont
 	printf "Provides: ${gives:-$name}
 Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
 Description: This is a symbolic package used by pacstall, may be removed with apt or dpkg. $description\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-	
+
 	echo '#!/bin/bash
 if [[ PACSTALL_REMOVE != "true" ]]; then
 	source /var/cache/pacstall/'"$name"'/'"$version"'/'"$name"'.pacscript 2>&1 /dev/null
@@ -224,7 +224,7 @@ fi
 
 fancy_message info "Sourcing pacscript"
 DIR=$(pwd)
-export homedir="/home/$LOGNAME"
+readonly homedir="/home/$LOGNAME" ; export homedir
 source "$PACKAGE".pacscript > /dev/null
 if [[ $? -ne 0 ]]; then
 	fancy_message error "Couldn't source pacscript"
@@ -337,7 +337,7 @@ fi
 function hashcheck() {
 	inputHash=$hash
 	# Get hash of file
-	fileHash=($(sha256sum "$1" | sed 's/\s.*$//'))
+	readonly fileHash=($(sha256sum "$1" | sed 's/\s.*$//'))
 
 	if [[ "$inputHash" != "$fileHash" ]]; then
 		# We bad
@@ -346,7 +346,7 @@ function hashcheck() {
 		if [[ "$url" != *".deb" ]]; then
 			sudo dpkg -r "$name" > /dev/null
 		fi
-		
+
 		fancy_message info "Cleaning up"
 		cleanup
 		return 1
@@ -365,7 +365,7 @@ case "$url" in
 		# cd into the directory
 		cd ./*/ 2> /dev/null
 		# The srcdir is /tmp/pacstall/foo
-		export srcdir="/tmp/pacstall/$PWD"
+		readonly srcdir="/tmp/pacstall/$PWD" ; export srcdir
 		# Make the directory available for users
 		sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
 		# Check the integrity
@@ -383,7 +383,7 @@ case "$url" in
 		# cd into it
 		cd ./*/ 2> /dev/null
 		# export srcdir
-		export srcdir="/tmp/pacstall/$PWD"
+		readonly srcdir="/tmp/pacstall/$PWD" ; export srcdir
 		# Make the directory available for users
 		sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
 	;;
@@ -424,7 +424,7 @@ case "$url" in
 		fi
 		sudo tar -xf "${url##*/}" 1>&1 2>/dev/null
 		cd ./*/ 2>/dev/null
-		export srcdir="/tmp/pacstall/$PWD"
+		readonly srcdir="/tmp/pacstall/$PWD" ; export srcdir
 		sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
 	;;
 esac
@@ -436,10 +436,10 @@ if [[ -n $patch ]]; then
 		wget -q "$i" -P PACSTALL_patchesdir &
 	done
 	wait
-	export PACPATCH=$(pwd)/PACSTALL_patchesdir
+	readonly PACPATCH=$(pwd)/PACSTALL_patchesdir ; export PACKAGE
 fi
 
-export pkgdir="/usr/src/pacstall/$name"
+readonly pkgdir="/usr/src/pacstall/$name" ; export pkgdir
 sudo chown -R "$USER":"$USER" /usr/src/pacstall
 
 # fakeroot is weird but this method works
