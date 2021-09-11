@@ -97,6 +97,9 @@ case "$url" in
 	;;
 esac
 
+# clear PATH database
+hash -r
+
 error_log 1 "remove $PACKAGE"
 return 1
 # vim:set ft=sh ts=4 sw=4 noet:
