@@ -29,6 +29,7 @@ function cleanup () {
 		sudo rm /tmp/pacstall-optdepends
 	fi
 	unset name version url build_depends depends breaks replace description hash removescript optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall 2>/dev/null
+	unset -f pkgver 2>/dev/null
 }
 
 function trap_ctrlc () {
