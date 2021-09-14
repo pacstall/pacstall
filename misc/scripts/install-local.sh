@@ -235,11 +235,6 @@ if [[ $? -ne 0 ]]; then
 	return 1
 fi
 
-# export all variables from pacscript (fakeroot), and redirect to /dev/null in case of errors (because obviously no pacscript will contain every single available option)
-export {name,version,url,build_depends,depends,replace,description,hash,maintainer,optdepends,ppa,pacdeps,patch} > /dev/null 2>&1
-# Do the same for functions
-export -f {prepare,build,install,postinst,removescript} > /dev/null 2>&1
-
 if type pkgver > /dev/null 2>&1; then
 	version=$(pkgver) > /dev/null
 fi
@@ -442,17 +437,8 @@ fi
 
 export pkgdir="/usr/src/pacstall/$name"
 
-# fakeroot is weird but this method works
-# create tmp variable that is the output of what prepare function is (it prints out function)
-if ! command -v fakeroot > /dev/null; then
-	sudo apt-get install fakeroot -y
-fi
-tmp_prepare=$(declare -f prepare)
-# We run fakeroot, BUT, we don't actually pass any variables through to fakeroot. In other words, bash works with the tmp_prepare, instead of fakeroot
-fancy_message info "Running prepare in fakeroot. Do not enter password if prompted"
-fakeroot -- bash -c "$tmp_prepare; prepare"
-# Unset because it's a tmp variable
-unset tmp_prepare
+fancy_message info "Preparing"
+prepare
 
 # Check if build function doesn't exist
 if ! type -t build > /dev/null 2>&1; then
@@ -464,13 +450,8 @@ if ! type -t build > /dev/null 2>&1; then
 	return 1
 fi
 
-if ! command -v fakeroot > /dev/null; then
-	sudo apt-get install fakeroot -y
-fi
-tmp_build=$(declare -f build)
-fancy_message info "Running build in fakeroot. Do not enter password if prompted"
-fakeroot -- bash -c "$tmp_build; build"
-unset tmp_build
+fancy_message info "Building"
+build
 
 # Trap so that we can clean up (hopefully without messing up anything)
 trap - SIGINT
@@ -493,6 +474,7 @@ cd /usr/src/pacstall/ || sudo mkdir -p /usr/src/pacstall && cd /usr/src/pacstall
 if ! command -v stow > /dev/null; then
 	# If stow failed to install, install it
 	sudo apt-get install stow -y
+	cd /usr/src/pacstall
 fi
 
 # Magic time. This installs the package to /, so `/usr/src/pacstall/foo/usr/bin/foo` -> `/usr/bin/foo`
