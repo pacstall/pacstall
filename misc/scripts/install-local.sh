@@ -55,6 +55,21 @@ function checks() {
 	if [[ -z "$hash" ]]; then
 		fancy_message warn "Package does not contain a hash"
 	fi
+	if [[ -z "$description" ]]; then
+		fancy_message warn "Package does not contain a description"
+	fi
+	if [[ -z "$version" ]]; then
+		fancy_message error "Package does not contain version"
+		exit 1
+	fi
+	if [[ -z "$name" ]]; then
+		fancy_message error "Package does not contain name"
+		exit 1
+	fi
+	if [[ -z "$url" ]]; then
+		fancy_message error "Package does not contain URL"
+		exit 1
+	fi
 }
 
 function cget() {
