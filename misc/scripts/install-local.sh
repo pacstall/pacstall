@@ -53,7 +53,10 @@ function checks() {
 	fi
 
 	if [[ -z "$hash" ]]; then
-		fancy_message warn "Package does not contain a hash"
+		# if the name doesn't end in -git, we put up the prompt
+		if ! [[ "$name" == "*-git" ]]; then
+			fancy_message warn "Package does not contain a hash"
+		fi
 	fi
 	if [[ -z "$description" ]]; then
 		fancy_message warn "Package does not contain a description"
