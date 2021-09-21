@@ -73,6 +73,10 @@ function checks() {
 		fancy_message error "Package does not contain URL"
 		exit 1
 	fi
+	if [[ -z "$maintainer" ]]; then
+		fancy_message warn "Package does not have a maintainer"
+		fancy_message warn "It maybe no longer maintained. Please be advised."
+	fi
 }
 
 function cget() {
