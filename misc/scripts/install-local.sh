@@ -44,13 +44,6 @@ function trap_ctrlc () {
 
 # run checks to verify script works
 function checks() {
-	# curl url to check it exists
-	if curl --output /dev/null --silent --head --fail "$url" > /dev/null; then
-		fancy_message info "URL exists"
-	else
-		fancy_message error "URL doesn't exist"
-		return 1
-	fi
 
 	if [[ -z "$name" ]]; then
 		fancy_message error "Package does not contain name"
@@ -76,6 +69,13 @@ function checks() {
 	if [[ -z "$maintainer" ]]; then
 		fancy_message warn "Package does not have a maintainer"
 		fancy_message warn "It maybe no longer maintained. Please be advised."
+	fi
+	# curl url to check it exists
+	if curl --output /dev/null --silent --head --fail "$url" > /dev/null; then
+		fancy_message info "URL exists"
+	else
+		fancy_message error "URL doesn't exist"
+		return 1
 	fi
 }
 
