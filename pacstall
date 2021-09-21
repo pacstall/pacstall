@@ -242,21 +242,19 @@ while [[ ! "$1" == "--" ]]; do
 		;;
 
 		-h|--help)
-			echo "
-			options:
-			-I --install, Installs package
-			-Il --install-local, Installs a local package
-			-S --search, Search for package
-			-R --remove, Removes package
-			-D --download, Downloads script
-			-A --add-repo, Adds repo to your repo list
-			-U --update, Update script
-			-V --version, Prints pacstall version
-			-L --list, Lists installed packages
-			-Up --upgrade, Upgrades packages
-			-Qi --query-info, Get package info
-			-P --disable--prompts, Disable Prompts for unattended installation
-			"
+			echo "options:
+-I --install, Installs package
+-Il --install-local, Installs a local package
+-S --search, Search for package
+-R --remove, Removes package
+-D --download, Downloads script
+-A --add-repo, Adds repo to your repo list
+-U --update, Update script
+-V --version, Prints pacstall version
+-L --list, Lists installed packages
+-Up --upgrade, Upgrades packages
+-Qi --query-info, Get package info
+-P --disable--prompts, Disable Prompts for unattended installation"
 			exit 0
 		;;
 
