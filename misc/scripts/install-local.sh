@@ -52,6 +52,10 @@ function checks() {
 		return 1
 	fi
 
+	if [[ -z "$name" ]]; then
+		fancy_message error "Package does not contain name"
+		exit 1
+	fi
 	if [[ -z "$hash" ]]; then
 		# if the name doesn't end in -git, we put up the prompt
 		if ! [[ "$name" == "*-git" ]]; then
@@ -63,10 +67,6 @@ function checks() {
 	fi
 	if [[ -z "$version" ]]; then
 		fancy_message error "Package does not contain version"
-		exit 1
-	fi
-	if [[ -z "$name" ]]; then
-		fancy_message error "Package does not contain name"
 		exit 1
 	fi
 	if [[ -z "$url" ]]; then
