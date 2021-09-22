@@ -274,7 +274,7 @@ fi
 
 if echo -n "$depends" > /dev/null 2>&1; then
 	if [[ -n "$breaks" ]]; then
-		if dpkg-query -W -f='${Status}' "${breaks}" | grep "^install ok installed" > /dev/null 2>&1; then
+		if dpkg-query -W -f='${Status}' "${breaks}" 2> /dev/null | grep "^install ok installed" > /dev/null 2>&1; then
 			# Check if anything in breaks variable is installed already
 			fancy_message error "${RED}$name${NC} breaks $breaks, which is currently installed by apt"
 			error_log 13 "install $PACKAGE"
@@ -282,7 +282,7 @@ if echo -n "$depends" > /dev/null 2>&1; then
 			cleanup
 			return 1
 		fi
-		if [[ $(pacstall -L) == *$breaks* ]]; then
+		if [[ $(pacstall -L) == $breaks ]]; then
 			# Same thing, but check if anything is installed with pacstall
 			fancy_message error "${RED}$name${NC} breaks $breaks, which is currently installed by pacstall"
 			error_log 13 "install $PACKAGE"
