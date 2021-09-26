@@ -49,7 +49,7 @@ function checks() {
 		fancy_message error "Package does not contain name"
 		exit 1
 	fi
-	if [[ -z "$hash" && "$name" != "*-git" ]]; then
+	if [[ -z "$hash" && "$name" != *-git ]]; then
 		fancy_message warn "Package does not contain a hash"
 	fi
 	if [[ -z "$version" ]]; then
