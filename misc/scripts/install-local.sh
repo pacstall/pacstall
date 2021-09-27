@@ -44,16 +44,32 @@ function trap_ctrlc () {
 
 # run checks to verify script works
 function checks() {
+
+	if [[ -z "$name" ]]; then
+		fancy_message error "Package does not contain name"
+		exit 1
+	fi
+	if [[ -z "$hash" && "$name" != *-git ]]; then
+		fancy_message warn "Package does not contain a hash"
+	fi
+	if [[ -z "$version" ]]; then
+		fancy_message error "Package does not contain version"
+		exit 1
+	fi
+	if [[ -z "$url" ]]; then
+		fancy_message error "Package does not contain URL"
+		exit 1
+	fi
+	if [[ -z "$maintainer" ]]; then
+		fancy_message warn "Package does not have a maintainer"
+		fancy_message warn "It maybe no longer maintained. Please be advised."
+	fi
 	# curl url to check it exists
 	if curl --output /dev/null --silent --head --fail "$url" > /dev/null; then
 		fancy_message info "URL exists"
 	else
 		fancy_message error "URL doesn't exist"
 		return 1
-	fi
-
-	if [[ -z "$hash" ]]; then
-		fancy_message warn "Package does not contain a hash"
 	fi
 }
 
