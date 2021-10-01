@@ -290,6 +290,8 @@ while [[ ! "$1" == "--" ]]; do
 					continue
 				fi
 
+				specifyRepo $REPO
+				fancy_message info "Downloading $GREEN${PACKAGE}.pacscript$NC from $CYAN$URLNAME$NC"
 				URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 				source "$STGDIR/scripts/download.sh"
 
@@ -467,6 +469,8 @@ while [[ ! "$1" == "--" ]]; do
 					continue
 				fi
 
+				specifyRepo $REPO
+				fancy_message info "Downloading $GREEN${PACKAGE}.pacscript$NC from $CYAN$URLNAME$NC"
 				export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 				source "$STGDIR/scripts/download.sh"
 
