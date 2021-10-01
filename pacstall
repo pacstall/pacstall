@@ -395,7 +395,7 @@ while [[ ! "$1" == "--" ]]; do
 				exit 0
 			else
 				fancy_message error "You failed to specify a repo to add"
-				return 1
+				exit 1
 			fi
 		;;
 
