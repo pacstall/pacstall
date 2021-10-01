@@ -25,14 +25,17 @@
 # Configuration
 export LC_ALL=C
 export LOGDIR="/var/log/pacstall/metadata"
-export LOGFILE="/var/log/pacstall/error_log/$(date +"%F_%T.log")"
+LOGFILE="/var/log/pacstall/error_log/$(date +"%F_%T.log")"
+export LOGFILE
 export SRCDIR="/tmp/pacstall"
 export STGDIR="/usr/share/pacstall"
 export STOWDIR="/usr/src/pacstall"
 
 # Colors
-export BOLD=$(tput bold)
-export NORMAL=$(tput sgr0)
+BOLD=$(tput bold)
+export BOLD
+NORMAL=$(tput sgr0)
+export NORMAL
 export NC='\033[0m'
 # Curtesy of https://stackoverflow.com/a/28938235/13449010
 
@@ -332,7 +335,8 @@ while [[ ! "$1" == "--" ]]; do
 				fi
 				shift
 
-				export PACKAGE="$(basename "$INPUT")"
+				PACKAGE="$(basename "$INPUT")"
+				export PACKAGE
 				if ! source "$STGDIR/scripts/install-local.sh"; then
 					fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
 					continue
