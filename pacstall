@@ -385,7 +385,7 @@ while [[ ! "$1" == "--" ]]; do
 				return 0
 			fi
 
-			if [ ! -z $REPO ]; then
+			if [ -n "$REPO" ]; then
 				source "$STGDIR/scripts/add-repo.sh"
 				exit 0
 			else
