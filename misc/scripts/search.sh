@@ -49,7 +49,7 @@ if [[ $PACKAGE == *@* ]]; then
 	REPONAME=${PACKAGE#*@}
 	
 	while IFS= read -r URL; do
-		if [[ $(specifyRepo "$REPONAME") == $REPONAME ]]; then
+		if [[ $(specifyRepo "$URL") == $REPONAME ]]; then
 			export PACKAGE=${PACKAGE%%@*}
 			export REPO=$URL
 			return 0
