@@ -23,8 +23,12 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 function cleanup () {
-	sudo rm -rf "${SRCDIR:?}"/*
-	sudo rm -rf /tmp/pacstall/*
+	if [ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]; then
+		sudo rm -rf /tmp/pacstall-pacdeps-"$PACKAGE"
+	else
+		sudo rm -rf "${SRCDIR:?}"/*
+		sudo rm -rf /tmp/pacstall/*
+	fi
 	if [ -f /tmp/pacstall-optdepends ]; then
 		sudo rm /tmp/pacstall-optdepends
 	fi
