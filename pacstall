@@ -25,14 +25,17 @@
 # Configuration
 export LC_ALL=C
 export LOGDIR="/var/log/pacstall/metadata"
-export LOGFILE="/var/log/pacstall/error_log/$(date +"%F_%T.log")"
+LOGFILE="/var/log/pacstall/error_log/$(date +"%F_%T.log")"
+export LOGFILE
 export SRCDIR="/tmp/pacstall"
 export STGDIR="/usr/share/pacstall"
 export STOWDIR="/usr/src/pacstall"
 
 # Colors
-export BOLD=$(tput bold)
-export NORMAL=$(tput sgr0)
+BOLD=$(tput bold)
+export BOLD
+NORMAL=$(tput sgr0)
+export NORMAL
 export NC='\033[0m'
 # Curtesy of https://stackoverflow.com/a/28938235/13449010
 
@@ -284,23 +287,20 @@ while [[ ! "$1" == "--" ]]; do
 
 				export type="install"
 				export local="no"
-				source "$STGDIR/scripts/search.sh"
 
-				if [[ $? -ne 0 ]]; then
+				if ! source "$STGDIR/scripts/search.sh"; then
 					continue
 				fi
 
 				URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
-				source "$STGDIR/scripts/download.sh"
 
-				if [[ $? -ne 0 ]]; then
+				if ! source "$STGDIR/scripts/download.sh"; then
 					fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
 					continue
 				fi
 
 				export REPO
-				source "$STGDIR/scripts/install-local.sh"
-				if [[ $? -ne 0 ]]; then
+				if ! source "$STGDIR/scripts/install-local.sh"; then
 					fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
 					continue
 				fi
@@ -325,7 +325,7 @@ while [[ ! "$1" == "--" ]]; do
 
 				# Enter directory if exists
 				if [[ -d "$INPUT" ]]; then
-					cd "$(basename "$INPUT")"
+					cd "$(basename "$INPUT")" || exit
 				fi
 				# Check if the file exist
 				if [[ ! -f "$2".pacscript ]]; then
@@ -335,9 +335,9 @@ while [[ ! "$1" == "--" ]]; do
 				fi
 				shift
 
-				export PACKAGE="$(basename "$INPUT")"
-				source "$STGDIR/scripts/install-local.sh"
-				if [[ $? -ne 0 ]]; then
+				PACKAGE="$(basename "$INPUT")"
+				export PACKAGE
+				if ! source "$STGDIR/scripts/install-local.sh"; then
 					fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
 					continue
 				fi
@@ -371,8 +371,7 @@ while [[ ! "$1" == "--" ]]; do
 			while [[ -n "$2" ]]; do
 				PACKAGE=$2
 				shift
-				source "$STGDIR/scripts/remove.sh"
-				if [[ $? -ne 0 ]]; then
+				if ! source "$STGDIR/scripts/remove.sh"; then
 					fancy_message error "Failed to remove ${GREEN}${PACKAGE}${NC}"
 				fi
 			done
@@ -385,12 +384,12 @@ while [[ ! "$1" == "--" ]]; do
 		-A|--add-repo)
 			REPO="$2"
 
-			if [ ! -f "$STGDIR/repo/pacstallrepo.txt" ]; then
+			if [[ ! -f "$STGDIR/repo/pacstallrepo.txt" ]]; then
 				echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > "$STGDIR/repo/pacstallrepo.txt"
 				return 0
 			fi
 
-			if [ ! -z $REPO ]; then
+			if [[ -n "$REPO" ]]; then
 				source "$STGDIR/scripts/add-repo.sh"
 				exit 0
 			else
@@ -441,8 +440,7 @@ while [[ ! "$1" == "--" ]]; do
 		;;
 
 		-L|--list)
-			/bin/ls -1aA "$LOGDIR"
-			if [[ $? -ne 0 ]]; then
+			if ! /bin/ls -1aA "$LOGDIR"; then
 				fancy_message error "Nothing installed yet"
 				exit 1
 			fi
@@ -460,17 +458,15 @@ while [[ ! "$1" == "--" ]]; do
 				PACKAGE=$2
 				shift
 				export type="download"
-				source "$STGDIR/scripts/search.sh"
 
-				if [[ $? -ne 0 ]]; then
+				if ! source "$STGDIR/scripts/search.sh"; then
 					((i++))
 					continue
 				fi
 
 				export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
-				source "$STGDIR/scripts/download.sh"
 
-				if [[ $? -ne 0 ]]; then
+				if ! source "$STGDIR/scripts/download.sh"; then
 					fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
 					continue
 				fi
