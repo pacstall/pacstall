@@ -47,18 +47,27 @@ function specifyRepo() {
 
 if [[ $PACKAGE == *@* ]]; then
 	REPONAME=${PACKAGE#*@}
-	
+	PACKAGE=${PACKAGE%%@*}
+
 	while IFS= read -r URL; do
 		specifyRepo "$URL"
 		if [[ $URLNAME == $REPONAME ]]; then
-			export PACKAGE=${PACKAGE%%@*}
+			PACKAGELIST=($(curl -s "$URL"/packagelist))
+			IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | grep -n "^${PACKAGE}$")
+			LEN=${#IDXSEARCH[@]}
+			if [[ "$LEN" -eq 0 ]]; then
+				fancy_message warn "There is no package with the name $IRed${PACKAGE%%@*}$CYAN @ $REPONAME$NC"
+				error_log 3 "search $PACKAGE@$REPONAME"
+				return 1	
+			fi
+			export PACKAGE
 			export REPO=$URL
 			return 0
 		fi
 	done < "$STGDIR/repo/pacstallrepo.txt"
 	
-	fancy_message warn "There is no package with the name $IRed${PACKAGE%%@*}$CYAN @ $REPONAME $NC"
-	error_log 3 "search $PACKAGE"
+	fancy_message warn "There is no repo with the name $CYAN$REPONAME$NC"
+	error_log 3 "search $PACKAGE@$REPONAME"
 	return 1	
 fi
 
