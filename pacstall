@@ -384,12 +384,12 @@ while [[ ! "$1" == "--" ]]; do
 		-A|--add-repo)
 			REPO="$2"
 
-			if [ ! -f "$STGDIR/repo/pacstallrepo.txt" ]; then
+			if [[ ! -f "$STGDIR/repo/pacstallrepo.txt" ]]; then
 				echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > "$STGDIR/repo/pacstallrepo.txt"
 				return 0
 			fi
 
-			if [ -n "$REPO" ]; then
+			if [[ -n "$REPO" ]]; then
 				source "$STGDIR/scripts/add-repo.sh"
 				exit 0
 			else
