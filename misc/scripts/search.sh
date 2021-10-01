@@ -31,6 +31,36 @@ if [[ -n "$UPGRADE" ]]; then
 	PACKAGE=$i
 fi
 
+function specifyRepo() {
+	SPLIT=($(echo "$REPO" | tr "/" "\n"))
+
+	if command echo "$REPO" |grep "github" &> /dev/null; then
+		echo "${SPLIT[-3]}/${SPLIT[-2]}"
+	elif command echo "$REPO" |grep "gitlab" &> /dev/null; then
+		echo "${SPLIT[-4]}/${SPLIT[-3]}"
+	else
+		echo "$REPO"
+	fi
+
+}
+
+
+if [[ $PACKAGE == *@* ]]; then
+	REPONAME=${PACKAGE#*@}
+	
+	while IFS= read -r URL; do
+		if [[ $(specifyRepo "$REPONAME") == $REPONAME ]]; then
+			export PACKAGE=${PACKAGE%%@*}
+			export REPO=$URL
+			return 0
+		fi
+	done < "$STGDIR/repo/pacstallrepo.txt"
+	
+	fancy_message warn "There is no package with the name $IRed${PACKAGE%%@*}$CYAN @ $REPONAME $NC"
+	error_log 3 "search $PACKAGE"
+	return 1	
+fi
+
 # Makes array of packages and array
 # of their respective URL's
 PACKAGELIST=()
