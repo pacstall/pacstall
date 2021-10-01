@@ -27,15 +27,22 @@ if [[ -z "$PACKAGE" ]]; then
 	exit 1
 fi
 
-if [ ! -f "$LOGDIR/$PACKAGE" ]; then
+if [[ ! -f "$LOGDIR/$PACKAGE" ]] && ! apt-cache show "${PACKAGE/-deb/}" 2> /dev/null; then
 	fancy_message error "Package does not exist"
 	exit 1
 fi
 
+if [[ "$PACKAGE" == *-deb ]]; then
+	size="$(numfmt --to=iec $(apt-cache --no-all-versions show "${PACKAGE/-deb/}" | grep Installed-Size | cut -d' ' -f 2))"
+else
+	size="$(du -sh "$STOWDIR"/"$PACKAGE" 2> /dev/null | awk '{print $1}')"
+fi
+
+
 source "$LOGDIR/$PACKAGE"
 echo -e "${BGreen}name${NORMAL}: $PACKAGE"
 echo -e "${BGreen}version${NORMAL}: $_version"
-echo -e "${BGreen}size${NORMAL}: $(du -sh "$STOWDIR"/"$PACKAGE" 2> /dev/null | awk '{print $1}')"
+echo -e "${BGreen}size${NORMAL}: $size"
 echo -e "${BGreen}description${NORMAL}: ""$_description"""
 echo -e "${BGreen}date installed${NORMAL}: ""$_date"""
 
