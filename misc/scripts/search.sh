@@ -31,6 +31,47 @@ if [[ -n "$UPGRADE" ]]; then
 	PACKAGE=$i
 fi
 
+function specifyRepo() {
+	SPLIT=($(echo "$1" | tr "/" "\n"))
+
+	if [[ "$1" == *"github"* ]]; then
+		export URLNAME="${SPLIT[-3]}/${SPLIT[-2]}"
+	elif [[ "$1" == *"gitlab"* ]]; then
+		export URLNAME="${SPLIT[-4]}/${SPLIT[-3]}"
+	else
+		export URLNAME="$REPO"
+	fi
+
+}
+
+
+if [[ $PACKAGE == *@* ]]; then
+	REPONAME=${PACKAGE#*@}
+	PACKAGE=${PACKAGE%%@*}
+
+	while IFS= read -r URL; do
+		specifyRepo "$URL"
+		if [[ $URLNAME == $REPONAME ]]; then
+			PACKAGELIST=($(curl -s "$URL"/packagelist))
+			IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | grep -n "^${PACKAGE}$")
+			LEN=($IDXSEARCH)
+			LEN=${#LEN[@]}
+			if [[ "$LEN" -eq 0 ]]; then
+				fancy_message warn "There is no package with the name $IRed${PACKAGE%%@*}$NC in the repo $CYAN$REPONAME$NC"
+				error_log 3 "search $PACKAGE@$REPONAME"
+				return 1	
+			fi
+			export PACKAGE
+			export REPO=$URL
+			return 0
+		fi
+	done < "$STGDIR/repo/pacstallrepo.txt"
+	
+	fancy_message warn "$IRed$REPONAME$NC is not on your repo list or does not exist"
+	error_log 3 "search $PACKAGE@$REPONAME"
+	return 1	
+fi
+
 # Makes array of packages and array
 # of their respective URL's
 PACKAGELIST=()
