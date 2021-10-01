@@ -54,7 +54,8 @@ if [[ $PACKAGE == *@* ]]; then
 		if [[ $URLNAME == $REPONAME ]]; then
 			PACKAGELIST=($(curl -s "$URL"/packagelist))
 			IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | grep -n "^${PACKAGE}$")
-			LEN=${#IDXSEARCH[@]}
+			LEN=($IDXSEARCH)
+			LEN=${#LEN[@]}
 			if [[ "$LEN" -eq 0 ]]; then
 				fancy_message warn "There is no package with the name $IRed${PACKAGE%%@*}$CYAN @ $REPONAME$NC"
 				error_log 3 "search $PACKAGE@$REPONAME"
