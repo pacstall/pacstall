@@ -32,14 +32,14 @@ if [[ -n "$UPGRADE" ]]; then
 fi
 
 function specifyRepo() {
-	SPLIT=($(echo "$REPO" | tr "/" "\n"))
+	SPLIT=($(echo "$1" | tr "/" "\n"))
 
-	if command echo "$REPO" |grep "github" &> /dev/null; then
-		echo "${SPLIT[-3]}/${SPLIT[-2]}"
-	elif command echo "$REPO" |grep "gitlab" &> /dev/null; then
-		echo "${SPLIT[-4]}/${SPLIT[-3]}"
+	if [[ "$1" == *"github"* ]]; then
+		export URLNAME="${SPLIT[-3]}/${SPLIT[-2]}"
+	elif [[ "$1" == *"gitlab"* ]]; then
+		export URLNAME="${SPLIT[-4]}/${SPLIT[-3]}"
 	else
-		echo "$REPO"
+		export URLNAME="$REPO"
 	fi
 
 }
@@ -49,7 +49,8 @@ if [[ $PACKAGE == *@* ]]; then
 	REPONAME=${PACKAGE#*@}
 	
 	while IFS= read -r URL; do
-		if [[ $(specifyRepo "$URL") == $REPONAME ]]; then
+		specifyRepo "$URL"
+		if [[ $URLNAME == $REPONAME ]]; then
 			export PACKAGE=${PACKAGE%%@*}
 			export REPO=$URL
 			return 0
