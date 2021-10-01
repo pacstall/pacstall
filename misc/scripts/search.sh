@@ -67,7 +67,7 @@ if [[ $PACKAGE == *@* ]]; then
 		fi
 	done < "$STGDIR/repo/pacstallrepo.txt"
 	
-	fancy_message warn "There is no repo with the name $CYAN$REPONAME$NC"
+	fancy_message warn "There is no repo with the name $RED$REPONAME$NC"
 	error_log 3 "search $PACKAGE@$REPONAME"
 	return 1	
 fi
