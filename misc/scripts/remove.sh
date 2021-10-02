@@ -27,17 +27,13 @@ function fn_exists() {
 }
 
 # Removal starts from here
-source "$LOGDIR/$PACKAGE" > /dev/null 2>&1
-
-if [[ $? -ne 0 ]]; then
+if ! source "$LOGDIR/$PACKAGE" > /dev/null 2>&1; then
 	fancy_message error "$PACKAGE is not installed or not properly symlinked"
 	error_log 3 "remove $PACKAGE"
 	return 1
 fi
 
-source /var/cache/pacstall/"${PACKAGE}"/"${_version}"/"${PACKAGE}".pacscript > /dev/null 2>&1
-
-if [[ $? -ne 0 ]]; then
+if ! source /var/cache/pacstall/"${PACKAGE}"/"${_version}"/"${PACKAGE}".pacscript > /dev/null 2>&1; then
 	fancy_message error "$PACKAGE is not installed or not properly symlinked"
 	error_log 1 "remove $PACKAGE"
 	return 1
@@ -56,7 +52,8 @@ case "$url" in
 	;;
 
 	*)
-		cd "$STOWDIR" || (sudo mkdir -p "$STOWDIR"; cd "$STOWDIR")
+		sudo mkdir -p "$STOWDIR"
+		cd "$STOWDIR" || exit 1
 
 		if [[ ! -d "$PACKAGE" ]]; then
 			fancy_message error "$PACKAGE is not installed or not properly symlinked"
@@ -83,9 +80,8 @@ case "$url" in
 
 		fancy_message info "Removing dummy package"
 		export PACSTALL_REMOVE="true"
-		sudo dpkg -r "$name" 2> /dev/null # removes virtual .deb package
 
-		if [[ $? -ne 0 ]]; then
+		if ! sudo dpkg -r "$name" 2> /dev/null; then
 			fancy_message error "Failed to remove dummy package"
 			error_log 1 "remove $PACKAGE"
 			return 1
