@@ -102,9 +102,9 @@ function parseRepo() {
 	SPLIT=($(echo "$REPO" | tr "/" "\n"))
 
 	if command echo "$REPO" |grep "github" &> /dev/null; then
-		echo -e "\e]8;;https://github.com/${SPLIT[-3]}/${SPLIT[-2]}\a${SPLIT[-3]}\e]8;;\a"
+		echo -e "\e]8;;https://github.com/${SPLIT[-3]}/${SPLIT[-2]}\a${SPLIT[-3]}/${SPLIT[-2]}\e]8;;\a"
 	elif command echo "$REPO" |grep "gitlab" &> /dev/null; then
-		echo -e "\e]8;;https://gitlab.com/${SPLIT[-4]}/${SPLIT[-3]}\a${SPLIT[-4]}\e]8;;\a"
+		echo -e "\e]8;;https://gitlab.com/${SPLIT[-4]}/${SPLIT[-3]}\a${SPLIT[-4]}/${SPLIT[-3]}\e]8;;\a"
 	else
 		echo "\e]8;;$REPO\a$REPO\e]8;;\a"
 	fi
@@ -146,43 +146,37 @@ else
 		# If there are multiple results, ask
 	else
 		echo -e "There are $LEN package(s) with the name $GREEN$PACKAGE$NC."
-
-		ask "Do you want to continue?" Y
-		if [[ $answer -eq 1 ]]; then
-			# Pacstall repo first
-			for IDX in $IDXSEARCH ; do
-				if [[ "${URLLIST[$IDX]}" == 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' ]]; then
-					PACSTALLREPO=$IDX
-					break
-				fi
-			done
-			if [[ -n "$PACSTALLREPO" ]]; then
-				# Overwrite last question
-				ask "\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo "${URLLIST[$IDX]}")$NC?" Y
-				if [[ $answer -eq 1 ]];then
-					export PACKAGE=${PACKAGELIST[$PACSTALLREPO]}
-					export REPO=${URLLIST[$PACSTALLREPO]}
-					unset PACSTALLREPO
-					return 0
-				fi
-			# If other repos, ask, if Pacstall repo, skip
-			else
-				for IDX in $IDXSEARCH ; do
-					if [[ "$IDX" == "$PACSTALLREPO" ]]; then
-						continue
-					fi
-					# Overwrite last question
-					ask "\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo "${URLLIST[$IDX]}")$NC?" Y
-					if [[ $answer -eq 1 ]];then
-						export PACKAGE=${PACKAGELIST[$IDX]}
-						export REPO=${URLLIST[$IDX]}
-						return 0
-					fi
-				done
+		echo
+		# Pacstall repo first
+		for IDX in $IDXSEARCH ; do
+			if [[ "${URLLIST[$IDX]}" == 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' ]]; then
+				PACSTALLREPO=$IDX
+				break
 			fi
-		else
-			return 1 # No
+		done
+		if [[ -n "$PACSTALLREPO" ]]; then
+			# Overwrite last question
+			ask "\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the official repo?" Y
+			if [[ $answer -eq 1 ]];then
+				export PACKAGE=${PACKAGELIST[$PACSTALLREPO]}
+				export REPO=${URLLIST[$PACSTALLREPO]}
+				unset PACSTALLREPO
+				return 0
+			fi
 		fi
+		# If other repos, ask, if Pacstall repo, skip
+		for IDX in $IDXSEARCH ; do
+			if [[ "$IDX" == "$PACSTALLREPO" ]]; then
+				continue
+			fi
+			# Overwrite last question
+			ask "\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo "${URLLIST[$IDX]}")$NC?" Y
+			if [[ $answer -eq 1 ]];then
+				export PACKAGE=${PACKAGELIST[$IDX]}
+				export REPO=${URLLIST[$IDX]}
+				return 0
+			fi
+		done
 	fi
 fi
 

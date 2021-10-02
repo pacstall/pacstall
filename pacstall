@@ -304,6 +304,7 @@ while [[ ! "$1" == "--" ]]; do
 					continue
 				fi
 
+				specifyRepo $REPO
 				URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 
 				if ! source "$STGDIR/scripts/download.sh"; then
@@ -476,6 +477,7 @@ while [[ ! "$1" == "--" ]]; do
 					continue
 				fi
 
+				specifyRepo $REPO
 				export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 
 				if ! source "$STGDIR/scripts/download.sh"; then
