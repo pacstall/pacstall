@@ -54,6 +54,11 @@ function fancy_message() {
 	esac
 }
 
+if [[ ! -t 0 ]]; then
+	NON_INTERACTIVE=true
+	fancy_message warn "Reading input from pipe"
+fi
+
 function ask() {
 	local prompt default reply
 
@@ -70,9 +75,16 @@ function ask() {
 	# Ask the question (not using "read -p" as it uses stderr not stdout)
 	echo -ne "$1 [$prompt] "
 
-	# Read the answer (use /dev/tty in case stdin is redirected from somewhere else)
 	if [[ -z "$DISABLE_PROMPTS" ]]; then
-		read -r reply < /dev/tty
+		read -r reply <&0
+		# Detect if script is running non-interactively
+		# Which implies that the input is being piped into the script
+		if [[ $NON_INTERACTIVE ]]; then
+			if [[ -z "$reply" ]]; then
+				printf "%s" "$default"
+			fi
+			echo "$reply"
+		fi
 	else
 		echo "$default"
 		reply=$default
@@ -87,12 +99,12 @@ function ask() {
 		# Check if the reply is valid
 		case "$reply" in
 			Y*|y*)
-				answer=1
+				export answer=1
 				return 0	#return code for backwards compatibility
 				break
 			;;
 			N*|n*)
-				answer=0
+				export answer=0
 				return 1	#return code
 				break
 			;;
