@@ -109,6 +109,22 @@ export On_IPurple='\033[0;105m'  # Purple
 export On_ICyan='\033[0;106m'    # Cyan
 export On_IWhite='\033[0;107m'   # White
 
+# fancy_message allows visually appealing output.
+# Source the code block and run:
+#
+# `fancy_message {info,warn,error} "What you want to say"`
+function fancy_message() {
+	local MESSAGE_TYPE="${1}"
+	local MESSAGE="${2}"
+
+	case ${MESSAGE_TYPE} in
+		info) echo -e "[${BGreen}+${NC}] INFO: ${MESSAGE}";;
+		warn) echo -e "[${BYellow}*${NC}] WARNING: ${MESSAGE}";;
+		error) echo -e "[${BRed}!${NC}] ERROR: ${MESSAGE}";;
+		*) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
+	esac
+}
+
 # This is the ask function. You can source this code block and then run something like:
 # ask "Do you like the color blue? " Y
 # if [[ $answer -eq 1 ]]; then
@@ -119,6 +135,11 @@ export On_IWhite='\033[0;107m'   # White
 #
 # Y=1 and N=0
 # You can specify {Y,N} or leave it out to prevent entering the default but this is not allowed in pacstall because of the -P flag which gives unattended installs
+if [[ ! -t 0 ]]; then
+	NON_INTERACTIVE=true
+	fancy_message warn "Reading input from pipe"
+fi
+
 function ask() {
 	local prompt default reply
 
@@ -139,7 +160,7 @@ function ask() {
 		read -r reply <&0
 		# Detect if script is running non-interactively
 		# Which implies that the input is being piped into the script
-		if [[ ! -t 0 ]]; then
+		if [[ $NON_INTERACTIVE ]]; then
 			if [[ -z "$reply" ]]; then
 				printf "%s" "$default"
 			fi
@@ -174,22 +195,6 @@ function ask() {
 			;;
 		esac
 	done
-}
-
-# fancy_message allows visually appealing output.
-# Source the code block and run:
-#
-# `fancy_message {info,warn,error} "What you want to say"`
-function fancy_message() {
-	local MESSAGE_TYPE="${1}"
-	local MESSAGE="${2}"
-
-	case ${MESSAGE_TYPE} in
-		info) echo -e "[${BGreen}+${NC}] INFO: ${MESSAGE}";;
-		warn) echo -e "[${BYellow}*${NC}] WARNING: ${MESSAGE}";;
-		error) echo -e "[${BRed}!${NC}] ERROR: ${MESSAGE}";;
-		*) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
-	esac
 }
 
 # use axel if avaliable
