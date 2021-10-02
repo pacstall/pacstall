@@ -135,9 +135,16 @@ function ask() {
 	# Ask the question (not using "read -p" as it uses stderr not stdout)
 	echo -ne "$1 [$prompt] "
 
-	# Read the answer (use /dev/tty in case stdin is redirected from somewhere else)
 	if [[ -z "$DISABLE_PROMPTS" ]]; then
-		read -r reply < /dev/tty
+		read -r reply <&0
+		# Detect if script is running non-interactively
+		# Which implies that the input is being piped into the script
+		if [[ ! -t 0 ]]; then
+			if [[ -z "$reply" ]]; then
+				printf "%s" "$default"
+			fi
+			echo "$reply"
+		fi
 	else
 		echo "$default"
 		reply=$default
