@@ -54,6 +54,11 @@ function fancy_message() {
 	esac
 }
 
+if [[ ! -t 0 ]]; then
+	NON_INTERACTIVE=true
+	fancy_message warn "Reading input from pipe"
+fi
+
 function ask() {
 	local prompt default reply
 
@@ -74,7 +79,7 @@ function ask() {
 		read -r reply <&0
 		# Detect if script is running non-interactively
 		# Which implies that the input is being piped into the script
-		if [[ ! -t 0 ]]; then
+		if [[ $NON_INTERACTIVE ]]; then
 			if [[ -z "$reply" ]]; then
 				printf "%s" "$default"
 			fi
