@@ -23,13 +23,13 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 function cleanup () {
-	if [ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]; then
+	if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
 		sudo rm -rf /tmp/pacstall-pacdeps-"$PACKAGE"
 	else
 		sudo rm -rf "${SRCDIR:?}"/*
 		sudo rm -rf /tmp/pacstall/*
 	fi
-	if [ -f /tmp/pacstall-optdepends ]; then
+	if [[ -f /tmp/pacstall-optdepends ]]; then
 		sudo rm /tmp/pacstall-optdepends
 	fi
 	unset name version url build_depends depends breaks replace description hash removescript optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall 2>/dev/null

@@ -74,7 +74,7 @@ case "$url" in
 			removescript
 		fi
 
-		if [ -n "$_dependencies" ]; then
+		if [[ -n "$_dependencies" ]]; then
 			fancy_message info "You may want to remove ${BLUE}$_dependencies${NC}"
 		fi
 
