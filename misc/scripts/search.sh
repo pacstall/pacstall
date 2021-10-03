@@ -126,6 +126,7 @@ elif [[ -n "$UPGRADE" ]]; then
 	for IDX in $IDXSEARCH ; do
 		mapfile -t REPOS <<< "${URLLIST[$IDX]}"
 	done
+	export REPOS
 	return 0
 # Check if its being used for search
 elif [[ -z "$PACKAGE" ]]; then
