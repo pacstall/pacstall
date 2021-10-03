@@ -31,22 +31,18 @@ _pacstall() {
 		;;
 
 		-S|--search)
-			COMPREPLY=( $( compgen -W "$(curl -s "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packagelist")" -- "$cur" ) )
+			# the sed part adds packagelist to the end of every line, xargs curl stuff curls each line, and awk gets rid of duplicates not including the first one
+			COMPREPLY=( $( compgen -W "$(cat /usr/share/pacstall/repo/pacstallrepo.txt | sed -e 's/$/\/packagelist/' | xargs -n 1 curl -s | awk '!seen[$0]++')" -- "$cur" ) )
 			return
 		;;
 
 		-I|--install)
-			COMPREPLY=( $( compgen -W "$(curl -s "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packagelist")" -- "$cur" ) )
+			COMPREPLY=( $( compgen -W "$(cat /usr/share/pacstall/repo/pacstallrepo.txt | sed -e 's/$/\/packagelist/' | xargs -n 1 curl -s | awk '!seen[$0]++')" -- "$cur" ) )
 			return
 		;;
 
 		-R|--remove)
 			COMPREPLY=( $( compgen -W "$(/bin/ls -1aA /usr/src/pacstall)" -- $cur ) )
-			return
-		;;
-
-		-Qd|--query-depends)
-			COMPREPLY=( $( compgen -W "$(curl -s "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packagelist")" -- $cur ) )
 			return
 		;;
 
@@ -60,7 +56,7 @@ _pacstall() {
 		;;
 
 		-D|--download)
-			COMPREPLY=( $( compgen -W "$(curl -s "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packagelist")" -- "$cur" ) )
+			COMPREPLY=( $( compgen -W "$(cat /usr/share/pacstall/repo/pacstallrepo.txt | sed -e 's/$/\/packagelist/' | xargs -n 1 curl -s | awk '!seen[$0]++')" -- "$cur" ) )
 			return
 	esac
 
