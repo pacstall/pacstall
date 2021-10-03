@@ -365,14 +365,14 @@ function hashcheck() {
 
 fancy_message info "Retrieving packages"
 mkdir -p "$SRCDIR"
-cd "$SRCDIR" || exit 1
+cd "$SRCDIR" 2> /dev/null || ( fancy_message warn "Couldn't enter ${SRCDIR}" && exit 1)
 
 case "$url" in
 	*.git)
 		# git clone quietly, with no history, and if submodules are there, download with 10 jobs
 		sudo git clone --quiet --depth=1 --jobs=10 "$url"
 		# cd into the directory
-		cd ./*/ 2> /dev/null || exit 1
+		cd ./*/ 2> /dev/null || ( fancy_message warn "Couldn't enter into the cloned git repository" && exit 1)
 		# The srcdir is /tmp/pacstall/foo
 		export srcdir="/tmp/pacstall/$PWD"
 		# Make the directory available for users
@@ -389,7 +389,7 @@ case "$url" in
 		# unzip file
 		sudo unzip -q "${url##*/}" 1>&1 2>/dev/null
 		# cd into it
-		cd ./*/ 2> /dev/null || exit 1
+		cd ./*/ 2> /dev/null || ( fancy_message warn "Couldn't enter into the downloaded archive" && exit 1)
 		# export srcdir
 		export srcdir="/tmp/pacstall/$PWD"
 		# Make the directory available for users
@@ -405,7 +405,7 @@ case "$url" in
 
 			fancy_message info "Storing pacscript"
 			sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
-			cd "$DIR" || exit 1
+			cd "$DIR" 2> /dev/null || ( fancy_message warn "Couldn't enter into ${DIR}" && exit 1)
 			sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 
 			fancy_message info "Cleaning up"
@@ -428,7 +428,7 @@ case "$url" in
 			return 1
 		fi
 		sudo tar -xf "${url##*/}" 1>&1 2>/dev/null
-		cd ./*/ 2>/dev/null || exit 1
+		cd ./*/ 2> /dev/null || ( fancy_message warn "Couldn't enter into the downloaded archive" && exit 1)
 		export srcdir="/tmp/pacstall/$PWD"
 		sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
 	;;
@@ -472,18 +472,20 @@ if [[ $REMOVE_DEPENDS = y ]]; then
 	sudo apt-get remove $build_depends
 fi
 
-cd "$HOME" || exit 1
+cd "$HOME" 2> /dev/null || ( fancy_message warn "Couldn't enter into ${HOME}" && exit 1)
 
 # Metadata writing
 log
 
 fancy_message info "Symlinking files"
-cd /usr/src/pacstall/ || sudo mkdir -p /usr/src/pacstall && cd /usr/src/pacstall || exit 1
+sudo mkdir -p /usr/src/pacstall
+cd /usr/src/pacstall 2> /dev/null || ( fancy_message warn "Couldn't enter into ${STOWDIR}" && exit 1)
+
 # By default (I think), stow symlinks to the directory behind it (..), but we want to symlink to /, or in other words, symlink files from pkg/usr to /usr
 if ! command -v stow > /dev/null; then
 	# If stow failed to install, install it
 	sudo apt-get install stow -y
-	cd /usr/src/pacstall || exit 1
+	cd /usr/src/pacstall 2> /dev/null || ( fancy_message warn "Couldn't enter into ${STOWDIR}" && exit 1)
 fi
 
 # Magic time. This installs the package to /, so `/usr/src/pacstall/foo/usr/bin/foo` -> `/usr/bin/foo`
@@ -505,7 +507,7 @@ fi
 
 fancy_message info "Storing pacscript"
 sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
-cd "$DIR" || exit 1
+cd "$DIR" 2> /dev/null || ( fancy_message warn "Couldn't enter into ${DIR}" && exit 1)
 sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 
 fancy_message info "Cleaning up"

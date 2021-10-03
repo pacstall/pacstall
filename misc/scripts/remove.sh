@@ -53,7 +53,7 @@ case "$url" in
 
 	*)
 		sudo mkdir -p "$STOWDIR"
-		cd "$STOWDIR" || exit 1
+		cd "$STOWDIR" 2> /dev/null || ( fancy_message error "Couldn't enter ${STOWDIR}" && exit 1 )
 
 		if [[ ! -d "$PACKAGE" ]]; then
 			fancy_message error "$PACKAGE is not installed or not properly symlinked"
