@@ -27,7 +27,7 @@ complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_com
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -Il -d 'Install local package'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -S -d 'Search for package'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -R -d 'Remove package'
-complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -A -d 'Change repository'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -A -d 'Add repository'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -U -d 'Update pacstall scripts'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -V -d 'Print pacstall version'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -L -d 'List packages installed'
