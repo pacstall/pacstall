@@ -25,14 +25,12 @@
 
 # This script searches for packages in all repos saved on pacstallrepo.txt
 
-export LC_ALL=C
-
 if [[ -n "$UPGRADE" ]]; then
-	PACKAGE=$i
+	PACKAGE="$i"
 fi
 
 function specifyRepo() {
-	SPLIT=($(echo "$1" | tr "/" "\n"))
+	mapfile -t SPLIT < <(echo "$1" | tr "/" "\n")
 
 	if [[ "$1" == *"github"* ]]; then
 		export URLNAME="${SPLIT[-3]}/${SPLIT[-2]}"
@@ -51,18 +49,18 @@ if [[ $PACKAGE == *@* ]]; then
 
 	while IFS= read -r URL; do
 		specifyRepo "$URL"
-		if [[ $URLNAME == $REPONAME ]]; then
-			PACKAGELIST=($(curl -s "$URL"/packagelist))
+		if [[ "$URLNAME" == "$REPONAME" ]]; then
+			mapfile -t PACKAGELIST < <(curl -s "$URL"/packagelist)
 			IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | grep -n "^${PACKAGE}$")
-			LEN=($IDXSEARCH)
-			LEN=${#LEN[@]}
+			_LEN=($IDXSEARCH)
+			LEN=${#_LEN[@]}
 			if [[ "$LEN" -eq 0 ]]; then
 				fancy_message warn "There is no package with the name $IRed${PACKAGE%%@*}$NC in the repo $CYAN$REPONAME$NC"
 				error_log 3 "search $PACKAGE@$REPONAME"
 				return 1	
 			fi
 			export PACKAGE
-			export REPO=$URL
+			export REPO="$URL"
 			return 0
 		fi
 	done < "$STGDIR/repo/pacstallrepo.txt"
@@ -77,9 +75,9 @@ fi
 PACKAGELIST=()
 URLLIST=()
 while IFS= read -r URL; do
-	PARTIALLIST=($(curl -s "$URL"/packagelist))
+	mapfile -t PARTIALLIST < <(curl -s "$URL"/packagelist)
 	URLLIST+=("${PARTIALLIST[@]/*/$URL}")
-	PACKAGELIST+=(${PARTIALLIST[@]})
+	PACKAGELIST+=("${PARTIALLIST[@]}")
 done < "$STGDIR/repo/pacstallrepo.txt"
 
 # Gets index of packages that the search returns
@@ -90,8 +88,8 @@ if [[ -z "$PACKAGE" ]]; then
 else
 	IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | grep -n "^${PACKAGE}$" | cut -d : -f1| awk '{print $0"-1"}'|bc)
 fi
-LEN=($IDXSEARCH)
-LEN=${#LEN[@]}
+_LEN=($IDXSEARCH)
+LEN=${#_LEN[@]}
 
 # Parses github and gitlab URL's
 # url -> maintaner/repo
@@ -99,7 +97,7 @@ LEN=${#LEN[@]}
 # terminals that support them
 function parseRepo() {
 	local REPO="${1}"
-	SPLIT=($(echo "$REPO" | tr "/" "\n"))
+	mapfile -t SPLIT < <(echo "$REPO" | tr "/" "\n")
 
 	if command echo "$REPO" |grep "github" &> /dev/null; then
 		echo -e "\e]8;;https://github.com/${SPLIT[-3]}/${SPLIT[-2]}\a${SPLIT[-3]}/${SPLIT[-2]}\e]8;;\a"
@@ -111,7 +109,7 @@ function parseRepo() {
 }
 
 
-#Check if there are results
+# Check if there are results
 if [[ "$LEN" -eq 0 ]]; then
 	if [[ -z "$SEARCH" ]]; then
 		fancy_message warn "There is no package with the name $IRed$PACKAGE$NC"
@@ -126,7 +124,7 @@ elif [[ -n "$UPGRADE" ]]; then
 	REPOS=()
 	# Return list of repos with the package
 	for IDX in $IDXSEARCH ; do
-		REPOS+=(${URLLIST[$IDX]})
+		mapfile -t REPOS <<< "${URLLIST[$IDX]}"
 	done
 	return 0
 # Check if its being used for search
