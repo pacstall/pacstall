@@ -142,6 +142,7 @@ else
 	done < /tmp/pacstall-up-urls
 
 	export local='no'
+	cd "$SRCDIR"
 	for i in "${!upgrade[@]}"; do
 		PACKAGE=${upgrade[$i]}
 		ask "Do you want to upgrade ${GREEN}${PACKAGE}${NC}?" Y
