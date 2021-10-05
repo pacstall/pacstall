@@ -412,6 +412,9 @@ case "$url" in
 		sudo apt install -y -f ./"${url##*/}" 2>/dev/null
 		if [[ $? -eq 0 ]]; then
 			log
+			if type -t postinst > /dev/null 2>&1; then
+				postinst
+			fi
 
 			fancy_message info "Storing pacscript"
 			sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"

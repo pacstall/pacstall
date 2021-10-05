@@ -51,6 +51,10 @@ case "$url" in
 			return 1
 		fi
 		
+		if fn_exists removescript; then
+			fancy_message info "Running post removal script"
+			removescript
+		fi
 		sudo rm -f "$LOGDIR/$PACKAGE"
 		return 0
 	;;
@@ -72,7 +76,7 @@ case "$url" in
 		# Update PATH database
 		hash -r
 
-		if fn_exists removescript ; then
+		if fn_exists removescript; then
 			fancy_message info "Running post removal script"
 			removescript
 		fi
