@@ -21,6 +21,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
+set filtered_repolist (cat /usr/share/pacstall/repo/pacstallrepo.txt | sed -e 's/$/\/packagelist/')
 
 set -l pacstall_commands -I -Il -S -R -A -U -V -L -Up -Qi -D -T
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -I -d 'Install package'
@@ -37,10 +38,10 @@ complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_com
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -T -d 'Makes a tree of a package'
 
 # Completion for the -I flag
-complete -f --command pacstall -n "__fish_seen_subcommand_from -I" -a "(cat /usr/share/pacstall/repo/pacstallrepo.txt | sed -e 's/$/\/packagelist/' | xargs -n 1 curl -s | awk '!seen[$0]++')"
+complete -f --command pacstall -n "__fish_seen_subcommand_from -I" -a "(echo $filtered_repolist | xargs -n 1 curl -s | awk '!seen[\$0]++')"
 
 # Completion for the -S flag
-complete -f --command pacstall -n "__fish_seen_subcommand_from -S" -a "(cat /usr/share/pacstall/repo/pacstallrepo.txt | sed -e 's/$/\/packagelist/' | xargs -n 1 curl -s | awk '!seen[$0]++')"
+complete -f --command pacstall -n "__fish_seen_subcommand_from -S" -a "(echo $filtered_repolist | xargs -n 1 curl -s | awk '!seen[\$0]++')"
 
 # Completion for the -R flag
 complete -f --command pacstall -n "__fish_seen_subcommand_from -R" -a "(/bin/ls -1aA /usr/src/pacstall/ | tr ' ' '\n')"
@@ -49,7 +50,7 @@ complete -f --command pacstall -n "__fish_seen_subcommand_from -R" -a "(/bin/ls 
 complete -f --command pacstall -n "__fish_seen_subcommand_from -Qi" -a "(/bin/ls -1aA /var/log/pacstall/metadata | tr ' ' '\n')"
 
 # Completion for the -D flag
-complete -f --command pacstall -n "__fish_seen_subcommand_from -D" -a "(cat /usr/share/pacstall/repo/pacstallrepo.txt | sed -e 's/$/\/packagelist/' | xargs -n 1 curl -s | awk '!seen[$0]++')"
+complete -f --command pacstall -n "__fish_seen_subcommand_from -D" -a "(echo $filtered_repolist | xargs -n 1 curl -s | awk '!seen[\$0]++')"
 
 # Completion for the -Il flag
 complete -f --command pacstall -n "__fish_seen_subcommand_from -Il" -a "(find -- *.pacscript* | sed 's/.pacscript//g')"
