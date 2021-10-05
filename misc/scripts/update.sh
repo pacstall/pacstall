@@ -28,7 +28,7 @@
 sudo mkdir -p "/var/log/pacstall/metadata"
 sudo mkdir -p "/var/log/pacstall/error_log"
 find /var/log/pacstall/* -maxdepth 1 | grep -v metadata | grep -v error_log | xargs -I{} sudo mv {} /var/log/pacstall/metadata
-sudo chown $LOGNAME -R /var/log/pacstall/error_log
+sudo chown "$LOGNAME" -R /var/log/pacstall/error_log
 
 STGDIR="/usr/share/pacstall"
 

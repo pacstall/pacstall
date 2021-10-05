@@ -23,13 +23,13 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 function cleanup () {
-	if [ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]; then
+	if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
 		sudo rm -rf /tmp/pacstall-pacdeps-"$PACKAGE"
 	else
 		sudo rm -rf "${SRCDIR:?}"/*
 		sudo rm -rf /tmp/pacstall/*
 	fi
-	if [ -f /tmp/pacstall-optdepends ]; then
+	if [[ -f /tmp/pacstall-optdepends ]]; then
 		sudo rm /tmp/pacstall-optdepends
 	fi
 	unset name version url build_depends depends breaks replace description hash removescript optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall 2>/dev/null
@@ -141,16 +141,16 @@ function makeVirtualDeb {
 	# implements $(gives) variable
 	fancy_message info "Creating dummy package"
 	sudo mkdir -p "$SRCDIR/$name-pacstall/DEBIAN"
-	printf "Package: $name\n" | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	printf "Package: %s\n" "$name" | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	
 	if [[ $version =~ ^[0-9] ]]; then
-		printf "Version: $version-1\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		printf "Version: %s-1\n" "$version" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	else
-		printf "Version: 0$version-1\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		printf "Version: 0%s-1\n" "$version" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 	
 	if [[ -n $depends ]]; then
-		printf "Depends: ${depends//' '/' , '}\n"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		printf "Depends: %s\n" "${depends//' '/' , '}"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 	
 	if [[ -n $optdepends ]]; then
@@ -197,10 +197,9 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 
 	sudo chmod -x "$SRCDIR/$name-pacstall/DEBIAN/postrm"
 	sudo chmod 755 "$SRCDIR/$name-pacstall/DEBIAN/postrm"
-	sudo dpkg-deb -b "$SRCDIR/$name-pacstall" > "/dev/null"
 
-	if [[ $? -ne 0 ]]; then
-		fancy_message error "Couldn't create dummy package"
+	if ! sudo dpkg-deb -b "$SRCDIR/$name-pacstall" > "/dev/null"; then
+		fancy_message error "Could not create dummy package"
 		error_log 5 "install $PACKAGE"
 		fancy_message info "Cleaning up"
 		cleanup
@@ -212,8 +211,7 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 
 
 	fancy_message info "Installing dependencies"
-	sudo apt-get install $optinstall -f -y -qq -o=Dpkg::Use-Pty=0
-	if [[ $? -ne 0	 ]]; then
+	if ! sudo apt-get install $optinstall -f -y -qq -o=Dpkg::Use-Pty=0; then
 		fancy_message error "Failed to install dependencies"
 		error_log 8 "install $PACKAGE"
 		sudo dpkg -r --force-all "$name" > /dev/null
@@ -246,9 +244,8 @@ fi
 fancy_message info "Sourcing pacscript"
 DIR=$(pwd)
 export homedir="/home/$LOGNAME"
-source "$PACKAGE".pacscript > /dev/null
-if [[ $? -ne 0 ]]; then
-	fancy_message error "Couldn't source pacscript"
+if ! source "$PACKAGE".pacscript > /dev/null; then
+	fancy_message error "Could not source pacscript"
 	error_log 12 "install $PACKAGE"
 	fancy_message info "Cleaning up"
 	cleanup
@@ -260,8 +257,7 @@ if type pkgver > /dev/null 2>&1; then
 fi
 
 # Run checks function
-checks
-if [[ $? -ne 0 ]]; then
+if ! checks; then
 	fancy_message error "There was an error checking the script!"
 	error_log 6 "install $PACKAGE"
 	fancy_message info "Cleaning up"
@@ -343,17 +339,14 @@ if [[ $NOBUILDDEP -eq 0 ]]; then
 	fi
 fi
 
-if [[ "$url" != *".deb" ]]; then
-	makeVirtualDeb
-	if [[ $? -ne 0 ]]; then
+if [[ "$url" != *".deb" ]] && ! makeVirtualDeb; then
 		return 1
-	fi
 fi
 
 function hashcheck() {
 	inputHash=$hash
 	# Get hash of file
-	fileHash=($(sha256sum "$1" | sed 's/\s.*$//'))
+	fileHash="$(sha256sum "$1" | sed 's/\s.*$//')"
 
 	if [[ "$inputHash" != "$fileHash" ]]; then
 		# We bad
@@ -372,14 +365,14 @@ function hashcheck() {
 
 fancy_message info "Retrieving packages"
 mkdir -p "$SRCDIR"
-cd "$SRCDIR"
+cd "$SRCDIR" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter ${SRCDIR}"; exit 1 )
 
 case "$url" in
 	*.git)
 		# git clone quietly, with no history, and if submodules are there, download with 10 jobs
 		sudo git clone --quiet --depth=1 --jobs=10 "$url"
 		# cd into the directory
-		cd ./*/ 2> /dev/null
+		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the cloned git repository"; exit 1 )
 		# The srcdir is /tmp/pacstall/foo
 		export srcdir="/tmp/pacstall/$PWD"
 		# Make the directory available for users
@@ -390,14 +383,13 @@ case "$url" in
 	*.zip)
 		download "$url"
 		# hash the file
-		hashcheck "${url##*/}"
-		if [[ $? -ne 0 ]]; then
+		if ! hashcheck "${url##*/}"; then
 			return 1
 		fi
 		# unzip file
 		sudo unzip -q "${url##*/}" 1>&1 2>/dev/null
 		# cd into it
-		cd ./*/ 2> /dev/null
+		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive"; exit 1 )
 		# export srcdir
 		export srcdir="/tmp/pacstall/$PWD"
 		# Make the directory available for users
@@ -405,17 +397,15 @@ case "$url" in
 	;;
 	*.deb)
 		download "$url"
-		hashcheck "${url##*/}"
-		if [[ $? -ne 0 ]]; then
+		if ! hashcheck "${url##*/}"; then
 			return 1
 		fi
-		sudo apt install -y -f ./"${url##*/}" 2>/dev/null
-		if [[ $? -eq 0 ]]; then
+		if sudo apt install -y -f ./"${url##*/}" 2>/dev/null; then
 			log
 
 			fancy_message info "Storing pacscript"
 			sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
-			cd "$DIR"
+			cd "$DIR" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${DIR}"; exit 1 )
 			sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 
 			fancy_message info "Cleaning up"
@@ -434,12 +424,11 @@ case "$url" in
 	*)
 		download "$url"
 		# I think you get it by now
-		hashcheck "${url##*/}"
-		if [[ $? -ne 0 ]]; then
+		if ! hashcheck "${url##*/}"; then
 			return 1
 		fi
 		sudo tar -xf "${url##*/}" 1>&1 2>/dev/null
-		cd ./*/ 2>/dev/null
+		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive"; exit 1 )
 		export srcdir="/tmp/pacstall/$PWD"
 		sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
 	;;
@@ -483,24 +472,25 @@ if [[ $REMOVE_DEPENDS = y ]]; then
 	sudo apt-get remove $build_depends
 fi
 
-cd "$HOME"
+cd "$HOME" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${HOME}"; exit 1 )
 
 # Metadata writing
 log
 
 fancy_message info "Symlinking files"
-cd /usr/src/pacstall/ || sudo mkdir -p /usr/src/pacstall && cd /usr/src/pacstall
+sudo mkdir -p /usr/src/pacstall
+cd /usr/src/pacstall 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${STOWDIR}"; exit 1 )
+
 # By default (I think), stow symlinks to the directory behind it (..), but we want to symlink to /, or in other words, symlink files from pkg/usr to /usr
 if ! command -v stow > /dev/null; then
 	# If stow failed to install, install it
 	sudo apt-get install stow -y
-	cd /usr/src/pacstall
+	cd /usr/src/pacstall 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${STOWDIR}"; exit 1 )
 fi
 
 # Magic time. This installs the package to /, so `/usr/src/pacstall/foo/usr/bin/foo` -> `/usr/bin/foo`
-sudo stow --target="/" "$PACKAGE"
 # stow will fail to symlink packages if files already exist on the system; this is just an error
-if [[ $? -ne 0	 ]]; then
+if ! sudo stow --target="/" "$PACKAGE"; then
 	fancy_message error "Package contains links to files that exist on the system"
 	error_log 14 "install $PACKAGE"
 	sudo dpkg -r "$name" > /dev/null
@@ -511,14 +501,13 @@ fi
 
 # `hash -r` updates PATH database
 hash -r
-type -t postinst > /dev/null 2>&1
-if [[ $? -eq 0 ]]; then
+if type -t postinst > /dev/null 2>&1; then
 	postinst
 fi
 
 fancy_message info "Storing pacscript"
 sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
-cd "$DIR"
+cd "$DIR" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${DIR}"; exit 1 )
 sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 
 fancy_message info "Cleaning up"

@@ -24,7 +24,7 @@
 
 if [[ ! -d "/var/log/pacstall/error_log" ]]; then
 	sudo mkdir -p "/var/log/pacstall/error_log"
-	sudo chown $LOGNAME -R /var/log/pacstall/error_log
+	sudo chown "$LOGNAME" -R /var/log/pacstall/error_log
 fi
 
 function error_log() {
