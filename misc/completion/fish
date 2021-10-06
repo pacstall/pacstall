@@ -50,7 +50,7 @@ complete -f --command pacstall -n "__fish_seen_subcommand_from -R" -a "(/bin/ls 
 complete -f --command pacstall -n "__fish_seen_subcommand_from -Qi" -a "(/bin/ls -1aA /var/log/pacstall/metadata | tr ' ' '\n')"
 
 # Completion for the -D flag
-complete -f --command pacstall -n "__fish_seen_subcommand_from -D" -a "(echo $filtered_repolist | xargs -n 1 curl -s | awk '!seen[\$0]++')"
+complete -f --command pacstall -n "__fish_seen_subcommand_from -D" -a "$packages"
 
 # Completion for the -Il flag
 complete -f --command pacstall -n "__fish_seen_subcommand_from -Il" -a "(find -- *.pacscript* | sed 's/.pacscript//g')"
