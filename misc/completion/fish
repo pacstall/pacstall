@@ -21,7 +21,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
-set filtered_repolist (cat /usr/share/pacstall/repo/pacstallrepo.txt | sed -e 's/$/\/packagelist/')
+set packages (sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | awk '!seen[$0]++')
 
 set -l pacstall_commands -I -Il -S -R -A -U -V -L -Up -Qi -D -T
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -I -d 'Install package'
