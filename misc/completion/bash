@@ -57,7 +57,7 @@ _pacstall() {
 		;;
 
 		-D|--download)
-			COMPREPLY=( $( compgen -W "$(cat /usr/share/pacstall/repo/pacstallrepo.txt | sed -e 's/$/\/packagelist/' | xargs -n 1 curl -s | awk '!seen[$0]++')" -- "$cur" ) )
+			COMPREPLY=("${packages[@]}")
 			return
 	esac
 
