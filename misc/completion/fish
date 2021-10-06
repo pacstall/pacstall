@@ -38,7 +38,7 @@ complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_com
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -T -d 'Makes a tree of a package'
 
 # Completion for the -I flag
-complete -f --command pacstall -n "__fish_seen_subcommand_from -I" -a "(echo $filtered_repolist | xargs -n 1 curl -s | awk '!seen[\$0]++')"
+complete -f --command pacstall -n "__fish_seen_subcommand_from -I" -a "$packages"
 
 # Completion for the -S flag
 complete -f --command pacstall -n "__fish_seen_subcommand_from -S" -a "(echo $filtered_repolist | xargs -n 1 curl -s | awk '!seen[\$0]++')"
