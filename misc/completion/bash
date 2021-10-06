@@ -33,8 +33,7 @@ _pacstall() {
 		;;
 
 		-S|--search)
-			# the sed part adds packagelist to the end of every line, xargs curl stuff curls each line, and awk gets rid of duplicates not including the first one
-			COMPREPLY=( $( compgen -W "$(cat /usr/share/pacstall/repo/pacstallrepo.txt | sed -e 's/$/\/packagelist/' | xargs -n 1 curl -s | awk '!seen[$0]++')" -- "$cur" ) )
+			COMPREPLY=("${packages[@]}")
 			return
 		;;
 
