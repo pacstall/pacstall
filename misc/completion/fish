@@ -23,7 +23,7 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 set packages (sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | awk '!seen[$0]++')
 
-set -l pacstall_commands -I -Il -S -R -A -U -V -L -Up -Qi -D -T
+set -l pacstall_commands -I -Il -S -R -A -U -V -L -Up -Qi -D -T -PI -PIl -PS -PR -PA -PU -PV -PL -PUp -PQi -PD -PT
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -I -d 'Install package'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -Il -d 'Install local package'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -S -d 'Search for package'
@@ -57,4 +57,25 @@ complete -f --command pacstall -n "__fish_seen_subcommand_from -Il" -a "(find --
 
 # Completion for the -T flag
 complete -f --command pacstall -n "__fish_seen_subcommand_from -T" -a "(/bin/ls -1aA /usr/src/pacstall/ | tr ' ' '\n')"
+
+# Completion for the -PI flag
+complete -f --command pacstall -n "__fish_seen_subcommand_from -PI" -a "$packages"
+
+# Completion for the -PS flag
+complete -f --command pacstall -n "__fish_seen_subcommand_from -PS" -a "$packages"
+
+# Completion for the -PR flag
+complete -f --command pacstall -n "__fish_seen_subcommand_from -PR" -a "(/bin/ls -1aA /usr/src/pacstall/ | tr ' ' '\n')"
+
+# Completion for the -PQi flag
+complete -f --command pacstall -n "__fish_seen_subcommand_from -PQi" -a "(/bin/ls -1aA /var/log/pacstall/metadata | tr ' ' '\n')"
+
+# Completion for the -PD flag
+complete -f --command pacstall -n "__fish_seen_subcommand_from -PD" -a "$packages"
+
+# Completion for the -PIl flag
+complete -f --command pacstall -n "__fish_seen_subcommand_from -PIl" -a "(find -- *.pacscript* | sed 's/.pacscript//g')"
+
+# Completion for the -PT flag
+complete -f --command pacstall -n "__fish_seen_subcommand_from -PT" -a "(/bin/ls -1aA /usr/src/pacstall/ | tr ' ' '\n')"
 # vim:set ft=sh ts=4 sw=4 noet:
