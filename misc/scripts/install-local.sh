@@ -417,7 +417,7 @@ case "$url" in
 			sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
 			cd "$DIR"
 			sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
-
+			sudo chmod o+r /var/cache/pacstall/"$PACKAGE"/"$version"/"$PACKAGE".pacscript
 			fancy_message info "Cleaning up"
 			cleanup
 			return 0
