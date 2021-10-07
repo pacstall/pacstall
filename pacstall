@@ -274,8 +274,6 @@ while [[ ! "$1" == "--" ]]; do
 		;;
 
 		-I|--install)
-			# Used to verify failed pacdeps installs
-			unset fail_install
 			
 			function trap_ctrlc () {
 				fancy_message warn "The installation of $2 was interrupted, removing files"
@@ -328,7 +326,7 @@ while [[ ! "$1" == "--" ]]; do
 				fi
 			done
 
-			if [[ -s "LOGFILE" ]]; then
+			if [[ -n "$fail_install" ]]; then
 				exit 1
 			fi
 				exit 0
