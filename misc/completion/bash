@@ -59,6 +59,36 @@ _pacstall() {
 		-D|--download)
 			COMPREPLY=("${packages[@]}")
 			return
+		;;
+
+		-PS)
+			COMPREPLY=("${packages[@]}")
+			return
+		;;
+
+		-PI)
+			COMPREPLY=("${packages[@]}")
+			return
+		;;
+
+		-IR)
+			COMPREPLY=( $( compgen -W "$(/bin/ls -1aA /usr/src/pacstall)" -- $cur ) )
+			return
+		;;
+
+		-PQi)
+			COMPREPLY=( $( compgen -W "$(/bin/ls -1aAp /var/log/pacstall/metadata)" -- $cur ) )
+			return
+		;;
+		-PIl)
+			COMPREPLY=( $( compgen -W "$(find -- *.pacscript* | sed 's/.pacscript//g')" -- "$cur" ) )
+			return
+		;;
+
+		-PD)
+			COMPREPLY=("${packages[@]}")
+			return
+		;;
 	esac
 
 	case "$cur" in
