@@ -274,6 +274,9 @@ while [[ ! "$1" == "--" ]]; do
 		;;
 
 		-I|--install)
+			# Used to verify failed pacdeps installs
+			unset fail_install
+			
 			function trap_ctrlc () {
 				fancy_message warn "The installation of $2 was interrupted, removing files"
 				rm -rf "${SRCDIR:?}"/* # :? makes bash error out in case SRCDIR is empty, saving us from yoinking /* directory by mistake
@@ -301,6 +304,8 @@ while [[ ! "$1" == "--" ]]; do
 				export local="no"
 
 				if ! source "$STGDIR/scripts/search.sh"; then
+					fail_install = 1
+					export fail_install
 					continue
 				fi
 
@@ -308,12 +313,16 @@ while [[ ! "$1" == "--" ]]; do
 				URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 
 				if ! source "$STGDIR/scripts/download.sh"; then
+					fail_install = 1
+					export fail_install
 					fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
 					continue
 				fi
 
 				export REPO
 				if ! source "$STGDIR/scripts/install-local.sh"; then
+					fail_install = 1
+					export fail_install
 					fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
 					continue
 				fi
