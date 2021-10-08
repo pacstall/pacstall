@@ -284,7 +284,13 @@ if [[ -n "$pacdeps" ]]; then
 		fancy_message info "Installing $i"
 		# If /tmp/pacstall-pacdeps-"$i" is available, it will trigger the logger to log it as a dependency
 		sudo touch /tmp/pacstall-pacdeps-"$i"
-		pacstall -P -I "$i"
+		
+		if ! pacstall -P -I "$i"; then
+			fancy_message error "Failed to install pacstall dependencies"
+			error_log 8 "install $PACKAGE"
+			cleanup
+			return 1
+		fi
 	done
 fi
 
