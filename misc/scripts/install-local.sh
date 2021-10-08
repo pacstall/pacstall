@@ -416,7 +416,7 @@ case "$url" in
 			sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
 			cd "$DIR" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${DIR}"; exit 1 )
 			sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
-
+			sudo chmod o+r /var/cache/pacstall/"$PACKAGE"/"$version"/"$PACKAGE".pacscript
 			fancy_message info "Cleaning up"
 			cleanup
 			return 0
@@ -518,6 +518,7 @@ fancy_message info "Storing pacscript"
 sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
 cd "$DIR" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${DIR}"; exit 1 )
 sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
+sudo chmod o+r /var/cache/pacstall/"$PACKAGE"/"$version"/"$PACKAGE".pacscript
 
 fancy_message info "Cleaning up"
 cleanup
