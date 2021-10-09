@@ -23,7 +23,7 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 set packages (sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | awk '!seen[$0]++')
 
-set -l pacstall_commands -I -Il -S -R -A -U -V -L -Up -Qi -D -T -PI -PIl -PS -PR -PA -PU -PV -PL -PUp -PQi -PD -PT
+set -l pacstall_commands -I -Il -S -R -A -U -V -L -Up -Qi -D -T -PI -PIl -PS -PR -PA -PU -PV -PL -PUp -PQi -PD -PT -P
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -I -d 'Install package'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -Il -d 'Install local package'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -S -d 'Search for package'
@@ -78,4 +78,7 @@ complete -f --command pacstall -n "__fish_seen_subcommand_from -PIl" -a "(find -
 
 # Completion for the -PT flag
 complete -f --command pacstall -n "__fish_seen_subcommand_from -PT" -a "(/bin/ls -1aA /usr/src/pacstall/ | tr ' ' '\n')"
+
+# Completion for the -P flag
+complete -f --command pacstall -n "__fish_seen_subcommand_from -P" -a "$pacstall_commands"
 # vim:set ft=sh ts=4 sw=4 noet:
