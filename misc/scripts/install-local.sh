@@ -108,7 +108,10 @@ function log() {
 	fi
 
 	# Metadata writing
-	echo "_version=\"$version"\" | sudo tee "$LOGDIR"/"$PACKAGE" > /dev/null
+	if [[ -n ${gives} ]]; then
+		echo "_gives=\"${gives}"\" | sudo tee "$LOGDIR"/"$PACKAGE" > /dev/null
+	fi
+	echo "_version=\"$version"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 	echo "_description=\"$description"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 	echo "_date=\"$(date)"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 	echo "_maintainer=\"$maintainer"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
