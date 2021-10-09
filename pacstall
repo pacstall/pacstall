@@ -302,7 +302,7 @@ while [[ ! "$1" == "--" ]]; do
 				export local="no"
 
 				if ! source "$STGDIR/scripts/search.sh"; then
-					fail_install = 1
+					fail_install=1
 					export fail_install
 					continue
 				fi
@@ -311,7 +311,7 @@ while [[ ! "$1" == "--" ]]; do
 				URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 
 				if ! source "$STGDIR/scripts/download.sh"; then
-					fail_install = 1
+					fail_install=1
 					export fail_install
 					fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
 					continue
@@ -319,7 +319,7 @@ while [[ ! "$1" == "--" ]]; do
 
 				export REPO
 				if ! source "$STGDIR/scripts/install-local.sh"; then
-					fail_install = 1
+					fail_install=1
 					export fail_install
 					fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
 					continue
