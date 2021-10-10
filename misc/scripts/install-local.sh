@@ -498,7 +498,7 @@ cd "$STOWDIR" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message wa
 if ! command -v stow > /dev/null; then
 	# If stow failed to install, install it
 	sudo apt-get install stow -y
-	cd /usr/src/pacstall 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${STOWDIR}"; exit 1 )
+	cd "$STOWDIR" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${STOWDIR}"; exit 1 )
 fi
 
 # Magic time. This installs the package to /, so `/usr/src/pacstall/foo/usr/bin/foo` -> `/usr/bin/foo`
