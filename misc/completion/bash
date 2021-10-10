@@ -33,17 +33,17 @@ _pacstall() {
 		;;
 
 		-S|--search)
-			COMPREPLY=("$packages")
+			COMPREPLY=($packages)
 			return
 		;;
 
 		-I|--install)
-			COMPREPLY=("$packages")
+			COMPREPLY=($packages)
 			return
 		;;
 
 		-R|--remove)
-			COMPREPLY=( $( compgen -W "$(/bin/ls -1aA /usr/src/pacstall)" -- $cur ) )
+			COMPREPLY=( $( compgen -W "$(/bin/ls -1aA /var/log/pacstall/metadata)" -- $cur ) )
 			return
 		;;
 
@@ -52,27 +52,22 @@ _pacstall() {
 			return
 		;;
 		-Il|--install-local)
-			COMPREPLY=( $( compgen -W "$(find -- *.pacscript* | sed 's/.pacscript//g')" -- "$cur" ) )
+			COMPREPLY=( $( compgen -W "$(find -- *.pacscript* 2>/dev/null | sed 's/.pacscript//g')" -- "$cur" ) )
 			return
 		;;
 
 		-D|--download)
-			COMPREPLY=("$packages")
+			COMPREPLY=($packages)
 			return
 		;;
 
 		-PS)
-			COMPREPLY=("$packages")
+			COMPREPLY=($packages)
 			return
 		;;
 
 		-PI)
-			COMPREPLY=("$packages")
-			return
-		;;
-
-		-IR)
-			COMPREPLY=( $( compgen -W "$(/bin/ls -1aA /usr/src/pacstall)" -- $cur ) )
+			COMPREPLY=($packages)
 			return
 		;;
 
@@ -81,12 +76,12 @@ _pacstall() {
 			return
 		;;
 		-PIl)
-			COMPREPLY=( $( compgen -W "$(find -- *.pacscript* | sed 's/.pacscript//g')" -- "$cur" ) )
+			COMPREPLY=( $( compgen -W "$(find -- *.pacscript* 2>/dev/null | sed 's/.pacscript//g')" -- "$cur" ) )
 			return
 		;;
 
 		-PD)
-			COMPREPLY=("$packages")
+			COMPREPLY=($packages)
 			return
 		;;
 	esac

@@ -44,7 +44,7 @@ complete -f --command pacstall -n "__fish_seen_subcommand_from -I" -a "$packages
 complete -f --command pacstall -n "__fish_seen_subcommand_from -S" -a "$packages"
 
 # Completion for the -R flag
-complete -f --command pacstall -n "__fish_seen_subcommand_from -R" -a "(/bin/ls -1aA /usr/src/pacstall/ | tr ' ' '\n')"
+complete -f --command pacstall -n "__fish_seen_subcommand_from -R" -a "(/bin/ls -1aA /var/log/pacstall/metadata | tr ' ' '\n')"
 
 # Completion for the -Qi flag
 complete -f --command pacstall -n "__fish_seen_subcommand_from -Qi" -a "(/bin/ls -1aA /var/log/pacstall/metadata | tr ' ' '\n')"
@@ -56,7 +56,7 @@ complete -f --command pacstall -n "__fish_seen_subcommand_from -D" -a "$packages
 complete -f --command pacstall -n "__fish_seen_subcommand_from -Il" -a "(find -- *.pacscript* | sed 's/.pacscript//g')"
 
 # Completion for the -T flag
-complete -f --command pacstall -n "__fish_seen_subcommand_from -T" -a "(/bin/ls -1aA /usr/src/pacstall/ | tr ' ' '\n')"
+complete -f --command pacstall -n "__fish_seen_subcommand_from -T" -a "(/bin/ls -1aA /var/log/pacstall/metadata | tr ' ' '\n')"
 
 # Completion for the -PI flag
 complete -f --command pacstall -n "__fish_seen_subcommand_from -PI" -a "$packages"
@@ -65,7 +65,7 @@ complete -f --command pacstall -n "__fish_seen_subcommand_from -PI" -a "$package
 complete -f --command pacstall -n "__fish_seen_subcommand_from -PS" -a "$packages"
 
 # Completion for the -PR flag
-complete -f --command pacstall -n "__fish_seen_subcommand_from -PR" -a "(/bin/ls -1aA /usr/src/pacstall/ | tr ' ' '\n')"
+complete -f --command pacstall -n "__fish_seen_subcommand_from -PR" -a "(/bin/ls -1aA /var/log/pacstall/metadata | tr ' ' '\n')"
 
 # Completion for the -PQi flag
 complete -f --command pacstall -n "__fish_seen_subcommand_from -PQi" -a "(/bin/ls -1aA /var/log/pacstall/metadata | tr ' ' '\n')"
@@ -80,5 +80,5 @@ complete -f --command pacstall -n "__fish_seen_subcommand_from -PIl" -a "(find -
 complete -f --command pacstall -n "__fish_seen_subcommand_from -PT" -a "(/bin/ls -1aA /usr/src/pacstall/ | tr ' ' '\n')"
 
 # Completion for the -P flag
-complete -f --command pacstall -n "__fish_seen_subcommand_from -P" -a "$pacstall_commands"
+complete -f --command pacstall -n "__fish_seen_subcommand_from -P" -a "(echo $pacstall_commands)"
 # vim:set ft=sh ts=4 sw=4 noet:
