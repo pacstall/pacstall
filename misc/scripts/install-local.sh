@@ -187,8 +187,8 @@ Description: This is a symbolic package used by pacstall, may be removed with ap
 	echo '#!/bin/bash
 if [[ PACSTALL_REMOVE != "true" ]]; then
 	source /var/cache/pacstall/'"$name"'/'"$version"'/'"$name"'.pacscript 2>&1 /dev/null
-	sudo mkdir -p "$STOWDIR"
-	cd "$STOWDIR"
+	sudo mkdir -p '"$STOWDIR"'
+	cd '"$STOWDIR"'
 	stow --target="/" -D '"$name"' 2> /dev/null
 	rm -rf '"$name"' 2> /dev/null
 	hash -r
