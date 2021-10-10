@@ -18,4 +18,4 @@
 
 ## Checklist
 
-- [ ] I agree to have read the [contributing guidelines](https://github.com/pacstall/pacstall/blob/develop/CONTRIBUTING.md), and confirm that this pull request is abiding by all the clauses stated in the guideline.
+- [ ] I confirm that I have read the [contributing guidelines](https://github.com/pacstall/pacstall/blob/develop/CONTRIBUTING.md), and this pull request is abiding by all the clauses stated in the guideline.
