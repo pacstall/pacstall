@@ -187,7 +187,8 @@ Description: This is a symbolic package used by pacstall, may be removed with ap
 	echo '#!/bin/bash
 if [[ PACSTALL_REMOVE != "true" ]]; then
 	source /var/cache/pacstall/'"$name"'/'"$version"'/'"$name"'.pacscript 2>&1 /dev/null
-	cd '"$STOWDIR"' || (sudo mkdir -p '"$STOWDIR"'; cd '"$STOWDIR"')
+	sudo mkdir -p "$STOWDIR"
+	cd "$STOWDIR" 2> /dev/null || ( error_log 1 "install $name"; fancy_message warn "Could not enter ${STOWDIR}"; exit 1 )
 	stow --target="/" -D '"$name"' 2> /dev/null
 	rm -rf '"$name"' 2> /dev/null
 	hash -r
@@ -490,8 +491,8 @@ cd "$HOME" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn 
 log
 
 fancy_message info "Symlinking files"
-sudo mkdir -p ${STOWDIR}
-cd ${STOWDIR} 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${STOWDIR}"; exit 1 )
+sudo mkdir -p $STOWDIR
+cd $STOWDIR 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${STOWDIR}"; exit 1 )
 
 # By default (I think), stow symlinks to the directory behind it (..), but we want to symlink to /, or in other words, symlink files from pkg/usr to /usr
 if ! command -v stow > /dev/null; then
