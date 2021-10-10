@@ -15,3 +15,7 @@
 ## Addendum
 
 <!--Link any issues with this PR and/or write something that you want to inform us about (optional)-->
+
+## Checklist
+
+- [ ] I agree to have read the [contributing guidelines](https://github.com/pacstall/pacstall/blob/develop/CONTRIBUTING.md), and confirm that this pull request is abiding by all the clauses stated in the guideline.
