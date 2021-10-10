@@ -490,8 +490,8 @@ cd "$HOME" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn 
 log
 
 fancy_message info "Symlinking files"
-sudo mkdir -p /usr/src/pacstall
-cd /usr/src/pacstall 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${STOWDIR}"; exit 1 )
+sudo mkdir -p ${STOWDIR}
+cd ${STOWDIR} 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${STOWDIR}"; exit 1 )
 
 # By default (I think), stow symlinks to the directory behind it (..), but we want to symlink to /, or in other words, symlink files from pkg/usr to /usr
 if ! command -v stow > /dev/null; then
