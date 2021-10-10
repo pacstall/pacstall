@@ -43,12 +43,12 @@ _pacstall() {
 		;;
 
 		-R|--remove)
-			COMPREPLY=( $( compgen -W "$(/bin/ls -1aA /var/log/pacstall/metadata)" -- $cur ) )
+			COMPREPLY=( $( compgen -W "$(\ls -1aA /var/log/pacstall/metadata)" -- $cur ) )
 			return
 		;;
 
 		-Qi|--query-info)
-			COMPREPLY=( $( compgen -W "$(/bin/ls -1aAp /var/log/pacstall/metadata)" -- $cur ) )
+			COMPREPLY=( $( compgen -W "$(\ls -1aAp /var/log/pacstall/metadata)" -- $cur ) )
 			return
 		;;
 		-Il|--install-local)
@@ -72,7 +72,7 @@ _pacstall() {
 		;;
 
 		-PQi)
-			COMPREPLY=( $( compgen -W "$(/bin/ls -1aAp /var/log/pacstall/metadata)" -- $cur ) )
+			COMPREPLY=( $( compgen -W "$(\ls -1aAp /var/log/pacstall/metadata)" -- $cur ) )
 			return
 		;;
 		-PIl)
