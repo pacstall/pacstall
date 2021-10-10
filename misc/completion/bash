@@ -21,7 +21,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-mapfile -t packages <<< "$(compgen -W "$(sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | awk '!seen[$0]++')" -- "$cur")"
+packages="$(compgen -W "$(sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | awk '!seen[$0]++')" -- "$cur")"
 
 _pacstall() {
 	cur=${COMP_WORDS[COMP_CWORD]}
@@ -33,12 +33,12 @@ _pacstall() {
 		;;
 
 		-S|--search)
-			COMPREPLY=("${packages[@]}")
+			COMPREPLY=("$packages")
 			return
 		;;
 
 		-I|--install)
-			COMPREPLY=("${packages[@]}")
+			COMPREPLY=("$packages")
 			return
 		;;
 
@@ -57,17 +57,17 @@ _pacstall() {
 		;;
 
 		-D|--download)
-			COMPREPLY=("${packages[@]}")
+			COMPREPLY=("$packages")
 			return
 		;;
 
 		-PS)
-			COMPREPLY=("${packages[@]}")
+			COMPREPLY=("$packages")
 			return
 		;;
 
 		-PI)
-			COMPREPLY=("${packages[@]}")
+			COMPREPLY=("$packages")
 			return
 		;;
 
@@ -86,7 +86,7 @@ _pacstall() {
 		;;
 
 		-PD)
-			COMPREPLY=("${packages[@]}")
+			COMPREPLY=("$packages")
 			return
 		;;
 	esac
