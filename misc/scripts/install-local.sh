@@ -420,7 +420,9 @@ case "$url" in
 
 			fancy_message info "Storing pacscript"
 			sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
-			cd "$DIR" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${DIR}" )
+			if ! cd "$DIR" 2> /dev/null; then
+				error_log 1 "install $PACKAGE"; fancy_message error "Could not enter into ${DIR}"; exit 1
+			fi
 			sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 			sudo chmod o+r /var/cache/pacstall/"$PACKAGE"/"$version"/"$PACKAGE".pacscript
 			fancy_message info "Cleaning up"
@@ -494,13 +496,17 @@ log
 
 fancy_message info "Symlinking files"
 sudo mkdir -p "$STOWDIR"
-cd "$STOWDIR" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${STOWDIR}" )
+if ! cd "$STOWDIR" 2> /dev/null ; then
+	error_log 1 "install $PACKAGE"; fancy_message error "Could not enter into ${STOWDIR}"; exit 1
+fi
 
 # By default (I think), stow symlinks to the directory behind it (..), but we want to symlink to /, or in other words, symlink files from pkg/usr to /usr
 if ! command -v stow > /dev/null; then
 	# If stow failed to install, install it
 	sudo apt-get install stow -y
-	cd "$STOWDIR" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${STOWDIR}" )
+	if ! cd "$STOWDIR" 2> /dev/null; then
+		error_log 1 "install $PACKAGE"; fancy_message error "Could not enter into ${STOWDIR}"; exit 1
+	fi
 fi
 
 # Magic time. This installs the package to /, so `/usr/src/pacstall/foo/usr/bin/foo` -> `/usr/bin/foo`
@@ -522,7 +528,9 @@ fi
 
 fancy_message info "Storing pacscript"
 sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
-cd "$DIR" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${DIR}" )
+if ! cd "$DIR" 2> /dev/null; then
+	error_log 1 "install $PACKAGE"; fancy_message error "Could not enter into ${DIR}"; exit 1
+fi
 sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 sudo chmod o+r /var/cache/pacstall/"$PACKAGE"/"$version"/"$PACKAGE".pacscript
 
