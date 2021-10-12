@@ -143,13 +143,8 @@ ask "Do you want to install axel?" Y
 if [[ "$answer" -eq 1 ]]; then
     apt-get install -qq -y axel
 fi
-ask "Do you want to install ripgrep?" Y
-if [[ "$answer" -eq 1 ]]; then
-    apt-get install -qq -y ripgrep
-fi
 
 apt-get install -qq -y curl wget stow build-essential unzip tree bc git
-
 
 LOGDIR="/var/log/pacstall/metadata"
 STGDIR="/usr/share/pacstall"
