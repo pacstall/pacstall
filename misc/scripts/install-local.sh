@@ -375,14 +375,16 @@ function hashcheck() {
 
 fancy_message info "Retrieving packages"
 mkdir -p "$SRCDIR"
-cd "$SRCDIR" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter ${SRCDIR}"; exit 1 )
+if ! cd "$SRCDIR" 2> /dev/null; then
+       error_log 1 "install $PACKAGE"; fancy_message error "Could not enter ${SRCDIR}"; exit 1
+fi
 
 case "$url" in
 	*.git)
 		# git clone quietly, with no history, and if submodules are there, download with 10 jobs
 		sudo git clone --quiet --depth=1 --jobs=10 "$url"
 		# cd into the directory
-		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the cloned git repository"; exit 1 )
+		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the cloned git repository" )
 		# The srcdir is /tmp/pacstall/foo
 		export srcdir="/tmp/pacstall/$PWD"
 		# Make the directory available for users
@@ -399,7 +401,7 @@ case "$url" in
 		# unzip file
 		sudo unzip -q "${url##*/}" 1>&1 2>/dev/null
 		# cd into it
-		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive"; exit 1 )
+		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive" )
 		# export srcdir
 		export srcdir="/tmp/pacstall/$PWD"
 		# Make the directory available for users
@@ -418,7 +420,7 @@ case "$url" in
 
 			fancy_message info "Storing pacscript"
 			sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
-			cd "$DIR" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${DIR}"; exit 1 )
+			cd "$DIR" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${DIR}" )
 			sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 			sudo chmod o+r /var/cache/pacstall/"$PACKAGE"/"$version"/"$PACKAGE".pacscript
 			fancy_message info "Cleaning up"
@@ -441,7 +443,7 @@ case "$url" in
 			return 1
 		fi
 		sudo tar -xf "${url##*/}" 1>&1 2>/dev/null
-		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive"; exit 1 )
+		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive" )
 		export srcdir="/tmp/pacstall/$PWD"
 		sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
 	;;
@@ -485,7 +487,7 @@ if [[ $REMOVE_DEPENDS = y ]]; then
 	sudo apt-get remove $build_depends
 fi
 
-cd "$HOME" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${HOME}"; exit 1 )
+cd "$HOME" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${HOME}" )
 
 # Metadata writing
 log
@@ -520,7 +522,7 @@ fi
 
 fancy_message info "Storing pacscript"
 sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
-cd "$DIR" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${DIR}"; exit 1 )
+cd "$DIR" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${DIR}" )
 sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 sudo chmod o+r /var/cache/pacstall/"$PACKAGE"/"$version"/"$PACKAGE".pacscript
 

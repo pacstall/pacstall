@@ -57,7 +57,7 @@ case "$url" in
 
 	*)
 		sudo mkdir -p "$STOWDIR"
-		cd "$STOWDIR" 2> /dev/null || ( error_log 1 "remove $PACKAGE"; fancy_message error "Could not enter ${STOWDIR}"; exit 1 )
+		cd "$STOWDIR" 2> /dev/null || ( error_log 1 "remove $PACKAGE"; fancy_message error "Could not enter ${STOWDIR}" )
 
 		if [[ ! -d "$PACKAGE" ]]; then
 			fancy_message error "$PACKAGE is not installed or not properly symlinked"
