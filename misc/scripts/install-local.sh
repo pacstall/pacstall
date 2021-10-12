@@ -492,13 +492,13 @@ log
 
 fancy_message info "Symlinking files"
 sudo mkdir -p "$STOWDIR"
-cd "$STOWDIR" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${STOWDIR}"; exit 1 )
+cd "$STOWDIR" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${STOWDIR}" )
 
 # By default (I think), stow symlinks to the directory behind it (..), but we want to symlink to /, or in other words, symlink files from pkg/usr to /usr
 if ! command -v stow > /dev/null; then
 	# If stow failed to install, install it
 	sudo apt-get install stow -y
-	cd "$STOWDIR" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${STOWDIR}"; exit 1 )
+	cd "$STOWDIR" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${STOWDIR}" )
 fi
 
 # Magic time. This installs the package to /, so `/usr/src/pacstall/foo/usr/bin/foo` -> `/usr/bin/foo`

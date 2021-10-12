@@ -140,7 +140,7 @@ else
 	export local='no'
 	sudo mkdir -p "$SRCDIR"
 	sudo chown -R "$USER":"$USER" "$SRCDIR"
-	cd "$SRCDIR" 2> /dev/null || ( error_log 1 "upgrade"; fancy_message warn "Could not enter ${SRCDIR}"; exit 1 )
+	cd "$SRCDIR" 2> /dev/null || ( error_log 1 "upgrade"; fancy_message warn "Could not enter ${SRCDIR}" )
 	for i in "${!upgrade[@]}"; do
 		PACKAGE=${upgrade[$i]}
 		ask "Do you want to upgrade ${GREEN}${PACKAGE}${NC}?" Y
