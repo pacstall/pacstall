@@ -376,7 +376,7 @@ function hashcheck() {
 fancy_message info "Retrieving packages"
 mkdir -p "$SRCDIR"
 if ! cd "$SRCDIR" 2> /dev/null; then
-       error_log 1 "install $PACKAGE"; fancy_message error "Could not enter ${SRCDIR}"; exit 1
+	error_log 1 "install $PACKAGE"; fancy_message error "Could not enter ${SRCDIR}"; exit 1
 fi
 
 case "$url" in

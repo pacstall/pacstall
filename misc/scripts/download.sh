@@ -34,7 +34,7 @@ if curl --output /dev/null --silent --head --fail "$URL" ; then
 	if [[ "$type" = "install" ]]; then
 		mkdir -p "$SRCDIR"
 		if ! cd "$SRCDIR" ; then
-		       error_log 1 "install $PACKAGE"; fancy_message error "Could not enter ${SRCDIR}"; exit 1
+			error_log 1 "install $PACKAGE"; fancy_message error "Could not enter ${SRCDIR}"; exit 1
 		fi
 	fi
 	
