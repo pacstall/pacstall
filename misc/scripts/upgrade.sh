@@ -140,7 +140,7 @@ else
 	export local='no'
 	sudo mkdir -p "$SRCDIR"
 	sudo chown -R "$USER":"$USER" "$SRCDIR"
-	if ! cd "$SRCDIR" 2> /dev/null then
+	if ! cd "$SRCDIR" 2> /dev/null; then
 	       error_log 1 "upgrade"; fancy_message error "Could not enter ${SRCDIR}"; exit 1
 	fi
 	for i in "${!upgrade[@]}"; do
