@@ -148,7 +148,7 @@ if [[ "$answer" -eq 1 ]]; then
     apt-get install -qq -y ripgrep
 fi
 
-apt-get install -qq -y curl wget stow build-essential unzip tree bc git
+apt-get install -qq -y curl wget stow build-essential unzip tree bc git iputils-ping
 
 
 LOGDIR="/var/log/pacstall/metadata"
