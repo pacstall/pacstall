@@ -22,6 +22,20 @@
 
 ---
 
+### Features
+
+*  Supports binary, git, appimage, building and `.deb` packages
+*  Accelerated package download using [axel](https://github.com/axel-download-accelerator/axel)*
+*  Auto update checks for git packages, so you always get the latest build of your favourite program off the latest commit by the developer
+*  Over 175 packages available to install in the official programs repository
+*  Ability to install programs from multiple repositories
+*  Ability to track Pacstall updates from any fork/branch easily
+*  Completions available for `bash` (`ZSH`), and `fish`
+
+*\* marked features are optional, and can be turned on during installation*
+
+---
+
 ### Installing
 
 You can run the command below to install Pacstall.
