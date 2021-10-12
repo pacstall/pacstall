@@ -145,17 +145,17 @@ function makeVirtualDeb {
 	fancy_message info "Creating dummy package"
 	sudo mkdir -p "$SRCDIR/$name-pacstall/DEBIAN"
 	printf "Package: %s\n" "$name" | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-	
+
 	if [[ $version =~ ^[0-9] ]]; then
 		printf "Version: %s-1\n" "$version" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	else
 		printf "Version: 0%s-1\n" "$version" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
-	
+
 	if [[ -n $depends ]]; then
 		printf "Depends: %s\n" "${depends//' '/' , '}"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
-	
+
 	if [[ -n $optdepends ]]; then
 		fancy_message info "$name has optional dependencies that can enhance its functionalities"
 		echo "Optional dependencies:"
@@ -164,12 +164,12 @@ function makeVirtualDeb {
 		if [[ $answer -eq 1 ]]; then
 			optinstall='--install-suggests'
 		fi
-		
+
 		printf "Suggests:" |sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 		printf " %s\n" "${optdepends[@]}" | awk -F': ' '{print $1}' | tr '\n' ',' | head -c -2 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 		printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
-	
+
 	printf "Architecture: all
 Essential: no
 Section: Pacstall
@@ -183,7 +183,7 @@ Replace: ${replace//' '/', '}" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/cont
 	printf "Provides: ${gives:-$name}
 Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
 Description: This is a symbolic package used by pacstall, may be removed with apt or dpkg. $description\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-	
+
 	echo '#!/bin/bash
 if [[ PACSTALL_REMOVE != "true" ]]; then
 	source /var/cache/pacstall/'"$name"'/'"$version"'/'"$name"'.pacscript 2>&1 /dev/null
@@ -288,7 +288,7 @@ if [[ -n "$pacdeps" ]]; then
 		fancy_message info "Installing $i"
 		# If /tmp/pacstall-pacdeps-"$i" is available, it will trigger the logger to log it as a dependency
 		sudo touch /tmp/pacstall-pacdeps-"$i"
-		
+
 		if ! pacstall -P -I "$i"; then
 			fancy_message error "Failed to install pacstall dependencies"
 			error_log 8 "install $PACKAGE"
@@ -365,7 +365,7 @@ function hashcheck() {
 		if [[ "$url" != *".deb" ]]; then
 			sudo dpkg -r "$name" > /dev/null
 		fi
-		
+
 		fancy_message info "Cleaning up"
 		cleanup
 		return 1
@@ -464,7 +464,10 @@ fi
 export pkgdir="/usr/src/pacstall/$name"
 
 fancy_message info "Preparing"
-prepare
+if ! prepare; then
+	fancy_message error "Could not prepare $PACKAGE properly"
+	exit 1
+fi
 
 # Check if build function doesn't exist
 if ! type -t build > /dev/null 2>&1; then
@@ -477,13 +480,19 @@ if ! type -t build > /dev/null 2>&1; then
 fi
 
 fancy_message info "Building"
-build
+if ! build; then
+	fancy_message error "Could not properly build $PACKAGE"
+	exit 1
+fi
 
 # Trap so that we can clean up (hopefully without messing up anything)
 trap - SIGINT
 
 fancy_message info "Installing"
-install
+if ! install; then
+	fancy_message error "Could not install $PACKAGE properly"
+	exit 1
+fi
 
 if [[ $REMOVE_DEPENDS = y ]]; then
 	sudo apt-get remove $build_depends
