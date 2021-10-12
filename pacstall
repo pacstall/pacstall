@@ -125,6 +125,23 @@ function fancy_message() {
 	esac
 }
 
+function lock() {
+	pidof -o %PPID -x $0 >/dev/null && return 0 || return 1
+}
+
+while lock; do
+	if [[ -z $first ]]; then
+		first=1
+		fancy_message warn "Pacstall is already running another instance"
+	fi
+	sleep 1
+done 
+
+if [[ ! -t 0 ]]; then
+	NON_INTERACTIVE=true
+	fancy_message warn "Reading input from pipe"
+fi
+
 # This is the ask function. You can source this code block and then run something like:
 # ask "Do you like the color blue? " Y
 # if [[ $answer -eq 1 ]]; then
@@ -134,11 +151,7 @@ function fancy_message() {
 # fi
 #
 # Y=1 and N=0
-# You can specify {Y,N} or leave it out to prevent entering the default but this is not allowed in pacstall because of the -P flag which gives unattended installs
-if [[ ! -t 0 ]]; then
-	NON_INTERACTIVE=true
-	fancy_message warn "Reading input from pipe"
-fi
+# You can specify {Y,N} or leave it out to prevent entering the default but this is not allowed in pacstall because of the -P flag which gives unattended install
 
 function ask() {
 	local prompt default reply
