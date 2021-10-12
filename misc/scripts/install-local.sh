@@ -187,7 +187,8 @@ Description: This is a symbolic package used by pacstall, may be removed with ap
 	echo '#!/bin/bash
 if [[ PACSTALL_REMOVE != "true" ]]; then
 	source /var/cache/pacstall/'"$name"'/'"$version"'/'"$name"'.pacscript 2>&1 /dev/null
-	cd '"$STOWDIR"' || (sudo mkdir -p '"$STOWDIR"'; cd '"$STOWDIR"')
+	sudo mkdir -p '"$STOWDIR"'
+	cd '"$STOWDIR"'
 	stow --target="/" -D '"$name"' 2> /dev/null
 	rm -rf '"$name"' 2> /dev/null
 	hash -r
@@ -374,14 +375,16 @@ function hashcheck() {
 
 fancy_message info "Retrieving packages"
 mkdir -p "$SRCDIR"
-cd "$SRCDIR" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter ${SRCDIR}"; exit 1 )
+if ! cd "$SRCDIR" 2> /dev/null; then
+	error_log 1 "install $PACKAGE"; fancy_message error "Could not enter ${SRCDIR}"; exit 1
+fi
 
 case "$url" in
 	*.git)
 		# git clone quietly, with no history, and if submodules are there, download with 10 jobs
 		sudo git clone --quiet --depth=1 --jobs=10 "$url"
 		# cd into the directory
-		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the cloned git repository"; exit 1 )
+		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the cloned git repository" )
 		# The srcdir is /tmp/pacstall/foo
 		export srcdir="/tmp/pacstall/$PWD"
 		# Make the directory available for users
@@ -398,7 +401,7 @@ case "$url" in
 		# unzip file
 		sudo unzip -q "${url##*/}" 1>&1 2>/dev/null
 		# cd into it
-		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive"; exit 1 )
+		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive" )
 		# export srcdir
 		export srcdir="/tmp/pacstall/$PWD"
 		# Make the directory available for users
@@ -417,7 +420,9 @@ case "$url" in
 
 			fancy_message info "Storing pacscript"
 			sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
-			cd "$DIR" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${DIR}"; exit 1 )
+			if ! cd "$DIR" 2> /dev/null; then
+				error_log 1 "install $PACKAGE"; fancy_message error "Could not enter into ${DIR}"; exit 1
+			fi
 			sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 			sudo chmod o+r /var/cache/pacstall/"$PACKAGE"/"$version"/"$PACKAGE".pacscript
 			fancy_message info "Cleaning up"
@@ -440,7 +445,7 @@ case "$url" in
 			return 1
 		fi
 		sudo tar -xf "${url##*/}" 1>&1 2>/dev/null
-		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive"; exit 1 )
+		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive" )
 		export srcdir="/tmp/pacstall/$PWD"
 		sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
 	;;
@@ -484,20 +489,24 @@ if [[ $REMOVE_DEPENDS = y ]]; then
 	sudo apt-get remove $build_depends
 fi
 
-cd "$HOME" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${HOME}"; exit 1 )
+cd "$HOME" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${HOME}" )
 
 # Metadata writing
 log
 
 fancy_message info "Symlinking files"
-sudo mkdir -p /usr/src/pacstall
-cd /usr/src/pacstall 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${STOWDIR}"; exit 1 )
+sudo mkdir -p "$STOWDIR"
+if ! cd "$STOWDIR" 2> /dev/null ; then
+	error_log 1 "install $PACKAGE"; fancy_message error "Could not enter into ${STOWDIR}"; exit 1
+fi
 
 # By default (I think), stow symlinks to the directory behind it (..), but we want to symlink to /, or in other words, symlink files from pkg/usr to /usr
 if ! command -v stow > /dev/null; then
 	# If stow failed to install, install it
 	sudo apt-get install stow -y
-	cd /usr/src/pacstall 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${STOWDIR}"; exit 1 )
+	if ! cd "$STOWDIR" 2> /dev/null; then
+		error_log 1 "install $PACKAGE"; fancy_message error "Could not enter into ${STOWDIR}"; exit 1
+	fi
 fi
 
 # Magic time. This installs the package to /, so `/usr/src/pacstall/foo/usr/bin/foo` -> `/usr/bin/foo`
@@ -519,7 +528,9 @@ fi
 
 fancy_message info "Storing pacscript"
 sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
-cd "$DIR" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${DIR}"; exit 1 )
+if ! cd "$DIR" 2> /dev/null; then
+	error_log 1 "install $PACKAGE"; fancy_message error "Could not enter into ${DIR}"; exit 1
+fi
 sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 sudo chmod o+r /var/cache/pacstall/"$PACKAGE"/"$version"/"$PACKAGE".pacscript
 
