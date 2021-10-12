@@ -25,6 +25,7 @@
 function cleanup () {
 	if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
 		sudo rm -rf /tmp/pacstall-pacdeps-"$PACKAGE"
+		sudo rm -rf /tmp/pacstall-pacdeps
 	else
 		sudo rm -rf "${SRCDIR:?}"/*
 		sudo rm -rf /tmp/pacstall/*
@@ -374,9 +375,16 @@ function hashcheck() {
 }
 
 fancy_message info "Retrieving packages"
-mkdir -p "$SRCDIR"
-if ! cd "$SRCDIR" 2> /dev/null; then
-	error_log 1 "install $PACKAGE"; fancy_message error "Could not enter ${SRCDIR}"; exit 1
+if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
+	mkdir -p "/tmp/pacstall-pacdep"
+	if ! cd "/tmp/pacstall-pacdep" 2> /dev/null; then
+		error_log 1 "install $PACKAGE"; fancy_message error "Could not enter ${SRCDIR}"; exit 1
+	fi
+else
+	mkdir -p "$SRCDIR"
+	if ! cd "$SRCDIR" 2> /dev/null; then
+		error_log 1 "install $PACKAGE"; fancy_message error "Could not enter ${SRCDIR}"; exit 1
+	fi
 fi
 
 case "$url" in
@@ -386,7 +394,7 @@ case "$url" in
 		# cd into the directory
 		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the cloned git repository" )
 		# The srcdir is /tmp/pacstall/foo
-		export srcdir="/tmp/pacstall/$PWD"
+		export srcdir="$PWD"
 		# Make the directory available for users
 		sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
 		# Check the integrity
@@ -403,7 +411,7 @@ case "$url" in
 		# cd into it
 		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive" )
 		# export srcdir
-		export srcdir="/tmp/pacstall/$PWD"
+		export srcdir="$PWD"
 		# Make the directory available for users
 		sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
 	;;
@@ -446,7 +454,7 @@ case "$url" in
 		fi
 		sudo tar -xf "${url##*/}" 1>&1 2>/dev/null
 		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive" )
-		export srcdir="/tmp/pacstall/$PWD"
+		export srcdir="$PWD"
 		sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
 	;;
 esac
