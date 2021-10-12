@@ -126,10 +126,13 @@ function fancy_message() {
 }
 
 function lock() {
+	if [[ -f "/tmp/pacstall-pacdeps-$1" ]]; then
+		return 1
+	fi
 	pidof -o %PPID -x $0 >/dev/null && return 0 || return 1
 }
 
-while lock; do
+while lock $3; do
 	if [[ -z $first ]]; then
 		first=1
 		fancy_message warn "Pacstall is already running another instance"
