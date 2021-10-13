@@ -237,7 +237,7 @@ for i in "${@}"; do
 	# We remove the '-' prefix as we'll add it later.
 	for j in $(echo "${i}" | sed 's|^-||' | sed 's|[[:upper:]]| &|g'); do
 		# If current string is 'P', add to beginning of argument list.
-		if [[ "${j}" == "P" ]]; then
+		if [[ "${j}" == "P" ]] || [[ "${j}" == "-disable-prompts" ]]; then
 			argument_list=("-${j}" "${argument_list[@]}")
 		else
 			argument_list+=("-${j}")
