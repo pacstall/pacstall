@@ -289,7 +289,7 @@ while [[ ! "$1" == "--" ]]; do
 -L --list, Lists installed packages
 -Up --upgrade, Upgrades packages
 -Qi --query-info, Get package info
--P --disable--prompts, Disable Prompts for unattended installation"
+-P --disable-prompts, Disable Prompts for unattended installation"
 			exit 0
 		;;
 
