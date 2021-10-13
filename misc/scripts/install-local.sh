@@ -491,7 +491,7 @@ trap - SIGINT
 
 fancy_message info "Installing"
 if ! install; then
-	error_log 5 "install $PACKAGE"
+	error_log 14 "install $PACKAGE"
 	fancy_message error "Could not install $PACKAGE properly"
 	exit 1
 fi
