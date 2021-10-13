@@ -76,6 +76,10 @@ _pacstall() {
 			return
 		;;
 		*)
+			if [[ "-P" =~ (^|[[:space:]])${COMP_WORDS[COMP_CWORD-1]}($|[[:space:]]) ]] || [[ "--disable-prompts" =~ (^|[[:space:]])${COMP_WORDS[COMP_CWORD-1]}($|[[:space:]]) ]]; then
+				COMPREPLY=( $( compgen -W "-I -Il -R -Up" -- "$cur" ) )
+				return
+			fi			
 			COMPREPLY=( $( compgen -W "-I -Il -S -R -A -U -V -L -Up -Qi -T" -- "$cur" ) )
 			return
 		;;
