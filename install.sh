@@ -119,8 +119,8 @@ if ! command -v apt &> /dev/null; then
 	fancy_message error "apt could not be found"
 	exit 1
 fi
-# Install wget and sudo (probably already installed but this is important for the tester)
-apt-get install -y -qq sudo wget
+# Install wget,sudo and ping (probably already installed but this is important for the tester)
+apt-get install -y -qq sudo wget iputils-ping
 
 echo -e "|------------------------|"
 echo -e "|---${GREEN}Pacstall Installer${NC}---|"
@@ -148,7 +148,7 @@ if [[ "$answer" -eq 1 ]]; then
     apt-get install -qq -y ripgrep
 fi
 
-apt-get install -qq -y curl wget stow build-essential unzip tree bc git iputils-ping
+apt-get install -qq -y curl wget stow build-essential unzip tree bc git
 
 
 LOGDIR="/var/log/pacstall/metadata"
