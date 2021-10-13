@@ -119,7 +119,6 @@ if ! command -v apt &> /dev/null; then
 	fancy_message error "apt could not be found"
 	exit 1
 fi
-# Install wget,sudo and ping (probably already installed but this is important for the tester)
 apt-get install -y -qq sudo wget iputils-ping
 
 echo -e "|------------------------|"
