@@ -26,57 +26,49 @@ set packages (sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.
 set -l pacstall_commands -I -Il -S -R -A -U -V -L -Up -Qi -D -T -PI -PIl -PR -PUp -P
 set -l pacstall_p_commands -I -Il -R -Up
 
-complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -I -d 'Install package'
-complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -Il -d 'Install local package'
-complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -S -d 'Search for package'
-complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -R -d 'Remove package'
-complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -A -d 'Add repository'
-complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -U -d 'Update pacstall scripts'
-complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -V -d 'Print pacstall version'
-complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -L -d 'List packages installed'
-complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -Up -d 'Upgrade packages'
+# Completion for normal commands
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -s S -l search -d 'Search for package'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -s A -l add-repo -d 'Add repository'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -s U -l update -d 'Update pacstall scripts'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -s V -l version -d 'Print pacstall version'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -s L -l list -d 'List packages installed'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -s D -l download -d 'Downloads package'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -s T -l tree -d 'Makes a tree of a package'
+
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -Qi -d 'Get package info'
-complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -D -d 'Downloads package'
-complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -T -d 'Makes a tree of a package'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -l query-info -d 'Get package info'
 
+# Completions for P commands
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -s I -l install -d 'Install package'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -PI -d 'Install package'
-complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -PIl -d 'Install local package'
-complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -PR -d 'Remove package'
-complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -PUp -d 'Upgrade packages'
-
 complete -f --command pacstall -n "__fish_seen_subcommand_from -P && not __fish_seen_subcommand_from $pacstall_p_commands" -a -I -d 'Install package'
-complete -f --command pacstall -n "__fish_seen_subcommand_from -P && not __fish_seen_subcommand_from $pacstall_p_commands" -a -Il -d 'Install local package'
+
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -s R -l remove -d 'Remove package'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -PR -d 'Remove package'
 complete -f --command pacstall -n "__fish_seen_subcommand_from -P && not __fish_seen_subcommand_from $pacstall_p_commands" -a -R -d 'Remove package'
+
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -Il -d 'Install local package'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -l install-local -d 'Install local package'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -PIl -d 'Install local package'
+complete -f --command pacstall -n "__fish_seen_subcommand_from -P && not __fish_seen_subcommand_from $pacstall_p_commands" -a -Il -d 'Install local package'
+
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -Up -d 'Upgrade packages'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -l upgrade -d 'Upgrade packages'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -PUp -d 'Upgrade packages'
 complete -f --command pacstall -n "__fish_seen_subcommand_from -P && not __fish_seen_subcommand_from $pacstall_p_commands" -a -Up -d 'Upgrade package'
 
-# Completion for the -I flag
-complete -f --command pacstall -n "__fish_seen_subcommand_from -I" -a "$packages"
+#
+set -l package_commands -I --install -S --search -D --download -PI
+set -l log_commands -R --remove -L --list -Qi --query-info -T --tree -PR
+set -l pacscript_commands -Il --install-local -PIl
 
-# Completion for the -S flag
-complete -f --command pacstall -n "__fish_seen_subcommand_from -S" -a "$packages"
+# Completion for the package related flags
+complete -f --command pacstall -n "__fish_seen_subcommand_from $package_commands" -a "$packages"
 
-# Completion for the -R flag
-complete -f --command pacstall -n "__fish_seen_subcommand_from -R" -a "(\ls -1aA /var/log/pacstall/metadata | tr ' ' '\n')"
+# Completion for the log related flags
+complete -f --command pacstall -n "__fish_seen_subcommand_from $log_commands" -a "(\ls -1aA /var/log/pacstall/metadata | tr ' ' '\n')"
 
-# Completion for the -Qi flag
-complete -f --command pacstall -n "__fish_seen_subcommand_from -Qi" -a "(\ls -1aA /var/log/pacstall/metadata | tr ' ' '\n')"
-
-# Completion for the -D flag
-complete -f --command pacstall -n "__fish_seen_subcommand_from -D" -a "$packages"
-
-# Completion for the -Il flag
-complete -f --command pacstall -n "__fish_seen_subcommand_from -Il" -a "(find -- *.pacscript* | sed 's/.pacscript//g')"
-
-# Completion for the -T flag
-complete -f --command pacstall -n "__fish_seen_subcommand_from -T" -a "(\ls -1aA /var/log/pacstall/metadata | tr ' ' '\n')"
-
-# Completion for the -PI flag
-complete -f --command pacstall -n "__fish_seen_subcommand_from -PI" -a "$packages"
-
-# Completion for the -PR flag
-complete -f --command pacstall -n "__fish_seen_subcommand_from -PR" -a "(\ls -1aA /var/log/pacstall/metadata | tr ' ' '\n')"
-
-# Completion for the -PIl flag
-complete -f --command pacstall -n "__fish_seen_subcommand_from -PIl" -a "(find -- *.pacscript* | sed 's/.pacscript//g')"
+# Completion for the local pacscript flags
+complete -f --command pacstall -n "__fish_seen_subcommand_from $pacscript_commands" -a "(find -- *.pacscript* | sed 's/.pacscript//g')"
 
 # vim:set ft=sh ts=4 sw=4 noet:
