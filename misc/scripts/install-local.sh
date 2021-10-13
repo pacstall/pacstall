@@ -415,7 +415,11 @@ case "$url" in
 		if sudo apt install -y -f ./"${url##*/}" 2>/dev/null; then
 			log
 			if type -t postinst > /dev/null 2>&1; then
-				postinst
+				if ! postinst; then
+					error_log 5 "postinst hook"
+					fancy_message error "Could not run postinst hook successfully"
+					exit 1
+				fi
 			fi
 
 			fancy_message info "Storing pacscript"
@@ -452,8 +456,8 @@ case "$url" in
 esac
 
 if [[ -n $patch ]]; then
-		fancy_message info "Downloading patches"
-		mkdir -p PACSTALL_patchesdir
+	fancy_message info "Downloading patches"
+	mkdir -p PACSTALL_patchesdir
 	for i in "${patch[@]}"; do
 		wget -q "$i" -P PACSTALL_patchesdir &
 	done
