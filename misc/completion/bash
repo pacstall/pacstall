@@ -71,8 +71,12 @@ _pacstall() {
 			COMPREPLY=( $( compgen -W '$( _parse_help "$1" )' -- "$cur" ) )
 			return
 		;;
+		-P*)
+			COMPREPLY=( $( compgen -W "-PI -PS -PR -PA -PU -PV -PL -PUp -PQi -PT" -- "$cur" ) )
+			return
+		;;
 		*)
-			COMPREPLY=( $( compgen -W "-I -S -R -A -U -V -L -Up -Qi -T" "$cur" ) )
+			COMPREPLY=( $( compgen -W "-I -S -R -A -U -V -L -Up -Qi -T" -- "$cur" ) )
 			return
 		;;
 	esac
