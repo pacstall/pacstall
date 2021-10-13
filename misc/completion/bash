@@ -26,61 +26,41 @@ packages="$(compgen -W "$(sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/p
 _pacstall() {
 	cur=${COMP_WORDS[COMP_CWORD]}
 	prev=${COMP_WORDS[COMP_CWORD-1]}
-
+	
+	if [[ "-P --disable--prompts" =~ (^|[[:space:]])"$prev"($|[[:space:]]) ]]; then
+		prev=${COMP_WORDS[COMP_CWORD-2]}
+	fi
+	
 	case "$prev" in
 		-'?'|--help|-v|--version)
 			return
 		;;
 
-		-S|--search)
+		-?(P)S?(P)|--search)
 			COMPREPLY=($packages)
 			return
 		;;
 
-		-I|--install)
+		-?(P)I?(P)|--install)
 			COMPREPLY=($packages)
 			return
 		;;
 
-		-R|--remove)
+		-?(P)R?(P)|--remove)
 			COMPREPLY=( $( compgen -W "$(\ls -1aA /var/log/pacstall/metadata)" -- $cur ) )
 			return
 		;;
 
-		-Qi|--query-info)
+		-?(P)Qi?(P)|--query-info)
 			COMPREPLY=( $( compgen -W "$(\ls -1aAp /var/log/pacstall/metadata)" -- $cur ) )
 			return
 		;;
-		-Il|--install-local)
+		-?(P)Il?(P)|--install-local)
 			COMPREPLY=( $( compgen -W "$(find -- *.pacscript* 2>/dev/null | sed 's/.pacscript//g')" -- "$cur" ) )
 			return
 		;;
 
-		-D|--download)
-			COMPREPLY=($packages)
-			return
-		;;
-
-		-PS)
-			COMPREPLY=($packages)
-			return
-		;;
-
-		-PI)
-			COMPREPLY=($packages)
-			return
-		;;
-
-		-PQi)
-			COMPREPLY=( $( compgen -W "$(\ls -1aAp /var/log/pacstall/metadata)" -- $cur ) )
-			return
-		;;
-		-PIl)
-			COMPREPLY=( $( compgen -W "$(find -- *.pacscript* 2>/dev/null | sed 's/.pacscript//g')" -- "$cur" ) )
-			return
-		;;
-
-		-PD)
+		-?(P)D?(P)|--download)
 			COMPREPLY=($packages)
 			return
 		;;
