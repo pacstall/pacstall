@@ -134,12 +134,7 @@ function fancy_message() {
 # fi
 #
 # Y=1 and N=0
-# You can specify {Y,N} or leave it out to prevent entering the default but this is not allowed in pacstall because of the -P flag which gives unattended installs
-if [[ ! -t 0 ]]; then
-	NON_INTERACTIVE=true
-	fancy_message warn "Reading input from pipe"
-fi
-
+# You can specify {Y,N} or leave it out to prevent entering the default but this is not allowed in pacstall because of the -P flag which gives unattended install
 function ask() {
 	local prompt default reply
 
@@ -207,7 +202,6 @@ function download() {
 	fi
 }
 
-
 # Error out when run as root
 if [[ "$EUID" -eq 0 ]]; then
 	fancy_message error "Pacstall can't be run as root. Please run as a normal user."
@@ -218,6 +212,11 @@ fi
 [ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && sudo apt-get update -qq
 
 source "$STGDIR/scripts/error_log.sh"
+
+if [[ ! -t 0 ]]; then
+	NON_INTERACTIVE=true
+	fancy_message warn "Reading input from pipe"
+fi
 
 # Separate grouped short options
 argument_list=()
@@ -248,6 +247,27 @@ done
 
 # Set the new list of arguments
 set -- "${argument_list[@]}"
+
+function lock() {
+	ignore_short="-S -D -A -V -L -Qi -h"
+	ignore_long="--search --download --add-repo --version --query-info --help"
+	if [[ "$ignore" =~ (^|[[:space:]])"$1"($|[[:space:]]) ]]; then
+		return 1
+	elif [[ "$ignore" =~ (^|[[:space:]])"$2"($|[[:space:]]) ]]; then
+		return 1
+	elif [[ -f "/tmp/pacstall-pacdeps-$3" ]]; then
+		return 1
+	fi
+	pidof -o %PPID -x $0 >/dev/null && return 0 || return 1
+}
+
+while lock $1 $2 $3; do
+	if [[ -z $first ]]; then
+		first=1
+		fancy_message warn "Pacstall is already running another instance"
+	fi
+	sleep 1
+done
 
 while [[ ! "$1" == "--" ]]; do
 	case "$1" in
