@@ -72,11 +72,11 @@ _pacstall() {
 			return
 		;;
 		-P*)
-			COMPREPLY=( $( compgen -W "-PI -PS -PR -PA -PU -PV -PL -PUp -PQi -PT" -- "$cur" ) )
+			COMPREPLY=( $( compgen -W "-PI -PIl -PR -PUp" -- "$cur" ) )
 			return
 		;;
 		*)
-			COMPREPLY=( $( compgen -W "-I -S -R -A -U -V -L -Up -Qi -T" -- "$cur" ) )
+			COMPREPLY=( $( compgen -W "-I -Il -S -R -A -U -V -L -Up -Qi -T" -- "$cur" ) )
 			return
 		;;
 	esac
