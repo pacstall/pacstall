@@ -481,6 +481,7 @@ fi
 
 fancy_message info "Building"
 if ! build; then
+	error_log 5 "build $PACKAGE"
 	fancy_message error "Could not properly build $PACKAGE"
 	exit 1
 fi
@@ -490,6 +491,7 @@ trap - SIGINT
 
 fancy_message info "Installing"
 if ! install; then
+	error_log 5 "install $PACKAGE"
 	fancy_message error "Could not install $PACKAGE properly"
 	exit 1
 fi
@@ -532,7 +534,11 @@ fi
 # `hash -r` updates PATH database
 hash -r
 if type -t postinst > /dev/null 2>&1; then
-	postinst
+	if ! postinst; then
+		error_log 5 "postinst hook"
+		fancy_message error "Could not run postinst hook successfully"
+		exit 1
+	fi
 fi
 
 fancy_message info "Storing pacscript"
