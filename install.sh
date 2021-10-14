@@ -26,11 +26,13 @@
 NC="\033[0m"
 
 RED='\033[0;31m'
-GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-
+GREEN='\033[0;32m'
 BIGreen='\033[1;92m'
-BIRed='\033[1;91m'
+
+
+
+
 
 function fancy_message() {
 	# $1 = type , $2 = message
