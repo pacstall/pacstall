@@ -1,0 +1,54 @@
+= MAKEDEB(8)
+:doctype: manpage
+:hardbreaks:
+:manmanual: Pacstall Manual
+:mansource: Pacstall 1.5
+
+== NAME
+pacstall - AUR for Ubuntu
+
+== SYNOPSIS
+pacstall [FLAG] [INPUT]
+
+== DESCRIPTION
+Pacstall will attempt to become the AUR Ubuntu wishes it had. It takes the AUR and puts a spin on it, making it easier to install programs without scouring github repos and the likes
+
+== FLAGS
+*-I, --install*::
+Installs package from repository
+
+*-R, --remove*::
+Removes package from system
+
+*-S, --search*::
+Searches for package from repository. Look at -C flag to change repository
+
+*-A, --add-repo*::
+Run this command with a github/gitlab url to add a repo
+
+*-U, --update*::
+Run this command with no options to update pacstall. This is not for updating your packages
+
+*-Up, --update-packages*::
+Run this command to update packages
+
+*-L, --list*::
+Run this command with no options to list out all installed packages
+
+*-V, --version*::
+Run this without input to display pacstall version. Run with input to display version of that installed package
+
+*-D, --download*::
+Run this command with an input to download that particular package
+
+*-Qd, --query-depends*::
+Run this command with input to determine the dependencies of a package
+
+*-Qi, --query-info*::
+Run this command with input to get a list of metadata for said package
+
+== BUGS
+If you find any, please submit a bug request at <\https://github.com/pacstall/pacstall/issues>
+
+== AUTHOR
+Henry (\hwengerstickel@pm.me)
