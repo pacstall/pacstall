@@ -21,56 +21,66 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+packages="$(compgen -W "$(sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | awk '!seen[$0]++')" -- "$cur")"
+
 _pacstall() {
 	cur=${COMP_WORDS[COMP_CWORD]}
 	prev=${COMP_WORDS[COMP_CWORD-1]}
-
+	
+	if [[ "-P --disable-prompts" =~ (^|[[:space:]])"$prev"($|[[:space:]]) ]]; then
+		prev=${COMP_WORDS[COMP_CWORD-2]}
+	fi
+	
 	case "$prev" in
 		-'?'|--help|-v|--version)
 			return
 		;;
 
-		-S|--search)
-			COMPREPLY=( $( compgen -W "$(curl -s "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packagelist")" -- "$cur" ) )
+		-?(P)S?(P)|--search)
+			COMPREPLY=($packages)
 			return
 		;;
 
-		-I|--install)
-			COMPREPLY=( $( compgen -W "$(curl -s "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packagelist")" -- "$cur" ) )
+		-?(P)I?(P)|--install)
+			COMPREPLY=($packages)
 			return
 		;;
 
-		-R|--remove)
-			COMPREPLY=( $( compgen -W "$(/bin/ls -1aA /usr/src/pacstall)" -- $cur ) )
+		-?(P)R?(P)|--remove)
+			COMPREPLY=( $( compgen -W "$(\ls -1aA /var/log/pacstall/metadata)" -- $cur ) )
 			return
 		;;
 
-		-Qd|--query-depends)
-			COMPREPLY=( $( compgen -W "$(curl -s "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packagelist")" -- $cur ) )
+		-?(P)Qi?(P)|--query-info)
+			COMPREPLY=( $( compgen -W "$(\ls -1aAp /var/log/pacstall/metadata)" -- $cur ) )
+			return
+		;;
+		-?(P)Il?(P)|--install-local)
+			COMPREPLY=( $( compgen -W "$(find -- *.pacscript* 2>/dev/null | sed 's/.pacscript//g')" -- "$cur" ) )
 			return
 		;;
 
-		-Qi|--query-info)
-			COMPREPLY=( $( compgen -W "$(/bin/ls -1aAp /var/log/pacstall/metadata)" -- $cur ) )
+		-?(P)D?(P)|--download)
+			COMPREPLY=($packages)
 			return
 		;;
-		-Il|--install-local)
-			COMPREPLY=( $( compgen -W "$(find -- *.pacscript* | sed 's/.pacscript//g')" -- "$cur" ) )
-			return
-		;;
-
-		-D|--download)
-			COMPREPLY=( $( compgen -W "$(curl -s "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packagelist")" -- "$cur" ) )
-			return
 	esac
 
 	case "$cur" in
-		-*)
+		--*)
 			COMPREPLY=( $( compgen -W '$( _parse_help "$1" )' -- "$cur" ) )
 			return
 		;;
+		-P*)
+			COMPREPLY=( $( compgen -W "-PI -PIl -PR -PUp" -- "$cur" ) )
+			return
+		;;
 		*)
-			COMPREPLY=( $( compgen -W "-I -S -R -C -U -V -L -Up -Qd -Qi" "$cur" ) )
+			if [[ "-P" =~ (^|[[:space:]])${COMP_WORDS[COMP_CWORD-1]}($|[[:space:]]) ]] || [[ "--disable-prompts" =~ (^|[[:space:]])${COMP_WORDS[COMP_CWORD-1]}($|[[:space:]]) ]]; then
+				COMPREPLY=( $( compgen -W "-I -Il -R -Up" -- "$cur" ) )
+				return
+			fi			
+			COMPREPLY=( $( compgen -W "-I -Il -S -R -A -U -V -L -Up -Qi -T" -- "$cur" ) )
 			return
 		;;
 	esac
