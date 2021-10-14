@@ -82,7 +82,7 @@ function error_log() {
 			return 0
 		;;
 		12)
-			echo "[ $(date) | $scope ] Error 12 - Error parsing  pacscript." >> "$LOGFILE"
+			echo "[ $(date) | $scope ] Error 12 - Error parsing pacscript." >> "$LOGFILE"
 			return 0
 		;;
 		13)

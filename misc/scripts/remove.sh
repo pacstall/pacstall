@@ -77,7 +77,11 @@ case "$url" in
 
 		if fn_exists removescript; then
 			fancy_message info "Running post removal script"
-			removescript
+			if ! removescript; then
+				error_log 2 "removescript $PACKAGE"
+				fancy_message "Could not run removescript properly"
+				exit 1
+			fi
 		fi
 
 		if [[ -n "$_dependencies" ]]; then
