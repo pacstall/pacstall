@@ -58,63 +58,6 @@ if [[ ! -t 0 ]]; then
 	fancy_message warn "Reading input from pipe"
 fi
 
-function ask() {
-	local prompt default reply
-
-	if [[ ${2:-} = 'Y' ]]; then
-		prompt="${BIGreen}Y${NC}/${RED}n${NC}"
-		default='Y'
-	elif [[ ${2:-} = 'N' ]]; then
-		prompt="${GREEN}y${NC}/${BIRed}N${NC}"
-		default='N'
-	else
-		prompt="${GREEN}y${NC}/${RED}n${NC}"
-	fi
-
-	# Ask the question (not using "read -p" as it uses stderr not stdout)
-	echo -ne "$1 [$prompt] "
-
-	if [[ -z "$DISABLE_PROMPTS" ]]; then
-		read -r reply <&0
-		# Detect if script is running non-interactively
-		# Which implies that the input is being piped into the script
-		if [[ $NON_INTERACTIVE ]]; then
-			if [[ -z "$reply" ]]; then
-				printf "%s" "$default"
-			fi
-			echo "$reply"
-		fi
-	else
-		echo "$default"
-		reply=$default
-	fi
-
-	# Default?
-	if [[ -z $reply ]]; then
-		reply=$default
-	fi
-
-	while true; do
-		# Check if the reply is valid
-		case "$reply" in
-			Y*|y*)
-				export answer=1
-				return 0	#return code for backwards compatibility
-				break
-			;;
-			N*|n*)
-				export answer=0
-				return 1	#return code
-				break
-			;;
-			*)
-				echo -ne "$1 [$prompt] "
-				read -r reply < /dev/tty
-			;;
-		esac
-	done
-}
-
 if ! command -v apt &> /dev/null; then
 	fancy_message error "apt could not be found"
 	exit 1
@@ -138,10 +81,19 @@ fi
 
 fancy_message info "Installing packages"
 
-ask "Do you want to install axel?" Y
-if [[ "$answer" -eq 1 ]]; then
-    apt-get install -qq -y axel
+echo -ne ""Do you want to install axel?" [${BIGreen}Y${NC}/${RED}n${NC}] "
+if read -r reply <&0 && [[ -z $reply ]]; then
+	reply=Y
 fi
+
+case "$reply" in
+	N*|n*)
+		break
+	;;
+	*)
+		apt-get install -qq -y axel
+	;;
+esac
 
 apt-get install -qq -y curl wget stow build-essential unzip tree bc git iputils-ping
 
@@ -160,6 +112,7 @@ chown "$(logname)" -R "$SRCDIR"
 mkdir -p "$LOGDIR"
 mkdir -p "/var/log/pacstall/error_log"
 chown "$(logname)" -R "/var/log/pacstall/error_log"
+
 mkdir -p "/usr/share/man/man8"
 mkdir -p "/usr/share/bash-completion/completions"
 
