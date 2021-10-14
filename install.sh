@@ -82,17 +82,10 @@ fi
 fancy_message info "Installing packages"
 
 echo -ne ""Do you want to install axel?" [${BIGreen}Y${NC}/${RED}n${NC}] "
-if read -r reply <&0 && [[ -z $reply ]]; then
-	reply=Y
-fi
-
+read -r reply <&0
 case "$reply" in
-	N*|n*)
-		break
-	;;
-	*)
-		apt-get install -qq -y axel
-	;;
+	N*|n*) ;;
+	*) apt-get install -qq -y axel;;
 esac
 
 apt-get install -qq -y curl wget stow build-essential unzip tree bc git iputils-ping
