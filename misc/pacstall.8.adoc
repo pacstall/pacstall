@@ -2,10 +2,10 @@
 :doctype: manpage
 :hardbreaks:
 :manmanual: Pacstall Manual
-:mansource: Pacstall 1.5
+:mansource: Pacstall 1.6 Celadon
 
 == NAME
-pacstall - AUR for Ubuntu
+pacstall - An AUR inspired package manager for Ubuntu
 
 == SYNOPSIS
 pacstall [FLAG] [INPUT]
@@ -47,8 +47,11 @@ Run this command with input to determine the dependencies of a package
 *-Qi, --query-info*::
 Run this command with input to get a list of metadata for said package
 
+*-P, --disable-prompts*::
+Run this command with another command to accept the default values that Pacstall gives (pacstall -P -I pkg)
+
 == BUGS
 If you find any, please submit a bug request at <\https://github.com/pacstall/pacstall/issues>
 
 == AUTHOR
-Henry (\hwengerstickel@pm.me)
+The Pacstall team (\pacstall@pm.me)
