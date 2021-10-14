@@ -1,4 +1,4 @@
-= MAKEDEB(8)
+= PACSTALL(8)
 :doctype: manpage
 :hardbreaks:
 :manmanual: Pacstall Manual
