@@ -50,10 +50,10 @@ complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_com
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -PIl -d 'Install local package'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -PUp -d 'Upgrade packages'
 
-complete -f --command pacstall -n "__fish_seen_subcommand_from $pacstall_p && not __fish_seen_subcommand_from $pacstall_p_commands" -o I -d 'Install package'
-complete -f --command pacstall -n "__fish_seen_subcommand_from $pacstall_p && not __fish_seen_subcommand_from $pacstall_p_commands" -o R -d 'Remove package'
-complete -f --command pacstall -n "__fish_seen_subcommand_from $pacstall_p && not __fish_seen_subcommand_from $pacstall_p_commands" -o Il -d 'Install local package'
-complete -f --command pacstall -n "__fish_seen_subcommand_from $pacstall_p && not __fish_seen_subcommand_from $pacstall_p_commands" -o Up -d 'Upgrade packages'
+complete -f --command pacstall -n "__fish_seen_subcommand_from $pacstall_p && not __fish_seen_subcommand_from $pacstall_p_commands" -o I -l install -d 'Install package'
+complete -f --command pacstall -n "__fish_seen_subcommand_from $pacstall_p && not __fish_seen_subcommand_from $pacstall_p_commands" -o R -l remove -d 'Remove package'
+complete -f --command pacstall -n "__fish_seen_subcommand_from $pacstall_p && not __fish_seen_subcommand_from $pacstall_p_commands" -o Il -l install-local  -d 'Install local package'
+complete -f --command pacstall -n "__fish_seen_subcommand_from $pacstall_p && not __fish_seen_subcommand_from $pacstall_p_commands" -o Up  -l upgrade -d 'Upgrade packages'
 
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -IP -d 'Install package'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -RP -d 'Remove package'
