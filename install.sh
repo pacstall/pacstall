@@ -83,7 +83,7 @@ fi
 
 fancy_message info "Installing packages"
 
-echo -ne ""Do you want to install axel (faster downloads)?" [${BIGreen}Y${NC}/${RED}n${NC}] "
+echo -ne "Do you want to install axel (faster downloads)? [${BIGreen}Y${NC}/${RED}n${NC}] "
 read -r reply <&0
 case "$reply" in
 	N*|n*) ;;
