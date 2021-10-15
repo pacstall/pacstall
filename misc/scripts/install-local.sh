@@ -393,10 +393,6 @@ case "$url" in
 		sudo git clone --quiet --depth=1 --jobs=10 "$url"
 		# cd into the directory
 		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the cloned git repository" )
-		# The srcdir is /tmp/pacstall/foo
-		export srcdir="$PWD"
-		# Make the directory available for users
-		sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
 		# Check the integrity
 		git fsck --full
 	;;
@@ -410,10 +406,6 @@ case "$url" in
 		sudo unzip -q "${url##*/}" 1>&1 2>/dev/null
 		# cd into it
 		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive" )
-		# export srcdir
-		export srcdir="$PWD"
-		# Make the directory available for users
-		sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
 	;;
 	*.deb)
 		download "$url"
@@ -450,6 +442,12 @@ case "$url" in
 			return 1
 		fi
 	;;
+	*.AppImage)
+		download "$url"
+		if ! hashcheck "${url##*/}"; then
+			return 1
+		fi
+	;;
 	*)
 		download "$url"
 		# I think you get it by now
@@ -458,10 +456,11 @@ case "$url" in
 		fi
 		sudo tar -xf "${url##*/}" 1>&1 2>/dev/null
 		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive" )
-		export srcdir="$PWD"
-		sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
 	;;
 esac
+
+export srcdir="$PWD"
+sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
 
 if [[ -n $patch ]]; then
 	fancy_message info "Downloading patches"
