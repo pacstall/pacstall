@@ -185,8 +185,27 @@ Replace: ${replace//' '/', '}" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/cont
 Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
 Description: This is a symbolic package used by pacstall, may be removed with apt or dpkg. $description\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 
-	echo '#!/bin/bash
-if [[ PACSTALL_REMOVE != "true" ]]; then
+	echo '#!/usr/bin/env bash
+function ask() {
+	local default reply
+	if [[ ${2:-} = "Y" ]]; then
+		echo -ne "$1 [Y/n] "
+		default="Y"
+	elif [[ ${2:-} = "N" ]]; then
+		echo -ne "$1 [y/N] "
+	fi
+	default=${2:-}
+	read -r reply <&0
+	if [[ -z $reply ]]; then
+		reply=$default
+	fi
+	case "$reply" in
+		Y*|y*) export answer=1;;
+		N*|n*) export answer=0;;
+	esac
+}
+if [[ -z $PACSTALL_REMOVE ]] && [[ -z $PACSTALL_INSTALL ]]; then
+	export -f ask
 	source /var/cache/pacstall/'"$name"'/'"$version"'/'"$name"'.pacscript 2>&1 /dev/null
 	sudo mkdir -p '"$STOWDIR"'
 	cd '"$STOWDIR"'
@@ -210,13 +229,13 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 		cleanup
 		return 1
 	fi
-
+	export PACSTALL_INSTALL=1
 	sudo rm -rf "$SRCDIR/$name-pacstall"
-	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" 2> "/dev/null"
+	sudo --preserve-env=PACSTALL_INSTALL dpkg -i "$SRCDIR/$name-pacstall.deb" 2> "/dev/null"
 
 
 	fancy_message info "Installing dependencies"
-	if ! sudo apt-get install $optinstall -f -y -qq -o=Dpkg::Use-Pty=0; then
+	if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install $optinstall -f -y -qq -o=Dpkg::Use-Pty=0; then
 		fancy_message error "Failed to install dependencies"
 		error_log 8 "install $PACKAGE"
 		sudo dpkg -r --force-all "$name" > /dev/null
@@ -224,8 +243,9 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 		cleanup
 		return 1
 	fi
-	sudo dpkg -i "$SRCDIR/$name-pacstall.deb" > "/dev/null"
+	sudo --preserve-env=PACSTALL_INSTALL dpkg -i "$SRCDIR/$name-pacstall.deb" > "/dev/null"
 	sudo rm "$SRCDIR/$name-pacstall.deb"
+	unset PACSTALL_INSTALL
 	return 0
 }
 
