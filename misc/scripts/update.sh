@@ -37,6 +37,7 @@ for i in {error_log.sh,add-repo.sh,search.sh,download.sh,install-local.sh,upgrad
 done
 
 sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/pacstall -P /bin &
+sudo wget -q -O /usr/share/man/man8/pacstall.8.gz https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/pacstall.8.gz &
 sudo mkdir -p /usr/share/bash-completion/completions &
 sudo wget -q -O /usr/share/bash-completion/completions/pacstall https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/completion/bash &
 
