@@ -290,14 +290,22 @@ if ! checks; then
 	return 1
 fi
 
-if [[ -n "$build_depends" ]]; then
+# Get all uninstalled build depends
+for build_dep in $build_depends; do
+	if dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null | grep "^install ok installed" > /dev/null 2>&1; then
+		build_depends=$(echo $build_depends | sed -e "s/ *${build_dep}*/ /");
+	fi;
+done
+
+# This echo makes it ignore empty strigs
+if [[ -n "$(echo "$build_depends")" ]]; then
 	fancy_message info "${BLUE}$name${NC} requires ${CYAN}$(echo -e "$build_depends")${NC} to install"
 	ask "Do you want to remove them after installing ${BLUE}$name${NC}" N
 	if [[ $answer -eq 1 ]]; then
 		NOBUILDDEP=0
+	else
+		NOBUILDDEP=1
 	fi
-else
-	NOBUILDDEP=1
 fi
 
 # Trap Crtl+C just before the point cleanup is first needed
@@ -527,7 +535,7 @@ if ! install; then
 	exit 1
 fi
 
-if [[ $REMOVE_DEPENDS = y ]]; then
+if [[ $NOBUILDDEP -eq 1 ]]; then
 	sudo apt-get remove $build_depends
 fi
 
