@@ -252,13 +252,13 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 ask "Do you want to view/edit the pacscript" N
 if [[ $answer -eq 1 ]]; then
 	if [[ -n $PACSTALL_EDITOR ]]; then
-		sudo $PACSTALL_EDITOR "$PACKAGE".pacscript
+		$PACSTALL_EDITOR "$PACKAGE".pacscript
 	elif [[ -n $EDITOR ]]; then
-		sudo $EDITOR "$PACKAGE".pacscript
+		$EDITOR "$PACKAGE".pacscript
 	elif [[ -n $VISUAL ]]; then
-		sudo $VISUAL "$PACKAGE".pacscript
+		$VISUAL "$PACKAGE".pacscript
 	else
-		sudo sensible-editor "$PACKAGE".pacscript
+		sensible-editor "$PACKAGE".pacscript
 	fi
 fi
 
