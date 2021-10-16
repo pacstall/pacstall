@@ -200,8 +200,8 @@ function ask() {
 		reply=$default
 	fi
 	case "$reply" in
-		Y*|y*) export answer=1;;
-		N*|n*) export answer=0;;
+		Y*|y*) export answer=1; return 0;;
+		N*|n*) export answer=0; return 1;;
 	esac
 }
 if [[ -z $PACSTALL_REMOVE ]] && [[ -z $PACSTALL_INSTALL ]]; then
