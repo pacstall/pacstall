@@ -9,4 +9,4 @@ jobs:
         with:
           args:
         env:
-          REMOTE_BASH_URL: https://github.com/pacstall/pacstall/raw/1.6-hotfix/.github/workflows/workflow.sh
+          REMOTE_BASH_URL: https://github.com/NarutoXY/pacstall/raw/fix-ci/.github/workflows/workflow.sh
