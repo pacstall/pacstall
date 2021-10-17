@@ -315,27 +315,25 @@ if [[ -n "$pacdeps" ]]; then
 	done
 fi
 
-if echo -n "$depends" > /dev/null 2>&1; then
-	if [[ -n "$breaks" ]]; then
-		for pkgk in $breaks; then
-			if dpkg-query -W -f='${Status}' "${pgk}" 2> /dev/null | grep "^install ok installed" > /dev/null 2>&1 && ! pacstall -L | grep "${pkg}" > /dev/null 2>&1 && [[ "${break}" != "${name}" ]] ; then
-				# Check if anything in breaks variable is installed already
-				fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by apt"
-				error_log 13 "install $PACKAGE"
-				fancy_message info "Cleaning up"
-				cleanup
-				return 1
-			fi
-			if pacstall -L | grep "${pkg}" > /dev/null 2>&1 && [[ "${pgk}" != "${name}" ]] ; then
-				# Same thing, but check if anything is installed with pacstall
-				fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by pacstall"
-				error_log 13 "install $PACKAGE"
-				fancy_message info "Cleaning up"
-				cleanup
-				return 1
-			fi
-		done
-	fi
+if [[ -n "$breaks" ]]; then
+	for pkgk in $breaks; then
+		if dpkg-query -W -f='${Status}' "${pgk}" 2> /dev/null | grep "^install ok installed" > /dev/null 2>&1 && ! pacstall -L | grep "${pkg}" > /dev/null 2>&1 && [[ "${break}" != "${name}" ]] ; then
+			# Check if anything in breaks variable is installed already
+			fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by apt"
+			error_log 13 "install $PACKAGE"
+			fancy_message info "Cleaning up"
+			cleanup
+			return 1
+		fi
+		if pacstall -L | grep "${pkg}" > /dev/null 2>&1 && [[ "${pgk}" != "${name}" ]] ; then
+			# Same thing, but check if anything is installed with pacstall
+			fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by pacstall"
+			error_log 13 "install $PACKAGE"
+			fancy_message info "Cleaning up"
+			cleanup
+			return 1
+		fi
+	done
 fi
 
 if [[ -n $replace ]]; then
