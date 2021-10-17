@@ -317,7 +317,7 @@ fi
 
 if [[ -n "$breaks" ]]; then
 	for pkg in $breaks; then
-		if dpkg-query -W -f='${Status} ${Section}' "${pgk}" 2> /dev/null | grep "^install ok installed" | grep -v "Pacstall" > /dev/null 2>&1; then
+		if dpkg-query -W -f='${Status} ${Section}' "${pkg}" 2> /dev/null | grep "^install ok installed" | grep -v "Pacstall" > /dev/null 2>&1; then
 			# Check if anything in breaks variable is installed already
 			fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by apt"
 			error_log 13 "install $PACKAGE"
@@ -325,7 +325,7 @@ if [[ -n "$breaks" ]]; then
 			cleanup
 			return 1
 		fi
-		if [[ "${pgk}" != "${name}" ]] && pacstall -L | grep "${pkg}" > /dev/null 2>&1; then
+		if [[ "${pkg}" != "${name}" ]] && pacstall -L | grep "${pkg}" > /dev/null 2>&1; then
 			# Same thing, but check if anything is installed with pacstall
 			fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by pacstall"
 			error_log 13 "install $PACKAGE"
