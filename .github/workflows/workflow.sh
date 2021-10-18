@@ -2,11 +2,18 @@
 
 apt install -y sudo bc wget iputils-ping network-manager
 echo "N" | sudo bash -c "$(curl -fsSL https://git.io/JsADh || wget -q https://git.io/JsADh -O -)"
-# wget https://github.com/pacstall/pacstall/releases/download/1.6/pacstall-1.6.deb
-# apt install -y ./pacstall-1.6.deb
-# apt remove -y axel
 useradd -m -d /home/pacstall pacstall
 usermod -a -G sudo pacstall
+
+# chowning
+LOGDIR="/var/log/pacstall/metadata"
+STGDIR="/usr/share/pacstall"
+SRCDIR="/tmp/pacstall"
+chown pacstall -R "$SRCDIR"
+chown pacstall -R "$LOGDIR"
+chown pacstall -R "/var/log/pacstall/error_log"
+export LOGNAME = "pacstall"
+
 echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 sudo -u pacstall bash -c : && RUNAS="sudo -u pacstall"
 
