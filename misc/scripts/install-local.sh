@@ -535,7 +535,7 @@ if ! install; then
 fi
 
 if [[ $NOBUILDDEP -eq 1 ]]; then
-	sudo apt-get remove -y $build_depends
+	sudo apt-get remove -y "$build_depends"
 fi
 
 cd "$HOME" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${HOME}" )
