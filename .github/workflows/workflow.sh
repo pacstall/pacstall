@@ -12,7 +12,7 @@ SRCDIR="/tmp/pacstall"
 chown pacstall -R "$SRCDIR"
 chown pacstall -R "$LOGDIR"
 chown pacstall -R "/var/log/pacstall/error_log"
-export LOGNAME = "pacstall"
+export LOGNAME="pacstall"
 
 echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 sudo -u pacstall bash -c : && RUNAS="sudo -u pacstall"
