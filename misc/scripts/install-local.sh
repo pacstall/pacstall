@@ -200,8 +200,8 @@ function ask() {
 		reply=$default
 	fi
 	case "$reply" in
-		Y*|y*) export answer=1;;
-		N*|n*) export answer=0;;
+		Y*|y*) export answer=1; return 0;;
+		N*|n*) export answer=0; return 1;;
 	esac
 }
 if [[ -z $PACSTALL_REMOVE ]] && [[ -z $PACSTALL_INSTALL ]]; then
@@ -290,19 +290,15 @@ if ! checks; then
 	return 1
 fi
 
-if [[ -n "$build_depends" ]]; then
-	fancy_message info "${BLUE}$name${NC} requires ${CYAN}$(echo -e "$build_depends")${NC} to install"
-	ask "Do you want to remove them after installing ${BLUE}$name${NC}" N
-	if [[ $answer -eq 1 ]]; then
-		NOBUILDDEP=0
-	fi
-else
-	NOBUILDDEP=1
-fi
-
 # Trap Crtl+C just before the point cleanup is first needed
 trap "trap_ctrlc" 2
 
+if [[ -n "$ppa" ]]; then
+	for i in "${ppa[@]}"; do
+		# Add ppa, but ppa bad I guess
+		sudo add-apt-repository ppa:"$i"
+	done
+fi
 
 if [[ -n "$pacdeps" ]]; then
 	for i in "${pacdeps[@]}"; do
@@ -319,25 +315,25 @@ if [[ -n "$pacdeps" ]]; then
 	done
 fi
 
-if echo -n "$depends" > /dev/null 2>&1; then
-	if [[ -n "$breaks" ]]; then
-		if dpkg-query -W -f='${Status}' "${breaks}" 2> /dev/null | grep "^install ok installed" > /dev/null 2>&1; then
+if [[ -n "$breaks" ]]; then
+	for pkg in $breaks; do
+		if dpkg-query -W -f='${Status} ${Section}' "${pkg}" 2> /dev/null | grep "^install ok installed" | grep -v "Pacstall" > /dev/null 2>&1; then
 			# Check if anything in breaks variable is installed already
-			fancy_message error "${RED}$name${NC} breaks $breaks, which is currently installed by apt"
+			fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by apt"
 			error_log 13 "install $PACKAGE"
 			fancy_message info "Cleaning up"
 			cleanup
 			return 1
 		fi
-		if [[ $(pacstall -L) == $breaks ]]; then
+		if [[ "${pkg}" != "${name}" ]] && pacstall -L | grep "${pkg}" > /dev/null 2>&1; then
 			# Same thing, but check if anything is installed with pacstall
-			fancy_message error "${RED}$name${NC} breaks $breaks, which is currently installed by pacstall"
+			fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by pacstall"
 			error_log 13 "install $PACKAGE"
 			fancy_message info "Cleaning up"
 			cleanup
 			return 1
 		fi
-	fi
+	done
 fi
 
 if [[ -n $replace ]]; then
@@ -353,14 +349,25 @@ if [[ -n $replace ]]; then
 	fi
 fi
 
-if [[ -n "$ppa" ]]; then
-	for i in "${ppa[@]}"; do
-		# Add ppa, but ppa bad I guess
-		sudo add-apt-repository ppa:"$i"
-	done
-fi
+# Get all uninstalled build depends
+for build_dep in $build_depends; do
+	if dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null | grep "^install ok installed" > /dev/null 2>&1; then
+		build_depends=${build_depends/"${build_dep}"/};
+	fi;
+done
 
-if [[ $NOBUILDDEP -eq 0 ]]; then
+build_depends=$(echo "$build_depends" | tr -s ' ' | awk '{gsub(/^ +| +$/,"")} {print $0}')
+
+# This echo makes it ignore empty strigs
+if [[ -n "$build_depends" ]]; then
+	fancy_message info "${BLUE}$name${NC} requires ${CYAN}$(echo -e "$build_depends")${NC} to install"
+	ask "Do you want to remove them after installing ${BLUE}$name${NC}" N
+	if [[ $answer -eq 0 ]]; then
+		NOBUILDDEP=0
+	else
+		NOBUILDDEP=1
+	fi
+
 	if ! sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $build_depends; then
 		fancy_message error "Failed to install build dependencies"
 		error_log 8 "install $PACKAGE"
@@ -527,8 +534,8 @@ if ! install; then
 	exit 1
 fi
 
-if [[ $REMOVE_DEPENDS = y ]]; then
-	sudo apt-get remove $build_depends
+if [[ $NOBUILDDEP -eq 1 ]]; then
+	sudo apt-get remove -y "$build_depends"
 fi
 
 cd "$HOME" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${HOME}" )
