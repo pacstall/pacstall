@@ -414,6 +414,9 @@ else
 	fi
 fi
 
+sudo mkdir -p "/tmp/pacstall"
+sudo chown "$LOGNAME" -R /tmp/pacstall
+
 case "$url" in
 	*.git)
 		# git clone quietly, with no history, and if submodules are there, download with 10 jobs
