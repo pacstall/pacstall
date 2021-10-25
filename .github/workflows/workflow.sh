@@ -1,6 +1,5 @@
 #!/bin/bash
 
-apt install -y sudo bc wget iputils-ping network-manager
 export PACSTALL_SKIP_NETWORK_CHECK=1
 echo "N" | sudo bash -c "$(curl -fsSL https://git.io/JsADh || wget -q https://git.io/JsADh -O -)"
 useradd -m -d /home/pacstall pacstall
