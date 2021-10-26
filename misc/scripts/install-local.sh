@@ -576,6 +576,7 @@ if ! command -v stow > /dev/null; then
 		fancy_message info "Cleaning up"
 		cleanup
 		return 1
+	fi
 fi
 
 # Magic time. This installs the package to /, so `/usr/src/pacstall/foo/usr/bin/foo` -> `/usr/bin/foo`
