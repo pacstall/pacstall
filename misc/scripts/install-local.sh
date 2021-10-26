@@ -507,6 +507,9 @@ export pkgdir="/usr/src/pacstall/$name"
 fancy_message info "Preparing"
 if ! prepare; then
 	fancy_message error "Could not prepare $PACKAGE properly"
+	sudo dpkg -r "$name" > /dev/null
+	fancy_message info "Cleaning up"
+	cleanup
 	exit 1
 fi
 
@@ -524,6 +527,9 @@ fancy_message info "Building"
 if ! build; then
 	error_log 5 "build $PACKAGE"
 	fancy_message error "Could not properly build $PACKAGE"
+	sudo dpkg -r "$name" > /dev/null
+	fancy_message info "Cleaning up"
+	cleanup
 	exit 1
 fi
 
@@ -534,6 +540,9 @@ fancy_message info "Installing"
 if ! install; then
 	error_log 14 "install $PACKAGE"
 	fancy_message error "Could not install $PACKAGE properly"
+	sudo dpkg -r "$name" > /dev/null
+	fancy_message info "Cleaning up"
+	cleanup
 	exit 1
 fi
 
@@ -549,16 +558,24 @@ log
 fancy_message info "Symlinking files"
 sudo mkdir -p "$STOWDIR"
 if ! cd "$STOWDIR" 2> /dev/null ; then
-	error_log 1 "install $PACKAGE"; fancy_message error "Could not enter into ${STOWDIR}"; exit 1
+	error_log 1 "install $PACKAGE";
+	fancy_message error "Could not enter into ${STOWDIR}";
+	sudo dpkg -r "$name" > /dev/null
+	fancy_message info "Cleaning up"
+	cleanup
+	exit 1
 fi
 
 # By default (I think), stow symlinks to the directory behind it (..), but we want to symlink to /, or in other words, symlink files from pkg/usr to /usr
 if ! command -v stow > /dev/null; then
 	# If stow failed to install, install it
-	sudo apt-get install stow -y
-	if ! cd "$STOWDIR" 2> /dev/null; then
-		error_log 1 "install $PACKAGE"; fancy_message error "Could not enter into ${STOWDIR}"; exit 1
-	fi
+	if ! sudo apt-get install stow -y; then
+		fancy_message error "Failed to install the pacstall dependency stow"
+		error_log 15 "install $PACKAGE"
+		sudo dpkg -r "$name" > /dev/null
+		fancy_message info "Cleaning up"
+		cleanup
+		return 1
 fi
 
 # Magic time. This installs the package to /, so `/usr/src/pacstall/foo/usr/bin/foo` -> `/usr/bin/foo`
@@ -578,6 +595,9 @@ if type -t postinst > /dev/null 2>&1; then
 	if ! postinst; then
 		error_log 5 "postinst hook"
 		fancy_message error "Could not run postinst hook successfully"
+		sudo dpkg -r "$name" > /dev/null
+		fancy_message info "Cleaning up"
+		cleanup
 		exit 1
 	fi
 fi
@@ -585,8 +605,14 @@ fi
 fancy_message info "Storing pacscript"
 sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
 if ! cd "$DIR" 2> /dev/null; then
-	error_log 1 "install $PACKAGE"; fancy_message error "Could not enter into ${DIR}"; exit 1
+	error_log 1 "install $PACKAGE"
+	fancy_message error "Could not enter into ${DIR}"
+	sudo dpkg -r "$name" > /dev/null
+	fancy_message info "Cleaning up"
+	cleanup
+	exit 1
 fi
+
 sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 sudo chmod o+r /var/cache/pacstall/"$PACKAGE"/"$version"/"$PACKAGE".pacscript
 
