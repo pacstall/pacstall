@@ -64,6 +64,11 @@ _pacstall() {
 			COMPREPLY=($packages)
 			return
 		;;
+		
+		-?(P)K?(P)|--keep)
+			COMPREPLY=($packages)
+			return
+		;;
 	esac
 
 	case "$cur" in
