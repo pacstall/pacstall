@@ -26,7 +26,8 @@ set packages (sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.
 # Flag lists
 set -l pacstall_commands -I --install -PI -IP -Il --install-local -PIl -IlP -S --search -R -PR -RP --remove -A --add-repo -U --update -V --version -L --list -Up -PUp -UpP --upgradee -Qi --query-info -D --download -T --tree -P --disable-prompts
 set -l pacstall_p_commands -I --install -Il --install-local -R --remove -Up --upgrade
-set -l pacstall_p -P --disable-prompts
+set -l pacstall_p -P --disable-prompts 
+set -l pacstall_k_commands -I --install -Il --install-local -PI -PIl
 
 # Completion for normal commands
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -o S -l search -d 'Search for package'
@@ -42,7 +43,8 @@ complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_com
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -o R -l remove -d 'Remove package'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -o Il -l install-local -d 'Install local package'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -o Up -l upgrade -d 'Upgrade packages'
-complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -o K -l keep -d 'Retain build directory'
+
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_k_commands" -o K -l keep -d 'Retain build directory'
 
 # Completions for P commands
 
