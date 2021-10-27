@@ -66,7 +66,7 @@ _pacstall() {
 		;;
 		
 		-?(P)K?(P)|--keep)
-			COMPREPLY=($packages)
+			COMPREPLY=( $( compgen -W "-I -Il -PI -PIl -PR -PUp" -- "$cur" ) )
 			return
 		;;
 	esac
