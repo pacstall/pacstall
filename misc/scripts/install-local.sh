@@ -23,7 +23,18 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 function cleanup () {
-	if [[ -z ${KEEP+x} ]]; then
+	if [[ -n $KEEP ]]; then
+		mkdir -p /tmp/pacstall-keep
+		if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
+			sudo mv /tmp/pacstall-pacdeps-"$PACKAGE" /tmp/pacstall-keep/pacstall-pacdeps-"$PACKAGE"
+			sudo mv /tmp/pacstall-pacdep /tmp/pacstall-keep/pacstall-pacdep
+		else
+			sudo mv /tmp/pacstall /tmp/pacstall-keep/pacstall
+		fi
+		if [[ -f /tmp/pacstall-optdepends ]]; then
+			sudo mv /tmp/pacstall-optdepends /tmp/pacstall-keep/pacstall-optdepends
+		fi
+	else
 		if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
 			sudo rm -rf /tmp/pacstall-pacdeps-"$PACKAGE"
 			sudo rm -rf /tmp/pacstall-pacdep
