@@ -24,15 +24,15 @@
 
 function cleanup () {
 	if [[ -n $KEEP ]]; then
-		mkdir -p /tmp/pacstall-keep/$name
+		mkdir -p /"tmp/pacstall-keep/$name"
 		if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
-			sudo mv /tmp/pacstall-pacdeps-"$PACKAGE" /tmp/pacstall-keep/$name/pacstall-pacdeps-"$PACKAGE"
-			sudo mv /tmp/pacstall-pacdep /tmp/pacstall-keep/$name/pacstall-pacdep
+			sudo mv "/tmp/pacstall-pacdeps-$PACKAGE" "/tmp/pacstall-keep/$name/pacstall-pacdeps-$PACKAGE"
+			sudo mv "/tmp/pacstall-pacdep" "/tmp/pacstall-keep/$name/pacstall-pacdep"
 		else
-			sudo mv /tmp/pacstall /tmp/pacstall-keep/$name/pacstall
+			sudo mv "/tmp/pacstall" "/tmp/pacstall-keep/$name/pacstall"
 		fi
 		if [[ -f /tmp/pacstall-optdepends ]]; then
-			sudo mv /tmp/pacstall-optdepends /tmp/pacstall-keep/$name/pacstall-optdepends
+			sudo mv "/tmp/pacstall-optdepends" "/tmp/pacstall-keep/$name/pacstall-optdepends"
 		fi
 	else
 		if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
