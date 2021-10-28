@@ -1,6 +1,8 @@
-# Alpha branch
+# WIP
 
-## This is v2 alpha branch. We aim to migrate pacstall v2 to python as python is faster than bash. This branch contains all the python code for pacstall v2.
+This is the python rewrite branch.
+
+---
 
 <p align="center">
 <a href="https://github.com/pacstall/pacstall/releases/latest"><img src="https://img.shields.io/github/v/release/pacstall/pacstall?color=red&style=flat-square"></a>
