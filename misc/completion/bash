@@ -77,11 +77,11 @@ _pacstall() {
 			return
 		;;
 		-P*)
-			COMPREPLY=( $( compgen -W "-PI -PIl -PR -PUp" -- "$cur" ) )
+			COMPREPLY=( $( compgen -W "-PK -PI -PIl -PR -PUp -PKI -PKIl -PKR -PKUp" -- "$cur" ) )
 			return
 		;;
 		-K*)
-			COMPREPLY=( $( compgen -W "-KP -KI -KIl -KR -KUp" -- "$cur" ) )
+			COMPREPLY=( $( compgen -W "-KP -KI -KIl -KR -KUp -KPI -KPIl -KPR -KPUp" -- "$cur" ) )
 			return
 		;;
 		*)
