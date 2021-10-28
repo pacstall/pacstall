@@ -24,10 +24,11 @@
 set packages (sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | awk '!seen[$0]++')
 
 # Flag lists
-set -l pacstall_commands -I --install -PI -IP -Il --install-local -PIl -IlP -S --search -R -PR -RP --remove -A --add-repo -U --update -V --version -L --list -Up -PUp -UpP --upgradee -Qi --query-info -D --download -T --tree -P --disable-prompts -K --keep -PK
+set -l pacstall_commands -I --install -PI -IP -Il --install-local -PIl -IlP -S --search -R -PR -RP --remove -A --add-repo -U --update -V --version -L --list -Up -PUp -UpP --upgradee -Qi --query-info -D --download -T --tree -P --disable-prompts -K --keep -PK -PI -PIl -PR -PUp -PKI -PKIl -PKUp -KP -KI -KIl -KR -KUp -KPI -KPIl -KPUp
 set -l pacstall_p_commands -I --install -Il --install-local -R --remove -Up --upgrade
 set -l pacstall_p -P --disable-prompts 
-set -l pacstall_k_commands -I --install -Il --install-local -Up --upgrade -PI -PIl -PUp
+set -l pacstall_k -K --keep
+set -l pacstall_k_commands -I --install -Il --install-local -Up --upgrade
 
 # Completion for normal commands
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -o S -l search -d 'Search for package'
@@ -52,18 +53,44 @@ complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_com
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -PR -d 'Remove package'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -PIl -d 'Install local package'
 complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -PUp -d 'Upgrade packages'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -PK -d 'Retain build dir'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -PKI -d 'Install package'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -PKIl -d 'Install local package'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -PKUp -d 'Upgrade packages'
 
 complete -f --command pacstall -n "__fish_seen_subcommand_from $pacstall_p && not __fish_seen_subcommand_from $pacstall_p_commands" -o I -l install -d 'Install package'
 complete -f --command pacstall -n "__fish_seen_subcommand_from $pacstall_p && not __fish_seen_subcommand_from $pacstall_p_commands" -o R -l remove -d 'Remove package'
 complete -f --command pacstall -n "__fish_seen_subcommand_from $pacstall_p && not __fish_seen_subcommand_from $pacstall_p_commands" -o Il -l install-local  -d 'Install local package'
 complete -f --command pacstall -n "__fish_seen_subcommand_from $pacstall_p && not __fish_seen_subcommand_from $pacstall_p_commands" -o Up  -l upgrade -d 'Upgrade packages'
+complete -f --command pacstall -n "__fish_seen_subcommand_from $pacstall_p && not __fish_seen_subcommand_from $pacstall_p_commands" -o KI -l install -d 'Install package'
+complete -f --command pacstall -n "__fish_seen_subcommand_from $pacstall_p && not __fish_seen_subcommand_from $pacstall_p_commands" -o KIl -l install-local  -d 'Install local package'
+complete -f --command pacstall -n "__fish_seen_subcommand_from $pacstall_p && not __fish_seen_subcommand_from $pacstall_p_commands" -o KUp  -l upgrade -d 'Upgrade packages'
 
 complete -f --command pacstall -n "__fish_seen_subcommand_from $pacstall_p_commands && not __fish_seen_subcommand_from $pacstall_p" -s P -l disable-prompts -d 'Disable prompts'
 
+# Completions for K commands 
+
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -KI -d 'Install package'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -KIl -d 'Install local package'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -KUp -d 'Upgrade packages'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -KP -d 'Disable prompts'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -KPI -d 'Install package'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -KPIl -d 'Install local package'
+complete -f --command pacstall -n "not __fish_seen_subcommand_from $pacstall_commands" -a -KPUp -d 'Upgrade packages'
+
+complete -f --command pacstall -n "__fish_seen_subcommand_from $pacstall_p && not __fish_seen_subcommand_from $pacstall_p_commands" -o I -l install -d 'Install package'
+complete -f --command pacstall -n "__fish_seen_subcommand_from $pacstall_p && not __fish_seen_subcommand_from $pacstall_p_commands" -o Il -l install-local  -d 'Install local package'
+complete -f --command pacstall -n "__fish_seen_subcommand_from $pacstall_p && not __fish_seen_subcommand_from $pacstall_p_commands" -o Up  -l upgrade -d 'Upgrade packages'
+complete -f --command pacstall -n "__fish_seen_subcommand_from $pacstall_p && not __fish_seen_subcommand_from $pacstall_p_commands" -o PI -l install -d 'Install package'
+complete -f --command pacstall -n "__fish_seen_subcommand_from $pacstall_p && not __fish_seen_subcommand_from $pacstall_p_commands" -o PIl -l install-local  -d 'Install local package'
+complete -f --command pacstall -n "__fish_seen_subcommand_from $pacstall_p && not __fish_seen_subcommand_from $pacstall_p_commands" -o PUp  -l upgrade -d 'Upgrade packages'
+
+complete -f --command pacstall -n "__fish_seen_subcommand_from $pacstall_k_commands && not __fish_seen_subcommand_from $pacstall_k" -s K -l keep -d 'Retain build dir'
+
 # Command type lists
-set -l package_commands -I -PI -IP --install -S --search -D --download
+set -l package_commands -I -PI -IP --install -S --search -D --download -KI -IK -KPI -KIP -PKI -PIK -IKP -IPK
 set -l log_commands -R -PR -RP --remove -L --list -Qi --query-info -T --tree
-set -l pacscript_commands -Il -PIl -IlP --install-local
+set -l pacscript_commands -Il -PIl -IlP --install-local -KIl -IlK -PKIl -PIlK -KIlP -KPIl -IlKP -IlPK
 
 # Completion for the package related flags
 complete -f --command pacstall -n "__fish_seen_subcommand_from $package_commands" -a "$packages"
