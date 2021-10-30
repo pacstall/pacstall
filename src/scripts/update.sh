@@ -25,25 +25,30 @@
 # Update should be self-contained and should use mutable functions or variables
 # Color variables are ok, while "$USERNAME" and "$BRANCH" are needed
 
-echo -ne "Are you sure you want to update pacstall? [${GREEN}y${NC}/${BIRed}N${NC}] "
-read -r reply < /dev/tty
-
-if [[ -z $reply ]] || [[ $reply == "N"* ]] || [[ $reply == "n"* ]]; then
-	exit 1
-fi
-
 sudo mkdir -p "/var/log/pacstall/metadata"
 sudo mkdir -p "/var/log/pacstall/error_log"
 find /var/log/pacstall/* -maxdepth 1 | grep -v metadata | grep -v error_log | xargs -I{} sudo mv {} /var/log/pacstall/metadata
-sudo chown $LOGNAME -R /var/log/pacstall/error_log
+sudo chown "$LOGNAME" -R /var/log/pacstall/error_log
+sudo mkdir -p "/tmp/pacstall"
+sudo chown "$LOGNAME" -R /tmp/pacstall
 
 STGDIR="/usr/share/pacstall"
+
+if ! command -v apt &> /dev/null; then
+	echo -ne "Do you want to install axel (faster downloads)? [${BIGreen}Y${NC}/${RED}n${NC}] "
+	read -r reply <&0
+	case "$reply" in
+		N*|n*) ;;
+		*) apt-get install -qq -y axel;;
+	esac
+fi
 
 for i in {error_log.sh,add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
 	sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/"$i" -P "$STGDIR/scripts" &
 done
 
 sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/pacstall -P /bin &
+sudo wget -q -O /usr/share/man/man8/pacstall.8.gz https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/pacstall.8.gz &
 sudo mkdir -p /usr/share/bash-completion/completions &
 sudo wget -q -O /usr/share/bash-completion/completions/pacstall https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/completion/bash &
 
@@ -52,6 +57,9 @@ if command -v fish &> /dev/null; then
 fi
 
 wait
+
+sudo chmod +x /bin/pacstall
+sudo chmod +x /usr/share/pacstall/scripts/*
 
 # Bling Bling update ascii
 echo '
