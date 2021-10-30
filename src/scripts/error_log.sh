@@ -24,7 +24,7 @@
 
 if [[ ! -d "/var/log/pacstall/error_log" ]]; then
 	sudo mkdir -p "/var/log/pacstall/error_log"
-	sudo chown $LOGNAME -R /var/log/pacstall/error_log
+	sudo chown "$LOGNAME" -R /var/log/pacstall/error_log
 fi
 
 function error_log() {
@@ -82,7 +82,7 @@ function error_log() {
 			return 0
 		;;
 		12)
-			echo "[ $(date) | $scope ] Error 12 - Error parsing  pacscript." >> "$LOGFILE"
+			echo "[ $(date) | $scope ] Error 12 - Error parsing pacscript." >> "$LOGFILE"
 			return 0
 		;;
 		13)

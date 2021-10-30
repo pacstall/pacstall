@@ -25,10 +25,49 @@
 
 # This script searches for packages in all repos saved on pacstallrepo.txt
 
-export LC_ALL=C
-
 if [[ -n "$UPGRADE" ]]; then
-	PACKAGE=$i
+	PACKAGE="$i"
+fi
+
+function specifyRepo() {
+	mapfile -t SPLIT < <(echo "$1" | tr "/" "\n")
+
+	if [[ "$1" == *"github"* ]]; then
+		export URLNAME="${SPLIT[-3]}/${SPLIT[-2]}"
+	elif [[ "$1" == *"gitlab"* ]]; then
+		export URLNAME="${SPLIT[-4]}/${SPLIT[-3]}"
+	else
+		export URLNAME="$REPO"
+	fi
+
+}
+
+
+if [[ $PACKAGE == *@* ]]; then
+	REPONAME=${PACKAGE#*@}
+	PACKAGE=${PACKAGE%%@*}
+
+	while IFS= read -r URL; do
+		specifyRepo "$URL"
+		if [[ "$URLNAME" == "$REPONAME" ]]; then
+			mapfile -t PACKAGELIST < <(curl -s "$URL"/packagelist)
+			IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | grep -n "^${PACKAGE}$")
+			_LEN=($IDXSEARCH)
+			LEN=${#_LEN[@]}
+			if [[ "$LEN" -eq 0 ]]; then
+				fancy_message warn "There is no package with the name $IRed${PACKAGE%%@*}$NC in the repo $CYAN$REPONAME$NC"
+				error_log 3 "search $PACKAGE@$REPONAME"
+				return 1	
+			fi
+			export PACKAGE
+			export REPO="$URL"
+			return 0
+		fi
+	done < "$STGDIR/repo/pacstallrepo.txt"
+	
+	fancy_message warn "$IRed$REPONAME$NC is not on your repo list or does not exist"
+	error_log 3 "search $PACKAGE@$REPONAME"
+	return 1	
 fi
 
 # Makes array of packages and array
@@ -36,9 +75,9 @@ fi
 PACKAGELIST=()
 URLLIST=()
 while IFS= read -r URL; do
-	PARTIALLIST=($(curl -s "$URL"/packagelist))
+	mapfile -t PARTIALLIST < <(curl -s "$URL"/packagelist)
 	URLLIST+=("${PARTIALLIST[@]/*/$URL}")
-	PACKAGELIST+=(${PARTIALLIST[@]})
+	PACKAGELIST+=("${PARTIALLIST[@]}")
 done < "$STGDIR/repo/pacstallrepo.txt"
 
 # Gets index of packages that the search returns
@@ -49,8 +88,8 @@ if [[ -z "$PACKAGE" ]]; then
 else
 	IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | grep -n "^${PACKAGE}$" | cut -d : -f1| awk '{print $0"-1"}'|bc)
 fi
-LEN=($IDXSEARCH)
-LEN=${#LEN[@]}
+_LEN=($IDXSEARCH)
+LEN=${#_LEN[@]}
 
 # Parses github and gitlab URL's
 # url -> maintaner/repo
@@ -58,19 +97,19 @@ LEN=${#LEN[@]}
 # terminals that support them
 function parseRepo() {
 	local REPO="${1}"
-	SPLIT=($(echo "$REPO" | tr "/" "\n"))
+	mapfile -t SPLIT < <(echo "$REPO" | tr "/" "\n")
 
 	if command echo "$REPO" |grep "github" &> /dev/null; then
-		echo -e "\e]8;;https://github.com/${SPLIT[-3]}/${SPLIT[-2]}\a${SPLIT[-3]}\e]8;;\a"
+		echo -e "\e]8;;https://github.com/${SPLIT[-3]}/${SPLIT[-2]}\a${SPLIT[-3]}/${SPLIT[-2]}\e]8;;\a"
 	elif command echo "$REPO" |grep "gitlab" &> /dev/null; then
-		echo -e "\e]8;;https://gitlab.com/${SPLIT[-4]}/${SPLIT[-3]}\a${SPLIT[-4]}\e]8;;\a"
+		echo -e "\e]8;;https://gitlab.com/${SPLIT[-4]}/${SPLIT[-3]}\a${SPLIT[-4]}/${SPLIT[-3]}\e]8;;\a"
 	else
 		echo "\e]8;;$REPO\a$REPO\e]8;;\a"
 	fi
 }
 
 
-#Check if there are results
+# Check if there are results
 if [[ "$LEN" -eq 0 ]]; then
 	if [[ -z "$SEARCH" ]]; then
 		fancy_message warn "There is no package with the name $IRed$PACKAGE$NC"
@@ -85,8 +124,9 @@ elif [[ -n "$UPGRADE" ]]; then
 	REPOS=()
 	# Return list of repos with the package
 	for IDX in $IDXSEARCH ; do
-		REPOS+=(${URLLIST[$IDX]})
+		mapfile -t REPOS <<< "${URLLIST[$IDX]}"
 	done
+	export REPOS
 	return 0
 # Check if its being used for search
 elif [[ -z "$PACKAGE" ]]; then
@@ -105,43 +145,37 @@ else
 		# If there are multiple results, ask
 	else
 		echo -e "There are $LEN package(s) with the name $GREEN$PACKAGE$NC."
-
-		ask "Do you want to continue?" Y
-		if [[ $answer -eq 1 ]]; then
-			# Pacstall repo first
-			for IDX in $IDXSEARCH ; do
-				if [[ "${URLLIST[$IDX]}" == 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' ]]; then
-					PACSTALLREPO=$IDX
-					break
-				fi
-			done
-			if [[ -n "$PACSTALLREPO" ]]; then
-				# Overwrite last question
-				ask "\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo "${URLLIST[$IDX]}")$NC?" Y
-				if [[ $answer -eq 1 ]];then
-					export PACKAGE=${PACKAGELIST[$PACSTALLREPO]}
-					export REPO=${URLLIST[$PACSTALLREPO]}
-					unset PACSTALLREPO
-					return 0
-				fi
-			# If other repos, ask, if Pacstall repo, skip
-			else
-				for IDX in $IDXSEARCH ; do
-					if [[ "$IDX" == "$PACSTALLREPO" ]]; then
-						continue
-					fi
-					# Overwrite last question
-					ask "\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo "${URLLIST[$IDX]}")$NC?" Y
-					if [[ $answer -eq 1 ]];then
-						export PACKAGE=${PACKAGELIST[$IDX]}
-						export REPO=${URLLIST[$IDX]}
-						return 0
-					fi
-				done
+		echo
+		# Pacstall repo first
+		for IDX in $IDXSEARCH ; do
+			if [[ "${URLLIST[$IDX]}" == 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' ]]; then
+				PACSTALLREPO=$IDX
+				break
 			fi
-		else
-			return 1 # No
+		done
+		if [[ -n "$PACSTALLREPO" ]]; then
+			# Overwrite last question
+			ask "\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the official repo?" Y
+			if [[ $answer -eq 1 ]];then
+				export PACKAGE=${PACKAGELIST[$PACSTALLREPO]}
+				export REPO=${URLLIST[$PACSTALLREPO]}
+				unset PACSTALLREPO
+				return 0
+			fi
 		fi
+		# If other repos, ask, if Pacstall repo, skip
+		for IDX in $IDXSEARCH ; do
+			if [[ "$IDX" == "$PACSTALLREPO" ]]; then
+				continue
+			fi
+			# Overwrite last question
+			ask "\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo "${URLLIST[$IDX]}")$NC?" Y
+			if [[ $answer -eq 1 ]];then
+				export PACKAGE=${PACKAGELIST[$IDX]}
+				export REPO=${URLLIST[$IDX]}
+				return 0
+			fi
+		done
 	fi
 fi
 
