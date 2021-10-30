@@ -145,17 +145,9 @@ The footer is optional and is used to reference issue tracker IDs.
 
 #### Pull Requests
 
-##### Title prefix of pull request
+##### Title of pull request
 
-Pull request titles should contain one of these prefixes:
-
-* `Feat`: Adding new features.
-* `Chan`: Change default behaviors or the existing features.
-* `Fix`: Fix some bugs.
-* `Ref`: Refactor code.
-* `Style`: Change formatting etc; no production code change.
-* `Remove`: Remove some existing code.
-* `Doc`: Update the help files.
+Pull request titles should be structured like the commit messages, but the `Subject` portion should be a single high-level description of all the changes in it.
 
 ##### Draft pull requests
 
