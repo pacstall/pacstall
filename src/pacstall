@@ -25,14 +25,17 @@
 # Configuration
 export LC_ALL=C
 export LOGDIR="/var/log/pacstall/metadata"
-export LOGFILE="/var/log/pacstall/error_log/$(date +"%F_%T.log")"
+LOGFILE="/var/log/pacstall/error_log/$(date +"%F_%T.log")"
+export LOGFILE
 export SRCDIR="/tmp/pacstall"
 export STGDIR="/usr/share/pacstall"
 export STOWDIR="/usr/src/pacstall"
 
 # Colors
-export BOLD=$(tput bold)
-export NORMAL=$(tput sgr0)
+BOLD=$(tput bold)
+export BOLD
+NORMAL=$(tput sgr0)
+export NORMAL
 export NC='\033[0m'
 # Curtesy of https://stackoverflow.com/a/28938235/13449010
 
@@ -106,6 +109,22 @@ export On_IPurple='\033[0;105m'  # Purple
 export On_ICyan='\033[0;106m'    # Cyan
 export On_IWhite='\033[0;107m'   # White
 
+# fancy_message allows visually appealing output.
+# Source the code block and run:
+#
+# `fancy_message {info,warn,error} "What you want to say"`
+function fancy_message() {
+	local MESSAGE_TYPE="${1}"
+	local MESSAGE="${2}"
+
+	case ${MESSAGE_TYPE} in
+		info) echo -e "[${BGreen}+${NC}] INFO: ${MESSAGE}";;
+		warn) echo -e "[${BYellow}*${NC}] WARNING: ${MESSAGE}";;
+		error) echo -e "[${BRed}!${NC}] ERROR: ${MESSAGE}";;
+		*) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
+	esac
+}
+
 # This is the ask function. You can source this code block and then run something like:
 # ask "Do you like the color blue? " Y
 # if [[ $answer -eq 1 ]]; then
@@ -115,7 +134,7 @@ export On_IWhite='\033[0;107m'   # White
 # fi
 #
 # Y=1 and N=0
-# You can specify {Y,N} or leave it out to prevent entering the default but this is not allowed in pacstall because of the -P flag which gives unattended installs
+# You can specify {Y,N} or leave it out to prevent entering the default but this is not allowed in pacstall because of the -P flag which gives unattended install
 function ask() {
 	local prompt default reply
 
@@ -132,9 +151,16 @@ function ask() {
 	# Ask the question (not using "read -p" as it uses stderr not stdout)
 	echo -ne "$1 [$prompt] "
 
-	# Read the answer (use /dev/tty in case stdin is redirected from somewhere else)
 	if [[ -z "$DISABLE_PROMPTS" ]]; then
-		read -r reply < /dev/tty
+		read -r reply <&0
+		# Detect if script is running non-interactively
+		# Which implies that the input is being piped into the script
+		if [[ $NON_INTERACTIVE ]]; then
+			if [[ -z "$reply" ]]; then
+				printf "%s" "$default"
+			fi
+			echo "$reply"
+		fi
 	else
 		echo "$default"
 		reply=$default
@@ -166,22 +192,6 @@ function ask() {
 	done
 }
 
-# fancy_message allows visually appealing output.
-# Source the code block and run:
-#
-# `fancy_message {info,warn,error} "What you want to say"`
-function fancy_message() {
-	local MESSAGE_TYPE="${1}"
-	local MESSAGE="${2}"
-
-	case ${MESSAGE_TYPE} in
-		info) echo -e "[${BGreen}+${NC}] INFO: ${MESSAGE}";;
-		warn) echo -e "[${BYellow}*${NC}] WARNING: ${MESSAGE}";;
-		error) echo -e "[${BRed}!${NC}] ERROR: ${MESSAGE}";;
-		*) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
-	esac
-}
-
 # use axel if avaliable
 function download() {
 	sudo rm -f "${1##*/}"
@@ -191,7 +201,6 @@ function download() {
 		wget -q --show-progress --progress=bar:force "$1" 2>&1
 	fi
 }
-
 
 # Error out when run as root
 if [[ "$EUID" -eq 0 ]]; then
@@ -203,6 +212,11 @@ fi
 [ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && sudo apt-get update -qq
 
 source "$STGDIR/scripts/error_log.sh"
+
+if [[ ! -t 0 ]]; then
+	NON_INTERACTIVE=true
+	fancy_message warn "Reading input from pipe"
+fi
 
 # Separate grouped short options
 argument_list=()
@@ -223,7 +237,7 @@ for i in "${@}"; do
 	# We remove the '-' prefix as we'll add it later.
 	for j in $(echo "${i}" | sed 's|^-||' | sed 's|[[:upper:]]| &|g'); do
 		# If current string is 'P', add to beginning of argument list.
-		if [[ "${j}" == "P" ]]; then
+		if [[ "${j}" == "P" ]] || [[ "${j}" == "-disable-prompts" ]]; then
 			argument_list=("-${j}" "${argument_list[@]}")
 		else
 			argument_list+=("-${j}")
@@ -234,6 +248,27 @@ done
 # Set the new list of arguments
 set -- "${argument_list[@]}"
 
+function lock() {
+	ignore_short="-S -D -A -V -L -Qi -h"
+	ignore_long="--search --download --add-repo --version --query-info --help"
+	if [[ "$ignore" =~ (^|[[:space:]])"$1"($|[[:space:]]) ]]; then
+		return 1
+	elif [[ "$ignore" =~ (^|[[:space:]])"$2"($|[[:space:]]) ]]; then
+		return 1
+	elif [[ -f "/tmp/pacstall-pacdeps-$3" ]]; then
+		return 1
+	fi
+	pidof -o %PPID -x $0 >/dev/null && return 0 || return 1
+}
+
+while lock $1 $2 $3; do
+	if [[ -z $first ]]; then
+		first=1
+		fancy_message warn "Pacstall is already running another instance"
+	fi
+	sleep 1
+done
+
 while [[ ! "$1" == "--" ]]; do
 	case "$1" in
 		-P|--disable-prompts)
@@ -242,24 +277,25 @@ while [[ ! "$1" == "--" ]]; do
 		;;
 
 		-h|--help)
-			echo "
-			options:
-			-I --install, Installs package
-			-Il --install-local, Installs a local package
-			-S --search, Search for package
-			-R --remove, Removes package
-			-D --download, Downloads script
-			-A --add-repo, Adds repo to your repo list
-			-U --update, Update script
-			-V --version, Prints pacstall version
-			-L --list, Lists installed packages
-			-Up --upgrade, Upgrades packages
-			-Qi --query-info, Get package info
-			"
+			echo "options:
+-I --install, Installs package
+-Il --install-local, Installs a local package
+-S --search, Search for package
+-R --remove, Removes package
+-D --download, Downloads script
+-A --add-repo, Adds repo to your repo list
+-U --update, Update script
+-V --version, Prints pacstall version
+-L --list, Lists installed packages
+-Up --upgrade, Upgrades packages
+-Qi --query-info, Get package info
+-P --disable-prompts, Disable Prompts for unattended installation
+-K --keep, retain build directory after package install"
 			exit 0
 		;;
 
 		-I|--install)
+			
 			function trap_ctrlc () {
 				fancy_message warn "The installation of $2 was interrupted, removing files"
 				rm -rf "${SRCDIR:?}"/* # :? makes bash error out in case SRCDIR is empty, saving us from yoinking /* directory by mistake
@@ -285,29 +321,33 @@ while [[ ! "$1" == "--" ]]; do
 
 				export type="install"
 				export local="no"
-				source "$STGDIR/scripts/search.sh"
 
-				if [[ $? -ne 0 ]]; then
+				if ! source "$STGDIR/scripts/search.sh"; then
+					fail_install=1
+					export fail_install
 					continue
 				fi
 
+				specifyRepo $REPO
 				URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
-				source "$STGDIR/scripts/download.sh"
 
-				if [[ $? -ne 0 ]]; then
+				if ! source "$STGDIR/scripts/download.sh"; then
+					fail_install=1
+					export fail_install
 					fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
 					continue
 				fi
 
 				export REPO
-				source "$STGDIR/scripts/install-local.sh"
-				if [[ $? -ne 0 ]]; then
+				if ! source "$STGDIR/scripts/install-local.sh"; then
+					fail_install=1
+					export fail_install
 					fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
 					continue
 				fi
 			done
 
-			if [[ -s "LOGFILE" ]]; then
+			if [[ -n "$fail_install" ]]; then
 				exit 1
 			fi
 				exit 0
@@ -326,7 +366,7 @@ while [[ ! "$1" == "--" ]]; do
 
 				# Enter directory if exists
 				if [[ -d "$INPUT" ]]; then
-					cd "$(basename "$INPUT")"
+					cd "$(basename "$INPUT")" || exit
 				fi
 				# Check if the file exist
 				if [[ ! -f "$2".pacscript ]]; then
@@ -336,9 +376,9 @@ while [[ ! "$1" == "--" ]]; do
 				fi
 				shift
 
-				export PACKAGE="$(basename "$INPUT")"
-				source "$STGDIR/scripts/install-local.sh"
-				if [[ $? -ne 0 ]]; then
+				PACKAGE="$(basename "$INPUT")"
+				export PACKAGE
+				if ! source "$STGDIR/scripts/install-local.sh"; then
 					fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
 					continue
 				fi
@@ -372,8 +412,7 @@ while [[ ! "$1" == "--" ]]; do
 			while [[ -n "$2" ]]; do
 				PACKAGE=$2
 				shift
-				source "$STGDIR/scripts/remove.sh"
-				if [[ $? -ne 0 ]]; then
+				if ! source "$STGDIR/scripts/remove.sh"; then
 					fancy_message error "Failed to remove ${GREEN}${PACKAGE}${NC}"
 				fi
 			done
@@ -386,17 +425,17 @@ while [[ ! "$1" == "--" ]]; do
 		-A|--add-repo)
 			REPO="$2"
 
-			if [ ! -f "$STGDIR/repo/pacstallrepo.txt" ]; then
+			if [[ ! -f "$STGDIR/repo/pacstallrepo.txt" ]]; then
 				echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > "$STGDIR/repo/pacstallrepo.txt"
 				return 0
 			fi
 
-			if [ ! -z $REPO ]; then
+			if [[ -n "$REPO" ]]; then
 				source "$STGDIR/scripts/add-repo.sh"
 				exit 0
 			else
 				fancy_message error "You failed to specify a repo to add"
-				return 1
+				exit 1
 			fi
 		;;
 
@@ -404,7 +443,7 @@ while [[ ! "$1" == "--" ]]; do
 			PACKAGE="$2"
 
 			if [[ -z "$PACKAGE" ]]; then
-				echo -e "1.6 ${BICyan}Celadon${NC}"
+				echo -e "1.6.1 ${BIPurple}Cerise${NC}"
 				exit 0
 			else
 				# If pacstall -V was called with an argument, it's a package, so get the package version (usful for scripting)
@@ -442,8 +481,7 @@ while [[ ! "$1" == "--" ]]; do
 		;;
 
 		-L|--list)
-			/bin/ls -1aA "$LOGDIR"
-			if [[ $? -ne 0 ]]; then
+			if ! /bin/ls -1aA "$LOGDIR"; then
 				fancy_message error "Nothing installed yet"
 				exit 1
 			fi
@@ -461,17 +499,16 @@ while [[ ! "$1" == "--" ]]; do
 				PACKAGE=$2
 				shift
 				export type="download"
-				source "$STGDIR/scripts/search.sh"
 
-				if [[ $? -ne 0 ]]; then
+				if ! source "$STGDIR/scripts/search.sh"; then
 					((i++))
 					continue
 				fi
 
+				specifyRepo $REPO
 				export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
-				source "$STGDIR/scripts/download.sh"
 
-				if [[ $? -ne 0 ]]; then
+				if ! source "$STGDIR/scripts/download.sh"; then
 					fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
 					continue
 				fi
@@ -510,6 +547,10 @@ while [[ ! "$1" == "--" ]]; do
 
 			tree -C "$STOWDIR/$PACKAGE" | sed "s/\/usr\/src\/pacstall\/$PACKAGE/\//g"
 			exit 0
+		;;
+
+		-K|--keep)
+			KEEP=true
 		;;
 
 		*)

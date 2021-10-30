@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-REPO=${2%/}
+REPO="${2%/}"
 
 if echo "$REPO" | grep "github.com" > /dev/null ; then
 	REPO="${REPO/'github.com'/'raw.githubusercontent.com'}"
@@ -57,9 +57,9 @@ if ! wget -q --spider "$REPO/packagelist"; then
 fi
 REPOLIST=()
 while IFS= read -r REPOURL; do
-	REPOLIST+="${REPOURL} "
+	REPOLIST+=("${REPOURL} ")
 done < "$STGDIR/repo/pacstallrepo.txt"
-REPOLIST+=($REPO)
+REPOLIST+=("$REPO")
 
 echo "${REPOLIST[@]}"|tr -s ' ' '\n'| sort -u | sudo tee "$STGDIR/repo/pacstallrepo.txt" > /dev/null
 # vim:set ft=sh ts=4 sw=4 noet:
