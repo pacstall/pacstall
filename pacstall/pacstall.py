@@ -39,6 +39,6 @@ if not [
     for list in glob("/var/lib/apt/lists/*")
     if os.stat(list).st_mtime < time() - 604800
 ]:
-    message.fancy("info", "Last update was more than one week ago")
-    message.fancy("info", "Updating system")
+    message.fancy("info", "APT lists were updated more than a week ago")
+    message.fancy("info", "Updating APT lists")
     os.system("sudo apt-get -qq update")
