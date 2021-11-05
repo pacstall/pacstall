@@ -1,6 +1,6 @@
 #!/bin/bash
-apt update -y
-apt install curl sudo git wget bc -y
+apt update -qq
+apt install curl sudo git wget bc -y -qq
 export PACSTALL_SKIP_NETWORK_CHECK=1
 echo "N" | sudo bash -c "$(curl -fsSL https://git.io/JsADh || wget -q https://git.io/JsADh -O -)"
 useradd -m -d /home/pacstall pacstall
