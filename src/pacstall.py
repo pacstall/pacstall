@@ -55,7 +55,7 @@ class CustomHelpFormatter(HelpFormatter):
 
 if getuser() == "root":
     message.fancy("error", "Pacstall can't be run as root")
-    exit(1)
+    sys.exit(1)
 
 # Run `sudo apt update` if sources haven't been updated for more than a week
 if not [
