@@ -24,7 +24,7 @@
 from api import color, message
 
 import os
-from sys import exit, argv
+import sys
 from getpass import getuser
 from argparse import HelpFormatter, ArgumentParser
 from glob import glob
@@ -36,21 +36,21 @@ class CustomHelpFormatter(HelpFormatter):
         if not action.option_strings:
             (metavar,) = self._metavar_formatter(action, action.dest)(1)
             return metavar
-        else:
-            parts = []
-            # if the Optional doesn't take a value, format is:
-            #    -s, --long
-            if action.nargs == 0:
-                parts.extend(action.option_strings)
 
-            # if the Optional takes a value, format is:
-            #    -s ARGS, --long ARGS
-            # change to
-            #    -s, --long
-            else:
-                for option_string in action.option_strings:
-                    parts.append("%s" % option_string)
-            return ", ".join(parts)
+        parts = []
+        # if the Optional doesn't take a value, format is:
+        #    -s, --long
+        if action.nargs == 0:
+            parts.extend(action.option_strings)
+
+        # if the Optional takes a value, format is:
+        #    -s ARGS, --long ARGS
+        # change to
+        #    -s, --long
+        else:
+            for option_string in action.option_strings:
+                parts.append("%s" % option_string)
+        return ", ".join(parts)
 
 
 if getuser() == "root":
@@ -65,7 +65,7 @@ if not [
 ]:
     message.fancy("info", "APT lists were updated more than a week ago")
     message.fancy("info", "Updating APT lists")
-    os.system("sudo apt-get -qq update")
+    os.system("/usr/bin/sudo /usr/bin/apt-get -qq update")
 
 parser = ArgumentParser(prog="pacstall", formatter_class=CustomHelpFormatter)
 commands = parser.add_argument_group("commands").add_mutually_exclusive_group()
@@ -116,8 +116,8 @@ modifiers.add_argument(
     help="retain build directory after installation",
 )
 
-if len(argv) == 1:
+if len(sys.argv) == 1:
     parser.print_help()
-    exit(1)
+    sys.exit(1)
 
 args = parser.parse_args()
