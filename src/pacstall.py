@@ -1,6 +1,6 @@
 #!/bin/env python3
 
-"""Main Pacstall launcher file"""
+"""Main Pacstall launcher file."""
 
 #     ____                  __        ____
 #    / __ \____ ___________/ /_____ _/ / /
