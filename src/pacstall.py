@@ -21,14 +21,14 @@
 #
 # You should have received a copy of the GNU General Public License
 
-from api import color, message
-
 import os
 import sys
 from getpass import getuser
 from argparse import HelpFormatter, ArgumentParser
 from glob import glob
 from time import time
+
+from api import color, message
 
 # Copied from https://stackoverflow.com/a/23941599 and modified
 class CustomHelpFormatter(HelpFormatter):
