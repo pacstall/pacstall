@@ -30,21 +30,31 @@ Classes
 Style: Modify text styles
 Foreground: Modify foreground colors
 Background: Modify background colors
+
+Functions
+---------
+res: Reset text styles and colors
+sty: Set text style
+fg: Set foreground colors
+bg: Set background colors
+color: Set text style and colors
 """
 
 
 class Style:
-    """
-    Modify text styles
-    """
+    """ Modify text styles """
 
-    BOLD = "\033[1m"
-    DIM = "\033[2m"
-    ITALIC = "\033[3m"
-    UNDERLINE = "\033[4m"
-    STRIKETHROUGH = "\033[9m"
-    BLINK = "\033[5m"
-    RESET = "\033[0m"
+    RESET = "\x1b[0m"
+    BOLD = "\x1b[1m"
+    DIM = "\x1b[2m"
+    ITALIC = "\x1b[3m"
+    UNDERLINE = "\x1b[4m"
+    BLINK = "\x1b[5m"
+    HIDE = "\x1b[8m"
+    STRIKETHROUGH = "\x1b[9m"
+
+
+
 
 
 class Foreground:
@@ -54,60 +64,27 @@ class Foreground:
     Sections
     --------
     normal(no prefix): Normal colors
-    bold("B" prefix): Bold colors
-    underline("U" prefix): Underlined colors
     high intensity("I" prefix): High intensity colors
-    bold high intensity("BI" prefix): Bold high intensity colors
     """
 
-    BLACK = "\033[0;30m"
-    RED = "\033[0;31m"
-    GREEN = "\033[0;32m"
-    YELLOW = "\033[0;33m"
-    BLUE = "\033[0;34m"
-    PURPLE = "\033[0;35m"
-    CYAN = "\033[0;36m"
-    WHITE = "\033[0;37m"
+    BLACK  = "\x1b[38;5;0m"
+    RED    = "\x1b[38;5;1m"
+    GREEN  = "\x1b[38;5;2m"
+    YELLOW = "\x1b[38;5;3m"
+    BLUE   = "\x1b[38;5;4m"
+    PURPLE = "\x1b[38;5;5m"
+    CYAN   = "\x1b[38;5;6m"
+    WHITE  = "\x1b[38;5;7m"
 
-    # Bold
-    BBLACK = "\033[1;30m"
-    BRED = "\033[1;31m"
-    BGREEN = "\033[1;32m"
-    BYELLOW = "\033[1;33m"
-    BBLUE = "\033[1;34m"
-    BPURPLE = "\033[1;35m"
-    BCYAN = "\033[1;36m"
-    BWHITE = "\033[1;37m"
-
-    # Underline
-    UBLACK = "\033[4;30m"
-    URED = "\033[4;31m"
-    UGREEN = "\033[4;32m"
-    UYELLOW = "\033[4;33m"
-    UBLUE = "\033[4;34m"
-    UPURPLE = "\033[4;35m"
-    UCYAN = "\033[4;36m"
-    UWHITE = "\033[4;37m"
-
-    # High Intensity
-    IBLACK = "\033[0;90m"
-    IRED = "\033[0;91m"
-    IGREEN = "\033[0;92m"
-    IYELLOW = "\033[0;93m"
-    IBLUE = "\033[0;94m"
-    IPURPLE = "\033[0;95m"
-    ICYAN = "\033[0;96m"
-    IWHITE = "\033[0;97m"
-
-    # Bold High Intensity
-    BIBLACK = "\033[1;90m"
-    BIRED = "\033[1;91m"
-    BIGREEN = "\033[1;92m"
-    BIYELLOW = "\033[1;93m"
-    BIBLUE = "\033[1;94m"
-    BIPURPLE = "\033[1;95m"
-    BICYAN = "\033[1;96m"
-    BIWHITE = "\033[1;97m"
+    # High Intensity backgrounds
+    IBLACK  = "\x1b[38;5;08m"
+    IRED    = "\x1b[38;5;09m"
+    IGREEN  = "\x1b[38;5;10m"
+    IYELLOW = "\x1b[38;5;11m"
+    IBLUE   = "\x1b[38;5;12m"
+    IPURPLE = "\x1b[38;5;13m"
+    ICYAN   = "\x1b[38;5;14m"
+    IWHITE  = "\x1b[38;5;15m"
 
 
 class Background:
@@ -120,21 +97,100 @@ class Background:
     high intensity("I" prefix): High intensity colors
     """
 
-    BLACK = "\033[40m"
-    RED = "\033[41m"
-    GREEN = "\033[42m"
-    YELLOW = "\033[43m"
-    BLUE = "\033[44m"
-    PURPLE = "\033[45m"
-    CYAN = "\033[46m"
-    WHITE = "\033[47m"
+    BLACK  = "\x1b[48;5;0m"
+    RED    = "\x1b[48;5;1m"
+    GREEN  = "\x1b[48;5;2m"
+    YELLOW = "\x1b[48;5;3m"
+    BLUE   = "\x1b[48;5;4m"
+    PURPLE = "\x1b[48;5;5m"
+    CYAN   = "\x1b[48;5;6m"
+    WHITE  = "\x1b[48;5;7m"
 
     # High Intensity backgrounds
-    IBLACK = "\033[0;100m"
-    IRED = "\033[0;101m"
-    IGREEN = "\033[0;102m"
-    IYELLOW = "\033[0;103m"
-    IBLUE = "\033[0;104m"
-    IPURPLE = "\033[0;105m"
-    ICYAN = "\033[0;106m"
-    IWHITE = "\033[0;107m"
+    IBLACK  = "\x1b[48;5;08m"
+    IRED    = "\x1b[48;5;09m"
+    IGREEN  = "\x1b[48;5;10m"
+    IYELLOW = "\x1b[48;5;11m"
+    IBLUE   = "\x1b[48;5;12m"
+    IPURPLE = "\x1b[48;5;13m"
+    ICYAN   = "\x1b[48;5;14m"
+    IWHITE  = "\x1b[48;5;15m"
+
+
+def res():
+    """ Reset text styles and colors """
+    return Style.RESET
+
+
+def sty(style=None):
+    """ Set text style """
+    if isinstance(style,int):
+        return f"\x1b[{str(style)}m"
+    elif isinstance(style,str)
+        style_dict = {  "reset"         : Style.RESET,
+                        "bold"          : Style.DIM,
+                        "dim"           : Style.DIM,
+                        "italic"        : Style.ITALIC,
+                        "underline"     : Style.UNDERLINE,
+                        "blink"         : Style.BLINK,
+                        "hide"          : Style.HIDE,
+                        "strikethrough" : Style.STRIKETHROUGH
+                    }
+        return style_dict[style]
+    return Style.RESET
+
+
+def fg(color=None):
+    """ Set foreground colors """
+    if isinstance(color,int) and 0<=color<=255:
+        return f"\x1b[38;5;{str(s)}m"
+    elif isinstance(color,str)
+        bg_dict = { "black"     : Foreground.BLACK,
+                    "green"     : Foreground.GREEN,
+                    "yellow"    : Foreground.YELLOW,
+                    "blue"      : Foreground.BLUE,
+                    "purple"    : Foreground.PURPLE,
+                    "cyan"      : Foreground.CYAN,
+                    "white"     : Foreground.WHITE,
+                    "Iblack"    : Foreground.IBLACK,
+                    "Igreen"    : Foreground.IGREEN,
+                    "Iyellow"   : Foreground.IYELLOW,
+                    "Iblue"     : Foreground.IBLUE,
+                    "Ipurple"   : Foreground.IPURPLE,
+                    "Icyan"     : Foreground.ICYAN,
+                    "Iwhite"    : Foreground.IWHITE,
+                }
+        return bg_dict[color]
+    return "\x1b[39m"
+
+
+def bg(color=None):
+    """ Set background colors """
+    if isinstance(color,int) and 0<=color<=255:
+        return f"\x1b[48;5;{str(s)}m"
+    elif isinstance(color,str)
+        bg_dict = { "black"     : Background.BLACK,
+                    "green"     : Background.GREEN,
+                    "yellow"    : Background.YELLOW,
+                    "blue"      : Background.BLUE,
+                    "purple"    : Background.PURPLE,
+                    "cyan"      : Background.CYAN,
+                    "white"     : Background.WHITE,
+                    "Iblack"    : Background.IBLACK,
+                    "Igreen"    : Background.IGREEN,
+                    "Iyellow"   : Background.IYELLOW,
+                    "Iblue"     : Background.IBLUE,
+                    "Ipurple"   : Background.IPURPLE,
+                    "Icyan"     : Background.ICYAN,
+                    "Iwhite"    : Background.IWHITE,
+                }
+        return bg_dict[color]
+    return "\x1b[49m"
+
+def color(fg=None,bg=None,sty=None):
+    """ Set text style and colors """
+    s = Style.select(sty)
+    f = Foreground.select(fg)
+    b = Backgrounb.select(bg)
+
+    return s + f + b
