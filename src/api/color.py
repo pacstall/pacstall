@@ -122,13 +122,13 @@ def res():
     return Style.RESET
 
 
-def sty(style=None):
+def set_sty(style=None):
     """ Set text style """
     if isinstance(style,int):
         return f"\x1b[{str(style)}m"
     elif isinstance(style,str):
         style_dict = {  "reset"         : Style.RESET,
-                        "bold"          : Style.DIM,
+                        "bold"          : Style.BOLD,
                         "dim"           : Style.DIM,
                         "italic"        : Style.ITALIC,
                         "underline"     : Style.UNDERLINE,
@@ -137,15 +137,16 @@ def sty(style=None):
                         "strikethrough" : Style.STRIKETHROUGH
                     }
         return style_dict[style]
-    return Style.RESET
+    return ""
 
 
-def fg(color=None):
+def set_fg(color=None):
     """ Set foreground colors """
     if isinstance(color,int) and 0<=color<=255:
-        return f"\x1b[38;5;{str(s)}m"
+        return f"\x1b[38;5;{str(color)}m"
     elif isinstance(color,str):
         bg_dict = { "black"     : Foreground.BLACK,
+                    "red"       : Foreground.RED,
                     "green"     : Foreground.GREEN,
                     "yellow"    : Foreground.YELLOW,
                     "blue"      : Foreground.BLUE,
@@ -153,6 +154,7 @@ def fg(color=None):
                     "cyan"      : Foreground.CYAN,
                     "white"     : Foreground.WHITE,
                     "Iblack"    : Foreground.IBLACK,
+                    "Ired"      : Foreground.IRED,
                     "Igreen"    : Foreground.IGREEN,
                     "Iyellow"   : Foreground.IYELLOW,
                     "Iblue"     : Foreground.IBLUE,
@@ -164,12 +166,13 @@ def fg(color=None):
     return "\x1b[39m"
 
 
-def bg(color=None):
+def set_bg(color=None):
     """ Set background colors """
     if isinstance(color,int) and 0<=color<=255:
-        return f"\x1b[48;5;{str(s)}m"
+        return f"\x1b[48;5;{str(color)}m"
     elif isinstance(color,str):
         bg_dict = { "black"     : Background.BLACK,
+                    "red"       : Background.RED,
                     "green"     : Background.GREEN,
                     "yellow"    : Background.YELLOW,
                     "blue"      : Background.BLUE,
@@ -177,6 +180,7 @@ def bg(color=None):
                     "cyan"      : Background.CYAN,
                     "white"     : Background.WHITE,
                     "Iblack"    : Background.IBLACK,
+                    "Ired"      : Background.IRED,
                     "Igreen"    : Background.IGREEN,
                     "Iyellow"   : Background.IYELLOW,
                     "Iblue"     : Background.IBLUE,
@@ -189,8 +193,8 @@ def bg(color=None):
 
 def color(fg=None,bg=None,sty=None):
     """ Set text style and colors """
-    s = Style.select(sty)
-    f = Foreground.select(fg)
-    b = Backgrounb.select(bg)
+    s = set_sty(sty)
+    f = set_fg(fg)
+    b = set_bg(bg)
 
     return s + f + b
