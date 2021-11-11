@@ -31,8 +31,7 @@ from api import color, message
 
 # Copied from https://stackoverflow.com/a/23941599 and modified
 class CustomHelpFormatter(HelpFormatter):
-    """
-    Custom help message formatter for Pacstall.
+    """Custom help message formatter for Pacstall.
 
     Format:
     -s, --long       help message
