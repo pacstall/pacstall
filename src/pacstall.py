@@ -1,5 +1,7 @@
 #!/bin/env python3
 
+"""Main Pacstall launcher file."""
+
 #     ____                  __        ____
 #    / __ \____ ___________/ /_____ _/ / /
 #   / /_/ / __ `/ ___/ ___/ __/ __ `/ / /
@@ -21,18 +23,22 @@
 #
 # You should have received a copy of the GNU General Public License
 
-from api import color, message
-
-import os
 import sys
 from getpass import getuser
 from argparse import HelpFormatter, ArgumentParser
-from glob import glob
-from time import time
+
+from api.color import Foreground
+from api import message
 
 # Copied from https://stackoverflow.com/a/23941599 and modified
 class CustomHelpFormatter(HelpFormatter):
-    def _format_action_invocation(self, action):
+    """Custom help message formatter for Pacstall.
+
+    Format:
+    -s, --long       help message
+    """
+
+    def _format_action_invocation(self, action) -> str:
         if not action.option_strings:
             (metavar,) = self._metavar_formatter(action, action.dest)(1)
             return metavar
@@ -55,17 +61,7 @@ class CustomHelpFormatter(HelpFormatter):
 
 if getuser() == "root":
     message.fancy("error", "Pacstall can't be run as root")
-    exit(1)
-
-# Run `sudo apt update` if sources haven't been updated for more than a week
-if not [
-    list
-    for list in glob("/var/lib/apt/lists/*")
-    if os.stat(list).st_mtime < time() - 604800
-]:
-    message.fancy("info", "APT lists were updated more than a week ago")
-    message.fancy("info", "Updating APT lists")
-    os.system("/usr/bin/sudo /usr/bin/apt-get -qq update")
+    sys.exit(1)
 
 parser = ArgumentParser(prog="pacstall", formatter_class=CustomHelpFormatter)
 commands = parser.add_argument_group("commands").add_mutually_exclusive_group()
@@ -90,7 +86,7 @@ commands.add_argument(
     "-V",
     "--version",
     action="version",
-    version=f"{color.Foreground.BIBLUE}Pacstall{color.Style.RESET} {color.Foreground.BIWHITE}2.0{color.Style.RESET} {color.Foreground.BIYELLOW}Kournikova{color.Style.RESET}",
+    version=f"{Foreground.BIBLUE}Pacstall {Foreground.BIWHITE}2.0 {Foreground.BIYELLOW}Kournikova",
     help="show version",
 )
 commands.add_argument(
@@ -120,4 +116,4 @@ if len(sys.argv) == 1:
     parser.print_help()
     sys.exit(1)
 
-args = parser.parse_args()
+parser.parse_args()
