@@ -31,7 +31,14 @@ from api import color, message
 
 # Copied from https://stackoverflow.com/a/23941599 and modified
 class CustomHelpFormatter(HelpFormatter):
-    def _format_action_invocation(self, action):
+    """
+    Custom help message formatter for Pacstall.
+
+    Format:
+    -s, --long       help message
+    """
+
+    def _format_action_invocation(self, action) -> str:
         if not action.option_strings:
             (metavar,) = self._metavar_formatter(action, action.dest)(1)
             return metavar
