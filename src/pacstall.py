@@ -27,7 +27,8 @@ import sys
 from getpass import getuser
 from argparse import HelpFormatter, ArgumentParser
 
-from api import color, message
+from api.color import Foreground
+from api import message
 
 # Copied from https://stackoverflow.com/a/23941599 and modified
 class CustomHelpFormatter(HelpFormatter):
@@ -85,7 +86,7 @@ commands.add_argument(
     "-V",
     "--version",
     action="version",
-    version=f"{color.Foreground.BIBLUE}Pacstall{color.Style.RESET} {color.Foreground.BIWHITE}2.0{color.Style.RESET} {color.Foreground.BIYELLOW}Kournikova{color.Style.RESET}",
+    version=f"{Foreground.BIBLUE}Pacstall {Foreground.BIWHITE}2.0 {Foreground.BIYELLOW}Kournikova",
     help="show version",
 )
 commands.add_argument(
@@ -114,3 +115,5 @@ modifiers.add_argument(
 if len(sys.argv) == 1:
     parser.print_help()
     sys.exit(1)
+
+parser.parse_args()
