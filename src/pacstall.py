@@ -23,12 +23,9 @@
 #
 # You should have received a copy of the GNU General Public License
 
-import os
 import sys
 from getpass import getuser
 from argparse import HelpFormatter, ArgumentParser
-from glob import glob
-from time import time
 
 from api import color, message
 
@@ -58,16 +55,6 @@ class CustomHelpFormatter(HelpFormatter):
 if getuser() == "root":
     message.fancy("error", "Pacstall can't be run as root")
     sys.exit(1)
-
-# Run `sudo apt update` if sources haven't been updated for more than a week
-if not [
-    list
-    for list in glob("/var/lib/apt/lists/*")
-    if os.stat(list).st_mtime < time() - 604800
-]:
-    message.fancy("info", "APT lists were updated more than a week ago")
-    message.fancy("info", "Updating APT lists")
-    os.system("/usr/bin/sudo /usr/bin/apt-get -qq update")
 
 parser = ArgumentParser(prog="pacstall", formatter_class=CustomHelpFormatter)
 commands = parser.add_argument_group("commands").add_mutually_exclusive_group()
