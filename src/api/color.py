@@ -125,7 +125,7 @@ def res():
 def set_sty(style=None):
     """ Set text style """
     if isinstance(style,int):
-        return f"\x1b[{str(style)}m"
+        return f'\x1b[{style}m'
     elif isinstance(style,str):
         style_dict = {  "reset"         : Style.RESET,
                         "bold"          : Style.BOLD,
@@ -143,7 +143,7 @@ def set_sty(style=None):
 def set_fg(color=None):
     """ Set foreground colors """
     if isinstance(color,int) and 0<=color<=255:
-        return f"\x1b[38;5;{str(color)}m"
+        return f'\x1b[38;5;{color}m'
     elif isinstance(color,str):
         bg_dict = { "black"     : Foreground.BLACK,
                     "red"       : Foreground.RED,
@@ -169,7 +169,7 @@ def set_fg(color=None):
 def set_bg(color=None):
     """ Set background colors """
     if isinstance(color,int) and 0<=color<=255:
-        return f"\x1b[48;5;{str(color)}m"
+        return f'\x1b[48;5;{color}m'
     elif isinstance(color,str):
         bg_dict = { "black"     : Background.BLACK,
                     "red"       : Background.RED,
