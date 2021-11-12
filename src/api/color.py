@@ -132,7 +132,7 @@ def set_sty(style=None):
     """
     if isinstance(style,int):
         return f'\x1b[{style}m'
-    elif isinstance(style,str):
+    if isinstance(style,str):
         style_dict = {  "reset"         : Style.RESET,
                         "bold"          : Style.BOLD,
                         "dim"           : Style.DIM,
@@ -152,7 +152,7 @@ def set_fg(col=None):
     """
     if isinstance(col,int) and 0<=col<=255:
         return f'\x1b[38;5;{col}m'
-    elif isinstance(col,str):
+    if isinstance(col,str):
         bg_dict = { "black"     : Foreground.BLACK,
                     "red"       : Foreground.RED,
                     "green"     : Foreground.GREEN,
@@ -180,7 +180,7 @@ def set_bg(col=None):
     """
     if isinstance(col,int) and 0<=col<=255:
         return f'\x1b[48;5;{col}m'
-    elif isinstance(col,str):
+    if isinstance(col,str):
         bg_dict = { "black"     : Background.BLACK,
                     "red"       : Background.RED,
                     "green"     : Background.GREEN,
@@ -202,6 +202,8 @@ def set_bg(col=None):
     return "\x1b[49m"
 
 
-def color(fg=None,bg=None,sty=None):
-    """ Set text style and colors """
+def color(fg=None, bg=None, sty=None):
+    """
+    Set text style and colors
+    """
     return set_sty(sty) + set_fg(fg) + set_bg(bg)
