@@ -196,9 +196,15 @@ function ask() {
 function download() {
 	sudo rm -f "${1##*/}"
 	if command -v axel > /dev/null; then
-		axel -ao "${1##*/}" "$1"
+		if ! axel -ao "${1##*/}" "$1"; then
+			fancy_message error "Could not download file"
+			exit 1
+		fi
 	else
-		wget -q --show-progress --progress=bar:force "$1" 2>&1
+		if ! wget -q --show-progress --progress=bar:force "$1" 2>&1; then
+			fancy_message error "Could not download file"
+			exit 1
+		fi
 	fi
 }
 
