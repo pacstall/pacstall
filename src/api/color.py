@@ -42,7 +42,9 @@ color: Set text style and colors
 
 
 class Style:
-    """ Modify text styles """
+    """
+    Modify text styles
+    """
 
     RESET = "\x1b[0m"
     BOLD = "\x1b[1m"
@@ -118,12 +120,16 @@ class Background:
 
 
 def res():
-    """ Reset text styles and colors """
+    """
+    Reset text styles and colors
+    """
     return Style.RESET
 
 
 def set_sty(style=None):
-    """ Set text style """
+    """
+    Set text style
+    """
     if isinstance(style,int):
         return f'\x1b[{style}m'
     elif isinstance(style,str):
@@ -140,11 +146,13 @@ def set_sty(style=None):
     return ""
 
 
-def set_fg(color=None):
-    """ Set foreground colors """
-    if isinstance(color,int) and 0<=color<=255:
-        return f'\x1b[38;5;{color}m'
-    elif isinstance(color,str):
+def set_fg(col=None):
+    """
+    Set foreground colors
+    """
+    if isinstance(col,int) and 0<=col<=255:
+        return f'\x1b[38;5;{col}m'
+    elif isinstance(col,str):
         bg_dict = { "black"     : Foreground.BLACK,
                     "red"       : Foreground.RED,
                     "green"     : Foreground.GREEN,
@@ -162,15 +170,17 @@ def set_fg(color=None):
                     "Icyan"     : Foreground.ICYAN,
                     "Iwhite"    : Foreground.IWHITE,
                 }
-        return bg_dict[color]
+        return bg_dict[col]
     return "\x1b[39m"
 
 
-def set_bg(color=None):
-    """ Set background colors """
-    if isinstance(color,int) and 0<=color<=255:
-        return f'\x1b[48;5;{color}m'
-    elif isinstance(color,str):
+def set_bg(col=None):
+    """
+    Set background colors
+    """
+    if isinstance(col,int) and 0<=col<=255:
+        return f'\x1b[48;5;{col}m'
+    elif isinstance(col,str):
         bg_dict = { "black"     : Background.BLACK,
                     "red"       : Background.RED,
                     "green"     : Background.GREEN,
@@ -188,13 +198,10 @@ def set_bg(color=None):
                     "Icyan"     : Background.ICYAN,
                     "Iwhite"    : Background.IWHITE,
                 }
-        return bg_dict[color]
+        return bg_dict[col]
     return "\x1b[49m"
+
 
 def color(fg=None,bg=None,sty=None):
     """ Set text style and colors """
-    s = set_sty(sty)
-    f = set_fg(fg)
-    b = set_bg(bg)
-
-    return s + f + b
+    return set_sty(sty) + set_fg(fg) + set_bg(bg)
