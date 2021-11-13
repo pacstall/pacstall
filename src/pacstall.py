@@ -137,7 +137,6 @@ if __name__ == "__main__":
     args = parse_arguments()
 
     if args.install or args.remove or args.upgrade:
-        global lock_file
         lock_file = open("/var/lock/pacstall.lock", "w")
         call("/usr/bin/sudo /usr/bin/chown root /var/lock/pacstall.lock", shell=True)
         while True:
