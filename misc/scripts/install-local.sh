@@ -422,7 +422,7 @@ sudo chown "$LOGNAME" -R /tmp/pacstall
 case "$url" in
 	*.git)
 		# git clone quietly, with no history, and if submodules are there, download with 10 jobs
-		sudo git clone --quiet --depth=1 --jobs=10 "$url"
+		git clone --quiet --depth=1 --jobs=10 "$url"
 		# cd into the directory
 		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the cloned git repository" )
 		# Check the integrity
@@ -435,7 +435,7 @@ case "$url" in
 			return 1
 		fi
 		# unzip file
-		sudo unzip -q "${url##*/}" 1>&1 2>/dev/null
+		unzip -q "${url##*/}" 1>&1 2>/dev/null
 		# cd into it
 		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive" )
 	;;
@@ -486,7 +486,7 @@ case "$url" in
 		if ! hashcheck "${url##*/}"; then
 			return 1
 		fi
-		sudo tar -xf "${url##*/}" 1>&1 2>/dev/null
+		tar -xf "${url##*/}" 1>&1 2>/dev/null
 		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive" )
 	;;
 esac
