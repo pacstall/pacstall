@@ -35,7 +35,8 @@ from api import message
 
 # Copied from https://stackoverflow.com/a/23941599 and modified
 class CustomHelpFormatter(HelpFormatter):
-    """Custom help message formatter for Pacstall.
+    """
+    Custom help message formatter for Pacstall.
 
     Format:
     -s, --long       help message
@@ -63,7 +64,8 @@ class CustomHelpFormatter(HelpFormatter):
 
 
 def parse_arguments() -> Namespace:
-    """Parses command line arguments passed to Pacstall.
+    """
+    Parses command line arguments passed to Pacstall.
 
     Prints help and exits if no argument is passed.
 
