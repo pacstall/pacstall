@@ -140,7 +140,7 @@ if __name__ == "__main__":
 
     if args.install or args.remove or args.upgrade:
         lock_file = open("/var/lock/pacstall.lock", "w")
-        call(["/usr/bin/sudo", "/usr/bin/chown", "root", "/var/lock/pacstall.lock"], shell=False)
+        call(["/usr/bin/sudo", "/usr/bin/chown", "root", "/var/lock/pacstall.lock"])
         while True:
             try:
                 lockf(lock_file, LOCK_EX | LOCK_NB)
