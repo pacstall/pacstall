@@ -146,5 +146,5 @@ if __name__ == "__main__":
                 lockf(lock_file, LOCK_EX | LOCK_NB)
                 break
             except IOError:
-                message.fancy("error", "Another instance running lol")
+                message.fancy("error", "Pacstall is already running another instance")
                 sleep(1)
