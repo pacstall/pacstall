@@ -133,7 +133,7 @@ def parse_arguments() -> Namespace:
 
 if __name__ == "__main__":
     if getuser() == "root":
-        message.fancy("error", "Pacstall can't be run as root")
+        message.fancy("error", "Pacstall cannot be run as root")
         sys.exit(1)
 
     args = parse_arguments()
