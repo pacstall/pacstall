@@ -23,6 +23,8 @@
 
 ---
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f5d03570111343c0b16c2ae062d7f02d)](https://app.codacy.com/gh/pacstall/pacstall?utm_source=github.com&utm_medium=referral&utm_content=pacstall/pacstall&utm_campaign=Badge_Grade_Settings)
+
 ### Features
 
 *  Supports binary, git, appimage, building and `.deb` packages
