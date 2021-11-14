@@ -24,15 +24,19 @@
 # You should have received a copy of the GNU General Public License
 
 import sys
+from fcntl import lockf, LOCK_EX, LOCK_NB
 from getpass import getuser
-from argparse import HelpFormatter, ArgumentParser
+from argparse import HelpFormatter, ArgumentParser, Namespace
+from time import sleep
+from subprocess import call
 
 from api.color import Foreground
 from api import message
 
 # Copied from https://stackoverflow.com/a/23941599 and modified
 class CustomHelpFormatter(HelpFormatter):
-    """Custom help message formatter for Pacstall.
+    """
+    Custom help message formatter for Pacstall.
 
     Format:
     -s, --long       help message
@@ -59,61 +63,88 @@ class CustomHelpFormatter(HelpFormatter):
         return ", ".join(parts)
 
 
-if getuser() == "root":
-    message.fancy("error", "Pacstall can't be run as root")
-    sys.exit(1)
+def parse_arguments() -> Namespace:
+    """
+    Parses command line arguments passed to Pacstall.
 
-parser = ArgumentParser(prog="pacstall", formatter_class=CustomHelpFormatter)
-commands = parser.add_argument_group("commands").add_mutually_exclusive_group()
-modifiers = parser.add_argument_group("modifiers")
+    Prints help and exits if no argument is passed.
 
-commands.add_argument(
-    "-I", "--install", metavar="package", nargs="+", help="install packages"
-)
-commands.add_argument(
-    "-S", "--search", metavar="package", nargs="?", help="search for packages"
-)
-commands.add_argument(
-    "-R", "--remove", metavar="package", nargs="?", help="remove packages"
-)
-commands.add_argument(
-    "-D", "--download", metavar="package", nargs="?", help="download pacscripts"
-)
-commands.add_argument(
-    "-A", "--add-repo", metavar="repo", nargs="?", help="add repos to the repo list"
-)
-commands.add_argument(
-    "-V",
-    "--version",
-    action="version",
-    version=f"{Foreground.BIBLUE}Pacstall {Foreground.BIWHITE}2.0 {Foreground.BIYELLOW}Kournikova",
-    help="show version",
-)
-commands.add_argument(
-    "-L", "--list", action="store_true", help="list installed packages"
-)
-commands.add_argument("-Up", "--upgrade", action="store_true", help="upgrade packages")
-commands.add_argument(
-    "-Qi", "--query-info", metavar="package", nargs=1, help="show package info"
-)
+    Returns
+    -------
+    Namespace: Containing all the parsed arguments
+    """
+    parser = ArgumentParser(prog="pacstall", formatter_class=CustomHelpFormatter)
+    commands = parser.add_argument_group("commands").add_mutually_exclusive_group()
+    modifiers = parser.add_argument_group("modifiers")
 
-modifiers.add_argument(
-    "-P",
-    "--disable-prompts",
-    dest="disable_prompts",
-    action="store_true",
-    help="disable prompts for unattended operations",
-)
-modifiers.add_argument(
-    "-K",
-    "--keep",
-    dest="keep",
-    action="store_true",
-    help="retain build directory after installation",
-)
+    commands.add_argument(
+        "-I", "--install", metavar="package", nargs="+", help="install packages"
+    )
+    commands.add_argument(
+        "-S", "--search", metavar="package", nargs="?", help="search for packages"
+    )
+    commands.add_argument(
+        "-R", "--remove", metavar="package", nargs="?", help="remove packages"
+    )
+    commands.add_argument(
+        "-D", "--download", metavar="package", nargs="?", help="download pacscripts"
+    )
+    commands.add_argument(
+        "-A", "--add-repo", metavar="repo", nargs="?", help="add repos to the repo list"
+    )
+    commands.add_argument(
+        "-V",
+        "--version",
+        action="version",
+        version=f"{Foreground.BIBLUE}Pacstall {Foreground.BIWHITE}2.0 {Foreground.BIYELLOW}Kournikova",
+        help="show version",
+    )
+    commands.add_argument(
+        "-L", "--list", action="store_true", help="list installed packages"
+    )
+    commands.add_argument(
+        "-Up", "--upgrade", action="store_true", help="upgrade packages"
+    )
+    commands.add_argument(
+        "-Qi", "--query-info", metavar="package", nargs=1, help="show package info"
+    )
 
-if len(sys.argv) == 1:
-    parser.print_help()
-    sys.exit(1)
+    modifiers.add_argument(
+        "-P",
+        "--disable-prompts",
+        dest="disable_prompts",
+        action="store_true",
+        help="disable prompts for unattended operations",
+    )
+    modifiers.add_argument(
+        "-K",
+        "--keep",
+        dest="keep",
+        action="store_true",
+        help="retain build directory after installation",
+    )
 
-parser.parse_args()
+    if len(sys.argv) == 1:
+        parser.print_help()
+        sys.exit(1)
+
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    if getuser() == "root":
+        message.fancy("error", "Pacstall cannot be run as root")
+        sys.exit(1)
+
+    args = parse_arguments()
+
+    if args.install or args.remove or args.upgrade:
+        lock_file = open("/var/lock/pacstall.lock", "w")
+        call(["/usr/bin/sudo", "/usr/bin/chown", "root", "/var/lock/pacstall.lock"])
+        while True:
+            try:
+                lockf(lock_file, LOCK_EX | LOCK_NB)
+                break
+            except IOError:
+                message.fancy("error", "Pacstall is already running another instance")
+                sleep(1)
