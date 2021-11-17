@@ -327,7 +327,7 @@ if [[ -n "$breaks" ]]; then
 			cleanup
 			return 1
 		fi
-		if [[ "${pkg}" != "${name}" ]] && pacstall -L | grep "${pkg}" > /dev/null 2>&1; then
+		if [[ "${pkg}" != "${name}" ]] && pacstall -L | grep -E "(^| )${pkg}( |$)" > /dev/null 2>&1; then
 			# Same thing, but check if anything is installed with pacstall
 			fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by pacstall"
 			error_log 13 "install $PACKAGE"
