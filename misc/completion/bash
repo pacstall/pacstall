@@ -64,6 +64,11 @@ _pacstall() {
 			COMPREPLY=($packages)
 			return
 		;;
+		
+		-?(P)K?(P)|--keep)
+			COMPREPLY=( $( compgen -W "-I -Il -Up -PI -PIl -PUp" -- "$cur" ) )
+			return
+		;;
 	esac
 
 	case "$cur" in
@@ -72,7 +77,11 @@ _pacstall() {
 			return
 		;;
 		-P*)
-			COMPREPLY=( $( compgen -W "-PI -PIl -PR -PUp" -- "$cur" ) )
+			COMPREPLY=( $( compgen -W "-PK -PI -PIl -PR -PUp -PKI -PKIl -PKR -PKUp" -- "$cur" ) )
+			return
+		;;
+		-K*)
+			COMPREPLY=( $( compgen -W "-KP -KI -KIl -KUp -KPI -KPIl -KPUp" -- "$cur" ) )
 			return
 		;;
 		*)

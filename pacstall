@@ -224,8 +224,8 @@ argument_list=()
 for i in "${@}"; do
 	# Just add argument if doesn't start with a single hyphen.
 	if ! [[ "${i}" =~ ^-[^-] ]]; then
-		# if argument is '-P', add to beginning of argument list.
-		if [[ "${i}" == "-P" ]]; then
+		# if argument is '-P' or '-K', add to beginning of argument list.
+		if [[ "${i}" == "-P" ]]  || [[ "${i}" == "-K" ]]; then
 			argument_list=("${i}" "${argument_list[@]}")
 		else
 			argument_list+=("${i}")
@@ -237,7 +237,7 @@ for i in "${@}"; do
 	# We remove the '-' prefix as we'll add it later.
 	for j in $(echo "${i}" | sed 's|^-||' | sed 's|[[:upper:]]| &|g'); do
 		# If current string is 'P', add to beginning of argument list.
-		if [[ "${j}" == "P" ]] || [[ "${j}" == "-disable-prompts" ]]; then
+		if [[ "${j}" == "P" ]] || [[ "${j}" == "-disable-prompts" ]] || [[ "${j}" == "K" ]] || [[ "${j}" == "-keep" ]]; then
 			argument_list=("-${j}" "${argument_list[@]}")
 		else
 			argument_list+=("-${j}")
@@ -550,6 +550,7 @@ while [[ ! "$1" == "--" ]]; do
 		;;
 
 		-K|--keep)
+			fancy_message info "Keeping build files"
 			KEEP=true
 		;;
 
