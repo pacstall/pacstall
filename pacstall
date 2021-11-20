@@ -550,6 +550,7 @@ while [[ ! "$1" == "--" ]]; do
 		;;
 
 		-K|--keep)
+			fancy_message info "Keeping build files"
 			KEEP=true
 		;;
 
