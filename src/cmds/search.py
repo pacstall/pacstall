@@ -53,7 +53,7 @@ def search(package, match=False):
             with urlopen(f'{repo_dict[repo]}/packagelist') as f:
                 packagelist = f.read().decode('utf-8').split()
         except KeyError:
-            fancy("error", f"Repo provided is not on the repo list")
+            fancy("error", 'Repo provided is not on the repo list')
             return -1
 
         if pkg_name in packagelist:
@@ -61,19 +61,19 @@ def search(package, match=False):
 
         fancy("error", f"Package {pkg_name} not found in the repo provided")
         return -1
-    
+
     if match:
         match_list = []
         for repo in repo_dict:
             with urlopen(f'{repo_url}/packagelist') as f:
                 packagelist = f.read().decode('utf-8').split()
-            
+
             if pkg_name in packagelist:
                 match_list.append(f'repo_url/packages/{package}/{package}.pacscript')
 
         if match_list:
             return choose(match_list)
-        
+
         fancy("error", f"Package {pkg_name} not found")       
         return -1
 
@@ -81,7 +81,7 @@ def search(package, match=False):
     for repo in repo_dict:
         with urlopen(f'{repo_dict[repo]}/packagelist') as f:
             packagelist = f.read().decode('utf-8').split()
-        
+
         for pkg in partial_match(package,packagelist):
             if repo in match_dict:
                 match_dict[repo]+=[pkg]
