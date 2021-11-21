@@ -99,6 +99,6 @@ complete -f --command pacstall -n "__fish_seen_subcommand_from $package_commands
 complete -f --command pacstall -n "__fish_seen_subcommand_from $log_commands" -a "(\ls -1aA /var/log/pacstall/metadata | tr ' ' '\n')"
 
 # Completion for the local pacscript flags
-complete -f --command pacstall -n "__fish_seen_subcommand_from $pacscript_commands" -a "(find -- *.pacscript* | sed 's/.pacscript//g')"
+complete -f --command pacstall -n "__fish_seen_subcommand_from $pacscript_commands" -a "(find -maxdepth 1 -type f -name '*.pacscript' | sed 's/.pacscript//g' | sed 's/.\///g')"
 
 # vim:set ft=sh ts=4 sw=4 noet:
