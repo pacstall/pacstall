@@ -22,7 +22,7 @@ def partial_match(package,package_list):
 def exact_match(package,package_list):
     return True if package in package_list else False
 
-def print_results(package,result_list):
+def print_results(package,match_dict):
     print("To do")
 
 def choose(package,repo_list):
@@ -31,15 +31,11 @@ def choose(package,repo_list):
 
 def search(package, match=True, local=False):
 
-    if local:
-        if not match:
-            match_list =  exact_match(package,package_list)
-            print_results(match_list,package)
-            return 0
+    if match and ".pacscript" in package:
+        from os.path import exists
+        return package if exists(package) else -1
 
-        if match and ".pacscript" in package:
-            from os.path import exists
-            return package if exists(package) else -1
+    if local:
         
         packagelist = get_local()
         if match and exact_match(package,get_local()):
@@ -51,7 +47,7 @@ def search(package, match=True, local=False):
     repo = None
 
     if "@" in package:
-        pkg_name, repo = package.split("@")
+        pkg_name, repo = package.split("@",1)
 
     if repo:
         try:
@@ -81,15 +77,20 @@ def search(package, match=True, local=False):
 
     match_dict = {}
 
-    for repo_url in repo_list.values():
-        packagelist = get_packagelist(repo_url)
-
-        for pkg_repo in partial_match():
-            if pkg_repo in match_dict:
-                match_dict[pkg_repo]+=[repo_url]
-            match_dict[pkg_repo]=[repo_url]
+    for repo in repo_list:
+        packagelist = get_packagelist(repo_list[repo])
+        for pkg in partial_match(package,packagelist):
+            if repo in match_dict:
+                match_dict[repo]+=[pkg]
+            match_dict[repo]=[pkg]
     
-    for pkg in match_dict:
-        print_results(pkg_name, match_dict[pkg])
-        return 0
+    packagelist = get_local()
+    match_local = partial_match(package,package_list)
+    for pkg in partial_match(package,packagelist):
+        if 'local' in match_dict:
+            match_dict['local']+=[pkg]
+        match_dict['local']=[pkg]
+
+    print_results(package, match_dict)
+    return 0
             
