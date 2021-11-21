@@ -7,20 +7,18 @@ def get_repolist():
 
 def get_packagelist(repo_url):
     f = urlopen(f'{repo_url}/packagelist')
-    packagelist = f.read().decode('utf-8').split()
-    return packagelist
+    return f.read().decode('utf-8').split()
 
 def get_local():
     from glob import glob
     return [pkg.replace(".pacscript","") for pkg in glob("*.pacscript")]
 
 def partial_match(package,package_list):
-    match_list=[]
     # To do
-    return match_list
+    return []
 
 def exact_match(package,package_list):
-    return True if package in package_list else False
+    return package in package_list
 
 def print_results(package,match_dict):
     print("To do")
