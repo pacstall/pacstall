@@ -29,19 +29,11 @@ def choose(package,repo_list):
     ask("To do","Y")
     return repo_list[0] # To do
 
-def search(package, match=True, local=False):
+def search(package, match=False):
 
     if match and ".pacscript" in package:
         from os.path import exists
         return package if exists(package) else -1
-
-    if local:
-        
-        packagelist = get_local()
-        if match and exact_match(package,get_local()):
-            return f"./{pgkname}.pacscript"
-        
-        return -1
 
     repo_list=get_repolist()
     repo = None
@@ -67,8 +59,12 @@ def search(package, match=True, local=False):
         for repo_url in repo_list.values():
             packagelist = get_packagelist(repo_url)
             if exact_match(pkg_name,packagelist):
-                match_list.append(repo_url)
+                match_list.append(f'repo_url/packages/{package}/{package}.pacscript')
         
+        packagelist = get_local()
+        if match and exact_match(package,get_local()):
+             match_list.append(f"./{pgkname}.pacscript")
+
         if match_list:
             return choose(match_list)
         
