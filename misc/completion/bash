@@ -41,7 +41,7 @@ _pacstall() {
 			return
 		;;
 
-		-?(P)I?(P)|--install)
+		-?(P)I?(P)|-?(K)I?(K)|-?(PK)I?(PK)|-?(KP)I?(KP)|--install)
 			COMPREPLY=($packages)
 			return
 		;;
@@ -55,7 +55,8 @@ _pacstall() {
 			COMPREPLY=( $( compgen -W "$(\ls -1aAp /var/log/pacstall/metadata)" -- $cur ) )
 			return
 		;;
-		-?(P)Il?(P)|--install-local)
+
+		-?(P)Il?(P)|-?(K)Il?(K)|-?(PK)Il?(PK)|-?(KP)Il?(KP)|--install-local)
 			COMPREPLY=( $( compgen -W "$(find -maxdepth 1 -type f -name '*.pacscript' | sed 's/.pacscript//g' | sed 's/.\///g')" -- "$cur" ) )
 			return
 		;;
@@ -69,6 +70,7 @@ _pacstall() {
 			COMPREPLY=( $( compgen -W "-I -Il -Up -PI -PIl -PUp" -- "$cur" ) )
 			return
 		;;
+
 	esac
 
 	case "$cur" in
