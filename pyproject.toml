@@ -6,7 +6,7 @@ authors = ["Pacstall Dev Team"]
 license = "GPL-3.0-only"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.8.2"
 
 [tool.poetry.dev-dependencies]
 
