@@ -8,7 +8,7 @@ authors = [
 	"David Brochero <davidfbg00@gmail.com>"
 ]
 license = "GPL-3.0-or-later"
-readme = "readme.md"
+readme = "README.md"
 homepage = "https://pacstall.dev"
 repository = "https://github.com/pacstall/pacstall"
 documentation = "https://github.com/pacstall/pacstall/wiki"
