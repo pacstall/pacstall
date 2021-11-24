@@ -5,13 +5,14 @@ This is the python rewrite branch.
 ---
 
 <p align="center">
-  <!-- General -->
-  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.8%2B-blue?logo=python&logoColor=white&style=flat-square"></a>
-  <a href="https://github.com/pacstall/pacstall/actions?query=workflow%3A%22test+install+script%22"><img src="https://img.shields.io/github/workflow/status/pacstall/pacstall/test%20install%20script?style=flat-square"></a>
+  <!-- Programming info -->
+  <a href="https://github.com/pacstall/pacstall/actions/workflows/remote-bash.yml"><img src="https://github.com/pacstall/pacstall/actions/workflows/remote-bash.yml/badge.svg"></a>
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/python-3.8%2B-306998?logo=python&logoColor=white&style=flat-square"></a>
   <a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-black?style=flat-square"/></a>
   <img alt="Codacy branch grade" src="https://img.shields.io/codacy/grade/3c7e992f7e464b16919b7d57e524c997/python3-rewrite?logo=codacy&style=flat-square">
+  <a href="https://www.gnu.org/software/bash"><img src="https://img.shields.io/badge/bash-v5-chateauGreen?logo=gnubash&logoColor=white&style=flat-square"></a>
   <a href="https://github.com/pacstall/pacstall-programs"><img src="https://img.shields.io/github/commit-activity/m/pacstall/pacstall-programs?style=flat-square&label=user%20repo%20activity"></a><br>
-<!-- Social -->
+  <!-- Social -->
   <a href="https://discord.gg/yzrjXJV6K8"><img src="https://img.shields.io/discord/839818021207801878?color=5865F2&label=Discord&logo=discord&logoColor=FFFFFF&style=flat-square"></a>
   <a href="https://matrix.to/#/#pacstall:matrix.org"><img src="https://img.shields.io/matrix/pacstall:matrix.org?color=888888&label=Matrix&logo=Matrix&style=flat-square"></a>
   <a href="https://www.reddit.com/r/pacstall/"><img src="https://img.shields.io/reddit/subreddit-subscribers/pacstall?style=flat-square&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAACXBIWXMAATRQAAE0UAFXCOjxAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAaBJREFUKJF9kk9LVGEUxn/nzlXT8TqaSPoBRPAjBANC3lUKglQatLY2zU78Bu4NImp2OYi4HLCFilpg+0Lxz06woAgdveaMNvO0eOfODI30wAsv7znPc855z2M0QCP008JLYBwYrD4fAXmKvLJPfI9zrUZ6wBTGW4yA2yAuMGZsjSUAr0byyDWRUn3gJaDnHnSmAmBRozwFMI3Qj8/hrZUmMlD4AU/mYG8HFl64yiWG/OpMzSQzR9pcgi/bULqKhwtoJeNXP6KO9gDSkzB8H4K7cCcJH1fg8rxBlHEUUlSI9DojXUXS2U814fyXi2XnpBBplGuvppLwnfrJEUz2QnQKlwV41AfH+y7m1dNRyFeFSGMdUrksRQXpQ1aqlN1ZfSddnEqVijSRiivuekAegNJvWH8PyS7o6oXdHdj77O6d3bC17DpwO82b0gzQxgFGQMKHx7PwcAaui4CgrQNWs7A8D39uQEQYQ1ZtdxpYjA0BQLLb+So6a3SPEM9sg1zdcs4Rb/5juQjx3DbIuY00xtIM0EoG+8fkIo/Hgq3xLc79CzNQvfQ4D27CAAAAAElFTkSuQmCC"></a>
