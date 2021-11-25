@@ -13,15 +13,15 @@ homepage = "https://pacstall.dev"
 repository = "https://github.com/pacstall/pacstall"
 documentation = "https://github.com/pacstall/pacstall/wiki"
 keywords = [
-	"command line",
-	"cli",
-	"console",
-	"package manager",
-	"pacstall",
-	"pacscript",
 	"aur",
-	"ubuntu",
-	"debian"
+	"cli",
+	"command line",
+	"console",
+	"debian",
+	"package manager",
+	"pacscript",
+	"pacstall",
+	"ubuntu"
 ]
 classifiers = [
 	"Development Status :: 5 - Production/Stable",
