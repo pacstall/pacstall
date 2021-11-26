@@ -1,0 +1,58 @@
+[tool.poetry]
+name = "pacstall"
+version = "2.0"
+description = "An AUR-inspired package manager for Ubuntu"
+authors = [
+	"Henry <hwengerstickel@protonmail.com>",
+	"Sourajyoti Basak <wiz28@protonmail.com>",
+	"David Brochero <davidfbg00@gmail.com>"
+]
+license = "GPL-3.0-or-later"
+readme = "README.md"
+homepage = "https://pacstall.dev"
+repository = "https://github.com/pacstall/pacstall"
+documentation = "https://github.com/pacstall/pacstall/wiki"
+keywords = [
+	"aur",
+	"cli",
+	"command line",
+	"console",
+	"debian",
+	"package manager",
+	"pacscript",
+	"pacstall",
+	"ubuntu"
+]
+classifiers = [
+	"Development Status :: 5 - Production/Stable",
+	"Environment :: Console",
+	"Intended Audience :: Developers",
+	"Intended Audience :: End Users/Desktop",
+	"Intended Audience :: System Administrators",
+	"License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+	"Operating System :: POSIX :: Linux",
+	"Programming Language :: Python :: 3 :: Only",
+	"Programming Language :: Python :: 3.8",
+	"Programming Language :: Python :: 3.9",
+	"Programming Language :: Python :: 3.10",
+	"Programming Language :: Python :: 3.11",
+	"Programming Language :: Python :: Implementation :: CPython",
+	"Programming Language :: Other",
+	"Programming Language :: Other Scripting Engines",
+	"Topic :: System",
+	"Topic :: System :: Archiving :: Packaging",
+	"Topic :: System :: Installation/Setup",
+	"Topic :: System :: Systems Administration",
+	"Topic :: System :: Software Distribution",
+	"Topic :: Utilities"
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+
+[tool.poetry.dev-dependencies]
+black = "^21.11b1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
