@@ -78,6 +78,14 @@ _pacstall() {
 			COMPREPLY=( $( compgen -W '$( _parse_help "$1" )' -- "$cur" ) )
 			return
 		;;
+		-PK*)
+			COMPREPLY=( $( compgen -W "-PKI -PKIl -PKUp" -- "$cur" ) )
+			return
+		;;
+		-KP*)
+			COMPREPLY=( $( compgen -W "-KPI -KPIl -KPUp" -- "$cur" ) )
+			return
+		;;
 		-P*)
 			COMPREPLY=( $( compgen -W "-PK -PI -PIl -PR -PUp -PKI -PKIl -PKR -PKUp" -- "$cur" ) )
 			return
