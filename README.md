@@ -6,7 +6,7 @@ This is the python rewrite branch.
 
 <p align="center">
   <!-- Programming info -->
-  <a href="https://github.com/pacstall/pacstall/actions/workflows/remote-bash.yml"><img alt="workflow: status"src="https://github.com/pacstall/pacstall/actions/workflows/remote-bash.yml/badge.svg"></a>
+  <a href="https://github.com/pacstall/pacstall/actions/workflows/remote-bash.yml"><img alt="workflow: status"src="https://img.shields.io/github/workflow/status/pacstall/pacstall/test%20install%20script?label=test%20install&logo=github&style=flat-square"></a>
   <a href="https://www.python.org/"><img alt="python 3.8+" src="https://img.shields.io/badge/python-3.8%2B-306998?logo=python&logoColor=white&style=flat-square"></a>
   <a href="https://github.com/psf/black"><img alt="code style: 3.8+" src="https://img.shields.io/badge/code%20style-black-black?style=flat-square"/></a>
   <a href="https://www.codacy.com/gh/pacstall/pacstall/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pacstall/pacstall&amp;utm_campaign=Badge_Grade"><img alt="Codacy branch grade" src="https://img.shields.io/codacy/grade/3c7e992f7e464b16919b7d57e524c997/python3-rewrite?logo=codacy&style=flat-square"></a>
