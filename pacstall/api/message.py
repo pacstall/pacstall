@@ -77,7 +77,7 @@ def ask(question: str, default: str = "nothing") -> str:
         reply = default
 
         if reply != "nothing":
-            print(f'{question} {prompt} {reply}')
+            print(f"{question} {prompt} {reply}")
     while True:
         if reply in ["Y", "N"]:
             return reply
