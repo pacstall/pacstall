@@ -30,8 +30,12 @@ from argparse import HelpFormatter, ArgumentParser, Namespace
 from time import sleep
 from subprocess import call
 
+from rich.traceback import install
+
 from api.color import Foreground
 from api import message
+
+from cmds import download
 
 # Copied from https://stackoverflow.com/a/23941599 and modified
 class CustomHelpFormatter(HelpFormatter):
@@ -132,6 +136,7 @@ def parse_arguments() -> Namespace:
 
 
 if __name__ == "__main__":
+    install() # --> Install Rich's traceback handler for better looking tracebacks
     if getuser() == "root":
         message.fancy("error", "Pacstall cannot be run as root")
         sys.exit(1)
@@ -148,3 +153,6 @@ if __name__ == "__main__":
             except IOError:
                 message.fancy("error", "Pacstall is already running another instance")
                 sleep(1)
+
+    if args.download:
+        exit (download.execute(args.download))
