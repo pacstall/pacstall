@@ -40,8 +40,8 @@ def execute(url: str, filepath: str = None) -> int:
     Error codes
     -----------
     0: Everything went fine.
-    1: No internet connection detected.
-    2: Some problem occurred while downloading.
+    1: Connection problems.
+    2: Downloading problems.
     3: Unknown error.
     """
     try:
@@ -49,18 +49,32 @@ def execute(url: str, filepath: str = None) -> int:
             if data.status_code != 200:
                 fancy("error", f"Error occurred while downloading {url}")
                 fancy("error", f"Error code: {data.status_code}")
-                return 2  # --> Problem occurred while downloading
+                return 1  # --> Problem occurred while downloading
             else:
                 if not filepath:
                     filepath = url.split("/")[-1]
-                with open(filepath, "wb") as file:
-                    file.write(data.content)
+                try:
+                    with open(filepath, "wb") as file:
+                        file.write(data.content)
+                except IOError:
+                    fancy("error", "Could not write downloaded contents to file")
+                    return 2
                 return 0  # --> No problems occurred while downloading
+
     except exceptions.ConnectionError:
-        fancy("error", "No internet connection")
+        fancy("error", "No internet connection detected")
         return 1  # --> No internet connection detected
+
+    except exceptions.Timeout:
+        fancy("error", "Connection timed out. Check your internet connection")
+        return 1  # --> Connection timed out
+
+    except exceptions.TooManyRedirects:
+        fancy("error", "Too many redirections. Possibly bad URL")
+        return 1  # --> Too many redirections
+
     except Exception:
-        fancy("error", "Unknown exception occured")
+        fancy("error", "Unknown exception occurred")
         Console().print_exception(
             show_locals=True, max_frames=1
         )  # --> Print exception in this case
