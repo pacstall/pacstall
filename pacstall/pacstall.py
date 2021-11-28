@@ -136,7 +136,9 @@ def parse_arguments() -> Namespace:
 
 
 if __name__ == "__main__":
-    install(show_locals=True)  # --> Install Rich's traceback handler for better looking tracebackes
+    install(
+        show_locals=True
+    )  # --> Install Rich's traceback handler for better looking tracebackes
     if getuser() == "root":
         message.fancy("error", "Pacstall cannot be run as root")
         sys.exit(1)
@@ -155,4 +157,4 @@ if __name__ == "__main__":
                 sleep(1)
 
     if args.download:
-        exit(download.execute(args.download))
+        sys.exit(download.execute(args.download))
