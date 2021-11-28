@@ -1,6 +1,6 @@
 #!/bin/env python3
 
-"""Download command"""
+"""Download command."""
 
 #     ____                  __        ____
 #    / __ \____ ___________/ /_____ _/ / /
