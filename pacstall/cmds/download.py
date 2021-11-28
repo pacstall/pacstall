@@ -62,7 +62,7 @@ def execute(url: str, filepath: str = None) -> int:
             try:
                 with open(filepath, "wb") as file:
                     file.write(data.content)
-            except IOError:
+            except OSError:
                 fancy("error", "Could not write downloaded contents to file")
                 return 2  # --> Writing data failed
             return 0  # --> No problems occurred while downloading
