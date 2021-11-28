@@ -44,34 +44,36 @@ def execute(url: str, filepath: str = None) -> int:
     2: Downloading problems.
     3: Unknown error.
     """
+
+    REQUEST_ERROR_MESSAGES = {
+        exceptions.HTTPError: "A HTTP error occurred while connecting to the URL",
+        exceptions.ConnectionError: "No internet connection detected",
+        exceptions.Timeout: "Connection timed out. Check your internet connection",
+        exceptions.TooManyRedirects: "Too many redirections. Possibly bad URL",
+    }
+
     try:
         with get(url) as data:
-            if data.status_code != 200:
-                fancy("error", f"Error occurred while downloading {url}")
-                fancy("error", f"Error code: {data.status_code}")
-                return 1  # --> Problem occurred while downloading
-            else:
-                if not filepath:
-                    filepath = url.split("/")[-1]
-                try:
-                    with open(filepath, "wb") as file:
-                        file.write(data.content)
-                except IOError:
-                    fancy("error", "Could not write downloaded contents to file")
-                    return 2
-                return 0  # --> No problems occurred while downloading
+            data.raise_for_status()
+            if not filepath:
+                filepath = url.split("/")[-1]
 
-    except exceptions.ConnectionError:
-        fancy("error", "No internet connection detected")
-        return 1  # --> No internet connection detected
+            try:
+                with open(filepath, "wb") as file:
+                    file.write(data.content)
+            except IOError:
+                fancy("error", "Could not write downloaded contents to file")
+                return 2
+            return 0  # --> No problems occurred while downloading
 
-    except exceptions.Timeout:
-        fancy("error", "Connection timed out. Check your internet connection")
-        return 1  # --> Connection timed out
-
-    except exceptions.TooManyRedirects:
-        fancy("error", "Too many redirections. Possibly bad URL")
-        return 1  # --> Too many redirections
+    except (
+        exceptions.HTTPError,
+        exceptions.ConnectionError,
+        exceptions.Timeout,
+        exceptions.TooManyRedirects,
+    ) as e:
+        fancy("error", REQUEST_ERROR_MESSAGES[type(e)])
+        return 1  # --> Connection problems
 
     except Exception:
         fancy("error", "Unknown exception occurred")
