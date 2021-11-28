@@ -1,5 +1,7 @@
 #!/bin/env python3
 
+"""Download command"""
+
 #     ____                  __        ____
 #    / __ \____ ___________/ /_____ _/ / /
 #   / /_/ / __ `/ ___/ ___/ __/ __ `/ / /
@@ -71,8 +73,8 @@ def execute(url: str, filepath: str = None) -> int:
         exceptions.ConnectionError,
         exceptions.Timeout,
         exceptions.TooManyRedirects,
-    ) as e:
-        fancy("error", REQUEST_ERROR_MESSAGES[type(e)])
+    ) as error:
+        fancy("error", REQUEST_ERROR_MESSAGES[type(error)])
         return 1  # --> Connection problems
 
     except Exception:
