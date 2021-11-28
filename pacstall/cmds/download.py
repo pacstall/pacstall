@@ -22,8 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-from requests import get
-from requests.exceptions import ConnectionError
+from requests import get, exceptions
 from rich.console import Console
 
 from api.message import fancy
@@ -57,10 +56,12 @@ def execute(url: str, filepath: str = None) -> int:
                 with open(filepath, "wb") as file:
                     file.write(data.content)
                 return 0  # --> No problems occurred while downloading
-    except ConnectionError:
+    except exceptions.ConnectionError:
         fancy("error", "No internet connection")
         return 1  # --> No internet connection detected
     except Exception:
         fancy("error", "Unknown exception occured")
-        Console().print_exception(show_locals=True, max_frames=1) # --> Print exception in this case
-        return 3 # --> Unknown error
+        Console().print_exception(
+            show_locals=True, max_frames=1
+        )  # --> Print exception in this case
+        return 3  # --> Unknown error
