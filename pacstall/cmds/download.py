@@ -64,7 +64,7 @@ def execute(url: str, filepath: str = None) -> int:
                     file.write(data.content)
             except IOError:
                 fancy("error", "Could not write downloaded contents to file")
-                return 2
+                return 2  # --> Writing data failed
             return 0  # --> No problems occurred while downloading
 
     except (
