@@ -1,7 +1,7 @@
 """
 Pacstall Commands
 
-Modules
+Files
 -------
 download: Download command
 """
