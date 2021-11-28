@@ -25,7 +25,6 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 from requests import get, exceptions
-from rich.console import Console
 
 from api.message import fancy
 
@@ -79,7 +78,4 @@ def execute(url: str, filepath: str = None) -> int:
 
     except Exception:
         fancy("error", "Unknown exception occurred")
-        Console().print_exception(
-            show_locals=True, max_frames=1
-        )  # --> Print exception in this case
         return 3  # --> Unknown error
