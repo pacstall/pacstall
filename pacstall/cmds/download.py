@@ -24,9 +24,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-from requests import get, exceptions
-
 from api.message import fancy
+from requests import exceptions, get
 
 
 def execute(url: str, filepath: str = None) -> int:
