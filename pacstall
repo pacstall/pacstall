@@ -251,9 +251,12 @@ set -- "${argument_list[@]}"
 function lock() {
 	ignore_short="-S -D -A -V -L -Qi -h"
 	ignore_long="--search --download --add-repo --version --query-info --help"
+	ignore="$ignore_short $ignore_long"
 	if [[ "$ignore" =~ (^|[[:space:]])"$1"($|[[:space:]]) ]]; then
 		return 1
 	elif [[ "$ignore" =~ (^|[[:space:]])"$2"($|[[:space:]]) ]]; then
+		return 1
+	elif [[ "$ignore" =~ (^|[[:space:]])"$3"($|[[:space:]]) ]]; then
 		return 1
 	elif [[ -f "/tmp/pacstall-pacdeps-$3" ]]; then
 		return 1
