@@ -24,14 +24,15 @@
 # You should have received a copy of the GNU General Public License
 
 import sys
-from fcntl import lockf, LOCK_EX, LOCK_NB
+from argparse import ArgumentParser, HelpFormatter, Namespace
+from fcntl import LOCK_EX, LOCK_NB, lockf
 from getpass import getuser
-from argparse import HelpFormatter, ArgumentParser, Namespace
-from time import sleep
 from subprocess import call
+from time import sleep
 
-from api.color import Foreground
 from api import message
+from api.color import Foreground
+
 
 # Copied from https://stackoverflow.com/a/23941599 and modified
 class CustomHelpFormatter(HelpFormatter):
@@ -42,7 +43,7 @@ class CustomHelpFormatter(HelpFormatter):
     -s, --long       help message
     """
 
-    def _format_action_invocation(self, action) -> str:
+    def _format_action_invocation(self, action) -> str:  # type: ignore[no-untyped-def]
         if not action.option_strings:
             (metavar,) = self._metavar_formatter(action, action.dest)(1)
             return metavar
@@ -145,6 +146,6 @@ if __name__ == "__main__":
             try:
                 lockf(lock_file, LOCK_EX | LOCK_NB)
                 break
-            except IOError:
+            except OSError:
                 message.fancy("error", "Pacstall is already running another instance")
                 sleep(1)

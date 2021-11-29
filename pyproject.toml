@@ -52,6 +52,13 @@ python = "^3.8"
 
 [tool.poetry.dev-dependencies]
 black = "^21.11b1"
+pre-commit = "^2.15.0"
+isort = "^5.10.1"
+pyupgrade = "^2.29.1"
+mypy = "^0.910"
+
+[tool.isort]
+profile = "black"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

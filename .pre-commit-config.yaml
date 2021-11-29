@@ -1,0 +1,44 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-ast
+      - id: check-added-large-files
+  - repo: local
+    hooks:
+      - id: black
+        name: Black
+        description: Automatically format code to follow the black code style
+        types_or: [python, pyi]
+        entry: poetry run black
+        language: system
+  - repo: local
+    hooks:
+      - id: isort
+        name: iSort
+        description: Automatically sort import statements
+        types: [python]
+        entry: poetry run isort
+        language: system
+  - repo: local
+    hooks:
+      - id: pyupgrade
+        name: PyUpgrade
+        description: Automatically upgrade syntax for newer versions.
+        types: [python]
+        entry: poetry run pyupgrade
+        args: [--py36-plus]
+        language: system
+  - repo: local
+    hooks:
+      - id: mypy
+        name: MyPy
+        description: Static type checker for Python
+        entry: poetry run mypy
+        language: system
+        types_or: [python, pyi]
+        args: ["--ignore-missing-imports", "--strict", "--pretty", "--show-error-context", "--show-column-numbers", "--show-error-codes"]
+# vim:set ft=yaml ts=2 sw=2 et:
