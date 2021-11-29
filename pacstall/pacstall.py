@@ -140,7 +140,7 @@ if __name__ == "__main__":
     install(
         show_locals=True
     )  # --> Install Rich's traceback handler for better looking tracebackes
-    
+
     if getuser() == "root":
         message.fancy("error", "Pacstall cannot be run as root")
         sys.exit(1)
