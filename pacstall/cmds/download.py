@@ -36,7 +36,7 @@ def execute(url: str, file_path: str = "") -> int:
     Parameters
     ----------
     url (str): URL to download file from.
-    file_path=None (str): Where to download the file to. If nothing is provided download in cwd.
+    file_path="" (str): Where to download the file to. If nothing is provided download in cwd.
 
     Error codes
     -----------
