@@ -20,8 +20,9 @@ repos:
       - id: isort
         name: iSort
         description: Automatically sort import statements
-        types: [python]
+        types_or: [cython, pyi, python]
         entry: poetry run isort
+        args: ["--py=auto", "--balanced", "-p=cmds", "-p=api", "-o=rich", "-o=requests", "--filter-files"]
         language: system
   - repo: local
     hooks:
