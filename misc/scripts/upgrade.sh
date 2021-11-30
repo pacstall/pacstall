@@ -115,7 +115,7 @@ for i in "${list[@]}"; do
 	if [[ -n "$remotever" ]]; then
 		if [[ $i == *"-git" ]] || ver_compare "$localver" "$remotever"; then
 			echo "$i" | sudo tee -a /tmp/pacstall-up-list >/dev/null
-			echo "${GREEN}${i}${CYAN} @ $(parseRepo "${remoteurl}") ${NC}" | sudo tee -a /tmp/pacstall-up-print >/dev/null
+			echo "\t${GREEN}${i}${CYAN} @ $(parseRepo "${remoteurl}") ${NC}" | sudo tee -a /tmp/pacstall-up-print >/dev/null
 			echo "$remoteurl" | sudo tee -a /tmp/pacstall-up-urls >/dev/null
 		fi
 	fi
@@ -126,7 +126,7 @@ if [[ $(wc -l /tmp/pacstall-up-list | awk '{ print $1 }') -eq 0 ]] ; then
 else
 	fancy_message info "Packages can be upgraded"
 	echo -e "Upgradable: $(wc -l /tmp/pacstall-up-print | awk '{ print $1 }')
-	${BOLD}$(cat /tmp/pacstall-up-print)${NORMAL}\n"
+${BOLD}$(cat /tmp/pacstall-up-print)${NORMAL}\n"
 
 	upgrade=()
 	while IFS= read -r line; do
