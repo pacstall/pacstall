@@ -12,6 +12,14 @@ repos:
       - id: check-added-large-files
   - repo: local
     hooks:
+      - id: codespell
+        name: CodeSpell
+        description: Checks for common misspellings in text files
+        types: [text]
+        entry: poetry run codespell
+        language: system
+  - repo: local
+    hooks:
       - id: black
         name: Black
         description: Automatically format code to follow the black code style

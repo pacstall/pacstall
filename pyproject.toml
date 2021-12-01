@@ -59,6 +59,7 @@ isort = "^5.10.1"
 pyupgrade = "^2.29.1"
 mypy = "^0.910"
 types-requests = "^2.26.1"
+codespell = "^2.1.0"
 
 [tool.isort]
 profile = "black"
