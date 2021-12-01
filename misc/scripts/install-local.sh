@@ -26,25 +26,23 @@ function cleanup () {
 	if [[ -n $KEEP ]]; then
 		mkdir -p /"tmp/pacstall-keep/$name"
 		if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
-			sudo mv "/tmp/pacstall-pacdeps-$PACKAGE" "/tmp/pacstall-keep/$name/pacstall-pacdeps-$PACKAGE"
-			sudo mv "/tmp/pacstall-pacdep" "/tmp/pacstall-keep/$name/pacstall-pacdep"
+			sudo mv /tmp/pacstall-pacdep/* "/tmp/pacstall-keep/$name"
 		else
-			sudo mv "/tmp/pacstall" "/tmp/pacstall-keep/$name/pacstall"
+			sudo mv /tmp/pacstall/* "/tmp/pacstall-keep/$name"
 		fi
 		if [[ -f /tmp/pacstall-optdepends ]]; then
 			sudo mv "/tmp/pacstall-optdepends" "/tmp/pacstall-keep/$name/pacstall-optdepends"
 		fi
+	fi
+	if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
+		sudo rm -rf /tmp/pacstall-pacdeps-"$PACKAGE"
+		sudo rm -rf /tmp/pacstall-pacdep
 	else
-		if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
-			sudo rm -rf /tmp/pacstall-pacdeps-"$PACKAGE"
-			sudo rm -rf /tmp/pacstall-pacdep
-		else
-			sudo rm -rf "${SRCDIR:?}"/*
-			sudo rm -rf /tmp/pacstall/*
-		fi
-		if [[ -f /tmp/pacstall-optdepends ]]; then
-			sudo rm /tmp/pacstall-optdepends
-		fi
+		sudo rm -rf "${SRCDIR:?}"/*
+		sudo rm -rf /tmp/pacstall/*
+	fi
+	if [[ -f /tmp/pacstall-optdepends ]]; then
+		sudo rm /tmp/pacstall-optdepends
 	fi
 	unset name version url build_depends depends breaks replace description hash removescript optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall 2>/dev/null
 	unset -f pkgver 2>/dev/null
@@ -319,8 +317,9 @@ if [[ -n "$pacdeps" ]]; then
 		fancy_message info "Installing $i"
 		# If /tmp/pacstall-pacdeps-"$i" is available, it will trigger the logger to log it as a dependency
 		sudo touch /tmp/pacstall-pacdeps-"$i"
-
-		if ! pacstall -P -I "$i"; then
+		
+		[[ $KEEP ]] && k="-K"
+		if ! pacstall -P "$k" -I "$i"; then
 			fancy_message error "Failed to install pacstall dependencies"
 			error_log 8 "install $PACKAGE"
 			cleanup
