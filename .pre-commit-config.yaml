@@ -17,6 +17,7 @@ repos:
         description: Checks for common misspellings in text files
         types: [text]
         entry: poetry run codespell
+        args: [-H, -f, --builtin, clear, rare, informal, usage, code]
         language: system
   - repo: local
     hooks:
