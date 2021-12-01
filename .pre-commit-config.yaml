@@ -1,4 +1,5 @@
 repos:
+  # General
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.2.0
     hooks:
@@ -11,6 +12,7 @@ repos:
       - id: check-yaml
       - id: check-ast
       - id: check-added-large-files
+  # Fish
   - repo: local
     hooks:
       - id: fish_syntax
@@ -25,51 +27,45 @@ repos:
         entry: fish_indent --write
         language: system
         files: "(fish)"
+  # Misc
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: v1.1.10
     hooks:
       - id: insert-license
         args: [--license-filepath, LICENSE_BOILERPLATE, "--detect-license-in-X-top-lines=20"]
         exclude: '^(.github)'
+  # Python
   - repo: local
     hooks:
       - id: codespell
-        name: CodeSpell
+        name: Check for misspellings
         description: Checks for common misspellings in text files
         types: [text]
         entry: poetry run codespell
         args: [-H, -f, --builtin, clear, rare, informal, usage, code]
         language: system
-  - repo: local
-    hooks:
       - id: black
-        name: Black
+        name: Format python code
         description: Automatically format code to follow the black code style
         types_or: [python, pyi]
         entry: poetry run black
         language: system
-  - repo: local
-    hooks:
       - id: isort
-        name: iSort
+        name: Sort python imports
         description: Automatically sort import statements
         types_or: [cython, pyi, python]
         entry: poetry run isort
         args: ["--py=auto", "--balanced", "-p=cmds", "-p=api", "-o=rich", "-o=requests", "--filter-files"]
         language: system
-  - repo: local
-    hooks:
       - id: pyupgrade
-        name: PyUpgrade
+        name: Check for old python syntax
         description: Automatically upgrade syntax for newer versions.
         types: [python]
         entry: poetry run pyupgrade
         args: [--py36-plus]
         language: system
-  - repo: local
-    hooks:
       - id: mypy
-        name: MyPy
+        name: Type check python code
         description: Static type checker for Python
         entry: poetry run mypy
         language: system
