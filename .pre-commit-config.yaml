@@ -17,6 +17,7 @@ repos:
     hooks:
       - id: insert-license
         args: [--license-filepath, LICENSE_BOILERPLATE, "--detect-license-in-X-top-lines=20"]
+        exclude: '^(.github)'
   - repo: local
     hooks:
       - id: codespell
