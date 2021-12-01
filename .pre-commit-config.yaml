@@ -8,6 +8,7 @@ repos:
       - id: check-toml
       - id: check-yaml
       - id: check-ast
+      - id: fix-encoding-pragma
       - id: check-added-large-files
   - repo: local
     hooks:
