@@ -11,6 +11,20 @@ repos:
       - id: check-yaml
       - id: check-ast
       - id: check-added-large-files
+  - repo: local
+    hooks:
+      - id: fish_syntax
+        name: Fish syntax check
+        description: Check Fish shell syntax
+        entry: fish --no-execute
+        language: system
+        files: "(fish)"
+      - id: fish_indent
+        name: Fish indent check
+        description: Check Fish shell indentation
+        entry: fish_indent --write
+        language: system
+        files: "(fish)"
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: v1.1.10
     hooks:
