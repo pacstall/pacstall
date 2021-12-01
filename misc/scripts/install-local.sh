@@ -30,9 +30,6 @@ function cleanup () {
 		else
 			sudo mv /tmp/pacstall/* "/tmp/pacstall-keep/$name"
 		fi
-		if [[ -f /tmp/pacstall-optdepends ]]; then
-			sudo mv "/tmp/pacstall-optdepends" "/tmp/pacstall-keep/$name/pacstall-optdepends"
-		fi
 	fi
 	if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
 		sudo rm -rf /tmp/pacstall-pacdeps-"$PACKAGE"
@@ -40,9 +37,6 @@ function cleanup () {
 	else
 		sudo rm -rf "${SRCDIR:?}"/*
 		sudo rm -rf /tmp/pacstall/*
-	fi
-	if [[ -f /tmp/pacstall-optdepends ]]; then
-		sudo rm /tmp/pacstall-optdepends
 	fi
 	unset name version url build_depends depends breaks replace description hash removescript optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall 2>/dev/null
 	unset -f pkgver 2>/dev/null
