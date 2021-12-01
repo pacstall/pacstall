@@ -12,6 +12,11 @@ repos:
       - id: check-ast
       - id: fix-encoding-pragma
       - id: check-added-large-files
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.1.10
+    hooks:
+      - id: insert-license
+        args: [--license-filepath, LICENSE_BOILERPLATE, "--detect-license-in-X-top-lines=20"]
   - repo: local
     hooks:
       - id: codespell
