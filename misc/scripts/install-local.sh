@@ -312,8 +312,8 @@ if [[ -n "$pacdeps" ]]; then
 		# If /tmp/pacstall-pacdeps-"$i" is available, it will trigger the logger to log it as a dependency
 		sudo touch /tmp/pacstall-pacdeps-"$i"
 		
-		[[ $KEEP ]] && k="-K"
-		if ! pacstall -P "$k" -I "$i"; then
+		[[ $KEEP ]] && cmd="-KPI" || cmd="-PI"
+		if ! pacstall "$cmd" "$i"; then
 			fancy_message error "Failed to install pacstall dependencies"
 			error_log 8 "install $PACKAGE"
 			cleanup
