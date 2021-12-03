@@ -260,11 +260,13 @@ function lock() {
 		return 1
 	elif [[ -f "/tmp/pacstall-pacdeps-$3" ]]; then
 		return 1
+	elif [[ -f "/tmp/pacstall-pacdeps-$4" ]]; then
+		return 1
 	fi
 	pidof -o %PPID -x $0 >/dev/null && return 0 || return 1
 }
 
-while lock $1 $2 $3; do
+while lock $1 $2 $3 $4; do
 	if [[ -z $first ]]; then
 		first=1
 		fancy_message warn "Pacstall is already running another instance"
