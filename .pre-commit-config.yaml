@@ -71,4 +71,14 @@ repos:
         language: system
         types_or: [python, pyi]
         args: ["--ignore-missing-imports", "--strict", "--pretty", "--show-error-context", "--show-column-numbers", "--show-error-codes"]
+  # Commit message hook
+  - repo: local
+    hooks:
+      - id: commitizen
+        name: Check commit message
+        description: Check whether the commit message follows committing rules
+        entry: poetry run cz check --commit-msg-file
+        language: system
+        require_serial: true
+        stages: [commit-msg]
 # vim:set ft=yaml ts=2 sw=2 et:
