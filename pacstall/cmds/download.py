@@ -24,18 +24,19 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-from api.message import fancy
 from requests import exceptions, get
 
+from api.message import fancy
 
-def execute(url: str, filepath: str = None) -> int:
+
+def execute(url: str, file_path: str = "") -> int:
     """
     Runs download command.
 
     Parameters
     ----------
     url (str): URL to download file from.
-    filepath=None (str): Where to download the file to. If nothing is provided download in cwd.
+    file_path="" (str): Where to download the file to. If nothing is provided download in cwd.
 
     Error codes
     -----------
@@ -55,11 +56,10 @@ def execute(url: str, filepath: str = None) -> int:
     try:
         with get(url) as data:
             data.raise_for_status()
-            if not filepath:
-                filepath = url.split("/")[-1]
+            file_path = file_path or url.split("/")[-1]
 
             try:
-                with open(filepath, "wb") as file:
+                with open(file_path, "wb") as file:
                     file.write(data.content)
             except OSError:
                 fancy("error", "Could not write downloaded contents to file")

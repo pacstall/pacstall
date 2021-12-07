@@ -22,9 +22,10 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+from os import environ
+
 from api.color import Foreground as fg
 from api.color import Style as st
-from os import environ
 
 
 def fancy(message_type: str, message: str) -> None:
