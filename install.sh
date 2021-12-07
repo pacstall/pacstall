@@ -134,4 +134,5 @@ wait
 
 chmod +x "/bin/pacstall"
 chmod +x $STGDIR/scripts/*
+sudo chown -R "$USER":"$USER" {/var/log/pacstall/,/tmp/pacstall/}
 # vim:set ft=sh ts=4 sw=4 noet:
