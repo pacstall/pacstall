@@ -37,7 +37,7 @@ if curl --output /dev/null --silent --head --fail "$URL" ; then
 			error_log 1 "install $PACKAGE"; fancy_message error "Could not enter ${SRCDIR}"; exit 1
 		fi
 	fi
-	
+
 	case "$URL" in
 		*.pacscript)
 			wget -q --show-progress --progress=bar:force "$URL" > /dev/null 2>&1
