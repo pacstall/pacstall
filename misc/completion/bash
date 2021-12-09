@@ -26,11 +26,11 @@ packages="$(compgen -W "$(sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/p
 _pacstall() {
 	cur=${COMP_WORDS[COMP_CWORD]}
 	prev=${COMP_WORDS[COMP_CWORD-1]}
-	
+
 	if [[ "-P --disable-prompts" =~ (^|[[:space:]])"$prev"($|[[:space:]]) ]]; then
 		prev=${COMP_WORDS[COMP_CWORD-2]}
 	fi
-	
+
 	case "$prev" in
 		-'?'|--help|-v|--version)
 			return
@@ -65,7 +65,7 @@ _pacstall() {
 			COMPREPLY=($packages)
 			return
 		;;
-		
+
 		-?(P)K?(P)|--keep)
 			COMPREPLY=( $( compgen -W "-I -Il -Up -PI -PIl -PUp" -- "$cur" ) )
 			return
@@ -98,7 +98,7 @@ _pacstall() {
 			if [[ "-P" =~ (^|[[:space:]])${COMP_WORDS[COMP_CWORD-1]}($|[[:space:]]) ]] || [[ "--disable-prompts" =~ (^|[[:space:]])${COMP_WORDS[COMP_CWORD-1]}($|[[:space:]]) ]]; then
 				COMPREPLY=( $( compgen -W "-I -Il -R -Up" -- "$cur" ) )
 				return
-			fi			
+			fi
 			COMPREPLY=( $( compgen -W "-I -Il -S -R -A -U -V -L -Up -Qi -T" -- "$cur" ) )
 			return
 		;;

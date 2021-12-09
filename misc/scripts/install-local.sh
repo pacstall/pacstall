@@ -268,13 +268,9 @@ if [[ $answer -eq 1 ]]; then
 	fi
 fi
 
-if [[ $(logname 2>/dev/null) ]]; then
-    LOGNAME=$(logname)
-fi
-
 fancy_message info "Sourcing pacscript"
 DIR=$(pwd)
-export homedir="/home/$LOGNAME"
+export homedir="/home/$user"
 if ! source "$PACKAGE".pacscript > /dev/null; then
 	fancy_message error "Could not source pacscript"
 	error_log 12 "install $PACKAGE"
@@ -311,7 +307,7 @@ if [[ -n "$pacdeps" ]]; then
 		fancy_message info "Installing $i"
 		# If /tmp/pacstall-pacdeps-"$i" is available, it will trigger the logger to log it as a dependency
 		sudo touch /tmp/pacstall-pacdeps-"$i"
-		
+
 		[[ $KEEP ]] && cmd="-KPI" || cmd="-PI"
 		if ! pacstall "$cmd" "$i"; then
 			fancy_message error "Failed to install pacstall dependencies"
