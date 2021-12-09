@@ -139,7 +139,7 @@ ${BOLD}$(cat /tmp/pacstall-up-print)${NORMAL}\n"
 
 	export local='no'
 	sudo mkdir -p "$SRCDIR"
-	sudo chown -R "$USER":"$USER" "$SRCDIR"
+	sudo chown -R "$user":"$user" "$SRCDIR"
 	if ! cd "$SRCDIR" 2> /dev/null; then
 		error_log 1 "upgrade"; fancy_message error "Could not enter ${SRCDIR}"; exit 1
 	fi

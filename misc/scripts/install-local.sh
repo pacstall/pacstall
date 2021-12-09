@@ -268,9 +268,7 @@ if [[ $answer -eq 1 ]]; then
 	fi
 fi
 
-if [[ $(logname 2>/dev/null) ]]; then
-    LOGNAME=$(logname)
-fi
+LOGNAME="$user"
 
 fancy_message info "Sourcing pacscript"
 DIR=$(pwd)
