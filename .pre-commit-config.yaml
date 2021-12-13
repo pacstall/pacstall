@@ -55,7 +55,7 @@ repos:
         description: Automatically sort import statements
         types_or: [cython, pyi, python]
         entry: poetry run isort
-        args: ["--py=auto", "--balanced", "-p=cmds", "-p=api", "-o=rich", "-o=requests", "--filter-files"]
+        args: ["--py=auto", "--balanced", "-p=pacstall", "-o=rich", "-o=requests", "--filter-files"]
         language: system
       - id: pyupgrade
         name: Check for old python syntax
