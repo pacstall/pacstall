@@ -31,7 +31,7 @@ export SRCDIR="/tmp/pacstall"
 export STGDIR="/usr/share/pacstall"
 export STOWDIR="/usr/src/pacstall"
 
-export user=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER}}")
+export PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER}}")
 
 # Colors
 BOLD=$(tput bold)
