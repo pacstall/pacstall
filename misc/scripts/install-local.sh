@@ -268,13 +268,9 @@ if [[ $answer -eq 1 ]]; then
 	fi
 fi
 
-if [[ $(logname 2>/dev/null) ]]; then
-    LOGNAME=$(logname)
-fi
-
 fancy_message info "Sourcing pacscript"
 DIR=$(pwd)
-export homedir="/home/$LOGNAME"
+export homedir="/home/$PACSTALL_USER"
 if ! source "$PACKAGE".pacscript > /dev/null; then
 	fancy_message error "Could not source pacscript"
 	error_log 12 "install $PACKAGE"
@@ -422,7 +418,7 @@ else
 fi
 
 sudo mkdir -p "/tmp/pacstall"
-sudo chown "$LOGNAME" -R /tmp/pacstall
+sudo chown "$PACSTALL_USER" -R /tmp/pacstall
 
 case "$url" in
 	*.git)
@@ -497,7 +493,7 @@ case "$url" in
 esac
 
 export srcdir="$PWD"
-sudo chown -R "$LOGNAME":"$LOGNAME" . 2>/dev/null
+sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2>/dev/null
 
 if [[ -n $patch ]]; then
 	fancy_message info "Downloading patches"

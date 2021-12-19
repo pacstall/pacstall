@@ -97,6 +97,8 @@ apt-get install -qq -y curl wget stow build-essential unzip tree bc git iputils-
 LOGDIR="/var/log/pacstall/metadata"
 STGDIR="/usr/share/pacstall"
 SRCDIR="/tmp/pacstall"
+PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER}}")
+
 
 fancy_message info "Making directories"
 mkdir -p "$STGDIR"
@@ -104,11 +106,11 @@ mkdir -p "$STGDIR/scripts"
 mkdir -p "$STGDIR/repo"
 
 mkdir -p "$SRCDIR"
-chown "$(logname)" -R "$SRCDIR"
+chown "$PACSTALL_USER" -R "$SRCDIR"
 
 mkdir -p "$LOGDIR"
 mkdir -p "/var/log/pacstall/error_log"
-chown "$(logname)" -R "/var/log/pacstall/error_log"
+chown "$PACSTALL_USER" -R "/var/log/pacstall/error_log"
 
 mkdir -p "/usr/share/man/man8"
 mkdir -p "/usr/share/bash-completion/completions"
