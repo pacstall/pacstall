@@ -136,7 +136,7 @@ def parse_arguments() -> Namespace:
     subparsers = parser.add_subparsers(dest="command")
 
     # HACK: The titles couldn't be modified in any Pythonic way. If you have a better way, please make a PR
-    parser._subparsers.title = "commands"  # type: ignore[union-attr]
+    parser._positionals.title = "commands"
     parser._optionals.title = "options"
 
     # Define parser for the `install` command
