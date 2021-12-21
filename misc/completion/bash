@@ -70,7 +70,11 @@ _pacstall() {
 			COMPREPLY=( $( compgen -W "-I -Il -Up -PI -PIl -PUp" -- "$cur" ) )
 			return
 		;;
-
+		
+		-T|--tree)
+			COMPREPLY=( $( compgen -W "$(\ls -1aAp /var/log/pacstall/metadata)" -- $cur ) )
+			return
+		;;
 	esac
 
 	case "$cur" in
