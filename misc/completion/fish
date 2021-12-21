@@ -21,7 +21,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
-set packages (sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | awk '!seen[$0]++')
 alias _seen "__fish_seen_subcommand_from"
 
 # Flag lists
@@ -100,7 +99,7 @@ set -l log_cmds -R -PR -RP --remove -L --list -Qi --query-info -T --tree
 set -l pacscript_cmds -Il --install-local  -PIl -IlP -KIl -IlK -PKIl -PIlK -KIlP -KPIl -IlKP -IlPK
 
 # Completion for the package related flags
-complete -f --command pacstall -n "_seen $package_cmds" -a "$packages"
+complete -f --command pacstall -n "_seen $package_cmds" -a "(sed -e 's/\$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | awk '!seen[\$0]++')"
 
 # Completion for the log related flags
 complete -f --command pacstall -n "_seen $log_cmds" -a "(\ls -1aA /var/log/pacstall/metadata | tr ' ' '\n')"
