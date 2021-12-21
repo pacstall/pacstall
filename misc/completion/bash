@@ -25,8 +25,6 @@ _pacstall() {
 	cur=${COMP_WORDS[COMP_CWORD]}
 	prev=${COMP_WORDS[COMP_CWORD-1]}
 	
-	packages=$(compgen -W "$(sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | awk '!seen[$0]++')" -- "$cur")
-	
 	if [[ "-P --disable-prompts" =~ (^|[[:space:]])"$prev"($|[[:space:]]) ]]; then
 		prev=${COMP_WORDS[COMP_CWORD-2]}
 	fi
@@ -37,12 +35,12 @@ _pacstall() {
 		;;
 
 		-?(P)S?(P)|--search)
-			COMPREPLY=($packages)
+			COMPREPLY=( $(compgen -W "$(sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | awk '!seen[$0]++')" -- "$cur") )
 			return
 		;;
 
 		-?(P)I?(P)|-?(K)I?(K)|-?(PK)I?(PK)|-?(KP)I?(KP)|--install)
-			COMPREPLY=($packages)
+			COMPREPLY=( $(compgen -W "$(sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | awk '!seen[$0]++')" -- "$cur") )
 			return
 		;;
 
@@ -62,7 +60,7 @@ _pacstall() {
 		;;
 
 		-?(P)D?(P)|--download)
-			COMPREPLY=($packages)
+			COMPREPLY=( $(compgen -W "$(sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | awk '!seen[$0]++')" -- "$cur") )
 			return
 		;;
 		
