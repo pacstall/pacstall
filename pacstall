@@ -302,6 +302,11 @@ while [[ ! "$1" == "--" ]]; do
 		;;
 
 		-I|--install)
+
+			if [[ -z "$2" ]]; then
+				fancy_message error "You failed to specify a package"
+				exit 1
+			fi
 			
 			function trap_ctrlc () {
 				fancy_message warn "The installation of $2 was interrupted, removing files"
