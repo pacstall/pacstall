@@ -28,6 +28,8 @@ from pacstall.api.color import Foreground
 
 
 class CustomHelpFormatter(HelpFormatter):
+    """Custom Help Formatter class for Pacstall"""
+
     def _format_action_invocation(self, action) -> str:  # type: ignore[no-untyped-def]
         """
         Define Pacstall help menu format
