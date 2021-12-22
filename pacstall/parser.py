@@ -108,7 +108,8 @@ def parse_arguments() -> Namespace:
 
         - For repo command
             - subcommand: ``str``
-                The subcommand passed to a pacstall command. Ex: `repo add` (`add` is the `subcommand`).
+                The subcommand passed to a pacstall command.
+                Ex: `repo add` (`add` is the `subcommand`).
 
                 - For list subcommand
                     `command` and `subcommand`.
