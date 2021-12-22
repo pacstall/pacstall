@@ -376,8 +376,8 @@ while [[ ! "$1" == "--" ]]; do
 				INPUT="$(basename "$2" ".pacscript")" # Removes the suffix
 				export local="yes"
 
-				# Enter directory if exists
-				if [[ -d "$INPUT" ]]; then
+				# Check if we need to cd into the directory first, and also check that $INPUT.pacscript does not exist
+				if [[ -d "$INPUT" ]] && [[ ! -f "$INPUT".pacscript ]]; then
 					cd "$(basename "$INPUT")" || exit
 				fi
 				# Check if the file exist
