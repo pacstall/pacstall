@@ -132,7 +132,7 @@ def parse_arguments() -> Namespace:
         "-V",
         "--version",
         action="version",
-        version=f"{Foreground.BIBLUE}Pacstall {Foreground.BIWHITE}2.0 {Foreground.BIYELLOW}Kournikova",
+        version=f"{Foreground.BIBLUE}Pacstall {Foreground.BIWHITE}2.0.0 {Foreground.BIYELLOW}Kournikova",
         help="Print pacstall version",
     )
     # Define our command subparsers
