@@ -138,7 +138,8 @@ def parse_arguments() -> Namespace:
     # Define our command subparsers
     subparsers = parser.add_subparsers(dest="command")
 
-    # HACK: The titles couldn't be modified in any Pythonic way. If you have a better way, please make a PR
+    # HACK: The titles couldn't be modified in any Pythonic way.
+    #       Please make a PR if you have a better way to do this.
     parser._positionals.title = "commands"
     parser._optionals.title = "options"
 
@@ -167,7 +168,8 @@ def parse_arguments() -> Namespace:
         action="store_true",
         help="Retain build directory after installation",
     )
-    # HACK: The titles couldn't be modified in any Pythonic way. If you have a better way, please make a PR
+    # HACK: The titles couldn't be modified in any Pythonic way.
+    #       Please make a PR if you have a better way to do this.
     install_parser._positionals.title = "arguments"
     install_parser._optionals.title = "options"
 
@@ -181,7 +183,8 @@ def parse_arguments() -> Namespace:
         action="store_true",
         help="Disable prompts for unattended operations",
     )
-    # HACK: The titles couldn't be modified in any Pythonic way. If you have a better way, please make a PR
+    # HACK: The titles couldn't be modified in any Pythonic way.
+    #       Please make a PR if you have a better way to do this.
     remove_parser._positionals.title = "arguments"
     remove_parser._optionals.title = "options"
 
@@ -206,27 +209,31 @@ def parse_arguments() -> Namespace:
         action="store_true",
         help="Retain build directory after upgrades",
     )
-    # HACK: The titles couldn't be modified in any Pythonic way. If you have a better way, please make a PR
+    # HACK: The titles couldn't be modified in any Pythonic way.
+    #       Please make a PR if you have a better way to do this.
     upgrade_parser._positionals.title = "arguments"
     upgrade_parser._optionals.title = "options"
 
     # Define parser for the `download` command
     download_parser = subparsers.add_parser("download", help="Download pacscripts")
     download_parser.add_argument("pacscripts", nargs="+", help="Pacscripts to download")
-    # HACK: The titles couldn't be modified in any Pythonic way. If you have a better way, please make a PR
+    # HACK: The titles couldn't be modified in any Pythonic way.
+    #       Please make a PR if you have a better way to do this.
     download_parser._positionals.title = "arguments"
     download_parser._optionals.title = "options"
 
     # Define parser for the `search` command
     search_parser = subparsers.add_parser("search", help="Search for packages")
     search_parser.add_argument("packages", nargs="+", help="Packages to search for")
-    # HACK: The titles couldn't be modified in any Pythonic way. If you have a better way, please make a PR
+    # HACK: The titles couldn't be modified in any Pythonic way.
+    #       Please make a PR if you have a better way to do this.
     search_parser._positionals.title = "arguments"
     search_parser._optionals.title = "options"
 
     # Define parser for the `list` command
     list_parser = subparsers.add_parser("list", help="List installed packages")
-    # HACK: The titles couldn't be modified in any Pythonic way. If you have a better way, please make a PR
+    # HACK: The titles couldn't be modified in any Pythonic way.
+    #       Please make a PR if you have a better way to do this.
     list_parser._positionals.title = "arguments"
     list_parser._optionals.title = "options"
 
@@ -235,7 +242,8 @@ def parse_arguments() -> Namespace:
     info_parser.add_argument(
         "packages", nargs="+", help="Packages to show the infos of"
     )
-    # HACK: The titles couldn't be modified in any Pythonic way. If you have a better way, please make a PR
+    # HACK: The titles couldn't be modified in any Pythonic way.
+    #       Please make a PR if you have a better way to do this.
     info_parser._positionals.title = "arguments"
     info_parser._optionals.title = "options"
 
@@ -245,7 +253,8 @@ def parse_arguments() -> Namespace:
         help="Modify package sources",
         formatter_class=CustomHelpFormatter,
     )
-    # HACK: The titles couldn't be modified in any Pythonic way. If you have a better way, please make a PR
+    # HACK: The titles couldn't be modified in any Pythonic way.
+    #       Please make a PR if you have a better way to do this.
     repo_parser._positionals.title = "commands"
     repo_parser._optionals.title = "options"
 
@@ -256,7 +265,8 @@ def parse_arguments() -> Namespace:
     repo_list_parser = repo_subcommand_subparsers.add_parser(
         "list", help="List currently installed package sources"
     )
-    # HACK: The titles couldn't be modified in any Pythonic way. If you have a better way, please make a PR
+    # HACK: The titles couldn't be modified in any Pythonic way.
+    #       Please make a PR if you have a better way to do this.
     repo_list_parser._positionals.title = "arguments"
     repo_list_parser._optionals.title = "options"
 
@@ -267,7 +277,8 @@ def parse_arguments() -> Namespace:
     repo_add_parser.add_argument(
         "repositories", nargs="+", help="Repositories to add to package sources"
     )
-    # HACK: The titles couldn't be modified in any Pythonic way. If you have a better way, please make a PR
+    # HACK: The titles couldn't be modified in any Pythonic way.
+    #       Please make a PR if you have a better way to do this.
     repo_add_parser._positionals.title = "arguments"
     repo_add_parser._optionals.title = "options"
 
@@ -278,7 +289,8 @@ def parse_arguments() -> Namespace:
     repo_remove_parser.add_argument(
         "repositories", nargs="+", help="Repositories to remove from package sources"
     )
-    # HACK: The titles couldn't be modified in any Pythonic way. If you have a better way, please make a PR
+    # HACK: The titles couldn't be modified in any Pythonic way.
+    #       Please make a PR if you have a better way to do this.
     repo_remove_parser._positionals.title = "arguments"
     repo_remove_parser._optionals.title = "options"
 
