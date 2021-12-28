@@ -459,11 +459,12 @@ while [[ ! "$1" == "--" ]]; do
 				exit 0
 			else
 				# If pacstall -V was called with an argument, it's a package, so get the package version (usful for scripting)
-				if pacstall -Qi "$PACKAGE" | grep 'version' | cut -d ":" -f2 | sed 's/ //g'; then
-					exit 0
-				else
+				if ! source "$LOGDIR/$PACKAGE"; then
 					fancy_message error "${GREEN}${PACKAGE}${NC} ins not installed"
 					exit 1
+				else
+					echo "${_version}"
+					exit
 				fi
 			fi
 		;;
