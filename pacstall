@@ -458,9 +458,8 @@ while [[ ! "$1" == "--" ]]; do
 				echo -e "1.7 \033[1m\x1b[38;2;160;82;45mSienna${NC}"
 				exit 0
 			else
-				# If pacstall -V was called with an argument, it's a package, so get the package version (usful for scripting)
 				if ! source "$LOGDIR/$PACKAGE"; then
-					fancy_message error "${GREEN}${PACKAGE}${NC} ins not installed"
+					fancy_message error "${GREEN}${PACKAGE}${NC} is not installed"
 					exit 1
 				else
 					echo "${_version}"
