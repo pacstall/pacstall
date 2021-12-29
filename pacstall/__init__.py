@@ -20,12 +20,4 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-"""
-Pacstall API
-
-Modules
--------
-color: Coloring API
-config: Pacstall runtime configuration
-message: Messaging API
-"""
+"""Main Pacstall module"""
