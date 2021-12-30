@@ -96,6 +96,7 @@ case "$url" in
 			error_log 1 "remove $PACKAGE"
 			return 1
 		fi
+		sudo rm -f /etc/apt/preferences.d/"${name}-pin"
 
 		sudo rm -f "$LOGDIR/$PACKAGE"
 		fancy_message info "Package removed successfully"
