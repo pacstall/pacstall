@@ -238,8 +238,12 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 	export PACSTALL_INSTALL=1
 	sudo rm -rf "$SRCDIR/$name-pacstall"
 	sudo --preserve-env=PACSTALL_INSTALL dpkg -i "$SRCDIR/$name-pacstall.deb" 2> "/dev/null"
-	# hold package to prevent apt from updating it if the package also exists in the repos
-	sudo apt-mark hold "${gives:-$name}"
+	if ! [[ -d /etc/apt/preferences.d/ ]]; then
+		sudo mkdir -p /etc/apt/preferences.d
+	fi
+	echo "Package: ${name}
+Pin: version ${version}-1
+Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" >/dev/null
 
 
 	fancy_message info "Installing dependencies"
@@ -253,8 +257,12 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 	fi
 	sudo --preserve-env=PACSTALL_INSTALL dpkg -i "$SRCDIR/$name-pacstall.deb" > "/dev/null"
 	sudo rm "$SRCDIR/$name-pacstall.deb"
-	# hold package to prevent apt from updating it if the package also exists in the repos
-	sudo apt-mark hold "${name:-$name}"
+	if ! [[ -d /etc/apt/preferences.d/ ]]; then
+		sudo mkdir -p /etc/apt/preferences.d
+	fi
+	echo "Package: ${name}
+Pin: version ${version}-1
+Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" >/dev/null
 	unset PACSTALL_INSTALL
 	return 0
 }
