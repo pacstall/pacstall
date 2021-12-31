@@ -262,7 +262,7 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" >/dev/null
 	fi
 	echo "Package: ${name}
 Pin: version ${version}-1
-Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" >/dev/null
+Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 	unset PACSTALL_INSTALL
 	return 0
 }
