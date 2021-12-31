@@ -51,7 +51,7 @@ if [[ $PACKAGE == *@* ]]; then
 		specifyRepo "$URL"
 		if [[ "$URLNAME" == "$REPONAME" ]]; then
 			mapfile -t PACKAGELIST < <(curl -s "$URL"/packagelist)
-			IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | grep -n "^${PACKAGE}$")
+			IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | grep -n -- "^${PACKAGE}$")
 			_LEN=($IDXSEARCH)
 			LEN=${#_LEN[@]}
 			if [[ "$LEN" -eq 0 ]]; then
@@ -84,9 +84,9 @@ done < "$STGDIR/repo/pacstallrepo.txt"
 # Complete name if download, upgrade or install
 # Partial word if search
 if [[ -z "$PACKAGE" ]]; then
-	IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | grep -n "${SEARCH}" | cut -d : -f1| awk '{print $0"-1"}'|bc)
+	IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | grep -n -- "${SEARCH}" | cut -d : -f1| awk '{print $0"-1"}'|bc)
 else
-	IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | grep -n "^${PACKAGE}$" | cut -d : -f1| awk '{print $0"-1"}'|bc)
+	IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | grep -n -- "^${PACKAGE}$" | cut -d : -f1| awk '{print $0"-1"}'|bc)
 fi
 _LEN=($IDXSEARCH)
 LEN=${#_LEN[@]}
