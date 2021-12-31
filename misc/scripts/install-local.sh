@@ -31,6 +31,7 @@ function cleanup () {
 			sudo mv /tmp/pacstall/* "/tmp/pacstall-keep/$name"
 		fi
 	fi
+	sudo rm -f /etc/apt/preferences.d/"${name:-$PACKAGE}-pin"
 	if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
 		sudo rm -rf /tmp/pacstall-pacdeps-"$PACKAGE"
 		sudo rm -rf /tmp/pacstall-pacdep
