@@ -243,7 +243,7 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 	fi
 	echo "Package: ${name}
 Pin: version ${version}-1
-Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" >/dev/null
+Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 
 
 	fancy_message info "Installing dependencies"
