@@ -31,7 +31,6 @@ function cleanup () {
 			sudo mv /tmp/pacstall/* "/tmp/pacstall-keep/$name"
 		fi
 	fi
-	sudo rm -f /etc/apt/preferences.d/"${name:-$PACKAGE}-pin"
 	if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
 		sudo rm -rf /tmp/pacstall-pacdeps-"$PACKAGE"
 		sudo rm -rf /tmp/pacstall-pacdep
@@ -49,6 +48,7 @@ function trap_ctrlc () {
 	if dpkg-query -W -f='${Status}' "$name" 2> /dev/null | grep -q -E "ok installed|ok unpacked" ; then
 		sudo dpkg -r --force-all "$name" > /dev/null
 	fi
+	sudo rm -f /etc/apt/preferences.d/"${name:-$PACKAGE}-pin"
 	cleanup
 	exit 1
 }
