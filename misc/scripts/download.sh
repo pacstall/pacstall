@@ -30,7 +30,7 @@ if ! (command -v nm-online -qx > /dev/null || ping -c 1 github.com > /dev/null);
 	exit 2
 fi
 
-if curl --output /dev/null --silent --head --fail "$URL" ; then
+if curl --output /dev/null --silent --head --fail -- "$URL" ; then
 	if [[ "$type" = "install" ]]; then
 		mkdir -p "$SRCDIR"
 		if ! cd "$SRCDIR" ; then
@@ -40,10 +40,10 @@ if curl --output /dev/null --silent --head --fail "$URL" ; then
 	
 	case "$URL" in
 		*.pacscript)
-			wget -q --show-progress --progress=bar:force "$URL" > /dev/null 2>&1
+			wget -q --show-progress --progress=bar:force -- "$URL" > /dev/null 2>&1
 		;;
 		*)
-			download "$URL" > /dev/null 2>&1
+			download -- "$URL" > /dev/null 2>&1
 		;;
 	esac
 	return 0
