@@ -30,13 +30,13 @@ function fn_exists() {
 if ! source "$LOGDIR/$PACKAGE" > /dev/null 2>&1; then
 	fancy_message error "$PACKAGE is not installed or not properly symlinked"
 	error_log 3 "remove $PACKAGE"
-	return 1
+	exit 1
 fi
 
 if ! source /var/cache/pacstall/"${PACKAGE}"/"${_version}"/"${PACKAGE}".pacscript > /dev/null 2>&1; then
 	fancy_message error "$PACKAGE is not installed or not properly symlinked"
 	error_log 1 "remove $PACKAGE"
-	return 1
+	exit 1
 fi
 
 case "$url" in
@@ -44,7 +44,7 @@ case "$url" in
 		if ! sudo apt remove "$gives" 2>/dev/null; then
 			fancy_message warn "Failed to remove the package"
 			error_log 1 "remove $PACKAGE"
-			return 1
+			exit 1
 		fi
 		
 		if fn_exists removescript; then
@@ -64,7 +64,7 @@ case "$url" in
 		if [[ ! -d "$PACKAGE" ]]; then
 			fancy_message error "$PACKAGE is not installed or not properly symlinked"
 			error_log 1 "remove $PACKAGE"
-			return 1
+			exit 1
 		fi
 
 		fancy_message info "Removing symlinks"
@@ -94,7 +94,7 @@ case "$url" in
 		if ! sudo --preserve-env=PACSTALL_REMOVE dpkg -r "$name" 2> /dev/null; then
 			fancy_message error "Failed to remove dummy package"
 			error_log 1 "remove $PACKAGE"
-			return 1
+			exit 1
 		fi
 
 		sudo rm -f "$LOGDIR/$PACKAGE"
@@ -104,5 +104,5 @@ case "$url" in
 esac
 
 error_log 1 "remove $PACKAGE"
-return 1
+exit 1
 # vim:set ft=sh ts=4 sw=4 noet:
