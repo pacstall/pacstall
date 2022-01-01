@@ -507,18 +507,20 @@ fi
 
 export pkgdir="/usr/src/pacstall/$name"
 
-fancy_message info "Preparing"
-if ! prepare; then
-	fancy_message error "Could not prepare $PACKAGE properly"
-	sudo dpkg -r "$name" > /dev/null
-	fancy_message info "Cleaning up"
-	cleanup
-	exit 1
+if type -t prepare >/dev/null 2>&1; then
+	fancy_message info "Preparing"
+	if ! prepare; then
+		fancy_message error "Could not prepare $PACKAGE properly"
+		sudo dpkg -r "$name" > /dev/null
+		fancy_message info "Cleaning up"
+		cleanup
+		exit 1
+	fi
 fi
 
 # Check if build function doesn't exist
 if ! type -t build > /dev/null 2>&1; then
-	fancy_message error "Something didn't compile right"
+	fancy_message error "Build function not found"
 	error_log 5 "install $PACKAGE"
 	sudo dpkg -r "$name" > /dev/null
 	fancy_message info "Cleaning up"
