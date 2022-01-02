@@ -243,7 +243,7 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 		sudo mkdir -p /etc/apt/preferences.d
 	fi
 	echo "Package: ${name}
-Pin: version ${version}-1
+Pin: version *
 Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 
 
@@ -259,7 +259,7 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 	sudo --preserve-env=PACSTALL_INSTALL dpkg -i "$SRCDIR/$name-pacstall.deb" > "/dev/null"
 	sudo rm "$SRCDIR/$name-pacstall.deb"
 	echo "Package: ${name}
-Pin: version ${version}-1
+Pin: version *
 Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 	unset PACSTALL_INSTALL
 	return 0
