@@ -5,7 +5,7 @@
  / ____/ /_/ / /__(__  ) /_/ /_/ / / /
 /_/    \__,_/\___/____/\__/\__,_/_/_/
 
-Copyright (C) 2020-2021
+Copyright (C) 2020-present
 
 This file is part of Pacstall
 
@@ -168,7 +168,7 @@ Paste this boilerplate in the beginning of every file.
  / ____/ /_/ / /__(__  ) /_/ /_/ / / /
 /_/    \__,_/\___/____/\__/\__,_/_/_/
 
-Copyright (C) 2020-2021
+Copyright (C) 2020-present
 
 This file is part of Pacstall
 
