@@ -48,6 +48,7 @@ function trap_ctrlc () {
 	if dpkg-query -W -f='${Status}' "$name" 2> /dev/null | grep -q -E "ok installed|ok unpacked" ; then
 		sudo dpkg -r --force-all "$name" > /dev/null
 	fi
+	sudo rm -f /etc/apt/preferences.d/"${name:-$PACKAGE}-pin"
 	cleanup
 	exit 1
 }
@@ -238,6 +239,12 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 	export PACSTALL_INSTALL=1
 	sudo rm -rf "$SRCDIR/$name-pacstall"
 	sudo --preserve-env=PACSTALL_INSTALL dpkg -i "$SRCDIR/$name-pacstall.deb" 2> "/dev/null"
+	if ! [[ -d /etc/apt/preferences.d/ ]]; then
+		sudo mkdir -p /etc/apt/preferences.d
+	fi
+	echo "Package: ${name}
+Pin: version *
+Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 
 
 	fancy_message info "Installing dependencies"
@@ -251,6 +258,9 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 	fi
 	sudo --preserve-env=PACSTALL_INSTALL dpkg -i "$SRCDIR/$name-pacstall.deb" > "/dev/null"
 	sudo rm "$SRCDIR/$name-pacstall.deb"
+	echo "Package: ${name}
+Pin: version *
+Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 	unset PACSTALL_INSTALL
 	return 0
 }
