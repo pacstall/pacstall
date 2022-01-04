@@ -200,7 +200,7 @@ function download() {
 	if command -v axel > /dev/null; then
 		axel -ao "${1##*/}" "$1"
 	else
-		wget -q --show-progress --progress=bar:force "$1" 2>&1
+		wget -q --show-progress --progress=bar:force -- "$1" 2>&1
 	fi
 }
 

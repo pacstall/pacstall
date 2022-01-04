@@ -72,10 +72,10 @@ for i in "${list[@]}"; do
 
 	source "$STGDIR/scripts/search.sh"
 
-	IDXMATCH=$(printf "%s\n" "${REPOS[@]}"| grep -n "$remoterepo" | cut -d : -f1| awk '{print $0"-1"}'| bc)
+	IDXMATCH=$(printf "%s\n" "${REPOS[@]}"| grep -n -- "$remoterepo" | cut -d : -f1| awk '{print $0"-1"}'| bc)
 
 	if [[ -n $IDXMATCH ]]; then
-		remotever=$(source <(curl -s "$remoterepo"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
+		remotever=$(source <(curl -s -- "$remoterepo"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
 		remoteurl="${REPOS[$IDXMATCH]}"
 	else
 		fancy_message warning "Package ${GREEN}${i}${CYAN} is not on ${CYAN}$(parseRepo "${remoterepo}")${NC} anymore"
@@ -88,7 +88,7 @@ for i in "${list[@]}"; do
 			if [[ $IDX -eq $IDXMATCH ]]; then
 				continue
 			else
-				ver=$(source <(curl -s "${REPOS[$IDX]}"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
+				ver=$(source <(curl -s -- "${REPOS[$IDX]}"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
 				if ! ver_compare "$alterver" "$ver"; then
 					alterver="$ver"
 					alterurl="$REPO"

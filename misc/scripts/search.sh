@@ -50,7 +50,7 @@ if [[ $PACKAGE == *@* ]]; then
 	while IFS= read -r URL; do
 		specifyRepo "$URL"
 		if [[ "$URLNAME" == "$REPONAME" ]]; then
-			mapfile -t PACKAGELIST < <(curl -s "$URL"/packagelist)
+			mapfile -t PACKAGELIST < <(curl -s -- "$URL"/packagelist)
 			IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | grep -n -- "^${PACKAGE}$")
 			_LEN=($IDXSEARCH)
 			LEN=${#_LEN[@]}
@@ -75,7 +75,7 @@ fi
 PACKAGELIST=()
 URLLIST=()
 while IFS= read -r URL; do
-	mapfile -t PARTIALLIST < <(curl -s "$URL"/packagelist)
+	mapfile -t PARTIALLIST < <(curl -s -- "$URL"/packagelist)
 	URLLIST+=("${PARTIALLIST[@]/*/$URL}")
 	PACKAGELIST+=("${PARTIALLIST[@]}")
 done < "$STGDIR/repo/pacstallrepo.txt"
