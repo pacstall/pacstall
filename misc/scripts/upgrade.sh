@@ -79,7 +79,7 @@ for i in "${list[@]}"; do
 		remoteurl="${REPOS[$IDXMATCH]}"
 	else
 		fancy_message warn "Package ${GREEN}${i}${CYAN} is not on ${CYAN}$(parseRepo "${remoterepo}")${NC} anymore"
-		sed -i "/_remote/d" "$LOGDIR/$i"
+		sudo sed -i "/_remote/d" "$LOGDIR/$i"
 	fi
 
 	if [[ $i != *"-git" ]]; then
