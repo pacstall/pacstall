@@ -68,8 +68,8 @@ function checks() {
 		exit 1
 	fi
 	if echo "$gives" | grep -q ",\|\\s"; then
-        fancy_message error "Expected argument \"gives\" to only contain one word but has multiple"
-        exit 1
+		fancy_message error "Expected argument \"gives\" to only contain one word but has multiple"
+		exit 1
 	fi
 	if [[ -z "$url" ]]; then
 		fancy_message error "Package does not contain URL"
