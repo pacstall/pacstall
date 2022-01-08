@@ -78,7 +78,7 @@ for i in "${list[@]}"; do
 		remotever=$(source <(curl -s -- "$remoterepo"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
 		remoteurl="${REPOS[$IDXMATCH]}"
 	else
-		fancy_message warning "Package ${GREEN}${i}${CYAN} is not on ${CYAN}$(parseRepo "${remoterepo}")${NC} anymore"
+		fancy_message warn "Package ${GREEN}${i}${CYAN} is not on ${CYAN}$(parseRepo "${remoterepo}")${NC} anymore"
 		sed -i "/_remote/d" "$LOGDIR/$i"
 	fi
 
