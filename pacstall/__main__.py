@@ -36,7 +36,7 @@ from pacstall.api.error_codes import ErrorCodes
 from pacstall.cmds import download
 from pacstall.parser import parse_arguments
 
-if __name__ == "__main__":
+def main():
     install(
         show_locals=True
     )  # --> Install Rich's traceback handler for better looking tracebackes
@@ -60,3 +60,6 @@ if __name__ == "__main__":
 
     if args.command == "download":
         sys.exit(download.execute(args.download))
+
+if __name__ == "__main__":
+    main()
