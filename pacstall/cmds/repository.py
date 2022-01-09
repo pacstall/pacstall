@@ -57,7 +57,7 @@ def prompt_continue(
     fancy("info", repo_urls.join("\n"))
 
     reply = ask("info", "Are you sure you want to proceed?", "Y")
-    return "yY".find(reply) != -1
+    return reply in "yY"
 
 
 def remove_many(repo_urls: List[str]) -> int:
@@ -216,7 +216,7 @@ def parse_github_url(url: str) -> str:
         "/"
     ) + MAX_URL_PARTS_REQUIRED * [None]
 
-    if account == None or repository == None:
+    if account is None or repository is None:
         return None
 
     raw_url_no_branch = f"https://raw.githubusercontent.com/{account}/{repository}"
@@ -227,7 +227,7 @@ def parse_github_url(url: str) -> str:
     else:
         used_branch = choose_master_or_main(raw_url_no_branch)
 
-    if used_branch == None:
+    if used_branch is None:
         return None
 
     return f"https://raw.githubusercontent.com/{account}/{repository}/{used_branch}"
@@ -252,14 +252,14 @@ def parse_gitlab_url(url: str) -> str:
         "/"
     ) + MAX_URL_PARTS_REQUIRED * [None]
 
-    if account == None or repository == None:
+    if account is None or repository is None:
         return None
 
     used_branch = choose_master_or_main(
         f"https://gitlab.com/{account}/{repository}/-/raw"
     )
 
-    if used_branch == None:
+    if used_branch is None:
         return None
 
     return f"https://raw.githubusercontent.com/{account}/{repository}/{used_branch}"
@@ -291,14 +291,14 @@ def parse_bitbucket_url(url: str) -> str:
         "/"
     ) + MAX_URL_PARTS_REQUIRED * [None]
 
-    if account == None or repository == None:
+    if account is None or repository is None:
         return None
 
     used_branch = choose_master_or_main(
         f"https://bitbucket.org/{account}/{repository}/raw"
     )
 
-    if used_branch == None:
+    if used_branch is None:
         return None
 
     return f"https://bitbucket.org/{account}/{repository}/raw/{used_branch}"
@@ -337,14 +337,14 @@ def add(repo_url: str) -> int:
     CODE_ERR_UNKNOWN = 5
 
     try:
-        if repo_url.find("github.com") != -1:
+        if "github.com" in repo_url:
             repo_url = parse_github_url(repo_url)
         elif repo_url.find("gitlab.com") != -1:
             repo_url = parse_gitlab_url(repo_url)
         elif repo_url.find("bitbucket.org") != -1:
             repo_url = parse_bitbucket_url(repo_url)
 
-        if repo_url == None:
+        if repo_url is None:
             fancy(
                 "error",
                 "This repository does not exist or has an invalid file structure.",
@@ -393,7 +393,6 @@ def list_repos() -> int:
     0: Everything went fine.
     1: File not found or umet permissions.
     """
-    CODE_OK = 0
     CODE_ERR_NO_FILE_OR_INVALID_PERM = 1
 
     try:
@@ -407,4 +406,4 @@ def list_repos() -> int:
             f"Could not read repository list from file '{config.PACSTALL_REPO_PATH}'",
         )
         return CODE_ERR_NO_FILE_OR_INVALID_PERM
-    return CODE_OK
+    return 0
