@@ -29,11 +29,12 @@ from fcntl import LOCK_EX, LOCK_NB, lockf
 from getpass import getuser
 from subprocess import call
 from time import sleep
+from typing import List
 
 from rich.traceback import install
 
 from pacstall.api import message
-from pacstall.cmds import download
+from pacstall.cmds import download, repository
 from pacstall.parser import parse_arguments
 
 if __name__ == "__main__":
@@ -61,3 +62,16 @@ if __name__ == "__main__":
 
     if args.command == "download":
         sys.exit(download.execute(args.download))
+
+    if args.command == "repo":
+        repo_urls: List[str] = args.repositories
+
+        code = -1
+        if args.subcommand == "add":
+            code = repository.add_many(repo_urls)
+        elif args.subcommand == "remove":
+            code = repository.remove_many(repo_urls)
+        elif args.subcommand == "list":
+            code = repository.list_repos(repo_urls)
+
+        sys.exit(code)

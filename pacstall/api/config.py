@@ -27,6 +27,7 @@ import tempfile
 LOGDIR = "/var/log/pacstall"  # Logging directory
 STGDIR = "/usr/share/pacstall"  # Scripts storage directory
 STOWDIR = "/usr/src/pacstall"  # Stowing directory
+PACSTALL_REPO_PATH = f"{STGDIR}/repo/pacstallrepo.txt"
 
 # SRCDIR -> Package source code storage dir
 def SRCDIR() -> str:

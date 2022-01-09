@@ -26,4 +26,5 @@ Pacstall Commands
 Files
 -------
 download: Download command
+repository: Repository commands
 """
