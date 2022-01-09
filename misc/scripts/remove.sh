@@ -91,7 +91,7 @@ case "$url" in
 		fancy_message info "Removing dummy package"
 		export PACSTALL_REMOVE=1
 
-		if ! sudo --preserve-env=PACSTALL_REMOVE dpkg -r "$name" 2> /dev/null; then
+		if ! sudo --preserve-env=PACSTALL_REMOVE apt purge "$name" 2> /dev/null; then
 			fancy_message error "Failed to remove dummy package"
 			error_log 1 "remove $PACKAGE"
 			exit 1
