@@ -34,7 +34,7 @@ from typing import List
 from rich.traceback import install
 
 from pacstall.api import message
-from pacstall.cmds import download, repository
+from pacstall.cmds import config, download, repos
 from pacstall.parser import parse_arguments
 
 if __name__ == "__main__":
@@ -63,15 +63,9 @@ if __name__ == "__main__":
     if args.command == "download":
         sys.exit(download.execute(args.download))
 
-    if args.command == "repo":
-        repo_urls: List[str] = args.repositories
+    if args.command == "repos":
+        err_code = repos.list_repos()
+        sys.exit(err_code if err_code is not None else 0)
 
-        code = -1
-        if args.subcommand == "add":
-            code = repository.add_many(repo_urls)
-        elif args.subcommand == "remove":
-            code = repository.remove_many(repo_urls)
-        elif args.subcommand == "list":
-            code = repository.list_repos(repo_urls)
-
-        sys.exit(code)
+    if args.command == "config":
+        sys.exit(config.open_editor())

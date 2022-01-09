@@ -101,27 +101,11 @@ def parse_arguments() -> Namespace:
             - packages : ``List[str]``
                 Packages to search for.
 
-        - For list command : `command`
-
         - For info command
             - packages : ``List[str]``
                 Packages to show the info of.
 
-        - For repo command
-            - subcommand: ``str``
-                The subcommand passed to a pacstall command.
-                Ex: `repo add` (`add` is the `subcommand`).
-
-                - For list subcommand
-                    `command` and `subcommand`.
-
-                - For add subcommand
-                    - repositories : ``List[str]``
-                        Repositories to add to package sources.
-
-                - For remove subcommand
-                    - repositories : ``List[str]``
-                        Repositories to remove from package sources.
+        - For repos command : `command`
     Returns
     -------
     parsed arguments : Namespace
@@ -231,12 +215,21 @@ def parse_arguments() -> Namespace:
     search_parser._positionals.title = "arguments"
     search_parser._optionals.title = "options"
 
-    # Define parser for the `list` command
-    list_parser = subparsers.add_parser("list", help="List installed packages")
+    # Define parser for the `repos` command
+    repos_parser = subparsers.add_parser("repos", help="List installed packages")
     # HACK: The titles couldn't be modified in any Pythonic way.
     #       Please make a PR if you have a better way to do this.
-    list_parser._positionals.title = "arguments"
-    list_parser._optionals.title = "options"
+    repos_parser._positionals.title = "arguments"
+    repos_parser._optionals.title = "options"
+
+    # Define parser for the `config` command
+    config_parser = subparsers.add_parser(
+        "config", help="Opens the config file in system's default editor."
+    )
+    # HACK: The titles couldn't be modified in any Pythonic way.
+    #       Please make a PR if you have a better way to do this.
+    config_parser._positionals.title = "arguments"
+    config_parser._optionals.title = "options"
 
     # Define parser for the `info` command
     info_parser = subparsers.add_parser("info", help="Show package info")
@@ -247,53 +240,6 @@ def parse_arguments() -> Namespace:
     #       Please make a PR if you have a better way to do this.
     info_parser._positionals.title = "arguments"
     info_parser._optionals.title = "options"
-
-    # Define parser for the `repo` command
-    repo_parser = subparsers.add_parser(
-        "repo",
-        help="Modify package sources",
-        formatter_class=CustomHelpFormatter,
-    )
-    # HACK: The titles couldn't be modified in any Pythonic way.
-    #       Please make a PR if you have a better way to do this.
-    repo_parser._positionals.title = "commands"
-    repo_parser._optionals.title = "options"
-
-    # Define subparsers for the `repo` command's subcommands: `list`, `add` & `remove`
-    repo_subcommand_subparsers = repo_parser.add_subparsers(dest="subcommand")
-
-    # Define parser for `repo list` subcommand
-    repo_list_parser = repo_subcommand_subparsers.add_parser(
-        "list", help="List currently installed package sources"
-    )
-    # HACK: The titles couldn't be modified in any Pythonic way.
-    #       Please make a PR if you have a better way to do this.
-    repo_list_parser._positionals.title = "arguments"
-    repo_list_parser._optionals.title = "options"
-
-    # Define parser for `repo add` subcommand
-    repo_add_parser = repo_subcommand_subparsers.add_parser(
-        "add", help="Add repositories to package sources"
-    )
-    repo_add_parser.add_argument(
-        "repositories", nargs="+", help="Repositories to add to package sources"
-    )
-    # HACK: The titles couldn't be modified in any Pythonic way.
-    #       Please make a PR if you have a better way to do this.
-    repo_add_parser._positionals.title = "arguments"
-    repo_add_parser._optionals.title = "options"
-
-    # Define parser for `repo remove` subcommand
-    repo_remove_parser = repo_subcommand_subparsers.add_parser(
-        "remove", help="Remove repositories from package sources"
-    )
-    repo_remove_parser.add_argument(
-        "repositories", nargs="+", help="Repositories to remove from package sources"
-    )
-    # HACK: The titles couldn't be modified in any Pythonic way.
-    #       Please make a PR if you have a better way to do this.
-    repo_remove_parser._positionals.title = "arguments"
-    repo_remove_parser._optionals.title = "options"
 
     # If no arguments are provided, print help and exit
     if len(sys.argv) == 1:

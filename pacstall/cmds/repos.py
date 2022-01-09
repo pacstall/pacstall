@@ -1,5 +1,7 @@
 #!/bin/env python3
 
+"""List repositories command."""
+
 #     ____                  __        ____
 #    / __ \____ ___________/ /_____ _/ / /
 #   / /_/ / __ `/ ___/ ___/ __/ __ `/ / /
@@ -22,15 +24,26 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-import tempfile
+from api.config_facade import ReadConfigErrorCode, read_config
 
-LOGDIR = "/var/log/pacstall"  # Logging directory
-STGDIR = "/usr/share/pacstall"  # Scripts storage directory
-STOWDIR = "/usr/src/pacstall"  # Stowing directory
-CONFDIR = "/etc/pacstall"
-PACSTALL_CONFIG_PATH = f"{CONFDIR}/config.toml"
+from pacstall.api.color import Foreground as fg
+from pacstall.api.color import Style as st
+from pacstall.api.message import fancy
 
-# SRCDIR -> Package source code storage dir
-def SRCDIR() -> str:
-    """Securely generate a SRCDIR to store source code of packages."""
-    return tempfile.mkdtemp()
+
+def list_repos() -> ReadConfigErrorCode:
+    """
+    Prints the existing repositories.
+
+    Returns
+    -------
+    `ReadConfigErrorCode` if an error has occurred, otherwise `None`.
+    """
+
+    (err, repos) = read_config()
+    if err is not None:
+        assert type(err.value) == int
+        return err
+
+    for repo in repos:
+        fancy("info", f"{fg.GREEN}{repo.name}{st.RESET} ({repo.branch}) - {repo.url}")
