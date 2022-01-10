@@ -27,7 +27,6 @@
 import sys
 from fcntl import LOCK_EX, LOCK_NB, lockf
 from getpass import getuser
-from subprocess import call
 from time import sleep
 
 from rich.traceback import install
@@ -41,16 +40,15 @@ if __name__ == "__main__":
         show_locals=True
     )  # --> Install Rich's traceback handler for better looking tracebackes
 
-    if getuser() == "root":
-        message.fancy("error", "Pacstall cannot be run as root")
-        sys.exit(1)
-
     args = parse_arguments()
     print(args)
 
+    if getuser() != "root":
+        message.fancy("error", "Pacstall needs to be launched as root!")
+        sys.exit(64)  # --> command line usage error
+
     if args.command in ["install", "remove", "upgrade"]:
         lock_file = open("/var/lock/pacstall.lock", "w")
-        call(["/usr/bin/sudo", "/usr/bin/chown", "root", "/var/lock/pacstall.lock"])
         while True:
             try:
                 lockf(lock_file, LOCK_EX | LOCK_NB)
