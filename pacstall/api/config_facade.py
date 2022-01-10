@@ -49,11 +49,15 @@ class SupportedGitProviderLinks(str, Enum):
 
 def is_repo_valid(repo_root_url: str) -> bool:
     """
-    Returns `True` if the repository respects the file structure, otherwise `False`.
-
+    Checks if the the `repo_root_url` is valid.
+    
     Parameters
     ----------
-    url_without_branch: URL to the root of the repository.
+    repo_root_url (str): URL to the root of the repository.
+    
+    Returns
+    -------
+    `True` if the repository respects the file structure, otherwise `False`.
     """
     try:
         # Choose branch by checking if the `packagelist` file exists
