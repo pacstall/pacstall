@@ -24,6 +24,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+from typing import Optional
+
 from api.config_facade import ReadConfigErrorCode, read_config
 
 from pacstall.api.color import Foreground as fg
@@ -31,7 +33,7 @@ from pacstall.api.color import Style as st
 from pacstall.api.message import fancy
 
 
-def list_repos() -> ReadConfigErrorCode:
+def list_repos() -> Optional[ReadConfigErrorCode]:
     """
     Prints the existing repositories.
 
@@ -42,8 +44,12 @@ def list_repos() -> ReadConfigErrorCode:
 
     (err, repos) = read_config()
     if err is not None:
-        assert type(err.value) == int
         return err
 
-    for repo in repos:
-        fancy("info", f"{fg.GREEN}{repo.name}{st.RESET} ({repo.branch}) - {repo.url}")
+    if repos is not None:
+        for repo in repos:
+            fancy(
+                "info", f"{fg.GREEN}{repo.name}{st.RESET} ({repo.branch}) - {repo.url}"
+            )
+
+    return None

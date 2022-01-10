@@ -37,7 +37,9 @@ __FALLBACK_EDITOR = "sensible-editor"
 
 def open_editor() -> int:
     """
-    Opens the `config.toml` file in the default editor, prioritizing `$PACSTALL_EDITOR > $EDITOR > sensible-editor`, and validates it.
+    Opens the `config.toml` file in the default editor, and validates it.
+
+    Prioritization order: `$PACSTALL_EDITOR` > `$EDITOR` > `sensible-editor`.
 
     Returns
     -------
@@ -52,7 +54,4 @@ def open_editor() -> int:
         return ret_code
 
     (err, _) = read_config()
-    if err is not None:
-        assert type(err.value) == int
-        return err.value  # Is already `int` but must please the git-hooks gods
-    return 0
+    return err.value if err is not None else 0  # type: ignore[no-any-return]

@@ -26,7 +26,7 @@
 
 from dataclasses import dataclass
 from enum import Enum, IntEnum
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, NoReturn, Optional, Tuple, TypeVar
 
 import tomli
 from api.config import PACSTALL_CONFIG_PATH
@@ -36,12 +36,20 @@ from requests import get
 
 @dataclass
 class RepositoryConfig:
+    """
+    Representation of a repository entry from `config.toml`
+    """
+
     name: str
     url: str
     branch: str
 
 
 class SupportedGitProviderLinks(str, Enum):
+    """
+    String enum that contains the links of the officially supported git platforms
+    """
+
     GITLAB_URL = "https://gitlab.com"
     GITHUB_URL = "https://github.com"
     BITBUCKET_URL = "https://bitbucket.org"
@@ -173,7 +181,18 @@ def __validate_attribute(
     return True
 
 
+def __raise_unreachable() -> NoReturn:
+    """
+    Small hack to help the type checker in complex cases.
+    """
+    raise Exception("Unreachable code. This will never be raised.")
+
+
 class ReadConfigErrorCode(IntEnum):
+    """
+    Possible error codes returned when reading and validating `config.toml`
+    """
+
     ERR_NO_FILE_OR_INVALID_PERM = 0
     ERR_INVALID_REPOSITORY = 1
     ERR_INVALID_OR_MISSING_ATTR = 2
@@ -192,14 +211,14 @@ def read_config() -> Tuple[
     If the error code is `None` then the repository list will *not* be `None` and vice-versa.
     """
     try:
-        config_dict: Optional[Dict[str, Dict[str, Optional[str]]]] = None
+        config_dict: Optional[Dict[str, Dict[str, Dict[str, Optional[str]]]]] = None
         try:
             with open(PACSTALL_CONFIG_PATH) as file:
-                config_dict = tomli.load(file)
-        except OSError as e:
+                config_dict = tomli.load(file)  # type: ignore[arg-type]
+        except OSError as error:
             fancy(
                 "error",
-                f"Could not read repositories from file '{PACSTALL_CONFIG_PATH}'.\n{e}",
+                f"Could not read repositories from file '{PACSTALL_CONFIG_PATH}'.\n{error}",
             )
 
             return (ReadConfigErrorCode.ERR_NO_FILE_OR_INVALID_PERM, None)
@@ -213,16 +232,21 @@ def read_config() -> Tuple[
             ):
                 return (ReadConfigErrorCode.ERR_INVALID_OR_MISSING_ATTR, None)
 
-            url = conf["url"]
+            # Help type checker recognize `[conf["url"]` is not None
+            url = conf["url"] if conf["url"] is not None else __raise_unreachable()
             parsed_url: Optional[str] = parse_url(url)
-            if parse_url is None:
+            if parsed_url is None:
                 fancy(
                     "error",
                     f"Repository '{repo_name}' has invalid attribute 'url': {url}",
                 )
                 return (ReadConfigErrorCode.ERR_INVALID_OR_MISSING_ATTR, None)
 
-            repo_entry = RepositoryConfig(repo_name, parsed_url, conf["branch"])
+            # Help type checker recognize `[conf["branch"]` is not None
+            branch = (
+                conf["branch"] if conf["branch"] is not None else __raise_unreachable()
+            )
+            repo_entry = RepositoryConfig(repo_name, parsed_url, branch)
 
             if not is_repo_valid(f"{repo_entry.url}/{repo_entry.branch}"):
                 fancy(
@@ -234,6 +258,8 @@ def read_config() -> Tuple[
             parsed_repo_list.append(repo_entry)
 
         return (None, parsed_repo_list)
-    except Exception as e:
-        fancy("error", f"Unknown exception occurred while parsing config file.\n{e}")
+    except Exception as error:
+        fancy(
+            "error", f"Unknown exception occurred while parsing config file.\n{error}"
+        )
         return (ReadConfigErrorCode.ERR_UNKNOWN, None)
