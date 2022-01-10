@@ -26,10 +26,9 @@
 
 from typing import Optional
 
-from api.config_facade import ReadConfigErrorCode, read_config
-
 from pacstall.api.color import Foreground as fg
 from pacstall.api.color import Style as st
+from pacstall.api.config_facade import ReadConfigErrorCode, read_config
 from pacstall.api.message import fancy
 
 
@@ -49,7 +48,8 @@ def list_repos() -> Optional[ReadConfigErrorCode]:
     if repos is not None:
         for repo in repos:
             fancy(
-                "info", f"{fg.GREEN}{repo.name}{st.RESET} ({repo.branch}) - {repo.url}"
+                "info",
+                f"{fg.GREEN}{repo.name}{st.RESET} ({repo.branch}) - {repo.original_url}",
             )
 
     return None

@@ -27,9 +27,8 @@
 from os import environ
 from subprocess import call
 
-from api.config_facade import read_config
-
 from pacstall.api.config import PACSTALL_CONFIG_PATH
+from pacstall.api.config_facade import read_config
 from pacstall.api.message import fancy
 
 __FALLBACK_EDITOR = "sensible-editor"
@@ -48,10 +47,10 @@ def open_editor() -> int:
     - `0` if success
     """
     editor = environ.get("PACSTALL_EDITOR", environ.get("EDITOR", __FALLBACK_EDITOR))
-    ret_code = call([editor, PACSTALL_CONFIG_PATH])
+    ret_code = call(["sudo", editor, PACSTALL_CONFIG_PATH])
     if ret_code != 0:
         fancy("error", f"Editor '{editor}' closed with a non-zero exit code")
         return ret_code
 
     (err, _) = read_config()
-    return err.value if err is not None else 0  # type: ignore[no-any-return]
+    return err.value if err is not None else 0

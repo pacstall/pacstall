@@ -29,9 +29,10 @@ from enum import Enum, IntEnum
 from typing import Dict, List, NoReturn, Optional, Tuple, TypeVar
 
 import tomli
-from api.config import PACSTALL_CONFIG_PATH
-from api.message import fancy
 from requests import get
+
+from pacstall.api.config import PACSTALL_CONFIG_PATH
+from pacstall.api.message import fancy
 
 
 @dataclass
@@ -43,6 +44,7 @@ class RepositoryConfig:
     name: str
     url: str
     branch: str
+    original_url: str
 
 
 class SupportedGitProviderLinks(str, Enum):
@@ -159,7 +161,7 @@ def parse_url(url: str) -> Optional[str]:
 
 
 def __validate_attribute(
-    repo_name: str, conf: Dict[str, Optional[str]], attribute_name: str, type: type
+    repo_name: str, conf: Dict[str, Optional[str]], attribute_name: str, ttype: type
 ) -> bool:
     """
     Checks if the given `attribute_name` is part of `conf` and has the type `type`.
@@ -175,10 +177,10 @@ def __validate_attribute(
             f"Repository '{repo_name}' is missing required attribute '{attribute_name}'",
         )
         return False
-    if type(conf[attribute_name]) is not type:
+    if type(conf[attribute_name]) is not ttype:
         fancy(
             "error",
-            f"Repository '{repo_name}' attribute '{attribute_name}' must be of type '{type}'",
+            f"Repository '{repo_name}' attribute '{attribute_name}' must be of type '{ttype}'",
         )
         return False
     return True
@@ -229,9 +231,9 @@ def read_config() -> Tuple[
         parsed_repo_list: List[RepositoryConfig] = []
         for (repo_name, conf) in config_dict["repository"].items():
             if not __validate_attribute(
-                repo_name, conf, attribute_name="url", type=str
+                repo_name, conf, attribute_name="url", ttype=str
             ) or not __validate_attribute(
-                repo_name, conf, attribute_name="branch", type=str
+                repo_name, conf, attribute_name="branch", ttype=str
             ):
                 return (ReadConfigErrorCode.ERR_INVALID_OR_MISSING_ATTR, None)
 
@@ -249,9 +251,10 @@ def read_config() -> Tuple[
             branch = (
                 conf["branch"] if conf["branch"] is not None else __raise_unreachable()
             )
-            repo_entry = RepositoryConfig(repo_name, parsed_url, branch)
+            repo_entry = RepositoryConfig(repo_name, parsed_url, branch, url)
 
             if not is_repo_valid(f"{repo_entry.url}/{repo_entry.branch}"):
+                print(f"{repo_entry.url}/{repo_entry.branch}")
                 fancy(
                     "error",
                     f"File 'packagelist' not found in the '{repo_name}' repository root.",
