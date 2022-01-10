@@ -163,6 +163,9 @@ def __validate_attribute(
 ) -> bool:
     """
     Checks if the given `attribute_name` is part of `conf` and has the type `type`.
+
+    Returns
+    -------
     If any of the conditions fail, an error message is printed and returns `False`, otherwise returns `True`.
     """
 
