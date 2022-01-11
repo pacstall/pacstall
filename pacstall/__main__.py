@@ -32,6 +32,7 @@ from time import sleep
 from rich.traceback import install
 
 from pacstall.api import message
+from pacstall.api.error_codes import ErrorCodes
 from pacstall.cmds import download
 from pacstall.parser import parse_arguments
 
@@ -45,7 +46,7 @@ if __name__ == "__main__":
 
     if getuser() != "root":
         message.fancy("error", "Pacstall needs to be launched as root!")
-        sys.exit(64)  # --> command line usage error
+        sys.exit(ErrorCodes.USAGE_ERROR)  # --> command line usage error
 
     if args.command in ["install", "remove", "upgrade"]:
         lock_file = open("/var/lock/pacstall.lock", "w")
