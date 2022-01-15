@@ -488,7 +488,7 @@ while [[ ! "$1" == "--" ]]; do
 			fi
 			if curl --output /dev/null --silent --head --fail https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/pyproject.toml; then
 				fancy_message error "The repository you are trying to upgrade to contains a version of pacstall that cannot be updated from $(pacstall -V)"
-				fancy_message error "Visit https://github.com/$USERNAME/pacstall/tree/$BRANCH for more information on how to update"
+				fancy_message error "Visit https://github.com/$USERNAME/pacstall/tree/$BRANCH for more information on how to reinstall. Most packages will also need to be reinstalled"
 				exit 1
 			fi
 			sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/update.sh -P "$STGDIR/scripts" 2> /dev/null
