@@ -14,8 +14,9 @@ This is the python rewrite branch.
   <a href="https://github.com/pacstall/pacstall-programs"><img alt="https://github.com/pacstall/pacstall-programs" src="https://img.shields.io/github/commit-activity/m/pacstall/pacstall-programs?style=flat-square&label=user%20repo%20activity"></a><br>
   <!-- Social -->
   <a href="https://discord.gg/yzrjXJV6K8"><img alt="join discord" src="https://img.shields.io/discord/839818021207801878?color=5865F2&label=Discord&logo=discord&logoColor=FFFFFF&style=flat-square"></a>
+  <a href="https://reddit.com/r/pacstall"><img src="https://img.shields.io/reddit/subreddit-subscribers/pacstall?label=Reddit&color=FF4301&style=flat-square&logo=reddit&logoColor=FFFFFF" loading="lazy"></a>
+  <a href="https://social.linux.pizza/web/@pacstall"><img alt="Mastodon Follow" src="https://img.shields.io/mastodon/follow/107278715447740005?color=3088d4&domain=https%3A%2F%2Fsocial.linux.pizza&label=Mastodon&logo=mastodon&logoColor=white&style=flat-square" loading="lazy"></a>
   <a href="https://matrix.to/#/#pacstall:matrix.org"><img alt="join matrix" src="https://img.shields.io/matrix/pacstall:matrix.org?color=888888&label=Matrix&logo=Matrix&style=flat-square"></a>
-  <a href="https://www.reddit.com/r/pacstall/"><img alt="join subreddit" src="https://img.shields.io/reddit/subreddit-subscribers/pacstall?style=flat-square&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAACXBIWXMAATRQAAE0UAFXCOjxAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAaBJREFUKJF9kk9LVGEUxn/nzlXT8TqaSPoBRPAjBANC3lUKglQatLY2zU78Bu4NImp2OYi4HLCFilpg+0Lxz06woAgdveaMNvO0eOfODI30wAsv7znPc855z2M0QCP008JLYBwYrD4fAXmKvLJPfI9zrUZ6wBTGW4yA2yAuMGZsjSUAr0byyDWRUn3gJaDnHnSmAmBRozwFMI3Qj8/hrZUmMlD4AU/mYG8HFl64yiWG/OpMzSQzR9pcgi/bULqKhwtoJeNXP6KO9gDSkzB8H4K7cCcJH1fg8rxBlHEUUlSI9DojXUXS2U814fyXi2XnpBBplGuvppLwnfrJEUz2QnQKlwV41AfH+y7m1dNRyFeFSGMdUrksRQXpQ1aqlN1ZfSddnEqVijSRiivuekAegNJvWH8PyS7o6oXdHdj77O6d3bC17DpwO82b0gzQxgFGQMKHx7PwcAaui4CgrQNWs7A8D39uQEQYQ1ZtdxpYjA0BQLLb+So6a3SPEM9sg1zdcs4Rb/5juQjx3DbIuY00xtIM0EoG+8fkIo/Hgq3xLc79CzNQvfQ4D27CAAAAAElFTkSuQmCC"></a>
 </p>
 
 <p align="center"><b>PACSTALL</b></p>
