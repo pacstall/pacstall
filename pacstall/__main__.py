@@ -28,7 +28,6 @@ import sys
 from fcntl import LOCK_EX, LOCK_NB, lockf
 from getpass import getuser
 from time import sleep
-from typing import List
 
 from rich.traceback import install
 
