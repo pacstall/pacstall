@@ -71,8 +71,8 @@ echo -e "|---${GREEN}Pacstall Installer${NC}---|"
 echo -e "|------------------------|"
 
 if [[ -n $PACSTALL_SKIP_NETWORK_CHECK ]]; then
-	if ! (command -v nm-online -qx > /dev/null || ping -c 1 github.com > /dev/null); then
-		fancy_message warn "You seem to be offline"
+	if ! ping -c 1 github.com &>/dev/null; then
+		fancy_message error "You seem to be offline"
 		exit 1
 	fi
 fi

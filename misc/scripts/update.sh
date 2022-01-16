@@ -42,7 +42,6 @@ if ! command -v apt &> /dev/null; then
 		*) apt-get install -qq -y axel;;
 	esac
 fi
-
 for i in {error_log.sh,add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
 	sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/"$i" -P "$STGDIR/scripts" &
 done
