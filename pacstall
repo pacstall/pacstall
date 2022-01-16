@@ -334,6 +334,10 @@ while [[ ! "$1" == "--" ]]; do
 				export type="install"
 				export local="no"
 
+				if ! { nm-online -qx 2>/dev/null; } || ping -c 1 github.com 2> /dev/null; then
+					fancy_message warn "You seem to be offline"
+					exit 1
+				fi
 				if ! source "$STGDIR/scripts/search.sh"; then
 					fail_install=1
 					export fail_install
@@ -404,6 +408,10 @@ while [[ ! "$1" == "--" ]]; do
 
 		-S|--search)
 
+			if ! { nm-online -qx 2>/dev/null; } || ping -c 1 github.com 2> /dev/null; then
+				fancy_message warn "You seem to be offline"
+				exit 1
+			fi
 			export SEARCH=$2
 			if [[ -z "$SEARCH" ]]; then
 				fancy_message error "You failed to specify a package"
@@ -442,6 +450,10 @@ while [[ ! "$1" == "--" ]]; do
 				return 0
 			fi
 
+			if ! { nm-online -qx 2>/dev/null; } || ping -c 1 github.com 2> /dev/null; then
+				fancy_message warn "You seem to be offline"
+				exit 1
+			fi
 			if [[ -n "$REPO" ]]; then
 				source "$STGDIR/scripts/add-repo.sh"
 				exit 0
@@ -487,6 +499,10 @@ while [[ ! "$1" == "--" ]]; do
 				fi
 			fi
 
+			if ! { nm-online -qx 2>/dev/null; } || ping -c 1 github.com 2> /dev/null; then
+				fancy_message warn "You seem to be offline"
+				exit 1
+			fi
 			sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/update.sh -P "$STGDIR/scripts" 2> /dev/null
 			source "$STGDIR/scripts/update.sh"
 			exit 0
@@ -512,6 +528,10 @@ while [[ ! "$1" == "--" ]]; do
 				shift
 				export type="download"
 
+				if ! { nm-online -qx 2>/dev/null; } || ping -c 1 github.com 2> /dev/null; then
+					fancy_message warn "You seem to be offline"
+					exit 1
+				fi
 				if ! source "$STGDIR/scripts/search.sh"; then
 					((i++))
 					continue
@@ -535,6 +555,10 @@ while [[ ! "$1" == "--" ]]; do
 		;;
 
 		-Up|--upgrade)
+			if ! { nm-online -qx 2>/dev/null; } || ping -c 1 github.com 2> /dev/null; then
+				fancy_message warn "You seem to be offline"
+				exit 1
+			fi
 			source "$STGDIR/scripts/upgrade.sh"
 
 			if [[ -s "LOGFILE" ]]; then

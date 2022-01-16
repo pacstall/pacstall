@@ -42,10 +42,6 @@ if ! command -v apt &> /dev/null; then
 		*) apt-get install -qq -y axel;;
 	esac
 fi
-if ! (command -v nm-online -qx > /dev/null || ping -c 1 github.com > /dev/null); then
-	fancy_message warn "You seem to be offline"
-	exit 1
-fi
 for i in {error_log.sh,add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
 	sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/"$i" -P "$STGDIR/scripts" &
 done
