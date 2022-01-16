@@ -321,7 +321,7 @@ if [[ -n "$pacdeps" ]]; then
 		fancy_message info "Installing $i"
 		# If /tmp/pacstall-pacdeps-"$i" is available, it will trigger the logger to log it as a dependency
 		sudo touch /tmp/pacstall-pacdeps-"$i"
-		
+
 		[[ $KEEP ]] && cmd="-KPI" || cmd="-PI"
 		if ! pacstall "$cmd" "$i"; then
 			fancy_message error "Failed to install pacstall dependencies"
@@ -403,7 +403,9 @@ function hashcheck() {
 	# Get hash of file
 	fileHash="$(sha256sum "$1" | sed 's/\s.*$//')"
 
-	if [[ "$inputHash" != "$fileHash" ]]; then
+	# Check if the input hash is the same as of the downloaded file.
+	# Skip this test if the hash variable doesn't exist in the pacscript.
+	if [[ "$inputHash" != "$fileHash" ]] && [[ -n "${hash}" ]]; then
 		# We bad
 		fancy_message error "Hashes don't match"
 		error_log 16 "install $PACKAGE"
