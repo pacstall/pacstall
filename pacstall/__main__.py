@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
     if args.command == "repos":
         err_code = repos.list_repos()
-        sys.exit(err_code if err_code is not None else 0)
+        sys.exit(err_code.value if err_code is not None else 0)
 
     if args.command == "config":
         sys.exit(config.open_editor())

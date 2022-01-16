@@ -25,13 +25,14 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 from dataclasses import dataclass
-from enum import Enum, IntEnum
-from typing import Dict, List, NoReturn, Optional, Tuple, TypeVar
+from enum import Enum
+from typing import Dict, List, NoReturn, Optional, Tuple
 
 import tomli
 from requests import get
 
 from pacstall.api.config import PACSTALL_CONFIG_PATH
+from pacstall.api.error_codes import ErrorCodes
 from pacstall.api.message import fancy
 
 
@@ -193,20 +194,7 @@ def __raise_unreachable() -> NoReturn:
     raise Exception("Unreachable code. This will never be raised.")
 
 
-class ReadConfigErrorCode(IntEnum):
-    """
-    Possible error codes returned when reading and validating `config.toml`
-    """
-
-    ERR_NO_FILE_OR_INVALID_PERM = 0
-    ERR_INVALID_REPOSITORY = 1
-    ERR_INVALID_OR_MISSING_ATTR = 2
-    ERR_UNKNOWN = 3
-
-
-def read_config() -> Tuple[
-    Optional[ReadConfigErrorCode], Optional[List[RepositoryConfig]]
-]:
+def read_config() -> Tuple[Optional[ErrorCodes], Optional[List[RepositoryConfig]]]:
     """
     Reads and parses the repository list.
 
@@ -226,7 +214,7 @@ def read_config() -> Tuple[
                 f"Could not read repositories from file '{PACSTALL_CONFIG_PATH}'.\n{error}",
             )
 
-            return (ReadConfigErrorCode.ERR_NO_FILE_OR_INVALID_PERM, None)
+            return (ErrorCodes.NO_INPUT_ERROR, None)
 
         parsed_repo_list: List[RepositoryConfig] = []
         for (repo_name, conf) in config_dict["repository"].items():
@@ -235,7 +223,7 @@ def read_config() -> Tuple[
             ) or not __validate_attribute(
                 repo_name, conf, attribute_name="branch", ttype=str
             ):
-                return (ReadConfigErrorCode.ERR_INVALID_OR_MISSING_ATTR, None)
+                return (ErrorCodes.CONFIG_ERROR, None)
 
             # Help type checker recognize `[conf["url"]` is not None
             url = conf["url"] if conf["url"] is not None else __raise_unreachable()
@@ -245,7 +233,7 @@ def read_config() -> Tuple[
                     "error",
                     f"Repository '{repo_name}' has invalid attribute 'url': {url}",
                 )
-                return (ReadConfigErrorCode.ERR_INVALID_OR_MISSING_ATTR, None)
+                return (ErrorCodes.CONFIG_ERROR, None)
 
             # Help type checker recognize `[conf["branch"]` is not None
             branch = (
@@ -259,7 +247,7 @@ def read_config() -> Tuple[
                     "error",
                     f"File 'packagelist' not found in the '{repo_name}' repository root.",
                 )
-                return (ReadConfigErrorCode.ERR_INVALID_REPOSITORY, None)
+                return (ErrorCodes.NO_HOST_ERROR, None)
 
             parsed_repo_list.append(repo_entry)
 
@@ -268,4 +256,4 @@ def read_config() -> Tuple[
         fancy(
             "error", f"Unknown exception occurred while parsing config file.\n{error}"
         )
-        return (ReadConfigErrorCode.ERR_UNKNOWN, None)
+        return (ErrorCodes.SOFTWARE_ERROR, None)

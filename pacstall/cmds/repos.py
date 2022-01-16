@@ -28,11 +28,12 @@ from typing import Optional
 
 from pacstall.api.color import Foreground as fg
 from pacstall.api.color import Style as st
-from pacstall.api.config_facade import ReadConfigErrorCode, read_config
+from pacstall.api.config_facade import read_config
+from pacstall.api.error_codes import ErrorCodes
 from pacstall.api.message import fancy
 
 
-def list_repos() -> Optional[ReadConfigErrorCode]:
+def list_repos() -> Optional[ErrorCodes]:
     """
     Prints the existing repositories.
 
