@@ -17,7 +17,6 @@ This is the python rewrite branch.
   <a href="https://reddit.com/r/pacstall"><img src="https://img.shields.io/reddit/subreddit-subscribers/pacstall?label=reddit&color=FF4301&style=flat-square&logo=reddit&logoColor=FFFFFF" loading="lazy"></a>
   <a href="https://social.linux.pizza/web/@pacstall"><img alt="Mastodon Follow" src="https://img.shields.io/mastodon/follow/107278715447740005?color=3088d4&domain=https%3A%2F%2Fsocial.linux.pizza&label=mastodon&logo=mastodon&logoColor=white&style=flat-square" loading="lazy"></a>
   <a href="https://matrix.to/#/#pacstall:matrix.org"><img alt="join matrix" src="https://img.shields.io/matrix/pacstall:matrix.org?color=888888&label=Matrix&logo=Matrix&style=flat-square"></a>
-
 </p>
 
 <p align="center"><b>PACSTALL</b></p>
