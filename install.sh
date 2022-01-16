@@ -72,7 +72,7 @@ echo -e "|------------------------|"
 
 if [[ -n $PACSTALL_SKIP_NETWORK_CHECK ]]; then
 	if ! { nm-online -qx 2>/dev/null; } || ping -c 1 github.com 2> /dev/null; then
-		fancy_message warn "You seem to be offline"
+		fancy_message error "You seem to be offline"
 		exit 1
 	fi
 fi

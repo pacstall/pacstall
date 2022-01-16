@@ -335,7 +335,7 @@ while [[ ! "$1" == "--" ]]; do
 				export local="no"
 
 				if ! { nm-online -qx 2>/dev/null; } || ping -c 1 github.com 2> /dev/null; then
-					fancy_message warn "You seem to be offline"
+					fancy_message error "You seem to be offline"
 					exit 1
 				fi
 				if ! source "$STGDIR/scripts/search.sh"; then
@@ -409,7 +409,7 @@ while [[ ! "$1" == "--" ]]; do
 		-S|--search)
 
 			if ! { nm-online -qx 2>/dev/null; } || ping -c 1 github.com 2> /dev/null; then
-				fancy_message warn "You seem to be offline"
+				fancy_message error "You seem to be offline"
 				exit 1
 			fi
 			export SEARCH=$2
@@ -451,7 +451,7 @@ while [[ ! "$1" == "--" ]]; do
 			fi
 
 			if ! { nm-online -qx 2>/dev/null; } || ping -c 1 github.com 2> /dev/null; then
-				fancy_message warn "You seem to be offline"
+				fancy_message error "You seem to be offline"
 				exit 1
 			fi
 			if [[ -n "$REPO" ]]; then
@@ -500,7 +500,7 @@ while [[ ! "$1" == "--" ]]; do
 			fi
 
 			if ! { nm-online -qx 2>/dev/null; } || ping -c 1 github.com 2> /dev/null; then
-				fancy_message warn "You seem to be offline"
+				fancy_message error "You seem to be offline"
 				exit 1
 			fi
 			sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/update.sh -P "$STGDIR/scripts" 2> /dev/null
@@ -529,7 +529,7 @@ while [[ ! "$1" == "--" ]]; do
 				export type="download"
 
 				if ! { nm-online -qx 2>/dev/null; } || ping -c 1 github.com 2> /dev/null; then
-					fancy_message warn "You seem to be offline"
+					fancy_message error "You seem to be offline"
 					exit 1
 				fi
 				if ! source "$STGDIR/scripts/search.sh"; then
@@ -556,7 +556,7 @@ while [[ ! "$1" == "--" ]]; do
 
 		-Up|--upgrade)
 			if ! { nm-online -qx 2>/dev/null; } || ping -c 1 github.com 2> /dev/null; then
-				fancy_message warn "You seem to be offline"
+				fancy_message error "You seem to be offline"
 				exit 1
 			fi
 			source "$STGDIR/scripts/upgrade.sh"
