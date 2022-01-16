@@ -334,7 +334,7 @@ while [[ ! "$1" == "--" ]]; do
 				export type="install"
 				export local="no"
 
-				if ! { nm-online -qx 2>/dev/null; } || ping -c 1 github.com 2> /dev/null; then
+				if ! { nm-online -qx 2>/dev/null; } || ! ping -c 1 github.com &>/dev/null; then
 					fancy_message error "You seem to be offline"
 					exit 1
 				fi
@@ -408,7 +408,7 @@ while [[ ! "$1" == "--" ]]; do
 
 		-S|--search)
 
-			if ! { nm-online -qx 2>/dev/null; } || ping -c 1 github.com 2> /dev/null; then
+			if ! { nm-online -qx 2>/dev/null; } || ! ping -c 1 github.com &>/dev/null; then
 				fancy_message error "You seem to be offline"
 				exit 1
 			fi
@@ -450,7 +450,7 @@ while [[ ! "$1" == "--" ]]; do
 				return 0
 			fi
 
-			if ! { nm-online -qx 2>/dev/null; } || ping -c 1 github.com 2> /dev/null; then
+			if ! { nm-online -qx 2>/dev/null; } || ! ping -c 1 github.com &>/dev/null; then
 				fancy_message error "You seem to be offline"
 				exit 1
 			fi
@@ -499,7 +499,7 @@ while [[ ! "$1" == "--" ]]; do
 				fi
 			fi
 
-			if ! { nm-online -qx 2>/dev/null; } || ping -c 1 github.com 2> /dev/null; then
+			if ! { nm-online -qx 2>/dev/null; } || ! ping -c 1 github.com &>/dev/null; then
 				fancy_message error "You seem to be offline"
 				exit 1
 			fi
@@ -528,7 +528,7 @@ while [[ ! "$1" == "--" ]]; do
 				shift
 				export type="download"
 
-				if ! { nm-online -qx 2>/dev/null; } || ping -c 1 github.com 2> /dev/null; then
+				if ! { nm-online -qx 2>/dev/null; } || ! ping -c 1 github.com &>/dev/null; then
 					fancy_message error "You seem to be offline"
 					exit 1
 				fi
@@ -555,7 +555,7 @@ while [[ ! "$1" == "--" ]]; do
 		;;
 
 		-Up|--upgrade)
-			if ! { nm-online -qx 2>/dev/null; } || ping -c 1 github.com 2> /dev/null; then
+			if ! { nm-online -qx 2>/dev/null; } || ! ping -c 1 github.com &>/dev/null; then
 				fancy_message error "You seem to be offline"
 				exit 1
 			fi
