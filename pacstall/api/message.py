@@ -24,8 +24,8 @@
 
 from os import environ
 
-from api.color import Foreground as fg
-from api.color import Style as st
+from pacstall.api.color import Foreground as fg
+from pacstall.api.color import Style as st
 
 
 def fancy(message_type: str, message: str) -> None:

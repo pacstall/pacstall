@@ -26,7 +26,7 @@
 
 from requests import exceptions, get
 
-from api.message import fancy
+from pacstall.api.message import fancy
 
 
 def execute(url: str, file_path: str = "") -> int:
