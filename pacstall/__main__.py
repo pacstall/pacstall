@@ -36,7 +36,10 @@ from pacstall.api.error_codes import ErrorCodes
 from pacstall.cmds import config, download, repos
 from pacstall.parser import parse_arguments
 
-if __name__ == "__main__":
+
+def main() -> None:
+    """Main Pacstall function."""
+
     install(
         show_locals=True
     )  # --> Install Rich's traceback handler for better looking tracebackes
@@ -67,3 +70,7 @@ if __name__ == "__main__":
 
     if args.command == "config":
         sys.exit(config.open_editor())
+
+
+if __name__ == "__main__":
+    main()
