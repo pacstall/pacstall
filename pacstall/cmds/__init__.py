@@ -27,4 +27,5 @@ Files
 -------
 download: Download command
 repository: Repository commands
+config: Config commands
 """
