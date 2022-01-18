@@ -27,8 +27,7 @@ import tempfile
 LOGDIR = "/var/log/pacstall"  # Logging directory
 STGDIR = "/usr/share/pacstall"  # Scripts storage directory
 STOWDIR = "/usr/src/pacstall"  # Stowing directory
-CONFDIR = "/etc/pacstall"
-PACSTALL_CONFIG_PATH = f"{CONFDIR}/config.toml"
+PACSTALL_CONFIG_PATH = "/etc/pacstall/config.toml"  # config.toml path
 
 # SRCDIR -> Package source code storage dir
 def SRCDIR() -> str:
