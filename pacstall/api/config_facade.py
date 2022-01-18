@@ -164,6 +164,10 @@ def parse_url(url: str) -> Optional[str]:
     """
     Tries to transform the given URL to a URL to the root of the raw git repository.
 
+    Parameters
+    ----------
+    url (str): URL to the root of the repository. Example: `https://github.com/pacstall/pacstall-programs`
+
     Supported Git Providers
     -----------------------
     `GitHub`, `GitLab` and `BitBucket`
@@ -186,13 +190,6 @@ def parse_url(url: str) -> Optional[str]:
         parsed_url = __parse_bitbucket_url(url)
 
     return parsed_url
-
-
-def __raise_unreachable() -> NoReturn:
-    """
-    Small hack to help the type checker in complex cases.
-    """
-    raise Exception("Unreachable code. This will never be raised.")
 
 
 def __parse_repo_config(
