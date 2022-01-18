@@ -105,7 +105,11 @@ def parse_arguments() -> Namespace:
             - packages : ``List[str]``
                 Packages to show the info of.
 
-        - For repos command : `command`
+        - For repos command
+            List installed packages.
+
+        - For config command
+            Opens the config file in system's default editor.
     Returns
     -------
     parsed arguments : Namespace
