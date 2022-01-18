@@ -1,7 +1,3 @@
-#!/bin/env python3
-
-"""List repositories command."""
-
 #     ____                  __        ____
 #    / __ \____ ___________/ /_____ _/ / /
 #   / /_/ / __ `/ ___/ ___/ __/ __ `/ / /
@@ -24,33 +20,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-from typing import Optional
-
-from pacstall.api.color import Foreground as fg
-from pacstall.api.color import Style as st
-from pacstall.api.config_facade import read_config
-from pacstall.api.error_codes import ErrorCodes
-from pacstall.api.message import fancy
-
-
-def list_repos() -> Optional[ErrorCodes]:
-    """
-    Prints the existing repositories.
-
-    Returns
-    -------
-    `ReadConfigErrorCode` if an error has occurred, otherwise `None`.
-    """
-
-    (conf, err) = read_config()
-    if err is not None:
-        return err
-    assert conf is not None
-
-    for repo in conf.repositories:
-        fancy(
-            "info",
-            f"{fg.GREEN}{repo.name}{st.RESET} ({repo.branch}) - {repo.original_url}",
-        )
-
-    return None
+{
+    "python.formatting.provider": "black"
+}

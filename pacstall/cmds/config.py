@@ -25,10 +25,11 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 from os import environ
-from subprocess import call
+from subprocess import run
 
 from pacstall.api.config import PACSTALL_CONFIG_PATH
 from pacstall.api.config_facade import read_config
+from pacstall.api.error_codes import ErrorCodes
 from pacstall.api.message import fancy
 
 __FALLBACK_EDITOR = "sensible-editor"
@@ -46,11 +47,21 @@ def open_editor() -> int:
     - `ReadConfigErrorCode` if the config validation fails
     - `0` if success
     """
-    editor = environ.get("PACSTALL_EDITOR", environ.get("EDITOR", __FALLBACK_EDITOR))
-    ret_code = call(["sudo", editor, PACSTALL_CONFIG_PATH])
+
+    (conf, err) = read_config()
+    if err != None:
+        return err.value  # type: ignore
+    assert conf is not None
+
+    editor = (
+        conf.settings.preferred_editor
+        if conf.settings.preferred_editor is not None
+        else environ.get("PACSTALL_EDITOR", environ.get("EDITOR", __FALLBACK_EDITOR))
+    )
+
+    ret_code = run(["sudo", editor, PACSTALL_CONFIG_PATH]).returncode
     if ret_code != 0:
-        fancy("error", f"Editor '{editor}' closed with a non-zero exit code")
+        fancy("error", f"Editor '{editor}' closed with a non-zero exit code {ret_code}")
         return ret_code
 
-    (err, _) = read_config()
-    return err.value if err is not None else 0
+    return 0

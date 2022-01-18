@@ -26,10 +26,10 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List, NoReturn, Optional, Tuple
+from typing import Any, Dict, List, NoReturn, Optional, Tuple
 
 import tomli
-from requests import get
+from requests import HTTPError, get
 
 from pacstall.api.config import PACSTALL_CONFIG_PATH
 from pacstall.api.error_codes import ErrorCodes
@@ -48,6 +48,25 @@ class RepositoryConfig:
     original_url: str
 
 
+@dataclass
+class SettingsConfig:
+    """
+    Data representation of the settings entry from `config.toml`
+    """
+
+    preferred_editor: Optional[str]
+
+
+@dataclass
+class PacstallConfig:
+    """
+    Data representation of `config.toml`
+    """
+
+    repositories: List[RepositoryConfig]
+    settings: SettingsConfig
+
+
 class SupportedGitProviderLinks(str, Enum):
     """
     String enum that contains the links of the officially supported git platforms
@@ -64,7 +83,7 @@ def is_repo_valid(repo_root_url: str) -> bool:
 
     Parameters
     ----------
-    repo_root_url (str): URL to the root of the repository.
+    repo_root_url (str): URL to the root of the raw repository.
 
     Returns
     -------
@@ -75,7 +94,7 @@ def is_repo_valid(repo_root_url: str) -> bool:
         with get(f"{repo_root_url}/packagelist") as result:
             result.raise_for_status()
             return True
-    except Exception:
+    except HTTPError:
         return False
 
 
@@ -83,54 +102,62 @@ def __parse_github_url(url: str) -> Optional[str]:
     """
     Parses GitHub url and returns a url to the root of the files.
 
+    Parameters
+    ----------
+    url (str): URL to the root of the repository. Example: `https://github.com/pacstall/pacstall-programs`
+
     Returns
     -------
     Url to the root of the files or `None` if error.
     """
 
-    GITHUB_RAW_URL = "https://raw.githubusercontent.com"
+    githubRawUrl = "https://raw.githubusercontent.com"
 
     # If does not follow format `https://github.com/account/repository`
     if url.split(SupportedGitProviderLinks.GITHUB_URL)[1].count("/") != 2:
         return None
 
-    return url.replace(SupportedGitProviderLinks.GITHUB_URL, GITHUB_RAW_URL)
+    return url.replace(SupportedGitProviderLinks.GITHUB_URL, githubRawUrl)
 
 
 def __parse_gitlab_url(url: str) -> Optional[str]:
     """
     Parses GitLab url and returns a url to the root of the files.
 
+    Parameters
+    ----------
+    url (str): URL to the root of the repository. Example: `https://github.com/pacstall/pacstall-programs`
+
     Returns
     -------
     Url to the root of the files or `None` if error.
     """
 
-    GITLAB_RAW_SUFFIX = "/-/raw"
-
     # If does not follow format `https://gitlab.com/account/repository`
     if url.split(SupportedGitProviderLinks.GITLAB_URL)[1].count("/") != 2:
         return None
 
-    return url + GITLAB_RAW_SUFFIX
+    return url + "/-/raw"
 
 
 def __parse_bitbucket_url(url: str) -> Optional[str]:
     """
     Parses Bitbucket url and returns a url to the root of the files.
 
+    Parameters
+    ----------
+    url (str): URL to the root of the repository. Example: `https://github.com/pacstall/pacstall-programs`
+
     Returns
     -------
     Url to the root of the files or `None` if error.
     """
 
-    BITBUCKET_RAW_SUFFIX = "/raw"
-
     # If does not follow format `https://bitbucket.org/account/repository`
     if url.split(SupportedGitProviderLinks.BITBUCKET_URL)[1].count("/") != 2:
         return None
 
-    return url + BITBUCKET_RAW_SUFFIX
+    return url + "/raw"
 
 
 def parse_url(url: str) -> Optional[str]:
@@ -161,32 +188,6 @@ def parse_url(url: str) -> Optional[str]:
     return parsed_url
 
 
-def __validate_attribute(
-    repo_name: str, conf: Dict[str, Optional[str]], attribute_name: str, ttype: type
-) -> bool:
-    """
-    Checks if the given `attribute_name` is part of `conf` and has the type `type`.
-
-    Returns
-    -------
-    If any of the conditions fail, an error message is printed and returns `False`, otherwise returns `True`.
-    """
-
-    if attribute_name not in conf:
-        fancy(
-            "error",
-            f"Repository '{repo_name}' is missing required attribute '{attribute_name}'",
-        )
-        return False
-    if type(conf[attribute_name]) is not ttype:
-        fancy(
-            "error",
-            f"Repository '{repo_name}' attribute '{attribute_name}' must be of type '{ttype}'",
-        )
-        return False
-    return True
-
-
 def __raise_unreachable() -> NoReturn:
     """
     Small hack to help the type checker in complex cases.
@@ -194,7 +195,92 @@ def __raise_unreachable() -> NoReturn:
     raise Exception("Unreachable code. This will never be raised.")
 
 
-def read_config() -> Tuple[Optional[ErrorCodes], Optional[List[RepositoryConfig]]]:
+def __parse_repo_config(
+    conf_dict: Dict[str, Optional[Dict[str, Optional[Dict[str, Optional[str]]]]]]
+) -> Tuple[Optional[List[RepositoryConfig]], Optional[ErrorCodes]]:
+    """
+    Maps config dict to RepositoryConfig
+
+    Returns
+    -------
+    `(List[RepositoryConfig], None)` if success and `(None, ErrorCodes)` otherwise
+    """
+
+    parsed_repo_list: List[RepositoryConfig] = []
+    repo_dict = conf_dict["repository"]
+    if repo_dict is None:
+        fancy("error", f"Config attribute 'repository' is required")
+        return (None, ErrorCodes.CONFIG_ERROR)
+
+    for (repo_name, repo_dict) in repo_dict.items():  # type: ignore[assignment]
+        failed_validation = False
+        if repo_dict["url"] is None:
+            fancy("error", f"Config attribute '{repo_name}.url' is required")
+            failed_validation = True
+        if type(repo_dict["url"]) != str:  # type: ignore[comparison-overlap]
+            fancy("error", f"Config attribute '{repo_name}.url' must be a string")
+            failed_validation = True
+        if repo_dict["branch"] is None:
+            fancy("error", f"Config attribute '{repo_name}.branch' is required")
+            failed_validation = True
+        if type(repo_dict["branch"]) != str:  # type: ignore[comparison-overlap]
+            fancy("error", f"Config attribute '{repo_name}.branch' must be a string")
+            failed_validation = True
+
+        if failed_validation:
+            return (None, ErrorCodes.CONFIG_ERROR)
+
+        url: str = repo_dict["url"]  # type: ignore[assignment]
+        parsed_url: Optional[str] = parse_url(url)
+        if parsed_url is None:
+            fancy(
+                "error",
+                f"Repository '{repo_name}' has invalid attribute 'url': {url}",
+            )
+            return (None, ErrorCodes.CONFIG_ERROR)
+
+        branch: str = repo_dict["branch"]  # type: ignore[assignment]
+        repo_entry = RepositoryConfig(repo_name, parsed_url, branch, url)
+
+        if not is_repo_valid(f"{repo_entry.url}/{repo_entry.branch}"):
+            fancy(
+                "error",
+                f"File 'packagelist' not found in the '{repo_name}' repository root.",
+            )
+            return (None, ErrorCodes.NO_HOST_ERROR)
+
+        parsed_repo_list.append(repo_entry)
+    return (parsed_repo_list, None)
+
+
+def __parse_settings_config(
+    conf_dict: Dict[str, Optional[Dict[str, Optional[Any]]]]
+) -> Tuple[Optional[SettingsConfig], Optional[ErrorCodes]]:
+    """
+    Maps config dict to SettingsConfig
+
+    Returns
+    -------
+    `(SettingsConfig, None)` if success and `(None, ErrorCodes)` otherwise
+    """
+
+    if conf_dict["settings"] is None:
+        fancy("error", f"Config attribute 'settings' is required")
+        return (None, ErrorCodes.CONFIG_ERROR)
+
+    if (
+        conf_dict["settings"]["preferred_editor"] is not None
+        and type(conf_dict["settings"]["preferred_editor"]) != str
+    ):
+        fancy("error", f"Config attribute 'settings.preferred_editor' must be a string")
+        return (None, ErrorCodes.CONFIG_ERROR)
+
+    editor = conf_dict["settings"].get("preferred_editor")
+
+    return (SettingsConfig(preferred_editor=editor), None)
+
+
+def read_config() -> Tuple[Optional[PacstallConfig], Optional[ErrorCodes]]:
     """
     Reads and parses the repository list.
 
@@ -204,7 +290,7 @@ def read_config() -> Tuple[Optional[ErrorCodes], Optional[List[RepositoryConfig]
     If the error code is `None` then the repository list will *not* be `None` and vice-versa.
     """
     try:
-        config_dict: Optional[Dict[str, Dict[str, Dict[str, Optional[str]]]]] = None
+        config_dict: Dict[str, Dict[str, Any]] = None  # type: ignore[assignment]
         try:
             with open(PACSTALL_CONFIG_PATH) as file:
                 config_dict = tomli.load(file)  # type: ignore[arg-type]
@@ -214,46 +300,20 @@ def read_config() -> Tuple[Optional[ErrorCodes], Optional[List[RepositoryConfig]
                 f"Could not read repositories from file '{PACSTALL_CONFIG_PATH}'.\n{error}",
             )
 
-            return (ErrorCodes.NO_INPUT_ERROR, None)
+            return (None, ErrorCodes.NO_INPUT_ERROR)
 
-        parsed_repo_list: List[RepositoryConfig] = []
-        for (repo_name, conf) in config_dict["repository"].items():
-            if not __validate_attribute(
-                repo_name, conf, attribute_name="url", ttype=str
-            ) or not __validate_attribute(
-                repo_name, conf, attribute_name="branch", ttype=str
-            ):
-                return (ErrorCodes.CONFIG_ERROR, None)
+        (repo_list, err) = __parse_repo_config(config_dict)  # type: ignore[arg-type]
+        if err != None:
+            return (None, err)
 
-            # Help type checker recognize `[conf["url"]` is not None
-            url = conf["url"] if conf["url"] is not None else __raise_unreachable()
-            parsed_url: Optional[str] = parse_url(url)
-            if parsed_url is None:
-                fancy(
-                    "error",
-                    f"Repository '{repo_name}' has invalid attribute 'url': {url}",
-                )
-                return (ErrorCodes.CONFIG_ERROR, None)
+        (settingsConfig, err) = __parse_settings_config(config_dict)  # type: ignore[arg-type]
+        if err != None:
+            return (None, err)
 
-            # Help type checker recognize `[conf["branch"]` is not None
-            branch = (
-                conf["branch"] if conf["branch"] is not None else __raise_unreachable()
-            )
-            repo_entry = RepositoryConfig(repo_name, parsed_url, branch, url)
-
-            if not is_repo_valid(f"{repo_entry.url}/{repo_entry.branch}"):
-                print(f"{repo_entry.url}/{repo_entry.branch}")
-                fancy(
-                    "error",
-                    f"File 'packagelist' not found in the '{repo_name}' repository root.",
-                )
-                return (ErrorCodes.NO_HOST_ERROR, None)
-
-            parsed_repo_list.append(repo_entry)
-
-        return (None, parsed_repo_list)
+        return (PacstallConfig(repositories=repo_list, settings=settingsConfig), None)  # type: ignore[arg-type]
     except Exception as error:
         fancy(
-            "error", f"Unknown exception occurred while parsing config file.\n{error}"
+            "error",
+            f"Unknown exception occurred while parsing config file.\n{error.args}",
         )
-        return (ErrorCodes.SOFTWARE_ERROR, None)
+        return (None, ErrorCodes.SOFTWARE_ERROR)
