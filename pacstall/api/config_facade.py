@@ -110,7 +110,7 @@ def __parse_github_url(url: str) -> str:
     -------
     Url to the root of the files.
 
-    Throws
+    Raises
     ------
      - `PacstallError`
     """
@@ -141,7 +141,7 @@ def __parse_gitlab_url(url: str) -> str:
     -------
     Url to the root of the files.
 
-    Throws
+    Raises
     ------
      - `PacstallError`
     """
@@ -170,7 +170,7 @@ def __parse_bitbucket_url(url: str) -> str:
     -------
     Url to the root of the files.
 
-    Throws
+    Raises
     ------
      - `PacstallError`
     """
@@ -207,7 +207,7 @@ def parse_url(url: str) -> str:
     -------
     The transformed URL
 
-    Throws
+    Raises
     ------
      - `PacstallError`
     """
@@ -233,7 +233,7 @@ def __parse_repo_config(
     -------
     `List[RepositoryConfig]`
 
-    Throws
+    Raises
     ------
      - `PacstallError`
     """
@@ -289,7 +289,7 @@ def __parse_settings_config(
     -------
     `SettingsConfig`
 
-    Throws
+    Raises
     ------
      - `PacstallError`
     """
@@ -321,7 +321,7 @@ def parse_raw_config_file() -> RawConfigDict:
     -------
     `RawConfigDict`
 
-    Throws
+    Raises
     ------
      - `PacstallError`
     """
@@ -349,7 +349,7 @@ def read_config() -> PacstallConfig:
     -------
     `PacstallConfig`
 
-    Throws
+    Raises
     ------
      - `PacstallError`
     """
