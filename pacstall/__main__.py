@@ -65,8 +65,7 @@ def main() -> None:
         sys.exit(download.execute(args.download))
 
     if args.command == "repos":
-        err_code = repos.list_repos()
-        sys.exit(err_code.value if err_code is not None else 0)
+        sys.exit(repos.list_repos())
 
     if args.command == "config":
         sys.exit(config.open_editor())

@@ -25,6 +25,16 @@
 from enum import IntFlag
 
 
+class PacstallError(Exception):
+    """
+    Used to raise Pacstall related errors.
+    """
+
+    def __init__(self, code: int) -> None:
+        super().__init__()
+        self.code = code
+
+
 class ErrorCodes(IntFlag):
     """
     Contains error codes used  in Pacstall.

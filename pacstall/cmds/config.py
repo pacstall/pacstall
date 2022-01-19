@@ -29,7 +29,7 @@ from subprocess import run
 
 from pacstall.api.config import PACSTALL_CONFIG_PATH
 from pacstall.api.config_facade import read_config
-from pacstall.api.error_codes import ErrorCodes
+from pacstall.api.error_codes import ErrorCodes, PacstallError
 from pacstall.api.message import fancy
 
 __FALLBACK_EDITOR = "sensible-editor"
@@ -39,25 +39,30 @@ def open_editor() -> int:
     """
     Opens the `config.toml` file in the default editor, and validates it.
 
-    Prioritization order: `$PACSTALL_EDITOR` > `$EDITOR` > `sensible-editor`.
+    Prioritization order: `PacstallConfig.settings.preferred_editor` > `$PACSTALL_EDITOR` > `$EDITOR` > `sensible-editor`.
 
     Returns
     -------
     - Editor's `exit code` if it closes with a non-zero exit code
-    - `ReadConfigErrorCode` if the config validation fails
+    - `ErrorCodes` if the config validation fails
     - `0` if success
     """
 
-    (conf, err) = read_config()
-    if err != None:
-        return err.value  # type: ignore
-    assert conf is not None
+    try:
+        conf = read_config()
+        editor = (
+            conf.settings.preferred_editor
+            if conf.settings.preferred_editor is not None
+            else environ.get(
+                "PACSTALL_EDITOR", environ.get("EDITOR", __FALLBACK_EDITOR)
+            )
+        )
 
-    editor = (
-        conf.settings.preferred_editor
-        if conf.settings.preferred_editor is not None
-        else environ.get("PACSTALL_EDITOR", environ.get("EDITOR", __FALLBACK_EDITOR))
-    )
+    except PacstallError as error:
+        return error.code
+    except Exception as error:
+        fancy("error", f"Unknown error has occurred. {error}")
+        return ErrorCodes.SOFTWARE_ERROR
 
     ret_code = run(["sudo", editor, PACSTALL_CONFIG_PATH]).returncode
     if ret_code != 0:

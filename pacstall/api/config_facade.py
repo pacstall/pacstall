@@ -32,7 +32,7 @@ import tomli
 from requests import HTTPError, get
 
 from pacstall.api.config import PACSTALL_CONFIG_PATH
-from pacstall.api.error_codes import ErrorCodes
+from pacstall.api.error_codes import ErrorCodes, PacstallError
 from pacstall.api.message import fancy
 
 
@@ -98,7 +98,7 @@ def is_repo_valid(repo_root_url: str) -> bool:
         return False
 
 
-def __parse_github_url(url: str) -> Optional[str]:
+def __parse_github_url(url: str) -> str:
     """
     Parses GitHub url and returns a url to the root of the files.
 
@@ -108,19 +108,28 @@ def __parse_github_url(url: str) -> Optional[str]:
 
     Returns
     -------
-    Url to the root of the files or `None` if error.
+    Url to the root of the files.
+
+    Throws
+    ------
+     - `PacstallError`
     """
 
     githubRawUrl = "https://raw.githubusercontent.com"
 
     # If does not follow format `https://github.com/account/repository`
     if url.split(SupportedGitProviderLinks.GITHUB_URL)[1].count("/") != 2:
-        return None
+        fancy(
+            "error",
+            f"Repository url '{url}' is not valid.",
+        )
+
+        raise PacstallError(ErrorCodes.CONFIG_ERROR)
 
     return url.replace(SupportedGitProviderLinks.GITHUB_URL, githubRawUrl)
 
 
-def __parse_gitlab_url(url: str) -> Optional[str]:
+def __parse_gitlab_url(url: str) -> str:
     """
     Parses GitLab url and returns a url to the root of the files.
 
@@ -130,17 +139,26 @@ def __parse_gitlab_url(url: str) -> Optional[str]:
 
     Returns
     -------
-    Url to the root of the files or `None` if error.
+    Url to the root of the files.
+
+    Throws
+    ------
+     - `PacstallError`
     """
 
     # If does not follow format `https://gitlab.com/account/repository`
     if url.split(SupportedGitProviderLinks.GITLAB_URL)[1].count("/") != 2:
-        return None
+        fancy(
+            "error",
+            f"Repository url '{url}' is not valid.",
+        )
+
+        raise PacstallError(ErrorCodes.CONFIG_ERROR)
 
     return url + "/-/raw"
 
 
-def __parse_bitbucket_url(url: str) -> Optional[str]:
+def __parse_bitbucket_url(url: str) -> str:
     """
     Parses Bitbucket url and returns a url to the root of the files.
 
@@ -150,17 +168,26 @@ def __parse_bitbucket_url(url: str) -> Optional[str]:
 
     Returns
     -------
-    Url to the root of the files or `None` if error.
+    Url to the root of the files.
+
+    Throws
+    ------
+     - `PacstallError`
     """
 
     # If does not follow format `https://bitbucket.org/account/repository`
     if url.split(SupportedGitProviderLinks.BITBUCKET_URL)[1].count("/") != 2:
-        return None
+        fancy(
+            "error",
+            f"Repository url '{url}' is not valid.",
+        )
+
+        raise PacstallError(ErrorCodes.CONFIG_ERROR)
 
     return url + "/raw"
 
 
-def parse_url(url: str) -> Optional[str]:
+def parse_url(url: str) -> str:
     """
     Tries to transform the given URL to a URL to the root of the raw git repository.
 
@@ -178,10 +205,14 @@ def parse_url(url: str) -> Optional[str]:
 
     Returns
     -------
-    The transformed URL if success, otherwise `None`
+    The transformed URL
+
+    Throws
+    ------
+     - `PacstallError`
     """
 
-    parsed_url: Optional[str] = url[:-1] if url.endswith("/") else url
+    parsed_url: str = url[:-1] if url.endswith("/") else url
     if url.startswith(SupportedGitProviderLinks.GITHUB_URL):
         parsed_url = __parse_github_url(url)
     elif url.startswith(SupportedGitProviderLinks.GITLAB_URL):
@@ -194,20 +225,24 @@ def parse_url(url: str) -> Optional[str]:
 
 def __parse_repo_config(
     conf_dict: Dict[str, Optional[Dict[str, Optional[Dict[str, Optional[str]]]]]]
-) -> Tuple[Optional[List[RepositoryConfig]], Optional[ErrorCodes]]:
+) -> List[RepositoryConfig]:
     """
-    Maps config dict to RepositoryConfig
+    Maps config dict to `List[RepositoryConfig]`
 
     Returns
     -------
-    `(List[RepositoryConfig], None)` if success and `(None, ErrorCodes)` otherwise
+    `List[RepositoryConfig]`
+
+    Throws
+    ------
+     - `PacstallError`
     """
 
     parsed_repo_list: List[RepositoryConfig] = []
     repo_dict = conf_dict["repository"]
     if repo_dict is None:
         fancy("error", f"Config attribute 'repository' is required")
-        return (None, ErrorCodes.CONFIG_ERROR)
+        raise PacstallError(ErrorCodes.CONFIG_ERROR)
 
     for (repo_name, repo_dict) in repo_dict.items():  # type: ignore[assignment]
         failed_validation = False
@@ -225,16 +260,10 @@ def __parse_repo_config(
             failed_validation = True
 
         if failed_validation:
-            return (None, ErrorCodes.CONFIG_ERROR)
+            raise PacstallError(ErrorCodes.CONFIG_ERROR)
 
         url: str = repo_dict["url"]  # type: ignore[assignment]
-        parsed_url: Optional[str] = parse_url(url)
-        if parsed_url is None:
-            fancy(
-                "error",
-                f"Repository '{repo_name}' has invalid attribute 'url': {url}",
-            )
-            return (None, ErrorCodes.CONFIG_ERROR)
+        parsed_url = parse_url(url)
 
         branch: str = repo_dict["branch"]  # type: ignore[assignment]
         repo_entry = RepositoryConfig(repo_name, parsed_url, branch, url)
@@ -244,73 +273,89 @@ def __parse_repo_config(
                 "error",
                 f"File 'packagelist' not found in the '{repo_name}' repository root.",
             )
-            return (None, ErrorCodes.NO_HOST_ERROR)
+            raise PacstallError(ErrorCodes.NO_HOST_ERROR)
 
         parsed_repo_list.append(repo_entry)
-    return (parsed_repo_list, None)
+    return parsed_repo_list
 
 
 def __parse_settings_config(
     conf_dict: Dict[str, Optional[Dict[str, Optional[Any]]]]
-) -> Tuple[Optional[SettingsConfig], Optional[ErrorCodes]]:
+) -> SettingsConfig:
     """
     Maps config dict to SettingsConfig
 
     Returns
     -------
-    `(SettingsConfig, None)` if success and `(None, ErrorCodes)` otherwise
+    `SettingsConfig`
+
+    Throws
+    ------
+     - `PacstallError`
     """
 
     if conf_dict["settings"] is None:
         fancy("error", f"Config attribute 'settings' is required")
-        return (None, ErrorCodes.CONFIG_ERROR)
+        raise PacstallError(ErrorCodes.CONFIG_ERROR)
 
     if (
         conf_dict["settings"]["preferred_editor"] is not None
         and type(conf_dict["settings"]["preferred_editor"]) != str
     ):
         fancy("error", f"Config attribute 'settings.preferred_editor' must be a string")
-        return (None, ErrorCodes.CONFIG_ERROR)
+        raise PacstallError(ErrorCodes.CONFIG_ERROR)
 
     editor = conf_dict["settings"].get("preferred_editor")
 
-    return (SettingsConfig(preferred_editor=editor), None)
+    return SettingsConfig(preferred_editor=editor)
 
 
-def read_config() -> Tuple[Optional[PacstallConfig], Optional[ErrorCodes]]:
+RawConfigDict = Dict[str, Dict[str, Any]]
+
+
+def parse_raw_config_file() -> RawConfigDict:
     """
-    Reads and parses the repository list.
+    Returns the *not-yet-validated* content of `config.toml` as `RawConfigDict`
 
     Returns
     -------
-    A tuple consisting of the error code, and the repository list.
-    If the error code is `None` then the repository list will *not* be `None` and vice-versa.
+    `RawConfigDict`
+
+    Throws
+    ------
+     - `PacstallError`
     """
+
+    config_dict: RawConfigDict = {"def": {}}
+
     try:
-        config_dict: Dict[str, Dict[str, Any]] = None  # type: ignore[assignment]
-        try:
-            with open(PACSTALL_CONFIG_PATH) as file:
-                config_dict = tomli.load(file)  # type: ignore[arg-type]
-        except OSError as error:
-            fancy(
-                "error",
-                f"Could not read repositories from file '{PACSTALL_CONFIG_PATH}'.\n{error}",
-            )
-
-            return (None, ErrorCodes.NO_INPUT_ERROR)
-
-        (repo_list, err) = __parse_repo_config(config_dict)  # type: ignore[arg-type]
-        if err != None:
-            return (None, err)
-
-        (settingsConfig, err) = __parse_settings_config(config_dict)  # type: ignore[arg-type]
-        if err != None:
-            return (None, err)
-
-        return (PacstallConfig(repositories=repo_list, settings=settingsConfig), None)  # type: ignore[arg-type]
-    except Exception as error:
+        with open(PACSTALL_CONFIG_PATH) as file:
+            config_dict = tomli.load(file)  # type: ignore[arg-type]
+    except OSError as error:
         fancy(
             "error",
-            f"Unknown exception occurred while parsing config file.\n{error.args}",
+            f"Could not read repositories from file '{PACSTALL_CONFIG_PATH}'.\n{error}",
         )
-        return (None, ErrorCodes.SOFTWARE_ERROR)
+
+        raise PacstallError(ErrorCodes.NO_INPUT_ERROR)
+    return config_dict
+
+
+def read_config() -> PacstallConfig:
+    """
+    Reads and parses the `config.toml` as `PacstallConfig`
+
+    Returns
+    -------
+    `PacstallConfig`
+
+    Throws
+    ------
+     - `PacstallError`
+    """
+
+    config_dict = parse_raw_config_file()
+    repo_list = __parse_repo_config(config_dict)  # type: ignore[arg-type]
+    settingsConfig = __parse_settings_config(config_dict)  # type: ignore[arg-type]
+
+    return PacstallConfig(repositories=repo_list, settings=settingsConfig)

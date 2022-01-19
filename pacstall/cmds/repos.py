@@ -29,28 +29,31 @@ from typing import Optional
 from pacstall.api.color import Foreground as fg
 from pacstall.api.color import Style as st
 from pacstall.api.config_facade import read_config
-from pacstall.api.error_codes import ErrorCodes
+from pacstall.api.error_codes import ErrorCodes, PacstallError
 from pacstall.api.message import fancy
 
 
-def list_repos() -> Optional[ErrorCodes]:
+def list_repos() -> int:
     """
     Prints the existing repositories.
 
     Returns
     -------
-    `ReadConfigErrorCode` if an error has occurred, otherwise `None`.
+    `int` exit code
     """
 
-    (conf, err) = read_config()
-    if err is not None:
-        return err
-    assert conf is not None
+    try:
+        conf = read_config()
 
-    for repo in conf.repositories:
-        fancy(
-            "info",
-            f"{fg.GREEN}{repo.name}{st.RESET} ({repo.branch}) - {repo.original_url}",
-        )
+        for repo in conf.repositories:
+            fancy(
+                "info",
+                f"{fg.GREEN}{repo.name}{st.RESET} ({repo.branch}) - {repo.original_url}",
+            )
 
-    return None
+        return 0
+    except PacstallError as error:
+        return error.code
+    except Exception as error:
+        fancy("error", f"Unknown error has occurred. {error}")
+        return ErrorCodes.SOFTWARE_ERROR
