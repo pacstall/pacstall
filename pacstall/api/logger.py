@@ -40,7 +40,6 @@ from time import time
 
 from pacstall.api.color import Foreground as Fg
 from pacstall.api.color import Style as St
-from pacstall.api.config import LOGDIR
 
 
 class ConsoleFormatter(Formatter):
@@ -108,15 +107,17 @@ def setup_logger(
         The lifetime of old log files, before they are purged.
     """
 
+    LOGGING_DIR_PREFIX = Path("/var/log/pacstall/")
+
     # Delete older logs
-    for log_folder in Path(LOGDIR).glob("*"):
+    for log_folder in LOGGING_DIR_PREFIX.glob("*"):
         log_folder_lifetime = log_folder.stat().st_mtime
         if log_folder_lifetime < lifetime:
             rmtree(log_folder)
 
     today = datetime.today()
     # Create logging path objects
-    logging_dir_path = Path(f"{LOGDIR}/{today.date()}")
+    logging_dir_path = LOGGING_DIR_PREFIX / f"{today.date()}"
     logging_dir_path.mkdir(exist_ok=True)
     logging_file_path = logging_dir_path / f"{today.time()}.log"
 
