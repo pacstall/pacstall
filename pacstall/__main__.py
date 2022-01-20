@@ -63,7 +63,7 @@ def main() -> int:
                 log.debug("Lock acquired")
                 break
             except OSError:
-                log.error("Pacstall is already running another instance")
+                log.warn("Pacstall is already running another instance")
                 sleep(1)
 
     if args.command == "download":
