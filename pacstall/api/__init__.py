@@ -27,5 +27,6 @@ Modules
 -------
 color: Coloring API
 config: Pacstall runtime configuration
-message: Messaging API
+logger: Logging API
+prompt: Prompting API
 """
