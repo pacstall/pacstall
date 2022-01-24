@@ -24,59 +24,114 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+from asyncio import gather
 from logging import getLogger
+from pathlib import Path
+from typing import List
 
-from requests import exceptions, get
+import aiofiles
+from httpx import AsyncClient, HTTPStatusError, RequestError
+from rich import print as rprint
+from rich.progress import (
+    BarColumn,
+    Progress,
+    SpinnerColumn,
+    TaskID,
+    TextColumn,
+    TimeRemainingColumn,
+    TransferSpeedColumn,
+)
+from rich.table import Column
+
+from pacstall.api.error_codes import ErrorCodes
 
 
-def execute(url: str, file_path: str = "") -> int:
-    """
-    Runs download command.
+async def download(
+    client: AsyncClient,
+    url: str,
+    download_task: TaskID,
+    progress_bar: Progress,
+) -> int:
+    filename = url.split("/")[-1].split(".pacscript")[0]
 
-    Parameters
-    ----------
-    url (str): URL to download file from.
-    file_path="" (str): Where to download the file to. If nothing is provided download in cwd.
+    # TODO: `log.debug` each successfully downloaded file.
+    #       If verbose level is high enough.
+    try:
+        response = await client.get(url)
+        response.raise_for_status()
+        async with aiofiles.open(Path.cwd() / url.split("/")[-1], mode="wb") as file:
+            await file.write(response.content)
 
-    Error codes
-    -----------
-    0: Everything went fine.
-    1: Connection problems.
-    2: Downloading problems.
-    3: Unknown error.
-    """
+        progress_bar.update(download_task, advance=1, filename=filename)
 
-    REQUEST_ERROR_MESSAGES = {
-        exceptions.HTTPError: "A HTTP error occurred while connecting to the URL",
-        exceptions.ConnectionError: "No internet connection detected",
-        exceptions.Timeout: "Connection timed out. Check your internet connection",
-        exceptions.TooManyRedirects: "Too many redirections. Possibly bad URL",
+        return 0
+
+    except HTTPStatusError as error:
+        rprint(
+            f"[bold red]Failed[/bold red]: {filename} (HTTP status error: {error.response.status_code})"
+        )
+        log = getLogger()
+        log.debug(f"Failed: {filename}", exc_info=True)
+        return ErrorCodes.UNAVAILABLE_ERROR
+
+    except RequestError as error:
+        error_message = str(error) if str(error) else type(error).__name__
+        rprint(f"[bold red]Failed[/bold red]: {filename} ({error_message})")
+
+        log = getLogger()
+        log.debug(f"Failed: {filename}", exc_info=True)
+        return ErrorCodes.UNAVAILABLE_ERROR
+
+    except OSError as error:
+        error_message = str(error) if str(error) else type(error).__name__
+        rprint(f"[bold red]Failed[/bold red]: {filename} (OS error: {error_message}")
+
+        log = getLogger()
+        log.debug(f"Failed: {filename}", exc_info=True)
+        return ErrorCodes.IO_ERROR
+
+
+async def execute(pacscripts: List[str]) -> int:
+    # TODO: Add ability to download from other repositories.
+    urls = {
+        f"https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packages/{pacscript}/{pacscript}.pacscript"
+        for pacscript in pacscripts
     }
 
-    log = getLogger()
+    with Progress(
+        SpinnerColumn(finished_text="[bold green]:heavy_check_mark:"),
+        TextColumn(
+            "[bold blue]{task.fields[filename]}",
+            # Make the column width the average width of the pacscripts
+            table_column=Column(
+                width=round(
+                    sum(len(pacscript) for pacscript in pacscripts) / len(pacscripts)
+                )
+            ),
+        ),
+        BarColumn(bar_width=None),
+        "[magenta]{task.completed}/{task.total}",
+        TransferSpeedColumn(),
+        TimeRemainingColumn(),
+        auto_refresh=True,
+    ) as progress_bar:
 
-    try:
-        with get(url) as data:
-            data.raise_for_status()
-            file_path = file_path or url.split("/")[-1]
-
-            try:
-                with open(file_path, "wb") as file:
-                    file.write(data.content)
-            except OSError:
-                log.error("Could not write downloaded contents to file")
-                return 2  # --> Writing data failed
-            return 0  # --> No problems occurred while downloading
-
-    except (
-        exceptions.HTTPError,
-        exceptions.ConnectionError,
-        exceptions.Timeout,
-        exceptions.TooManyRedirects,
-    ) as error:
-        log.exception(REQUEST_ERROR_MESSAGES[type(error)])
-        return 1  # --> Connection problems
-
-    except Exception:
-        log.exception("Unknown exception occurred")
-        return 3  # --> Unknown error
+        download_task = progress_bar.add_task(
+            "download pacscripts",
+            total=len(urls),
+            filename=pacscripts[0],
+        )
+        async with AsyncClient(follow_redirects=True) as client:
+            return max(  # type: ignore[no-any-return]
+                await gather(
+                    *[
+                        download(
+                            client,
+                            url,
+                            download_task,
+                            progress_bar,
+                        )
+                        for url in urls
+                    ]
+                )
+            ).real
