@@ -52,6 +52,29 @@ async def download(
     download_task: TaskID,
     progress_bar: Progress,
 ) -> int:
+    """
+    Downloads URLs asynchronously.
+
+    Parameters
+    ----------
+    client
+        The asynchronous httpx client.
+    url
+        The URL to download.
+    download_task
+        The task ID of the download task. Used to update the progress bar.
+    progress_bar
+        The progress bar.
+
+    Returns
+    -------
+    int
+        Exit codes (return codes) depending on the status of the download.
+        - ``0`` for success.
+        - :atrr:`pacstall.ErrorCodes.UNAVAILABLE_ERROR` (69) for when there's a
+          :exc:`HTTPStatusError` or :exc:`RequestError`.
+        - :atrr:`ErrorCodes.IO_ERROR` for when there's an :exc:`OSError`.
+    """
     filename = url.split("/")[-1].split(".pacscript")[0]
 
     # TODO: `log.debug` each successfully downloaded file.
@@ -92,6 +115,28 @@ async def download(
 
 
 async def execute(pacscripts: List[str]) -> int:
+    """
+    Executes the download command.
+
+    Parameters
+    ----------
+    pacscripts
+        The pacscripts to download.
+
+    Returns
+    -------
+    int
+        Returns the greatest returned exit code from :func:`download`
+
+    See Also
+    --------
+    download : Asynchronous download function for the pacscript URLs.
+
+    Notes
+    -----
+    This function currently only supports downloading pacscripts from the
+    `official repository <https://github.com/pacstall/pacstall-programs>`_.
+    """
     # TODO: Add ability to download from other repositories.
     urls = {
         f"https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packages/{pacscript}/{pacscript}.pacscript"
