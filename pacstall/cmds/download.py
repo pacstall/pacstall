@@ -75,7 +75,7 @@ async def download(
         return ErrorCodes.UNAVAILABLE_ERROR
 
     except RequestError as error:
-        error_message = str(error) if str(error) else type(error).__name__
+        error_message = str(error) or type(error).__name__
         rprint(f"[bold red]Failed[/bold red]: {filename} ({error_message})")
 
         log = getLogger()
@@ -83,7 +83,7 @@ async def download(
         return ErrorCodes.UNAVAILABLE_ERROR
 
     except OSError as error:
-        error_message = str(error) if str(error) else type(error).__name__
+        error_message = str(error) or type(error).__name__
         rprint(f"[bold red]Failed[/bold red]: {filename} (OS error: {error_message}")
 
         log = getLogger()
