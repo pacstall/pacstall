@@ -24,13 +24,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+from logging import getLogger
 from typing import Optional
 
 from pacstall.api.color import Foreground as fg
 from pacstall.api.color import Style as st
 from pacstall.api.config_facade import read_config
 from pacstall.api.error_codes import ErrorCodes, PacstallError
-from pacstall.api.message import fancy
 
 
 def list_repos() -> int:
@@ -42,12 +42,13 @@ def list_repos() -> int:
     `int` exit code
     """
 
+    log = getLogger()
+
     try:
         conf = read_config()
 
         for repo in conf.repositories:
-            fancy(
-                "info",
+            log.info(
                 f"{fg.GREEN}{repo.name}{st.RESET} ({repo.branch}) - {repo.original_url}",
             )
 
@@ -55,5 +56,5 @@ def list_repos() -> int:
     except PacstallError as error:
         return error.code
     except Exception as error:
-        fancy("error", f"Unknown error has occurred. {error}")
+        log.exception(f"Unknown error has occurred. {error}")
         return ErrorCodes.SOFTWARE_ERROR

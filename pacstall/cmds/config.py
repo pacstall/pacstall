@@ -24,13 +24,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+from logging import getLogger
 from os import environ
 from subprocess import run
 
-from pacstall.api.config import PACSTALL_CONFIG_PATH
-from pacstall.api.config_facade import read_config
+from pacstall.api.config_facade import PACSTALL_CONFIG_PATH, read_config
 from pacstall.api.error_codes import ErrorCodes, PacstallError
-from pacstall.api.message import fancy
 
 __FALLBACK_EDITOR = "sensible-editor"
 
@@ -48,6 +47,8 @@ def open_editor() -> int:
     - `0` if success
     """
 
+    log = getLogger()
+
     try:
         conf = read_config()
         editor = (
@@ -61,12 +62,12 @@ def open_editor() -> int:
     except PacstallError as error:
         return error.code
     except Exception as error:
-        fancy("error", f"Unknown error has occurred. {error}")
+        log.exception(f"Unknown error has occurred. {error}")
         return ErrorCodes.SOFTWARE_ERROR
 
     ret_code = run(["sudo", editor, PACSTALL_CONFIG_PATH]).returncode
     if ret_code != 0:
-        fancy("error", f"Editor '{editor}' closed with a non-zero exit code {ret_code}")
+        log.exception(f"Editor '{editor}' closed with a non-zero exit code {ret_code}")
         return ret_code
 
     return 0

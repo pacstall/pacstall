@@ -27,28 +27,32 @@
 import sys
 from fcntl import LOCK_EX, LOCK_NB, lockf
 from getpass import getuser
+from logging import getLogger
 from time import sleep
 
 from rich.traceback import install
 
-from pacstall.api import message
+from pacstall.api import logger
 from pacstall.api.error_codes import ErrorCodes
 from pacstall.cmds import config, download, repos
 from pacstall.parser import parse_arguments
 
 
-def main() -> None:
+def main() -> int:
     """Main Pacstall function."""
+
+    logger.setup_logger()
+    log = getLogger()
 
     install(
         show_locals=True
     )  # --> Install Rich's traceback handler for better looking tracebackes
 
     args = parse_arguments()
-    print(args)
+    log.debug(f"{args = }")
 
     if getuser() != "root":
-        message.fancy("error", "Pacstall needs to be launched as root!")
+        log.error("Pacstall needs to be launched as root")
         sys.exit(ErrorCodes.USAGE_ERROR)  # --> command line usage error
 
     if args.command in ["install", "remove", "upgrade"]:
@@ -56,20 +60,23 @@ def main() -> None:
         while True:
             try:
                 lockf(lock_file, LOCK_EX | LOCK_NB)
+                log.debug("Lock acquired")
                 break
             except OSError:
-                message.fancy("error", "Pacstall is already running another instance")
+                log.warn("Pacstall is already running another instance")
                 sleep(1)
 
     if args.command == "download":
-        sys.exit(download.execute(args.download))
+        return download.execute(args.download)
 
     if args.command == "repos":
-        sys.exit(repos.list_repos())
+        return repos.list_repos()
 
     if args.command == "config":
-        sys.exit(config.open_editor())
+        return config.open_editor()
+
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

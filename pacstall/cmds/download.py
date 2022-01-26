@@ -24,9 +24,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-from requests import exceptions, get
+from logging import getLogger
 
-from pacstall.api.message import fancy
+from requests import exceptions, get
 
 
 def execute(url: str, file_path: str = "") -> int:
@@ -53,6 +53,8 @@ def execute(url: str, file_path: str = "") -> int:
         exceptions.TooManyRedirects: "Too many redirections. Possibly bad URL",
     }
 
+    log = getLogger()
+
     try:
         with get(url) as data:
             data.raise_for_status()
@@ -62,7 +64,7 @@ def execute(url: str, file_path: str = "") -> int:
                 with open(file_path, "wb") as file:
                     file.write(data.content)
             except OSError:
-                fancy("error", "Could not write downloaded contents to file")
+                log.error("Could not write downloaded contents to file")
                 return 2  # --> Writing data failed
             return 0  # --> No problems occurred while downloading
 
@@ -72,9 +74,9 @@ def execute(url: str, file_path: str = "") -> int:
         exceptions.Timeout,
         exceptions.TooManyRedirects,
     ) as error:
-        fancy("error", REQUEST_ERROR_MESSAGES[type(error)])
+        log.exception(REQUEST_ERROR_MESSAGES[type(error)])
         return 1  # --> Connection problems
 
     except Exception:
-        fancy("error", "Unknown exception occurred")
+        log.exception("Unknown exception occurred")
         return 3  # --> Unknown error
