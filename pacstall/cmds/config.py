@@ -51,8 +51,8 @@ def open_editor() -> int:
     try:
         conf = read_config()
         editor = (
-            conf.settings.preferred_editor
-            if conf.settings.preferred_editor is not None
+            conf.settings.editor
+            if conf.settings.editor is not None
             else environ.get(
                 "PACSTALL_EDITOR", environ.get("EDITOR", __FALLBACK_EDITOR)
             )

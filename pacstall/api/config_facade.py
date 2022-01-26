@@ -54,7 +54,7 @@ class SettingsConfig:
     Data representation of the settings entry from `config.toml`
     """
 
-    preferred_editor: Optional[str]
+    editor: Optional[str]
 
 
 @dataclass
@@ -299,15 +299,15 @@ def __parse_settings_config(
         raise PacstallError(ErrorCodes.CONFIG_ERROR)
 
     if (
-        conf_dict["settings"]["preferred_editor"] is not None
-        and type(conf_dict["settings"]["preferred_editor"]) != str
+        conf_dict["settings"]["editor"] is not None
+        and type(conf_dict["settings"]["editor"]) != str
     ):
-        fancy("error", f"Config attribute 'settings.preferred_editor' must be a string")
+        fancy("error", f"Config attribute 'settings.editor' must be a string")
         raise PacstallError(ErrorCodes.CONFIG_ERROR)
 
-    editor = conf_dict["settings"].get("preferred_editor")
+    editor = conf_dict["settings"].get("editor")
 
-    return SettingsConfig(preferred_editor=editor)
+    return SettingsConfig(editor=editor)
 
 
 RawConfigDict = Dict[str, Dict[str, Any]]
