@@ -49,7 +49,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-rich = "^10.14.0"
+rich = "^11.0.0"
 httpx = "^0.21.3"
 aiofiles = "^0.8.0"
 
