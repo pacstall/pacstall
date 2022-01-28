@@ -71,10 +71,10 @@ def main() -> int:
         sys.exit(run(download.execute(args.pacscripts)))
 
     if args.command == "repos":
-        return repos.list_repos()
+        return run(repos.list_repos())
 
     if args.command == "config":
-        return config.open_editor()
+        return run(config.open_editor())
 
     return 0
 

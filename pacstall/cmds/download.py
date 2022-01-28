@@ -114,6 +114,64 @@ async def download(
         return ErrorCodes.IO_ERROR
 
 
+async def download_all_with_progressbar(
+    columns: List[str], task_desc: str, urls: List[str]
+) -> int:
+    """
+    Executes `download` for all the given urls and prints a progress bar
+
+    Parameters
+    ----------
+    columns
+        The columns to display in the progress bar
+    task_desc
+        Task description to be used in the progress bar
+    urls
+        The urls to download.
+
+    Returns
+    -------
+    int
+        Returns the greatest returned exit code from :func:`download`
+    """
+
+    with Progress(
+        SpinnerColumn(finished_text="[bold green]:heavy_check_mark:"),
+        TextColumn(
+            "[bold blue]{task.fields[filename]}",
+            # Make the column width the average width of the pacscripts
+            table_column=Column(
+                width=round(sum(len(pacscript) for pacscript in columns) / len(columns))
+            ),
+        ),
+        BarColumn(bar_width=None),
+        "[magenta]{task.completed}/{task.total}",
+        TransferSpeedColumn(),
+        TimeRemainingColumn(),
+        auto_refresh=True,
+    ) as progress_bar:
+
+        download_task = progress_bar.add_task(
+            task_desc,
+            total=len(urls),
+            filename=columns[0],
+        )
+        async with AsyncClient(follow_redirects=True) as client:
+            return max(  # type: ignore[no-any-return]
+                await gather(
+                    *[
+                        download(
+                            client,
+                            url,
+                            download_task,
+                            progress_bar,
+                        )
+                        for url in urls
+                    ]
+                )
+            ).real
+
+
 async def execute(pacscripts: List[str]) -> int:
     """
     Executes the download command.
@@ -138,45 +196,12 @@ async def execute(pacscripts: List[str]) -> int:
     `official repository <https://github.com/pacstall/pacstall-programs>`_.
     """
     # TODO: Add ability to download from other repositories.
-    urls = {
+    urls = [
         f"https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packages/{pacscript}/{pacscript}.pacscript"
         for pacscript in pacscripts
-    }
+    ]
 
-    with Progress(
-        SpinnerColumn(finished_text="[bold green]:heavy_check_mark:"),
-        TextColumn(
-            "[bold blue]{task.fields[filename]}",
-            # Make the column width the average width of the pacscripts
-            table_column=Column(
-                width=round(
-                    sum(len(pacscript) for pacscript in pacscripts) / len(pacscripts)
-                )
-            ),
-        ),
-        BarColumn(bar_width=None),
-        "[magenta]{task.completed}/{task.total}",
-        TransferSpeedColumn(),
-        TimeRemainingColumn(),
-        auto_refresh=True,
-    ) as progress_bar:
-
-        download_task = progress_bar.add_task(
-            "download pacscripts",
-            total=len(urls),
-            filename=pacscripts[0],
-        )
-        async with AsyncClient(follow_redirects=True) as client:
-            return max(  # type: ignore[no-any-return]
-                await gather(
-                    *[
-                        download(
-                            client,
-                            url,
-                            download_task,
-                            progress_bar,
-                        )
-                        for url in urls
-                    ]
-                )
-            ).real
+    result = await download_all_with_progressbar(
+        pacscripts, "download pacscripts", urls
+    )
+    return result

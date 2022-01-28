@@ -30,9 +30,10 @@ from logging import getLogger
 from typing import Any, Dict, List, NoReturn, Optional, Tuple
 
 import tomli
-from requests import HTTPError, get
+from httpx import AsyncClient
 
 from pacstall.api.error_codes import ErrorCodes, PacstallError
+from pacstall.cmds.download import download_all_with_progressbar
 
 PACSTALL_CONFIG_PATH = "/etc/pacstall/config.toml"
 
@@ -76,27 +77,6 @@ class SupportedGitProviderLinks(str, Enum):
     GITLAB_URL = "https://gitlab.com"
     GITHUB_URL = "https://github.com"
     BITBUCKET_URL = "https://bitbucket.org"
-
-
-def is_repo_valid(repo_root_url: str) -> bool:
-    """
-    Checks if the the `repo_root_url` is valid.
-
-    Parameters
-    ----------
-    repo_root_url (str): URL to the root of the raw repository.
-
-    Returns
-    -------
-    `True` if the repository respects the file structure, otherwise `False`.
-    """
-    try:
-        # Choose branch by checking if the `packagelist` file exists
-        with get(f"{repo_root_url}/packagelist") as result:
-            result.raise_for_status()
-            return True
-    except HTTPError:
-        return False
 
 
 def __parse_github_url(url: str) -> str:
@@ -225,7 +205,7 @@ def parse_url(url: str) -> str:
     return parsed_url
 
 
-def __parse_repo_config(
+async def __parse_repo_config(
     conf_dict: Dict[str, Optional[Dict[str, Optional[Dict[str, Optional[str]]]]]]
 ) -> List[RepositoryConfig]:
     """
@@ -271,14 +251,17 @@ def __parse_repo_config(
 
         branch: str = repo_dict["branch"]  # type: ignore[assignment]
         repo_entry = RepositoryConfig(repo_name, parsed_url, branch, url)
-
-        if not is_repo_valid(f"{repo_entry.url}/{repo_entry.branch}"):
-            log.exception(
-                f"File 'packagelist' not found in the '{repo_name}' repository root.",
-            )
-            raise PacstallError(ErrorCodes.NO_HOST_ERROR)
-
         parsed_repo_list.append(repo_entry)
+
+    err_code = await download_all_with_progressbar(
+        columns=[repo.name for repo in parsed_repo_list],
+        task_desc="validate repositories",
+        urls=[f"{repo.url}/{repo.branch}/packagelist" for repo in parsed_repo_list],
+    )
+
+    if err_code != 0:
+        raise PacstallError(err_code)
+
     return parsed_repo_list
 
 
@@ -346,7 +329,7 @@ def parse_raw_config_file() -> RawConfigDict:
     return config_dict
 
 
-def read_config() -> PacstallConfig:
+async def read_config() -> PacstallConfig:
     """
     Reads and parses the `config.toml` as `PacstallConfig`
 
@@ -360,7 +343,7 @@ def read_config() -> PacstallConfig:
     """
 
     config_dict = parse_raw_config_file()
-    repo_list = __parse_repo_config(config_dict)  # type: ignore[arg-type]
+    repo_list = await __parse_repo_config(config_dict)  # type: ignore[arg-type]
     settingsConfig = __parse_settings_config(config_dict)  # type: ignore[arg-type]
 
     return PacstallConfig(repositories=repo_list, settings=settingsConfig)

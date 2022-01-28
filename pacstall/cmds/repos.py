@@ -33,7 +33,7 @@ from pacstall.api.config_facade import read_config
 from pacstall.api.error_codes import ErrorCodes, PacstallError
 
 
-def list_repos() -> int:
+async def list_repos() -> int:
     """
     Prints the existing repositories.
 
@@ -45,7 +45,7 @@ def list_repos() -> int:
     log = getLogger()
 
     try:
-        conf = read_config()
+        conf = await read_config()
 
         for repo in conf.repositories:
             log.info(
