@@ -151,43 +151,39 @@ function ask() {
 	fi
 
 	# Ask the question (not using "read -p" as it uses stderr not stdout)
-	echo -ne "$1 [$prompt] "
+	printf "%s" "$1 [$prompt] "
 
-	if [[ -z "$DISABLE_PROMPTS" ]]; then
+	if [ -z "$DISABLE_PROMPTS" ]; then
 		read -r reply <&0
 		# Detect if script is running non-interactively
 		# Which implies that the input is being piped into the script
 		if [[ $NON_INTERACTIVE ]]; then
-			if [[ -z "$reply" ]]; then
-				printf "%s" "$default"
-			fi
-			echo "$reply"
+			[ "$reply" ] || printf "%s" "$default"
+			printf "%s\n" "$reply"
 		fi
 	else
-		echo "$default"
+		printf "%s\n" "$default"
 		reply=$default
 	fi
 
 	# Default?
-	if [[ -z $reply ]]; then
-		reply=$default
-	fi
+	[ $reply ] || reply=$default
 
 	while true; do
 		# Check if the reply is valid
-		case "$reply" in
-			Y*|y*)
+		case "${reply^^}" in
+			Y*)
 				export answer=1
 				return 0	#return code for backwards compatibility
 				break
 			;;
-			N*|n*)
+			N*)
 				export answer=0
 				return 1	#return code
 				break
 			;;
 			*)
-				echo -ne "$1 [$prompt] "
+				printf "%s" "$1 [$prompt] "
 				read -r reply < /dev/tty
 			;;
 		esac
@@ -205,17 +201,17 @@ function download() {
 }
 
 # Error out when run as root
-if [[ "$EUID" -eq 0 ]]; then
+if [ "$EUID" -eq 0 ]; then
 	fancy_message error "Pacstall can't be run as root. Please run as a normal user."
 	exit 1
 fi
 
 # run sudo apt update if it's been more than a week
-[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] && sudo apt-get update -qq
+[ "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ] || sudo apt-get update -qq
 
 source "$STGDIR/scripts/error_log.sh"
 
-if [[ ! -t 0 ]]; then
+if [ ! -t 0 ]; then
 	NON_INTERACTIVE=true
 	fancy_message warn "Reading input from pipe"
 fi
@@ -225,24 +221,24 @@ argument_list=()
 
 for i in "${@}"; do
 	# Just add argument if doesn't start with a single hyphen.
-	if ! [[ "${i}" =~ ^-[^-] ]]; then
+	if ! [[ "$i" =~ ^-[^-] ]]; then
 		# if argument is '-P' or '-K', add to beginning of argument list.
-		if [[ "${i}" == "-P" ]]  || [[ "${i}" == "-K" ]]; then
-			argument_list=("${i}" "${argument_list[@]}")
+		if [ "$i" = "-P" ]  || [ "$i" = "-K" ]; then
+			argument_list=("$i" "${argument_list[@]}")
 		else
-			argument_list+=("${i}")
+			argument_list+=("$i")
 		fi
 		continue
 	fi
 
 	# Add all arguments to the list of arguments.
 	# We remove the '-' prefix as we'll add it later.
-	for j in $(echo "${i}" | sed 's|^-||' | sed 's|[[:upper:]]| &|g'); do
+	for j in $(echo "$i" | sed 's|^-||' | sed 's|[[:upper:]]| &|g'); do
 		# If current string is 'P', add to beginning of argument list.
-		if [[ "${j}" == "P" ]] || [[ "${j}" == "-disable-prompts" ]] || [[ "${j}" == "K" ]] || [[ "${j}" == "-keep" ]]; then
-			argument_list=("-${j}" "${argument_list[@]}")
+		if [ "$j" = "P" ] || [ "$j" = "-disable-prompts" ] || [ "$j" = "K" ] || [ "$j" = "-keep" ]; then
+			argument_list=("-$j" "${argument_list[@]}")
 		else
-			argument_list+=("-${j}")
+			argument_list+=("-$j")
 		fi
 	done
 done
@@ -260,16 +256,16 @@ function lock() {
 		return 1
 	elif [[ "$ignore" =~ (^|[[:space:]])"$3"($|[[:space:]]) ]]; then
 		return 1
-	elif [[ -f "/tmp/pacstall-pacdeps-$3" ]]; then
+	elif [ -f "/tmp/pacstall-pacdeps-$3" ]; then
 		return 1
-	elif [[ -f "/tmp/pacstall-pacdeps-$4" ]]; then
+	elif [ -f "/tmp/pacstall-pacdeps-$4" ]; then
 		return 1
 	fi
 	pidof -o %PPID -x $0 >/dev/null && return 0 || return 1
 }
 
 while lock $1 $2 $3 $4; do
-	if [[ -z $first ]]; then
+	if [ -z $first ]; then
 		first=1
 		fancy_message warn "Pacstall is already running another instance"
 	fi
@@ -303,7 +299,7 @@ while [[ ! "$1" == "--" ]]; do
 
 		-I|--install)
 
-			if [[ -z "$2" ]]; then
+			if [ -z "$2" ]; then
 				fancy_message error "You failed to specify a package"
 				exit 1
 			fi
@@ -316,16 +312,16 @@ while [[ ! "$1" == "--" ]]; do
 			# Begin trapping
 			trap "trap_ctrlc" 2
 
-			while [[ -n "$2" ]]; do
+			while [ "$2" ]; do
 				export PACKAGE=$2
 				shift
-				if [[ -z "$PACKAGE" ]]; then
+				if [ -z "$PACKAGE" ]; then
 					fancy_message error "You failed to specify a package"
 					exit 1
 				fi
 
 				# Make the directory if not exist
-				if [[ ! -e "$STGDIR/repo/" ]]; then
+				if [ ! -e "$STGDIR/repo/" ]; then
 					sudo mkdir -p "$STGDIR/repo"
 					sudo touch "$STGDIR/repo/pacstallrepo.txt"
 					sudo pacstall -A
@@ -363,29 +359,27 @@ while [[ ! "$1" == "--" ]]; do
 				fi
 			done
 
-			if [[ -n "$fail_install" ]]; then
-				exit 1
-			fi
-				exit 0
+			[ "$fail_install" ] && exit 1
+			exit 0
 			;;
 
 		-Il|--install-local)
 
-			if [[ -z "$2" ]]; then
+			if [ -z "$2" ]; then
 				fancy_message error "You failed to specify a package"
 				exit 1
 			fi
 
-			while [[ -n "$2" ]]; do
+			while [ "$2" ]; do
 				INPUT="$(basename "$2" ".pacscript")" # Removes the suffix
 				export local="yes"
 
 				# Check if we need to cd into the directory first, and also check that $INPUT.pacscript does not exist
-				if [[ -d "$INPUT" ]] && [[ ! -f "$INPUT".pacscript ]]; then
+				if [ -d "$INPUT" ] && [ ! -f "$INPUT".pacscript ]; then
 					cd "$(basename "$INPUT")" || exit
 				fi
 				# Check if the file exist
-				if [[ ! -f "$2".pacscript ]]; then
+				if [ ! -f "$2".pacscript ]; then
 					fancy_message error "$2 does not exist"
 					shift
 					continue
@@ -400,9 +394,7 @@ while [[ ! "$1" == "--" ]]; do
 				fi
 				shift
 			done
-			if [[ -s "LOGFILE" ]]; then
-				exit 1
-			fi
+			[ -s "LOGFILE" ] && exit 1
 			exit 0
 		;;
 
@@ -413,7 +405,7 @@ while [[ ! "$1" == "--" ]]; do
 				exit 1
 			fi
 			export SEARCH=$2
-			if [[ -z "$SEARCH" ]]; then
+			if [ -z "$SEARCH" ]; then
 				fancy_message error "You failed to specify a package"
 				exit 1
 			fi
@@ -424,28 +416,26 @@ while [[ ! "$1" == "--" ]]; do
 
 		-R|--remove)
 
-			if [[ -z "$2" ]]; then
+			if [ -z "$2" ]; then
 				fancy_message error "You failed to specify a package"
 				exit 1
 			fi
 
-			while [[ -n "$2" ]]; do
+			while [ -n "$2" ]; do
 				PACKAGE=$2
 				shift
 				if ! source "$STGDIR/scripts/remove.sh"; then
 					fancy_message error "Failed to remove ${GREEN}${PACKAGE}${NC}"
 				fi
 			done
-			if [[ -s "LOGFILE" ]]; then
-				exit 1
-			fi
+			[ -s "LOGFILE" ] && exit 1
 			exit 0
 		;;
 
 		-A|--add-repo)
 			REPO="$2"
 
-			if [[ ! -f "$STGDIR/repo/pacstallrepo.txt" ]]; then
+			if [ ! -f "$STGDIR/repo/pacstallrepo.txt" ]; then
 				echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > "$STGDIR/repo/pacstallrepo.txt"
 				return 0
 			fi
@@ -454,7 +444,7 @@ while [[ ! "$1" == "--" ]]; do
 				fancy_message error "You seem to be offline"
 				exit 1
 			fi
-			if [[ -n "$REPO" ]]; then
+			if [ -n "$REPO" ]; then
 				source "$STGDIR/scripts/add-repo.sh"
 				exit 0
 			else
@@ -466,7 +456,7 @@ while [[ ! "$1" == "--" ]]; do
 		-V|--version)
 			PACKAGE="$2"
 
-			if [[ -z "$PACKAGE" ]]; then
+			if [ -z "$PACKAGE" ]; then
 				echo -e "1.7.1 \033[1m\x1b[38;2;227;37;107mRazzmatazz${NC}"
 				exit 0
 			else
@@ -484,15 +474,15 @@ while [[ ! "$1" == "--" ]]; do
 			USERNAME="$2"
 			BRANCH="$3"
 			# This stuff gives the ability for persistent updates
-			if [[ -z "$BRANCH" ]]; then
+			if [ -z "$BRANCH" ]; then
 				if [[ -f "$STGDIR/repo/update" ]]; then
 					BRANCH=$(sed 's/.*\ //' "$STGDIR/repo/update")
 				else
 					BRANCH="master"
 				fi
 			fi
-			if [[ -z "$USERNAME" ]]; then
-				if [[ -f "$STGDIR/repo/update" ]]; then
+			if [ -z "$USERNAME" ]; then
+				if [ -f "$STGDIR/repo/update" ]; then
 					USERNAME=$(sed 's/\s.*$//' "$STGDIR/repo/update")
 				else
 					USERNAME="pacstall"
@@ -523,12 +513,12 @@ while [[ ! "$1" == "--" ]]; do
 
 		-D|--download)
 
-			if [[ -z "$2" ]]; then
+			if [ -z "$2" ]; then
 				fancy_message error "You failed to specify a package"
 				exit 1
 			fi
 
-			while [[ -n "$2" ]]; do
+			while [ "$2" ]; do
 				PACKAGE=$2
 				shift
 				export type="download"
@@ -553,9 +543,7 @@ while [[ ! "$1" == "--" ]]; do
 				fancy_message info "${GREEN}${PACKAGE}${NC}'s pacscript is downloaded to ${GREEN}$(pwd)/$PACKAGE.pacscript${NC}"
 			done
 
-			if [[ -s "LOGFILE" ]]; then
-				exit 1
-			fi
+			[ -s "LOGFILE" ] && exit 1
 			exit 0
 		;;
 
@@ -566,9 +554,7 @@ while [[ ! "$1" == "--" ]]; do
 			fi
 			source "$STGDIR/scripts/upgrade.sh"
 
-			if [[ -s "LOGFILE" ]]; then
-				exit 1
-			fi
+			[ -s "LOGFILE" ] && exit 1
 			exit 0
 		;;
 
@@ -581,7 +567,7 @@ while [[ ! "$1" == "--" ]]; do
 		-T|--tree)
 			PACKAGE="$2"
 
-			if [[ ! -d "$STOWDIR/$PACKAGE" ]]; then
+			if [ ! -d "$STOWDIR/$PACKAGE" ]; then
 				fancy_message error "$PACKAGE does not exist"
 				exit 1
 			fi
@@ -602,6 +588,6 @@ while [[ ! "$1" == "--" ]]; do
 	esac
 	shift
 done
-if [[ "$1" == '--' ]]; then shift; fi
+[ "$1" == '--' ] && shift
 
 # vim:set ft=sh ts=4 sw=4 noet:
