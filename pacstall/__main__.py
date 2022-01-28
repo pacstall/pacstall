@@ -25,6 +25,7 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 import sys
+from asyncio import run
 from fcntl import LOCK_EX, LOCK_NB, lockf
 from getpass import getuser
 from logging import getLogger
@@ -67,7 +68,7 @@ def main() -> int:
                 sleep(1)
 
     if args.command == "download":
-        return download.execute(args.download)
+        sys.exit(run(download.execute(args.pacscripts)))
 
     if args.command == "repos":
         return repos.list_repos()

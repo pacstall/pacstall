@@ -49,19 +49,18 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-requests = "^2.26.0"
-rich = "^10.14.0"
-tomli = "^1.2.3"
+rich = "^11.1.0"
+httpx = "^0.22.0"
+aiofiles = "^0.8.0"
 
 [tool.poetry.dev-dependencies]
 black = "^21.11b1"
 pre-commit = "^2.15.0"
 isort = "^5.10.1"
 pyupgrade = "^2.29.1"
-mypy = "^0.910"
-types-requests = "^2.26.1"
+mypy = "^0.931"
 codespell = "^2.1.0"
-commitizen = "^2.20.0"
+types-aiofiles = "^0.8.3"
 
 [tool.isort]
 profile = "black"
