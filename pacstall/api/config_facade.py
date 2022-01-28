@@ -225,7 +225,7 @@ async def __parse_repo_config(
     parsed_repo_list: List[RepositoryConfig] = []
     repo_dict = conf_dict["repository"]
     if repo_dict is None:
-        log.exception(f"Config attribute 'repository' is required")
+        log.exception("Config attribute 'repository' is required")
         raise PacstallError(ErrorCodes.CONFIG_ERROR)
 
     for (repo_name, repo_dict) in repo_dict.items():  # type: ignore[assignment]
@@ -283,14 +283,14 @@ def __parse_settings_config(
     log = getLogger()
 
     if conf_dict["settings"] is None:
-        log.exception(f"Config attribute 'settings' is required")
+        log.exception("Config attribute 'settings' is required")
         raise PacstallError(ErrorCodes.CONFIG_ERROR)
 
     if (
         "editor" in conf_dict["settings"]
         and type(conf_dict["settings"]["editor"]) != str
     ):
-        log.exception(f"Config attribute 'settings.editor' must be a string")
+        log.exception("Config attribute 'settings.editor' must be a string")
         raise PacstallError(ErrorCodes.CONFIG_ERROR)
 
     editor = conf_dict["settings"].get("editor")
