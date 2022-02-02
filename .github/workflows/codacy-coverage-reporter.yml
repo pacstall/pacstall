@@ -1,0 +1,27 @@
+name: codacy-coverage-reporter
+
+on: ["push"]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Python
+        uses: actions/setup-python@master
+        with:
+          python-version: 3.8
+      - name: Setup Poetry Environment
+        run: |
+          curl -sSL https://install.python-poetry.org | python3 -
+          poetry install
+      - name: Generate Coverage Report
+        run: |
+          poetry run pip install coverage
+          poetry run coverage run -m pytest .
+          poetry run coverage xml
+      - name: Upload Coverage Report to Codacy
+        uses: codacy/codacy-coverage-reporter-action@v1
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: coverage.xml
