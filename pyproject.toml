@@ -79,6 +79,11 @@ show_error_codes = true
 show_error_context = true
 strict = true
 
+[tool.pytest.ini_options]
+markers = [
+	"arg_parser: test the argument parser"
+]
+
 [tool.poetry.scripts]
 pacstall = "pacstall.__main__:main"
 
