@@ -108,6 +108,7 @@ def setup_logger(
     """
 
     LOGGING_DIR_PREFIX = Path("/var/log/pacstall/")
+    LOGGING_DIR_PREFIX.mkdir(exist_ok=True, parents=True)
 
     # Delete older logs
     for log_folder in LOGGING_DIR_PREFIX.glob("*"):
