@@ -195,7 +195,7 @@ def parse_arguments() -> Namespace:
         help="Upgrade packages",
         epilog="Leave argument blank to upgrade all packages interactively",
     )
-    upgrade_parser.add_argument("packages", nargs="?", help="Packages to upgrade")
+    upgrade_parser.add_argument("packages", nargs="*", help="Packages to upgrade")
     upgrade_parser.add_argument(
         "-P",
         "--disable-prompts",
