@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #     ____                  __        ____
 #    / __ \____ ___________/ /_____ _/ / /
@@ -33,21 +33,15 @@ export UPGRADE="yes"
 
 # Get the list of the installed packages
 mapfile -t list < <(pacstall -L)
-if [[ -f /tmp/pacstall-up-list ]]; then
-	sudo rm /tmp/pacstall-up-list
-fi
 
-if [[ -f /tmp/pacstall-up-print ]]; then
-	sudo rm /tmp/pacstall-up-print
-fi
+# remove all old temp files
+for tmp in /tmp/pacstall-up-{list,print,urls}; {
+	[ -f "$tmp" ] && sudo rm -f "$tmp"
+}
+unset tmp
 
-if [[ -f /tmp/pacstall-up-urls ]]; then
-	sudo rm /tmp/pacstall-up-urls
-fi
-
-sudo touch /tmp/pacstall-up-list
-sudo touch /tmp/pacstall-up-print
-sudo touch /tmp/pacstall-up-urls
+# create new tmp files
+sudo touch /tmp/pacstall-up-{list,print,urls}
 
 fancy_message info "Checking for updates"
 
@@ -57,7 +51,7 @@ for i in "${list[@]}"; do
 	# localver is the current version of the package
 	localver=$(sed -n -e 's/_version=//p' "$LOGDIR"/"$i" | tr -d \")
 
-	if [[ -z "${_remoterepo}" ]]; then
+	if [ -z "${_remoterepo}" ]; then
 		# TODO: upgrade for local pacscripts
 		continue
 	elif echo "${_remoterepo}" | grep "github.com" > /dev/null ; then
@@ -74,45 +68,43 @@ for i in "${list[@]}"; do
 
 	IDXMATCH=$(printf "%s\n" "${REPOS[@]}"| grep -n "$remoterepo" | cut -d : -f1| awk '{print $0"-1"}'| bc)
 
-	if [[ -n $IDXMATCH ]]; then
+	if [ $IDXMATCH ]; then
 		remotever=$(source <(curl -s "$remoterepo"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
 		remoteurl="${REPOS[$IDXMATCH]}"
 	else
 		fancy_message warning "Package ${GREEN}${i}${CYAN} is not on ${CYAN}$(parseRepo "${remoterepo}")${NC} anymore"
 		sed -i "/_remote/d" "$LOGDIR/$i"
 	fi
+	
+	[ "$remotever" = "$localver" ] && continue
 
 	if [[ $i != *"-git" ]]; then
 		alterver="0.0.0"
 		for IDX in "${!REPOS[@]}"; do
-			if [[ $IDX -eq $IDXMATCH ]]; then
-				continue
-			else
-				ver=$(source <(curl -s "${REPOS[$IDX]}"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
-				if ! ver_compare "$alterver" "$ver"; then
-					alterver="$ver"
-					alterurl="$REPO"
-				fi
+			[ $IDX -eq $IDXMATCH ] && continue
+		
+			ver=$(source <(curl -s "${REPOS[$IDX]}"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
+			if ! ver_compare "$alterver" "$ver"; then
+				alterver="$ver"
+				alterurl="$REPO"
 			fi
 		done
-		if [[ -n "$remotever" ]]; then
+		if [ "$remotever" ]; then
 			if ver_compare "$remotever" "$alterver"; then
 				echo -e "${GREEN}${i}${CYAN} has a newer version at ${CYAN}$(parseRepo "${alterurl}")${NC}."
 				ask "Keep the package from the current repo?" Y
-				if [[ "$answer" -eq 0 ]]; then
+				if [ "$answer" -eq 0 ]; then
 					remoterepo="$alterver"
 					remoteurl="$alterurl"
 				fi
 			fi
-		elif [[ "$alterver" != "0.0.0" ]]; then
+		elif [ "$alterver" != "0.0.0" ]; then
 			remoterepo="$alterver"
 			remoteurl="$alterurl"
 		fi
-	elif [[ "$remotever" == "$localver" ]]; then
-		continue
 	fi
 
-	if [[ -n "$remotever" ]]; then
+	if [ "$remotever" ]; then
 		if [[ $i == *"-git" ]] || ver_compare "$localver" "$remotever"; then
 			echo "$i" | sudo tee -a /tmp/pacstall-up-list >/dev/null
 			echo "${GREEN}${i}${CYAN} @ $(parseRepo "${remoteurl}") ${NC}" | sudo tee -a /tmp/pacstall-up-print >/dev/null
@@ -120,35 +112,32 @@ for i in "${list[@]}"; do
 		fi
 	fi
 done
-
-if [[ $(wc -l /tmp/pacstall-up-list | awk '{ print $1 }') -eq 0 ]] ; then
+	# count line number using awk alone 
+if [[ $(awk 'END { print NR }' /tmp/pacstall-up-list) -eq 0 ]] ; then
 	fancy_message info "Nothing to upgrade"
 else
 	fancy_message info "Packages can be upgraded"
-	echo -e "Upgradable: $(wc -l /tmp/pacstall-up-print | awk '{ print $1 }')
+	echo -e "Upgradable: $(awk 'END { print NR }' /tmp/pacstall-up-list)
 	${BOLD}$(cat /tmp/pacstall-up-print)${NORMAL}\n"
-
-	upgrade=()
-	while IFS= read -r line; do
-		upgrade+=("$line")
-	done < /tmp/pacstall-up-list
-
-	while IFS= read -r line; do
-		remotes+=("$line")
-	done < /tmp/pacstall-up-urls
+	
+	# make array with builtin function in bash 
+	mapfile -t upgrade < /tmp/pacstall-up-list
+	mapfile -t remotes < /tmp/pacstall-up-urls
 
 	export local='no'
 	sudo mkdir -p "$SRCDIR"
 	sudo chown -R "$USER":"$USER" "$SRCDIR"
+	
 	if ! cd "$SRCDIR" 2> /dev/null; then
 		error_log 1 "upgrade"; fancy_message error "Could not enter ${SRCDIR}"; exit 1
 	fi
+	
 	for i in "${!upgrade[@]}"; do
 		PACKAGE=${upgrade[$i]}
 		ask "Do you want to upgrade ${GREEN}${PACKAGE}${NC}?" Y
-		if [[ "$answer" -eq 0 ]]; then
-			continue
-		fi
+		
+		[ "$answer" -eq 0 ] && continue
+		
 		REPO="${remotes[$i]}"
 		export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 		if ! source "$STGDIR/scripts/download.sh"; then
@@ -159,15 +148,10 @@ else
 	done
 fi
 
-if [[ -f "/tmp/pacstall-up-list" ]]; then
-	sudo rm -f /tmp/pacstall-up-list
-fi
+# remove tmp files
+for tmp in /tmp/pacstall-up-{list,print,urls}; {
+	[ -f "$tmp" ] && sudo rm -f "$tmp"
+}
+unset tmp
 
-if [[ -f "/tmp/pacstall-up-print" ]]; then
-	sudo rm -f /tmp/pacstall-up-print
-fi
-
-if [[ -f "/tmp/pacstall-up-urls" ]]; then
-	sudo rm -f /tmp/pacstall-up-urls
-fi
 # vim:set ft=sh ts=4 sw=4 noet:
