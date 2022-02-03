@@ -107,7 +107,7 @@ async def download(
 
     except OSError as error:
         error_message = str(error) or type(error).__name__
-        rprint(f"[bold red]Failed[/bold red]: {filename} (OS error: {error_message}")
+        rprint(f"[bold red]Failed[/bold red]: {filename} (OS error: {error_message})")
 
         log = getLogger()
         log.debug(f"Failed: {filename}", exc_info=True)
