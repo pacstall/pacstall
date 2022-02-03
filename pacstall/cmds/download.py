@@ -29,7 +29,7 @@ from logging import getLogger
 from pathlib import Path
 from typing import List
 
-import aiofiles
+from anyio import open_file
 from httpx import AsyncClient, HTTPStatusError, RequestError
 from rich import print as rprint
 from rich.progress import (
@@ -82,7 +82,7 @@ async def download(
     try:
         response = await client.get(url)
         response.raise_for_status()
-        async with aiofiles.open(Path.cwd() / url.split("/")[-1], mode="wb") as file:
+        async with await open_file(Path.cwd() / url.split("/")[-1], mode="wb") as file:
             await file.write(response.content)
 
         progress_bar.update(download_task, advance=1, filename=filename)
