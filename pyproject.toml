@@ -51,7 +51,6 @@ classifiers = [
 python = "^3.8"
 rich = "^11.1.0"
 httpx = "^0.22.0"
-aiofiles = "^0.8.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1"
@@ -60,7 +59,6 @@ isort = "^5.10.1"
 pyupgrade = "^2.29.1"
 mypy = "^0.931"
 codespell = "^2.1.0"
-types-aiofiles = "^0.8.3"
 
 [tool.isort]
 profile = "black"
