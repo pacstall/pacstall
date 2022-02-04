@@ -28,6 +28,10 @@ import pytest
 
 from pacstall.parser import parse_arguments
 
+# TODO: Test `repo` command.
+
+commands = ["install", "remove", "upgrade", "download", "search", "list", "info"]
+
 
 def test_with_no_arguments_passed() -> None:
     """Test to see if Pacstall errors out as expected when no arguments are supplied."""
@@ -55,464 +59,190 @@ def test_with_unknown_arguments(random_words: List[str]) -> None:
     assert error.value.code == 2
 
 
-class TestInstallParser:
+@pytest.mark.parametrize("command", commands)
+def test_with_no_packages_passed_to_commands(command: str) -> None:
     """
-    Tests the install command parser.
-    """
+    Test behavior with no packages passed to the commands.
 
-    def test_with_no_packages_passed(self) -> None:
-        """Test behavior with no packages passed to the command."""
-
-        sys.argv = ["pacstall", "install"]
-        with pytest.raises(SystemExit) as error:
-            parse_arguments()
-        assert error.value.code == 2
-
-    def test_with_unknown_flags(
-        self, random_flags: Callable[[List[str]], List[str]]
-    ) -> None:
-        """
-        Test behavior with unknown flags passed to the command.
-
-        Parameters
-        ----------
-        random_flags
-            Fixture factory to get random/unknown flags.
-        """
-
-        unknown_flags = random_flags(["h", "P", "K"])
-        sys.argv = ["pacstall", "install", *unknown_flags]
-        with pytest.raises(SystemExit) as error:
-            parse_arguments()
-        assert error.value.code == 2
-
-    def test_with_packages_passed(self, random_words: List[str]) -> None:
-        """
-        Test behavior with random packages passed to the command.
-
-        Parameters
-        ----------
-        random_words
-            Fixture to get random words used as the packages.
-        """
-
-        sys.argv = ["pacstall", "install", *random_words]
-        assert parse_arguments() == Namespace(
-            command="install",
-            disable_prompts=False,
-            keep=False,
-            packages=random_words,
-        )
-
-    def test_with_disable_prompts(self, random_words: List[str]) -> None:
-        """
-        Test behavior with disable prompts flag enabled.
-
-        Parameters
-        ----------
-        random_words
-            Fixture to get random words used as the packages.
-        """
-
-        sys.argv = ["pacstall", "install", "-P", *random_words]
-        assert parse_arguments() == Namespace(
-            command="install",
-            disable_prompts=True,
-            keep=False,
-            packages=random_words,
-        )
-
-        sys.argv = ["pacstall", "install", "--disable-prompts", *random_words]
-        assert parse_arguments() == Namespace(
-            command="install",
-            disable_prompts=True,
-            keep=False,
-            packages=random_words,
-        )
-
-    def test_with_keep(self, random_words: List[str]) -> None:
-        """
-        Test behavior with keep flag enabled.
-
-        Parameters
-        ----------
-        random_words
-            Fixture to get random words used as the packages.
-        """
-
-        sys.argv = ["pacstall", "install", "-K", *random_words]
-        assert parse_arguments() == Namespace(
-            command="install",
-            disable_prompts=False,
-            keep=True,
-            packages=random_words,
-        )
-
-        sys.argv = ["pacstall", "install", "--keep", *random_words]
-        assert parse_arguments() == Namespace(
-            command="install",
-            disable_prompts=False,
-            keep=True,
-            packages=random_words,
-        )
-
-
-class TestRemoveParser:
-    """
-    Tests the remove command parser.
+    Parameters
+    ----------
+    command
+        The command to test against (parametrized).
     """
 
-    def test_with_no_packages_passed(self) -> None:
-        """Test behavior with no packages passed to the command."""
+    sys.argv = ["pacstall", command]
 
-        sys.argv = ["pacstall", "remove"]
-        with pytest.raises(SystemExit) as error:
-            parse_arguments()
-        assert error.value.code == 2
-
-    def test_with_unknown_flags(
-        self, random_flags: Callable[[List[str]], List[str]]
-    ) -> None:
-        """
-        Test behavior with unknown flags passed to the command.
-
-        Parameters
-        ----------
-        random_flags
-            Fixture factory to get random/unknown flags.
-        """
-
-        unknown_flags = random_flags(["h", "P"])
-        sys.argv = ["pacstall", "remove", *unknown_flags]
-        with pytest.raises(SystemExit) as error:
-            parse_arguments()
-        assert error.value.code == 2
-
-    def test_with_packages_passed(self, random_words: List[str]) -> None:
-        """
-        Test behavior with random packages passed to the command.
-
-        Parameters
-        ----------
-        random_words
-            Fixture to get random words used as the packages.
-        """
-
-        sys.argv = ["pacstall", "remove", *random_words]
-        assert parse_arguments() == Namespace(
-            command="remove",
-            disable_prompts=False,
-            packages=random_words,
-        )
-
-    def test_with_disable_prompts(self, random_words: List[str]) -> None:
-        """
-        Test behavior with disable prompts flag enabled.
-
-        Parameters
-        ----------
-        random_words
-            Fixture to get random words used as the packages.
-        """
-
-        sys.argv = ["pacstall", "remove", "-P", *random_words]
-        assert parse_arguments() == Namespace(
-            command="remove",
-            disable_prompts=True,
-            packages=random_words,
-        )
-
-        sys.argv = ["pacstall", "remove", "--disable-prompts", *random_words]
-        assert parse_arguments() == Namespace(
-            command="remove",
-            disable_prompts=True,
-            packages=random_words,
-        )
-
-
-class TestUpgradeParser:
-    """
-    Tests the upgrade command parser.
-    """
-
-    def test_with_no_packages_passed(self) -> None:
-        """Test behavior with no packages passed to the command."""
-
-        sys.argv = ["pacstall", "upgrade"]
-        assert parse_arguments() == Namespace(
+    expected_namespaces = {
+        "upgrade": Namespace(
             command="upgrade", disable_prompts=False, keep=False, packages=[]
-        )
+        ),
+        "list": Namespace(command="list"),
+    }
 
-    def test_with_unknown_flags(
-        self, random_flags: Callable[[List[str]], List[str]]
-    ) -> None:
-        """
-        Test behavior with unknown flags passed to the command.
+    if command in expected_namespaces:
+        assert parse_arguments() == expected_namespaces[command]
 
-        Parameters
-        ----------
-        random_flags
-            Fixture factory to get random/unknown flags.
-        """
-
-        unknown_flags = random_flags(["h", "P", "K"])
-        sys.argv = ["pacstall", "upgrade", *unknown_flags]
+    else:
         with pytest.raises(SystemExit) as error:
             parse_arguments()
         assert error.value.code == 2
 
-    def test_with_packages_passed(self, random_words: List[str]) -> None:
-        """
-        Test behavior with random packages passed to the command.
 
-        Parameters
-        ----------
-        random_words
-            Fixture to get random words used as the packages.
-        """
-
-        sys.argv = ["pacstall", "upgrade", *random_words]
-        assert parse_arguments() == Namespace(
-            command="upgrade",
-            disable_prompts=False,
-            keep=False,
-            packages=random_words,
-        )
-
-    def test_with_disable_prompts(self, random_words: List[str]) -> None:
-        """
-        Test behavior with disable prompts flag enabled.
-
-        Parameters
-        ----------
-        random_words
-            Fixture to get random words used as the packages.
-        """
-
-        sys.argv = ["pacstall", "upgrade", "-P", *random_words]
-        assert parse_arguments() == Namespace(
-            command="upgrade",
-            disable_prompts=True,
-            keep=False,
-            packages=random_words,
-        )
-
-        sys.argv = ["pacstall", "upgrade", "--disable-prompts", *random_words]
-        assert parse_arguments() == Namespace(
-            command="upgrade",
-            disable_prompts=True,
-            keep=False,
-            packages=random_words,
-        )
-
-    def test_with_keep(self, random_words: List[str]) -> None:
-        """
-        Test behavior with keep flag enabled.
-
-        Parameters
-        ----------
-        random_words
-            Fixture to get random words used as the packages.
-        """
-
-        sys.argv = ["pacstall", "upgrade", "-K", *random_words]
-        assert parse_arguments() == Namespace(
-            command="upgrade",
-            disable_prompts=False,
-            keep=True,
-            packages=random_words,
-        )
-
-        sys.argv = ["pacstall", "upgrade", "--keep", *random_words]
-        assert parse_arguments() == Namespace(
-            command="upgrade",
-            disable_prompts=False,
-            keep=True,
-            packages=random_words,
-        )
-
-
-class TestDownloadParser:
+@pytest.mark.parametrize("command", commands)
+def test_with_unknown_flags_passed_to_commands(
+    random_flags: Callable[[List[str]], List[str]], command: str
+) -> None:
     """
-    Tests the download command parser.
+    Test behavior with unknown flags passed to the commands.
+
+    Parameters
+    ----------
+    random_flags
+        Fixture factory to get random/unknown flags.
+    command
+        The command to test against (parametrized).
     """
 
-    def test_with_no_packages_passed(self) -> None:
-        """Test behavior with no packages passed to the command."""
+    known_flags = {
+        "install": ["h", "P", "K"],
+        "remove": ["h", "P"],
+        "upgrade": ["h", "P", "K"],
+        "download": ["h"],
+        "search": ["h"],
+        "list": ["h"],
+        "info": ["h"],
+    }
 
-        sys.argv = ["pacstall", "download"]
-        with pytest.raises(SystemExit) as error:
-            parse_arguments()
-        assert error.value.code == 2
+    unknown_flags = random_flags(known_flags[command])
+    sys.argv = ["pacstall", command, *unknown_flags]
 
-    def test_with_unknown_flags(
-        self, random_flags: Callable[[List[str]], List[str]]
-    ) -> None:
-        """
-        Test behavior with unknown flags passed to the command.
+    with pytest.raises(SystemExit) as error:
+        parse_arguments()
+    assert error.value.code == 2
 
-        Parameters
-        ----------
-        random_flags
-            Fixture factory to get random/unknown flags.
-        """
 
-        unknown_flags = random_flags(["h"])
-        sys.argv = ["pacstall", "download", *unknown_flags]
-        with pytest.raises(SystemExit) as error:
-            parse_arguments()
-        assert error.value.code == 2
+@pytest.mark.parametrize("command", commands)
+def test_with_packages_passed_to_commands(
+    random_words: List[str], command: str
+) -> None:
+    """
+    Test behavior with random packages passed to the commands.
 
-    def test_with_packages_passed(self, random_words: List[str]) -> None:
-        """
-        Test behavior with random packages passed to the command.
+    Parameters
+    ----------
+    random_words
+        Fixture to get random words used as the packages.
+    command
+        The command to test against (parametrized).
+    """
+    sys.argv = ["pacstall", command, *random_words]
 
-        Parameters
-        ----------
-        random_words
-            Fixture to get random words used as the packages.
-        """
-
-        sys.argv = ["pacstall", "download", *random_words]
-        assert parse_arguments() == Namespace(
+    expected_namespaces = {
+        "install": Namespace(
+            command="install",
+            disable_prompts=False,
+            keep=False,
+            packages=random_words,
+        ),
+        "remove": Namespace(
+            command="remove",
+            disable_prompts=False,
+            packages=random_words,
+        ),
+        "upgrade": Namespace(
+            command="upgrade",
+            disable_prompts=False,
+            keep=False,
+            packages=random_words,
+        ),
+        "download": Namespace(
             command="download",
             pacscripts=random_words,
-        )
-
-
-class TestSearchParser:
-    """
-    Tests the download command parser.
-    """
-
-    def test_with_no_packages_passed(self) -> None:
-        """Test behavior with no packages passed to the command."""
-
-        sys.argv = ["pacstall", "search"]
-        with pytest.raises(SystemExit) as error:
-            parse_arguments()
-        assert error.value.code == 2
-
-    def test_with_unknown_flags(
-        self, random_flags: Callable[[List[str]], List[str]]
-    ) -> None:
-        """
-        Test behavior with unknown flags passed to the command.
-
-        Parameters
-        ----------
-        random_flags
-            Fixture factory to get random/unknown flags.
-        """
-
-        unknown_flags = random_flags(["h"])
-        sys.argv = ["pacstall", "search", *unknown_flags]
-        with pytest.raises(SystemExit) as error:
-            parse_arguments()
-        assert error.value.code == 2
-
-    def test_with_packages_passed(self, random_words: List[str]) -> None:
-        """
-        Test behavior with random packages passed to the command.
-
-        Parameters
-        ----------
-        random_words
-            Fixture to get random words used as the packages.
-        """
-
-        sys.argv = ["pacstall", "search", *random_words]
-        assert parse_arguments() == Namespace(
+        ),
+        "search": Namespace(
             command="search",
             packages=random_words,
-        )
+        ),
+        "info": Namespace(command="info", packages=random_words),
+    }
 
-
-class TestListParser:
-    """
-    Tests the list command parser.
-    """
-
-    def test_with_no_packages_passed(self) -> None:
-        """Test behavior with no packages passed to the command."""
-
-        sys.argv = ["pacstall", "list"]
-        assert parse_arguments() == Namespace(command="list")
-
-    def test_with_unknown_flags(
-        self, random_flags: Callable[[List[str]], List[str]]
-    ) -> None:
-        """
-        Test behavior with unknown flags passed to the command.
-
-        Parameters
-        ----------
-        random_flags
-            Fixture factory to get random/unknown flags.
-        """
-
-        unknown_flags = random_flags(["h"])
-        sys.argv = ["pacstall", "list", *unknown_flags]
+    if command == "list":
         with pytest.raises(SystemExit) as error:
             parse_arguments()
         assert error.value.code == 2
-
-    def test_with_packages_passed(self, random_words: List[str]) -> None:
-        """
-        Test behavior with random packages passed to the command.
-
-        Parameters
-        ----------
-        random_words
-            Fixture to get random words used as the packages.
-        """
-
-        sys.argv = ["pacstall", "list", *random_words]
-        with pytest.raises(SystemExit) as error:
-            parse_arguments()
-        assert error.value.code == 2
+    else:
+        assert parse_arguments() == expected_namespaces[command]
 
 
-class TestInfoParser:
+@pytest.mark.parametrize("command", ["install", "remove", "upgrade"])
+def test_commands_with_disable_prompts(random_words: List[str], command: str) -> None:
     """
-    Tests the info command parser.
+    Test behavior with disable prompts flag enabled.
+
+    Parameters
+    ----------
+    random_words
+        Fixture to get random words used as the packages.
+    command
+        The command to test against (parametrized).
     """
 
-    def test_with_no_packages_passed(self) -> None:
-        """Test behavior with no packages passed to the command."""
+    expected_namespaces = {
+        "install": Namespace(
+            command="install",
+            disable_prompts=True,
+            keep=False,
+            packages=random_words,
+        ),
+        "remove": Namespace(
+            command="remove",
+            disable_prompts=True,
+            packages=random_words,
+        ),
+        "upgrade": Namespace(
+            command="upgrade",
+            disable_prompts=True,
+            keep=False,
+            packages=random_words,
+        ),
+    }
 
-        sys.argv = ["pacstall", "info"]
-        with pytest.raises(SystemExit) as error:
-            parse_arguments()
-        assert error.value.code == 2
+    sys.argv = ["pacstall", command, "-P", *random_words]
+    assert parse_arguments() == expected_namespaces[command]
 
-    def test_with_unknown_flags(
-        self, random_flags: Callable[[List[str]], List[str]]
-    ) -> None:
-        """
-        Test behavior with unknown flags passed to the command.
+    sys.argv = ["pacstall", command, "--disable-prompts", *random_words]
+    assert parse_arguments() == expected_namespaces[command]
 
-        Parameters
-        ----------
-        random_flags
-            Fixture factory to get random/unknown flags.
-        """
 
-        unknown_flags = random_flags(["h"])
-        sys.argv = ["pacstall", "info", *unknown_flags]
-        with pytest.raises(SystemExit) as error:
-            parse_arguments()
-        assert error.value.code == 2
+@pytest.mark.parametrize("command", ["install", "upgrade"])
+def test_commands_with_keep(random_words: List[str], command: str) -> None:
+    """
+    Test behavior with keep flag enabled.
 
-    def test_with_packages_passed(self, random_words: List[str]) -> None:
-        """
-        Test behavior with random packages passed to the command.
+    Parameters
+    ----------
+    random_words
+        Fixture to get random words used as the packages.
+    command
+        The command to test against (parametrized).
+    """
 
-        Parameters
-        ----------
-        random_words
-            Fixture to get random words used as the packages.
-        """
+    sys.argv = ["pacstall", command, "-K", *random_words]
 
-        sys.argv = ["pacstall", "info", *random_words]
-        assert parse_arguments() == Namespace(command="info", packages=random_words)
+    expected_namespaces = {
+        "install": Namespace(
+            command="install",
+            disable_prompts=False,
+            keep=True,
+            packages=random_words,
+        ),
+        "upgrade": Namespace(
+            command="upgrade",
+            disable_prompts=False,
+            keep=True,
+            packages=random_words,
+        ),
+    }
+
+    sys.argv = ["pacstall", command, "--keep", *random_words]
+    assert parse_arguments() == expected_namespaces[command]
