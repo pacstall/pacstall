@@ -22,85 +22,11 @@
 
 import sys
 from argparse import Namespace
-from random import choice
-from string import ascii_letters, ascii_lowercase, digits, punctuation
 from typing import Callable, List
 
 import pytest
 
 from pacstall.parser import parse_arguments
-
-
-@pytest.fixture()
-def random_words() -> List[str]:
-    """
-    Fixture to generate random words.
-
-    Returns
-    -------
-    list of str:
-        The random generated words.
-    """
-
-    words = []
-    for _ in range(max(choice(range(10)), 1)):
-        package_name = ""
-        for _ in range(choice(range(10))):
-            if choice((1, 2, 3)) == 1:
-                package_name += choice(ascii_lowercase)
-            if choice((1, 2, 3)) == 2:
-                package_name += choice(digits)
-
-            # Punctuations should be added after the first letter so as to not
-            # interfere with flags.
-            if choice((1, 2, 3)) == 3 and len(package_name) > 1:
-                package_name += choice(punctuation)
-
-        words.append(package_name)
-    return words
-
-
-@pytest.fixture()
-def random_flags() -> Callable[[List[str]], List[str]]:
-    """
-    Fixture to generate random flags.
-
-    Returns
-    -------
-    callable of list of str and list of str:
-        Callable function to generate unknown flags.
-    """
-
-    def _random_flags(known_flags: List[str]) -> List[str]:
-        """
-        Generate unknown flags.
-
-        Parameters
-        ----------
-        known_flags
-            Known flags to exclude when generate random flags.
-
-        Returns
-        -------
-        list of str:
-            Random unknown flags.
-        """
-
-        flags = []
-        filtered_ascii_letters = ascii_letters
-        for known_flag in known_flags:
-            filtered_ascii_letters = filtered_ascii_letters.replace(known_flag, "")
-
-        for _ in range(max(choice(range(10)), 1)):
-            flag = choice(("-", "--"))
-            for _ in range(max(choice(range(10)), 1)):
-                flag += choice(filtered_ascii_letters)
-
-            flags.append(flag)
-
-        return flags
-
-    return _random_flags
 
 
 @pytest.mark.arg_parser()
