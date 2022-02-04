@@ -55,6 +55,7 @@ rich = "^11.2.0"
 [tool.poetry.dev-dependencies]
 black = "^22.1"
 codespell = "^2.1.0"
+coverage = "^6.3.1"
 isort = "^5.10.1"
 mypy = "^0.931"
 pre-commit = "^2.15.0"
@@ -81,7 +82,8 @@ strict = true
 
 [tool.pytest.ini_options]
 markers = [
-	"arg_parser: test the argument parser"
+	"arg_parser: test the argument parser",
+	"slow: mark test as slow."
 ]
 
 [tool.poetry.scripts]
