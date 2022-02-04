@@ -17,8 +17,8 @@ jobs:
           poetry install
       - name: Generate Coverage Report
         run: |
-          poetry run pip install coverage
           poetry run coverage run -m pytest .
+          poetry run coverage report -m
           poetry run coverage xml
       - name: Upload Coverage Report to Codacy
         uses: codacy/codacy-coverage-reporter-action@v1
