@@ -82,7 +82,6 @@ strict = true
 
 [tool.pytest.ini_options]
 markers = [
-	"arg_parser: test the argument parser",
 	"slow: mark test as slow."
 ]
 
