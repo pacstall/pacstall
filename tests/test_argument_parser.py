@@ -29,18 +29,15 @@ import pytest
 from pacstall.parser import parse_arguments
 
 
-@pytest.mark.arg_parser()
 def test_with_no_arguments_passed() -> None:
     """Test to see if Pacstall errors out as expected when no arguments are supplied."""
 
     sys.argv = ["pacstall"]
-    try:
+    with pytest.raises(SystemExit) as error:
         parse_arguments()
-    except SystemExit as error:
-        assert error.code == 1
+    assert error.value.code == 1
 
 
-@pytest.mark.arg_parser()
 def test_with_unknown_arguments(random_words: List[str]) -> None:
     """
     Test to see if Pacstall errors out as expected when random arguments are
@@ -53,13 +50,11 @@ def test_with_unknown_arguments(random_words: List[str]) -> None:
     """
 
     sys.argv = ["pacstall", *random_words]
-    try:
+    with pytest.raises(SystemExit) as error:
         parse_arguments()
-    except SystemExit as error:
-        assert error.code == 2
+    assert error.value.code == 2
 
 
-@pytest.mark.arg_parser()
 class TestInstallParser:
     """
     Tests the install command parser.
@@ -69,10 +64,9 @@ class TestInstallParser:
         """Test behavior with no packages passed to the command."""
 
         sys.argv = ["pacstall", "install"]
-        try:
+        with pytest.raises(SystemExit) as error:
             parse_arguments()
-        except SystemExit as error:
-            assert error.code == 2
+        assert error.value.code == 2
 
     def test_with_unknown_flags(
         self, random_flags: Callable[[List[str]], List[str]]
@@ -88,10 +82,9 @@ class TestInstallParser:
 
         unknown_flags = random_flags(["h", "P", "K"])
         sys.argv = ["pacstall", "install", *unknown_flags]
-        try:
+        with pytest.raises(SystemExit) as error:
             parse_arguments()
-        except SystemExit as error:
-            assert error.code == 2
+        assert error.value.code == 2
 
     def test_with_packages_passed(self, random_words: List[str]) -> None:
         """
@@ -164,7 +157,6 @@ class TestInstallParser:
         )
 
 
-@pytest.mark.arg_parser()
 class TestRemoveParser:
     """
     Tests the remove command parser.
@@ -174,10 +166,9 @@ class TestRemoveParser:
         """Test behavior with no packages passed to the command."""
 
         sys.argv = ["pacstall", "remove"]
-        try:
+        with pytest.raises(SystemExit) as error:
             parse_arguments()
-        except SystemExit as error:
-            assert error.code == 2
+        assert error.value.code == 2
 
     def test_with_unknown_flags(
         self, random_flags: Callable[[List[str]], List[str]]
@@ -193,10 +184,9 @@ class TestRemoveParser:
 
         unknown_flags = random_flags(["h", "P"])
         sys.argv = ["pacstall", "remove", *unknown_flags]
-        try:
+        with pytest.raises(SystemExit) as error:
             parse_arguments()
-        except SystemExit as error:
-            assert error.code == 2
+        assert error.value.code == 2
 
     def test_with_packages_passed(self, random_words: List[str]) -> None:
         """
@@ -240,7 +230,6 @@ class TestRemoveParser:
         )
 
 
-@pytest.mark.arg_parser()
 class TestUpgradeParser:
     """
     Tests the upgrade command parser.
@@ -250,10 +239,9 @@ class TestUpgradeParser:
         """Test behavior with no packages passed to the command."""
 
         sys.argv = ["pacstall", "upgrade"]
-        try:
-            parse_arguments()
-        except SystemExit as error:
-            assert error.code == 2
+        assert parse_arguments() == Namespace(
+            command="upgrade", disable_prompts=False, keep=False, packages=[]
+        )
 
     def test_with_unknown_flags(
         self, random_flags: Callable[[List[str]], List[str]]
@@ -269,10 +257,9 @@ class TestUpgradeParser:
 
         unknown_flags = random_flags(["h", "P", "K"])
         sys.argv = ["pacstall", "upgrade", *unknown_flags]
-        try:
+        with pytest.raises(SystemExit) as error:
             parse_arguments()
-        except SystemExit as error:
-            assert error.code == 2
+        assert error.value.code == 2
 
     def test_with_packages_passed(self, random_words: List[str]) -> None:
         """
@@ -345,7 +332,6 @@ class TestUpgradeParser:
         )
 
 
-@pytest.mark.arg_parser()
 class TestDownloadParser:
     """
     Tests the download command parser.
@@ -355,10 +341,9 @@ class TestDownloadParser:
         """Test behavior with no packages passed to the command."""
 
         sys.argv = ["pacstall", "download"]
-        try:
+        with pytest.raises(SystemExit) as error:
             parse_arguments()
-        except SystemExit as error:
-            assert error.code == 2
+        assert error.value.code == 2
 
     def test_with_unknown_flags(
         self, random_flags: Callable[[List[str]], List[str]]
@@ -374,10 +359,9 @@ class TestDownloadParser:
 
         unknown_flags = random_flags(["h"])
         sys.argv = ["pacstall", "download", *unknown_flags]
-        try:
+        with pytest.raises(SystemExit) as error:
             parse_arguments()
-        except SystemExit as error:
-            assert error.code == 2
+        assert error.value.code == 2
 
     def test_with_packages_passed(self, random_words: List[str]) -> None:
         """
@@ -396,7 +380,6 @@ class TestDownloadParser:
         )
 
 
-@pytest.mark.arg_parser()
 class TestSearchParser:
     """
     Tests the download command parser.
@@ -406,10 +389,9 @@ class TestSearchParser:
         """Test behavior with no packages passed to the command."""
 
         sys.argv = ["pacstall", "search"]
-        try:
+        with pytest.raises(SystemExit) as error:
             parse_arguments()
-        except SystemExit as error:
-            assert error.code == 2
+        assert error.value.code == 2
 
     def test_with_unknown_flags(
         self, random_flags: Callable[[List[str]], List[str]]
@@ -425,10 +407,9 @@ class TestSearchParser:
 
         unknown_flags = random_flags(["h"])
         sys.argv = ["pacstall", "search", *unknown_flags]
-        try:
+        with pytest.raises(SystemExit) as error:
             parse_arguments()
-        except SystemExit as error:
-            assert error.code == 2
+        assert error.value.code == 2
 
     def test_with_packages_passed(self, random_words: List[str]) -> None:
         """
@@ -447,7 +428,6 @@ class TestSearchParser:
         )
 
 
-@pytest.mark.arg_parser()
 class TestListParser:
     """
     Tests the list command parser.
@@ -473,10 +453,9 @@ class TestListParser:
 
         unknown_flags = random_flags(["h"])
         sys.argv = ["pacstall", "list", *unknown_flags]
-        try:
+        with pytest.raises(SystemExit) as error:
             parse_arguments()
-        except SystemExit as error:
-            assert error.code == 2
+        assert error.value.code == 2
 
     def test_with_packages_passed(self, random_words: List[str]) -> None:
         """
@@ -489,13 +468,11 @@ class TestListParser:
         """
 
         sys.argv = ["pacstall", "list", *random_words]
-        try:
+        with pytest.raises(SystemExit) as error:
             parse_arguments()
-        except SystemExit as error:
-            assert error.code == 2
+        assert error.value.code == 2
 
 
-@pytest.mark.arg_parser()
 class TestInfoParser:
     """
     Tests the info command parser.
@@ -505,10 +482,9 @@ class TestInfoParser:
         """Test behavior with no packages passed to the command."""
 
         sys.argv = ["pacstall", "info"]
-        try:
+        with pytest.raises(SystemExit) as error:
             parse_arguments()
-        except SystemExit as error:
-            assert error.code == 2
+        assert error.value.code == 2
 
     def test_with_unknown_flags(
         self, random_flags: Callable[[List[str]], List[str]]
@@ -524,10 +500,9 @@ class TestInfoParser:
 
         unknown_flags = random_flags(["h"])
         sys.argv = ["pacstall", "info", *unknown_flags]
-        try:
+        with pytest.raises(SystemExit) as error:
             parse_arguments()
-        except SystemExit as error:
-            assert error.code == 2
+        assert error.value.code == 2
 
     def test_with_packages_passed(self, random_words: List[str]) -> None:
         """
