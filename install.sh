@@ -70,14 +70,14 @@ echo -e "|------------------------|"
 echo -e "|---${GREEN}Pacstall Installer${NC}---|"
 echo -e "|------------------------|"
 
-if [[ -n $PACSTALL_SKIP_NETWORK_CHECK ]]; then
+if [[ "${GITHUB_ACTIONS}" != "true" ]]; then
 	if ! ping -c 1 github.com &>/dev/null; then
 		fancy_message error "You seem to be offline"
 		exit 1
 	fi
 fi
 
-echo ""
+echo
 if [[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ]]; then
 	fancy_message info "Updating"
 	apt-get -qq update

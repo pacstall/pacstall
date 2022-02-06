@@ -24,12 +24,6 @@
 
 # This script downloads pacscripts from the interwebs
 
-if ! (command -v nm-online -qx > /dev/null || ping -c 1 github.com > /dev/null); then
-	fancy_message error "Not connected to internet"
-	error_log 1 "get $PACKAGE pacscript"
-	exit 2
-fi
-
 if curl --output /dev/null --silent --head --fail -- "$URL" ; then
 	if [[ "$type" = "install" ]]; then
 		mkdir -p "$SRCDIR"
