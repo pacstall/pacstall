@@ -1,3 +1,14 @@
+ci:
+  skip: [
+    fish_syntax,
+    fish_indent,
+    codespell,
+    black,
+    isort,
+    pyupgrade,
+    mypy
+  ]
+
 repos:
   # General
   - repo: https://github.com/pre-commit/pre-commit-hooks
