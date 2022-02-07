@@ -54,7 +54,7 @@ def main() -> int:
             file=sys.stderr,
         )
         rprint(
-            f"[[bold green]+[/bold green]] [bold]INFO[/bold]: Try running [code]sudo pacstall {' '.join(sys.argv[1:])}[/code] instead",
+            f"[[bold green]+[/bold green]] [bold]INFO[/bold]: Try running [code]sudo {' '.join(sys.argv)}[/code] instead",
             file=sys.stderr,
         )
         sys.exit(ErrorCodes.USAGE_ERROR)  # --> command line usage error
