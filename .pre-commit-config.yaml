@@ -1,38 +1,52 @@
+ci:
+  skip: [
+    fish_syntax,
+    fish_indent,
+    codespell,
+    black,
+    isort,
+    pyupgrade,
+    mypy
+  ]
+
 repos:
   # General
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.2.0
     hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-      - id: mixed-line-ending
-        args: ["--fix=lf"]
+      - id: check-added-large-files
+      - id: check-ast
       - id: check-merge-conflict
       - id: check-toml
       - id: check-yaml
-      - id: check-ast
-      - id: check-added-large-files
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+      - id: trailing-whitespace
   # Fish
   - repo: local
     hooks:
       - id: fish_syntax
         name: Fish syntax check
         description: Check Fish shell syntax
-        entry: fish --no-execute
         language: system
-        files: "(fish)"
+        entry: fish --no-execute
+        types: [fish]
       - id: fish_indent
         name: Fish indent check
         description: Check Fish shell indentation
-        entry: fish_indent --write
         language: system
-        files: "(fish)"
+        entry: fish_indent --write
+        types: [fish]
   # Misc
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: v1.1.10
     hooks:
       - id: insert-license
-        args: [--license-filepath, LICENSE_BOILERPLATE, "--detect-license-in-X-top-lines=20"]
+        args: [
+          "--license-filepath=LICENSE_BOILERPLATE",
+          "--detect-license-in-X-top-lines=20"
+        ]
         exclude: '^(.github|.git)'
   # Python
   - repo: local
@@ -40,45 +54,45 @@ repos:
       - id: codespell
         name: Check for misspellings
         description: Checks for common misspellings in text files
-        types: [text]
-        entry: poetry run codespell
-        args: [-H, -f, --builtin, clear, rare, informal, usage, code]
+        args: [
+          --check-hidden,
+          --check-filenames,
+          --builtin,
+          clear,
+          rare,
+          informal,
+          usage,
+          code
+        ]
         language: system
+        entry: poetry run codespell
+        types: [text]
       - id: black
         name: Format python code
         description: Automatically format code to follow the black code style
-        types_or: [python, pyi]
-        entry: poetry run black
         language: system
+        entry: poetry run black
+        types_or: [python, pyi]
+        require_serial: true
       - id: isort
         name: Sort python imports
         description: Automatically sort import statements
-        types_or: [cython, pyi, python]
-        entry: poetry run isort
-        args: ["--py=auto", "--balanced", "-p=pacstall", "-o=rich", "-o=requests", "--filter-files"]
         language: system
+        entry: poetry run isort
+        types_or: [cython, pyi, python]
+        require_serial: true
       - id: pyupgrade
         name: Check for old python syntax
-        description: Automatically upgrade syntax for newer versions.
-        types: [python]
-        entry: poetry run pyupgrade
+        description: Automatically upgrade syntax for newer versions
         args: [--py36-plus]
         language: system
+        entry: poetry run pyupgrade
+        types: [python]
       - id: mypy
         name: Type check python code
         description: Static type checker for Python
+        language: system
         entry: poetry run mypy
-        language: system
         types_or: [python, pyi]
-        args: ["--ignore-missing-imports", "--strict", "--pretty", "--show-error-context", "--show-column-numbers", "--show-error-codes"]
-  # Commit message hook
-  - repo: local
-    hooks:
-      - id: commitizen
-        name: Check commit message
-        description: Check whether the commit message follows committing rules
-        entry: poetry run cz check --commit-msg-file
-        language: system
         require_serial: true
-        stages: [commit-msg]
 # vim:set ft=yaml ts=2 sw=2 et:
