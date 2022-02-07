@@ -42,6 +42,7 @@ from pacstall.parser import parse_arguments
 
 def main() -> int:
     """Main Pacstall function."""
+
     install(
         show_locals=True
     )  # --> Install Rich's traceback handler for better looking tracebackes
