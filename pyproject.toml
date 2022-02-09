@@ -50,7 +50,7 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.8"
 httpx = "^0.22.0"
-rich = "^11.1.0"
+rich = "^11.2.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1"
