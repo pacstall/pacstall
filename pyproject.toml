@@ -55,9 +55,11 @@ rich = "^11.2.0"
 [tool.poetry.dev-dependencies]
 black = "^22.1"
 codespell = "^2.1.0"
+coverage = "^6.3.1"
 isort = "^5.10.1"
 mypy = "^0.931"
 pre-commit = "^2.15.0"
+pytest = "^6.2.5"
 pyupgrade = "^2.29.1"
 
 [tool.isort]
@@ -77,6 +79,11 @@ show_column_numbers = true
 show_error_codes = true
 show_error_context = true
 strict = true
+
+[tool.pytest.ini_options]
+markers = [
+	"slow: mark test as slow."
+]
 
 [tool.poetry.scripts]
 pacstall = "pacstall.__main__:main"
