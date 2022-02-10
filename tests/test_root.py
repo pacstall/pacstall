@@ -21,26 +21,233 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 from os import environ
-from subprocess import run
 from pathlib import Path
+from subprocess import CalledProcessError, run
+from textwrap import dedent
+
+import pytest
+
+from pacstall.api.error_codes import ErrorCodes
 
 
-def test_launch_as_root():
-    # Run the help command as root
-    process = run(
-        [
-            "sudo",
-            "-E",
-            f"{Path(environ['HOME']) / '.local/bin/poetry'}",
-            "run",
-            "pacstall",
-            "-h",
-        ]
+@pytest.mark.slow()
+class TestWithoutRoot:
+    """Test behavior without root privileges."""
+
+    def test_launch(self) -> None:
+        """Test behavior when pacstall is launched without any arguments."""
+
+        with pytest.raises(CalledProcessError) as error:
+            run(
+                [f"{Path(environ['HOME']) / '.local/bin/poetry'}", "run", "pacstall"],
+                check=True,
+            )
+
+        assert error.value.returncode == 1
+
+    def test_with_help_flag(self) -> None:
+        """Test behavior when pacstall is launched as root."""
+
+        assert (
+            run(
+                [
+                    f"{Path(environ['HOME']) / '.local/bin/poetry'}",
+                    "run",
+                    "pacstall",
+                    "-h",
+                ],
+                check=True,
+            ).returncode
+            == 0
+        )
+
+    @pytest.mark.parametrize(
+        "command",
+        ["install", "remove", "upgrade", "download", "search", "list", "info"],
     )
-    assert process.returncode == 0
+    def test_commands(
+        self, command: str, capfd: pytest.CaptureFixture  # type:ignore[type-arg]
+    ) -> None:
+        """
+        Test behavior when commands are issued without root.
+
+        Parameters
+        ----------
+        command
+            Parameterized commands to test against.
+        capfd
+            Fixture to capture stderr output.
+        """
+
+        if command == "list":
+            assert (
+                run(
+                    [
+                        f"{Path(environ['HOME']) / '.local/bin/poetry'}",
+                        "run",
+                        "pacstall",
+                        command,
+                    ],
+                    check=True,
+                ).returncode
+                == 0
+            )
+
+        elif command in ["info", "search"]:
+            assert (
+                run(
+                    [
+                        f"{Path(environ['HOME']) / '.local/bin/poetry'}",
+                        "run",
+                        "pacstall",
+                        command,
+                        "foo",
+                    ],
+                    check=True,
+                ).returncode
+                == 0
+            )
+
+        elif command == "download":
+            with pytest.raises(CalledProcessError) as error:
+                run(
+                    [
+                        f"{Path(environ['HOME']) / '.local/bin/poetry'}",
+                        "run",
+                        "pacstall",
+                        command,
+                        "foo",
+                    ],
+                    check=True,
+                )
+
+            assert (
+                error.value.returncode == ErrorCodes.UNAVAILABLE_ERROR
+            )  # Not ErrorCodes.USAGE_ERROR
+
+        else:
+            with pytest.raises(CalledProcessError) as error:
+                run(
+                    [
+                        f"{Path(environ['HOME']) / '.local/bin/poetry'}",
+                        "run",
+                        "pacstall",
+                        command,
+                        "foo",
+                    ],
+                    check=True,
+                )
+
+            assert error.value.returncode == ErrorCodes.USAGE_ERROR
+            assert capfd.readouterr().err == dedent(
+                f"""\
+                [!] ERROR: Pacstall needs root privileges to run the {command} command
+                [+] INFO: Try running sudo pacstall {command} foo instead
+                """
+            )
 
 
-def test_launch_as_normal_user():
-    # Run the help command as normal user
-    process = run(["poetry", "run", "pacstall", "-h"])
-    assert process.returncode == 1
+@pytest.mark.slow()
+class TestWithRoot:
+    """Test behavior with root privileges."""
+
+    def test_launch(self) -> None:
+        """Test behavior when pacstall is launched without any arguments."""
+
+        with pytest.raises(CalledProcessError) as error:
+            run(
+                [
+                    "sudo",
+                    "-E",
+                    f"{Path(environ['HOME']) / '.local/bin/poetry'}",
+                    "run",
+                    "pacstall",
+                ],
+                check=True,
+            )
+
+        assert error.value.returncode == 1
+
+    def test_with_help_flag(self) -> None:
+        """Test behavior when pacstall is launched as root."""
+
+        assert (
+            run(
+                [
+                    "sudo",
+                    "-E",
+                    f"{Path(environ['HOME']) / '.local/bin/poetry'}",
+                    "run",
+                    "pacstall",
+                    "-h",
+                ],
+                check=True,
+            ).returncode
+            == 0
+        )
+
+    @pytest.mark.parametrize(
+        "command",
+        ["install", "remove", "upgrade", "download", "search", "list", "info"],
+    )
+    def test_commands(self, command: str) -> None:
+        """
+        Test behavior when commands are issued with root.
+
+        Parameters
+        ----------
+        command
+            Parameterized commands to test against.
+        """
+
+        if command == "list":
+            assert (
+                run(
+                    [
+                        "sudo",
+                        "-E",
+                        f"{Path(environ['HOME']) / '.local/bin/poetry'}",
+                        "run",
+                        "pacstall",
+                        command,
+                    ],
+                    check=True,
+                ).returncode
+                == 0
+            )
+
+        elif command == "download":
+            with pytest.raises(CalledProcessError) as error:
+                run(
+                    [
+                        "sudo",
+                        "-E",
+                        f"{Path(environ['HOME']) / '.local/bin/poetry'}",
+                        "run",
+                        "pacstall",
+                        command,
+                        "foo",
+                    ],
+                    check=True,
+                )
+
+            assert (
+                error.value.returncode == ErrorCodes.UNAVAILABLE_ERROR
+            )  # Not ErrorCodes.USAGE_ERROR
+
+        else:
+            assert (
+                run(
+                    [
+                        "sudo",
+                        "-E",
+                        f"{Path(environ['HOME']) / '.local/bin/poetry'}",
+                        "run",
+                        "pacstall",
+                        command,
+                        "foo",
+                    ],
+                    check=True,
+                ).returncode
+                == 0
+            )
