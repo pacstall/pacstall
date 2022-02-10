@@ -23,11 +23,13 @@
 """Pacstall logging API."""
 
 from datetime import datetime
+from getpass import getuser
 from logging import (
     DEBUG,
     ERROR,
     INFO,
     WARNING,
+    FileHandler,
     Formatter,
     LogRecord,
     StreamHandler,
@@ -107,32 +109,37 @@ def setup_logger(
         The lifetime of old log files, before they are purged.
     """
 
-    LOGGING_DIR_PREFIX = Path("/var/log/pacstall/")
-    LOGGING_DIR_PREFIX.mkdir(exist_ok=True, parents=True)
-
-    # Delete older logs
-    for log_folder in LOGGING_DIR_PREFIX.glob("*"):
-        log_folder_lifetime = log_folder.stat().st_mtime
-        if log_folder_lifetime < lifetime:
-            rmtree(log_folder)
-
-    today = datetime.today()
-    # Create logging path objects
-    logging_dir_path = LOGGING_DIR_PREFIX / f"{today.date()}"
-    logging_dir_path.mkdir(exist_ok=True)
-    logging_file_path = logging_dir_path / f"{today.time()}.log"
-
-    # Configure file logger
-    basicConfig(
-        level=file_logger_level,
-        format="%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
-        datefmt="%r",
-        filename=logging_file_path,
-        filemode="w",
-    )
-
     # Add console logger
     console = StreamHandler()
     console.setLevel(console_logger_level)
     console.setFormatter(ConsoleFormatter())
+    # HACK: Setting the level to DEBUG, otherwise file_logger_level doesn't
+    #       have any effect.
+    basicConfig(level=DEBUG, handlers=[console])
     getLogger().addHandler(console)
+
+    if getuser() == "root":
+        LOGGING_DIR_PREFIX = Path("/var/log/pacstall/")
+        LOGGING_DIR_PREFIX.mkdir(exist_ok=True, parents=True)
+
+        # Delete older logs
+        for log_folder in LOGGING_DIR_PREFIX.glob("*"):
+            log_folder_lifetime = log_folder.stat().st_mtime
+            if log_folder_lifetime < lifetime:
+                rmtree(log_folder)
+
+        today = datetime.today()
+        # Create logging path objects
+        logging_dir_path = LOGGING_DIR_PREFIX / f"{today.date()}"
+        logging_dir_path.mkdir(exist_ok=True)
+        logging_file_path = logging_dir_path / f"{today.time()}.log"
+
+        logging_file_handler = FileHandler(filename=logging_file_path, mode="w")
+        logging_file_handler.setLevel(file_logger_level)
+        logging_file_handler.setFormatter(
+            Formatter(
+                "%(asctime)s %(name)-12s %(levelname)-8s %(message)s", datefmt="%r"
+            )
+        )
+
+        getLogger().addHandler(logging_file_handler)
