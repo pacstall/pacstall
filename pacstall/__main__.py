@@ -31,6 +31,7 @@ from getpass import getuser
 from logging import getLogger
 from time import sleep
 
+from rich import print as rprint
 from rich.traceback import install
 
 from pacstall.api import logger
@@ -42,21 +43,28 @@ from pacstall.parser import parse_arguments
 def main() -> int:
     """Main Pacstall function."""
 
-    logger.setup_logger()
-    log = getLogger()
-
     install(
         show_locals=True
     )  # --> Install Rich's traceback handler for better looking tracebackes
 
     args = parse_arguments()
-    log.debug(f"{args = }")
-
-    if getuser() != "root":
-        log.error("Pacstall needs to be launched as root")
+    if args.command in ["install", "remove", "upgrade", "repo"] and getuser() != "root":
+        rprint(
+            f"[[bold red]![/bold red]] [bold]ERROR[/bold]: Pacstall needs root privileges to run the {args.command} command",
+            file=sys.stderr,
+        )
+        rprint(
+            f"[[bold green]+[/bold green]] [bold]INFO[/bold]: Try running [code]sudo {' '.join(sys.argv)}[/code] instead",
+            file=sys.stderr,
+        )
         sys.exit(ErrorCodes.USAGE_ERROR)  # --> command line usage error
 
-    if args.command in ["install", "remove", "upgrade"]:
+    logger.setup_logger()
+    log = getLogger()
+
+    log.debug(f"{args = }")
+
+    if args.command in ["install", "remove", "upgrade", "repo"]:
         lock_file = open("/var/lock/pacstall.lock", "w")
         while True:
             try:
