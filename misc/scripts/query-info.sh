@@ -35,7 +35,10 @@ fi
 source "$LOGDIR/$PACKAGE"
 
 if [[ "$PACKAGE" == *-deb ]]; then
-	size="$(numfmt --to=iec $(apt-cache --no-all-versions show "${_gives}" | grep Installed-Size | cut -d' ' -f 2))"
+	size="$(apt-cache --no-all-versions show "${_gives}" | grep Installed-Size | cut -d' ' -f 2 | numfmt --to=iec)"
+	if [[ -z "${size}" ]]; then
+		size="invalid"
+	fi
 else
 	size="$(du -sh "$STOWDIR"/"$PACKAGE" 2> /dev/null | awk '{print $1}')"
 fi
