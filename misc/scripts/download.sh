@@ -24,16 +24,16 @@
 
 # This script downloads pacscripts from the interwebs
 
-error_code="$(curl -o /dev/null -s -w "%{http_code}\n" -- "${URL}")"
-if [[ "${error_code}" != "200" ]]; then
-	if [[ "${error_code}" == "000" ]]; then
+http_code="$(curl -o /dev/null -s -w "%{http_code}\n" -- "${URL}")"
+if [[ "${http_code}" != "200" ]]; then
+	if [[ "${http_code}" == "000" ]]; then
 		fancy_message error "Failed to download file, check your internet connection"
 		exit 1
 	fi
 	fancy_message error "Package does not exist"
 	exit 1
 fi
-if [[ "${error_code}" == "200" ]]; then
+if [[ "${http_code}" == "200" ]]; then
 	if [[ "$type" = "install" ]]; then
 		mkdir -p "${SRCDIR}"
 		if ! cd "${SRCDIR}"; then
