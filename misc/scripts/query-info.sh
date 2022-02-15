@@ -35,14 +35,16 @@ fi
 source "$LOGDIR/$PACKAGE"
 
 if [[ "$PACKAGE" == *-deb ]]; then
-	size="$(numfmt --to=iec $(apt-cache --no-all-versions show "${_gives}" | grep Installed-Size | cut -d' ' -f 2))"
+	size="$(apt-cache --no-all-versions show "${_gives}" | grep Installed-Size | cut -d' ' -f 2 | numfmt --to=iec)"
 else
 	size="$(du -sh "$STOWDIR"/"$PACKAGE" 2> /dev/null | awk '{print $1}')"
 fi
 
 echo -e "${BGreen}name${NORMAL}: $PACKAGE"
 echo -e "${BGreen}version${NORMAL}: $_version"
-echo -e "${BGreen}size${NORMAL}: $size"
+if [[ -n "${size}" ]]; then
+	echo -e "${BGreen}size${NORMAL}: $size"
+fi
 echo -e "${BGreen}description${NORMAL}: ""$_description"""
 echo -e "${BGreen}date installed${NORMAL}: ""$_date"""
 
