@@ -80,12 +80,25 @@ function checks() {
 		fancy_message warn "It maybe no longer maintained. Please be advised."
 	fi
 	# curl url to check it exists
-	if curl --output /dev/null --silent --head --fail "$url" > /dev/null; then
-		fancy_message info "URL exists"
-	else
-		fancy_message error "URL doesn't exist"
-		return 1
-	fi
+    http_code="$(curl -o /dev/null -s -w "%{http_code}\n" -- "${url}")"
+    case "${http_code}" in
+        000)
+            fancy_message error "Failed to download file, check your connection"
+            error_log 1 "get ${PACKAGE} pacscript"
+            exit 1
+        ;;
+        404)
+            fancy_message error "The URL ${BIGreen}${url}${NC} returned a 404"
+            exit 1
+        ;;
+        200|302)
+            true
+        ;;
+        *)
+            fancy_message error "Failed with http code ${http_code}"
+            exit 1
+        ;;
+    esac
 }
 
 function cget() {
