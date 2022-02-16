@@ -25,33 +25,37 @@
 # This script downloads pacscripts from the interwebs
 
 http_code="$(curl -o /dev/null -s -w "%{http_code}\n" -- "${URL}")"
-if [[ "${http_code}" != "200" ]]; then
-	if [[ "${http_code}" == "000" ]]; then
-		fancy_message error "Failed to download file, check your internet connection"
+
+case "${http_code}" in
+	000)
+		fancy_message error "Failed to download file, check your connection"
+		error_log 1 "get ${PACKAGE} pacscript"
 		exit 1
-	fi
-	fancy_message error "Package does not exist"
-	exit 1
-fi
-if [[ "${http_code}" == "200" ]]; then
-	if [[ "$type" = "install" ]]; then
-		mkdir -p "${SRCDIR}"
-		if ! cd "${SRCDIR}"; then
-			error_log 1 "install ${PACKAGE}"; fancy_message error "Could not enter ${SRCDIR}"; exit 1
+	;;
+	404)
+		fancy_message error "The URL ${BIGreen}${URL}${NC} returned a 404"
+		exit 1
+	;;
+	200)
+		if [[ "$type" = "install" ]]; then
+			mkdir -p "${SRCDIR}"
+			if ! cd "${SRCDIR}"; then
+				error_log 1 "install ${PACKAGE}"; fancy_message error "Could not enter ${SRCDIR}"; exit 1
+			fi
 		fi
-	fi
-	
-	case "${URL}" in
-		*.pacscript)
-			wget -q --show-progress --progress=bar:force -- "${URL}" > /dev/null 2>&1
-		;;
-		*)
-			download -- "${URL}" > /dev/null 2>&1
-		;;
-	esac
-	return 0
-else
-	error_log 1 "get ${PACKAGE} pacscript"
-	return 1
-fi
+	;;
+	*)
+		fancy_message error "Failed with http code ${http_code}"
+		exit 1
+	;;
+esac
+case "${URL}" in
+	*.pacscript)
+		wget -q --show-progress --progress=bar:force -- "${URL}" > /dev/null 2>&1
+	;;
+	*)
+		download -- "${URL}" > /dev/null 2>&1
+	;;
+esac
+return 0
 # vim:set ft=sh ts=4 sw=4 noet:
