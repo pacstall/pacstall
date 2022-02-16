@@ -91,7 +91,7 @@ function checks() {
             fancy_message error "The URL ${BIGreen}${url}${NC} returned a 404"
             exit 1
         ;;
-        200|302)
+        200|301|302)
             true
         ;;
         *)
