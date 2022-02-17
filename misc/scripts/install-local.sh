@@ -458,6 +458,7 @@ case "$url" in
 	;;
 	*.deb)
 		if ! check_url "${url}"; then
+			sudo dpkg -r --force-all "$name" > /dev/null
 			cleanup
 			exit 1
 		fi
