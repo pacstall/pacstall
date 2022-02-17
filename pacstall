@@ -202,7 +202,7 @@ function check_url() {
             return 1
         ;;
         404)
-            fancy_message error "The URL ${BIGreen}${1}${NC} returned a 404"
+            fancy_message error "The URL cannot be found"
             return 1
         ;;
         200|302)
