@@ -57,7 +57,7 @@ if [[ $PACKAGE == *@* ]]; then
 			if [[ "$LEN" -eq 0 ]]; then
 				fancy_message warn "There is no package with the name $IRed${PACKAGE%%@*}$NC in the repo $CYAN$REPONAME$NC"
 				error_log 3 "search $PACKAGE@$REPONAME"
-				return 1	
+				exit 1
 			fi
 			export PACKAGE
 			export REPO="$URL"
@@ -67,7 +67,7 @@ if [[ $PACKAGE == *@* ]]; then
 	
 	fancy_message warn "$IRed$REPONAME$NC is not on your repo list or does not exist"
 	error_log 3 "search $PACKAGE@$REPONAME"
-	return 1	
+	exit 1
 fi
 
 # Makes array of packages and array
