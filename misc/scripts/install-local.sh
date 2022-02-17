@@ -79,26 +79,9 @@ function checks() {
 		fancy_message warn "Package does not have a maintainer"
 		fancy_message warn "It maybe no longer maintained. Please be advised."
 	fi
-	# curl url to check it exists
-    http_code="$(curl -o /dev/null -s -w "%{http_code}\n" -- "${url}")"
-    case "${http_code}" in
-        000)
-            fancy_message error "Failed to download file, check your connection"
-            error_log 1 "get ${PACKAGE} pacscript"
-            exit 1
-        ;;
-        404)
-            fancy_message error "The URL ${BIGreen}${url}${NC} returned a 404"
-            exit 1
-        ;;
-        200|301|302)
-            true
-        ;;
-        *)
-            fancy_message error "Failed with http code ${http_code}"
-            exit 1
-        ;;
-    esac
+	if ! check_url "${URL}"; then
+		exit 1
+	fi
 }
 
 function cget() {

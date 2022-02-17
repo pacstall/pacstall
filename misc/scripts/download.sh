@@ -24,7 +24,7 @@
 
 # This script downloads pacscripts from the interwebs
 
-if curl --output /dev/null --silent --head --fail -- "$URL" ; then
+if check_url "${URL}"; then
 	if [[ "$type" = "install" ]]; then
 		mkdir -p "$SRCDIR"
 		if ! cd "$SRCDIR" ; then
