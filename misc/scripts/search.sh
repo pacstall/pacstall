@@ -114,8 +114,10 @@ if [[ "$LEN" -eq 0 ]]; then
 	if [[ -z "$SEARCH" ]]; then
 		fancy_message warn "There is no package with the name $IRed$PACKAGE$NC"
 		error_log 3 "search $PACKAGE"
+		exit 1
 	else
 		fancy_message warn "There is no package with the name $IRed$SEARCH$NC"
+		exit 1
 	fi
 
 	return 1
