@@ -75,6 +75,9 @@ fi
 PACKAGELIST=()
 URLLIST=()
 while IFS= read -r URL; do
+	if ! check_url "${URL}/packagelist"; then
+		exit 1
+	fi
 	mapfile -t PARTIALLIST < <(curl -s -- "$URL"/packagelist)
 	URLLIST+=("${PARTIALLIST[@]/*/$URL}")
 	PACKAGELIST+=("${PARTIALLIST[@]}")
