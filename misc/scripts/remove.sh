@@ -41,7 +41,7 @@ fi
 
 case "$url" in
 	*.deb)
-		if ! sudo apt remove "$gives" 2>/dev/null; then
+		if ! sudo apt remove -y "$gives" 2>/dev/null; then
 			fancy_message warn "Failed to remove the package"
 			error_log 1 "remove $PACKAGE"
 			exit 1
