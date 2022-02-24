@@ -79,7 +79,7 @@ function checks() {
 		fancy_message warn "Package does not have a maintainer"
 		fancy_message warn "It maybe no longer maintained. Please be advised."
 	fi
-	if ! check_url "${URL}"; then
+	if ! check_url "${url}"; then
 		exit 1
 	fi
 }
