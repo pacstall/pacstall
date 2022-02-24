@@ -242,7 +242,8 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 	fi
 	export PACSTALL_INSTALL=1
 	sudo rm -rf "$SRCDIR/$name-pacstall"
-	sudo --preserve-env=PACSTALL_INSTALL apt-get install "$SRCDIR/$name-pacstall.deb" -y 2> "/dev/null"
+	# --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
+	sudo --preserve-env=PACSTALL_INSTALL apt-get install "$SRCDIR/$name-pacstall.deb" -y --allow-downgrades 2> "/dev/null"
 	if ! [[ -d /etc/apt/preferences.d/ ]]; then
 		sudo mkdir -p /etc/apt/preferences.d
 	fi
