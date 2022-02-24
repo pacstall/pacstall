@@ -178,7 +178,14 @@ function makeVirtualDeb {
 		fi
 
 		printf "Suggests:" |sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-		printf " %s\n" "${optdepends[@]}" | awk -F': ' '{print $1}' | tr '\n' ',' | head -c -2 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		for i in "${optdepends[@]}"; do
+			if ! grep -q ':' <<< "${i}"; then
+				fancy_message error "${i} does not have a description"
+				cleanup
+				return 1
+			fi
+		done
+		printf " %s\n" "${optdepends[@]}" | awk -F': ' '{print $1}' | tr '\n' ',' | head -c -1 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 		printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 
