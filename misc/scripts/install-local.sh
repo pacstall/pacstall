@@ -293,7 +293,7 @@ fi
 fancy_message info "Sourcing pacscript"
 DIR=$(pwd)
 export homedir="/home/$PACSTALL_USER"
-if ! source "$PACKAGE".pacscript > /dev/null; then
+if ! source "$PACKAGE".pacscript; then
 	fancy_message error "Could not source pacscript"
 	error_log 12 "install $PACKAGE"
 	fancy_message info "Cleaning up"
