@@ -27,7 +27,7 @@
 
 *  Supports binary, git, appimage, building and `.deb` packages
 *  Accelerated package download using [axel](https://github.com/axel-download-accelerator/axel) (optional)
-*  Checks for the latest commit on git packages, so you always get the latest build of your favourite program straight from the developer
+*  During upgrades, you always get the latest build off of the latest commit from the developer for `-git` packages. No need to wait for the pacscript maintainer to update the script!
 *  Ability to install programs from multiple repositories
 *  Ability to track Pacstall updates from any fork/branch easily
 *  Completions available for `bash` (`ZSH`), and `fish`
