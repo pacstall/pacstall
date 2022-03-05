@@ -27,8 +27,7 @@
 
 *  Supports binary, git, appimage, building and `.deb` packages
 *  Accelerated package download using [axel](https://github.com/axel-download-accelerator/axel) (optional)
-*  Auto update checks for git packages, so you always get the latest build of your favourite program off the latest commit by the developer
-*  Over 175 packages available to install in the official programs repository
+*  Checks for the latest commit on git packages, so you always get the latest build of your favourite program straight from the developer
 *  Ability to install programs from multiple repositories
 *  Ability to track Pacstall updates from any fork/branch easily
 *  Completions available for `bash` (`ZSH`), and `fish`
