@@ -30,6 +30,7 @@ from logging import (
     INFO,
     WARNING,
     FileHandler,
+    Filter,
     Formatter,
     LogRecord,
     StreamHandler,
@@ -38,6 +39,7 @@ from logging import (
 )
 from pathlib import Path
 from shutil import rmtree
+from sys import stderr, stdout
 from time import time
 
 from pacstall.api.color import Foreground as Fg
@@ -91,6 +93,36 @@ class ConsoleFormatter(Formatter):
         return Formatter.format(self, record)
 
 
+class MaxLevelFilter(Filter):
+    """
+    Filters (lets through) all messages with level < LEVEL.
+
+    Methods
+    -------
+    filter(record)
+        Filter a log record. If it's level is < LEVEL, it'll be let through.
+    """
+
+    def __init__(self, level: int):
+        self.level = level
+
+    def filter(self, record: LogRecord) -> bool:
+        """
+        Filter a log record. If it's level is < LEVEL, it'll be let through.
+
+        Parameters
+        ----------
+        record
+            A LogRecord instance represents an event being logged.
+
+        Returns
+        -------
+        bool
+            True if the record is let through, False otherwise.
+        """
+        return record.levelno < self.level
+
+
 def setup_logger(
     file_logger_level: int = DEBUG,
     console_logger_level: int = INFO,
@@ -109,14 +141,22 @@ def setup_logger(
         The lifetime of old log files, before they are purged.
     """
 
-    # Add console logger
-    console = StreamHandler()
-    console.setLevel(console_logger_level)
-    console.setFormatter(ConsoleFormatter())
-    # HACK: Setting the level to DEBUG, otherwise file_logger_level doesn't
-    #       have any effect.
-    basicConfig(level=DEBUG, handlers=[console])
-    getLogger().addHandler(console)
+    formatter = ConsoleFormatter()
+    stdout_handler = StreamHandler(stdout)
+    stderr_handler = StreamHandler(stderr)
+
+    # HACK: Setting the level to DEBUG otherwise handlers don't have any effect.
+    basicConfig(level=DEBUG, handlers=[stdout_handler, stderr_handler])
+
+    # Records lower than WARNING will be logged to stdout.
+    stdout_handler.addFilter(MaxLevelFilter(WARNING))
+    stdout_handler.setLevel(console_logger_level)
+    stdout_handler.setFormatter(formatter)
+
+    # Records higher than max(console_logger_level, WARNING) will be logged to
+    # stderr.
+    stderr_handler.setLevel(max(console_logger_level, WARNING))
+    stderr_handler.setFormatter(formatter)
 
     if getuser() == "root":
         LOGGING_DIR_PREFIX = Path("/var/log/pacstall/")
