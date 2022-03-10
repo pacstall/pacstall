@@ -193,6 +193,27 @@ function ask() {
 		esac
 	done
 }
+function check_url() {
+    http_code="$(curl -o /dev/null -s -w "%{http_code}\n" -- "${1}")"
+    case "${http_code}" in
+        000)
+            fancy_message error "Failed to download file, check your connection"
+            error_log 1 "get ${PACKAGE} pacscript"
+            return 1
+        ;;
+        404)
+            fancy_message error "The URL cannot be found"
+            return 1
+        ;;
+        200|302)
+            true
+        ;;
+        *)
+            fancy_message error "Failed with http code ${http_code}"
+            return 1
+        ;;
+    esac
+}
 
 # use axel if avaliable
 function download() {
@@ -334,12 +355,6 @@ while [[ ! "$1" == "--" ]]; do
 				export type="install"
 				export local="no"
 				
-				if [[ "${GITHUB_ACTIONS}" != "true" ]]; then
-					if ! ping -c 1 github.com &>/dev/null; then
-						fancy_message error "You seem to be offline"
-						exit 1
-					fi
-				fi
 				if ! source "$STGDIR/scripts/search.sh"; then
 					fail_install=1
 					export fail_install
@@ -410,12 +425,6 @@ while [[ ! "$1" == "--" ]]; do
 
 		-S|--search)
 
-			if [[ "${GITHUB_ACTIONS}" != "true" ]]; then
-				if ! ping -c 1 github.com &>/dev/null; then
-					fancy_message error "You seem to be offline"
-					exit 1
-				fi
-			fi
 			export SEARCH=$2
 			if [[ -z "$SEARCH" ]]; then
 				fancy_message error "You failed to specify a package"
@@ -454,12 +463,6 @@ while [[ ! "$1" == "--" ]]; do
 				return 0
 			fi
 
-			if [[ "${GITHUB_ACTIONS}" != "true" ]]; then
-				if ! ping -c 1 github.com &>/dev/null; then
-					fancy_message error "You seem to be offline"
-					exit 1
-				fi
-			fi
 			if [[ -n "$REPO" ]]; then
 				source "$STGDIR/scripts/add-repo.sh"
 				exit 0
@@ -505,12 +508,6 @@ while [[ ! "$1" == "--" ]]; do
 				fi
 			fi
 
-			if [[ "${GITHUB_ACTIONS}" != "true" ]]; then
-				if ! ping -c 1 github.com &>/dev/null; then
-					fancy_message error "You seem to be offline"
-        			exit 1
-      			fi
-			fi
 			if curl --output /dev/null --silent --head --fail https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/pyproject.toml; then
 				fancy_message error "The repository you are trying to upgrade to contains a version of pacstall that cannot be updated from $(pacstall -V)"
 				fancy_message error "Visit https://github.com/$USERNAME/pacstall/tree/$BRANCH for more information on how to reinstall. Most packages will also need to be reinstalled"
@@ -541,12 +538,6 @@ while [[ ! "$1" == "--" ]]; do
 				shift
 				export type="download"
 
-				if [[ "${GITHUB_ACTIONS}" != "true" ]]; then
-					if ! ping -c 1 github.com &>/dev/null; then
-						fancy_message error "You seem to be offline"
-						exit 1
-					fi
-				fi
 				if ! source "$STGDIR/scripts/search.sh"; then
 					((i++))
 					continue
@@ -570,12 +561,6 @@ while [[ ! "$1" == "--" ]]; do
 		;;
 
 		-Up|--upgrade)
-			if [[ "${GITHUB_ACTIONS}" != "true" ]]; then
-				if ! ping -c 1 github.com &>/dev/null; then
-					fancy_message error "You seem to be offline"
-					exit 1
-				fi
-			fi
 			source "$STGDIR/scripts/upgrade.sh"
 
 			if [[ -s "LOGFILE" ]]; then
