@@ -246,7 +246,7 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 	export PACSTALL_INSTALL=1
 	sudo rm -rf "$SRCDIR/$name-pacstall"
 	# --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
-	sudo --preserve-env=PACSTALL_INSTALL apt-get --install-recommends install "$SRCDIR/$name-pacstall.deb" -y --allow-downgrades 2> "/dev/null"
+	sudo --preserve-env=PACSTALL_INSTALL apt-get install $optinstall "$SRCDIR/$name-pacstall.deb" -y --allow-downgrades 2> "/dev/null"
 	if ! [[ -d /etc/apt/preferences.d/ ]]; then
 		sudo mkdir -p /etc/apt/preferences.d
 	fi
@@ -256,7 +256,7 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 
 
 	fancy_message info "Installing dependencies"
-	if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install $optinstall -f -y -qq -o=Dpkg::Use-Pty=0; then
+	if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install $optinstall -f -y -qq -o=Dpkg::Use-Pty=0 "${depends}"; then
 		fancy_message error "Failed to install dependencies"
 		error_log 8 "install $PACKAGE"
 		sudo dpkg -r --force-all "$name" > /dev/null
@@ -264,7 +264,7 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 		cleanup
 		return 1
 	fi
-	sudo --preserve-env=PACSTALL_INSTALL apt-get --install-recommends install "$SRCDIR/$name-pacstall.deb" -y > "/dev/null"
+	sudo --preserve-env=PACSTALL_INSTALL apt-get install $optinstall "$SRCDIR/$name-pacstall.deb" -y > "/dev/null"
 	sudo rm "$SRCDIR/$name-pacstall.deb"
 	echo "Package: ${name}
 Pin: version *
