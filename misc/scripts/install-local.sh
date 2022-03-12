@@ -246,7 +246,7 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 	export PACSTALL_INSTALL=1
 	sudo rm -rf "$SRCDIR/$name-pacstall"
 	# --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
-	sudo --preserve-env=PACSTALL_INSTALL apt-get install "$SRCDIR/$name-pacstall.deb" -y --allow-downgrades 2> "/dev/null"
+	sudo --preserve-env=PACSTALL_INSTALL apt-get --install-recommends install "$SRCDIR/$name-pacstall.deb" -y --allow-downgrades 2> "/dev/null"
 	if ! [[ -d /etc/apt/preferences.d/ ]]; then
 		sudo mkdir -p /etc/apt/preferences.d
 	fi
@@ -264,7 +264,7 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 		cleanup
 		return 1
 	fi
-	sudo --preserve-env=PACSTALL_INSTALL apt-get install "$SRCDIR/$name-pacstall.deb" -y > "/dev/null"
+	sudo --preserve-env=PACSTALL_INSTALL apt-get --install-recommends install "$SRCDIR/$name-pacstall.deb" -y > "/dev/null"
 	sudo rm "$SRCDIR/$name-pacstall.deb"
 	echo "Package: ${name}
 Pin: version *
