@@ -402,13 +402,13 @@ while [[ ! "$1" == "--" ]]; do
 				
 				# Check if we need to cd into the directory first
 				if [[ "$PKGPATH" != "." ]] && [[ -d "$PACKAGE" ]]; then
-					cd $PACKAGE
+					cd "$PACKAGE"
 				elif [[ -d "$PKGPATH" ]]; then
 					cd "$PKGPATH"
 				fi
 				
 				# Check if the file exist
-				if [[ ! -f "$INPUT".pacscript ]]; then
+				if [[ ! -f "$PACKAGE".pacscript ]]; then
 					fancy_message error "$2 does not exist"
 					shift
 					continue
