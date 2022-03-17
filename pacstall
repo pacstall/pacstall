@@ -401,7 +401,7 @@ while [[ ! "$1" == "--" ]]; do
 				export PACKAGE
 				
 				# Check if we need to cd into the directory first
-				if [[ "$PKGPATH" != "." ]] && [[ -d "$PACKAGE" ]]; then
+				if [[ "$PKGPATH" == "." ]] && [[ -d "$PACKAGE" ]]; then
 					cd "$PACKAGE"
 				elif [[ -d "$PKGPATH" ]]; then
 					cd "$PKGPATH"
