@@ -396,15 +396,15 @@ while [[ ! "$1" == "--" ]]; do
 			while [[ -n "$2" ]]; do
 				export local="yes"
 				
-				PATH="$(dirname "$2")"
+				PKGPATH="$(dirname "$2")"
 				PACKAGE="$(basename "$2" ".pacscript")" # Removes the suffix
 				export PACKAGE
 				
 				# Check if we need to cd into the directory first
-				if [[ "$PATH" != "." ]] && [[ -d "$PACKAGE" ]]; then
+				if [[ "$PKGPATH" != "." ]] && [[ -d "$PACKAGE" ]]; then
 					cd $PACKAGE
-				elif [[ -d "$PATH" ]]; then
-					cd "$PATH"
+				elif [[ -d "$PKGPATH" ]]; then
+					cd "$PKGPATH"
 				fi
 				
 				# Check if the file exist
