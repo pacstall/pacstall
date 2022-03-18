@@ -336,7 +336,7 @@ if [[ -n "$pacdeps" ]]; then
 	done
 fi
 
-if [[ -n "$breaks" ]]; then
+if [[ -n "$breaks" ]] && ! pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
 	for pkg in $breaks; do
 		if dpkg-query -W -f='${Status} ${Section}' "${pkg}" 2> /dev/null | grep "^install ok installed" | grep -v "Pacstall" > /dev/null 2>&1; then
 			# Check if anything in breaks variable is installed already
