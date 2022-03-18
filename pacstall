@@ -394,23 +394,27 @@ while [[ ! "$1" == "--" ]]; do
 			fi
 
 			while [[ -n "$2" ]]; do
-				INPUT="$(basename "$2" ".pacscript")" # Removes the suffix
 				export local="yes"
-
-				# Check if we need to cd into the directory first, and also check that $INPUT.pacscript does not exist
-				if [[ -d "$INPUT" ]] && [[ ! -f "$INPUT".pacscript ]]; then
-					cd "$(basename "$INPUT")" || exit
+				
+				PKGPATH="$(dirname "$2")"
+				PACKAGE="$(basename "$2" ".pacscript")" # Removes the suffix
+				export PACKAGE
+				
+				# Check if we need to cd into the directory first
+				if [[ "$PKGPATH" == "." ]] && [[ ! -f "$PACKAGE".pacscript ]] && [[ -d "$PACKAGE" ]]; then
+					cd "$PACKAGE"
+				elif [[ -d "$PKGPATH" ]]; then
+					cd "$PKGPATH"
 				fi
+				
 				# Check if the file exist
-				if [[ ! -f "$2".pacscript ]]; then
+				if [[ ! -f "$PACKAGE".pacscript ]]; then
 					fancy_message error "$2 does not exist"
 					shift
 					continue
 				fi
 				shift
 
-				PACKAGE="$(basename "$INPUT")"
-				export PACKAGE
 				if ! source "$STGDIR/scripts/install-local.sh"; then
 					fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
 					continue
