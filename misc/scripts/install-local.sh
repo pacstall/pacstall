@@ -447,7 +447,7 @@ if [[ "$name" == *-git ]]; then
 	# git clone quietly, with no history, and if submodules are there, download with 10 jobs
 	git clone --quiet --depth=1 --jobs=10 "$url"
 	# cd into the directory
-	cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the cloned git repository"; cleanup; exit 1 )
+	cd ./*/ 2> /dev/null || { error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the cloned git repository"; cleanup; exit 1; }
 	# Check the integrity
 	git fsck --full
 else
@@ -461,7 +461,7 @@ else
 			# unzip file
 			unzip -q "${url##*/}" 1>&1 2>/dev/null
 			# cd into it
-			cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive" )
+			cd ./*/ 2> /dev/null || { error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive"; }
 		;;
 		*.deb)
 			download "$url"
@@ -511,7 +511,7 @@ else
 				return 1
 			fi
 			tar -xf "${url##*/}" 1>&1 2>/dev/null
-			cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive" )
+			cd ./*/ 2> /dev/null || { error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive"; }
 		;;
 	esac
 fi
