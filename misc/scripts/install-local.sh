@@ -186,7 +186,7 @@ function makeVirtualDeb {
 	fi
 	dependency_string="$(printf "%s\n" "${dependency_array[@]}" | awk -F': ' '{print $1}' | sed ':a;N;$!ba;s/\n/, /g' | head -c -1)"
 	if (( ${#dependency_array[@]} != 0 )); then
-		printf "Depends: %s\n" "${dependency_string}" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control"
+		printf "Depends: %s\n" "${dependency_string}" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 	printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	printf "Architecture: all
