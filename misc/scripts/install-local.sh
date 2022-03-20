@@ -160,10 +160,6 @@ function makeVirtualDeb {
 		printf "Version: 0%s-1\n" "$version" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 
-	if [[ -n $depends ]]; then
-		printf "Depends: %s\n" "${depends//' '/' , '}"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-	fi
-
 	if [[ -n $optdepends ]]; then
 		fancy_message info "$name has optional dependencies that can enhance its functionalities"
 		echo "Optional dependencies:"
@@ -173,7 +169,6 @@ function makeVirtualDeb {
 			optinstall='--install-suggests'
 		fi
 
-		printf "Suggests:" |sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 		for i in "${optdepends[@]}"; do
 			if ! grep -q ':' <<< "${i}"; then
 				fancy_message error "${i} does not have a description"
@@ -181,10 +176,19 @@ function makeVirtualDeb {
 				return 1
 			fi
 		done
-		printf " %s\n" "${optdepends[@]}" | awk -F': ' '{print $1}' | tr '\n' ',' | head -c -1 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-		printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 
+	if [[ -n "${depends}" ]]; then
+		dependency_array+=( ${depends} )
+	fi
+	if [[ -n "${optinstall}" ]]; then
+		dependency_array+=( $(printf " %s\n" "${optdepends[@]}" | awk -F': ' '{print $1}') )
+	fi
+	dependency_string="$(printf "%s\n" "${dependency_array[@]}" | awk -F': ' '{print $1}' | sed ':a;N;$!ba;s/\n/, /g' | head -c -1)"
+	if (( ${#dependency_array[@]} != 0 )); then
+		printf "Depends: %s\n" "${dependency_string}" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control"
+	fi
+	printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	printf "Architecture: all
 Essential: no
 Section: Pacstall
@@ -198,6 +202,7 @@ Replace: ${replace//' '/', '}" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/cont
 	printf "Provides: ${gives:-$name}
 Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
 Description: This is a symbolic package used by pacstall, may be removed with apt or dpkg. $description\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	sudo sed -i '/^$/d' "$SRCDIR/$name-pacstall/DEBIAN/control"
 
 	echo '#!/usr/bin/env bash
 function ask() {
@@ -246,7 +251,7 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 	export PACSTALL_INSTALL=1
 	sudo rm -rf "$SRCDIR/$name-pacstall"
 	# --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
-	sudo --preserve-env=PACSTALL_INSTALL apt-get install $optinstall "$SRCDIR/$name-pacstall.deb" -y --allow-downgrades 2> "/dev/null"
+	sudo --preserve-env=PACSTALL_INSTALL apt-get install "$SRCDIR/$name-pacstall.deb" -y --allow-downgrades 2> "/dev/null"
 	if ! [[ -d /etc/apt/preferences.d/ ]]; then
 		sudo mkdir -p /etc/apt/preferences.d
 	fi
@@ -256,7 +261,7 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 
 
 	fancy_message info "Installing dependencies"
-	if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install $optinstall -f -y -qq -o=Dpkg::Use-Pty=0 "${depends}"; then
+	if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install -f -y -qq -o=Dpkg::Use-Pty=0 "${depends}"; then
 		fancy_message error "Failed to install dependencies"
 		error_log 8 "install $PACKAGE"
 		sudo dpkg -r --force-all "$name" > /dev/null
@@ -264,7 +269,7 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 		cleanup
 		return 1
 	fi
-	sudo --preserve-env=PACSTALL_INSTALL apt-get install $optinstall "$SRCDIR/$name-pacstall.deb" -y > "/dev/null"
+	sudo --preserve-env=PACSTALL_INSTALL apt-get install "$SRCDIR/$name-pacstall.deb" -y > "/dev/null"
 	sudo rm "$SRCDIR/$name-pacstall.deb"
 	echo "Package: ${name}
 Pin: version *
