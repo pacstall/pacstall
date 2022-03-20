@@ -1,0 +1,43 @@
+name: Bug report
+description: Create a report to help us improve
+labels: ["bug", "triage"]
+assignees:
+  - wizard-28
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      placeholder: Tell us what happened!
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: To reproduce
+      placeholder: 1. Just explain what happened and where you think the issue is.
+    validations:
+      required: true
+  - type: textarea
+    id: expectation
+    attributes:
+      label: Expected behavior
+    validations:
+          required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      placeholder: Attach or link to screenshots here.
+    validations:
+          required: true
+  - type: textarea
+    id: os_and_pacstall_version
+    attributes:
+      label: Desktop
+      description: Provide your OS and Pacstall versions.
+      placeholder: |
+        OS: Ubuntu 20.04
+        Pacstall: 1.7.2, master branch
+    validations:
+      required: true
