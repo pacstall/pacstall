@@ -196,7 +196,7 @@ Replace: ${replace//' '/', '}" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/cont
     else
         local comma_gives="${gives:-$name}"
     fi
-    printf "Provides: ${comma_gives}
+    printf '%s\n' "Provides: ${comma_gives}
 Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
 Description: This is a symbolic package used by pacstall, may be removed with apt or dpkg. $description\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 
