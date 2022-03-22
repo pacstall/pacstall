@@ -165,6 +165,13 @@ function makeVirtualDeb {
 	fi
 
 	if [[ -n $optdepends ]]; then
+		for i in "${optdepends[@]}"; do
+			if ! grep -q ':' <<< "${i}"; then
+				fancy_message error "${i} does not have a description"
+				cleanup
+				return 1
+			fi
+		done
 		
 		optdeps=()
 		for optdep in "${optdepends[@]}"; do
@@ -173,7 +180,7 @@ function makeVirtualDeb {
 				optdeps+=("${optdep}")
 			fi
 		done
-		echo $optdeps
+
 		if [[ -n $optdeps ]]; then
 			fancy_message info "$name has optional dependencies that can enhance its functionalities"
 			echo "Optional dependencies:"
@@ -188,13 +195,6 @@ function makeVirtualDeb {
 		fi
 		
 		printf "Suggests:" |sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-		for i in "${optdepends[@]}"; do
-			if ! grep -q ':' <<< "${i}"; then
-				fancy_message error "${i} does not have a description"
-				cleanup
-				return 1
-			fi
-		done
 		printf " %s\n" "${optdepends[@]}" | awk -F': ' '{print $1}' | tr '\n' ',' | head -c -1 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 		printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
