@@ -57,12 +57,12 @@ for i in "${list[@]}"; do
 	# localver is the current version of the package
 	localver=$(sed -n -e 's/_version=//p' "$LOGDIR"/"$i" | tr -d \")
 
-	if [[ -z "${_remoterepo}" ]]; then
+	if [[ -z ${_remoterepo} ]]; then
 		# TODO: upgrade for local pacscripts
 		continue
-	elif echo "${_remoterepo}" | grep "github.com" > /dev/null ; then
+	elif echo "${_remoterepo}" | grep "github.com" > /dev/null; then
 		remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}"
-	elif echo "${_remoterepo}"| grep "gitlab.com" > /dev/null; then
+	elif echo "${_remoterepo}" | grep "gitlab.com" > /dev/null; then
 		remoterepo="${_remoterepo}/-/raw/${_remotebranch}"
 	else
 		remoterepo="${_remoterepo}"
@@ -72,10 +72,10 @@ for i in "${list[@]}"; do
 
 	source "$STGDIR/scripts/search.sh"
 
-	IDXMATCH=$(printf "%s\n" "${REPOS[@]}"| grep -n -- "$remoterepo" | cut -d : -f1| awk '{print $0"-1"}'| bc)
+	IDXMATCH=$(printf "%s\n" "${REPOS[@]}" | grep -n -- "$remoterepo" | cut -d : -f1 | awk '{print $0"-1"}' | bc)
 
 	if [[ -n $IDXMATCH ]]; then
-		remotever=$(source <(curl -s -- "$remoterepo"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
+		remotever=$(source <(curl -s -- "$remoterepo"/packages/"$i"/"$i".pacscript) && type pkgver &> /dev/null && pkgver || echo "$version") > /dev/null
 		remoteurl="${REPOS[$IDXMATCH]}"
 	else
 		fancy_message warn "Package ${GREEN}${i}${CYAN} is not on ${CYAN}$(parseRepo "${remoterepo}")${NC} anymore"
@@ -88,40 +88,40 @@ for i in "${list[@]}"; do
 			if [[ $IDX -eq $IDXMATCH ]]; then
 				continue
 			else
-				ver=$(source <(curl -s -- "${REPOS[$IDX]}"/packages/"$i"/"$i".pacscript) && type pkgver &>/dev/null && pkgver || echo "$version") >/dev/null
+				ver=$(source <(curl -s -- "${REPOS[$IDX]}"/packages/"$i"/"$i".pacscript) && type pkgver &> /dev/null && pkgver || echo "$version") > /dev/null
 				if ! ver_compare "$alterver" "$ver"; then
 					alterver="$ver"
 					alterurl="$REPO"
 				fi
 			fi
 		done
-		if [[ -n "$remotever" ]]; then
+		if [[ -n $remotever ]]; then
 			if ver_compare "$remotever" "$alterver"; then
 				echo -e "${GREEN}${i}${CYAN} has a newer version at ${CYAN}$(parseRepo "${alterurl}")${NC}."
 				ask "Keep the package from the current repo?" Y
-				if [[ "$answer" -eq 0 ]]; then
+				if [[ $answer -eq 0 ]]; then
 					remoterepo="$alterver"
 					remoteurl="$alterurl"
 				fi
 			fi
-		elif [[ "$alterver" != "0.0.0" ]]; then
+		elif [[ $alterver != "0.0.0" ]]; then
 			remoterepo="$alterver"
 			remoteurl="$alterurl"
 		fi
-	elif [[ "$remotever" == "$localver" ]]; then
+	elif [[ $remotever == "$localver" ]]; then
 		continue
 	fi
 
-	if [[ -n "$remotever" ]]; then
+	if [[ -n $remotever ]]; then
 		if [[ $i == *"-git" ]] || ver_compare "$localver" "$remotever"; then
-			echo "$i" | sudo tee -a /tmp/pacstall-up-list >/dev/null
-			echo "\t${GREEN}${i}${CYAN} @ $(parseRepo "${remoteurl}") ${NC}" | sudo tee -a /tmp/pacstall-up-print >/dev/null
-			echo "$remoteurl" | sudo tee -a /tmp/pacstall-up-urls >/dev/null
+			echo "$i" | sudo tee -a /tmp/pacstall-up-list > /dev/null
+			echo "\t${GREEN}${i}${CYAN} @ $(parseRepo "${remoteurl}") ${NC}" | sudo tee -a /tmp/pacstall-up-print > /dev/null
+			echo "$remoteurl" | sudo tee -a /tmp/pacstall-up-urls > /dev/null
 		fi
 	fi
 done
 
-if [[ $(wc -l /tmp/pacstall-up-list | awk '{ print $1 }') -eq 0 ]] ; then
+if [[ $(wc -l /tmp/pacstall-up-list | awk '{ print $1 }') -eq 0 ]]; then
 	fancy_message info "Nothing to upgrade"
 else
 	fancy_message info "Packages can be upgraded"
@@ -141,19 +141,21 @@ ${BOLD}$(cat /tmp/pacstall-up-print)${NORMAL}\n"
 	sudo mkdir -p "$SRCDIR"
 	sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" "$SRCDIR"
 	if ! cd "$SRCDIR" 2> /dev/null; then
-		error_log 1 "upgrade"; fancy_message error "Could not enter ${SRCDIR}"; exit 1
+		error_log 1 "upgrade"
+		fancy_message error "Could not enter ${SRCDIR}"
+		exit 1
 	fi
 	for i in "${!upgrade[@]}"; do
 		PACKAGE=${upgrade[$i]}
 		ask "Do you want to upgrade ${GREEN}${PACKAGE}${NC}?" Y
-		if [[ "$answer" -eq 0 ]]; then
+		if [[ $answer -eq 0 ]]; then
 			continue
 		fi
 		REPO="${remotes[$i]}"
 		export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 		if ! source "$STGDIR/scripts/download.sh"; then
 			fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
-			continue;
+			continue
 		fi
 		source "$STGDIR/scripts/install-local.sh"
 	done
