@@ -22,7 +22,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-
 # Colors
 NC="\033[0m"
 
@@ -39,7 +38,7 @@ function fancy_message() {
 	# 0 - info
 	# 1 - warning
 	# 2 - error
-	if [[ -z "${1}" ]] || [[ -z "${2}" ]]; then
+	if [[ -z ${1} ]] || [[ -z ${2} ]]; then
 		return
 	fi
 
@@ -47,10 +46,10 @@ function fancy_message() {
 	local MESSAGE="${2}"
 
 	case ${MESSAGE_TYPE} in
-		info) echo -e "[${GREEN}+${NC}] INFO: ${MESSAGE}";;
-		warn) echo -e "[${YELLOW}*${NC}] WARNING: ${MESSAGE}";;
-		error) echo -e "[${RED}!${NC}] ERROR: ${MESSAGE}";;
-		*) echo -e "[?] UNKNOWN: ${MESSAGE}";;
+		info) echo -e "[${GREEN}+${NC}] INFO: ${MESSAGE}" ;;
+		warn) echo -e "[${YELLOW}*${NC}] WARNING: ${MESSAGE}" ;;
+		error) echo -e "[${RED}!${NC}] ERROR: ${MESSAGE}" ;;
+		*) echo -e "[?] UNKNOWN: ${MESSAGE}" ;;
 	esac
 }
 
@@ -60,23 +59,21 @@ if [[ ! -t 0 ]]; then
 fi
 
 # Check if pacstall is installed
-if ! command -v pacstall &>/dev/null; then
+if ! command -v pacstall &> /dev/null; then
 	fancy_message error "Pacstall is not installed!"
 	exit 1
 fi
-
 
 fancy_message info "You can keep the installed packages even after uninstalling Pacstall"
 fancy_message info "Choose between the options:"
 echo "	1. Remove Pacstall and installed packages."
 echo "	2. Remove Pacstall only (Keep installed packages)."
 
-
 while true; do
 	echo -ne "Type selection number [${BIRed}1${NC}/${BIGreen}2${NC}] "
 	read -r reply <&0
-	
-	if [[ "$reply" -eq 1 ]]; then
+
+	if [[ $reply -eq 1 ]]; then
 		fancy_message info "Removing Pacstall and installed packages..."
 
 		# Remove packages
@@ -108,10 +105,10 @@ while true; do
 		# Remove tmp files
 		fancy_message info "Removing temporary files"
 		sudo rm -rf /tmp/pacstall/
-		
+
 		break
-		
-	elif [[ "$reply" -eq 2 ]]; then
+
+	elif [[ $reply -eq 2 ]]; then
 		fancy_message info "Only uninstalling Pacstall..."
 		sudo rm "$(command -v pacstall)"
 
@@ -131,7 +128,7 @@ while true; do
 		# Remove tmp files
 		fancy_message info "Removing temporary files"
 		sudo rm -rf /tmp/pacstall/
-		
+
 		break
 	fi
 done
