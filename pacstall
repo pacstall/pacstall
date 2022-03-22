@@ -42,74 +42,74 @@ export NC='\033[0m'
 # Curtesy of https://stackoverflow.com/a/28938235/13449010
 
 # Regular Colors
-export BLACK='\033[0;30m'        # Black
-export RED='\033[0;31m'          # Red
-export GREEN='\033[0;32m'        # Green
-export YELLOW='\033[0;33m'       # Yellow
-export BLUE='\033[0;34m'         # Blue
-export PURPLE='\033[0;35m'       # Purple
-export CYAN='\033[0;36m'         # Cyan
-export WHITE='\033[0;37m'        # White
+export BLACK='\033[0;30m'  # Black
+export RED='\033[0;31m'    # Red
+export GREEN='\033[0;32m'  # Green
+export YELLOW='\033[0;33m' # Yellow
+export BLUE='\033[0;34m'   # Blue
+export PURPLE='\033[0;35m' # Purple
+export CYAN='\033[0;36m'   # Cyan
+export WHITE='\033[0;37m'  # White
 
 # Bold
-export BBlack='\033[1;30m'       # Black
-export BRed='\033[1;31m'         # Red
-export BGreen='\033[1;32m'       # Green
-export BYellow='\033[1;33m'      # Yellow
-export BBlue='\033[1;34m'        # Blue
-export BPurple='\033[1;35m'      # Purple
-export BCyan='\033[1;36m'        # Cyan
-export BWhite='\033[1;37m'       # White
+export BBlack='\033[1;30m'  # Black
+export BRed='\033[1;31m'    # Red
+export BGreen='\033[1;32m'  # Green
+export BYellow='\033[1;33m' # Yellow
+export BBlue='\033[1;34m'   # Blue
+export BPurple='\033[1;35m' # Purple
+export BCyan='\033[1;36m'   # Cyan
+export BWhite='\033[1;37m'  # White
 
 # Underline
-export UBlack='\033[4;30m'       # Black
-export URed='\033[4;31m'         # Red
-export UGreen='\033[4;32m'       # Green
-export UYellow='\033[4;33m'      # Yellow
-export UBlue='\033[4;34m'        # Blue
-export UPurple='\033[4;35m'      # Purple
-export UCyan='\033[4;36m'        # Cyan
-export UWhite='\033[4;37m'       # White
+export UBlack='\033[4;30m'  # Black
+export URed='\033[4;31m'    # Red
+export UGreen='\033[4;32m'  # Green
+export UYellow='\033[4;33m' # Yellow
+export UBlue='\033[4;34m'   # Blue
+export UPurple='\033[4;35m' # Purple
+export UCyan='\033[4;36m'   # Cyan
+export UWhite='\033[4;37m'  # White
 
 # Background
-export On_Black='\033[40m'       # Black
-export On_Red='\033[41m'         # Red
-export On_Green='\033[42m'       # Green
-export On_Yellow='\033[43m'      # Yellow
-export On_Blue='\033[44m'        # Blue
-export On_Purple='\033[45m'      # Purple
-export On_Cyan='\033[46m'        # Cyan
-export On_White='\033[47m'       # White
+export On_Black='\033[40m'  # Black
+export On_Red='\033[41m'    # Red
+export On_Green='\033[42m'  # Green
+export On_Yellow='\033[43m' # Yellow
+export On_Blue='\033[44m'   # Blue
+export On_Purple='\033[45m' # Purple
+export On_Cyan='\033[46m'   # Cyan
+export On_White='\033[47m'  # White
 
 # High Intensity
-export IBlack='\033[0;90m'       # Black
-export IRed='\033[0;91m'         # Red
-export IGreen='\033[0;92m'       # Green
-export IYellow='\033[0;93m'      # Yellow
-export IBlue='\033[0;94m'        # Blue
-export IPurple='\033[0;95m'      # Purple
-export ICyan='\033[0;96m'        # Cyan
-export IWhite='\033[0;97m'       # White
+export IBlack='\033[0;90m'  # Black
+export IRed='\033[0;91m'    # Red
+export IGreen='\033[0;92m'  # Green
+export IYellow='\033[0;93m' # Yellow
+export IBlue='\033[0;94m'   # Blue
+export IPurple='\033[0;95m' # Purple
+export ICyan='\033[0;96m'   # Cyan
+export IWhite='\033[0;97m'  # White
 
 # Bold High Intensity
-export BIBlack='\033[1;90m'      # Black
-export BIRed='\033[1;91m'        # Red
-export BIGreen='\033[1;92m'      # Green
-export BIYellow='\033[1;93m'     # Yellow
-export BIBlue='\033[1;94m'       # Blue
-export BIPurple='\033[1;95m'     # Purple
-export BICyan='\033[1;96m'       # Cyan
-export BIWhite='\033[1;97m'      # White
+export BIBlack='\033[1;90m'  # Black
+export BIRed='\033[1;91m'    # Red
+export BIGreen='\033[1;92m'  # Green
+export BIYellow='\033[1;93m' # Yellow
+export BIBlue='\033[1;94m'   # Blue
+export BIPurple='\033[1;95m' # Purple
+export BICyan='\033[1;96m'   # Cyan
+export BIWhite='\033[1;97m'  # White
 
 # High Intensity backgrounds
-export On_IBlack='\033[0;100m'   # Black
-export On_IRed='\033[0;101m'     # Red
-export On_IGreen='\033[0;102m'   # Green
-export On_IYellow='\033[0;103m'  # Yellow
-export On_IBlue='\033[0;104m'    # Blue
-export On_IPurple='\033[0;105m'  # Purple
-export On_ICyan='\033[0;106m'    # Cyan
-export On_IWhite='\033[0;107m'   # White
+export On_IBlack='\033[0;100m'  # Black
+export On_IRed='\033[0;101m'    # Red
+export On_IGreen='\033[0;102m'  # Green
+export On_IYellow='\033[0;103m' # Yellow
+export On_IBlue='\033[0;104m'   # Blue
+export On_IPurple='\033[0;105m' # Purple
+export On_ICyan='\033[0;106m'   # Cyan
+export On_IWhite='\033[0;107m'  # White
 
 # fancy_message allows visually appealing output.
 # Source the code block and run:
@@ -120,10 +120,10 @@ function fancy_message() {
 	local MESSAGE="${2}"
 
 	case ${MESSAGE_TYPE} in
-		info) echo -e "[${BGreen}+${NC}] INFO: ${MESSAGE}";;
-		warn) echo -e "[${BYellow}*${NC}] WARNING: ${MESSAGE}";;
-		error) echo -e "[${BRed}!${NC}] ERROR: ${MESSAGE}";;
-		*) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
+		info) echo -e "[${BGreen}+${NC}] INFO: ${MESSAGE}" ;;
+		warn) echo -e "[${BYellow}*${NC}] WARNING: ${MESSAGE}" ;;
+		error) echo -e "[${BRed}!${NC}] ERROR: ${MESSAGE}" ;;
+		*) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}" ;;
 	esac
 }
 
@@ -140,10 +140,10 @@ function fancy_message() {
 function ask() {
 	local prompt default reply
 
-	if [[ ${2:-} = 'Y' ]]; then
+	if [[ ${2:-} == 'Y' ]]; then
 		prompt="${BIGreen}Y${NC}/${RED}n${NC}"
 		default='Y'
-	elif [[ ${2:-} = 'N' ]]; then
+	elif [[ ${2:-} == 'N' ]]; then
 		prompt="${GREEN}y${NC}/${BIRed}N${NC}"
 		default='N'
 	else
@@ -153,12 +153,12 @@ function ask() {
 	# Ask the question (not using "read -p" as it uses stderr not stdout)
 	echo -ne "$1 [$prompt] "
 
-	if [[ -z "$DISABLE_PROMPTS" ]]; then
+	if [[ -z $DISABLE_PROMPTS ]]; then
 		read -r reply <&0
 		# Detect if script is running non-interactively
 		# Which implies that the input is being piped into the script
 		if [[ $NON_INTERACTIVE ]]; then
-			if [[ -z "$reply" ]]; then
+			if [[ -z $reply ]]; then
 				printf "%s" "$default"
 			fi
 			echo "$reply"
@@ -176,20 +176,20 @@ function ask() {
 	while true; do
 		# Check if the reply is valid
 		case "$reply" in
-			Y*|y*)
+			Y* | y*)
 				export answer=1
-				return 0	#return code for backwards compatibility
+				return 0 #return code for backwards compatibility
 				break
-			;;
-			N*|n*)
+				;;
+			N* | n*)
 				export answer=0
-				return 1	#return code
+				return 1 #return code
 				break
-			;;
+				;;
 			*)
 				echo -ne "$1 [$prompt] "
 				read -r reply < /dev/tty
-			;;
+				;;
 		esac
 	done
 }
@@ -205,7 +205,7 @@ function download() {
 }
 
 # Error out when run as root
-if [[ "$EUID" -eq 0 ]]; then
+if [[ $EUID -eq 0 ]]; then
 	fancy_message error "Pacstall can't be run as root. Please run as a normal user."
 	exit 1
 fi
@@ -225,9 +225,9 @@ argument_list=()
 
 for i in "${@}"; do
 	# Just add argument if doesn't start with a single hyphen.
-	if ! [[ "${i}" =~ ^-[^-] ]]; then
+	if ! [[ ${i} =~ ^-[^-] ]]; then
 		# if argument is '-P' or '-K', add to beginning of argument list.
-		if [[ "${i}" == "-P" ]]  || [[ "${i}" == "-K" ]]; then
+		if [[ ${i} == "-P" ]] || [[ ${i} == "-K" ]]; then
 			argument_list=("${i}" "${argument_list[@]}")
 		else
 			argument_list+=("${i}")
@@ -239,7 +239,7 @@ for i in "${@}"; do
 	# We remove the '-' prefix as we'll add it later.
 	for j in $(echo "${i}" | sed 's|^-||' | sed 's|[[:upper:]]| &|g'); do
 		# If current string is 'P', add to beginning of argument list.
-		if [[ "${j}" == "P" ]] || [[ "${j}" == "-disable-prompts" ]] || [[ "${j}" == "K" ]] || [[ "${j}" == "-keep" ]]; then
+		if [[ ${j} == "P" ]] || [[ ${j} == "-disable-prompts" ]] || [[ ${j} == "K" ]] || [[ ${j} == "-keep" ]]; then
 			argument_list=("-${j}" "${argument_list[@]}")
 		else
 			argument_list+=("-${j}")
@@ -254,18 +254,18 @@ function lock() {
 	ignore_short="-S -D -A -V -L -Qi -h"
 	ignore_long="--search --download --add-repo --version --query-info --help"
 	ignore="$ignore_short $ignore_long"
-	if [[ "$ignore" =~ (^|[[:space:]])"$1"($|[[:space:]]) ]]; then
+	if [[ $ignore =~ (^|[[:space:]])"$1"($|[[:space:]]) ]]; then
 		return 1
-	elif [[ "$ignore" =~ (^|[[:space:]])"$2"($|[[:space:]]) ]]; then
+	elif [[ $ignore =~ (^|[[:space:]])"$2"($|[[:space:]]) ]]; then
 		return 1
-	elif [[ "$ignore" =~ (^|[[:space:]])"$3"($|[[:space:]]) ]]; then
+	elif [[ $ignore =~ (^|[[:space:]])"$3"($|[[:space:]]) ]]; then
 		return 1
 	elif [[ -f "/tmp/pacstall-pacdeps-$3" ]]; then
 		return 1
 	elif [[ -f "/tmp/pacstall-pacdeps-$4" ]]; then
 		return 1
 	fi
-	pidof -o %PPID -x $0 >/dev/null && return 0 || return 1
+	pidof -o %PPID -x $0 > /dev/null && return 0 || return 1
 }
 
 while lock $1 $2 $3 $4; do
@@ -276,14 +276,14 @@ while lock $1 $2 $3 $4; do
 	sleep 1
 done
 
-while [[ ! "$1" == "--" ]]; do
+while [[ $1 != "--" ]]; do
 	case "$1" in
-		-P|--disable-prompts)
+		-P | --disable-prompts)
 			fancy_message warn "Prompts are disabled"
 			DISABLE_PROMPTS=yes
-		;;
+			;;
 
-		-h|--help)
+		-h | --help)
 			echo "options:
 -I --install, Installs package
 -Il --install-local, Installs a local package
@@ -299,16 +299,16 @@ while [[ ! "$1" == "--" ]]; do
 -P --disable-prompts, Disable Prompts for unattended installation
 -K --keep, retain build directory after package install"
 			exit 0
-		;;
+			;;
 
-		-I|--install)
+		-I | --install)
 
-			if [[ -z "$2" ]]; then
+			if [[ -z $2 ]]; then
 				fancy_message error "You failed to specify a package"
 				exit 1
 			fi
-			
-			function trap_ctrlc () {
+
+			function trap_ctrlc() {
 				fancy_message warn "The installation of $2 was interrupted, removing files"
 				rm -rf "${SRCDIR:?}"/* # :? makes bash error out in case SRCDIR is empty, saving us from yoinking /* directory by mistake
 				exit 2
@@ -316,10 +316,10 @@ while [[ ! "$1" == "--" ]]; do
 			# Begin trapping
 			trap "trap_ctrlc" 2
 
-			while [[ -n "$2" ]]; do
+			while [[ -n $2 ]]; do
 				export PACKAGE=$2
 				shift
-				if [[ -z "$PACKAGE" ]]; then
+				if [[ -z $PACKAGE ]]; then
 					fancy_message error "You failed to specify a package"
 					exit 1
 				fi
@@ -333,9 +333,9 @@ while [[ ! "$1" == "--" ]]; do
 
 				export type="install"
 				export local="no"
-				
-				if [[ "${GITHUB_ACTIONS}" != "true" ]]; then
-					if ! ping -c 1 github.com &>/dev/null; then
+
+				if [[ ${GITHUB_ACTIONS} != "true" ]]; then
+					if ! ping -c 1 github.com &> /dev/null; then
 						fancy_message error "You seem to be offline"
 						exit 1
 					fi
@@ -365,25 +365,25 @@ while [[ ! "$1" == "--" ]]; do
 				fi
 			done
 
-			if [[ -n "$fail_install" ]]; then
+			if [[ -n $fail_install ]]; then
 				exit 1
 			fi
-				exit 0
+			exit 0
 			;;
 
-		-Il|--install-local)
+		-Il | --install-local)
 
-			if [[ -z "$2" ]]; then
+			if [[ -z $2 ]]; then
 				fancy_message error "You failed to specify a package"
 				exit 1
 			fi
 
-			while [[ -n "$2" ]]; do
+			while [[ -n $2 ]]; do
 				INPUT="$(basename "$2" ".pacscript")" # Removes the suffix
 				export local="yes"
 
 				# Check if we need to cd into the directory first, and also check that $INPUT.pacscript does not exist
-				if [[ -d "$INPUT" ]] && [[ ! -f "$INPUT".pacscript ]]; then
+				if [[ -d $INPUT ]] && [[ ! -f "$INPUT".pacscript ]]; then
 					cd "$(basename "$INPUT")" || exit
 				fi
 				# Check if the file exist
@@ -406,34 +406,34 @@ while [[ ! "$1" == "--" ]]; do
 				exit 1
 			fi
 			exit 0
-		;;
+			;;
 
-		-S|--search)
+		-S | --search)
 
-			if [[ "${GITHUB_ACTIONS}" != "true" ]]; then
-				if ! ping -c 1 github.com &>/dev/null; then
+			if [[ ${GITHUB_ACTIONS} != "true" ]]; then
+				if ! ping -c 1 github.com &> /dev/null; then
 					fancy_message error "You seem to be offline"
 					exit 1
 				fi
 			fi
 			export SEARCH=$2
-			if [[ -z "$SEARCH" ]]; then
+			if [[ -z $SEARCH ]]; then
 				fancy_message error "You failed to specify a package"
 				exit 1
 			fi
 
 			source "$STGDIR/scripts/search.sh"
 			exit 0
-		;;
+			;;
 
-		-R|--remove)
+		-R | --remove)
 
-			if [[ -z "$2" ]]; then
+			if [[ -z $2 ]]; then
 				fancy_message error "You failed to specify a package"
 				exit 1
 			fi
 
-			while [[ -n "$2" ]]; do
+			while [[ -n $2 ]]; do
 				PACKAGE=$2
 				shift
 				if ! source "$STGDIR/scripts/remove.sh"; then
@@ -444,9 +444,9 @@ while [[ ! "$1" == "--" ]]; do
 				exit 1
 			fi
 			exit 0
-		;;
+			;;
 
-		-A|--add-repo)
+		-A | --add-repo)
 			REPO="$2"
 
 			if [[ ! -f "$STGDIR/repo/pacstallrepo.txt" ]]; then
@@ -454,25 +454,25 @@ while [[ ! "$1" == "--" ]]; do
 				return 0
 			fi
 
-			if [[ "${GITHUB_ACTIONS}" != "true" ]]; then
-				if ! ping -c 1 github.com &>/dev/null; then
+			if [[ ${GITHUB_ACTIONS} != "true" ]]; then
+				if ! ping -c 1 github.com &> /dev/null; then
 					fancy_message error "You seem to be offline"
 					exit 1
 				fi
 			fi
-			if [[ -n "$REPO" ]]; then
+			if [[ -n $REPO ]]; then
 				source "$STGDIR/scripts/add-repo.sh"
 				exit 0
 			else
 				fancy_message error "You failed to specify a repo to add"
 				exit 1
 			fi
-		;;
+			;;
 
-		-V|--version)
+		-V | --version)
 			PACKAGE="$2"
 
-			if [[ -z "$PACKAGE" ]]; then
+			if [[ -z $PACKAGE ]]; then
 				echo -e "1.7.2 \033[1m\x1b[38;2;206;32;41mCarmine${NC}"
 				exit 0
 			else
@@ -484,20 +484,20 @@ while [[ ! "$1" == "--" ]]; do
 					exit 1
 				fi
 			fi
-		;;
+			;;
 
-		-U|--update)
+		-U | --update)
 			USERNAME="$2"
 			BRANCH="$3"
 			# This stuff gives the ability for persistent updates
-			if [[ -z "$BRANCH" ]]; then
+			if [[ -z $BRANCH ]]; then
 				if [[ -f "$STGDIR/repo/update" ]]; then
 					BRANCH=$(sed 's/.*\ //' "$STGDIR/repo/update")
 				else
 					BRANCH="master"
 				fi
 			fi
-			if [[ -z "$USERNAME" ]]; then
+			if [[ -z $USERNAME ]]; then
 				if [[ -f "$STGDIR/repo/update" ]]; then
 					USERNAME=$(sed 's/\s.*$//' "$STGDIR/repo/update")
 				else
@@ -505,11 +505,11 @@ while [[ ! "$1" == "--" ]]; do
 				fi
 			fi
 
-			if [[ "${GITHUB_ACTIONS}" != "true" ]]; then
-				if ! ping -c 1 github.com &>/dev/null; then
+			if [[ ${GITHUB_ACTIONS} != "true" ]]; then
+				if ! ping -c 1 github.com &> /dev/null; then
 					fancy_message error "You seem to be offline"
-        			exit 1
-      			fi
+					exit 1
+				fi
 			fi
 			if curl --output /dev/null --silent --head --fail https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/pyproject.toml; then
 				fancy_message error "The repository you are trying to upgrade to contains a version of pacstall that cannot be updated from $(pacstall -V)"
@@ -519,30 +519,30 @@ while [[ ! "$1" == "--" ]]; do
 			sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/update.sh -P "$STGDIR/scripts" 2> /dev/null
 			source "$STGDIR/scripts/update.sh"
 			exit 0
-		;;
+			;;
 
-		-L|--list)
+		-L | --list)
 			if ! /bin/ls -1aA "$LOGDIR"; then
 				fancy_message error "Nothing installed yet"
 				exit 1
 			fi
 			exit 0
-		;;
+			;;
 
-		-D|--download)
+		-D | --download)
 
-			if [[ -z "$2" ]]; then
+			if [[ -z $2 ]]; then
 				fancy_message error "You failed to specify a package"
 				exit 1
 			fi
 
-			while [[ -n "$2" ]]; do
+			while [[ -n $2 ]]; do
 				PACKAGE=$2
 				shift
 				export type="download"
 
-				if [[ "${GITHUB_ACTIONS}" != "true" ]]; then
-					if ! ping -c 1 github.com &>/dev/null; then
+				if [[ ${GITHUB_ACTIONS} != "true" ]]; then
+					if ! ping -c 1 github.com &> /dev/null; then
 						fancy_message error "You seem to be offline"
 						exit 1
 					fi
@@ -567,11 +567,11 @@ while [[ ! "$1" == "--" ]]; do
 				exit 1
 			fi
 			exit 0
-		;;
+			;;
 
-		-Up|--upgrade)
-			if [[ "${GITHUB_ACTIONS}" != "true" ]]; then
-				if ! ping -c 1 github.com &>/dev/null; then
+		-Up | --upgrade)
+			if [[ ${GITHUB_ACTIONS} != "true" ]]; then
+				if ! ping -c 1 github.com &> /dev/null; then
 					fancy_message error "You seem to be offline"
 					exit 1
 				fi
@@ -582,15 +582,15 @@ while [[ ! "$1" == "--" ]]; do
 				exit 1
 			fi
 			exit 0
-		;;
+			;;
 
-		-Qi|--query-info)
+		-Qi | --query-info)
 			PACKAGE=$2
 			source "$STGDIR/scripts/query-info.sh"
 			exit 0
-		;;
+			;;
 
-		-T|--tree)
+		-T | --tree)
 			PACKAGE="$2"
 
 			if [[ ! -d "$STOWDIR/$PACKAGE" ]]; then
@@ -600,20 +600,20 @@ while [[ ! "$1" == "--" ]]; do
 
 			tree -C "$STOWDIR/$PACKAGE" | sed "s/\/usr\/src\/pacstall\/$PACKAGE/\//g"
 			exit 0
-		;;
+			;;
 
-		-K|--keep)
+		-K | --keep)
 			fancy_message info "Keeping build files"
 			KEEP=true
-		;;
+			;;
 
 		*)
 			pacstall -h
 			exit 3
-		;;
+			;;
 	esac
 	shift
 done
-if [[ "$1" == '--' ]]; then shift; fi
+if [[ $1 == '--' ]]; then shift; fi
 
 # vim:set ft=sh ts=4 sw=4 noet:
