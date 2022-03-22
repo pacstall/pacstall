@@ -30,17 +30,13 @@ YELLOW='\033[1;33m'
 GREEN='\033[0;32m'
 BIGreen='\033[1;92m'
 
-
-
-
-
 function fancy_message() {
 	# $1 = type , $2 = message
 	# Message types
 	# 0 - info
 	# 1 - warning
 	# 2 - error
-	if [[ -z "${1}" ]] || [[ -z "${2}" ]]; then
+	if [[ -z ${1} ]] || [[ -z ${2} ]]; then
 		return
 	fi
 
@@ -48,10 +44,10 @@ function fancy_message() {
 	local MESSAGE="${2}"
 
 	case ${MESSAGE_TYPE} in
-		info) echo -e "[${GREEN}+${NC}] INFO: ${MESSAGE}";;
-		warn) echo -e "[${YELLOW}*${NC}] WARNING: ${MESSAGE}";;
-		error) echo -e "[${RED}!${NC}] ERROR: ${MESSAGE}";;
-		*) echo -e "[?] UNKNOWN: ${MESSAGE}";;
+		info) echo -e "[${GREEN}+${NC}] INFO: ${MESSAGE}" ;;
+		warn) echo -e "[${YELLOW}*${NC}] WARNING: ${MESSAGE}" ;;
+		error) echo -e "[${RED}!${NC}] ERROR: ${MESSAGE}" ;;
+		*) echo -e "[?] UNKNOWN: ${MESSAGE}" ;;
 	esac
 }
 
@@ -70,8 +66,8 @@ echo -e "|------------------------|"
 echo -e "|---${GREEN}Pacstall Installer${NC}---|"
 echo -e "|------------------------|"
 
-if [[ "${GITHUB_ACTIONS}" != "true" ]]; then
-	if ! ping -c 1 github.com &>/dev/null; then
+if [[ ${GITHUB_ACTIONS} != "true" ]]; then
+	if ! ping -c 1 github.com &> /dev/null; then
 		fancy_message error "You seem to be offline"
 		exit 1
 	fi
@@ -88,8 +84,8 @@ fancy_message info "Installing packages"
 echo -ne "Do you want to install axel (faster downloads)? [${BIGreen}Y${NC}/${RED}n${NC}] "
 read -r reply <&0
 case "$reply" in
-	N*|n*) ;;
-	*) apt-get install -qq -y axel;;
+	N* | n*) ;;
+	*) apt-get install -qq -y axel ;;
 esac
 
 apt-get install -qq -y curl wget stow build-essential unzip tree bc git iputils-ping
@@ -98,7 +94,6 @@ LOGDIR="/var/log/pacstall/metadata"
 STGDIR="/usr/share/pacstall"
 SRCDIR="/tmp/pacstall"
 PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER}}")
-
 
 fancy_message info "Making directories"
 mkdir -p "$STGDIR"
