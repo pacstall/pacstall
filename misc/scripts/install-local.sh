@@ -165,14 +165,28 @@ function makeVirtualDeb {
 	fi
 
 	if [[ -n $optdepends ]]; then
-		fancy_message info "$name has optional dependencies that can enhance its functionalities"
-		echo "Optional dependencies:"
-		printf '    %s\n' "${optdepends[@]}"
-		ask "Do you want to install them" Y
-		if [[ $answer -eq 1 ]]; then
-			optinstall='--install-suggests'
+		
+		optdeps=()
+		for optdep in "${optdepends[@]}"; do
+			opt=${optdep%%: *}
+			if ! dpkg-query -W -f='${Status}' "${opt}" 2> /dev/null | grep "^install ok installed" > /dev/null 2>&1; then
+				optdeps+=("${optdep}")
+			fi
+		done
+		echo $optdeps
+		if [[ -n $optdeps ]]; then
+			fancy_message info "$name has optional dependencies that can enhance its functionalities"
+			echo "Optional dependencies:"
+			printf '    %s\n' "${optdeps[@]}"
+			ask "Do you want to install them" Y
+			if [[ $answer -eq 1 ]]; then
+				optinstall='--install-suggests'
+				if pacstall -L | grep "$name" > /dev/null 2>&1; then
+					sudo dpkg -r --force-all "$name" > /dev/null
+				fi
+			fi
 		fi
-
+		
 		printf "Suggests:" |sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 		for i in "${optdepends[@]}"; do
 			if ! grep -q ':' <<< "${i}"; then
@@ -244,19 +258,10 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 		return 1
 	fi
 	export PACSTALL_INSTALL=1
-	sudo rm -rf "$SRCDIR/$name-pacstall"
-	# --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
-	sudo --preserve-env=PACSTALL_INSTALL apt-get install "$SRCDIR/$name-pacstall.deb" -y --allow-downgrades 2> "/dev/null"
-	if ! [[ -d /etc/apt/preferences.d/ ]]; then
-		sudo mkdir -p /etc/apt/preferences.d
-	fi
-	echo "Package: ${name}
-Pin: version *
-Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
-
-
+	
 	fancy_message info "Installing dependencies"
-	if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install $optinstall -f -y -qq -o=Dpkg::Use-Pty=0; then
+	# --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
+	if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install "$SRCDIR/$name-pacstall.deb" -y --allow-downgrades $optinstall 2> "/dev/null"; then
 		fancy_message error "Failed to install dependencies"
 		error_log 8 "install $PACKAGE"
 		sudo dpkg -r --force-all "$name" > /dev/null
@@ -264,12 +269,17 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 		cleanup
 		return 1
 	fi
-	sudo --preserve-env=PACSTALL_INSTALL apt-get install "$SRCDIR/$name-pacstall.deb" -y > "/dev/null"
+
+	sudo rm -rf "$SRCDIR/$name-pacstall"
 	sudo rm "$SRCDIR/$name-pacstall.deb"
+
+	if ! [[ -d /etc/apt/preferences.d/ ]]; then
+		sudo mkdir -p /etc/apt/preferences.d
+	fi
 	echo "Package: ${name}
 Pin: version *
 Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
-	unset PACSTALL_INSTALL
+
 	return 0
 }
 
@@ -374,7 +384,7 @@ fi
 for build_dep in $build_depends; do
 	if dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null | grep "^install ok installed" > /dev/null 2>&1; then
 		build_depends=${build_depends/"${build_dep}"/};
-	fi;
+	fi
 done
 
 build_depends=$(echo "$build_depends" | tr -s ' ' | awk '{gsub(/^ +| +$/,"")} {print $0}')
