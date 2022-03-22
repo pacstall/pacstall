@@ -192,6 +192,7 @@ function makeVirtualDeb {
 					sudo dpkg -r --force-all "$name" > /dev/null
 				fi
 			fi
+			unset optdeps opt
 		fi
 		
 		printf "Suggests:" |sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
@@ -279,7 +280,7 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 	echo "Package: ${name}
 Pin: version *
 Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
-
+	unset PACSTALL_INSTALL 
 	return 0
 }
 
