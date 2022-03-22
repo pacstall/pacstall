@@ -280,7 +280,7 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 	echo "Package: ${name}
 Pin: version *
 Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
-	unset PACSTALL_INSTALL 
+	unset PACSTALL_INSTALL
 	return 0
 }
 
@@ -384,7 +384,7 @@ fi
 # Get all uninstalled build depends
 for build_dep in $build_depends; do
 	if dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null | grep "^install ok installed" > /dev/null 2>&1; then
-		build_depends=${build_depends/"${build_dep}"/};
+		build_depends=${build_depends/"${build_dep}"/}
 	fi
 done
 
