@@ -3,6 +3,7 @@ description: Suggest an idea for Pacstall
 labels: ["enhancement", "triage"]
 assignees:
   - Henryws
+  - wizard-28
 body:
   - type: textarea
     id: problem
