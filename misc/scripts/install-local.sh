@@ -460,10 +460,10 @@ case "$url" in
 		# unzip file
 		unzip -q "${url##*/}" 1>&1 2> /dev/null
 		# cd into it
-		cd ./*/ 2> /dev/null || (
+		cd ./*/ 2> /dev/null || {
 			error_log 1 "install $PACKAGE"
 			fancy_message warn "Could not enter into the downloaded archive"
-		)
+		}
 		;;
 	*.deb)
 		download "$url"
@@ -515,10 +515,10 @@ case "$url" in
 			return 1
 		fi
 		tar -xf "${url##*/}" 1>&1 2> /dev/null
-		cd ./*/ 2> /dev/null || (
+		cd ./*/ 2> /dev/null || {
 			error_log 1 "install $PACKAGE"
 			fancy_message warn "Could not enter into the downloaded archive"
-		)
+		}
 		;;
 esac
 
@@ -585,10 +585,10 @@ if [[ $NOBUILDDEP -eq 1 ]]; then
 	sudo apt-get purge --auto-remove -y $build_depends
 fi
 
-cd "$HOME" 2> /dev/null || (
+cd "$HOME" 2> /dev/null || {
 	error_log 1 "install $PACKAGE"
 	fancy_message warn "Could not enter into ${HOME}"
-)
+}
 
 # Metadata writing
 log
