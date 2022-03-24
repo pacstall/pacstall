@@ -31,13 +31,19 @@ body:
       placeholder: Attach or link to screenshots here.
     validations:
           required: true
-  - type: textarea
-    id: os_and_pacstall_version
+  - type: input
+    id: os
     attributes:
-      label: Desktop
-      description: Provide your OS and Pacstall versions.
-      placeholder: |
-        OS: Ubuntu 20.04
-        Pacstall: 1.7.2, master branch
+      label: OS version
+      description: Provide your OS version.
+      placeholder: Ubuntu 20.04
+    validations:
+      required: true
+  - type: input
+    id: pacstall
+    attributes:
+      label: Pacstall version
+      description: Provide the installed pacstall version.
+      placeholder: 1.7.2, master branch
     validations:
       required: true
