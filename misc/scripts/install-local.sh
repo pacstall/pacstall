@@ -440,6 +440,16 @@ fi
 sudo mkdir -p "/tmp/pacstall"
 sudo chown "$PACSTALL_USER" -R /tmp/pacstall
 
+if [[ -n $patch ]]; then
+	fancy_message info "Downloading patches"
+	mkdir -p PACSTALL_patchesdir
+	for i in "${patch[@]}"; do
+		wget -q "$i" -P PACSTALL_patchesdir &
+	done
+	wait
+	export PACPATCH=$(pwd)/PACSTALL_patchesdir
+fi
+
 case "$url" in
 	*.git)
 		# git clone quietly, with no history, and if submodules are there, download with 10 jobs
@@ -531,16 +541,6 @@ esac
 
 export srcdir="$PWD"
 sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2>/dev/null
-
-if [[ -n $patch ]]; then
-	fancy_message info "Downloading patches"
-	mkdir -p PACSTALL_patchesdir
-	for i in "${patch[@]}"; do
-		wget -q "$i" -P PACSTALL_patchesdir &
-	done
-	wait
-	export PACPATCH=$(pwd)/PACSTALL_patchesdir
-fi
 
 export pkgdir="/usr/src/pacstall/$name"
 
