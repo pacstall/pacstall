@@ -160,10 +160,6 @@ function makeVirtualDeb {
 		printf "Version: 0%s-1\n" "$version" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 
-	if [[ -n $depends ]]; then
-		printf "Depends: %s\n" "${depends//' '/' , '}"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-	fi
-
 	if [[ -n $optdepends ]]; then
 		for i in "${optdepends[@]}"; do
 			if ! grep -q ':' <<< "${i}"; then
@@ -173,11 +169,16 @@ function makeVirtualDeb {
 			fi
 		done
 		
+		
 		optdeps=()
 		for optdep in "${optdepends[@]}"; do
 			opt=${optdep%%: *}
+			# Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
+			# Add to the optdeps list if not to display the question
 			if ! dpkg-query -W -f='${Status}' "${opt}" 2> /dev/null | grep "^install ok installed" > /dev/null 2>&1; then
 				optdeps+=("${optdep}")
+			else
+				depends+=" ${opt}"
 			fi
 		done
 
@@ -187,17 +188,25 @@ function makeVirtualDeb {
 			printf '    %s\n' "${optdeps[@]}"
 			ask "Do you want to install them" Y
 			if [[ $answer -eq 1 ]]; then
-				optinstall='--install-suggests'
+				for optdep in "${optdeps[@]}"; do
+					depends+=" ${optdep%%: *}"
+				done
 				if pacstall -L | grep "$name" > /dev/null 2>&1; then
 					sudo dpkg -r --force-all "$name" > /dev/null
 				fi
+			else
+				# Add to the suggests anyway. They won't get installed but can be queried
+				printf "Suggests:" |sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+				printf " %s\n" "${optdeps[@]}" | awk -F': ' '{print $1}' | tr '\n' ',' | head -c -1 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+				printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 			fi
 			unset optdeps opt
 		fi
-		
-		printf "Suggests:" |sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-		printf " %s\n" "${optdepends[@]}" | awk -F': ' '{print $1}' | tr '\n' ',' | head -c -1 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-		printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	fi
+	
+	if [[ -n $depends ]]; then
+		depends="$(echo $depends | sed -e 's/^[[:space:]]*//')"
+		printf "Depends: %s\n" "${depends//' '/' , '}"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" t> /dev/null
 	fi
 
 	printf "Architecture: all
@@ -262,7 +271,7 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >/dev/null
 	
 	fancy_message info "Installing dependencies"
 	# --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
-	if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install "$SRCDIR/$name-pacstall.deb" -y --allow-downgrades $optinstall 2> /dev/null; then
+	if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install "$SRCDIR/$name-pacstall.deb" -y --allow-downgrades 2> /dev/null; then
 		fancy_message error "Failed to install dependencies"
 		error_log 8 "install $PACKAGE"
 		sudo dpkg -r --force-all "$name" > /dev/null
