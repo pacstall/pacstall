@@ -23,29 +23,28 @@
     <br />
     <!-- Link to the programs repository -->
     <a href="https://github.com/pacstall/pacstall-programs">
-        <img alt="https://github.com/pacstall/pacstall-programs" src="https://img.shields.io/github/commit-activity/m/pacstall/pacstall-programs?style=for-the-badge&label=user%20repo%20activity" />
+        <img alt="https://github.com/pacstall/pacstall-programs" src="https://img.shields.io/github/commit-activity/m/pacstall/pacstall-programs?style=for-the-badge&label=programs%20repo%20activity" />
     </a>
 </p>
 
-## What is this?
+## What is this
 
 Pacstall is an AUR inspired package manager for Ubuntu. It takes the AUR and
 puts a spin on it, making it easier to install programs without scouring github
 repos and the likes.
 
-The list of available packages can be found
+You can find the list of avaiable packages to install
 [here](https://github.com/pacstall/pacstall-programs/tree/master/packages).
 
 ## Features
 
-*  Supports binary, git, [AppImage](https://appimage.org), building and `.deb`
-   packages.
-*  Asynchronous downloads.
-*  Auto update checks for git packages, so you always get the latest build of
-   your favourite program off the latest commit by the developer.
-*  Ability to use multiple pacscript sources, instead of just the official one.
-*  Ability to track Pacstall updates from any fork/branch easily.
-*  Completions available for `bash`, `zsh`, `fish`, `pwsh`, `powershell`.
+* Supports [AppImage](https://appimage.org), binary, building, `.deb` and git
+  packages.
+* Asynchronous downloads.
+* Auto update checks for git packages, so you always get the latest build of
+  your favourite program off the latest commit by the developer.
+* Track multiple pacscript sources, instead of just the official one.
+* Completions available for `bash`,`fish`,`powershell`,`pwsh` and `zsh`.
 
 ## Installation
 
@@ -91,7 +90,6 @@ For more information on each command, run `pacstall <command> -h`.
 
 You can read the full usage
 [here](https://github.com/pacstall/pacstall/wiki/Pacstall-2.0-Usage).
-
 
 ## Auto completions
 
