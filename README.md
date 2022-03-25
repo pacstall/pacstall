@@ -12,9 +12,6 @@
         <img alt="Codacy branch grade" src="https://img.shields.io/codacy/grade/3c7e992f7e464b16919b7d57e524c997/python3-rewrite?logo=codacy&style=for-the-badge" />
     </a>
     <a href="https://www.gnu.org/software/bash"><img alt="bash v5" src="https://img.shields.io/badge/bash-v5-chateauGreen?logo=gnubash&logoColor=white&style=for-the-badge" /></a>
-    <a href="https://github.com/pacstall/pacstall-programs">
-        <img alt="https://github.com/pacstall/pacstall-programs" src="https://img.shields.io/github/commit-activity/m/pacstall/pacstall-programs?style=for-the-badge&label=user%20repo%20activity" />
-    </a>
     <br />
     <!-- Social -->
     <a href="https://discord.gg/yzrjXJV6K8"><img alt="join discord" src="https://img.shields.io/discord/839818021207801878?color=5865F2&label=Discord&logo=discord&logoColor=FFFFFF&style=for-the-badge" /></a>
@@ -23,6 +20,11 @@
         <img alt="Mastodon Follow" src="https://img.shields.io/mastodon/follow/107278715447740005?color=3088d4&domain=https%3A%2F%2Fsocial.linux.pizza&label=Mastodon&logo=mastodon&logoColor=white&style=for-the-badge" loading="lazy" />
     </a>
     <a href="https://matrix.to/#/#pacstall:matrix.org"><img alt="join matrix" src="https://img.shields.io/matrix/pacstall:matrix.org?color=888888&label=Matrix&logo=Matrix&style=for-the-badge" /></a>
+    <br />
+    <!-- Link to the programs repository -->
+    <a href="https://github.com/pacstall/pacstall-programs">
+        <img alt="https://github.com/pacstall/pacstall-programs" src="https://img.shields.io/github/commit-activity/m/pacstall/pacstall-programs?style=for-the-badge&label=user%20repo%20activity" />
+    </a>
 </p>
 
 ## What is this?
