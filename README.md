@@ -99,6 +99,10 @@ To install the auto completions for your shell run:
 $ pacstall --install-completion
 ```
 
+## Stats
+
+<p align="center"><img alt="Repobeats analytics image" src="https://repobeats.axiom.co/api/embed/ba51853c4b477dcb6b2f3ad9c183f8d7086d027c.svg" /></p>
+
 ## License
 
 <p align="center"><img alt="GPL-3.0-or-later" height="100" src="https://www.gnu.org/graphics/gplv3-or-later.svg" /></p>
