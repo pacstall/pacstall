@@ -460,10 +460,6 @@ case "$url" in
 		git fsck --full
 	;;
 	*.zip)
-		if ! check_url "${url}"; then
-			cleanup
-			exit 1
-		fi
 		download "$url"
 		# hash the file
 		if ! hashcheck "${url##*/}"; then
@@ -475,11 +471,6 @@ case "$url" in
 		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive" )
 	;;
 	*.deb)
-		if ! check_url "${url}"; then
-			sudo dpkg -r --force-all "$name" > /dev/null
-			cleanup
-			exit 1
-		fi
 		download "$url"
 		if ! hashcheck "${url##*/}"; then
 			return 1
@@ -515,20 +506,12 @@ case "$url" in
 		fi
 	;;
 	*.AppImage)
-		if ! check_url "${url}"; then
-			cleanup
-			exit 1
-		fi
 		download "$url"
 		if ! hashcheck "${url##*/}"; then
 			return 1
 		fi
 	;;
 	*)
-		if ! check_url "${url}"; then
-			cleanup
-			exit 1
-		fi
 		download "$url"
 		# I think you get it by now
 		if ! hashcheck "${url##*/}"; then
