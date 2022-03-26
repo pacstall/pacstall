@@ -194,7 +194,7 @@ function ask() {
 	done
 }
 function check_url() {
-    http_code="$(curl -o /dev/null -s -w "%{http_code}\n" -- "${1}")"
+    http_code="$(curl -o /dev/null --silent --head --write-out '%{http_code}\n' -- "${1}")"
     case "${http_code}" in
         000)
             fancy_message error "Failed to download file, check your connection"
