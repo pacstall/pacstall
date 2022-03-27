@@ -160,7 +160,7 @@ function makeVirtualDeb {
 		printf "Version: 0%s-1\n" "$version" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 
-	if [[ -n $optdepends ]]; then
+	if [[ ${#optdepends[@]} -ne 0 ]]; then
 		for i in "${optdepends[@]}"; do
 			if ! grep -q ':' <<< "${i}"; then
 				fancy_message error "${i} does not have a description"
@@ -205,7 +205,7 @@ function makeVirtualDeb {
 	fi
 	
 	if [[ -n $depends ]]; then
-		depends="$(echo $depends | sed -e 's/^[[:space:]]*//')"
+		depends="$(echo "$depends" | sed -e 's/^[[:space:]]*//')"
 		printf "Depends: %s\n" "${depends//' '/' , '}"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" t> /dev/null
 	fi
 
