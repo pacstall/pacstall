@@ -55,7 +55,6 @@ function trap_ctrlc () {
 
 # run checks to verify script works
 function checks() {
-
 	if [[ -z "$name" ]]; then
 		fancy_message error "Package does not contain name"
 		exit 1
@@ -450,94 +449,84 @@ if [[ -n $patch ]]; then
 	export PACPATCH=$(pwd)/PACSTALL_patchesdir
 fi
 
-case "$url" in
-	*.git)
-		# git clone quietly, with no history, and if submodules are there, download with 10 jobs
-		git clone --quiet --depth=1 --jobs=10 "$url"
-		# cd into the directory
-		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the cloned git repository" )
-		# Check the integrity
-		git fsck --full
-	;;
-	*.zip)
-		if ! check_url "${url}"; then
-			cleanup
-			exit 1
-		fi
-		download "$url"
-		# hash the file
-		if ! hashcheck "${url##*/}"; then
-			return 1
-		fi
-		# unzip file
-		unzip -q "${url##*/}" 1>&1 2>/dev/null
-		# cd into it
-		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive" )
-	;;
-	*.deb)
-		if ! check_url "${url}"; then
-			sudo dpkg -r --force-all "$name" > /dev/null
-			cleanup
-			exit 1
-		fi
-		download "$url"
-		if ! hashcheck "${url##*/}"; then
-			return 1
-		fi
-		if sudo apt install -y -f ./"${url##*/}" 2>/dev/null; then
-			log
-			if type -t postinst > /dev/null 2>&1; then
-				if ! postinst; then
-					error_log 5 "postinst hook"
-					fancy_message error "Could not run postinst hook successfully"
-					exit 1
+if [[ "$name" == *-git ]]; then
+	# git clone quietly, with no history, and if submodules are there, download with 10 jobs
+	git clone --quiet --depth=1 --jobs=10 "$url"
+	# cd into the directory
+	cd ./*/ 2> /dev/null || {
+		error_log 1 "install $PACKAGE"
+		fancy_message warn "Could not enter into the cloned git repository"
+		fancy_message info "Cleaning up"
+		cleanup
+		exit 1
+	}
+	# Check the integrity
+	git fsck --full
+else
+	case "$url" in
+		*.zip)
+			download "$url"
+			# hash the file
+			if ! hashcheck "${url##*/}"; then
+				return 1
+			fi
+			# unzip file
+			unzip -q "${url##*/}" 1>&1 2>/dev/null
+			# cd into it
+			cd ./*/ 2> /dev/null || { error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive"; }
+		;;
+		*.deb)
+			download "$url"
+			if ! hashcheck "${url##*/}"; then
+				return 1
+			fi
+			if sudo apt install -y -f ./"${url##*/}" 2>/dev/null; then
+				log
+				if type -t postinst > /dev/null 2>&1; then
+					if ! postinst; then
+						error_log 5 "postinst hook"
+						fancy_message error "Could not run postinst hook successfully"
+						exit 1
+					fi
 				fi
-			fi
 
-			fancy_message info "Storing pacscript"
-			sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
-			if ! cd "$DIR" 2> /dev/null; then
-				error_log 1 "install $PACKAGE"; fancy_message error "Could not enter into ${DIR}"; exit 1
-			fi
-			sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
-			sudo chmod o+r /var/cache/pacstall/"$PACKAGE"/"$version"/"$PACKAGE".pacscript
-			fancy_message info "Cleaning up"
-			cleanup
-			return 0
+				fancy_message info "Storing pacscript"
+				sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
+				if ! cd "$DIR" 2> /dev/null; then
+					error_log 1 "install $PACKAGE"; fancy_message error "Could not enter into ${DIR}"; exit 1
+				fi
+				sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
+				sudo chmod o+r /var/cache/pacstall/"$PACKAGE"/"$version"/"$PACKAGE".pacscript
+				fancy_message info "Cleaning up"
+				cleanup
+				return 0
 
-		else
-			fancy_message error "Failed to install the package"
-			error_log 14 "install $PACKAGE"
-			sudo dpkg -r "$name" > /dev/null
-			fancy_message info "Cleaning up"
-			cleanup
-			return 1
-		fi
-	;;
-	*.AppImage)
-		if ! check_url "${url}"; then
-			cleanup
-			exit 1
-		fi
-		download "$url"
-		if ! hashcheck "${url##*/}"; then
-			return 1
-		fi
-	;;
-	*)
-		if ! check_url "${url}"; then
-			cleanup
-			exit 1
-		fi
-		download "$url"
-		# I think you get it by now
-		if ! hashcheck "${url##*/}"; then
-			return 1
-		fi
-		tar -xf "${url##*/}" 1>&1 2>/dev/null
-		cd ./*/ 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive" )
-	;;
-esac
+			else
+				fancy_message error "Failed to install the package"
+				error_log 14 "install $PACKAGE"
+				sudo dpkg -r "$name" > /dev/null
+				fancy_message info "Cleaning up"
+				cleanup
+				return 1
+			fi
+		;;
+		*.AppImage)
+			download "$url"
+			if ! hashcheck "${url##*/}"; then
+				return 1
+			fi
+		;;
+		*)
+			download "$url"
+			# I think you get it by now
+			if ! hashcheck "${url##*/}"; then
+				return 1
+			fi
+			tar -xf "${url##*/}" 1>&1 2>/dev/null
+			cd ./*/ 2> /dev/null || { error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive"; }
+		;;
+	esac
+fi
 
 export srcdir="$PWD"
 sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2>/dev/null
