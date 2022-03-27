@@ -468,7 +468,7 @@ else
 			download "$url"
 			# hash the file
 			if ! hashcheck "${url##*/}"; then
-				exit 1
+				return 1
 			fi
 			# unzip file
 			unzip -q "${url##*/}" 1>&1 2>/dev/null
