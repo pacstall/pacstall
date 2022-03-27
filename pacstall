@@ -194,7 +194,7 @@ function ask() {
 	done
 }
 function check_url() {
-    http_code="$(curl -o /dev/null -s -w "%{http_code}\n" -- "${1}")"
+    http_code="$(curl -o /dev/null -s --head --write-out '%{http_code}\n' -- "${1}")"
     case "${http_code}" in
         000)
             fancy_message error "Failed to download file, check your connection"
@@ -219,9 +219,17 @@ function check_url() {
 function download() {
 	sudo rm -f "${1##*/}"
 	if command -v axel > /dev/null; then
-		axel -ao "${1##*/}" "$1"
+		if check_url "${1}"; then
+			axel -ao "${1##*/}" "$1"
+		else
+			return 1
+		fi
 	else
-		wget -q --show-progress --progress=bar:force -- "$1" 2>&1
+		if check_url "${1}"; then
+			wget -q --show-progress --progress=bar:force -- "$1" 2>&1
+		else
+			return 1
+		fi
 	fi
 }
 
