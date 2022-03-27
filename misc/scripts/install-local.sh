@@ -78,12 +78,8 @@ function checks() {
 		fancy_message warn "Package does not have a maintainer"
 		fancy_message warn "It maybe no longer maintained. Please be advised."
 	fi
-	# curl url to check it exists
-	if curl --output /dev/null --silent --head --fail "$url" > /dev/null; then
-		fancy_message info "URL exists"
-	else
-		fancy_message error "URL doesn't exist"
-		return 1
+	if ! check_url "${url}"; then
+		exit 1
 	fi
 }
 
@@ -292,7 +288,7 @@ fi
 fancy_message info "Sourcing pacscript"
 DIR=$(pwd)
 export homedir="/home/$PACSTALL_USER"
-if ! source "$PACKAGE".pacscript > /dev/null; then
+if ! source "$PACKAGE".pacscript; then
 	fancy_message error "Could not source pacscript"
 	error_log 12 "install $PACKAGE"
 	fancy_message info "Cleaning up"
@@ -339,7 +335,7 @@ if [[ -n "$pacdeps" ]]; then
 	done
 fi
 
-if [[ -n "$breaks" ]]; then
+if [[ -n "$breaks" ]] && ! pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
 	for pkg in $breaks; do
 		if dpkg-query -W -f='${Status} ${Section}' "${pkg}" 2> /dev/null | grep "^install ok installed" | grep -v "Pacstall" > /dev/null 2>&1; then
 			# Check if anything in breaks variable is installed already
@@ -443,6 +439,16 @@ fi
 sudo mkdir -p "/tmp/pacstall"
 sudo chown "$PACSTALL_USER" -R /tmp/pacstall
 
+if [[ -n $patch ]]; then
+	fancy_message info "Downloading patches"
+	mkdir -p PACSTALL_patchesdir
+	for i in "${patch[@]}"; do
+		wget -q "$i" -P PACSTALL_patchesdir &
+	done
+	wait
+	export PACPATCH=$(pwd)/PACSTALL_patchesdir
+fi
+
 if [[ "$name" == *-git ]]; then
 	# git clone quietly, with no history, and if submodules are there, download with 10 jobs
 	git clone --quiet --depth=1 --jobs=10 "$url"
@@ -462,7 +468,7 @@ else
 			download "$url"
 			# hash the file
 			if ! hashcheck "${url##*/}"; then
-				return 1
+				exit 1
 			fi
 			# unzip file
 			unzip -q "${url##*/}" 1>&1 2>/dev/null
@@ -524,16 +530,6 @@ fi
 
 export srcdir="$PWD"
 sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2>/dev/null
-
-if [[ -n $patch ]]; then
-	fancy_message info "Downloading patches"
-	mkdir -p PACSTALL_patchesdir
-	for i in "${patch[@]}"; do
-		wget -q "$i" -P PACSTALL_patchesdir &
-	done
-	wait
-	export PACPATCH=$(pwd)/PACSTALL_patchesdir
-fi
 
 export pkgdir="/usr/src/pacstall/$name"
 
