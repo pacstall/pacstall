@@ -464,6 +464,7 @@ else
 		*.zip)
 			if ! download "$url"; then
 				error_log 1 "download $PACKAGE"
+				fancy_message error "Failed to download package"
 				fancy_message info "Cleaning up"
 				cleanup
 				exit 1
@@ -480,6 +481,7 @@ else
 		*.deb)
 			if ! download "$url"; then
 				error_log 1 "download $PACKAGE"
+				fancy_message error "Failed to download package"
 				fancy_message info "Cleaning up"
 				cleanup
 				exit 1
@@ -520,6 +522,7 @@ else
 		*.AppImage)
 			if ! download "$url"; then
 				error_log 1 "download $PACKAGE"
+				fancy_message error "Failed to download package"
 				fancy_message info "Cleaning up"
 				cleanup
 				exit 1
@@ -531,6 +534,7 @@ else
 		*)
 			if ! download "$url"; then
 				error_log 1 "download $PACKAGE"
+				fancy_message error "Failed to download package"
 				fancy_message info "Cleaning up"
 				cleanup
 				exit 1
