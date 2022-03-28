@@ -191,7 +191,7 @@ function makeVirtualDeb {
 				for optdep in "${optdeps[@]}"; do
 					depends+=" ${optdep%%: *}"
 				done
-				if pacstall -L | grep "$name" > /dev/null 2>&1; then
+				if pacstall -L | grep -E "(^| )${name}( |$)"> /dev/null 2>&1; then
 					sudo dpkg -r --force-all "$name" > /dev/null
 				fi
 			else
