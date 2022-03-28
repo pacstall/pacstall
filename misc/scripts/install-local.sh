@@ -196,7 +196,7 @@ function makeVirtualDeb {
 				fi
 			else
 				# Add to the suggests anyway. They won't get installed but can be queried
-				printf "Suggests:" |sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+				printf "Suggests:" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 				printf " %s\n" "${optdeps[@]}" | awk -F': ' '{print $1}' | tr '\n' ',' | head -c -1 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 				printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 			fi
