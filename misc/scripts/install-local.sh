@@ -160,6 +160,7 @@ function makeVirtualDeb {
 		printf "Version: 0%s-1\n" "$version" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 
+	local deps="${depends}"
 	if [[ ${#optdepends[@]} -ne 0 ]]; then
 		for i in "${optdepends[@]}"; do
 			if ! grep -q ':' <<< "${i}"; then
@@ -168,17 +169,16 @@ function makeVirtualDeb {
 				return 1
 			fi
 		done
-		
-		
-		optdeps=()
+
+		local optdeps=()
 		for optdep in "${optdepends[@]}"; do
-			opt=${optdep%%: *}
+			local opt=${optdep%%: *}
 			# Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
 			# Add to the optdeps list if not to display the question
 			if ! dpkg-query -W -f='${Status}' "${opt}" 2> /dev/null | grep "^install ok installed" > /dev/null 2>&1; then
 				optdeps+=("${optdep}")
 			else
-				depends+=" ${opt}"
+				deps+=" ${opt}"
 			fi
 		done
 
@@ -189,7 +189,7 @@ function makeVirtualDeb {
 			ask "Do you want to install them" Y
 			if [[ $answer -eq 1 ]]; then
 				for optdep in "${optdeps[@]}"; do
-					depends+=" ${optdep%%: *}"
+					deps+=" ${optdep%%: *}"
 				done
 				if pacstall -L | grep -E "(^| )${name}( |$)"> /dev/null 2>&1; then
 					sudo dpkg -r --force-all "$name" > /dev/null
@@ -200,13 +200,12 @@ function makeVirtualDeb {
 				printf " %s\n" "${optdeps[@]}" | awk -F': ' '{print $1}' | tr '\n' ',' | head -c -1 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 				printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 			fi
-			unset optdeps opt
 		fi
 	fi
-	
-	if [[ -n $depends ]]; then
-		depends="$(echo "$depends" | sed -e 's/^[[:space:]]*//')"
-		printf "Depends: %s\n" "${depends//' '/' , '}"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" t> /dev/null
+
+	if [[ -n $deps ]]; then
+		deps="$(echo "${deps}" | sed -e 's/^[[:space:]]*//')"
+		printf "Depends: %s\n" "${deps//' '/' , '}"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" t> /dev/null
 	fi
 
 	printf "Architecture: all
