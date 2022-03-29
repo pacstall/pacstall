@@ -182,7 +182,7 @@ function makeVirtualDeb {
 			fi
 		done
 
-		if [[ -n $optdeps ]]; then
+		if [[ ${#optdeps[@]} -ne 0 ]]; then
 			fancy_message info "$name has optional dependencies that can enhance its functionalities"
 			echo "Optional dependencies:"
 			printf '    %s\n' "${optdeps[@]}"
