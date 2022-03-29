@@ -34,10 +34,14 @@ if check_url "${URL}"; then
 	
 	case "$URL" in
 		*.pacscript)
-			wget -q --show-progress --progress=bar:force -- "$URL" > /dev/null 2>&1
+			if ! wget -q --show-progress --progress=bar:force -- "$URL" > /dev/null 2>&1; then
+				error_log 1 "download $PACKAGE"; fancy_message error "Could not download ${URL}"; exit 1
+			fi
 		;;
 		*)
-			download -- "$URL" > /dev/null 2>&1
+			if ! download -- "$URL" > /dev/null 2>&1; then
+				error_log 1 "download $PACKAGE"; fancy_message error "Could not download ${URL}"; exit 1
+			fi
 		;;
 	esac
 	return 0

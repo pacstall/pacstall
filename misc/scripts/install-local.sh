@@ -78,9 +78,6 @@ function checks() {
 		fancy_message warn "Package does not have a maintainer"
 		fancy_message warn "It maybe no longer maintained. Please be advised."
 	fi
-	if ! check_url "${url}"; then
-		exit 1
-	fi
 }
 
 function cget() {
@@ -465,7 +462,13 @@ if [[ "$name" == *-git ]]; then
 else
 	case "$url" in
 		*.zip)
-			download "$url"
+			if ! download "$url"; then
+				error_log 1 "download $PACKAGE"
+				fancy_message error "Failed to download package"
+				fancy_message info "Cleaning up"
+				cleanup
+				exit 1
+			fi
 			# hash the file
 			if ! hashcheck "${url##*/}"; then
 				return 1
@@ -476,7 +479,13 @@ else
 			cd ./*/ 2> /dev/null || { error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive"; }
 		;;
 		*.deb)
-			download "$url"
+			if ! download "$url"; then
+				error_log 1 "download $PACKAGE"
+				fancy_message error "Failed to download package"
+				fancy_message info "Cleaning up"
+				cleanup
+				exit 1
+			fi
 			if ! hashcheck "${url##*/}"; then
 				return 1
 			fi
@@ -511,13 +520,25 @@ else
 			fi
 		;;
 		*.AppImage)
-			download "$url"
+			if ! download "$url"; then
+				error_log 1 "download $PACKAGE"
+				fancy_message error "Failed to download package"
+				fancy_message info "Cleaning up"
+				cleanup
+				exit 1
+			fi
 			if ! hashcheck "${url##*/}"; then
 				return 1
 			fi
 		;;
 		*)
-			download "$url"
+			if ! download "$url"; then
+				error_log 1 "download $PACKAGE"
+				fancy_message error "Failed to download package"
+				fancy_message info "Cleaning up"
+				cleanup
+				exit 1
+			fi
 			# I think you get it by now
 			if ! hashcheck "${url##*/}"; then
 				return 1
