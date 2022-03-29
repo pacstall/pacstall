@@ -66,10 +66,6 @@ function checks() {
 		fancy_message error "Package does not contain version"
 		exit 1
 	fi
-	if echo "$gives" | grep -q ",\|\\s"; then
-		fancy_message error "\"gives\" supports only one field"
-		exit 1
-	fi
 	if [[ -z "$url" ]]; then
 		fancy_message error "Package does not contain URL"
 		exit 1
@@ -214,7 +210,12 @@ Priority: optional\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /d
 Replace: ${replace//' '/', '}" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 
-	printf "Provides: ${gives:-$name}
+    if echo "$gives" | grep -q ",\|\\s"; then
+        local comma_gives="${gives// /, }"
+    else
+        local comma_gives="${gives:-$name}"
+    fi
+    printf '%s\n' "Provides: ${comma_gives}
 Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
 Description: This is a symbolic package used by pacstall, may be removed with apt or dpkg. $description\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 
