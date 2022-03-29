@@ -51,13 +51,13 @@ You can find the list of avaiable packages to install
 To install the latest release run:
 
 ```console
-$ pip install pacstall
+$ sudo pip install pacstall
 ```
 
 To install the latest development build run:
 
 ```console
-$ pip install git+https://github.com/pacstall/pacstall@python3-rewrite
+$ sudo pip install git+https://github.com/pacstall/pacstall@python3-rewrite
 ```
 
 ## Usage
