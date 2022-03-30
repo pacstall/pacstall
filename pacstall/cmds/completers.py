@@ -20,13 +20,30 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-"""Pacstall Commands."""
+"""Module for completion generation for commands."""
 
-from typer import Typer
+from typing import Generator
 
-app = Typer(
-    name="pacstall",
-    context_settings={"help_option_names": ["-h", "--help"]},
-    help="An AUR inspired package manager for Ubuntu.",
-    no_args_is_help=True,
-)
+from httpx import Client, HTTPStatusError, RequestError
+
+
+def package_completer() -> Generator[str, None, None]:
+    """
+    Auto completion function for packages.
+
+    Return
+    ------
+    Generator[str, None, None]
+        A generator of package names.
+    """
+
+    with Client() as client:
+        try:
+            response = client.get(
+                "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packagelist"
+            )
+            response.raise_for_status()
+        except (HTTPStatusError, RequestError):
+            ...
+        else:
+            yield from response.text.splitlines()

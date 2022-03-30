@@ -20,4 +20,15 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-"""Main Pacstall module"""
+"""Imports all the commands."""
+
+
+from pacstall.cmds import config  # type: ignore[unused-import]
+from pacstall.cmds import download  # type: ignore[unused-import]
+from pacstall.cmds import install  # type: ignore[unused-import]
+from pacstall.cmds import list  # type: ignore[unused-import]
+from pacstall.cmds import remove  # type: ignore[unused-import]
+from pacstall.cmds import repo  # type: ignore[unused-import]
+from pacstall.cmds import search  # type: ignore[unused-import]
+from pacstall.cmds import show  # type: ignore[unused-import]
+from pacstall.cmds import upgrade  # type: ignore[unused-import]

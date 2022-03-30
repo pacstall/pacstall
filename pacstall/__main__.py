@@ -24,62 +24,61 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-import sys
-from asyncio import run
-from fcntl import LOCK_EX, LOCK_NB, lockf
-from getpass import getuser
-from logging import getLogger
-from time import sleep
+from logging import DEBUG
+from typing import Optional
 
-from rich import print as rprint
-from rich.traceback import install
+import typer
+from rich import traceback
 
 from pacstall.api import logger
-from pacstall.api.error_codes import ErrorCodes
-from pacstall.cmds import download
-from pacstall.parser import parse_arguments
+from pacstall.api.color import Foreground
+from pacstall.cmds import app
 
 
-def main() -> int:
+@app.callback(invoke_without_command=True)
+def version_callback(
+    version: Optional[bool] = typer.Option(
+        None, "-v", "--version", help="Show version and exit.", is_eager=True
+    ),
+    debug: Optional[bool] = typer.Option(
+        None, "-d", "--debug", help="Turn on debugging info.", is_eager=True
+    ),
+) -> None:
+    """
+    Show version and exit.
+
+    Parameters
+    ----------
+    version
+        Show version and exit.
+    debug
+        Turn on debugging info.
+
+    Raises
+    ------
+    typer.Exit
+        Exit with code 0.
+    """
+    if debug:
+        logger.setup_logger(console_logger_level=DEBUG)
+    else:
+        logger.setup_logger()
+
+    if version:
+        print(
+            f"{Foreground.BIBLUE}Pacstall {Foreground.BIWHITE}2.0.0 {Foreground.BIYELLOW}Kournikova"
+        )
+        raise typer.Exit()
+
+
+def main() -> None:
     """Main Pacstall function."""
 
-    install(
-        show_locals=True
-    )  # --> Install Rich's traceback handler for better looking tracebackes
+    # Install Rich's traceback handler for better looking tracebackes.
+    traceback.install(show_locals=True)
 
-    args = parse_arguments()
-    if args.command in ["install", "remove", "upgrade", "repo"] and getuser() != "root":
-        rprint(
-            f"[[bold red]![/bold red]] [bold]ERROR[/bold]: Pacstall needs root privileges to run the {args.command} command",
-            file=sys.stderr,
-        )
-        rprint(
-            f"[[bold green]+[/bold green]] [bold]INFO[/bold]: Try running [code]sudo {' '.join(sys.argv)}[/code] instead",
-            file=sys.stderr,
-        )
-        sys.exit(ErrorCodes.USAGE_ERROR)  # --> command line usage error
-
-    logger.setup_logger()
-    log = getLogger()
-
-    log.debug(f"{args = }")
-
-    if args.command in ["install", "remove", "upgrade", "repo"]:
-        lock_file = open("/var/lock/pacstall.lock", "w")
-        while True:
-            try:
-                lockf(lock_file, LOCK_EX | LOCK_NB)
-                log.debug("Lock acquired")
-                break
-            except OSError:
-                log.warn("Pacstall is already running another instance")
-                sleep(1)
-
-    if args.command == "download":
-        sys.exit(run(download.execute(args.pacscripts)))
-
-    sys.exit(0)
+    app()
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

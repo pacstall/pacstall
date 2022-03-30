@@ -20,13 +20,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-"""Pacstall Commands."""
+"""Repo command."""
 
-from typer import Typer
+from pacstall.cmds import app
 
-app = Typer(
-    name="pacstall",
-    context_settings={"help_option_names": ["-h", "--help"]},
-    help="An AUR inspired package manager for Ubuntu.",
-    no_args_is_help=True,
-)
+
+@app.command()
+def repo() -> None:
+    """List installed package sources."""
+
+    ...

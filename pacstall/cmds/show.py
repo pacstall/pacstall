@@ -20,13 +20,18 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-"""Pacstall Commands."""
+"""Show command."""
 
-from typer import Typer
+from logging import getLogger
+from typing import List
 
-app = Typer(
-    name="pacstall",
-    context_settings={"help_option_names": ["-h", "--help"]},
-    help="An AUR inspired package manager for Ubuntu.",
-    no_args_is_help=True,
-)
+from pacstall.cmds import app
+
+
+@app.command()
+def show(packages: List[str]) -> None:
+    """Show information about packages."""
+
+    log = getLogger()
+
+    log.debug(f"{packages = }")
