@@ -8,7 +8,12 @@ updates:
     schedule:
       interval: "daily"
     target-branch: "python3-rewrite"
-    commit-message:
-      prefix: "build"
-      prefix-development: "build"
-      include: "scope"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    target-branch: "python3-rewrite"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
