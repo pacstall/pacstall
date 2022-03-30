@@ -578,7 +578,7 @@ sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2>/dev/null
 export pkgdir="/usr/src/pacstall/$name"
 
 fancy_message info "Preparing"
-if ! (set -euo pipefail; prepare); then
+if ! (set -euo pipefail; prepare; echo "$PWD" > /tmp/pacstall-curdir); then
 	fancy_message error "Could not prepare $PACKAGE properly"
 	sudo dpkg -r "$name" > /dev/null
 	fancy_message info "Cleaning up"
@@ -597,7 +597,8 @@ if ! type -t build > /dev/null 2>&1; then
 fi
 
 fancy_message info "Building"
-if ! (set -euo pipefail; build); then
+cd $(cat /tmp/pacstall-curdir)
+if ! (set -euo pipefail; build; echo "$PWD" > /tmp/pacstall-curdir); then
 	error_log 5 "build $PACKAGE"
 	fancy_message error "Could not properly build $PACKAGE"
 	sudo dpkg -r "$name" > /dev/null
@@ -610,6 +611,7 @@ fi
 trap - SIGINT
 
 fancy_message info "Installing"
+cd $(cat /tmp/pacstall-curdir)
 if ! (set -euo pipefail; install); then
 	error_log 14 "install $PACKAGE"
 	fancy_message error "Could not install $PACKAGE properly"
