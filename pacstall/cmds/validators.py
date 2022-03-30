@@ -66,11 +66,11 @@ def root_validator(packages: List[str], command_name: str) -> List[str]:
 
     if getuser() != "root":
         rprint(
-            f"[[bold red]![/bold red]] [bold]ERROR[/bold]: Pacstall needs root privileges to run the [code]{command_name}[/code] command",
+            f"[[bold red]![/bold red]] [bold]ERROR[/bold]: Pacstall needs root privileges to run the [bold cyan]{command_name}[/bold cyan] command",
             file=stderr,
         )
         rprint(
-            f"[[bold green]+[/bold green]] [bold]INFO[/bold]: Try running [code]sudo pacstall {' '.join(argv[1:])}[/code] instead"
+            f"[[bold green]+[/bold green]] [bold]INFO[/bold]: Try running [bold cyan]sudo pacstall {' '.join(argv[1:])}[/bold cyan] instead"
         )
 
         raise Abort(ErrorCodes.USAGE_ERROR)
