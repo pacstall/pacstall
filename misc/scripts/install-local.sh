@@ -323,7 +323,10 @@ if [[ -n "$pacdeps" ]]; then
 		sudo touch /tmp/pacstall-pacdeps-"$i"
 
 		[[ $KEEP ]] && cmd="-KPI" || cmd="-PI"
-		if ! pacstall "$cmd" "$i"; then
+		if pacstall -L | grep -E "(^| )${i}( |$)" > /dev/null 2>&1; then
+			fancy_message info "The pacstall dependency ${i} is already installed"
+			fancy_message warn "It's recommended to upgrade, as ${i} may have a newer version"
+		elif ! pacstall "$cmd" "$i"; then
 			fancy_message error "Failed to install pacstall dependencies"
 			error_log 8 "install $PACKAGE"
 			cleanup
