@@ -49,7 +49,7 @@ case "$url" in
 		
 		if fn_exists removescript; then
 			fancy_message info "Running post removal script"
-			removescript
+			(set -euo pipefail; removescript)
 		fi
 		sudo rm -f "$LOGDIR/$PACKAGE"
 		return 0
@@ -77,7 +77,7 @@ case "$url" in
 
 		if fn_exists removescript; then
 			fancy_message info "Running post removal script"
-			if ! removescript; then
+			if ! (set -euo pipefail; removescript); then
 				error_log 2 "removescript $PACKAGE"
 				fancy_message "Could not run removescript properly"
 				exit 1

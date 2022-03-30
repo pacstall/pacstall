@@ -66,6 +66,10 @@ function checks() {
 		fancy_message error "Package does not contain version"
 		exit 1
 	fi
+	if echo "$gives" | grep -q ",\|\\s"; then
+		fancy_message error "\"gives\" supports only one field"
+		exit 1
+	fi
 	if [[ -z "$url" ]]; then
 		fancy_message error "Package does not contain URL"
 		exit 1
@@ -152,8 +156,20 @@ function makeVirtualDeb {
 		printf "Version: 0%s-1\n" "$version" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 
-	local deps="${depends}"
-	if [[ ${#optdepends[@]} -ne 0 ]]; then
+	if [[ -n $depends ]]; then
+		printf "Depends: %s\n" "${depends//' '/' , '}"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	fi
+
+	if [[ -n $optdepends ]]; then
+		fancy_message info "$name has optional dependencies that can enhance its functionalities"
+		echo "Optional dependencies:"
+		printf '    %s\n' "${optdepends[@]}"
+		ask "Do you want to install them" Y
+		if [[ $answer -eq 1 ]]; then
+			optinstall='--install-suggests'
+		fi
+
+		printf "Suggests:" |sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 		for i in "${optdepends[@]}"; do
 			if ! grep -q ':' <<< "${i}"; then
 				fancy_message error "${i} does not have a description"
@@ -161,43 +177,8 @@ function makeVirtualDeb {
 				return 1
 			fi
 		done
-
-		local optdeps=()
-		for optdep in "${optdepends[@]}"; do
-			local opt=${optdep%%: *}
-			# Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
-			# Add to the optdeps list if not to display the question
-			if ! dpkg-query -W -f='${Status}' "${opt}" 2> /dev/null | grep "^install ok installed" > /dev/null 2>&1; then
-				optdeps+=("${optdep}")
-			else
-				deps+=" ${opt}"
-			fi
-		done
-
-		if [[ ${#optdeps[@]} -ne 0 ]]; then
-			fancy_message info "$name has optional dependencies that can enhance its functionalities"
-			echo "Optional dependencies:"
-			printf '    %s\n' "${optdeps[@]}"
-			ask "Do you want to install them" Y
-			if [[ $answer -eq 1 ]]; then
-				for optdep in "${optdeps[@]}"; do
-					deps+=" ${optdep%%: *}"
-				done
-				if pacstall -L | grep -E "(^| )${name}( |$)"> /dev/null 2>&1; then
-					sudo dpkg -r --force-all "$name" > /dev/null
-				fi
-			else
-				# Add to the suggests anyway. They won't get installed but can be queried
-				printf "Suggests:" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-				printf " %s\n" "${optdeps[@]}" | awk -F': ' '{print $1}' | tr '\n' ',' | head -c -1 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-				printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-			fi
-		fi
-	fi
-
-	if [[ -n $deps ]]; then
-		deps="$(echo "${deps}" | sed -e 's/^[[:space:]]*//')"
-		printf "Depends: %s\n" "${deps//' '/' , '}"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" t> /dev/null
+		printf " %s\n" "${optdepends[@]}" | awk -F': ' '{print $1}' | tr '\n' ',' | head -c -1 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 
 	printf "Architecture: all
@@ -210,12 +191,7 @@ Priority: optional\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /d
 Replace: ${replace//' '/', '}" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 
-    if echo "$gives" | grep -q ",\|\\s"; then
-        local comma_gives="${gives// /, }"
-    else
-        local comma_gives="${gives:-$name}"
-    fi
-    printf '%s\n' "Provides: ${comma_gives}
+	printf "Provides: ${gives:-$name}
 Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
 Description: This is a symbolic package used by pacstall, may be removed with apt or dpkg. $description\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 
@@ -247,16 +223,16 @@ if [[ -z $PACSTALL_REMOVE ]] && [[ -z $PACSTALL_INSTALL ]]; then
 	rm -rf '"$name"' 2> /dev/null
 	hash -r
 	if declare -F removescript >/dev/null ; then
-		removescript
+		(set -euo pipefail; removescript)
 	fi
 	rm -f '"$LOGDIR"'/'"$name"'
 else unset PACSTALL_REMOVE
-fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >/dev/null
+fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >"/dev/null"
 
 	sudo chmod -x "$SRCDIR/$name-pacstall/DEBIAN/postrm"
 	sudo chmod 755 "$SRCDIR/$name-pacstall/DEBIAN/postrm"
 
-	if ! sudo dpkg-deb -b "$SRCDIR/$name-pacstall" > /dev/null; then
+	if ! sudo dpkg-deb -b "$SRCDIR/$name-pacstall" > "/dev/null"; then
 		fancy_message error "Could not create dummy package"
 		error_log 5 "install $PACKAGE"
 		fancy_message info "Cleaning up"
@@ -264,10 +240,19 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >/dev/null
 		return 1
 	fi
 	export PACSTALL_INSTALL=1
-	
-	fancy_message info "Installing dependencies"
+	sudo rm -rf "$SRCDIR/$name-pacstall"
 	# --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
-	if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install "$SRCDIR/$name-pacstall.deb" -y --allow-downgrades 2> /dev/null; then
+	sudo --preserve-env=PACSTALL_INSTALL apt-get install "$SRCDIR/$name-pacstall.deb" -y --allow-downgrades 2> "/dev/null"
+	if ! [[ -d /etc/apt/preferences.d/ ]]; then
+		sudo mkdir -p /etc/apt/preferences.d
+	fi
+	echo "Package: ${name}
+Pin: version *
+Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
+
+
+	fancy_message info "Installing dependencies"
+	if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install $optinstall -f -y -qq -o=Dpkg::Use-Pty=0; then
 		fancy_message error "Failed to install dependencies"
 		error_log 8 "install $PACKAGE"
 		sudo dpkg -r --force-all "$name" > /dev/null
@@ -275,13 +260,8 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >/dev/null
 		cleanup
 		return 1
 	fi
-
-	sudo rm -rf "$SRCDIR/$name-pacstall"
+	sudo --preserve-env=PACSTALL_INSTALL apt-get install "$SRCDIR/$name-pacstall.deb" -y > "/dev/null"
 	sudo rm "$SRCDIR/$name-pacstall.deb"
-
-	if ! [[ -d /etc/apt/preferences.d/ ]]; then
-		sudo mkdir -p /etc/apt/preferences.d
-	fi
 	echo "Package: ${name}
 Pin: version *
 Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
@@ -389,8 +369,8 @@ fi
 # Get all uninstalled build depends
 for build_dep in $build_depends; do
 	if dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null | grep "^install ok installed" > /dev/null 2>&1; then
-		build_depends=${build_depends/"${build_dep}"/}
-	fi
+		build_depends=${build_depends/"${build_dep}"/};
+	fi;
 done
 
 build_depends=$(echo "$build_depends" | tr -s ' ' | awk '{gsub(/^ +| +$/,"")} {print $0}')
@@ -484,7 +464,6 @@ else
 		*.zip)
 			if ! download "$url"; then
 				error_log 1 "download $PACKAGE"
-				fancy_message error "Failed to download package"
 				fancy_message info "Cleaning up"
 				cleanup
 				exit 1
@@ -501,7 +480,6 @@ else
 		*.deb)
 			if ! download "$url"; then
 				error_log 1 "download $PACKAGE"
-				fancy_message error "Failed to download package"
 				fancy_message info "Cleaning up"
 				cleanup
 				exit 1
@@ -542,7 +520,6 @@ else
 		*.AppImage)
 			if ! download "$url"; then
 				error_log 1 "download $PACKAGE"
-				fancy_message error "Failed to download package"
 				fancy_message info "Cleaning up"
 				cleanup
 				exit 1
@@ -554,7 +531,6 @@ else
 		*)
 			if ! download "$url"; then
 				error_log 1 "download $PACKAGE"
-				fancy_message error "Failed to download package"
 				fancy_message info "Cleaning up"
 				cleanup
 				exit 1
@@ -575,7 +551,7 @@ sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2>/dev/null
 export pkgdir="/usr/src/pacstall/$name"
 
 fancy_message info "Preparing"
-if ! prepare; then
+if ! (set -euo pipefail; prepare); then
 	fancy_message error "Could not prepare $PACKAGE properly"
 	sudo dpkg -r "$name" > /dev/null
 	fancy_message info "Cleaning up"
@@ -594,7 +570,7 @@ if ! type -t build > /dev/null 2>&1; then
 fi
 
 fancy_message info "Building"
-if ! build; then
+if ! (set -euo pipefail; build); then
 	error_log 5 "build $PACKAGE"
 	fancy_message error "Could not properly build $PACKAGE"
 	sudo dpkg -r "$name" > /dev/null
@@ -607,7 +583,7 @@ fi
 trap - SIGINT
 
 fancy_message info "Installing"
-if ! install; then
+if ! (set -euo pipefail; install); then
 	error_log 14 "install $PACKAGE"
 	fancy_message error "Could not install $PACKAGE properly"
 	sudo dpkg -r "$name" > /dev/null
