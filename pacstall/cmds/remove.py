@@ -20,13 +20,32 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-"""Pacstall Commands."""
+"""Remove command."""
 
-from typer import Typer
+from logging import getLogger
+from typing import List
 
-app = Typer(
-    name="pacstall",
-    context_settings={"help_option_names": ["-h", "--help"]},
-    help="An AUR inspired package manager for Ubuntu.",
-    no_args_is_help=True,
-)
+from typer import Argument, Option
+
+from pacstall.cmds import app
+from pacstall.cmds.validators import root_validator
+
+
+@app.command()
+def remove(
+    packages: List[str] = Argument(
+        ..., callback=lambda packages: root_validator(packages, "remove")
+    ),
+    disable_prompts_flag: bool = Option(
+        False,
+        "-p",
+        "--disable-prompts",
+        help="Disables prompts for unattended uninstallation.",
+    ),
+) -> None:
+    """Remove packages."""
+
+    log = getLogger()
+
+    log.debug(f"{packages = }")
+    log.debug(f"{disable_prompts_flag = }")

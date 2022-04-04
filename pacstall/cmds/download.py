@@ -24,10 +24,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-from asyncio import gather
+import sys
+from asyncio import gather, run
 from logging import getLogger
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 from anyio import open_file
 from httpx import AsyncClient, HTTPStatusError, RequestError
@@ -42,11 +43,14 @@ from rich.progress import (
     TransferSpeedColumn,
 )
 from rich.table import Column
+from typer import Abort, Argument, Exit, Option
 
 from pacstall.api.error_codes import ErrorCodes
+from pacstall.cmds import app
+from pacstall.cmds.completers import package_completer
 
 
-async def download(
+async def download_pacscripts(
     client: AsyncClient,
     url: str,
     download_task: TaskID,
@@ -114,69 +118,71 @@ async def download(
         return ErrorCodes.IO_ERROR
 
 
-async def execute(pacscripts: List[str]) -> int:
+@app.command()
+def download(
+    pacscripts: List[str] = Argument(..., autocompletion=package_completer),
+    repo_flag: Optional[str] = Option(
+        None,
+        "-r",
+        "--repo",
+        help="Download from the specified repository.",
+        metavar="REPOSITORY",
+    ),
+) -> None:
     """
-    Executes the download command.
+    Download pacscripts.
 
-    Parameters
-    ----------
-    pacscripts
-        The pacscripts to download.
-
-    Returns
-    -------
-    int
-        Returns the greatest returned exit code from :func:`download`
-
-    See Also
-    --------
-    download : Asynchronous download function for the pacscript URLs.
-
-    Notes
-    -----
-    This function currently only supports downloading pacscripts from the
-    `official repository <https://github.com/pacstall/pacstall-programs>`_.
+    Downloads pacscripts from the repositories. Searches in all of your
+    repositories unless specified otherwise.
     """
-    # TODO: Add ability to download from other repositories.
-    urls = {
-        f"https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packages/{pacscript}/{pacscript}.pacscript"
-        for pacscript in pacscripts
-    }
 
-    with Progress(
-        SpinnerColumn(finished_text="[bold green]:heavy_check_mark:"),
-        TextColumn(
-            "[bold blue]{task.fields[filename]}",
-            # Make the column width the average width of the pacscripts
-            table_column=Column(
-                width=round(
-                    sum(len(pacscript) for pacscript in pacscripts) / len(pacscripts)
-                )
+    async def _execute(pacscripts: List[str]) -> int:
+        # TODO: Add ability to download from other repositories.
+        urls = {
+            f"https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packages/{pacscript}/{pacscript}.pacscript"
+            for pacscript in pacscripts
+        }
+
+        with Progress(
+            SpinnerColumn(finished_text="[bold green]:heavy_check_mark:"),
+            TextColumn(
+                "[bold blue]{task.fields[filename]}",
+                # Make the column width the average width of the pacscripts
+                table_column=Column(
+                    width=round(
+                        sum(len(pacscript) for pacscript in pacscripts)
+                        / len(pacscripts)
+                    )
+                ),
             ),
-        ),
-        BarColumn(bar_width=None),
-        "[magenta]{task.completed}/{task.total}",
-        TransferSpeedColumn(),
-        TimeRemainingColumn(),
-        auto_refresh=True,
-    ) as progress_bar:
+            BarColumn(bar_width=None),
+            "[magenta]{task.completed}/{task.total}",
+            TransferSpeedColumn(),
+            TimeRemainingColumn(),
+            auto_refresh=True,
+        ) as progress_bar:
 
-        download_task = progress_bar.add_task(
-            "download pacscripts",
-            total=len(urls),
-            filename=pacscripts[0],
-        )
-        async with AsyncClient(follow_redirects=True) as client:
-            return max(  # type: ignore[no-any-return]
-                await gather(
-                    *[
-                        download(
-                            client,
-                            url,
-                            download_task,
-                            progress_bar,
-                        )
-                        for url in urls
-                    ]
-                )
-            ).real
+            download_task = progress_bar.add_task(
+                "download pacscripts",
+                total=len(urls),
+                filename=pacscripts[0],
+            )
+            async with AsyncClient(follow_redirects=True) as client:
+                return max(  # type: ignore[no-any-return]
+                    await gather(
+                        *[
+                            download_pacscripts(
+                                client,
+                                url,
+                                download_task,
+                                progress_bar,
+                            )
+                            for url in urls
+                        ]
+                    )
+                ).real
+
+    if (exit_code := run(_execute(pacscripts))) == 0:
+        Exit()
+    else:
+        Abort(exit_code)
