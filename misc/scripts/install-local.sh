@@ -579,7 +579,8 @@ sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2>/dev/null
 export pkgdir="/usr/src/pacstall/$name"
 
 fancy_message info "Preparing"
-if ! (set -euo pipefail; prepare; echo "$PWD" > /tmp/pacstall-curdir); then
+(set -euo pipefail; prepare; echo "$PWD" > /tmp/pacstall-curdir)
+if [[ $? -ne 0 ]]; then
 	fancy_message error "Could not prepare $PACKAGE properly"
 	sudo dpkg -r "$name" > /dev/null
 	fancy_message info "Cleaning up"
@@ -599,7 +600,8 @@ fi
 
 fancy_message info "Building"
 cd $(< /tmp/pacstall-curdir)
-if ! (set -euo pipefail; build; echo "$PWD" > /tmp/pacstall-curdir); then
+(set -euo pipefail; build; echo "$PWD" > /tmp/pacstall-curdir)
+if [[ $? -ne 0 ]]; then
 	error_log 5 "build $PACKAGE"
 	fancy_message error "Could not properly build $PACKAGE"
 	sudo dpkg -r "$name" > /dev/null
@@ -613,7 +615,8 @@ trap - SIGINT
 
 fancy_message info "Installing"
 cd $(< /tmp/pacstall-curdir)
-if ! (set -euo pipefail; install); then
+(set -euo pipefail; install)
+if [[ $? -ne 0 ]]; then
 	error_log 14 "install $PACKAGE"
 	fancy_message error "Could not install $PACKAGE properly"
 	sudo dpkg -r "$name" > /dev/null
@@ -671,7 +674,8 @@ fi
 # `hash -r` updates PATH database
 hash -r
 if type -t postinst > /dev/null 2>&1; then
-	if ! (set -euo pipefail; postinst); then
+	(set -euo pipefail; postinst)
+	if [[ $? -ne 0 ]]; then
 		error_log 5 "postinst hook"
 		fancy_message error "Could not run postinst hook successfully"
 		sudo dpkg -r "$name" > /dev/null
