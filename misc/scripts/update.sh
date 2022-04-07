@@ -38,8 +38,8 @@ if ! command -v apt &> /dev/null; then
 	echo -ne "Do you want to install axel (faster downloads)? [${BIGreen}Y${NC}/${RED}n${NC}] "
 	read -r reply <&0
 	case "$reply" in
-		N*|n*) ;;
-		*) apt-get install -qq -y axel;;
+		N* | n*) ;;
+		*) apt-get install -qq -y axel ;;
 	esac
 fi
 for i in {error_log.sh,add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
@@ -68,7 +68,7 @@ echo '
  / ____/ /_/ / /__(__  ) /_/ /_/ / / /
 /_/    \__,_/\___/____/\__/\__,_/_/_/
 '
-if [[ "$USERNAME" == "pacstall" ]] && [[ "$BRANCH" == "master" ]]; then
+if [[ $USERNAME == "pacstall" ]] && [[ $BRANCH == "master" ]]; then
 	echo -e "[${BGreen}+${NC}] INFO: You are at version $(pacstall -V)"
 	echo -e "[${BYellow}*${NC}] WARNING: Be sure to check our GitHub release page to make sure you have no incompatible code: https://github.com/pacstall/pacstall/releases"
 else
