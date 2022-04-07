@@ -38,7 +38,7 @@ function cleanup () {
 		sudo rm -rf "${SRCDIR:?}"/*
 		sudo rm -rf /tmp/pacstall/*
 	fi
-	sudo rm /tmp/pacstall-curdir
+	sudo rm -f /tmp/pacstall-curdir
 	unset name version url build_depends depends breaks replace description hash removescript optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall 2>/dev/null
 	unset -f pkgver 2>/dev/null
 }
@@ -140,7 +140,7 @@ function log() {
 }
 
 
-function makeVirtualDeb {
+function makeVirtualDeb() {
 	# creates empty .deb package (with only the control file) for apt integration
 	# implements $(gives) variable
 	fancy_message info "Creating dummy package"
@@ -577,16 +577,18 @@ export srcdir="$PWD"
 sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2>/dev/null
 
 export pkgdir="/usr/src/pacstall/$name"
+# export functions so the child environment can use them
+export -f prepare build install || true
 
 fancy_message info "Preparing"
-(set -euo pipefail; prepare; echo "$PWD" > /tmp/pacstall-curdir)
-if [[ $? -ne 0 ]]; then
+trap cleanup ERR
+bash -ce "prepare && echo $PWD > /tmp/pacstall-curdir" || {
 	fancy_message error "Could not prepare $PACKAGE properly"
 	sudo dpkg -r "$name" > /dev/null
 	fancy_message info "Cleaning up"
 	cleanup
 	exit 1
-fi
+}
 
 # Check if build function doesn't exist
 if ! type -t build > /dev/null 2>&1; then
@@ -600,30 +602,33 @@ fi
 
 fancy_message info "Building"
 cd $(< /tmp/pacstall-curdir)
-(set -euo pipefail; build; echo "$PWD" > /tmp/pacstall-curdir)
-if [[ $? -ne 0 ]]; then
+bash -ce "build && echo $PWD > /tmp/pacstall-curdir" || {
 	error_log 5 "build $PACKAGE"
 	fancy_message error "Could not properly build $PACKAGE"
 	sudo dpkg -r "$name" > /dev/null
 	fancy_message info "Cleaning up"
 	cleanup
 	exit 1
-fi
+}
 
 # Trap so that we can clean up (hopefully without messing up anything)
 trap - SIGINT
 
 fancy_message info "Installing"
 cd $(< /tmp/pacstall-curdir)
-(set -euo pipefail; install)
-if [[ $? -ne 0 ]]; then
+bash -ce "install && echo $PWD > /tmp/pacstall-curdir" || {
 	error_log 14 "install $PACKAGE"
 	fancy_message error "Could not install $PACKAGE properly"
 	sudo dpkg -r "$name" > /dev/null
 	fancy_message info "Cleaning up"
 	cleanup
 	exit 1
-fi
+}
+
+# unset all traps
+trap -
+# reset the sigint trap
+trap - SIGINT
 
 if [[ $NOBUILDDEP -eq 1 ]]; then
 	fancy_message info "Purging build dependencies"
