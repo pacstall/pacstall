@@ -589,7 +589,7 @@ fi
 
 # Check if build function doesn't exist
 if ! type -t build > /dev/null 2>&1; then
-	fancy_message error "Something didn't compile right"
+	fancy_message error "build function not found"
 	error_log 5 "install $PACKAGE"
 	sudo dpkg -r "$name" > /dev/null
 	fancy_message info "Cleaning up"
