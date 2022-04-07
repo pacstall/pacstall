@@ -239,8 +239,19 @@ function ask() {
 		N*|n*) export answer=0; return 1;;
 	esac
 }
+function fancy_message() {
+	local MESSAGE_TYPE="${1}"
+	local MESSAGE="${2}"
+	local BOLD=$(tput bold)
+	local NC="\033[0m"
+	case ${MESSAGE_TYPE} in
+		info) echo -e "[${BOLD}+${NC}] INFO: ${MESSAGE}";;
+		warn) echo -e "[${BOLD}*${NC}] WARNING: ${MESSAGE}";;
+		error) echo -e "[${BOLD}!${NC}] ERROR: ${MESSAGE}";;
+		*) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
+	esac
+}
 if [[ -z $PACSTALL_REMOVE ]] && [[ -z $PACSTALL_INSTALL ]]; then
-	export -f ask
 	source /var/cache/pacstall/'"$name"'/'"$version"'/'"$name"'.pacscript 2>&1 /dev/null
 	sudo mkdir -p '"$STOWDIR"'
 	cd '"$STOWDIR"'
@@ -248,7 +259,10 @@ if [[ -z $PACSTALL_REMOVE ]] && [[ -z $PACSTALL_INSTALL ]]; then
 	rm -rf '"$name"' 2> /dev/null
 	hash -r
 	if declare -F removescript >/dev/null ; then
-		(set -euo pipefail; removescript)
+		export -f ask fancy_message removescript || true
+		bash -ce "removescript" || {
+			fancy_message error "Could not run removescript properly"
+		}
 	fi
 	rm -f '"$LOGDIR"'/'"$name"'
 else unset PACSTALL_REMOVE
@@ -274,7 +288,7 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >/dev/null
 		sudo dpkg -r --force-all "$name" > /dev/null
 		fancy_message info "Cleaning up"
 		cleanup
-		return 1
+			return 1
 	fi
 
 	sudo rm -rf "$SRCDIR/$name-pacstall"
@@ -616,7 +630,7 @@ trap - SIGINT
 
 fancy_message info "Installing"
 cd $(< /tmp/pacstall-curdir)
-bash -ce "install && echo $PWD > /tmp/pacstall-curdir" || {
+bash -ce "install" || {
 	error_log 14 "install $PACKAGE"
 	fancy_message error "Could not install $PACKAGE properly"
 	sudo dpkg -r "$name" > /dev/null
@@ -679,15 +693,15 @@ fi
 # `hash -r` updates PATH database
 hash -r
 if type -t postinst > /dev/null 2>&1; then
-	(set -euo pipefail; postinst)
-	if [[ $? -ne 0 ]]; then
+	export -f postinst || true
+	bash -ce "postinst" || {
 		error_log 5 "postinst hook"
 		fancy_message error "Could not run postinst hook successfully"
 		sudo dpkg -r "$name" > /dev/null
 		fancy_message info "Cleaning up"
 		cleanup
 		exit 1
-	fi
+	}
 fi
 
 fancy_message info "Storing pacscript"
