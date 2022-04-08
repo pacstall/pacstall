@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-function cleanup () {
+function cleanup() {
 	if [[ -n $KEEP ]]; then
 		mkdir -p /"tmp/pacstall-keep/$name"
 		if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
@@ -38,14 +38,14 @@ function cleanup () {
 		sudo rm -rf "${SRCDIR:?}"/*
 		sudo rm -rf /tmp/pacstall/*
 	fi
-	unset name version url build_depends depends breaks replace description hash removescript optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall 2>/dev/null
-	unset -f pkgver 2>/dev/null
+	unset name version url build_depends depends breaks replace description hash removescript optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall 2> /dev/null
+	unset -f pkgver 2> /dev/null
 }
 
-function trap_ctrlc () {
+function trap_ctrlc() {
 	echo ""
 	fancy_message warn "Interupted, cleaning up"
-	if dpkg-query -W -f='${Status}' "$name" 2> /dev/null | grep -q -E "ok installed|ok unpacked" ; then
+	if dpkg-query -W -f='${Status}' "$name" 2> /dev/null | grep -q -E "ok installed|ok unpacked"; then
 		sudo dpkg -r --force-all "$name" > /dev/null
 	fi
 	sudo rm -f /etc/apt/preferences.d/"${name:-$PACKAGE}-pin"
@@ -55,22 +55,22 @@ function trap_ctrlc () {
 
 # run checks to verify script works
 function checks() {
-	if [[ -z "$name" ]]; then
+	if [[ -z $name ]]; then
 		fancy_message error "Package does not contain name"
 		exit 1
 	fi
-	if [[ -z "$hash" && "$name" != *-git ]]; then
+	if [[ -z $hash && $name != *-git ]]; then
 		fancy_message warn "Package does not contain a hash"
 	fi
-	if [[ -z "$version" ]]; then
+	if [[ -z $version ]]; then
 		fancy_message error "Package does not contain version"
 		exit 1
 	fi
-	if [[ -z "$url" ]]; then
+	if [[ -z $url ]]; then
 		fancy_message error "Package does not contain URL"
 		exit 1
 	fi
-	if [[ -z "$maintainer" ]]; then
+	if [[ -z $maintainer ]]; then
 		fancy_message warn "Package does not have a maintainer"
 		fancy_message warn "It maybe no longer maintained. Please be advised."
 	fi
@@ -91,12 +91,12 @@ function log() {
 
 	# Origin repo info parsing
 	if [[ $local == 'no' ]]; then
-		if echo "$REPO" | grep "github" > /dev/null ; then
+		if echo "$REPO" | grep "github" > /dev/null; then
 			pURL="${REPO/'raw.githubusercontent.com'/'github.com'}"
 			pURL="${pURL%/*}"
 			pBRANCH="${REPO##*/}"
 			branch="yes"
-		elif echo "$REPO"| grep "gitlab" > /dev/null; then
+		elif echo "$REPO" | grep "gitlab" > /dev/null; then
 			pURL="${REPO%/-/raw/*}"
 			pBRANCH="${REPO##*/-/raw/}"
 			branch="yes"
@@ -107,10 +107,10 @@ function log() {
 	fi
 
 	# Metadata writing
-	 echo "_name=\"$PACKAGE"\" | sudo tee "$LOGDIR"/"$PACKAGE" > /dev/null
-        if [[ -n ${gives} ]]; then
-                echo "_gives=\"${gives}"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-        fi
+	echo "_name=\"$PACKAGE"\" | sudo tee "$LOGDIR"/"$PACKAGE" > /dev/null
+	if [[ -n ${gives} ]]; then
+		echo "_gives=\"${gives}"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+	fi
 	echo "_version=\"$version"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 	echo "_description=\"$description"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 	echo "_date=\"$(date)"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
@@ -128,16 +128,15 @@ function log() {
 		echo "_ppa=\"$ppa"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 	fi
 	if test -f /tmp/pacstall-pacdeps-"$PACKAGE"; then
-		echo "_pacstall_depends=\"true"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+		echo '_pacstall_depends="true"' | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 	fi
 	if [[ $local == 'no' ]]; then
-		echo  "_remoterepo=\"$pURL"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+		echo "_remoterepo=\"$pURL"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 		if [[ $branch == 'yes' ]]; then
-			echo  "_remotebranch=\"$pBRANCH"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+			echo "_remotebranch=\"$pBRANCH"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 		fi
 	fi
 }
-
 
 function makeVirtualDeb {
 	# creates empty .deb package (with only the control file) for apt integration
@@ -183,7 +182,7 @@ function makeVirtualDeb {
 				for optdep in "${optdeps[@]}"; do
 					deps+=" ${optdep%%: *}"
 				done
-				if pacstall -L | grep -E "(^| )${name}( |$)"> /dev/null 2>&1; then
+				if pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
 					sudo dpkg -r --force-all "$name" > /dev/null
 				fi
 			else
@@ -197,7 +196,7 @@ function makeVirtualDeb {
 
 	if [[ -n $deps ]]; then
 		deps="$(echo "${deps}" | sed -e 's/^[[:space:]]*//')"
-		printf "Depends: %s\n" "${deps//' '/' , '}"| sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" t> /dev/null
+		printf "Depends: %s\n" "${deps//' '/' , '}" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" t > /dev/null
 	fi
 
 	printf "Architecture: all
@@ -210,12 +209,12 @@ Priority: optional\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /d
 Replace: ${replace//' '/', '}" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 
-    if echo "$gives" | grep -q ",\|\\s"; then
-        local comma_gives="${gives// /, }"
-    else
-        local comma_gives="${gives:-$name}"
-    fi
-    printf '%s\n' "Provides: ${comma_gives}
+	if echo "$gives" | grep -q ",\|\\s"; then
+		local comma_gives="${gives// /, }"
+	else
+		local comma_gives="${gives:-$name}"
+	fi
+	printf '%s\n' "Provides: ${comma_gives}
 Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
 Description: This is a symbolic package used by pacstall, may be removed with apt or dpkg. $description\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 
@@ -251,7 +250,7 @@ if [[ -z $PACSTALL_REMOVE ]] && [[ -z $PACSTALL_INSTALL ]]; then
 	fi
 	rm -f '"$LOGDIR"'/'"$name"'
 else unset PACSTALL_REMOVE
-fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >/dev/null
+fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" > /dev/null
 
 	sudo chmod -x "$SRCDIR/$name-pacstall/DEBIAN/postrm"
 	sudo chmod 755 "$SRCDIR/$name-pacstall/DEBIAN/postrm"
@@ -264,7 +263,7 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >/dev/null
 		return 1
 	fi
 	export PACSTALL_INSTALL=1
-	
+
 	fancy_message info "Installing dependencies"
 	# --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
 	if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install "$SRCDIR/$name-pacstall.deb" -y --allow-downgrades 2> /dev/null; then
@@ -329,14 +328,14 @@ fi
 # Trap Crtl+C just before the point cleanup is first needed
 trap "trap_ctrlc" 2
 
-if [[ -n "$ppa" ]]; then
+if [[ -n $ppa ]]; then
 	for i in "${ppa[@]}"; do
 		# Add ppa, but ppa bad I guess
 		sudo add-apt-repository ppa:"$i"
 	done
 fi
 
-if [[ -n "$pacdeps" ]]; then
+if [[ -n $pacdeps ]]; then
 	for i in "${pacdeps[@]}"; do
 		fancy_message info "Installing $i"
 		# If /tmp/pacstall-pacdeps-"$i" is available, it will trigger the logger to log it as a dependency
@@ -355,7 +354,7 @@ if [[ -n "$pacdeps" ]]; then
 	done
 fi
 
-if [[ -n "$breaks" ]] && ! pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
+if [[ -n $breaks ]] && ! pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
 	for pkg in $breaks; do
 		if dpkg-query -W -f='${Status} ${Section}' "${pkg}" 2> /dev/null | grep "^install ok installed" | grep -v "Pacstall" > /dev/null 2>&1; then
 			# Check if anything in breaks variable is installed already
@@ -365,7 +364,7 @@ if [[ -n "$breaks" ]] && ! pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null
 			cleanup
 			return 1
 		fi
-		if [[ "${pkg}" != "${name}" ]] && pacstall -L | grep -E "(^| )${pkg}( |$)" > /dev/null 2>&1; then
+		if [[ ${pkg} != "${name}" ]] && pacstall -L | grep -E "(^| )${pkg}( |$)" > /dev/null 2>&1; then
 			# Same thing, but check if anything is installed with pacstall
 			fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by pacstall"
 			error_log 13 "install $PACKAGE"
@@ -378,7 +377,7 @@ fi
 
 if [[ -n $replace ]]; then
 	# Ask user if they want to replace the program
-	if dpkg-query -W -f='${Status}' $replace 2> /dev/null | grep -q "ok installed" ; then
+	if dpkg-query -W -f='${Status}' $replace 2> /dev/null | grep -q "ok installed"; then
 		ask "This script replaces $replace. Do you want to proceed" N
 		if [[ $answer -eq 0 ]]; then
 			fancy_message info "Cleaning up"
@@ -399,7 +398,7 @@ done
 build_depends=$(echo "$build_depends" | tr -s ' ' | awk '{gsub(/^ +| +$/,"")} {print $0}')
 
 # This echo makes it ignore empty strigs
-if [[ -n "$build_depends" ]]; then
+if [[ -n $build_depends ]]; then
 	fancy_message info "${BLUE}$name${NC} requires ${CYAN}$(echo -e "$build_depends")${NC} to install"
 	ask "Do you want to remove them after installing ${BLUE}$name${NC}" N
 	if [[ $answer -eq 0 ]]; then
@@ -417,8 +416,8 @@ if [[ -n "$build_depends" ]]; then
 	fi
 fi
 
-if [[ "$url" != *".deb" ]] && ! makeVirtualDeb; then
-		return 1
+if [[ $url != *".deb" ]] && ! makeVirtualDeb; then
+	return 1
 fi
 
 function hashcheck() {
@@ -428,11 +427,11 @@ function hashcheck() {
 
 	# Check if the input hash is the same as of the downloaded file.
 	# Skip this test if the hash variable doesn't exist in the pacscript.
-	if [[ "$inputHash" != "$fileHash" ]] && [[ -n "${hash}" ]]; then
+	if [[ $inputHash != "$fileHash" ]] && [[ -n ${hash} ]]; then
 		# We bad
 		fancy_message error "Hashes don't match"
 		error_log 16 "install $PACKAGE"
-		if [[ "$url" != *".deb" ]]; then
+		if [[ $url != *".deb" ]]; then
 			sudo dpkg -r "$name" > /dev/null
 		fi
 
@@ -447,12 +446,16 @@ fancy_message info "Retrieving packages"
 if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
 	mkdir -p "/tmp/pacstall-pacdep"
 	if ! cd "/tmp/pacstall-pacdep" 2> /dev/null; then
-		error_log 1 "install $PACKAGE"; fancy_message error "Could not enter ${SRCDIR}"; exit 1
+		error_log 1 "install $PACKAGE"
+		fancy_message error "Could not enter ${SRCDIR}"
+		exit 1
 	fi
 else
 	mkdir -p "$SRCDIR"
 	if ! cd "$SRCDIR" 2> /dev/null; then
-		error_log 1 "install $PACKAGE"; fancy_message error "Could not enter ${SRCDIR}"; exit 1
+		error_log 1 "install $PACKAGE"
+		fancy_message error "Could not enter ${SRCDIR}"
+		exit 1
 	fi
 fi
 
@@ -469,7 +472,7 @@ if [[ -n $patch ]]; then
 	export PACPATCH=$(pwd)/PACSTALL_patchesdir
 fi
 
-if [[ "$name" == *-git ]]; then
+if [[ $name == *-git ]]; then
 	# git clone quietly, with no history, and if submodules are there, download with 10 jobs
 	git clone --quiet --depth=1 --jobs=10 "$url"
 	# cd into the directory
@@ -497,10 +500,13 @@ else
 				return 1
 			fi
 			# unzip file
-			unzip -q "${url##*/}" 1>&1 2>/dev/null
+			unzip -q "${url##*/}" 1>&1 2> /dev/null
 			# cd into it
-			cd ./*/ 2> /dev/null || { error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive"; }
-		;;
+			cd ./*/ 2> /dev/null || {
+				error_log 1 "install $PACKAGE"
+				fancy_message warn "Could not enter into the downloaded archive"
+			}
+			;;
 		*.deb)
 			if ! download "$url"; then
 				error_log 1 "download $PACKAGE"
@@ -512,7 +518,7 @@ else
 			if ! hashcheck "${url##*/}"; then
 				return 1
 			fi
-			if sudo apt install -y -f ./"${url##*/}" 2>/dev/null; then
+			if sudo apt install -y -f ./"${url##*/}" 2> /dev/null; then
 				log
 				if type -t postinst > /dev/null 2>&1; then
 					if ! postinst; then
@@ -525,7 +531,9 @@ else
 				fancy_message info "Storing pacscript"
 				sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
 				if ! cd "$DIR" 2> /dev/null; then
-					error_log 1 "install $PACKAGE"; fancy_message error "Could not enter into ${DIR}"; exit 1
+					error_log 1 "install $PACKAGE"
+					fancy_message error "Could not enter into ${DIR}"
+					exit 1
 				fi
 				sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 				sudo chmod o+r /var/cache/pacstall/"$PACKAGE"/"$version"/"$PACKAGE".pacscript
@@ -541,7 +549,7 @@ else
 				cleanup
 				return 1
 			fi
-		;;
+			;;
 		*.AppImage)
 			if ! download "$url"; then
 				error_log 1 "download $PACKAGE"
@@ -553,7 +561,7 @@ else
 			if ! hashcheck "${url##*/}"; then
 				return 1
 			fi
-		;;
+			;;
 		*)
 			if ! download "$url"; then
 				error_log 1 "download $PACKAGE"
@@ -566,14 +574,17 @@ else
 			if ! hashcheck "${url##*/}"; then
 				return 1
 			fi
-			tar -xf "${url##*/}" 1>&1 2>/dev/null
-			cd ./*/ 2> /dev/null || { error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into the downloaded archive"; }
-		;;
+			tar -xf "${url##*/}" 1>&1 2> /dev/null
+			cd ./*/ 2> /dev/null || {
+				error_log 1 "install $PACKAGE"
+				fancy_message warn "Could not enter into the downloaded archive"
+			}
+			;;
 	esac
 fi
 
 export srcdir="$PWD"
-sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2>/dev/null
+sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2> /dev/null
 
 export pkgdir="/usr/src/pacstall/$name"
 
@@ -625,16 +636,19 @@ if [[ $NOBUILDDEP -eq 1 ]]; then
 	sudo apt-get purge --auto-remove -y $build_depends
 fi
 
-cd "$HOME" 2> /dev/null || ( error_log 1 "install $PACKAGE"; fancy_message warn "Could not enter into ${HOME}" )
+cd "$HOME" 2> /dev/null || (
+	error_log 1 "install $PACKAGE"
+	fancy_message warn "Could not enter into ${HOME}"
+)
 
 # Metadata writing
 log
 
 fancy_message info "Symlinking files"
 sudo mkdir -p "$STOWDIR"
-if ! cd "$STOWDIR" 2> /dev/null ; then
-	error_log 1 "install $PACKAGE";
-	fancy_message error "Could not enter into ${STOWDIR}";
+if ! cd "$STOWDIR" 2> /dev/null; then
+	error_log 1 "install $PACKAGE"
+	fancy_message error "Could not enter into ${STOWDIR}"
 	sudo dpkg -r "$name" > /dev/null
 	fancy_message info "Cleaning up"
 	cleanup

@@ -24,16 +24,16 @@
 
 REPO="${2%/}"
 
-if echo "$REPO" | grep "github.com" > /dev/null ; then
+if echo "$REPO" | grep "github.com" > /dev/null; then
 	REPO="${REPO/'github.com'/'raw.githubusercontent.com'}"
-	if  ! echo "$REPO" | grep  "/tree/" > /dev/null ; then
+	if ! echo "$REPO" | grep "/tree/" > /dev/null; then
 		REPO="$REPO/master"
 		fancy_message warn "Assuming that git branch is ${GREEN}master${NC}"
 	else
 		REPO="${URL/'/tree/'/'/'}"
 	fi
-elif echo "$REPO"| grep "gitlab.com" > /dev/null; then
-	if  ! echo "$REPO" | grep  "/tree/" > /dev/null ; then
+elif echo "$REPO" | grep "gitlab.com" > /dev/null; then
+	if ! echo "$REPO" | grep "/tree/" > /dev/null; then
 		REPO="$REPO/-/raw/master"
 		fancy_message warn "Assuming that git branch is ${GREEN}master${NC}"
 	else
@@ -49,7 +49,6 @@ else
 	fi
 fi
 
-
 if ! wget -q --spider -- "$REPO/packagelist"; then
 	fancy_message warn "If the URL is a private repo, edit ${CYAN}\e]8;;file://$STGDIR/repo/pacstallrepo.txt\a$STGDIR/repo/pacstallrepo.txt\e]8;;\a${NC}"
 	fancy_message error "packagelist file not found"
@@ -61,5 +60,5 @@ while IFS= read -r REPOURL; do
 done < "$STGDIR/repo/pacstallrepo.txt"
 REPOLIST+=("$REPO")
 
-echo "${REPOLIST[@]}"|tr -s ' ' '\n'| sort -u | sudo tee "$STGDIR/repo/pacstallrepo.txt" > /dev/null
+echo "${REPOLIST[@]}" | tr -s ' ' '\n' | sort -u | sudo tee "$STGDIR/repo/pacstallrepo.txt" > /dev/null
 # vim:set ft=sh ts=4 sw=4 noet:
