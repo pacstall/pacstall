@@ -76,6 +76,7 @@ case "$url" in
 		hash -r
 
 		if fn_exists removescript; then
+			trap - ERR
 			fancy_message info "Running post removal script"
 			export -f ask fancy_message removescript
 			bash -ce "removescript" || {
@@ -83,6 +84,8 @@ case "$url" in
 				fancy_message error "Could not run removescript properly"
 				exit 1
 			}
+			trap -
+			trap - SIGINT
 		fi
 
 		if [[ -n "$_dependencies" ]]; then

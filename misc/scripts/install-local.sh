@@ -259,10 +259,13 @@ if [[ -z $PACSTALL_REMOVE ]] && [[ -z $PACSTALL_INSTALL ]]; then
 	rm -rf '"$name"' 2> /dev/null
 	hash -r
 	if declare -F removescript >/dev/null ; then
+		trap - ERR
 		export -f ask fancy_message removescript || true
 		bash -ce "removescript" || {
 			fancy_message error "Could not run removescript properly"
 		}
+		trap -
+		trap - SIGINT
 	fi
 	rm -f '"$LOGDIR"'/'"$name"'
 else unset PACSTALL_REMOVE
@@ -288,7 +291,7 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" >/dev/null
 		sudo dpkg -r --force-all "$name" > /dev/null
 		fancy_message info "Cleaning up"
 		cleanup
-			return 1
+		return 1
 	fi
 
 	sudo rm -rf "$SRCDIR/$name-pacstall"
@@ -693,6 +696,7 @@ fi
 # `hash -r` updates PATH database
 hash -r
 if type -t postinst > /dev/null 2>&1; then
+	trap cleanup ERR
 	export -f postinst || true
 	bash -ce "postinst" || {
 		error_log 5 "postinst hook"
@@ -702,6 +706,10 @@ if type -t postinst > /dev/null 2>&1; then
 		cleanup
 		exit 1
 	}
+	# unset all traps
+	trap -
+	# reset the sigint trap
+	trap - SIGINT
 fi
 
 fancy_message info "Storing pacscript"
