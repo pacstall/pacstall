@@ -128,7 +128,7 @@ function log() {
 		echo "_ppa=\"$ppa"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 	fi
 	if test -f /tmp/pacstall-pacdeps-"$PACKAGE"; then
-		echo '_pacstall_depends="true'\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+		echo '_pacstall_depends="true"' | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
 	fi
 	if [[ $local == 'no' ]]; then
 		echo "_remoterepo=\"$pURL"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
