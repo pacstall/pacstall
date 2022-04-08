@@ -597,8 +597,11 @@ export pkgdir="/usr/src/pacstall/$name"
 # export functions so the child environment can use them
 export -f prepare build install || true
 
-fancy_message info "Preparing"
+# Trap so that we can clean up (hopefully without messing up anything)
 trap cleanup ERR
+trap - SIGINT
+
+fancy_message info "Preparing"
 bash -ce "prepare && echo $PWD > /tmp/pacstall-curdir" || {
 	fancy_message error "Could not prepare $PACKAGE properly"
 	sudo dpkg -r "$name" > /dev/null
@@ -628,8 +631,7 @@ bash -ce "build && echo $PWD > /tmp/pacstall-curdir" || {
 	exit 1
 }
 
-# Trap so that we can clean up (hopefully without messing up anything)
-trap - SIGINT
+
 
 fancy_message info "Installing"
 cd $(< /tmp/pacstall-curdir)
@@ -706,9 +708,7 @@ if type -t postinst > /dev/null 2>&1; then
 		cleanup
 		exit 1
 	}
-	# unset all traps
 	trap -
-	# reset the sigint trap
 	trap - SIGINT
 fi
 
