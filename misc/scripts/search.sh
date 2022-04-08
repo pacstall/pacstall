@@ -64,7 +64,7 @@ if [[ $PACKAGE == *@* ]]; then
 			return 0
 		fi
 	done < "$STGDIR/repo/pacstallrepo.txt"
-	
+
 	fancy_message warn "$IRed$REPONAME$NC is not on your repo list or does not exist"
 	error_log 3 "search $PACKAGE@$REPONAME"
 	exit 1

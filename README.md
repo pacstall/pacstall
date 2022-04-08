@@ -53,7 +53,7 @@ bash -c "$(curl -fsSL https://git.io/JEZbi || wget -q https://git.io/JEZbi -O -)
 ### Basic Commands
 ```bash
 pacstall -I foo
-``` 
+```
 This will install foo. Equivalent of apt install
 
 ```bash

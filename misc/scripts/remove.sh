@@ -46,7 +46,7 @@ case "$url" in
 			error_log 1 "remove $PACKAGE"
 			exit 1
 		fi
-		
+
 		if fn_exists removescript; then
 			fancy_message info "Running post removal script"
 			removescript

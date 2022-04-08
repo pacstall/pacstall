@@ -31,7 +31,7 @@ if check_url "${URL}"; then
 			error_log 1 "install $PACKAGE"; fancy_message error "Could not enter ${SRCDIR}"; exit 1
 		fi
 	fi
-	
+
 	case "$URL" in
 		*.pacscript)
 			if ! wget -q --show-progress --progress=bar:force -- "$URL" > /dev/null 2>&1; then

@@ -328,7 +328,7 @@ while [[ ! "$1" == "--" ]]; do
 				fancy_message error "You failed to specify a package"
 				exit 1
 			fi
-			
+
 			function trap_ctrlc () {
 				fancy_message warn "The installation of $2 was interrupted, removing files"
 				rm -rf "${SRCDIR:?}"/* # :? makes bash error out in case SRCDIR is empty, saving us from yoinking /* directory by mistake
@@ -400,18 +400,18 @@ while [[ ! "$1" == "--" ]]; do
 
 			while [[ -n "$2" ]]; do
 				export local="yes"
-				
+
 				PKGPATH="$(dirname "$2")"
 				PACKAGE="$(basename "$2" ".pacscript")" # Removes the suffix
 				export PACKAGE
-				
+
 				# Check if we need to cd into the directory first
 				if [[ "$PKGPATH" == "." ]] && [[ ! -f "$PACKAGE".pacscript ]] && [[ -d "$PACKAGE" ]]; then
 					cd "$PACKAGE"
 				elif [[ -d "$PKGPATH" ]]; then
 					cd "$PKGPATH"
 				fi
-				
+
 				# Check if the file exist
 				if [[ ! -f "$PACKAGE".pacscript ]]; then
 					fancy_message error "$2 does not exist"

@@ -18,7 +18,7 @@ repos:
         args: ["-o", "all"]
       - id: shfmt
         args: ["-bn", "-ci", "-sr", "-s"]
-  - repo: https://github.com/codespell-project/codespell 
+  - repo: https://github.com/codespell-project/codespell
     rev: v2.1.0
     hooks:
       - id: codespell
