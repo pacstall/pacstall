@@ -95,7 +95,7 @@ _LEN=($IDXSEARCH)
 LEN=${#_LEN[@]}
 
 # Parses github and gitlab URL's
-# url -> maintaner/repo
+# url -> maintainer/repo
 # Also adds hyperlink for the
 # terminals that support them
 function parseRepo() {
