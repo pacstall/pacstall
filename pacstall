@@ -378,16 +378,10 @@ while [[ $1 != "--" ]]; do
 
 				export REPO
 				if ! source "$STGDIR/scripts/install-local.sh"; then
-					fail_install=1
-					export fail_install
 					fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
-					continue
+					exit 1
 				fi
 			done
-
-			if [[ -n $fail_install ]]; then
-				exit 1
-			fi
 			exit 0
 			;;
 
@@ -427,7 +421,7 @@ while [[ $1 != "--" ]]; do
 
 				if ! source "$STGDIR/scripts/install-local.sh"; then
 					fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
-					continue
+					exit 1
 				fi
 				shift
 			done
