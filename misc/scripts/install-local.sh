@@ -621,7 +621,7 @@ if ! type -t build > /dev/null 2>&1; then
 fi
 
 fancy_message info "Building"
-cd $(< /tmp/pacstall-curdir)
+cd "$(< /tmp/pacstall-curdir)" &&
 bash -ce "build && echo $PWD > /tmp/pacstall-curdir" || {
 	error_log 5 "build $PACKAGE"
 	fancy_message error "Could not properly build $PACKAGE"
@@ -634,7 +634,7 @@ bash -ce "build && echo $PWD > /tmp/pacstall-curdir" || {
 
 
 fancy_message info "Installing"
-cd $(< /tmp/pacstall-curdir)
+cd "$(< /tmp/pacstall-curdir)" &&
 bash -ce "install" || {
 	error_log 14 "install $PACKAGE"
 	fancy_message error "Could not install $PACKAGE properly"
