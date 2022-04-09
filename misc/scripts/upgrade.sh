@@ -34,20 +34,20 @@ export UPGRADE="yes"
 # Get the list of the installed packages
 mapfile -t list < <(pacstall -L)
 if [[ -f /tmp/pacstall-up-list ]]; then
-	sudo rm /tmp/pacstall-up-list
+	rm /tmp/pacstall-up-list
 fi
 
 if [[ -f /tmp/pacstall-up-print ]]; then
-	sudo rm /tmp/pacstall-up-print
+	rm /tmp/pacstall-up-print
 fi
 
 if [[ -f /tmp/pacstall-up-urls ]]; then
-	sudo rm /tmp/pacstall-up-urls
+	rm /tmp/pacstall-up-urls
 fi
 
-sudo touch /tmp/pacstall-up-list
-sudo touch /tmp/pacstall-up-print
-sudo touch /tmp/pacstall-up-urls
+touch /tmp/pacstall-up-list
+touch /tmp/pacstall-up-print
+touch /tmp/pacstall-up-urls
 
 fancy_message info "Checking for updates"
 
@@ -162,14 +162,14 @@ ${BOLD}$(cat /tmp/pacstall-up-print)${NORMAL}\n"
 fi
 
 if [[ -f "/tmp/pacstall-up-list" ]]; then
-	sudo rm -f /tmp/pacstall-up-list
+	rm -f /tmp/pacstall-up-list
 fi
 
 if [[ -f "/tmp/pacstall-up-print" ]]; then
-	sudo rm -f /tmp/pacstall-up-print
+	rm -f /tmp/pacstall-up-print
 fi
 
 if [[ -f "/tmp/pacstall-up-urls" ]]; then
-	sudo rm -f /tmp/pacstall-up-urls
+	rm -f /tmp/pacstall-up-urls
 fi
 # vim:set ft=sh ts=4 sw=4 noet:
