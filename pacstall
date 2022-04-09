@@ -215,7 +215,7 @@ function check_url() {
 	esac
 }
 
-# use axel if avaliable
+# use axel if available
 function download() {
 	sudo rm -f "${1##*/}"
 	if command -v axel > /dev/null; then

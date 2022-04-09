@@ -44,7 +44,7 @@ function cleanup() {
 
 function trap_ctrlc() {
 	echo ""
-	fancy_message warn "Interupted, cleaning up"
+	fancy_message warn "Interrupted, cleaning up"
 	if dpkg-query -W -f='${Status}' "$name" 2> /dev/null | grep -q -E "ok installed|ok unpacked"; then
 		sudo dpkg -r --force-all "$name" > /dev/null
 	fi
