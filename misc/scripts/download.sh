@@ -25,24 +25,30 @@
 # This script downloads pacscripts from the interwebs
 
 if check_url "${URL}"; then
-	if [[ "$type" = "install" ]]; then
+	if [[ $type == "install" ]]; then
 		mkdir -p "$SRCDIR"
-		if ! cd "$SRCDIR" ; then
-			error_log 1 "install $PACKAGE"; fancy_message error "Could not enter ${SRCDIR}"; exit 1
+		if ! cd "$SRCDIR"; then
+			error_log 1 "install $PACKAGE"
+			fancy_message error "Could not enter ${SRCDIR}"
+			exit 1
 		fi
 	fi
-	
+
 	case "$URL" in
 		*.pacscript)
 			if ! wget -q --show-progress --progress=bar:force -- "$URL" > /dev/null 2>&1; then
-				error_log 1 "download $PACKAGE"; fancy_message error "Could not download ${URL}"; exit 1
+				error_log 1 "download $PACKAGE"
+				fancy_message error "Could not download ${URL}"
+				exit 1
 			fi
-		;;
+			;;
 		*)
 			if ! download -- "$URL" > /dev/null 2>&1; then
-				error_log 1 "download $PACKAGE"; fancy_message error "Could not download ${URL}"; exit 1
+				error_log 1 "download $PACKAGE"
+				fancy_message error "Could not download ${URL}"
+				exit 1
 			fi
-		;;
+			;;
 	esac
 	return 0
 else

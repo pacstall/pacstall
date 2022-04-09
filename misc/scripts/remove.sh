@@ -23,7 +23,7 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 function fn_exists() {
-	declare -F "$1" > /dev/null;
+	declare -F "$1" > /dev/null
 }
 
 # Removal starts from here
@@ -41,12 +41,12 @@ fi
 
 case "$url" in
 	*.deb)
-		if ! sudo apt remove -y "$gives" 2>/dev/null; then
+		if ! sudo apt remove -y "$gives" 2> /dev/null; then
 			fancy_message warn "Failed to remove the package"
 			error_log 1 "remove $PACKAGE"
 			exit 1
 		fi
-		
+
 		if fn_exists removescript; then
 			trap - ERR
 			fancy_message info "Running post removal script"
@@ -61,15 +61,17 @@ case "$url" in
 		fi
 		sudo rm -f "$LOGDIR/$PACKAGE"
 		return 0
-	;;
+		;;
 
 	*)
 		sudo mkdir -p "$STOWDIR"
 		if ! cd "$STOWDIR" 2> /dev/null; then
-			error_log 1 "remove $PACKAGE"; fancy_message error "Could not enter ${STOWDIR}"; exit 1
+			error_log 1 "remove $PACKAGE"
+			fancy_message error "Could not enter ${STOWDIR}"
+			exit 1
 		fi
 
-		if [[ ! -d "$PACKAGE" ]]; then
+		if [[ ! -d $PACKAGE ]]; then
 			fancy_message error "$PACKAGE is not installed or not properly symlinked"
 			error_log 1 "remove $PACKAGE"
 			exit 1
@@ -96,7 +98,7 @@ case "$url" in
 			trap - SIGINT
 		fi
 
-		if [[ -n "$_dependencies" ]]; then
+		if [[ -n $_dependencies ]]; then
 			fancy_message info "You may want to remove ${BLUE}$_dependencies${NC}"
 		fi
 
@@ -113,7 +115,7 @@ case "$url" in
 		sudo rm -f "$LOGDIR/$PACKAGE"
 		fancy_message info "Package removed successfully"
 		return 0
-	;;
+		;;
 esac
 
 error_log 1 "remove $PACKAGE"

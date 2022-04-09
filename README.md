@@ -13,7 +13,7 @@
 
 <p align="center"><b>PACSTALL</b></p>
 <p align="center">
-<a href="https://github.com/pacstall/pacstall"><img align="center" src="https://pacstall.dev/image/pacstall.svg" alt="Pacstall Logo"></a>
+<a href="https://github.com/pacstall/pacstall"><img align="center" src="https://raw.githubusercontent.com/pacstall/website/master/client/public/pacstall.svg" alt="Pacstall Logo"></a>
 </p>
 <p align="center"><b>The AUR Ubuntu never had</b></p>
 
@@ -53,7 +53,7 @@ bash -c "$(curl -fsSL https://git.io/JEZbi || wget -q https://git.io/JEZbi -O -)
 ### Basic Commands
 ```bash
 pacstall -I foo
-``` 
+```
 This will install foo. Equivalent of apt install
 
 ```bash
