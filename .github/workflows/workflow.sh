@@ -18,7 +18,7 @@ export LOGNAME="pacstall"
 echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 sudo -u pacstall bash -c : && RUNAS="sudo -u pacstall"
 
-$RUNAS bash<<_
+$RUNAS bash << _
 export TERM="xterm"
 echo "Installing neofetch"
 pacstall -PI neofetch
