@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-if [[ -z "$PACKAGE" ]]; then
+if [[ -z $PACKAGE ]]; then
 	fancy_message error "You failed to specify a package"
 	exit 1
 fi
@@ -34,15 +34,17 @@ fi
 
 source "$LOGDIR/$PACKAGE"
 
-if [[ "$PACKAGE" == *-deb ]]; then
-	size="$(numfmt --to=iec $(apt-cache --no-all-versions show "${_gives}" | grep Installed-Size | cut -d' ' -f 2))"
+if [[ $PACKAGE == *-deb ]]; then
+	size="$(apt-cache --no-all-versions show "${_gives}" | grep Installed-Size | cut -d' ' -f 2 | numfmt --to=iec)"
 else
 	size="$(du -sh "$STOWDIR"/"$PACKAGE" 2> /dev/null | awk '{print $1}')"
 fi
 
 echo -e "${BGreen}name${NORMAL}: $PACKAGE"
 echo -e "${BGreen}version${NORMAL}: $_version"
-echo -e "${BGreen}size${NORMAL}: $size"
+if [[ -n ${size} ]]; then
+	echo -e "${BGreen}size${NORMAL}: $size"
+fi
 echo -e "${BGreen}description${NORMAL}: ""$_description"""
 echo -e "${BGreen}date installed${NORMAL}: ""$_date"""
 

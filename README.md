@@ -13,11 +13,11 @@
 
 <p align="center"><b>PACSTALL</b></p>
 <p align="center">
-<a href="https://github.com/pacstall/pacstall"><img align="center" src="https://pacstall.dev/image/pacstall.svg" alt="Pacstall Logo"></a>
+<a href="https://github.com/pacstall/pacstall"><img align="center" src="https://raw.githubusercontent.com/pacstall/website/master/client/public/pacstall.svg" alt="Pacstall Logo"></a>
 </p>
 <p align="center"><b>The AUR Ubuntu never had</b></p>
 
-<p align="center">Pacstall will attempt to become the AUR Ubuntu wishes it had. It takes the AUR and puts a spin on it, making it easier to install programs without scouring github repos and the likes.</p>
+<p align="center">Pacstall is the AUR Ubuntu wishes it had. It takes the AUR and puts a spin on it, making it easier to install programs without scouring github repos and the likes.</p>
 <p align="center">The list of available packages can be found <a href="https://github.com/pacstall/pacstall-programs/tree/master/packages">here</a>.</p>
 </p>
 
@@ -27,8 +27,7 @@
 
 *  Supports binary, git, appimage, building and `.deb` packages
 *  Accelerated package download using [axel](https://github.com/axel-download-accelerator/axel) (optional)
-*  Auto update checks for git packages, so you always get the latest build of your favourite program off the latest commit by the developer
-*  Over 175 packages available to install in the official programs repository
+*  During upgrades, you always get the latest build off of the latest commit from the developer for `-git` packages. No need to wait for the pacscript maintainer to update the script!
 *  Ability to install programs from multiple repositories
 *  Ability to track Pacstall updates from any fork/branch easily
 *  Completions available for `bash` (`ZSH`), and `fish`
@@ -54,7 +53,7 @@ bash -c "$(curl -fsSL https://git.io/JEZbi || wget -q https://git.io/JEZbi -O -)
 ### Basic Commands
 ```bash
 pacstall -I foo
-``` 
+```
 This will install foo. Equivalent of apt install
 
 ```bash

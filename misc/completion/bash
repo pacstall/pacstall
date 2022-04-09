@@ -25,88 +25,88 @@ _pacstall() {
 	cur=${COMP_WORDS[COMP_CWORD]}
 	prev=${COMP_WORDS[1]}
 
-        if [[ "-P --disable-prompts -K --keep" =~ (^|[[:space:]])"$prev"($|[[:space:]]) ]]; then
-                prev=${COMP_WORDS[2]}
-                if [[ "-P --disable-prompts -K --keep" =~ (^|[[:space:]])"$prev"($|[[:space:]]) ]]; then
-                        prev=${COMP_WORDS[3]}
-                fi
-        fi
-	
+	if [[ "-P --disable-prompts -K --keep" =~ (^|[[:space:]])"$prev"($|[[:space:]]) ]]; then
+		prev=${COMP_WORDS[2]}
+		if [[ "-P --disable-prompts -K --keep" =~ (^|[[:space:]])"$prev"($|[[:space:]]) ]]; then
+			prev=${COMP_WORDS[3]}
+		fi
+	fi
+
 	case "$prev" in
-		-'?'|--help|-v|--version)
+		-'?' | --help | -v | --version)
 			return
-		;;
+			;;
 
-		-?(P)S?(P)|--search)
-			COMPREPLY=( $(compgen -W "$(sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | awk '!seen[$0]++')" -- "$cur") )
+		-?(P)S?(P) | --search)
+			COMPREPLY=($(compgen -W "$(sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | awk '!seen[$0]++')" -- "$cur"))
 			return
-		;;
+			;;
 
-		-?(P)I?(P)|-?(K)I?(K)|-?(PK)I?(PK)|-?(KP)I?(KP)|--install)
-			COMPREPLY=( $(compgen -W "$(sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | awk '!seen[$0]++')" -- "$cur") )
+		-?(P)I?(P) | -?(K)I?(K) | -?(PK)I?(PK) | -?(KP)I?(KP) | --install)
+			COMPREPLY=($(compgen -W "$(sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | awk '!seen[$0]++')" -- "$cur"))
 			return
-		;;
+			;;
 
-		-?(P)R?(P)|--remove)
-			COMPREPLY=( $( compgen -W "$(\ls -1aA /var/log/pacstall/metadata)" -- $cur ) )
+		-?(P)R?(P) | --remove)
+			COMPREPLY=($(compgen -W "$(\ls -1aA /var/log/pacstall/metadata)" -- $cur))
 			return
-		;;
+			;;
 
-		-?(P)Qi?(P)|--query-info)
-			COMPREPLY=( $( compgen -W "$(\ls -1aAp /var/log/pacstall/metadata)" -- $cur ) )
+		-?(P)Qi?(P) | --query-info)
+			COMPREPLY=($(compgen -W "$(\ls -1aAp /var/log/pacstall/metadata)" -- $cur))
 			return
-		;;
+			;;
 
-		-?(P)Il?(P)|-?(K)Il?(K)|-?(PK)Il?(PK)|-?(KP)Il?(KP)|--install-local)
-			COMPREPLY=( $( compgen -W "$(find -maxdepth 1 -type f -name '*.pacscript' | sed 's/.pacscript//g' | sed 's/.\///g')" -- "$cur" ) )
+		-?(P)Il?(P) | -?(K)Il?(K) | -?(PK)Il?(PK) | -?(KP)Il?(KP) | --install-local)
+			COMPREPLY=($(compgen -W "$(find -maxdepth 1 -type f -name '*.pacscript' | sed 's/.pacscript//g' | sed 's/.\///g')" -- "$cur"))
 			return
-		;;
+			;;
 
-		-?(P)D?(P)|--download)
-			COMPREPLY=( $(compgen -W "$(sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | awk '!seen[$0]++')" -- "$cur") )
+		-?(P)D?(P) | --download)
+			COMPREPLY=($(compgen -W "$(sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | awk '!seen[$0]++')" -- "$cur"))
 			return
-		;;
-		
-		-?(P)K?(P)|--keep)
-			COMPREPLY=( $( compgen -W "-I -Il -Up -PI -PIl -PUp" -- "$cur" ) )
+			;;
+
+		-?(P)K?(P) | --keep)
+			COMPREPLY=($(compgen -W "-I -Il -Up -PI -PIl -PUp" -- "$cur"))
 			return
-		;;
-		
-		-T|--tree)
-			COMPREPLY=( $( compgen -W "$(\ls -1aAp /var/log/pacstall/metadata)" -- $cur ) )
+			;;
+
+		-T | --tree)
+			COMPREPLY=($(compgen -W "$(\ls -1aAp /var/log/pacstall/metadata)" -- $cur))
 			return
-		;;
+			;;
 	esac
 
 	case "$cur" in
 		--*)
-			COMPREPLY=( $( compgen -W '$( _parse_help "$1" )' -- "$cur" ) )
+			COMPREPLY=($(compgen -W '$( _parse_help "$1" )' -- "$cur"))
 			return
-		;;
+			;;
 		-PK*)
-			COMPREPLY=( $( compgen -W "-PKI -PKIl -PKUp" -- "$cur" ) )
+			COMPREPLY=($(compgen -W "-PKI -PKIl -PKUp" -- "$cur"))
 			return
-		;;
+			;;
 		-KP*)
-			COMPREPLY=( $( compgen -W "-KPI -KPIl -KPUp" -- "$cur" ) )
+			COMPREPLY=($(compgen -W "-KPI -KPIl -KPUp" -- "$cur"))
 			return
-		;;
+			;;
 		-P*)
-			COMPREPLY=( $( compgen -W "-PK -PI -PIl -PR -PUp -PKI -PKIl -PKR -PKUp" -- "$cur" ) )
+			COMPREPLY=($(compgen -W "-PK -PI -PIl -PR -PUp -PKI -PKIl -PKR -PKUp" -- "$cur"))
 			return
-		;;
+			;;
 		-K*)
-			COMPREPLY=( $( compgen -W "-KP -KI -KIl -KUp -KPI -KPIl -KPUp" -- "$cur" ) )
+			COMPREPLY=($(compgen -W "-KP -KI -KIl -KUp -KPI -KPIl -KPUp" -- "$cur"))
 			return
-		;;
+			;;
 		*)
-			if [[ "-P" =~ (^|[[:space:]])${COMP_WORDS[COMP_CWORD-1]}($|[[:space:]]) ]] || [[ "--disable-prompts" =~ (^|[[:space:]])${COMP_WORDS[COMP_CWORD-1]}($|[[:space:]]) ]]; then
-				COMPREPLY=( $( compgen -W "-I -Il -R -Up" -- "$cur" ) )
+			if [[ "-P" =~ (^|[[:space:]])${COMP_WORDS[COMP_CWORD - 1]}($|[[:space:]]) ]] || [[ "--disable-prompts" =~ (^|[[:space:]])${COMP_WORDS[COMP_CWORD - 1]}($|[[:space:]]) ]]; then
+				COMPREPLY=($(compgen -W "-I -Il -R -Up" -- "$cur"))
 				return
-			fi			
-			COMPREPLY=( $( compgen -W "-I -Il -S -R -A -U -V -L -Up -Qi -T" -- "$cur" ) )
+			fi
+			COMPREPLY=($(compgen -W "-I -Il -S -R -A -U -V -L -Up -Qi -T" -- "$cur"))
 			return
-		;;
+			;;
 	esac
 } && complete -o filenames -o bashdefault -F _pacstall pacstall
 # vim:set ft=sh ts=4 sw=4 noet:
