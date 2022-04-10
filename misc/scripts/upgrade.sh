@@ -33,17 +33,9 @@ export UPGRADE="yes"
 
 # Get the list of the installed packages
 mapfile -t list < <(pacstall -L)
-if [[ -f /tmp/pacstall-up-list ]]; then
-	rm /tmp/pacstall-up-list
-fi
-
-if [[ -f /tmp/pacstall-up-print ]]; then
-	rm /tmp/pacstall-up-print
-fi
-
-if [[ -f /tmp/pacstall-up-urls ]]; then
-	rm /tmp/pacstall-up-urls
-fi
+rm -f /tmp/pacstall-up-list
+rm -f /tmp/pacstall-up-print
+rm -f /tmp/pacstall-up-urls
 
 touch /tmp/pacstall-up-list
 touch /tmp/pacstall-up-print
@@ -161,15 +153,7 @@ ${BOLD}$(cat /tmp/pacstall-up-print)${NORMAL}\n"
 	done
 fi
 
-if [[ -f "/tmp/pacstall-up-list" ]]; then
-	rm -f /tmp/pacstall-up-list
-fi
-
-if [[ -f "/tmp/pacstall-up-print" ]]; then
-	rm -f /tmp/pacstall-up-print
-fi
-
-if [[ -f "/tmp/pacstall-up-urls" ]]; then
-	rm -f /tmp/pacstall-up-urls
-fi
+rm -f /tmp/pacstall-up-list
+rm -f /tmp/pacstall-up-print
+rm -f /tmp/pacstall-up-urls
 # vim:set ft=sh ts=4 sw=4 noet:
