@@ -89,7 +89,7 @@ case "$url" in
 			trap - ERR
 			fancy_message info "Running post removal script"
 			export -f ask fancy_message removescript
-			bash -ce "removescript" || {
+			bash -ce "/var/cache/pacstall/${PACKAGE}/${_version}/${PACKAGE}.pacscript; removescript" || {
 				error_log 2 "removescript $PACKAGE"
 				fancy_message error "Could not run removescript properly"
 				exit 1
