@@ -32,7 +32,7 @@ function cleanup() {
 		fi
 	fi
 	if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
-		sudo rm -rf /tmp/pacstall-pacdeps-"$PACKAGE"
+		rm -rf /tmp/pacstall-pacdeps-"$PACKAGE"
 		sudo rm -rf /tmp/pacstall-pacdep
 	else
 		sudo rm -rf "${SRCDIR:?}"/*
@@ -355,7 +355,7 @@ if [[ -n $pacdeps ]]; then
 	for i in "${pacdeps[@]}"; do
 		fancy_message info "Installing $i"
 		# If /tmp/pacstall-pacdeps-"$i" is available, it will trigger the logger to log it as a dependency
-		sudo touch /tmp/pacstall-pacdeps-"$i"
+		touch /tmp/pacstall-pacdeps-"$i"
 
 		[[ $KEEP ]] && cmd="-KPI" || cmd="-PI"
 		if pacstall -L | grep -E "(^| )${i}( |$)" > /dev/null 2>&1; then
@@ -367,6 +367,7 @@ if [[ -n $pacdeps ]]; then
 			cleanup
 			return 1
 		fi
+		rm /tmp/pacstall-pacdeps-"$i"
 	done
 fi
 
