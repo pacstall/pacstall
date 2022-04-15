@@ -51,36 +51,35 @@ bash -c "$(curl -fsSL https://git.io/JEZbi || wget -q https://git.io/JEZbi -O -)
 ---
 
 ### Basic Commands
+Install `foo` (Equivalent of `apt install`):
 ```bash
 pacstall -I foo
 ```
-This will install foo. Equivalent of apt install
 
+Remove `foo` (Equivalent of `apt remove`):
 ```bash
 pacstall -R foo
 ```
-This will remove foo. Equivalent of apt remove
 
+Search for `foo` (Equivalent of `apt search`):
 ```bash
 pacstall -S foo
 ```
-This will search for foo in repositories. Equivalent of apt search
 
+Adding a Repository:
 ```bash
-pacstall -A
+pacstall -A REPOSITORY_NAME
 ```
-Run this command with a github/gitlab url to add a repo
 
+Update Pacstall's Scripts:
 ```bash
 pacstall -U
 ```
-This will update pacstall's scripts
 
+Update Packages (Equivalent of `apt upgrade`):
 ```bash
 pacstall -Up
 ```
-
-This will update packages. Equivalent of apt upgrade
 
 These are the basic commands, for more info, run `pacstall -h`
 
