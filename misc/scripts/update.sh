@@ -34,14 +34,6 @@ sudo chown "$PACSTALL_USER" -R /tmp/pacstall
 
 STGDIR="/usr/share/pacstall"
 
-if ! command -v apt &> /dev/null; then
-	echo -ne "Do you want to install axel (faster downloads)? [${BIGreen}Y${NC}/${RED}n${NC}] "
-	read -r reply <&0
-	case "$reply" in
-		N* | n*) ;;
-		*) apt-get install -qq -y axel ;;
-	esac
-fi
 for i in {error_log.sh,add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
 	sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/"$i" -P "$STGDIR/scripts" &
 done
