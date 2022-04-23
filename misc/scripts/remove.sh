@@ -48,7 +48,6 @@ case "$url" in
 		fi
 
 		if fn_exists removescript; then
-			trap - ERR
 			fancy_message info "Running post removal script"
 			export -f ask fancy_message removescript
 			bash -ce "removescript" || {
@@ -56,8 +55,6 @@ case "$url" in
 				fancy_message error "Could not run removescript properly"
 				exit 1
 			}
-			trap -
-			trap - SIGINT
 		fi
 		sudo rm -f "$LOGDIR/$PACKAGE"
 		return 0
