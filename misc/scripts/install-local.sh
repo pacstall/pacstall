@@ -680,7 +680,6 @@ fi
 # `hash -r` updates PATH database
 hash -r
 if type -t postinst > /dev/null 2>&1; then
-	trap cleanup ERR
 	export -f postinst || true
 	bash -ce "source $pacfile && postinst" || {
 		error_log 5 "postinst hook"
@@ -690,8 +689,6 @@ if type -t postinst > /dev/null 2>&1; then
 		cleanup
 		exit 1
 	}
-	trap -
-	trap - SIGINT
 fi
 
 fancy_message info "Storing pacscript"
