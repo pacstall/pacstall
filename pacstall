@@ -305,38 +305,38 @@ while [[ $1 != "--" ]]; do
 			;;
 
 		-h | --help)
-			echo "Usage: pacstall [-h] [-V] {-I,-Il,-S,-R,-D,-A,-U,-L,-Up,-Qi} [-P] [-K]
+			echo -e "Usage: pacstall [-h] [-V] {-I,-Il,-S,-R,-D,-A,-U,-L,-Up,-Qi} [-P] [-K]
 
 Commands:
-	-I, --install <package>
+	${BOLD}-I${NC}, ${BOLD}--install${NC} <package>
 		Install a package.
-	-Il, --install-local <package>
+	${BOLD}-Il${NC}, ${BOLD}--install-local${NC} <package>
 		Install a local pacscript.
-	-S, --search <package>
+	${BOLD}-S${NC}, ${BOLD}--search${NC} <package>
 		Search for a package.
-	-R, --remove <package>
+	${BOLD}-R${NC}, ${BOLD}--remove${NC} <package>
 		Remove a package.
-	-D, --download <package>
+	${BOLD}-D${NC}, ${BOLD}--download${NC} <package>
 		Download a pacscript.
-	-A, --add-repo <repo>
+	${BOLD}-A${NC}, ${BOLD}--add-repo${NC} <repo>
 		Add a repository.
-	-U, --update
+	${BOLD}-U${NC}, ${BOLD}--update${NC}
 		Update Pacstall.
-	-L, --list
+	${BOLD}-L${NC}, ${BOLD}--list${NC}
 		List all installed packages.
-	-Up, --upgrade
+	${BOLD}-Up${NC}, ${BOLD}--upgrade${NC}
 		Upgrade all installed packages.
-	-Qi, --query-info <package>
+	${BOLD}-Qi${NC}, ${BOLD}--query-info${NC} <package>
 		Query information about a package.
-	-P, --disable-prompts
+	${BOLD}-P${NC}, ${BOLD}--disable-prompts${NC}
 		Disable prompts.
-	-K, --keep
+	${BOLD}-K${NC}, ${BOLD}--keep${NC}
 		Keep the downloaded files.
 
 Options:
-	-h, --help
+	${BOLD}-h${NC}, ${BOLD}--help${NC}
 		Display this help message.
-	-V, --version
+	${BOLD}-V${NC}, ${BOLD}--version${NC}
 		Display the version number."
 			exit 0
 			;;
