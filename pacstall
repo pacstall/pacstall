@@ -305,20 +305,39 @@ while [[ $1 != "--" ]]; do
 			;;
 
 		-h | --help)
-			echo "options:
--I --install, Installs package
--Il --install-local, Installs a local package
--S --search, Search for package
--R --remove, Removes package
--D --download, Downloads script
--A --add-repo, Adds repo to your repo list
--U --update, Update script
--V --version, Prints pacstall version
--L --list, Lists installed packages
--Up --upgrade, Upgrades packages
--Qi --query-info, Get package info
--P --disable-prompts, Disable Prompts for unattended installation
--K --keep, retain build directory after package install"
+			echo "Usage: pacstall [-h] [-V] {-I,-Il,-S,-R,-D,-A,-U,-L,-Up,-Qi} [-P] [-K]
+
+Commands:
+	-I, --install <package>
+		Install a package.
+	-Il, --install-local <package>
+		Install a local pacscript.
+	-S, --search <package>
+		Search for a package.
+	-R, --remove <package>
+		Remove a package.
+	-D, --download <package>
+		Download a pacscript.
+	-A, --add-repo <repo>
+		Add a repository.
+	-U, --update
+		Update Pacstall.
+	-L, --list
+		List all installed packages.
+	-Up, --upgrade
+		Upgrade all installed packages.
+	-Qi, --query-info <package>
+		Query information about a package.
+	-P, --disable-prompts
+		Disable prompts.
+	-K, --keep
+		Keep the downloaded files.
+
+Options:
+	-h, --help
+		Display this help message.
+	-V, --version
+		Display the version number."
 			exit 0
 			;;
 
