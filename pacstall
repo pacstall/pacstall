@@ -307,6 +307,8 @@ while [[ $1 != "--" ]]; do
 		-h | --help)
 			echo -e "Usage: pacstall [-h] [-V] {-I,-Il,-S,-R,-D,-A,-U,-L,-Up,-Qi} [-P] [-K]
 
+	An AUR inspired package manager for Ubuntu.
+
 Commands:
 	${BOLD}-I${NC}, ${BOLD}--install${NC} <package>
 		Install a package.
@@ -328,16 +330,16 @@ Commands:
 		Upgrade all installed packages.
 	${BOLD}-Qi${NC}, ${BOLD}--query-info${NC} <package>
 		Query information about a package.
+
+Options:
 	${BOLD}-P${NC}, ${BOLD}--disable-prompts${NC}
 		Disable prompts.
 	${BOLD}-K${NC}, ${BOLD}--keep${NC}
 		Keep the downloaded files.
-
-Options:
-	${BOLD}-h${NC}, ${BOLD}--help${NC}
-		Display this help message.
 	${BOLD}-V${NC}, ${BOLD}--version${NC}
-		Display the version number."
+		Display the version number.
+	${BOLD}-h${NC}, ${BOLD}--help${NC}
+		Display this help message."
 			exit 0
 			;;
 
