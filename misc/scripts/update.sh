@@ -47,7 +47,7 @@ if command -v fish &> /dev/null; then
 	sudo wget -q -O /usr/share/fish/vendor_completions.d/pacstall.fish https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/completion/fish &
 fi
 
-wait
+wait && stty sane
 
 sudo chmod +x /bin/pacstall
 sudo chmod +x /usr/share/pacstall/scripts/*
