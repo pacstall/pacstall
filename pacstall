@@ -335,7 +335,7 @@ Options:
 	${BOLD}-P${NC}, ${BOLD}--disable-prompts${NC}
 		Disable prompts.
 	${BOLD}-K${NC}, ${BOLD}--keep${NC}
-		Keep the downloaded files.
+		Keep the build files.
 	${BOLD}-V${NC}, ${BOLD}--version${NC}
 		Display the version number.
 	${BOLD}-h${NC}, ${BOLD}--help${NC}
