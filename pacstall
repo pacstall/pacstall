@@ -322,7 +322,7 @@ Commands:
 		Download a pacscript.
 	${BOLD}-A${NC}, ${BOLD}--add-repo${NC} <repo>
 		Add a repository.
-	${BOLD}-U${NC}, ${BOLD}--update${NC}
+	${BOLD}-U${NC}, ${BOLD}--update${NC} [user] [branch]
 		Update Pacstall.
 	${BOLD}-L${NC}, ${BOLD}--list${NC}
 		List all installed packages.
