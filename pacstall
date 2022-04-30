@@ -305,20 +305,41 @@ while [[ $1 != "--" ]]; do
 			;;
 
 		-h | --help)
-			echo "options:
--I --install, Installs package
--Il --install-local, Installs a local package
--S --search, Search for package
--R --remove, Removes package
--D --download, Downloads script
--A --add-repo, Adds repo to your repo list
--U --update, Update script
--V --version, Prints pacstall version
--L --list, Lists installed packages
--Up --upgrade, Upgrades packages
--Qi --query-info, Get package info
--P --disable-prompts, Disable Prompts for unattended installation
--K --keep, retain build directory after package install"
+			echo -e "Usage: pacstall [-h] [-V] {-I,-Il,-S,-R,-D,-A,-U,-L,-Up,-Qi} [-P] [-K]
+
+An AUR inspired package manager for Ubuntu.
+
+Commands:
+	${BOLD}-I${NC}, ${BOLD}--install${NC} <package>
+		Install a package.
+	${BOLD}-Il${NC}, ${BOLD}--install-local${NC} <package>
+		Install a local pacscript.
+	${BOLD}-S${NC}, ${BOLD}--search${NC} <package>
+		Search for a package.
+	${BOLD}-R${NC}, ${BOLD}--remove${NC} <package>
+		Remove a package.
+	${BOLD}-D${NC}, ${BOLD}--download${NC} <package>
+		Download a pacscript.
+	${BOLD}-A${NC}, ${BOLD}--add-repo${NC} <repo>
+		Add a repository.
+	${BOLD}-U${NC}, ${BOLD}--update${NC} [user] [branch]
+		Update Pacstall.
+	${BOLD}-L${NC}, ${BOLD}--list${NC}
+		List all installed packages.
+	${BOLD}-Up${NC}, ${BOLD}--upgrade${NC}
+		Upgrade all installed packages.
+	${BOLD}-Qi${NC}, ${BOLD}--query-info${NC} <package>
+		Query information about a package.
+
+Options:
+	${BOLD}-P${NC}, ${BOLD}--disable-prompts${NC}
+		Disable prompts.
+	${BOLD}-K${NC}, ${BOLD}--keep${NC}
+		Keep the build files.
+	${BOLD}-V${NC}, ${BOLD}--version${NC}
+		Display the version number.
+	${BOLD}-h${NC}, ${BOLD}--help${NC}
+		Display this help message."
 			exit 0
 			;;
 
