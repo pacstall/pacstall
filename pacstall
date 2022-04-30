@@ -307,7 +307,7 @@ while [[ $1 != "--" ]]; do
 		-h | --help)
 			echo -e "Usage: pacstall [-h] [-V] {-I,-Il,-S,-R,-D,-A,-U,-L,-Up,-Qi} [-P] [-K]
 
-	An AUR inspired package manager for Ubuntu.
+An AUR inspired package manager for Ubuntu.
 
 Commands:
 	${BOLD}-I${NC}, ${BOLD}--install${NC} <package>
