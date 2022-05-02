@@ -318,9 +318,12 @@ fi
 
 fancy_message info "Sourcing pacscript"
 DIR=$(pwd)
-export homedir="/home/$PACSTALL_USER"
-export pacfile=$(readlink -f "$PACKAGE".pacscript)
-if ! source "$PACKAGE".pacscript; then
+homedir="/home/$PACSTALL_USER"
+export homedir
+
+pacfile=$(readlink -f "$PACKAGE".pacscript)
+export pacfile
+if ! source "$pacfile"; then
 	fancy_message error "Could not source pacscript"
 	error_log 12 "install $PACKAGE"
 	fancy_message info "Cleaning up"
@@ -610,7 +613,7 @@ export -f fancy_message
 trap cleanup ERR
 trap - SIGINT
 
-bash -ce 'source $pacfile;
+bash -ce 'source "$pacfile";
 fancy_message info "Preparing";
 echo "prepare" > /tmp/pacstall-func
 prepare; fancy_message info "Building"
@@ -681,7 +684,7 @@ fi
 hash -r
 if type -t postinst > /dev/null 2>&1; then
 	export -f postinst || true
-	bash -ce "source $pacfile && postinst" || {
+	bash -ce "source '$pacfile' && postinst" || {
 		error_log 5 "postinst hook"
 		fancy_message error "Could not run postinst hook successfully"
 		sudo dpkg -r "$name" > /dev/null
