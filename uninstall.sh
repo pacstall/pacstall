@@ -80,9 +80,9 @@ while true; do
 		if [[ -z $(pacstall -L) ]]; then
 			fancy_message warn "Nothing is installed using Pacstall yet"
 			fancy_message warn "Skipping package uninstallation"
-
+		else
 			for i in $(pacstall -L); do
-				pacstall -P -R "$i"
+				pacstall -PR "$i"
 			done
 		fi
 
