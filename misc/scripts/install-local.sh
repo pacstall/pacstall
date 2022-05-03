@@ -323,7 +323,7 @@ export homedir
 
 pacfile=$(readlink -f "$PACKAGE".pacscript)
 export pacfile
-if ! source "$pacfile"; then
+if ! source "$PACKAGE".pacscript; then
 	fancy_message error "Could not source pacscript"
 	error_log 12 "install $PACKAGE"
 	fancy_message info "Cleaning up"
