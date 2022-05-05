@@ -121,9 +121,9 @@ function fancy_message() {
 
 	case ${MESSAGE_TYPE} in
 		info) echo -e "[${BGreen}+${NC}] INFO: ${MESSAGE}" ;;
-		warn) echo -e "[${BYellow}*${NC}] WARNING: ${MESSAGE}" ;;
-		error) echo -e "[${BRed}!${NC}] ERROR: ${MESSAGE}" ;;
-		*) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}" ;;
+		warn) >&2 echo -e "[${BYellow}*${NC}] WARNING: ${MESSAGE}" ;;
+		error) >&2 echo -e "[${BRed}!${NC}] ERROR: ${MESSAGE}" ;;
+		*) >&2 echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}" ;;
 	esac
 }
 
