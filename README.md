@@ -18,7 +18,7 @@
 <p align="center"><b>The AUR Ubuntu never had</b></p>
 
 <p align="center">Pacstall is the AUR Ubuntu wishes it had. It takes the concept of AUR and puts a spin on it, making it easier to install programs without scouring github repos and the likes.</p>
-<p align="center">The list of available packages can be found <a href="https://github.com/pacstall/pacstall-programs">here</a>.</p>
+<p align="center">The list of available packages can be found <a href="https://pacstall.dev/packages">here</a>.</p>
 </p>
 
 ---
