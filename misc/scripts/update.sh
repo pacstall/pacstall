@@ -77,6 +77,7 @@ echo -e "Useful links:"
 echo -e "\t${BYellow}Website${NC}  : https://pacstall.dev"
 echo -e "\t${BPurple}Packages${NC} : https://pacstall.dev/packages"
 echo -e "\t${BCyan}GitHub${NC}   : https://github.com/pacstall"
+echo -e "\t${BBlue}Discord${NC}  : https://discord.gg/yzrjXJV6K8"
 exit 0
 
 # vim:set ft=sh ts=4 sw=4 noet:
