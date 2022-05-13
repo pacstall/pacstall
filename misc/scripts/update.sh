@@ -72,7 +72,7 @@ echo "$USERNAME $BRANCH" | sudo tee "$STGDIR/repo/update" > /dev/null
 new_pacstall_branch=( $(cat $STGDIR/repo/update) )
 new_pacstall_version=( $(pacstall -V) )
 
-echo -e "[${BGreen}+${NC}] INFO: updated from ${BGreen}${old_pacstall_version[0]}${NC} (${BGreen}${old_pacstall_branch[1]}${NC}) -> ${new_pacstall_version[0]} (${BGreen}${new_pacstall_branch[1]}${NC})"
+echo -e "[${BGreen}+${NC}] INFO: updated from ${BGreen}${old_pacstall_version[0]}${NC} (${BGreen}${old_pacstall_branch[1]}${NC}) -> ${BGreen}${new_pacstall_version[0]}${NC} (${BGreen}${new_pacstall_branch[1]}${NC})"
 echo -e "Useful links:"
 echo -e "\t${BYellow}Website${NC}  : https://pacstall.dev"
 echo -e "\t${BPurple}Packages${NC} : https://pacstall.dev/packages"
