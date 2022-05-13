@@ -38,6 +38,8 @@ sudo mkdir -p /usr/share/bash-completion/completions
 STGDIR="/usr/share/pacstall"
 
 tty_settings=$(stty -g)
+old_pacstall_version=( "$(pacstall -V)" )
+old_pacstall_branch=( "$(cat $STGDIR/repo/update)" )
 
 for i in {error_log.sh,add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
 	sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/"$i" -P "$STGDIR/scripts" &
@@ -64,16 +66,15 @@ echo '
  / ____/ /_/ / /__(__  ) /_/ /_/ / / /
 /_/    \__,_/\___/____/\__/\__,_/_/_/
 '
-if [[ $USERNAME == "pacstall" ]] && [[ $BRANCH == "master" ]]; then
-	echo -e "[${BGreen}+${NC}] INFO: You are at version $(pacstall -V)"
-	echo -e "[${BYellow}*${NC}] WARNING: Be sure to check our GitHub release page to make sure you have no incompatible code: https://github.com/pacstall/pacstall/releases"
-else
-	echo -e "[${BYellow}*${NC}] WARNING: You are using a ${RED}development${NC} version of $(pacstall -V)"
-	echo -e "[${BYellow}*${NC}] WARNING: There may be bugs in the code."
-	echo -e "[${BYellow}*${NC}] WARNING: Please report them to the Pacstall team through \e]8;;https://github.com/pacstall/pacstall/issues\aGitHub\e]8;;\a or \e]8;;https://discord.com/invite/yzrjXJV6K8\aDiscord\e]8;;\a"
-
-fi
 echo "$USERNAME $BRANCH" | sudo tee "$STGDIR/repo/update" > /dev/null
+
+new_pacstall_branch=( "$(cat $STGDIR/repo/update)" )
+
+echo -e "[${BGreen}+${NC}] INFO: updated from ${BGreen}${old_pacstall_version[0]} (${old_pacstall_branch[1]})${NC} -> ${BGreen}$(pacstall -V) (${new_pacstall_branch[1]})${NC}"
+echo -e "Useful links:"
+echo -e "\tWebsite  : https://pacstall.dev"
+echo -e "\tPackages : https://pacstall.dev/packages"
+echo -e "\tGitHub   : https://github.com/pacstall"
 exit 0
 
 # vim:set ft=sh ts=4 sw=4 noet:
