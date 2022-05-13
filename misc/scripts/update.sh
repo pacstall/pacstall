@@ -36,6 +36,7 @@ sudo chown "$PACSTALL_USER" -R /tmp/pacstall
 sudo mkdir -p /usr/share/bash-completion/completions
 
 STGDIR="/usr/share/pacstall"
+tabs -4
 
 tty_settings=$(stty -g)
 old_pacstall_version=( $(pacstall -V) )
@@ -70,7 +71,7 @@ echo "$USERNAME $BRANCH" | sudo tee "$STGDIR/repo/update" > /dev/null
 
 new_pacstall_branch=( $(cat $STGDIR/repo/update) )
 
-echo -e "[${BGreen}+${NC}] INFO: updated from ${BGreen}${old_pacstall_version[0]} (${old_pacstall_branch[1]})${NC} -> ${BGreen}$(pacstall -V) (${new_pacstall_branch[1]})${NC}"
+echo -e "[${BGreen}+${NC}] INFO: updated from ${BGreen}${old_pacstall_version[0]}${NC} (${BGreen}${old_pacstall_branch[1]}${NC}) -> $(pacstall -V) (${BGreen}${new_pacstall_branch[1]}${NC})"
 echo -e "Useful links:"
 echo -e "\tWebsite  : https://pacstall.dev"
 echo -e "\tPackages : https://pacstall.dev/packages"
