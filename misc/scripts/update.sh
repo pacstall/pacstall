@@ -38,8 +38,8 @@ sudo mkdir -p /usr/share/bash-completion/completions
 STGDIR="/usr/share/pacstall"
 
 tty_settings=$(stty -g)
-old_pacstall_version=( "$(pacstall -V)" )
-old_pacstall_branch=( "$(cat $STGDIR/repo/update)" )
+old_pacstall_version=( $(pacstall -V) )
+old_pacstall_branch=( $(cat $STGDIR/repo/update) )
 
 for i in {error_log.sh,add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
 	sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/"$i" -P "$STGDIR/scripts" &
@@ -68,7 +68,7 @@ echo '
 '
 echo "$USERNAME $BRANCH" | sudo tee "$STGDIR/repo/update" > /dev/null
 
-new_pacstall_branch=( "$(cat $STGDIR/repo/update)" )
+new_pacstall_branch=( $(cat $STGDIR/repo/update) )
 
 echo -e "[${BGreen}+${NC}] INFO: updated from ${BGreen}${old_pacstall_version[0]} (${old_pacstall_branch[1]})${NC} -> ${BGreen}$(pacstall -V) (${new_pacstall_branch[1]})${NC}"
 echo -e "Useful links:"
