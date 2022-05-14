@@ -74,10 +74,10 @@ new_pacstall_version=( $(pacstall -V) )
 
 echo -e "[${BGreen}+${NC}] INFO: updated from ${BGreen}${old_pacstall_version[0]}${NC} (${BGreen}${old_pacstall_branch[1]}${NC}) -> ${BGreen}${new_pacstall_version[0]}${NC} (${BGreen}${new_pacstall_branch[1]}${NC})"
 echo -e "Useful links:"
-echo -e "\t${BYellow}Website${NC}  : https://pacstall.dev"
-echo -e "\t${BPurple}Packages${NC} : https://pacstall.dev/packages"
-echo -e "\t${BCyan}GitHub${NC}   : https://github.com/pacstall"
-echo -e "\t${BBlue}Discord${NC}  : https://discord.gg/yzrjXJV6K8"
+echo -e "\t${BYellow}Website${NC}  : ${BOLD}https://pacstall.dev${NORMAL}"
+echo -e "\t${BPurple}Packages${NC} : ${BOLD}https://pacstall.dev/packages${NORMAL}"
+echo -e "\t${BCyan}GitHub${NC}   : ${BOLD}https://github.com/pacstall${NORMAL}"
+echo -e "\t${BBlue}Discord${NC}  : ${BOLD}https://discord.gg/yzrjXJV6K8${NORMAL}"
 exit 0
 
 # vim:set ft=sh ts=4 sw=4 noet:
