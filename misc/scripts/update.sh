@@ -59,7 +59,24 @@ wait && stty "$tty_settings"
 sudo chmod +x /bin/pacstall
 sudo chmod +x /usr/share/pacstall/scripts/*
 
+
+echo "$USERNAME $BRANCH" | sudo tee "$STGDIR/repo/update" > /dev/null
+
+new_pacstall_branch=( $(cat $STGDIR/repo/update) )
+new_pacstall_version=( $(pacstall -V) )
+
 # Bling Bling update ascii
+if [[ "${new_pacstall_branch[1]}" != "master" ]]; then
+echo '
+                                     ∩~-~∩
+ _____               _        _ _   ξ ･×･ ξ
+|  __ \             | |      | | |  ξ　~　ξ
+| |__) |_ _  ___ ___| |_ __ _| | |  ξ　　 ξ
+|  ___/ _` |/ __/ __| __/ _` | | |  ξ　　 “～～～〇
+| |  | (_| | (__\__ \ || (_| | | |  ξ　　 　　　 ξ
+|_|   \__,_|\___|___/\__\__,_|_|_|  ξ_ξ ξ_ξ ξ_ξξ_ξ
+'
+else
 echo '
     ____                  __        ____
    / __ \____ ___________/ /_____ _/ / /
@@ -67,17 +84,22 @@ echo '
  / ____/ /_/ / /__(__  ) /_/ /_/ / / /
 /_/    \__,_/\___/____/\__/\__,_/_/_/
 '
-echo "$USERNAME $BRANCH" | sudo tee "$STGDIR/repo/update" > /dev/null
-
-new_pacstall_branch=( $(cat $STGDIR/repo/update) )
-new_pacstall_version=( $(pacstall -V) )
+fi
 
 echo -e "[${BGreen}+${NC}] INFO: updated from ${BGreen}${old_pacstall_version[0]}${NC} (${BGreen}${old_pacstall_branch[1]}${NC}) -> ${BGreen}${new_pacstall_version[0]}${NC} (${BGreen}${new_pacstall_branch[1]}${NC})"
+
+if [[ "${new_pacstall_branch[1]}" != "master" ]]; then
+	echo -e "[${BGreen}+${NC}] INFO: You have updated to a development branch. Please remember that bugs may arise, and that this branch may not be as stable as master."
+fi
+
 echo -e "Useful links:"
-echo -e "\t${BYellow}Website${NC}  : ${BOLD}https://pacstall.dev${NORMAL}"
-echo -e "\t${BPurple}Packages${NC} : ${BOLD}https://pacstall.dev/packages${NORMAL}"
-echo -e "\t${BCyan}GitHub${NC}   : ${BOLD}https://github.com/pacstall${NORMAL}"
-echo -e "\t${BBlue}Discord${NC}  : ${BOLD}https://discord.gg/yzrjXJV6K8${NORMAL}"
+echo -e "\t${BYellow}Website${NC}: ${BOLD}https://pacstall.dev${NORMAL}"
+echo -e "\t${BPurple}Packages${NC}: ${BOLD}https://pacstall.dev/packages${NORMAL}"
+echo -e "\t${BCyan}GitHub${NC}: ${BOLD}https://github.com/pacstall${NORMAL}"
+if [[ "${new_pacstall_branch[1]}" != "master" ]]; then
+	echo -e "\t${BRed}Report Bugs${NC}: ${BOLD}https://github.com/pacstall/pacstall/issues${NORMAL}"
+fi
+echo -e "\t${BBlue}Discord${NC}: ${BOLD}https://discord.gg/yzrjXJV6K8${NORMAL}"
 exit 0
 
 # vim:set ft=sh ts=4 sw=4 noet:
