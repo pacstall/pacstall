@@ -100,6 +100,7 @@ if [[ "${new_pacstall_branch[1]}" != "master" ]]; then
 	echo -e "\t${BRed}Report Bugs${NC}: ${BOLD}https://github.com/pacstall/pacstall/issues${NORMAL}"
 fi
 echo -e "\t${BBlue}Discord${NC}: ${BOLD}https://discord.gg/yzrjXJV6K8${NORMAL}"
+echo -e "\t${BGreen}Matrix${NC}: ${BOLD}https://matrix.to/#/#pacstall:matrix.org${NORMAL}"
 exit 0
 
 # vim:set ft=sh ts=4 sw=4 noet:
