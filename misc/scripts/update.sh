@@ -86,7 +86,7 @@ echo '
 '
 fi
 
-echo -e "[${BGreen}+${NC}] INFO: updated from ${BGreen}${old_pacstall_version[0]}${NC} (${BGreen}${old_pacstall_branch[1]}${NC}) -> ${BGreen}${new_pacstall_version[0]}${NC} (${BGreen}${new_pacstall_branch[1]}${NC})"
+echo -e "[${BGreen}+${NC}] INFO: updated from ${BGreen}${old_pacstall_version[0]}${NC} (${BGreen}${old_pacstall_branch[0]} ${old_pacstall_branch[1]}${NC}) -> ${BGreen}${new_pacstall_version[0]}${NC} (${BGreen}${new_pacstall_branch[0]} ${new_pacstall_branch[1]}${NC})"
 
 if [[ "${new_pacstall_branch[1]}" != "master" ]]; then
 	echo -e "[${BGreen}+${NC}] INFO: You have updated to a development branch. Please remember that bugs may arise, and that this branch may not be as stable as master."
