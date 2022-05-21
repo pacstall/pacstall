@@ -38,6 +38,7 @@ function cleanup() {
 		sudo rm -rf "${SRCDIR:?}"/*
 		sudo rm -rf /tmp/pacstall/*
 	fi
+	rm -f /tmp/pacstall-func
 	unset name version url build_depends depends breaks replace description hash removescript optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall 2> /dev/null
 	unset -f pkgver 2> /dev/null
 }
@@ -237,8 +238,19 @@ function ask() {
 		N*|n*) export answer=0; return 1;;
 	esac
 }
+function fancy_message() {
+	local MESSAGE_TYPE="${1}"
+	local MESSAGE="${2}"
+	local BOLD=$(tput bold)
+	local NC="\033[0m"
+	case ${MESSAGE_TYPE} in
+		info) echo -e "[${BOLD}+${NC}] INFO: ${MESSAGE}";;
+		warn) echo -e "[${BOLD}*${NC}] WARNING: ${MESSAGE}";;
+		error) echo -e "[${BOLD}!${NC}] ERROR: ${MESSAGE}";;
+		*) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
+	esac
+}
 if [[ -z $PACSTALL_REMOVE ]] && [[ -z $PACSTALL_INSTALL ]]; then
-	export -f ask
 	source /var/cache/pacstall/'"$name"'/'"$version"'/'"$name"'.pacscript 2>&1 /dev/null
 	sudo mkdir -p '"$STOWDIR"'
 	cd '"$STOWDIR"'
@@ -246,7 +258,10 @@ if [[ -z $PACSTALL_REMOVE ]] && [[ -z $PACSTALL_INSTALL ]]; then
 	rm -rf '"$name"' 2> /dev/null
 	hash -r
 	if declare -F removescript >/dev/null ; then
-		removescript
+		export -f ask fancy_message removescript || true
+		bash -ce "source /var/cache/pacstall/'"$name"'/'"$version"'/'"$name"'.pacscript; removescript" || {
+			fancy_message error "Could not run removescript properly"
+		}
 	fi
 	rm -f '"$LOGDIR"'/'"$name"'
 else unset PACSTALL_REMOVE
@@ -303,7 +318,11 @@ fi
 
 fancy_message info "Sourcing pacscript"
 DIR=$(pwd)
-export homedir="/home/$PACSTALL_USER"
+homedir="/home/$PACSTALL_USER"
+export homedir
+
+pacfile=$(readlink -f "$PACKAGE".pacscript)
+export pacfile
 if ! source "$PACKAGE".pacscript; then
 	fancy_message error "Could not source pacscript"
 	error_log 12 "install $PACKAGE"
@@ -588,48 +607,29 @@ export srcdir="$PWD"
 sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2> /dev/null
 
 export pkgdir="/usr/src/pacstall/$name"
-
-fancy_message info "Preparing"
-if ! prepare; then
-	fancy_message error "Could not prepare $PACKAGE properly"
-	sudo dpkg -r "$name" > /dev/null
-	fancy_message info "Cleaning up"
-	cleanup
-	exit 1
-fi
-
-# Check if build function doesn't exist
-if ! type -t build > /dev/null 2>&1; then
-	fancy_message error "Something didn't compile right"
-	error_log 5 "install $PACKAGE"
-	sudo dpkg -r "$name" > /dev/null
-	fancy_message info "Cleaning up"
-	cleanup
-	return 1
-fi
-
-fancy_message info "Building"
-if ! build; then
-	error_log 5 "build $PACKAGE"
-	fancy_message error "Could not properly build $PACKAGE"
-	sudo dpkg -r "$name" > /dev/null
-	fancy_message info "Cleaning up"
-	cleanup
-	exit 1
-fi
+export -f fancy_message
 
 # Trap so that we can clean up (hopefully without messing up anything)
+trap cleanup ERR
 trap - SIGINT
 
-fancy_message info "Installing"
-if ! install; then
-	error_log 14 "install $PACKAGE"
-	fancy_message error "Could not install $PACKAGE properly"
+bash -ce 'source "$pacfile";
+fancy_message info "Preparing";
+echo "prepare" > /tmp/pacstall-func
+prepare; fancy_message info "Building"
+echo "build" > /tmp/pacstall-func
+build; fancy_message info "Installing"
+echo "install" > /tmp/pacstall-func
+install' || {
+	error_log 5 "$(< "/tmp/pacstall-func") $PACKAGE"
+	fancy_message error "Could not $(< "/tmp/pacstall-func") $PACKAGE properly"
 	sudo dpkg -r "$name" > /dev/null
 	fancy_message info "Cleaning up"
 	cleanup
 	exit 1
-fi
+}
+
+trap - ERR
 
 if [[ $NOBUILDDEP -eq 1 ]]; then
 	fancy_message info "Purging build dependencies"
@@ -683,14 +683,15 @@ fi
 # `hash -r` updates PATH database
 hash -r
 if type -t postinst > /dev/null 2>&1; then
-	if ! postinst; then
+	export -f postinst || true
+	bash -ce "source '$pacfile' && postinst" || {
 		error_log 5 "postinst hook"
 		fancy_message error "Could not run postinst hook successfully"
 		sudo dpkg -r "$name" > /dev/null
 		fancy_message info "Cleaning up"
 		cleanup
 		exit 1
-	fi
+	}
 fi
 
 fancy_message info "Storing pacscript"

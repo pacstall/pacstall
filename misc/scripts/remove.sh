@@ -49,7 +49,12 @@ case "$url" in
 
 		if fn_exists removescript; then
 			fancy_message info "Running post removal script"
-			removescript
+			export -f ask fancy_message removescript
+			bash -ce "removescript" || {
+				error_log 2 "removescript $PACKAGE"
+				fancy_message error "Could not run removescript properly"
+				exit 1
+			}
 		fi
 		sudo rm -f "$LOGDIR/$PACKAGE"
 		return 0
@@ -79,11 +84,12 @@ case "$url" in
 
 		if fn_exists removescript; then
 			fancy_message info "Running post removal script"
-			if ! removescript; then
+			export -f ask fancy_message removescript
+			bash -ce "/var/cache/pacstall/${PACKAGE}/${_version}/${PACKAGE}.pacscript; removescript" || {
 				error_log 2 "removescript $PACKAGE"
-				fancy_message "Could not run removescript properly"
+				fancy_message error "Could not run removescript properly"
 				exit 1
-			fi
+			}
 		fi
 
 		if [[ -n $_dependencies ]]; then
