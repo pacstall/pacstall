@@ -88,7 +88,7 @@ fi
 
 echo -e "[${BGreen}+${NC}] INFO: updated from ${BGreen}${old_pacstall_version[0]}${NC} (${BGreen}${old_pacstall_branch[0]} ${old_pacstall_branch[1]}${NC}) -> ${BGreen}${new_pacstall_version[0]}${NC} (${BGreen}${new_pacstall_branch[0]} ${new_pacstall_branch[1]}${NC})"
 
-if [[ "${new_pacstall_branch[1]}" != "master" ]]; then
+if [[ "${new_pacstall_branch[0]}" != "pacstall" ]] || [[ "${new_pacstall_branch[1]}" != "master" ]]; then
 	echo -e "[${BGreen}+${NC}] INFO: You have updated to a development branch. Please remember that bugs may arise, and that this branch may not be as stable as master."
 fi
 
@@ -97,7 +97,7 @@ echo -e "\t${BYellow}Website${NC}: ${BOLD}https://pacstall.dev${NORMAL}"
 echo -e "\t${BPurple}Packages${NC}: ${BOLD}https://pacstall.dev/packages${NORMAL}"
 echo -e "\t${BCyan}GitHub${NC}: ${BOLD}https://github.com/pacstall${NORMAL}"
 if [[ "${new_pacstall_branch[1]}" != "master" ]]; then
-	echo -e "\t${BRed}Report Bugs${NC}: ${BOLD}https://github.com/pacstall/pacstall/issues${NORMAL}"
+	echo -e "\t${BRed}Report Bugs${NC}: ${BOLD}https://github.com/${new_pacstall_branch[0]}/pacstall/issues${NORMAL}"
 fi
 echo -e "\t${BBlue}Discord${NC}: ${BOLD}https://discord.gg/yzrjXJV6K8${NORMAL}"
 echo -e "\t${BGreen}Matrix${NC}: ${BOLD}https://matrix.to/#/#pacstall:matrix.org${NORMAL}"
