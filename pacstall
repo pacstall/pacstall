@@ -376,7 +376,7 @@ Options:
 				export type="install"
 				export local="no"
 
-				check_url "https://github.com" || check_url "https://github.com" || {
+				check_url "https://github.com" || check_url "https://gitlab.com" || {
 					fancy_message error "Could not connect to the internet"
 					exit 1
 				}
@@ -435,7 +435,7 @@ Options:
 				fi
 				shift
 
-				check_url "https://github.com" || check_url "https://github.com" || {
+				check_url "https://github.com" || check_url "https://gitlab.com" || {
 					fancy_message error "Could not connect to the internet"
 					exit 1
 				}
@@ -460,7 +460,7 @@ Options:
 				exit 1
 			fi
 
-			check_url "https://github.com" || check_url "https://github.com" || {
+			check_url "https://github.com" || check_url "https://gitlab.com" || {
 				fancy_message error "Could not connect to the internet"
 				exit 1
 			}
@@ -542,7 +542,7 @@ Options:
 				fi
 			fi
 
-			check_url "https://github.com" || check_url "https://github.com" || {
+			check_url "https://github.com" || check_url "https://gitlab.com" || {
 				fancy_message error "Could not connect to the internet"
 				exit 1
 			}
@@ -577,7 +577,7 @@ Options:
 				shift
 				export type="download"
 
-				check_url "https://github.com" || check_url "https://github.com" || {
+				check_url "https://github.com" || check_url "https://gitlab.com" || {
 					fancy_message error "Could not connect to the internet"
 					exit 1
 				}
@@ -605,7 +605,7 @@ Options:
 			;;
 
 		-Up | --upgrade)
-			check_url "https://github.com" || check_url "https://github.com" || {
+			check_url "https://github.com" || check_url "https://gitlab.com" || {
 				fancy_message error "Could not connect to the internet"
 				exit 1
 			}
