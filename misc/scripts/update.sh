@@ -91,7 +91,7 @@ echo -e "[${BGreen}+${NC}] INFO: updated from ${BGreen}${old_pacstall_version[0]
 if [[ "${new_pacstall_branch[0]}" != "pacstall" ]] || [[ "${new_pacstall_branch[1]}" != "master" ]]; then
 	echo -e "[${BGreen}+${NC}] INFO: You have updated to a development branch."
 	echo -e "[${BYellow}*${NC}] WARN: Please remember that bugs may arise, and that this branch may not be as stable as master."
-	
+
 fi
 
 echo -e "Useful links:"
