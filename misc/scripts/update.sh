@@ -94,15 +94,17 @@ if [[ "${new_pacstall_branch[0]}" != "pacstall" ]] || [[ "${new_pacstall_branch[
 
 fi
 
-echo -e "Useful links:"
-echo -e "\t${BYellow}Website${NC}: ${BOLD}https://pacstall.dev${NORMAL}"
-echo -e "\t${BPurple}Packages${NC}: ${BOLD}https://pacstall.dev/packages${NORMAL}"
-echo -e "\t${BCyan}GitHub${NC}: ${BOLD}https://github.com/pacstall${NORMAL}"
-if [[ "${new_pacstall_branch[1]}" != "master" ]]; then
-	echo -e "\t${BRed}Report Bugs${NC}: ${BOLD}https://github.com/${new_pacstall_branch[0]}/pacstall/issues${NORMAL}"
+if [[ "${new_pacstall_branch[0]}" == "pacstall" ]]; then
+	echo -e "Useful links:"
+	echo -e "\t${BYellow}Website${NC}: ${BOLD}https://pacstall.dev${NORMAL}"
+	echo -e "\t${BPurple}Packages${NC}: ${BOLD}https://pacstall.dev/packages${NORMAL}"
+	echo -e "\t${BCyan}GitHub${NC}: ${BOLD}https://github.com/pacstall${NORMAL}"
+	if [[ "${new_pacstall_branch[1]}" != "master" ]]; then
+		echo -e "\t${BRed}Report Bugs${NC}: ${BOLD}https://github.com/${new_pacstall_branch[0]}/pacstall/issues${NORMAL}"
+	fi
+	echo -e "\t${BBlue}Discord${NC}: ${BOLD}https://discord.gg/yzrjXJV6K8${NORMAL}"
+	echo -e "\t${BGreen}Matrix${NC}: ${BOLD}https://matrix.to/#/#pacstall:matrix.org${NORMAL}"
 fi
-echo -e "\t${BBlue}Discord${NC}: ${BOLD}https://discord.gg/yzrjXJV6K8${NORMAL}"
-echo -e "\t${BGreen}Matrix${NC}: ${BOLD}https://matrix.to/#/#pacstall:matrix.org${NORMAL}"
 exit 0
 
 # vim:set ft=sh ts=4 sw=4 noet:
