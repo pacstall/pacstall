@@ -356,15 +356,16 @@ fi
 
 if [[ -n $pacdeps ]]; then
 	for i in "${pacdeps[@]}"; do
-		fancy_message info "Installing $i"
 		# If /tmp/pacstall-pacdeps-"$i" is available, it will trigger the logger to log it as a dependency
 		touch /tmp/pacstall-pacdeps-"$i"
 
 		[[ $KEEP ]] && cmd="-KPI" || cmd="-PI"
 		if pacstall -L | grep -E "(^| )${i}( |$)" > /dev/null 2>&1; then
 			fancy_message info "The pacstall dependency ${i} is already installed"
-			fancy_message warn "It's recommended to upgrade, as ${i} may have a newer version"
-		elif ! pacstall "$cmd" "$i"; then
+			if [[ -z $UPGRADE ]]; then
+				fancy_message warn "It's recommended to upgrade, as ${i} may have a newer version"
+			fi
+		elif ! fancy_message info "Installing $i" && pacstall "$cmd" "$i"; then
 			fancy_message error "Failed to install pacstall dependencies"
 			error_log 8 "install $PACKAGE"
 			cleanup
