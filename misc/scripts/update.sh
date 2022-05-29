@@ -40,7 +40,7 @@ tabs -4
 
 tty_settings=$(stty -g)
 old_pacstall_version=( $(pacstall -V) )
-old_pacstall_branch=( $(cat $STGDIR/repo/update) )
+old_pacstall_update_info=( $(cat $STGDIR/repo/update) )
 
 for i in {error_log.sh,add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
 	sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/"$i" -P "$STGDIR/scripts" &
@@ -62,11 +62,11 @@ sudo chmod +x /usr/share/pacstall/scripts/*
 
 echo "$USERNAME $BRANCH" | sudo tee "$STGDIR/repo/update" > /dev/null
 
-new_pacstall_branch=( $(cat $STGDIR/repo/update) )
+new_pacstall_update_info=( $(cat $STGDIR/repo/update) )
 new_pacstall_version=( $(pacstall -V) )
 
 # Bling Bling update ascii
-if [[ "${new_pacstall_branch[1]}" != "master" ]]; then
+if [[ "${new_pacstall_update_info[1]}" != "master" ]]; then
 echo '
                                      ∩~-~∩
  _____               _        _ _   ξ ･×･ ξ
@@ -86,20 +86,20 @@ echo '
 '
 fi
 
-echo -e "[${BGreen}+${NC}] INFO: updated from ${BGreen}${old_pacstall_version[0]}${NC} (${BGreen}${old_pacstall_branch[0]} ${old_pacstall_branch[1]}${NC}) -> ${BGreen}${new_pacstall_version[0]}${NC} (${BGreen}${new_pacstall_branch[0]} ${new_pacstall_branch[1]}${NC})"
+echo -e "[${BGreen}+${NC}] INFO: updated from ${BGreen}${old_pacstall_version[0]}${NC} (${BGreen}${old_pacstall_update_info[0]} ${old_pacstall_update_info[1]}${NC}) -> ${BGreen}${new_pacstall_version[0]}${NC} (${BGreen}${new_pacstall_update_info[0]} ${new_pacstall_update_info[1]}${NC})"
 
-if [[ "${new_pacstall_branch[0]}" != "pacstall" ]] || [[ "${new_pacstall_branch[1]}" != "master" ]]; then
+if [[ "${new_pacstall_update_info[1]}" != "master" ]]; then
 	echo -e "[${BGreen}+${NC}] INFO: You have updated to a development branch."
 	echo -e "[${BYellow}*${NC}] WARN: Please remember that bugs may arise, and that this branch may not be as stable as master."
 
 fi
 
-if [[ "${new_pacstall_branch[0]}" == "pacstall" ]]; then
+if [[ "${new_pacstall_update_info[0]}" == "pacstall" ]]; then
 	echo -e "Useful links:"
 	echo -e "\t${BYellow}Website${NC}: ${BOLD}https://pacstall.dev${NORMAL}"
 	echo -e "\t${BPurple}Packages${NC}: ${BOLD}https://pacstall.dev/packages${NORMAL}"
 	echo -e "\t${BCyan}GitHub${NC}: ${BOLD}https://github.com/pacstall${NORMAL}"
-	echo -e "\t${BRed}Report Bugs${NC}: ${BOLD}https://github.com/${new_pacstall_branch[0]}/pacstall/issues${NORMAL}"
+	echo -e "\t${BRed}Report Bugs${NC}: ${BOLD}https://github.com/${new_pacstall_update_info[0]}/pacstall/issues${NORMAL}"
 	echo -e "\t${BBlue}Discord${NC}: ${BOLD}https://discord.gg/yzrjXJV6K8${NORMAL}"
 	echo -e "\t${BGreen}Matrix${NC}: ${BOLD}https://matrix.to/#/#pacstall:matrix.org${NORMAL}"
 fi
