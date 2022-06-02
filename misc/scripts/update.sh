@@ -91,7 +91,7 @@ else
 '
 fi
 
-echo -e "[${BGreen}+${NC}] INFO: updated from ${BGreen}${old_version}${NC} (${BGreen}${old_version} ${old_username}${NC}) -> ${BGreen}${new_version}${NC} (${BGreen}${new_username} ${new_branch}${NC})"
+echo -e "[${BGreen}+${NC}] INFO: updated from ${BGreen}${old_version}${NC} (${BGreen}${old_username} ${old_branch}${NC}) -> ${BGreen}${new_version}${NC} (${BGreen}${new_username} ${new_branch}${NC})"
 
 if [[ ${new_branch} != "master" ]]; then
 	echo -e "[${BGreen}+${NC}] INFO: You have updated to a development branch."
