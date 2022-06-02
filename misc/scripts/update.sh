@@ -68,7 +68,7 @@ new_info=($(cat $STGDIR/repo/update))
 new_version=($(pacstall -V))
 
 new_username="${new_info[0]}"
-new_branch="${new_version[1]}"
+new_branch="${new_info[1]}"
 
 # Bling Bling update ascii
 if [[ ${new_branch} != "master" ]]; then
