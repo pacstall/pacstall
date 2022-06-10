@@ -51,6 +51,28 @@ function fancy_message() {
 	esac
 }
 
+function check_url() {
+	http_code="$(curl -o /dev/null -s --head --write-out '%{http_code}\n' -- "${1}")"
+	case "${http_code}" in
+		000)
+			fancy_message error "Failed to download file, check your connection"
+			error_log 1 "get ${PACKAGE} pacscript"
+			return 1
+			;;
+		404)
+			fancy_message error "The URL cannot be found"
+			return 1
+			;;
+		200 | 301 | 302)
+			true
+			;;
+		*)
+			fancy_message error "Failed with http code ${http_code}"
+			return 1
+			;;
+	esac
+}
+
 if [[ ! -t 0 ]]; then
 	NON_INTERACTIVE=true
 	fancy_message warn "Reading input from pipe"
@@ -67,10 +89,10 @@ echo -e "|---${GREEN}Pacstall Installer${NC}---|"
 echo -e "|------------------------|"
 
 if [[ ${GITHUB_ACTIONS} != "true" ]]; then
-	if ! ping -c 1 github.com &> /dev/null; then
-		fancy_message error "You seem to be offline"
+	check_url "https://github.com" || {
+		fancy_message error "Could not connect to the internet"
 		exit 1
-	fi
+	}
 fi
 
 echo
