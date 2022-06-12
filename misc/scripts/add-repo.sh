@@ -49,7 +49,7 @@ else
 	fi
 fi
 
-if ! wget -q --spider -- "$REPO/packagelist"; then
+if ! curl --head -s --fail -- "$REPO/packagelist"; then
 	fancy_message warn "If the URL is a private repo, edit ${CYAN}\e]8;;file://$STGDIR/repo/pacstallrepo.txt\a$STGDIR/repo/pacstallrepo.txt\e]8;;\a${NC}"
 	fancy_message error "packagelist file not found"
 	exit 3
