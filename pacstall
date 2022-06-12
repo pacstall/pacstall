@@ -194,7 +194,7 @@ function ask() {
 	done
 }
 function check_url() {
-    if [[ "${1}" == "file://"* ]] then
+    if [[ "${1}" == "file://"* ]]; then
     	if [[ -f "${1}" ]]; then
     	  true
     	fi
