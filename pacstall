@@ -198,7 +198,7 @@ function check_url() {
     	if [[ -f "${1}" ]]; then
     	  true
     	fi
-    else    
+    else
 		http_code="$(curl -o /dev/null -s --head --write-out '%{http_code}\n' -- "${1}")"
 		case "${http_code}" in
 			000)
