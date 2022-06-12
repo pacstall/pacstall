@@ -65,4 +65,5 @@ done < "$STGDIR/repo/pacstallrepo.txt"
 REPOLIST+=("$REPO")
 
 echo "${REPOLIST[@]}" | tr -s ' ' '\n' | sort -u | sudo tee "$STGDIR/repo/pacstallrepo.txt" > /dev/null
+fancy_message info "The repo list has been updated"
 # vim:set ft=sh ts=4 sw=4 noet:
