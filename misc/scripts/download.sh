@@ -36,11 +36,13 @@ if check_url "${URL}"; then
 
 	case "$URL" in
 		*.pacscript|*packagelist)
-			if ! curl -s -- "$URL" > /dev/null 2>&1; then
+			FILE=$(basename "$URL")
+			if ! curl -s -- "$URL" > $FILE; then
 				error_log 1 "download $PACKAGE"
 				fancy_message error "Could not download ${URL}"
 				exit 1
 			fi
+			unset FILE
 			;;
 		*)
 			if ! download -- "$URL" > /dev/null 2>&1; then
