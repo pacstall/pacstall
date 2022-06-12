@@ -39,6 +39,10 @@ elif echo "$REPO" | grep "gitlab.com" > /dev/null; then
 	else
 		REPO="${REPO/"/tree/"/"/raw/"}"
 	fi
+elif [[ -d "$REPO" ]] > /dev/null; then
+	if ! echo "$REPO" | grep "file://" > /dev/null; then
+		REPO="file://$(readlink -f $REPO)"
+	fi
 else
 	fancy_message warn "The repo link must be the root to the raw files"
 	fancy_message warn "Make sure the repo contains a package list"
