@@ -107,7 +107,7 @@ for i in "${list[@]}"; do
 	if [[ -n $remotever ]]; then
 		if [[ $i == *"-git" ]] || ver_compare "$localver" "$remotever"; then
 			echo "$i" | tee -a /tmp/pacstall-up-list > /dev/null
-			echo "\t${GREEN}${i}${CYAN} @ $(parseRepo "${remoteurl}") ${NC}" | tee -a /tmp/pacstall-up-print > /dev/null
+			echo "\t${GREEN}${i}${CYAN} @ $(parseRepo "${remoteurl}")${NC} ${GREEN}$localver${NC} -> ${GREEN}$remotever${NC}" | tee -a /tmp/pacstall-up-print > /dev/null
 			echo "$remoteurl" | tee -a /tmp/pacstall-up-urls > /dev/null
 		fi
 	fi
