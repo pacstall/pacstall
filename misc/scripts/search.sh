@@ -41,6 +41,23 @@ function specifyRepo() {
 
 }
 
+# Parses github and gitlab URL's
+# url -> maintainer/repo
+# Also adds hyperlink for the
+# terminals that support them
+function parseRepo() {
+	local REPO="${1}"
+	mapfile -t SPLIT < <(echo "$REPO" | tr "/" "\n")
+
+	if command echo "$REPO" | grep "github" &> /dev/null; then
+		echo -e "\e]8;;https://github.com/${SPLIT[-3]}/${SPLIT[-2]}\a${SPLIT[-3]}/${SPLIT[-2]}\e]8;;\a"
+	elif command echo "$REPO" | grep "gitlab" &> /dev/null; then
+		echo -e "\e]8;;https://gitlab.com/${SPLIT[-4]}/${SPLIT[-3]}\a${SPLIT[-4]}/${SPLIT[-3]}\e]8;;\a"
+	else
+		echo "\e]8;;$REPO\a$REPO\e]8;;\a"
+	fi
+}
+
 if [[ $PACKAGE == *@* ]]; then
 	REPONAME=${PACKAGE#*@}
 	PACKAGE=${PACKAGE%%@*}
@@ -79,9 +96,8 @@ while IFS= read -r URL; do
 		
 	fi	
 	if ! check_url "${URL}/packagelist"; then
-		specifyRepo "${URL}"
-		fancy_message warning "Skipping repo ${URLNAME}"
-		fancy_message warning "You can remove or fix the URL iby editing $STGDIR/repo/pacstallrepo.txt"
+		fancy_message warn "Skipping repo $CYAN$(parseRepo ${URL})$NC"
+		fancy_message warn "You can remove or fix the URL by editing $CYAN$STGDIR/repo/pacstallrepo.txt$NC"
 		continue
 	fi
 	mapfile -t PARTIALLIST < <(curl -s -- "$URL"/packagelist)
@@ -100,31 +116,14 @@ fi
 _LEN=($IDXSEARCH)
 LEN=${#_LEN[@]}
 
-# Parses github and gitlab URL's
-# url -> maintainer/repo
-# Also adds hyperlink for the
-# terminals that support them
-function parseRepo() {
-	local REPO="${1}"
-	mapfile -t SPLIT < <(echo "$REPO" | tr "/" "\n")
-
-	if command echo "$REPO" | grep "github" &> /dev/null; then
-		echo -e "\e]8;;https://github.com/${SPLIT[-3]}/${SPLIT[-2]}\a${SPLIT[-3]}/${SPLIT[-2]}\e]8;;\a"
-	elif command echo "$REPO" | grep "gitlab" &> /dev/null; then
-		echo -e "\e]8;;https://gitlab.com/${SPLIT[-4]}/${SPLIT[-3]}\a${SPLIT[-4]}/${SPLIT[-3]}\e]8;;\a"
-	else
-		echo "\e]8;;$REPO\a$REPO\e]8;;\a"
-	fi
-}
-
 # Check if there are results
 if [[ $LEN -eq 0 ]]; then
 	if [[ -z $SEARCH ]]; then
-		fancy_message warn "There is no package with the name $IRed$PACKAGE$NC"
+		fancy_message error "There is no package with the name $IRed$PACKAGE$NC"
 		error_log 3 "search $PACKAGE"
 		exit 1
 	else
-		fancy_message warn "There is no package with the name $IRed$SEARCH$NC"
+		fancy_message error "There is no package with the name $IRed$SEARCH$NC"
 		exit 1
 	fi
 
