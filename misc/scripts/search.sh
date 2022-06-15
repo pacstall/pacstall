@@ -73,8 +73,16 @@ fi
 PACKAGELIST=()
 URLLIST=()
 while IFS= read -r URL; do
+	if [[ ${URL} == "/"* ]]; then 
+		sed -i "s#${URL}#file://$(readlink -f ${URL})#g" "$STGDIR/repo/pacstallrepo.txt"
+		URL="file://$(readlink -f ${URL})"
+		
+	fi	
 	if ! check_url "${URL}/packagelist"; then
-		exit 1
+		specifyRepo "${URL}"
+		fancy_message warning "Skipping repo ${URLNAME}"
+		fancy_message warning "You can remove or fix the URL iby editing $STGDIR/repo/pacstallrepo.txt"
+		continue
 	fi
 	mapfile -t PARTIALLIST < <(curl -s -- "$URL"/packagelist)
 	URLLIST+=("${PARTIALLIST[@]/*/$URL}")
