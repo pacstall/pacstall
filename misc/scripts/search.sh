@@ -90,11 +90,11 @@ fi
 PACKAGELIST=()
 URLLIST=()
 while IFS= read -r URL; do
-	if [[ ${URL} == "/"* ]]; then 
+	if [[ ${URL} == "/"* ]]; then
 		sed -i "s#${URL}#file://$(readlink -f ${URL})#g" "$STGDIR/repo/pacstallrepo.txt"
 		URL="file://$(readlink -f ${URL})"
-		
-	fi	
+
+	fi
 	if ! check_url "${URL}/packagelist"; then
 		fancy_message warn "Skipping repo $CYAN$(parseRepo ${URL})$NC"
 		fancy_message warn "You can remove or fix the URL by editing $CYAN$STGDIR/repo/pacstallrepo.txt$NC"
