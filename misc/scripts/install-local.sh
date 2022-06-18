@@ -608,7 +608,7 @@ export srcdir="$PWD"
 sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2> /dev/null
 
 export pkgdir="/usr/src/pacstall/$name"
-export -f fancy_message
+export -f ask fancy_message
 
 # Trap so that we can clean up (hopefully without messing up anything)
 trap cleanup ERR
