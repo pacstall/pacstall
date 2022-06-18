@@ -92,7 +92,7 @@ URLLIST=()
 while IFS= read -r URL; do
 	if [[ ${URL} == "/"* ]] || [[ ${URL} == "~"* ]] || [[ ${URL} == "."* ]]; then
 		sed -i "s#${URL}#file://$(readlink -f ${URL})#g" "$STGDIR/repo/pacstallrepo.txt" ||
-		fancy_message warn 'Add "file://" to the local repo absolute path on $CYAN$STGDIR/repo/pacstallrepo.txt$NC'
+		fancy_message warn "Add \"file://\" to the local repo absolute path on $CYAN$STGDIR/repo/pacstallrepo.txt$NC"
 		URL="file://$(readlink -f ${URL})"
 
 	fi
