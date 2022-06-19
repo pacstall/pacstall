@@ -510,7 +510,7 @@ Options:
 			PACKAGE="$2"
 
 			if [[ -z $PACKAGE ]]; then
-				echo -e "1.7.3 \033[1m\x1b[38;2;217;56;30mVermilion${NC}"
+				echo -e "1.8.0 \033[1m\x1b[38;2;251;206;177mApricot${NC}"
 				exit 0
 			else
 				# If pacstall -V was called with an argument, it's a package, so get the package version (useful for scripting)
