@@ -375,37 +375,39 @@ if [[ -n $pacdeps ]]; then
 	done
 fi
 
-if [[ -n $breaks ]] && ! pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
-	for pkg in $breaks; do
-		if dpkg-query -W -f='${Status} ${Section}' "${pkg}" 2> /dev/null | grep "^install ok installed" | grep -v "Pacstall" > /dev/null 2>&1; then
-			# Check if anything in breaks variable is installed already
-			fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by apt"
-			error_log 13 "install $PACKAGE"
-			fancy_message info "Cleaning up"
-			cleanup
-			return 1
-		fi
-		if [[ ${pkg} != "${name}" ]] && pacstall -L | grep -E "(^| )${pkg}( |$)" > /dev/null 2>&1; then
-			# Same thing, but check if anything is installed with pacstall
-			fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by pacstall"
-			error_log 13 "install $PACKAGE"
-			fancy_message info "Cleaning up"
-			cleanup
-			return 1
-		fi
-	done
-fi
+if ! pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
+	if [[ -n $breaks ]]; then
+		for pkg in $breaks; do
+			if dpkg-query -W -f='${Status} ${Section}' "${pkg}" 2> /dev/null | grep "^install ok installed" | grep -v "Pacstall" > /dev/null 2>&1; then
+				# Check if anything in breaks variable is installed already
+				fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by apt"
+				error_log 13 "install $PACKAGE"
+				fancy_message info "Cleaning up"
+				cleanup
+				return 1
+			fi
+			if [[ ${pkg} != "${name}" ]] && pacstall -L | grep -E "(^| )${pkg}( |$)" > /dev/null 2>&1; then
+				# Same thing, but check if anything is installed with pacstall
+				fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by pacstall"
+				error_log 13 "install $PACKAGE"
+				fancy_message info "Cleaning up"
+				cleanup
+				return 1
+			fi
+		done
+	fi
 
-if [[ -n $replace ]]; then
-	# Ask user if they want to replace the program
-	if dpkg-query -W -f='${Status}' $replace 2> /dev/null | grep -q "ok installed"; then
-		ask "This script replaces $replace. Do you want to proceed" N
-		if [[ $answer -eq 0 ]]; then
-			fancy_message info "Cleaning up"
-			cleanup
-			return 1
+	if [[ -n $replace ]]; then
+		# Ask user if they want to replace the program
+		if dpkg-query -W -f='${Status}' $replace 2> /dev/null | grep -q "ok installed"; then
+			ask "This script replaces $replace. Do you want to proceed" N
+			if [[ $answer -eq 0 ]]; then
+				fancy_message info "Cleaning up"
+				cleanup
+				return 1
+			fi
+			sudo apt-get remove -y $replace
 		fi
-		sudo apt-get remove -y $replace
 	fi
 fi
 
