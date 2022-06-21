@@ -146,7 +146,7 @@ elif [[ -n $UPGRADE ]]; then
 # Check if its being used for search
 elif [[ -z $PACKAGE ]]; then
 	for IDX in $IDXSEARCH; do
-		echo -e "$GREEN${PACKAGELIST[$IDX]}$CYAN @ $(parseRepo "${URLLIST[$IDX]}") $NC"
+		echo -e "$GREEN${PACKAGELIST[$IDX]} $PURPLE@ $CYAN$(parseRepo "${URLLIST[$IDX]}") $NC"
 	done
 	return 0
 # Options left: install or download
