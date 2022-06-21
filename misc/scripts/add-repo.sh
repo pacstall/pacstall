@@ -39,7 +39,7 @@ elif echo "$REPO" | grep "gitlab.com" > /dev/null; then
 	else
 		REPO="${REPO/"/tree/"/"/raw/"}"
 	fi
-elif [[ -d "$REPO" ]] > /dev/null; then
+elif [[ -d $REPO ]] > /dev/null; then
 	if ! echo "$REPO" | grep "file://" > /dev/null; then
 		REPO="file://$(readlink -f $REPO)"
 	fi

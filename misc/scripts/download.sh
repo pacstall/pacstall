@@ -35,7 +35,7 @@ if check_url "${URL}"; then
 	fi
 
 	case "$URL" in
-		*.pacscript|*packagelist)
+		*.pacscript | *packagelist)
 			FILE=$(basename "$URL")
 			if ! curl -s -- "$URL" > "$FILE"; then
 				error_log 1 "download $PACKAGE"
