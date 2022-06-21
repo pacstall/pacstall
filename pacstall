@@ -330,6 +330,8 @@ Commands:
 		Upgrade all installed packages.
 	${BOLD}-Qi${NC}, ${BOLD}--query-info${NC} <package>
 		Query information about a package.
+	${BOLD}-T${NC}, ${BOLD}--tree${NC} <package>
+		Display a tree list of a packages files
 
 Options:
 	${BOLD}-P${NC}, ${BOLD}--disable-prompts${NC}
