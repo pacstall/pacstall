@@ -31,7 +31,8 @@ fi
 function getPath() {
 	local path="${1}"
 	path="${path/"file://"/}"
-	path="$(readlink -f $path)"
+	path="${path/"~"/"$HOME"}"
+	path="$(readlink -f ${path})"
 	path="${path/"$HOME"/"~"}"
 	echo $path
 }
