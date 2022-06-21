@@ -28,6 +28,14 @@ if [[ -n $UPGRADE ]]; then
 	PACKAGE="$i"
 fi
 
+function getPath() {
+	local path="${1}"
+	path="${path/"file://"/}"
+	path="$(readlink -f $path)"
+	path="${path/"$HOME"/"~"}"
+	echo $path
+}
+
 function specifyRepo() {
 	mapfile -t SPLIT < <(echo "$1" | tr "/" "\n")
 
@@ -35,8 +43,8 @@ function specifyRepo() {
 		export URLNAME="${SPLIT[-3]}/${SPLIT[-2]}"
 	elif [[ $1 == *"gitlab"* ]]; then
 		export URLNAME="${SPLIT[-4]}/${SPLIT[-3]}"
-	elif if [[ $1 == "/"* ]] || [[ $1 == "~"* ]] || [[ $1 == "."* ]]; then
-		export URLNAME="file://$(readlink -f ${URL})"
+	elif [[ $1 == "file://" ]] || [[ $1 == "/"* ]] || [[ $1 == "~"* ]] || [[ $1 == "."* ]]; then
+		export URLNAME="$(getPath ${1})"
 	else
 		export URLNAME="$REPO"
 	fi
@@ -57,8 +65,7 @@ function parseRepo() {
 	elif command echo "$REPO" | grep "gitlab" &> /dev/null; then
 		echo -e "\e]8;;https://gitlab.com/${SPLIT[-4]}/${SPLIT[-3]}\a${SPLIT[-4]}/${SPLIT[-3]}\e]8;;\a"
 	elif command echo "$REPO" | grep "file://" &> /dev/null; then
-		local REPODIR="${REPO/"file://"/}"
-		REPODIR="${REPODIR/"$HOME"/"~"}"
+		local REPODIR="$(getPath ${REPO})"
 		echo "\e]8;;$REPO\a$REPODIR\e]8;;\a"
 	else
 		echo "\e]8;;$REPO\a$REPO\e]8;;\a"
@@ -67,6 +74,9 @@ function parseRepo() {
 
 if [[ $PACKAGE == *@* ]]; then
 	REPONAME=${PACKAGE#*@}
+	if [[ $REPONAME == "file://" ]] ||[[ $REPONAME == "/"* ]] || [[ $REPONAME == "~"* ]] || [[ $REPONAME == "."* ]]; then
+		REPONAME="$(getPath ${REPONAME})"
+	fi
 	PACKAGE=${PACKAGE%%@*}
 
 	while IFS= read -r URL; do
