@@ -74,7 +74,7 @@ function parseRepo() {
 
 if [[ $PACKAGE == *@* ]]; then
 	REPONAME=${PACKAGE#*@}
-	if [[ $REPONAME == "file://" ]] ||[[ $REPONAME == "/"* ]] || [[ $REPONAME == "~"* ]] || [[ $REPONAME == "."* ]]; then
+	if [[ $REPONAME == "file://" ]] || [[ $REPONAME == "/"* ]] || [[ $REPONAME == "~"* ]] || [[ $REPONAME == "."* ]]; then
 		REPONAME="$(getPath ${REPONAME})"
 	fi
 	PACKAGE=${PACKAGE%%@*}
