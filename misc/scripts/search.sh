@@ -43,7 +43,7 @@ function specifyRepo() {
 		export URLNAME="${SPLIT[-3]}/${SPLIT[-2]}"
 	elif [[ $1 == *"gitlab"* ]]; then
 		export URLNAME="${SPLIT[-4]}/${SPLIT[-3]}"
-	elif [[ $1 == "file://" ]] || [[ $1 == "/"* ]] || [[ $1 == "~"* ]] || [[ $1 == "."* ]]; then
+	elif [[ $1 == "file://"* ]] || [[ $1 == "/"* ]] || [[ $1 == "~"* ]] || [[ $1 == "."* ]]; then
 		export URLNAME="$(getPath ${1})"
 	else
 		export URLNAME="$REPO"
