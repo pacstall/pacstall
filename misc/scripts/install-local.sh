@@ -259,7 +259,7 @@ if [[ -z $PACSTALL_REMOVE ]] && [[ -z $PACSTALL_INSTALL ]]; then
 	hash -r
 	if declare -F removescript >/dev/null ; then
 		export -f ask fancy_message removescript || true
-		bash -ce "source /var/cache/pacstall/'"$name"'/'"$version"'/'"$name"'.pacscript; removescript" || {
+		bash -ceuo pipefail "source /var/cache/pacstall/'"$name"'/'"$version"'/'"$name"'.pacscript; removescript" || {
 			fancy_message error "Could not run removescript properly"
 		}
 	fi
@@ -616,7 +616,7 @@ export -f ask fancy_message
 trap cleanup ERR
 trap - SIGINT
 
-bash -ce 'source "$pacfile";
+bash -ceuo pipefail 'source "$pacfile";
 fancy_message info "Preparing";
 echo "prepare" > /tmp/pacstall-func
 prepare; fancy_message info "Building"
@@ -687,7 +687,7 @@ fi
 hash -r
 if type -t postinst > /dev/null 2>&1; then
 	export -f postinst || true
-	bash -ce "source '$pacfile' && postinst" || {
+	bash -ceuo pipefail "source '$pacfile' && postinst" || {
 		error_log 5 "postinst hook"
 		fancy_message error "Could not run postinst hook successfully"
 		sudo dpkg -r "$name" > /dev/null
