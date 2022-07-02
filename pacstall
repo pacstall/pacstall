@@ -199,7 +199,7 @@ function check_url() {
 			true
 		fi
 	else
-		http_code="$(curl -o /dev/null -s --head --write-out '%{http_code}\n' -- "${1}")"
+		http_code="$(curl --location -o /dev/null -s --head --write-out '%{http_code}\n' -- "${1}")"
 		case "${http_code}" in
 			000)
 				if [[ ${1} == *"packagelist" ]]; then
