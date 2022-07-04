@@ -195,8 +195,10 @@ function ask() {
 }
 function check_url() {
 	if [[ ${1} == "file://"* ]]; then
-		if [[ -f ${1} ]]; then
+		if [[ -f ${1/"file://"/} ]]; then
 			true
+		else
+			return 1
 		fi
 	else
 		http_code="$(curl --location -o /dev/null -s --head --write-out '%{http_code}\n' -- "${1}")"
