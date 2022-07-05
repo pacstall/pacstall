@@ -115,14 +115,18 @@ while IFS= read -r URL; do
 
 	fi
 	if ! check_url "${URL}/packagelist"; then
-		fancy_message warn "Skipping repo $CYAN$(parseRepo ${URL})$NC"
-		fancy_message warn "You can remove or fix the URL by editing $CYAN$STGDIR/repo/pacstallrepo.txt$NC"
+		if [[ -z $REPOMSG ]]; then
+			fancy_message warn "Skipping repo $CYAN$(parseRepo ${URL})$NC"
+			fancy_message warn "You can remove or fix the URL by editing $CYAN$STGDIR/repo/pacstallrepo.txt$NC"
+		fi
 		continue
 	fi
 	mapfile -t PARTIALLIST < <(curl -s -- "$URL"/packagelist)
 	URLLIST+=("${PARTIALLIST[@]/*/$URL}")
 	PACKAGELIST+=("${PARTIALLIST[@]}")
 done < "$STGDIR/repo/pacstallrepo.txt"
+
+REPOMSG=1
 
 # Gets index of packages that the search returns
 # Complete name if download, upgrade or install
