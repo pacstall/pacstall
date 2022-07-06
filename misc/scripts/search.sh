@@ -112,7 +112,10 @@ while IFS= read -r URL; do
 		sed -i "s#${URL}#file://$(readlink -f ${URL})#g" "$STGDIR/repo/pacstallrepo.txt" \
 			|| fancy_message warn "Add \"file://\" to the local repo absolute path on $CYAN$STGDIR/repo/pacstallrepo.txt$NC"
 		URL="file://$(readlink -f ${URL})"
-
+	elif [[ ${URL} == "file://"* ]] && [[ ${URL} == *"/~/"* ]]; then
+		sed -i "s#${URL}#${URL/'~'/$HOME}#g" "$STGDIR/repo/pacstallrepo.txt" \
+			|| fancy_message warn "Replace '~' with the full home path on $CYAN$STGDIR/repo/pacstallrepo.txt$NC"
+		URL="${URL/'~'/$HOME}"
 	fi
 	if ! check_url "${URL}/packagelist"; then
 		if [[ -z $REPOMSG ]]; then
