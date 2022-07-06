@@ -40,7 +40,7 @@ tabs -4
 
 tty_settings=$(stty -g)
 old_version=($(pacstall -V))
-old_info=($(cat $STGDIR/repo/update || echo no default))
+old_info=($(cat $STGDIR/repo/update 2>/dev/null || echo no default))
 
 old_username="${old_info[0]}"
 old_branch="${old_info[1]}"
