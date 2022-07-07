@@ -371,7 +371,6 @@ if [[ -n $pacdeps ]]; then
 			cleanup
 			return 1
 		fi
-		rm -f /tmp/pacstall-pacdeps-"$i"
 	done
 fi
 
