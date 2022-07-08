@@ -39,6 +39,10 @@ elif echo "$REPO" | grep "gitlab.com" > /dev/null; then
 	else
 		REPO="${REPO/"/tree/"/"/raw/"}"
 	fi
+elif [[ -d $REPO ]] > /dev/null; then
+	if ! echo "$REPO" | grep "file://" > /dev/null; then
+		REPO="file://$(readlink -f $REPO)"
+	fi
 else
 	fancy_message warn "The repo link must be the root to the raw files"
 	fancy_message warn "Make sure the repo contains a package list"
@@ -49,7 +53,7 @@ else
 	fi
 fi
 
-if ! wget -q --spider -- "$REPO/packagelist"; then
+if ! curl --head --location -s --fail -- "$REPO/packagelist" > /dev/null; then
 	fancy_message warn "If the URL is a private repo, edit ${CYAN}\e]8;;file://$STGDIR/repo/pacstallrepo.txt\a$STGDIR/repo/pacstallrepo.txt\e]8;;\a${NC}"
 	fancy_message error "packagelist file not found"
 	exit 3
@@ -61,4 +65,5 @@ done < "$STGDIR/repo/pacstallrepo.txt"
 REPOLIST+=("$REPO")
 
 echo "${REPOLIST[@]}" | tr -s ' ' '\n' | sort -u | sudo tee "$STGDIR/repo/pacstallrepo.txt" > /dev/null
+fancy_message info "The repo list has been updated"
 # vim:set ft=sh ts=4 sw=4 noet:

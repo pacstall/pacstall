@@ -121,9 +121,9 @@ function fancy_message() {
 
 	case ${MESSAGE_TYPE} in
 		info) echo -e "[${BGreen}+${NC}] INFO: ${MESSAGE}" ;;
-		warn) >&2 echo -e "[${BYellow}*${NC}] WARNING: ${MESSAGE}" ;;
-		error) >&2 echo -e "[${BRed}!${NC}] ERROR: ${MESSAGE}" ;;
-		*) >&2 echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}" ;;
+		warn) echo >&2 -e "[${BYellow}*${NC}] WARNING: ${MESSAGE}" ;;
+		error) echo >&2 -e "[${BRed}!${NC}] ERROR: ${MESSAGE}" ;;
+		*) echo >&2 -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}" ;;
 	esac
 }
 
@@ -194,25 +194,37 @@ function ask() {
 	done
 }
 function check_url() {
-	http_code="$(curl -o /dev/null -s --head --write-out '%{http_code}\n' -- "${1}")"
-	case "${http_code}" in
-		000)
-			fancy_message error "Failed to download file, check your connection"
-			error_log 1 "get ${PACKAGE} pacscript"
-			return 1
-			;;
-		404)
-			fancy_message error "The URL cannot be found"
-			return 1
-			;;
-		200 | 301 | 302)
+	if [[ ${1} == "file://"* ]]; then
+		if [[ -f ${1/"file://"/} ]]; then
 			true
-			;;
-		*)
-			fancy_message error "Failed with http code ${http_code}"
+		else
 			return 1
-			;;
-	esac
+		fi
+	else
+		http_code="$(curl --location -o /dev/null -s --head --write-out '%{http_code}\n' -- "${1}")"
+		case "${http_code}" in
+			000)
+				if [[ ${1} == *"packagelist" ]]; then
+					fancy_message error "Packagelist not found"
+				else
+					fancy_message error "Failed to download file, check your connection"
+				fi
+				error_log 1 "get ${PACKAGE} pacscript"
+				return 1
+				;;
+			404)
+				fancy_message error "The URL cannot be found"
+				return 1
+				;;
+			200 | 301 | 302)
+				true
+				;;
+			*)
+				fancy_message error "Failed with http code ${http_code}"
+				return 1
+				;;
+		esac
+	fi
 }
 
 # use axel if available

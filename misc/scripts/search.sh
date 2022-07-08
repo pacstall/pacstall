@@ -28,10 +28,21 @@ if [[ -n $UPGRADE ]]; then
 	PACKAGE="$i"
 fi
 
+function getPath() {
+	local path="${1}"
+	path="${path/"file://"/}"
+	path="${path/"~"/"$HOME"}"
+	path="$(readlink -f ${path})"
+	path="${path/"$HOME"/"~"}"
+	echo $path
+}
+
 function specifyRepo() {
 	mapfile -t SPLIT < <(echo "$1" | tr "/" "\n")
 
-	if [[ $1 == *"github"* ]]; then
+	if [[ $1 == "file://"* ]] || [[ $1 == "/"* ]] || [[ $1 == "~"* ]] || [[ $1 == "."* ]]; then
+		export URLNAME="$(getPath ${1})"
+	elif [[ $1 == *"github"* ]]; then
 		export URLNAME="${SPLIT[-3]}/${SPLIT[-2]}"
 	elif [[ $1 == *"gitlab"* ]]; then
 		export URLNAME="${SPLIT[-4]}/${SPLIT[-3]}"
@@ -41,8 +52,32 @@ function specifyRepo() {
 
 }
 
+# Parses github and gitlab URL's
+# url -> maintainer/repo
+# Also adds hyperlink for the
+# terminals that support them
+function parseRepo() {
+	local REPO="${1}"
+
+	mapfile -t SPLIT < <(echo "$REPO" | tr "/" "\n")
+
+	if command echo "$REPO" | grep "file://" &> /dev/null; then
+		local REPODIR="$(getPath ${REPO})"
+		echo "\e]8;;$REPO\a$REPODIR\e]8;;\a"
+	elif command echo "$REPO" | grep "github" &> /dev/null; then
+		echo -e "\e]8;;https://github.com/${SPLIT[-3]}/${SPLIT[-2]}\a${SPLIT[-3]}/${SPLIT[-2]}\e]8;;\a"
+	elif command echo "$REPO" | grep "gitlab" &> /dev/null; then
+		echo -e "\e]8;;https://gitlab.com/${SPLIT[-4]}/${SPLIT[-3]}\a${SPLIT[-4]}/${SPLIT[-3]}\e]8;;\a"
+	else
+		echo "\e]8;;$REPO\a$REPO\e]8;;\a"
+	fi
+}
+
 if [[ $PACKAGE == *@* ]]; then
 	REPONAME=${PACKAGE#*@}
+	if [[ $REPONAME == "file://"* ]] || [[ $REPONAME == "/"* ]] || [[ $REPONAME == "~"* ]] || [[ $REPONAME == "."* ]]; then
+		REPONAME="$(getPath ${REPONAME})"
+	fi
 	PACKAGE=${PACKAGE%%@*}
 
 	while IFS= read -r URL; do
@@ -73,13 +108,28 @@ fi
 PACKAGELIST=()
 URLLIST=()
 while IFS= read -r URL; do
+	if [[ ${URL} == "/"* ]] || [[ ${URL} == "~"* ]] || [[ ${URL} == "."* ]]; then
+		sed -i "s#${URL}#file://$(readlink -f ${URL})#g" "$STGDIR/repo/pacstallrepo.txt" 2> /dev/null \
+			|| fancy_message warn "Add \"file://\" to the local repo absolute path on \e]8;;file://$STGDIR/repo/pacstallrepo.txt\a$CYAN$STGDIR/repo/pacstallrepo.txt$NC\e]8;;\a"
+		URL="file://$(readlink -f ${URL})"
+	elif [[ ${URL} == "file://"* ]] && [[ ${URL} == *"/~/"* ]]; then
+		sed -i "s#${URL}#${URL/'~'/$HOME}#g" "$STGDIR/repo/pacstallrepo.txt" 2> /dev/null \
+			|| fancy_message warn "Replace '~' with the full home path on \e]8;;file://$STGDIR/repo/pacstallrepo.txt\a$CYAN$STGDIR/repo/pacstallrepo.txt$NC\e]8;;\a"
+		URL="${URL/'~'/$HOME}"
+	fi
 	if ! check_url "${URL}/packagelist"; then
-		exit 1
+		if [[ -z $REPOMSG ]]; then
+			fancy_message warn "Skipping repo $CYAN$(parseRepo ${URL})$NC"
+			fancy_message warn "You can remove or fix the URL by editing $CYAN$STGDIR/repo/pacstallrepo.txt$NC"
+		fi
+		continue
 	fi
 	mapfile -t PARTIALLIST < <(curl -s -- "$URL"/packagelist)
 	URLLIST+=("${PARTIALLIST[@]/*/$URL}")
 	PACKAGELIST+=("${PARTIALLIST[@]}")
 done < "$STGDIR/repo/pacstallrepo.txt"
+
+REPOMSG=1
 
 # Gets index of packages that the search returns
 # Complete name if download, upgrade or install
@@ -92,31 +142,14 @@ fi
 _LEN=($IDXSEARCH)
 LEN=${#_LEN[@]}
 
-# Parses github and gitlab URL's
-# url -> maintainer/repo
-# Also adds hyperlink for the
-# terminals that support them
-function parseRepo() {
-	local REPO="${1}"
-	mapfile -t SPLIT < <(echo "$REPO" | tr "/" "\n")
-
-	if command echo "$REPO" | grep "github" &> /dev/null; then
-		echo -e "\e]8;;https://github.com/${SPLIT[-3]}/${SPLIT[-2]}\a${SPLIT[-3]}/${SPLIT[-2]}\e]8;;\a"
-	elif command echo "$REPO" | grep "gitlab" &> /dev/null; then
-		echo -e "\e]8;;https://gitlab.com/${SPLIT[-4]}/${SPLIT[-3]}\a${SPLIT[-4]}/${SPLIT[-3]}\e]8;;\a"
-	else
-		echo "\e]8;;$REPO\a$REPO\e]8;;\a"
-	fi
-}
-
 # Check if there are results
 if [[ $LEN -eq 0 ]]; then
 	if [[ -z $SEARCH ]]; then
-		fancy_message warn "There is no package with the name $IRed$PACKAGE$NC"
+		fancy_message error "There is no package with the name $IRed$PACKAGE$NC"
 		error_log 3 "search $PACKAGE"
 		exit 1
 	else
-		fancy_message warn "There is no package with the name $IRed$SEARCH$NC"
+		fancy_message error "There is no package with the name $IRed$SEARCH$NC"
 		exit 1
 	fi
 
@@ -133,7 +166,7 @@ elif [[ -n $UPGRADE ]]; then
 # Check if its being used for search
 elif [[ -z $PACKAGE ]]; then
 	for IDX in $IDXSEARCH; do
-		echo -e "$GREEN${PACKAGELIST[$IDX]}$CYAN @ $(parseRepo "${URLLIST[$IDX]}") $NC"
+		echo -e "$GREEN${PACKAGELIST[$IDX]} $PURPLE@ $CYAN$(parseRepo "${URLLIST[$IDX]}") $NC"
 	done
 	return 0
 # Options left: install or download

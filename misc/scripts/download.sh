@@ -35,12 +35,14 @@ if check_url "${URL}"; then
 	fi
 
 	case "$URL" in
-		*.pacscript)
-			if ! wget -q --show-progress --progress=bar:force -- "$URL" > /dev/null 2>&1; then
+		*.pacscript | *packagelist)
+			FILE=$(basename "$URL")
+			if ! curl --location -s -- "$URL" > "$FILE"; then
 				error_log 1 "download $PACKAGE"
 				fancy_message error "Could not download ${URL}"
 				exit 1
 			fi
+			unset FILE
 			;;
 		*)
 			if ! download -- "$URL" > /dev/null 2>&1; then
