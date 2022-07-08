@@ -13,12 +13,12 @@
 
 <p align="center"><b>PACSTALL</b></p>
 <p align="center">
-<a href="https://github.com/pacstall/pacstall"><img align="center" src="https://raw.githubusercontent.com/pacstall/website/master/client/public/pacstall.svg" alt="Pacstall Logo"></a>
+<a href="https://github.com/pacstall/pacstall"><img align="center" src="https://raw.githubusercontent.com/pacstall/website/master/client/public/pacstall.svg" width="200" height="200" alt="Pacstall Logo"></a>
 </p>
 <p align="center"><b>The AUR Ubuntu never had</b></p>
 
-<p align="center">Pacstall is the AUR Ubuntu wishes it had. It takes the AUR and puts a spin on it, making it easier to install programs without scouring github repos and the likes.</p>
-<p align="center">The list of available packages can be found <a href="https://github.com/pacstall/pacstall-programs/tree/master/packages">here</a>.</p>
+<p align="center">Pacstall is the AUR Ubuntu wishes it had. It takes the concept of AUR and puts a spin on it, making it easier to install programs without scouring github repos and the likes.</p>
+<p align="center">The list of available packages can be found <a href="https://pacstall.dev/packages">here</a>.</p>
 </p>
 
 ---
@@ -51,36 +51,35 @@ bash -c "$(curl -fsSL https://git.io/JEZbi || wget -q https://git.io/JEZbi -O -)
 ---
 
 ### Basic Commands
+Install `foo` (Equivalent of `apt install`):
 ```bash
 pacstall -I foo
 ```
-This will install foo. Equivalent of apt install
 
+Remove `foo` (Equivalent of `apt remove`):
 ```bash
 pacstall -R foo
 ```
-This will remove foo. Equivalent of apt remove
 
+Search for `foo` (Equivalent of `apt search`):
 ```bash
 pacstall -S foo
 ```
-This will search for foo in repositories. Equivalent of apt search
 
+Adding a Repository:
 ```bash
-pacstall -A
+pacstall -A REPOSITORY_NAME
 ```
-Run this command with a github/gitlab url to add a repo
 
+Update Pacstall's Scripts:
 ```bash
 pacstall -U
 ```
-This will update pacstall's scripts
 
+Update Packages (Equivalent of `apt upgrade`):
 ```bash
 pacstall -Up
 ```
-
-This will update packages. Equivalent of apt upgrade
 
 These are the basic commands, for more info, run `pacstall -h`
 

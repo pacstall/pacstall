@@ -33,21 +33,13 @@ export UPGRADE="yes"
 
 # Get the list of the installed packages
 mapfile -t list < <(pacstall -L)
-if [[ -f /tmp/pacstall-up-list ]]; then
-	sudo rm /tmp/pacstall-up-list
-fi
+rm -f /tmp/pacstall-up-list
+rm -f /tmp/pacstall-up-print
+rm -f /tmp/pacstall-up-urls
 
-if [[ -f /tmp/pacstall-up-print ]]; then
-	sudo rm /tmp/pacstall-up-print
-fi
-
-if [[ -f /tmp/pacstall-up-urls ]]; then
-	sudo rm /tmp/pacstall-up-urls
-fi
-
-sudo touch /tmp/pacstall-up-list
-sudo touch /tmp/pacstall-up-print
-sudo touch /tmp/pacstall-up-urls
+touch /tmp/pacstall-up-list
+touch /tmp/pacstall-up-print
+touch /tmp/pacstall-up-urls
 
 fancy_message info "Checking for updates"
 
@@ -114,9 +106,9 @@ for i in "${list[@]}"; do
 
 	if [[ -n $remotever ]]; then
 		if [[ $i == *"-git" ]] || ver_compare "$localver" "$remotever"; then
-			echo "$i" | sudo tee -a /tmp/pacstall-up-list > /dev/null
-			echo "\t${GREEN}${i}${CYAN} @ $(parseRepo "${remoteurl}") ${NC}" | sudo tee -a /tmp/pacstall-up-print > /dev/null
-			echo "$remoteurl" | sudo tee -a /tmp/pacstall-up-urls > /dev/null
+			echo "$i" | tee -a /tmp/pacstall-up-list > /dev/null
+			echo "\t${GREEN}${i}${CYAN} @ $(parseRepo "${remoteurl}")${NC} ( ${BLUE}${localver:-unknown}${NC} -> ${BLUE}${remotever:-unknown}${NC} )" | tee -a /tmp/pacstall-up-print > /dev/null
+			echo "$remoteurl" | tee -a /tmp/pacstall-up-urls > /dev/null
 		fi
 	fi
 done
@@ -161,15 +153,7 @@ ${BOLD}$(cat /tmp/pacstall-up-print)${NORMAL}\n"
 	done
 fi
 
-if [[ -f "/tmp/pacstall-up-list" ]]; then
-	sudo rm -f /tmp/pacstall-up-list
-fi
-
-if [[ -f "/tmp/pacstall-up-print" ]]; then
-	sudo rm -f /tmp/pacstall-up-print
-fi
-
-if [[ -f "/tmp/pacstall-up-urls" ]]; then
-	sudo rm -f /tmp/pacstall-up-urls
-fi
+rm -f /tmp/pacstall-up-list
+rm -f /tmp/pacstall-up-print
+rm -f /tmp/pacstall-up-urls
 # vim:set ft=sh ts=4 sw=4 noet:

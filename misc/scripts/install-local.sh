@@ -32,12 +32,13 @@ function cleanup() {
 		fi
 	fi
 	if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
-		sudo rm -rf /tmp/pacstall-pacdeps-"$PACKAGE"
+		rm -rf /tmp/pacstall-pacdeps-"$PACKAGE"
 		sudo rm -rf /tmp/pacstall-pacdep
 	else
 		sudo rm -rf "${SRCDIR:?}"/*
 		sudo rm -rf /tmp/pacstall/*
 	fi
+	rm -f /tmp/pacstall-func
 	unset name version url build_depends depends breaks replace description hash removescript optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall 2> /dev/null
 	unset -f pkgver 2> /dev/null
 }
@@ -237,8 +238,19 @@ function ask() {
 		N*|n*) export answer=0; return 1;;
 	esac
 }
+function fancy_message() {
+	local MESSAGE_TYPE="${1}"
+	local MESSAGE="${2}"
+	local BOLD=$(tput bold)
+	local NC="\033[0m"
+	case ${MESSAGE_TYPE} in
+		info) echo -e "[${BOLD}+${NC}] INFO: ${MESSAGE}";;
+		warn) echo -e "[${BOLD}*${NC}] WARNING: ${MESSAGE}";;
+		error) echo -e "[${BOLD}!${NC}] ERROR: ${MESSAGE}";;
+		*) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
+	esac
+}
 if [[ -z $PACSTALL_REMOVE ]] && [[ -z $PACSTALL_INSTALL ]]; then
-	export -f ask
 	source /var/cache/pacstall/'"$name"'/'"$version"'/'"$name"'.pacscript 2>&1 /dev/null
 	sudo mkdir -p '"$STOWDIR"'
 	cd '"$STOWDIR"'
@@ -246,7 +258,10 @@ if [[ -z $PACSTALL_REMOVE ]] && [[ -z $PACSTALL_INSTALL ]]; then
 	rm -rf '"$name"' 2> /dev/null
 	hash -r
 	if declare -F removescript >/dev/null ; then
-		removescript
+		export -f ask fancy_message removescript || true
+		bash -ceuo pipefail "source /var/cache/pacstall/'"$name"'/'"$version"'/'"$name"'.pacscript; removescript" || {
+			fancy_message error "Could not run removescript properly"
+		}
 	fi
 	rm -f '"$LOGDIR"'/'"$name"'
 else unset PACSTALL_REMOVE
@@ -303,7 +318,11 @@ fi
 
 fancy_message info "Sourcing pacscript"
 DIR=$(pwd)
-export homedir="/home/$PACSTALL_USER"
+homedir="/home/$PACSTALL_USER"
+export homedir
+
+pacfile=$(readlink -f "$PACKAGE".pacscript)
+export pacfile
 if ! source "$PACKAGE".pacscript; then
 	fancy_message error "Could not source pacscript"
 	error_log 12 "install $PACKAGE"
@@ -337,15 +356,16 @@ fi
 
 if [[ -n $pacdeps ]]; then
 	for i in "${pacdeps[@]}"; do
-		fancy_message info "Installing $i"
 		# If /tmp/pacstall-pacdeps-"$i" is available, it will trigger the logger to log it as a dependency
-		sudo touch /tmp/pacstall-pacdeps-"$i"
+		touch /tmp/pacstall-pacdeps-"$i"
 
 		[[ $KEEP ]] && cmd="-KPI" || cmd="-PI"
 		if pacstall -L | grep -E "(^| )${i}( |$)" > /dev/null 2>&1; then
 			fancy_message info "The pacstall dependency ${i} is already installed"
-			fancy_message warn "It's recommended to upgrade, as ${i} may have a newer version"
-		elif ! pacstall "$cmd" "$i"; then
+			if [[ -z $UPGRADE ]]; then
+				fancy_message warn "It's recommended to upgrade, as ${i} may have a newer version"
+			fi
+		elif fancy_message info "Installing $i" && ! pacstall "$cmd" "$i"; then
 			fancy_message error "Failed to install pacstall dependencies"
 			error_log 8 "install $PACKAGE"
 			cleanup
@@ -354,37 +374,39 @@ if [[ -n $pacdeps ]]; then
 	done
 fi
 
-if [[ -n $breaks ]] && ! pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
-	for pkg in $breaks; do
-		if dpkg-query -W -f='${Status} ${Section}' "${pkg}" 2> /dev/null | grep "^install ok installed" | grep -v "Pacstall" > /dev/null 2>&1; then
-			# Check if anything in breaks variable is installed already
-			fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by apt"
-			error_log 13 "install $PACKAGE"
-			fancy_message info "Cleaning up"
-			cleanup
-			return 1
-		fi
-		if [[ ${pkg} != "${name}" ]] && pacstall -L | grep -E "(^| )${pkg}( |$)" > /dev/null 2>&1; then
-			# Same thing, but check if anything is installed with pacstall
-			fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by pacstall"
-			error_log 13 "install $PACKAGE"
-			fancy_message info "Cleaning up"
-			cleanup
-			return 1
-		fi
-	done
-fi
+if ! pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
+	if [[ -n $breaks ]]; then
+		for pkg in $breaks; do
+			if dpkg-query -W -f='${Status} ${Section}' "${pkg}" 2> /dev/null | grep "^install ok installed" | grep -v "Pacstall" > /dev/null 2>&1; then
+				# Check if anything in breaks variable is installed already
+				fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by apt"
+				error_log 13 "install $PACKAGE"
+				fancy_message info "Cleaning up"
+				cleanup
+				return 1
+			fi
+			if [[ ${pkg} != "${name}" ]] && pacstall -L | grep -E "(^| )${pkg}( |$)" > /dev/null 2>&1; then
+				# Same thing, but check if anything is installed with pacstall
+				fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by pacstall"
+				error_log 13 "install $PACKAGE"
+				fancy_message info "Cleaning up"
+				cleanup
+				return 1
+			fi
+		done
+	fi
 
-if [[ -n $replace ]]; then
-	# Ask user if they want to replace the program
-	if dpkg-query -W -f='${Status}' $replace 2> /dev/null | grep -q "ok installed"; then
-		ask "This script replaces $replace. Do you want to proceed" N
-		if [[ $answer -eq 0 ]]; then
-			fancy_message info "Cleaning up"
-			cleanup
-			return 1
+	if [[ -n $replace ]]; then
+		# Ask user if they want to replace the program
+		if dpkg-query -W -f='${Status}' $replace 2> /dev/null | grep -q "ok installed"; then
+			ask "This script replaces $replace. Do you want to proceed" N
+			if [[ $answer -eq 0 ]]; then
+				fancy_message info "Cleaning up"
+				cleanup
+				return 1
+			fi
+			sudo apt-get remove -y $replace
 		fi
-		sudo apt-get remove -y $replace
 	fi
 fi
 
@@ -587,48 +609,29 @@ export srcdir="$PWD"
 sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2> /dev/null
 
 export pkgdir="/usr/src/pacstall/$name"
-
-fancy_message info "Preparing"
-if ! prepare; then
-	fancy_message error "Could not prepare $PACKAGE properly"
-	sudo dpkg -r "$name" > /dev/null
-	fancy_message info "Cleaning up"
-	cleanup
-	exit 1
-fi
-
-# Check if build function doesn't exist
-if ! type -t build > /dev/null 2>&1; then
-	fancy_message error "Something didn't compile right"
-	error_log 5 "install $PACKAGE"
-	sudo dpkg -r "$name" > /dev/null
-	fancy_message info "Cleaning up"
-	cleanup
-	return 1
-fi
-
-fancy_message info "Building"
-if ! build; then
-	error_log 5 "build $PACKAGE"
-	fancy_message error "Could not properly build $PACKAGE"
-	sudo dpkg -r "$name" > /dev/null
-	fancy_message info "Cleaning up"
-	cleanup
-	exit 1
-fi
+export -f ask fancy_message
 
 # Trap so that we can clean up (hopefully without messing up anything)
+trap cleanup ERR
 trap - SIGINT
 
-fancy_message info "Installing"
-if ! install; then
-	error_log 14 "install $PACKAGE"
-	fancy_message error "Could not install $PACKAGE properly"
+bash -ceuo pipefail 'source "$pacfile";
+fancy_message info "Preparing";
+echo "prepare" > /tmp/pacstall-func
+prepare; fancy_message info "Building"
+echo "build" > /tmp/pacstall-func
+build; fancy_message info "Installing"
+echo "install" > /tmp/pacstall-func
+install' || {
+	error_log 5 "$(< "/tmp/pacstall-func") $PACKAGE"
+	fancy_message error "Could not $(< "/tmp/pacstall-func") $PACKAGE properly"
 	sudo dpkg -r "$name" > /dev/null
 	fancy_message info "Cleaning up"
 	cleanup
 	exit 1
-fi
+}
+
+trap - ERR
 
 if [[ $NOBUILDDEP -eq 1 ]]; then
 	fancy_message info "Purging build dependencies"
@@ -682,14 +685,15 @@ fi
 # `hash -r` updates PATH database
 hash -r
 if type -t postinst > /dev/null 2>&1; then
-	if ! postinst; then
+	export -f postinst || true
+	bash -ceuo pipefail "source '$pacfile' && postinst" || {
 		error_log 5 "postinst hook"
 		fancy_message error "Could not run postinst hook successfully"
 		sudo dpkg -r "$name" > /dev/null
 		fancy_message info "Cleaning up"
 		cleanup
 		exit 1
-	fi
+	}
 fi
 
 fancy_message info "Storing pacscript"

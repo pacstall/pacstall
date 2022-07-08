@@ -121,9 +121,9 @@ function fancy_message() {
 
 	case ${MESSAGE_TYPE} in
 		info) echo -e "[${BGreen}+${NC}] INFO: ${MESSAGE}" ;;
-		warn) echo -e "[${BYellow}*${NC}] WARNING: ${MESSAGE}" ;;
-		error) echo -e "[${BRed}!${NC}] ERROR: ${MESSAGE}" ;;
-		*) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}" ;;
+		warn) echo >&2 -e "[${BYellow}*${NC}] WARNING: ${MESSAGE}" ;;
+		error) echo >&2 -e "[${BRed}!${NC}] ERROR: ${MESSAGE}" ;;
+		*) echo >&2 -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}" ;;
 	esac
 }
 
@@ -194,25 +194,37 @@ function ask() {
 	done
 }
 function check_url() {
-	http_code="$(curl -o /dev/null -s --head --write-out '%{http_code}\n' -- "${1}")"
-	case "${http_code}" in
-		000)
-			fancy_message error "Failed to download file, check your connection"
-			error_log 1 "get ${PACKAGE} pacscript"
-			return 1
-			;;
-		404)
-			fancy_message error "The URL cannot be found"
-			return 1
-			;;
-		200 | 301 | 302)
+	if [[ ${1} == "file://"* ]]; then
+		if [[ -f ${1/"file://"/} ]]; then
 			true
-			;;
-		*)
-			fancy_message error "Failed with http code ${http_code}"
+		else
 			return 1
-			;;
-	esac
+		fi
+	else
+		http_code="$(curl --location -o /dev/null -s --head --write-out '%{http_code}\n' -- "${1}")"
+		case "${http_code}" in
+			000)
+				if [[ ${1} == *"packagelist" ]]; then
+					fancy_message error "Packagelist not found"
+				else
+					fancy_message error "Failed to download file, check your connection"
+				fi
+				error_log 1 "get ${PACKAGE} pacscript"
+				return 1
+				;;
+			404)
+				fancy_message error "The URL cannot be found"
+				return 1
+				;;
+			200 | 301 | 302)
+				true
+				;;
+			*)
+				fancy_message error "Failed with http code ${http_code}"
+				return 1
+				;;
+		esac
+	fi
 }
 
 # use axel if available
@@ -301,24 +313,47 @@ while [[ $1 != "--" ]]; do
 	case "$1" in
 		-P | --disable-prompts)
 			fancy_message warn "Prompts are disabled"
-			DISABLE_PROMPTS=yes
+			export DISABLE_PROMPTS=yes
 			;;
 
 		-h | --help)
-			echo "options:
--I --install, Installs package
--Il --install-local, Installs a local package
--S --search, Search for package
--R --remove, Removes package
--D --download, Downloads script
--A --add-repo, Adds repo to your repo list
--U --update, Update script
--V --version, Prints pacstall version
--L --list, Lists installed packages
--Up --upgrade, Upgrades packages
--Qi --query-info, Get package info
--P --disable-prompts, Disable Prompts for unattended installation
--K --keep, retain build directory after package install"
+			echo -e "Usage: pacstall [-h] [-V] {-I,-Il,-S,-R,-D,-A,-U,-L,-Up,-Qi} [-P] [-K]
+
+An AUR inspired package manager for Ubuntu.
+
+Commands:
+	${BOLD}-I${NC}, ${BOLD}--install${NC} <package>
+		Install a package.
+	${BOLD}-Il${NC}, ${BOLD}--install-local${NC} <package>
+		Install a local pacscript.
+	${BOLD}-S${NC}, ${BOLD}--search${NC} <package>
+		Search for a package.
+	${BOLD}-R${NC}, ${BOLD}--remove${NC} <package>
+		Remove a package.
+	${BOLD}-D${NC}, ${BOLD}--download${NC} <package>
+		Download a pacscript.
+	${BOLD}-A${NC}, ${BOLD}--add-repo${NC} <repo>
+		Add a repository.
+	${BOLD}-U${NC}, ${BOLD}--update${NC} [user] [branch]
+		Update Pacstall.
+	${BOLD}-L${NC}, ${BOLD}--list${NC}
+		List all installed packages.
+	${BOLD}-Up${NC}, ${BOLD}--upgrade${NC}
+		Upgrade all installed packages.
+	${BOLD}-Qi${NC}, ${BOLD}--query-info${NC} <package>
+		Query information about a package.
+	${BOLD}-T${NC}, ${BOLD}--tree${NC} <package>
+		Display a tree list of a packages files
+
+Options:
+	${BOLD}-P${NC}, ${BOLD}--disable-prompts${NC}
+		Disable prompts.
+	${BOLD}-K${NC}, ${BOLD}--keep${NC}
+		Keep the build files.
+	${BOLD}-V${NC}, ${BOLD}--version${NC}
+		Display the version number.
+	${BOLD}-h${NC}, ${BOLD}--help${NC}
+		Display this help message."
 			exit 0
 			;;
 
@@ -355,7 +390,7 @@ while [[ $1 != "--" ]]; do
 				export type="install"
 				export local="no"
 
-				check_url "https://github.com" || check_url "https://github.com" || {
+				check_url "https://github.com" || check_url "https://gitlab.com" || {
 					fancy_message error "Could not connect to the internet"
 					exit 1
 				}
@@ -414,7 +449,7 @@ while [[ $1 != "--" ]]; do
 				fi
 				shift
 
-				check_url "https://github.com" || check_url "https://github.com" || {
+				check_url "https://github.com" || check_url "https://gitlab.com" || {
 					fancy_message error "Could not connect to the internet"
 					exit 1
 				}
@@ -439,7 +474,7 @@ while [[ $1 != "--" ]]; do
 				exit 1
 			fi
 
-			check_url "https://github.com" || check_url "https://github.com" || {
+			check_url "https://github.com" || check_url "https://gitlab.com" || {
 				fancy_message error "Could not connect to the internet"
 				exit 1
 			}
@@ -489,14 +524,14 @@ while [[ $1 != "--" ]]; do
 			PACKAGE="$2"
 
 			if [[ -z $PACKAGE ]]; then
-				echo -e "1.7.3 \033[1m\x1b[38;2;217;56;30mVermilion${NC}"
+				echo -e "2.0.0 \033[1m\x1b[38;2;251;206;177mApricot${NC}"
 				exit 0
 			else
-				# If pacstall -V was called with an argument, it's a package, so get the package version (usful for scripting)
+				# If pacstall -V was called with an argument, it's a package, so get the package version (useful for scripting)
 				if pacstall -Qi "$PACKAGE" | grep 'version' | cut -d ":" -f2 | sed 's/ //g'; then
 					exit 0
 				else
-					fancy_message error "${GREEN}${PACKAGE}${NC} ins not installed"
+					fancy_message error "${GREEN}${PACKAGE}${NC} is not installed"
 					exit 1
 				fi
 			fi
@@ -521,7 +556,7 @@ while [[ $1 != "--" ]]; do
 				fi
 			fi
 
-			check_url "https://github.com" || check_url "https://github.com" || {
+			check_url "https://github.com" || check_url "https://gitlab.com" || {
 				fancy_message error "Could not connect to the internet"
 				exit 1
 			}
@@ -556,7 +591,7 @@ while [[ $1 != "--" ]]; do
 				shift
 				export type="download"
 
-				check_url "https://github.com" || check_url "https://github.com" || {
+				check_url "https://github.com" || check_url "https://gitlab.com" || {
 					fancy_message error "Could not connect to the internet"
 					exit 1
 				}
@@ -584,7 +619,7 @@ while [[ $1 != "--" ]]; do
 			;;
 
 		-Up | --upgrade)
-			check_url "https://github.com" || check_url "https://github.com" || {
+			check_url "https://github.com" || check_url "https://gitlab.com" || {
 				fancy_message error "Could not connect to the internet"
 				exit 1
 			}
