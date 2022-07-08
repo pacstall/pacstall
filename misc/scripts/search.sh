@@ -109,11 +109,11 @@ PACKAGELIST=()
 URLLIST=()
 while IFS= read -r URL; do
 	if [[ ${URL} == "/"* ]] || [[ ${URL} == "~"* ]] || [[ ${URL} == "."* ]]; then
-		sed -i "s#${URL}#file://$(readlink -f ${URL})#g" "$STGDIR/repo/pacstallrepo.txt" \
+		sed -i "s#${URL}#file://$(readlink -f ${URL})#g" "$STGDIR/repo/pacstallrepo.txt" 2> /dev/null \
 			|| fancy_message warn "Add \"file://\" to the local repo absolute path on \e]8;;file://$STGDIR/repo/pacstallrepo.txt\a$CYAN$STGDIR/repo/pacstallrepo.txt$NC\e]8;;\a"
 		URL="file://$(readlink -f ${URL})"
 	elif [[ ${URL} == "file://"* ]] && [[ ${URL} == *"/~/"* ]]; then
-		sed -i "s#${URL}#${URL/'~'/$HOME}#g" "$STGDIR/repo/pacstallrepo.txt" \
+		sed -i "s#${URL}#${URL/'~'/$HOME}#g" "$STGDIR/repo/pacstallrepo.txt" 2> /dev/null \
 			|| fancy_message warn "Replace '~' with the full home path on \e]8;;file://$STGDIR/repo/pacstallrepo.txt\a$CYAN$STGDIR/repo/pacstallrepo.txt$NC\e]8;;\a"
 		URL="${URL/'~'/$HOME}"
 	fi
