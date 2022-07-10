@@ -85,7 +85,7 @@ case "$url" in
 		if fn_exists removescript; then
 			fancy_message info "Running post removal script"
 			export -f ask fancy_message removescript
-			bash -ce "/var/cache/pacstall/${PACKAGE}/${_version}/${PACKAGE}.pacscript; removescript" || {
+			bash -ce ". /var/cache/pacstall/${PACKAGE}/${_version}/${PACKAGE}.pacscript; removescript" || {
 				error_log 2 "removescript $PACKAGE"
 				fancy_message error "Could not run removescript properly"
 				exit 1
