@@ -631,6 +631,7 @@ build; fancy_message sub "install"
 echo "install" > /tmp/pacstall-func
 install' || {
 	error_log 5 "$(< "/tmp/pacstall-func") $PACKAGE"
+	echo -ne "\t"
 	fancy_message error "Could not $(< "/tmp/pacstall-func") $PACKAGE properly"
 	sudo dpkg -r "$name" > /dev/null
 	fancy_message info "Cleaning up"
