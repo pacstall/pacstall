@@ -77,7 +77,7 @@ case "$url" in
 		fancy_message info "Removing symlinks"
 		sudo stow --target="/" -D "$PACKAGE"
 
-		fancy_message info "Removing package"
+		fancy_message info "Removing package directory"
 		sudo rm -rf "$PACKAGE"
 		# Update PATH database
 		hash -r
@@ -104,6 +104,8 @@ case "$url" in
 			error_log 1 "remove $PACKAGE"
 			exit 1
 		fi
+
+		sub_message "Removing apt pin"
 		sudo rm -f /etc/apt/preferences.d/"${name}-pin"
 
 		sudo rm -f "$LOGDIR/$PACKAGE"
