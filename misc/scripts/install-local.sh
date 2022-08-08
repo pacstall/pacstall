@@ -142,7 +142,8 @@ function log() {
 function makeVirtualDeb {
 	# creates empty .deb package (with only the control file) for apt integration
 	# implements $(gives) variable
-	fancy_message info "Creating dummy package"
+	fancy_message info "Preparing package"
+	sub_message "Creating dummy package"
 	sudo mkdir -p "$SRCDIR/$name-pacstall/DEBIAN"
 	printf "Package: %s\n" "$name" | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 
@@ -175,7 +176,7 @@ function makeVirtualDeb {
 		done
 
 		if [[ ${#optdeps[@]} -ne 0 ]]; then
-			fancy_message info "$name has optional dependencies that can enhance its functionalities"
+			sub_message "$name has optional dependencies that can enhance its functionalities"
 			echo "Optional dependencies:"
 			printf '    %s\n' "${optdeps[@]}"
 			ask "Do you want to install them" Y
@@ -615,12 +616,13 @@ export -f ask fancy_message
 trap cleanup ERR
 trap - SIGINT
 
+fancy_message info "Running functions"
 bash -ceuo pipefail 'source "$pacfile";
-fancy_message info "Preparing";
+sub_message "prepare";
 echo "prepare" > /tmp/pacstall-func
-prepare; fancy_message info "Building"
+prepare; sub_message "build"
 echo "build" > /tmp/pacstall-func
-build; fancy_message info "Installing"
+build; sub_message "install"
 echo "install" > /tmp/pacstall-func
 install' || {
 	error_log 5 "$(< "/tmp/pacstall-func") $PACKAGE"
@@ -696,7 +698,8 @@ if type -t postinst > /dev/null 2>&1; then
 	}
 fi
 
-fancy_message info "Storing pacscript"
+fancy_message info "Performing post install operations"
+sub_message "Storing pacscript"
 sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
 if ! cd "$DIR" 2> /dev/null; then
 	error_log 1 "install $PACKAGE"
@@ -710,7 +713,7 @@ fi
 sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 sudo chmod o+r /var/cache/pacstall/"$PACKAGE"/"$version"/"$PACKAGE".pacscript
 
-fancy_message info "Cleaning up"
+sub_message "Cleaning up"
 cleanup
 return 0
 

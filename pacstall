@@ -127,6 +127,11 @@ function fancy_message() {
 	esac
 }
 
+function sub_message() {
+	local MESSAGE="${1}"
+	echo -e "\t[${BBlue}>${NC}]: $MESSAGE"
+}
+
 # This is the ask function. You can source this code block and then run something like:
 # ask "Do you like the color blue? " Y
 # if [[ $answer -eq 1 ]]; then
