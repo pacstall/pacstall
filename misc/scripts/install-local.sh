@@ -179,7 +179,9 @@ function makeVirtualDeb {
 		if [[ ${#optdeps[@]} -ne 0 ]]; then
 			sub_message "Optional dependencies"
 			printf '		%s\n' "${optdeps[@]}"
-			ask "Do you want to install them" Y
+			# tab over the next line
+			echo -ne "\t"
+			ask "Do you want to install optional dependencies" Y
 			if [[ $answer -eq 1 ]]; then
 				for optdep in "${optdeps[@]}"; do
 					deps+=" ${optdep%%: *}"
