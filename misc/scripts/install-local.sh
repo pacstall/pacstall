@@ -143,7 +143,6 @@ function makeVirtualDeb {
 	# creates empty .deb package (with only the control file) for apt integration
 	# implements $(gives) variable
 	fancy_message info "Preparing package"
-	sub_message "Creating dummy package"
 	sudo mkdir -p "$SRCDIR/$name-pacstall/DEBIAN"
 	printf "Package: %s\n" "$name" | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 
@@ -176,7 +175,7 @@ function makeVirtualDeb {
 		done
 
 		if [[ ${#optdeps[@]} -ne 0 ]]; then
-			sub_message "$name has optional dependencies that can enhance its functionalities"
+			fancy_message info "$name has optional dependencies that can enhance its functionalities"
 			echo "Optional dependencies:"
 			printf '    %s\n' "${optdeps[@]}"
 			ask "Do you want to install them" Y
