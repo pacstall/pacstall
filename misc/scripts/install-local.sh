@@ -177,9 +177,9 @@ function makeVirtualDeb {
 		fancy_message info "Installing dependencies"
 
 		if [[ ${#optdeps[@]} -ne 0 ]]; then
-			sub_message "$name has optional dependencies that can enhance its functionalities"
-			echo -e "\tOptional dependencies:"
-			printf '        %s\n' "${optdeps[@]}"
+			sub_message "Optional dependencies"
+			echo -e "\t\t$name has optional dependencies that can enhance its functionalities"
+			printf '			%s\n' "${optdeps[@]}"
 			ask "Do you want to install them" Y
 			if [[ $answer -eq 1 ]]; then
 				for optdep in "${optdeps[@]}"; do
@@ -281,7 +281,7 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" > /dev/null
 	fi
 	export PACSTALL_INSTALL=1
 
-	sub_message "Installing required dependencies"
+	sub_message "Required dependencies"
 	# --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
 	if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install "$SRCDIR/$name-pacstall.deb" -y --allow-downgrades 2> /dev/null; then
 		fancy_message error "Failed to install dependencies"
