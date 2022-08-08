@@ -252,6 +252,7 @@ function fancy_message() {
 		info) echo -e "[${BOLD}+${NC}] INFO: ${MESSAGE}";;
 		warn) echo -e "[${BOLD}*${NC}] WARNING: ${MESSAGE}";;
 		error) echo -e "[${BOLD}!${NC}] ERROR: ${MESSAGE}";;
+		sub) echo -e "\t[${BOLD}>${NC}] ${MESSAGE}" ;;
 		*) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
 	esac
 }
