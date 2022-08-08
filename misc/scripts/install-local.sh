@@ -179,7 +179,7 @@ function makeVirtualDeb {
 		if [[ ${#optdeps[@]} -ne 0 ]]; then
 			sub_message "Optional dependencies"
 			for i in "${optdeps[@]}"; do
-				printf '		%s\n' "${BOLD}${i%%: *}: ${i#*:}${NC}"
+				echo -e "\t\t${BOLD}${i%%:*}: ${i#*:}${NC}"
 			done
 			# tab over the next line
 			echo -ne "\t"
