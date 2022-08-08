@@ -123,13 +123,9 @@ function fancy_message() {
 		info) echo -e "[${BGreen}+${NC}] INFO: ${MESSAGE}" ;;
 		warn) echo >&2 -e "[${BYellow}*${NC}] WARNING: ${MESSAGE}" ;;
 		error) echo >&2 -e "[${BRed}!${NC}] ERROR: ${MESSAGE}" ;;
+		sub) echo -e "\t[${BBlue}>${NC}] ${MESSAGE}" ;;
 		*) echo >&2 -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}" ;;
 	esac
-}
-
-function sub_message() {
-	local MESSAGE="${1}"
-	echo -e "\t[${BBlue}>${NC}] $MESSAGE"
 }
 
 # This is the ask function. You can source this code block and then run something like:

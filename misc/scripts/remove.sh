@@ -105,7 +105,7 @@ case "$url" in
 			exit 1
 		fi
 
-		sub_message "Removing apt pin"
+		fancy_message sub "Removing apt pin"
 		sudo rm -f /etc/apt/preferences.d/"${name}-pin"
 
 		sudo rm -f "$LOGDIR/$PACKAGE"
