@@ -288,6 +288,7 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" > /dev/null
 	fancy_message sub "Required dependencies"
 	# --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
 	if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install "$SRCDIR/$name-pacstall.deb" -y --allow-downgrades 2> /dev/null; then
+		echo -ne "\t"
 		fancy_message error "Failed to install dependencies"
 		error_log 8 "install $PACKAGE"
 		sudo dpkg -r --force-all "$name" > /dev/null
