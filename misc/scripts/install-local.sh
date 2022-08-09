@@ -167,7 +167,7 @@ function makeVirtualDeb {
 			local opt=${optdep%%: *}
 			# Check if package exists in the repos, and if not, go to the next program
 			if [[ -z "$(apt-cache search --names-only "^$opt\$")" ]]; then
-				fancy_message warn "${BLUE}$opt${NC} does not exist in apt repositories"
+				missing_optdeps+="\t$(fancy_message warn "${BLUE}$opt${NC} does not exist in apt repositories")"
 				continue
 			fi
 			# Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
@@ -183,7 +183,11 @@ function makeVirtualDeb {
 
 		if [[ ${#optdeps[@]} -ne 0 ]]; then
 			fancy_message sub "Optional dependencies"
+			if [[ -n ${missing_optdeps} ]]; then
+				printf '%s\n' "${missing_optdeps}"
+			fi
 			for i in "${optdeps[@]}"; do
+				# print optdepends with bold package name
 				echo -e "\t\t${BOLD}${i%%:*}${NC}:${i#*:}"
 			done
 			# tab over the next line
