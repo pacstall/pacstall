@@ -185,6 +185,7 @@ function makeVirtualDeb {
 			fancy_message sub "Optional dependencies"
 			if [[ -n ${missing_optdeps[*]} ]]; then
 				for i in "${missing_optdeps[@]}"; do
+					echo -e "\t"
 					fancy_message warn "${BLUE}$i${NC} does not exist in apt repositories"
 				done
 			fi
