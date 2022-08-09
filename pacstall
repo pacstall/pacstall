@@ -114,7 +114,7 @@ export On_IWhite='\033[0;107m'  # White
 # fancy_message allows visually appealing output.
 # Source the code block and run:
 #
-# `fancy_message {info,warn,error} "What you want to say"`
+# `fancy_message {info,warn,error,sub} "What you want to say"`
 function fancy_message() {
 	local MESSAGE_TYPE="${1}"
 	local MESSAGE="${2}"
@@ -123,6 +123,7 @@ function fancy_message() {
 		info) echo -e "[${BGreen}+${NC}] INFO: ${MESSAGE}" ;;
 		warn) echo >&2 -e "[${BYellow}*${NC}] WARNING: ${MESSAGE}" ;;
 		error) echo >&2 -e "[${BRed}!${NC}] ERROR: ${MESSAGE}" ;;
+		sub) echo -e "\t[${BBlue}>${NC}] ${MESSAGE}" ;;
 		*) echo >&2 -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}" ;;
 	esac
 }

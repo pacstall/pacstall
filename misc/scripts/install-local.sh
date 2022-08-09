@@ -142,7 +142,7 @@ function log() {
 function makeVirtualDeb {
 	# creates empty .deb package (with only the control file) for apt integration
 	# implements $(gives) variable
-	fancy_message info "Creating dummy package"
+	fancy_message info "Preparing package"
 	sudo mkdir -p "$SRCDIR/$name-pacstall/DEBIAN"
 	printf "Package: %s\n" "$name" | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 
@@ -174,11 +174,16 @@ function makeVirtualDeb {
 			fi
 		done
 
+		fancy_message info "Installing dependencies"
+
 		if [[ ${#optdeps[@]} -ne 0 ]]; then
-			fancy_message info "$name has optional dependencies that can enhance its functionalities"
-			echo "Optional dependencies:"
-			printf '    %s\n' "${optdeps[@]}"
-			ask "Do you want to install them" Y
+			fancy_message sub "Optional dependencies"
+			for i in "${optdeps[@]}"; do
+				echo -e "\t\t${BOLD}${i%%:*}${NC}:${i#*:}"
+			done
+			# tab over the next line
+			echo -ne "\t"
+			ask "Do you want to install the optional dependencies" Y
 			if [[ $answer -eq 1 ]]; then
 				for optdep in "${optdeps[@]}"; do
 					deps+=" ${optdep%%: *}"
@@ -247,6 +252,7 @@ function fancy_message() {
 		info) echo -e "[${BOLD}+${NC}] INFO: ${MESSAGE}";;
 		warn) echo -e "[${BOLD}*${NC}] WARNING: ${MESSAGE}";;
 		error) echo -e "[${BOLD}!${NC}] ERROR: ${MESSAGE}";;
+		sub) echo -e "\t[${BOLD}>${NC}] ${MESSAGE}" ;;
 		*) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
 	esac
 }
@@ -279,9 +285,10 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" > /dev/null
 	fi
 	export PACSTALL_INSTALL=1
 
-	fancy_message info "Installing dependencies"
+	fancy_message sub "Required dependencies"
 	# --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
 	if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install "$SRCDIR/$name-pacstall.deb" -y --allow-downgrades 2> /dev/null; then
+		echo -ne "\t"
 		fancy_message error "Failed to install dependencies"
 		error_log 8 "install $PACKAGE"
 		sudo dpkg -r --force-all "$name" > /dev/null
@@ -615,15 +622,17 @@ export -f ask fancy_message
 trap cleanup ERR
 trap - SIGINT
 
+fancy_message info "Running functions"
 bash -ceuo pipefail 'source "$pacfile";
-fancy_message info "Preparing";
+fancy_message sub "prepare";
 echo "prepare" > /tmp/pacstall-func
-prepare; fancy_message info "Building"
+prepare; fancy_message sub "build"
 echo "build" > /tmp/pacstall-func
-build; fancy_message info "Installing"
+build; fancy_message sub "install"
 echo "install" > /tmp/pacstall-func
 install' || {
 	error_log 5 "$(< "/tmp/pacstall-func") $PACKAGE"
+	echo -ne "\t"
 	fancy_message error "Could not $(< "/tmp/pacstall-func") $PACKAGE properly"
 	sudo dpkg -r "$name" > /dev/null
 	fancy_message info "Cleaning up"
@@ -696,7 +705,8 @@ if type -t postinst > /dev/null 2>&1; then
 	}
 fi
 
-fancy_message info "Storing pacscript"
+fancy_message info "Performing post install operations"
+fancy_message sub "Storing pacscript"
 sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
 if ! cd "$DIR" 2> /dev/null; then
 	error_log 1 "install $PACKAGE"
@@ -710,7 +720,7 @@ fi
 sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
 sudo chmod o+r /var/cache/pacstall/"$PACKAGE"/"$version"/"$PACKAGE".pacscript
 
-fancy_message info "Cleaning up"
+fancy_message sub "Cleaning up"
 cleanup
 return 0
 
