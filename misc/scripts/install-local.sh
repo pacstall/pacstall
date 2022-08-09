@@ -165,6 +165,11 @@ function makeVirtualDeb {
 		local optdeps=()
 		for optdep in "${optdepends[@]}"; do
 			local opt=${optdep%%: *}
+			# Check if package exists in the repos, and if not, go to the next program
+			if [[ -z "$(apt-cache search --names-only "^$opt\$")" ]]; then
+				fancy_message warn "${BLUE}$opt${NC} does not exist in apt repositories"
+				continue
+			fi
 			# Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
 			# Add to the optdeps list if not to display the question
 			if ! dpkg-query -W -f='${Status}' "${opt}" 2> /dev/null | grep "^install ok installed" > /dev/null 2>&1; then
