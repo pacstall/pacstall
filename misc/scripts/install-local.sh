@@ -189,7 +189,7 @@ function makeVirtualDeb {
 					fancy_message warn "${BLUE}$i${NC} does not exist in apt repositories"
 				done
 			fi
-			z=0
+			z=1
 			for i in "${optdeps[@]}"; do
 				# print optdepends with bold package name
 				echo -e "\t\t[${BIBlue}$z${NC}] ${BOLD}${i%%:*}${NC}:${i#*:}"
