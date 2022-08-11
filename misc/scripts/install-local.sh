@@ -192,7 +192,7 @@ function makeVirtualDeb {
 			z=1
 			for i in "${optdeps[@]}"; do
 				# print optdepends with bold package name
-				echo -e "\t\t[${BIBlue}$z${NC}] ${BOLD}${i%%:*}${NC}:${i#*:}"
+				echo -e "\t\t[${BICyan}$z${NC}] ${BOLD}${i%%:*}${NC}:${i#*:}"
 				(( z++ ))
 			done
 			unset z
