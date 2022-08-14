@@ -39,6 +39,7 @@ function cleanup() {
 		sudo rm -rf /tmp/pacstall/*
 	fi
 	rm -f /tmp/pacstall-func
+	rm -f /tmp/pacstall-select-options
 	unset name version url build_depends depends breaks replace description hash removescript optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall 2> /dev/null
 	unset -f pkgver 2> /dev/null
 }
@@ -52,6 +53,34 @@ function trap_ctrlc() {
 	sudo rm -f /etc/apt/preferences.d/"${name:-$PACKAGE}-pin"
 	cleanup
 	exit 1
+}
+
+function select_options() {
+	rm -f /tmp/pacstall-select-options
+	local message="${1}"
+	local length="${2}"
+	echo -ne "${message} [$( seq -s ' ' 1 "$length" )] [${BIGreen}Y${NC}/${RED}n${NC}] "
+	if [[ -z $DISABLE_PROMPTS ]]; then
+		read -r input <&0
+		if [[ $NON_INTERACTIVE ]]; then
+			if [[ -z $input ]]; then
+				echo "Y"
+			fi
+			echo "$input"
+		fi
+	else
+		echo "Y"
+		input="Y"
+	fi
+	if [[ -z $input ]] || [[ $input =~ ^[Yy]$ ]]; then
+		seq -s ' ' 1 "$length" | tee /tmp/pacstall-select-options >/dev/null
+	elif [[ $input =~ ^[Nn]$ ]]; then
+		echo "n" | tee /tmp/pacstall-select-options >/dev/null
+	elif ! [[ $input =~ [a-zA-Z]+ ]] || [[ $input =~ ^[0-9]+$ ]]; then
+		echo "$input" | tee /tmp/pacstall-select-options >/dev/null
+	else
+		select_options "$message" "$length"
+	fi
 }
 
 # run checks to verify script works
@@ -195,10 +224,13 @@ function makeVirtualDeb {
 			done
 			# tab over the next line
 			echo -ne "\t"
-			ask "Do you want to install the optional dependencies" Y
-			if [[ $answer -eq 1 ]]; then
-				for optdep in "${optdeps[@]}"; do
-					deps+=" ${optdep%%: *}"
+			select_options "Select optional dependencies to install" "${#optdeps[@]}"
+			choices=( $(cat /tmp/pacstall-select-options) )
+			if [[ "${choices[0]}" != "n" ]]; then
+				for i in "${choices[@]}"; do
+					(( i-- ))
+					s="${optdeps[$i]}"
+					deps+=" ${s%%: *}"
 				done
 				if pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
 					sudo dpkg -r --force-all "$name" > /dev/null
