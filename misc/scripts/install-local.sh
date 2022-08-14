@@ -218,10 +218,13 @@ function makeVirtualDeb {
 					fancy_message warn "${BLUE}$i${NC} does not exist in apt repositories"
 				done
 			fi
+			z=1
 			for i in "${optdeps[@]}"; do
 				# print optdepends with bold package name
-				echo -e "\t\t${BOLD}${i%%:*}${NC}:${i#*:}"
+				echo -e "\t\t[${BICyan}$z${NC}] ${BOLD}${i%%:*}${NC}:${i#*:}"
+				(( z++ ))
 			done
+			unset z
 			# tab over the next line
 			echo -ne "\t"
 			select_options "Select optional dependencies to install" "${#optdeps[@]}"
