@@ -233,7 +233,9 @@ function makeVirtualDeb {
 				for i in "${choices[@]}"; do
 					(( i-- ))
 					s="${optdeps[$i]}"
-					deps+=" ${s%%: *}"
+					if [[ -n $s ]]; then
+						deps+=" ${s%%: *}"
+					fi
 				done
 				if pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
 					sudo dpkg -r --force-all "$name" > /dev/null
