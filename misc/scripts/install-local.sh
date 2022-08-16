@@ -77,7 +77,16 @@ function select_options() {
 	elif [[ $input =~ ^[Nn]$ ]]; then
 		echo "n" | tee /tmp/pacstall-select-options >/dev/null
 	elif ! [[ $input =~ [a-zA-Z]+ ]] || [[ $input =~ ^[0-9]+$ ]]; then
-		echo "$input" | tee /tmp/pacstall-select-options >/dev/null
+		for i in "${input[@]}"; do
+			if [[ $i =~ [0-9]+-[0-9]+ ]]; then
+				split_arr=(${i//-/ })
+				out+=( $(seq -s ' ' "${split_arr[0]}" "${split_arr[1]}") )
+				continue
+			else
+				out+=($i)
+			fi
+		done
+		echo "${out[@]}" | tee /tmp/pacstall-select-options >/dev/null
 	else
 		select_options "$message" "$length"
 	fi
