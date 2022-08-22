@@ -44,6 +44,7 @@ touch /tmp/pacstall-up-urls
 fancy_message info "Checking for updates"
 
 for i in "${list[@]}"; do
+	{
 	source "$LOGDIR/$i"
 
 	# localver is the current version of the package
@@ -51,7 +52,7 @@ for i in "${list[@]}"; do
 
 	if [[ -z ${_remoterepo} ]]; then
 		# TODO: upgrade for local pacscripts
-		continue
+		return
 	elif echo "${_remoterepo}" | grep "github.com" > /dev/null; then
 		remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}"
 	elif echo "${_remoterepo}" | grep "gitlab.com" > /dev/null; then
@@ -101,7 +102,7 @@ for i in "${list[@]}"; do
 			remoteurl="$alterurl"
 		fi
 	elif [[ $remotever == "$localver" ]]; then
-		continue
+		return
 	fi
 
 	if [[ -n $remotever ]]; then
@@ -111,7 +112,10 @@ for i in "${list[@]}"; do
 			echo "$remoteurl" | tee -a /tmp/pacstall-up-urls > /dev/null
 		fi
 	fi
+	} &
 done
+
+wait
 
 if [[ $(wc -l /tmp/pacstall-up-list | awk '{ print $1 }') -eq 0 ]]; then
 	fancy_message info "Nothing to upgrade"
