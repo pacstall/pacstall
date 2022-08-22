@@ -59,7 +59,12 @@ function select_options() {
 	rm -f /tmp/pacstall-select-options
 	local message="${1}"
 	local length="${2}"
-	echo -ne "${message} [${BOLD}$( seq -s ' ' 1 "$length" )${NC}] [${BIGreen}Y${NC}/${RED}n${NC}] "
+
+	if [[ $length -ge 6 ]]; then
+		echo -ne "${message} [${BOLD}1..$length${NC}] [${BIGreen}Y${NC}/${RED}n${NC}] "
+	else
+		echo -ne "${message} [${BOLD}$( seq -s ' ' 1 "$length" )${NC}] [${BIGreen}Y${NC}/${RED}n${NC}] "
+	fi
 	if [[ -z $DISABLE_PROMPTS ]]; then
 		read -r input <&0
 		if [[ $NON_INTERACTIVE ]]; then
