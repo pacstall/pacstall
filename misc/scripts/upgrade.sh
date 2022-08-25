@@ -43,7 +43,10 @@ touch /tmp/pacstall-up-urls
 
 fancy_message info "Checking for updates"
 
+N=$(nproc)
+(
 for i in "${list[@]}"; do
+	((n=n%N)); ((n++==0)) && wait
 	{
 	source "$LOGDIR/$i"
 
@@ -114,8 +117,7 @@ for i in "${list[@]}"; do
 	fi
 	} &
 done
-
-wait
+)
 
 if [[ $(wc -l /tmp/pacstall-up-list | awk '{ print $1 }') -eq 0 ]]; then
 	fancy_message info "Nothing to upgrade"
