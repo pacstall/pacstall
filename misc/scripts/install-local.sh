@@ -217,7 +217,7 @@ function makeVirtualDeb {
 
 	if [[ -n $deps ]]; then
 		deps="$(echo "${deps}" | sed -e 's/^[[:space:]]*//')"
-		printf "Depends: %s\n" "${deps//' '/' , '}" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" t > /dev/null
+		printf "Depends: %s\n" "${deps//' '/' , '}" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 	fi
 
 	printf "Architecture: all
