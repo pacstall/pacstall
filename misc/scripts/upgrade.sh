@@ -113,11 +113,11 @@ for i in "${list[@]}"; do
 	fi
 done
 
-if [[ $(wc -l /tmp/pacstall-up-list | awk '{ print $1 }') -eq 0 ]]; then
+if [[ $(wc -l < /tmp/pacstall-up-list) -eq 0 ]]; then
 	fancy_message info "Nothing to upgrade"
 else
 	fancy_message info "Packages can be upgraded"
-	echo -e "Upgradable: $(wc -l /tmp/pacstall-up-print | awk '{ print $1 }')
+	echo -e "Upgradable: $(wc -l < /tmp/pacstall-up-print)
 ${BOLD}$(cat /tmp/pacstall-up-print)${NORMAL}\n"
 
 	upgrade=()
