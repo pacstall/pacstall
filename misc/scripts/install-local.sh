@@ -55,6 +55,9 @@ function trap_ctrlc() {
 	exit 1
 }
 
+# source this code block and run like so:
+# 	$ select_options "My message I want to send" "${#array[@]}"
+# This will then output the options given by the user to /tmp/pacstall-select-options, which you can then turn into another array
 function select_options() {
 	rm -f /tmp/pacstall-select-options
 	local message="${1}"
