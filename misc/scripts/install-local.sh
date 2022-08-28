@@ -55,50 +55,6 @@ function trap_ctrlc() {
 	exit 1
 }
 
-# source this code block and run like so:
-# 	$ select_options "My message I want to send" "${#array[@]}"
-# This will then output the options given by the user to /tmp/pacstall-select-options, which you can then turn into another array
-function select_options() {
-	rm -f /tmp/pacstall-select-options
-	local message="${1}"
-	local length="${2}"
-
-	if [[ $length -ge 6 ]]; then
-		echo -ne "${message} [${BOLD}1..$length${NC}] [${BIGreen}Y${NC}/${RED}n${NC}] "
-	else
-		echo -ne "${message} [${BOLD}$( seq -s ' ' 1 "$length" )${NC}] [${BIGreen}Y${NC}/${RED}n${NC}] "
-	fi
-	if [[ -z $DISABLE_PROMPTS ]]; then
-		read -r input <&0
-		if [[ $NON_INTERACTIVE ]]; then
-			if [[ -z $input ]]; then
-				echo "Y"
-			fi
-			echo "$input"
-		fi
-	else
-		echo "Y"
-		input="Y"
-	fi
-	if [[ -z $input ]] || [[ $input =~ ^[Yy]$ ]]; then
-		seq -s ' ' 1 "$length" | tee /tmp/pacstall-select-options >/dev/null
-	elif [[ $input =~ ^[Nn]$ ]]; then
-		echo "n" | tee /tmp/pacstall-select-options >/dev/null
-	elif ! [[ $input =~ [a-zA-Z]+ ]] || [[ $input =~ ^[0-9]+$ ]]; then
-		for i in "${input[@]}"; do
-			if [[ $i =~ [0-9]+-[0-9]+ ]]; then
-				split_arr=(${i//-/ })
-				out+=( $(seq -s ' ' "${split_arr[0]}" "${split_arr[1]}") )
-				continue
-			else
-				out+=($i)
-			fi
-		done
-		echo "${out[@]}" | tee /tmp/pacstall-select-options >/dev/null
-	else
-		select_options "$message" "$length"
-	fi
-}
 
 # run checks to verify script works
 function checks() {
