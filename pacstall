@@ -194,6 +194,7 @@ function ask() {
 		esac
 	done
 }
+
 function check_url() {
 	if [[ ${1} == "file://"* ]]; then
 		if [[ -f ${1/"file://"/} ]]; then
@@ -269,8 +270,18 @@ function select_options() {
 		echo "n" | tee /tmp/pacstall-select-options >/dev/null
 	elif ! [[ $input =~ [a-zA-Z]+ ]] || [[ $input =~ ^[0-9]+$ ]]; then
 		for i in "${input[@]}"; do
-			if [[ $i =~ [0-9]+-[0-9]+ ]]; then
-				split_arr=(${i//-/ })
+			if [[ $i =~ [0-9]+-[0-9]+ ]] || [[ $i =~ [0-9]+..[0-9]+ ]]; then
+				case "$i" in
+					-)
+						split_arr=(${i//-/ })
+						;;
+					*..*)
+						split_arr=(${i//../ })
+						;;
+					*)
+						select_options "$message" "$length"
+						;;
+				esac
 				out+=( $(seq -s ' ' "${split_arr[0]}" "${split_arr[1]}") )
 				continue
 			else
