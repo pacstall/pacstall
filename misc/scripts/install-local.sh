@@ -275,15 +275,13 @@ function fancy_message() {
 		*) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
 	esac
 }
-if [[ -z $PACSTALL_REMOVE ]] && [[ -z $PACSTALL_INSTALL ]]; then
-	hash -r
-	if declare -F removescript >/dev/null ; then
-		export -f ask fancy_message removescript || true
-		removescript
-	fi
-	rm -f '"$LOGDIR"'/'"$name"'
-else unset PACSTALL_REMOVE
-fi' | sudo tee "$debian/DEBIAN/postrm" > /dev/null
+
+hash -r
+declare -f removescript
+if declare -F removescript >/dev/null; then
+	removescript
+fi
+rm -f '"$LOGDIR"'/'"$name"'' | sudo tee "$debian/DEBIAN/postrm" > /dev/null
 
 	sudo chmod -x "$debian/DEBIAN/postrm"
 	sudo chmod 755 "$debian/DEBIAN/postrm"
