@@ -33,10 +33,7 @@ if ! dpkg -l "$PACKAGE" &>/dev/null; then
 	exit 1
 fi
 
-sudo apt-get remove "$PACKAGE" -y || {
-	fancy_message error "Failed to remove $PACKAGE"
-	exit 1
-}
+sudo apt-get remove "$PACKAGE" -y && exit 0
 
 error_log 1 "remove $PACKAGE"
 exit 1
