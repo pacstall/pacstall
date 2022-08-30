@@ -141,18 +141,13 @@ function log() {
 	fi
 }
 
-function makedeb() {
-	local debian="$STOWDIR/$name"
-	fancy_message info "Packaging $name"
-	sudo mkdir -p "$debian/DEBIAN"
-	printf "Package: %s\n" "$name" | sudo tee "$debian/DEBIAN/control" > /dev/null
+function deblog() {
+	local key="$1"
+	local content="$2"
+	echo "$key: $content" | sudo tee -a "$STOWDIR/$name/DEBIAN/control" >/dev/null
+}
 
-	if [[ $version =~ ^[0-9] ]]; then
-		printf "Version: %s-1\n" "$version" | sudo tee -a "$debian/DEBIAN/control" > /dev/null
-	else
-		printf "Version: 0%s-1\n" "$version" | sudo tee -a "$debian/DEBIAN/control" > /dev/null
-	fi
-
+function prompt_optdepends() {
 	local deps="${depends}"
 	if [[ ${#optdepends[@]} -ne 0 ]]; then
 		for i in "${optdepends[@]}"; do
@@ -212,26 +207,36 @@ function makedeb() {
 				fi
 			else
 				# Add to the suggests anyway. They won't get installed but can be queried
-				printf "Suggests:" | sudo tee -a "$debian/DEBIAN/control" > /dev/null
-				printf " %s\n" "${optdeps[@]}" | awk -F': ' '{print $1}' | tr '\n' ',' | head -c -1 | sudo tee -a "$debian/DEBIAN/control" > /dev/null
-				printf "\n" | sudo tee -a "$debian/DEBIAN/control" > /dev/null
+				deblog "Suggests" "$(echo "${optdeps[@]}" | awk -F': ' '{print $1}' | tr '\n' ',' | head -c -1)"
 			fi
 		fi
 	fi
 
 	if [[ -n $deps ]]; then
 		deps="$(echo "${deps}" | sed -e 's/^[[:space:]]*//')"
-		printf "Depends: %s\n" "${deps//' '/' , '}" | sudo tee -a "$debian/DEBIAN/control" > /dev/null
+		deblog "Depends" "${deps//' '/', '}"
+	fi
+}
+
+function makedeb() {
+	sudo rm -f "${SRCDIR:?}.deb"
+	fancy_message info "Packaging $name"
+	deblog "Package" "$name"
+
+	if [[ $version =~ ^[0-9] ]]; then
+		deblog "Version" "$version-1"
+	else
+		deblog "Version" "0$version-1"
 	fi
 
-	printf "Architecture: all
-Essential: no
-Section: Pacstall
-Priority: optional\n" | sudo tee -a "$debian/DEBIAN/control" > /dev/null
+	deblog "Architecture" "all"
+	deblog "Essential" "no"
+	deblog "Section" "Pacstall"
+	deblog "Priority" "optional"
 
 	if [[ -n $replace ]]; then
-		echo -e "Conflicts: ${replace//' '/', '}
-Replace: ${replace//' '/', '}" | sudo tee -a "$debian/DEBIAN/control" > /dev/null
+		deblog "Conflicts" "${replace//' '/', '}"
+		deblog "Replace" "${replace//' '/', '}"
 	fi
 
 	if echo "$gives" | grep -q ",\|\\s"; then
@@ -239,10 +244,12 @@ Replace: ${replace//' '/', '}" | sudo tee -a "$debian/DEBIAN/control" > /dev/nul
 	else
 		local comma_gives="${gives:-$name}"
 	fi
-	printf '%s\n' "Provides: ${comma_gives}
-Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
-Description: $description" | sudo tee -a "$debian/DEBIAN/control" > /dev/null
 
+	deblog "Provides" "${comma_gives}"
+	deblog "Maintainer" "${maintainer:-Pacstall <pacstall@pm.me>}"
+	deblog "Description" "$description"
+
+if [[ $(type -t removescript) == function ]]; then
 	echo '#!/usr/bin/env bash
 function ask() {
 	local default reply
@@ -276,15 +283,15 @@ function fancy_message() {
 	esac
 }
 
-hash -r
-declare -f removescript
-if declare -F removescript >/dev/null; then
-	removescript
+hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/postrm" >/dev/null
+echo "$(declare -f removescript)
+removescript
+rm -f $LOGDIR/$name
+fi" | sudo tee -a "$STOWDIR/$name/DEBIAN/postrm" >/dev/null
 fi
-rm -f '"$LOGDIR"'/'"$name"'' | sudo tee "$debian/DEBIAN/postrm" > /dev/null
 
-	sudo chmod -x "$debian/DEBIAN/postrm"
-	sudo chmod 755 "$debian/DEBIAN/postrm"
+	#sudo chmod -x "$SRCDIR/DEBIAN/postrm"
+	#sudo chmod 755 "$SRCDIR/DEBIAN/postrm"
 
 	cd "$STOWDIR"
 	if ! sudo dpkg-deb -b "$name" > /dev/null; then
@@ -297,7 +304,7 @@ rm -f '"$LOGDIR"'/'"$name"'' | sudo tee "$debian/DEBIAN/postrm" > /dev/null
 	export PACSTALL_INSTALL=1
 
 	# --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
-	if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install "$debian.deb" -y --allow-downgrades 2> /dev/null; then
+	if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install "$STOWDIR/$name.deb" -y --allow-downgrades 2> /dev/null; then
 		echo -ne "\t"
 		fancy_message error "Failed to install $name deb"
 		error_log 8 "install $PACKAGE"
@@ -307,8 +314,8 @@ rm -f '"$LOGDIR"'/'"$name"'' | sudo tee "$debian/DEBIAN/postrm" > /dev/null
 		return 1
 	fi
 
-	sudo rm -rf "$debian"
-	sudo rm -rf "$debian.deb"
+	sudo rm -rf "$STOWDIR/$name"
+	#sudo rm -rf "$SRCDIR.deb"
 
 	if ! [[ -d /etc/apt/preferences.d/ ]]; then
 		sudo mkdir -p /etc/apt/preferences.d
@@ -347,6 +354,8 @@ if ! source "$PACKAGE".pacscript; then
 	cleanup
 	return 1
 fi
+
+mkdir -p "$STOWDIR/$name/DEBIAN"
 
 if type pkgver > /dev/null 2>&1; then
 	version=$(pkgver) > /dev/null
@@ -628,6 +637,8 @@ export -f ask fancy_message select_options
 trap cleanup ERR
 trap - SIGINT
 
+prompt_optdepends
+
 fancy_message info "Running functions"
 bash -ceuo pipefail 'source "$pacfile";
 fancy_message sub "prepare";
@@ -663,10 +674,8 @@ cd "$HOME" 2> /dev/null || (
 log
 
 
-makedeb || {
-	cleanup
-	exit 1
-}
+makedeb
+
 # `hash -r` updates PATH database
 hash -r
 if type -t postinst > /dev/null 2>&1; then
@@ -698,6 +707,7 @@ sudo chmod o+r /var/cache/pacstall/"$PACKAGE"/"$version"/"$PACKAGE".pacscript
 
 fancy_message sub "Cleaning up"
 cleanup
+
 return 0
 
 # vim:set ft=sh ts=4 sw=4 noet:
