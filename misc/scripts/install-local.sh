@@ -141,17 +141,16 @@ function log() {
 	fi
 }
 
-function makeVirtualDeb {
-	# creates empty .deb package (with only the control file) for apt integration
-	# implements $(gives) variable
-	fancy_message info "Preparing package"
-	sudo mkdir -p "$SRCDIR/$name-pacstall/DEBIAN"
-	printf "Package: %s\n" "$name" | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+function makedeb() {
+	local debian="$STOWDIR/$name"
+	fancy_message info "Packaging $name"
+	sudo mkdir -p "$debian/DEBIAN"
+	printf "Package: %s\n" "$name" | sudo tee "$debian/DEBIAN/control" > /dev/null
 
 	if [[ $version =~ ^[0-9] ]]; then
-		printf "Version: %s-1\n" "$version" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		printf "Version: %s-1\n" "$version" | sudo tee -a "$debian/DEBIAN/control" > /dev/null
 	else
-		printf "Version: 0%s-1\n" "$version" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		printf "Version: 0%s-1\n" "$version" | sudo tee -a "$debian/DEBIAN/control" > /dev/null
 	fi
 
 	local deps="${depends}"
@@ -180,8 +179,6 @@ function makeVirtualDeb {
 				deps+=" ${opt}"
 			fi
 		done
-
-		fancy_message info "Installing dependencies"
 
 		if [[ ${#optdeps[@]} -ne 0 ]]; then
 			fancy_message sub "Optional dependencies"
@@ -230,11 +227,11 @@ function makeVirtualDeb {
 	printf "Architecture: all
 Essential: no
 Section: Pacstall
-Priority: optional\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+Priority: optional\n" | sudo tee -a "$debian/DEBIAN/control" > /dev/null
 
 	if [[ -n $replace ]]; then
 		echo -e "Conflicts: ${replace//' '/', '}
-Replace: ${replace//' '/', '}" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+Replace: ${replace//' '/', '}" | sudo tee -a "$debian/DEBIAN/control" > /dev/null
 	fi
 
 	if echo "$gives" | grep -q ",\|\\s"; then
@@ -244,7 +241,7 @@ Replace: ${replace//' '/', '}" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/cont
 	fi
 	printf '%s\n' "Provides: ${comma_gives}
 Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
-Description: This is a symbolic package used by pacstall, may be removed with apt or dpkg. $description\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+Description: $description" | sudo tee -a "$debian/DEBIAN/control" > /dev/null
 
 	echo '#!/usr/bin/env bash
 function ask() {
@@ -279,27 +276,20 @@ function fancy_message() {
 	esac
 }
 if [[ -z $PACSTALL_REMOVE ]] && [[ -z $PACSTALL_INSTALL ]]; then
-	source /var/cache/pacstall/'"$name"'/'"$version"'/'"$name"'.pacscript 2>&1 /dev/null
-	sudo mkdir -p '"$STOWDIR"'
-	cd '"$STOWDIR"'
-	stow --target="/" -D '"$name"' 2> /dev/null
-	rm -rf '"$name"' 2> /dev/null
 	hash -r
 	if declare -F removescript >/dev/null ; then
 		export -f ask fancy_message removescript || true
-		bash -ceuo pipefail "source /var/cache/pacstall/'"$name"'/'"$version"'/'"$name"'.pacscript; removescript" || {
-			fancy_message error "Could not run removescript properly"
-		}
+		removescript
 	fi
 	rm -f '"$LOGDIR"'/'"$name"'
 else unset PACSTALL_REMOVE
-fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" > /dev/null
+fi' | sudo tee "$debian/DEBIAN/postrm" > /dev/null
 
-	sudo chmod -x "$SRCDIR/$name-pacstall/DEBIAN/postrm"
-	sudo chmod 755 "$SRCDIR/$name-pacstall/DEBIAN/postrm"
+	sudo chmod -x "$debian/DEBIAN/postrm"
+	sudo chmod 755 "$debian/DEBIAN/postrm"
 
-	if ! sudo dpkg-deb -b "$SRCDIR/$name-pacstall" > /dev/null; then
-		fancy_message error "Could not create dummy package"
+	if ! sudo dpkg-deb -b "$debian" > /dev/null; then
+		fancy_message error "Could not create package"
 		error_log 5 "install $PACKAGE"
 		fancy_message info "Cleaning up"
 		cleanup
@@ -309,7 +299,7 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" > /dev/null
 
 	fancy_message sub "Required dependencies"
 	# --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
-	if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install "$SRCDIR/$name-pacstall.deb" -y --allow-downgrades 2> /dev/null; then
+	if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install "$debian.deb" -y --allow-downgrades 2> /dev/null; then
 		echo -ne "\t"
 		fancy_message error "Failed to install dependencies"
 		error_log 8 "install $PACKAGE"
@@ -319,8 +309,8 @@ fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" > /dev/null
 		return 1
 	fi
 
-	sudo rm -rf "$SRCDIR/$name-pacstall"
-	sudo rm "$SRCDIR/$name-pacstall.deb"
+	sudo rm -rf "$debian"
+	sudo rm "$debian.deb"
 
 	if ! [[ -d /etc/apt/preferences.d/ ]]; then
 		sudo mkdir -p /etc/apt/preferences.d
@@ -465,10 +455,6 @@ if [[ -n $build_depends ]]; then
 		cleanup
 		return 1
 	fi
-fi
-
-if [[ $url != *".deb" ]] && ! makeVirtualDeb; then
-	return 1
 fi
 
 function hashcheck() {
@@ -637,7 +623,7 @@ fi
 export srcdir="$PWD"
 sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2> /dev/null
 
-export pkgdir="/usr/src/pacstall/$name"
+export pkgdir="$STOWDIR/$name"
 export -f ask fancy_message select_options
 
 # Trap so that we can clean up (hopefully without messing up anything)
@@ -678,41 +664,11 @@ cd "$HOME" 2> /dev/null || (
 # Metadata writing
 log
 
-fancy_message info "Symlinking files"
-sudo mkdir -p "$STOWDIR"
-if ! cd "$STOWDIR" 2> /dev/null; then
-	error_log 1 "install $PACKAGE"
-	fancy_message error "Could not enter into ${STOWDIR}"
-	sudo dpkg -r "$name" > /dev/null
-	fancy_message info "Cleaning up"
+
+makedeb || {
 	cleanup
 	exit 1
-fi
-
-# By default (I think), stow symlinks to the directory behind it (..), but we want to symlink to /, or in other words, symlink files from pkg/usr to /usr
-if ! command -v stow > /dev/null; then
-	# If stow failed to install, install it
-	if ! sudo apt-get install stow -y; then
-		fancy_message error "Failed to install the pacstall dependency stow"
-		error_log 15 "install $PACKAGE"
-		sudo dpkg -r "$name" > /dev/null
-		fancy_message info "Cleaning up"
-		cleanup
-		return 1
-	fi
-fi
-
-# Magic time. This installs the package to /, so `/usr/src/pacstall/foo/usr/bin/foo` -> `/usr/bin/foo`
-# stow will fail to symlink packages if files already exist on the system; this is just an error
-if ! sudo stow --target="/" "$PACKAGE"; then
-	fancy_message error "Package contains links to files that exist on the system"
-	error_log 14 "install $PACKAGE"
-	sudo dpkg -r "$name" > /dev/null
-	fancy_message info "Cleaning up"
-	cleanup
-	return 1
-fi
-
+}
 # `hash -r` updates PATH database
 hash -r
 if type -t postinst > /dev/null 2>&1; then
