@@ -310,6 +310,7 @@ fi' | sudo tee "$debian/DEBIAN/postrm" > /dev/null
 	fi
 
 	sudo rm -rf "$debian"
+	sudo rm -rf "$debian.deb"
 
 	if ! [[ -d /etc/apt/preferences.d/ ]]; then
 		sudo mkdir -p /etc/apt/preferences.d
