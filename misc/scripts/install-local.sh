@@ -298,11 +298,10 @@ fi' | sudo tee "$debian/DEBIAN/postrm" > /dev/null
 	fi
 	export PACSTALL_INSTALL=1
 
-	fancy_message sub "Required dependencies"
 	# --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
 	if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install "$debian.deb" -y --allow-downgrades 2> /dev/null; then
 		echo -ne "\t"
-		fancy_message error "Failed to install dependencies"
+		fancy_message error "Failed to install $name deb"
 		error_log 8 "install $PACKAGE"
 		sudo dpkg -r --force-all "$name" > /dev/null
 		fancy_message info "Cleaning up"
@@ -311,7 +310,6 @@ fi' | sudo tee "$debian/DEBIAN/postrm" > /dev/null
 	fi
 
 	sudo rm -rf "$debian"
-	sudo rm "$debian.deb"
 
 	if ! [[ -d /etc/apt/preferences.d/ ]]; then
 		sudo mkdir -p /etc/apt/preferences.d
