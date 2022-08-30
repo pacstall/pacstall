@@ -4,7 +4,7 @@
 #  / ____/ /_/ / /__(__  ) /_/ /_/ / / /
 # /_/    \__,_/\___/____/\__/\__,_/_/_/
 #
-# Copyright (C) 2020-2021
+# Copyright (C) 2020-2022
 #
 # This file is part of Pacstall
 #
@@ -22,11 +22,31 @@
 
 """List command."""
 
+from pathlib import Path
+
 from pacstall.cmds import app
 
+LOGDIR = "/var/log/pacstall/metadata"
 
+
+# It is a bad idea to overwite the list built-in function in Python, which
+# converts a variable to a list. Python will shadow the namespace to
+# compensate.
 @app.command()
 def list() -> None:
     """List installed packages."""
 
-    ...
+    metadata = Path(LOGDIR)
+
+    def list_map_func(pathobj) -> tuple:
+        version = None
+        with pathobj.open() as fp:
+            for line in fp:
+                if line.startswith('_version='):
+                    version = line.split('=')[1].strip()[1:-1]
+        return (pathobj.name, version)
+
+    version_list = sorted(map(list_map_func, metadata.iterdir()))
+
+    for pkg, ver in version_list:
+        print(f'{pkg}, {ver}')
