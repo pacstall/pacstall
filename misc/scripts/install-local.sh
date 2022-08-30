@@ -39,6 +39,7 @@ function cleanup() {
 		sudo rm -rf /tmp/pacstall/*
 	fi
 	rm -f /tmp/pacstall-func
+	rm -f /tmp/pacstall-select-options
 	unset name version url build_depends depends breaks replace description hash removescript optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall 2> /dev/null
 	unset -f pkgver 2> /dev/null
 }
@@ -53,6 +54,7 @@ function trap_ctrlc() {
 	cleanup
 	exit 1
 }
+
 
 # run checks to verify script works
 function checks() {
@@ -198,10 +200,15 @@ function makeVirtualDeb {
 			unset z
 			# tab over the next line
 			echo -ne "\t"
-			ask "Do you want to install the optional dependencies" Y
-			if [[ $answer -eq 1 ]]; then
-				for optdep in "${optdeps[@]}"; do
-					deps+=" ${optdep%%: *}"
+			select_options "Select optional dependencies to install" "${#optdeps[@]}"
+			choices=( $(cat /tmp/pacstall-select-options) )
+			if [[ "${choices[0]}" != "n" ]]; then
+				for i in "${choices[@]}"; do
+					(( i-- ))
+					s="${optdeps[$i]}"
+					if [[ -n $s ]]; then
+						deps+=" ${s%%: *}"
+					fi
 				done
 				if pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
 					sudo dpkg -r --force-all "$name" > /dev/null
@@ -631,7 +638,7 @@ export srcdir="$PWD"
 sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2> /dev/null
 
 export pkgdir="/usr/src/pacstall/$name"
-export -f ask fancy_message
+export -f ask fancy_message select_options
 
 # Trap so that we can clean up (hopefully without messing up anything)
 trap cleanup ERR
