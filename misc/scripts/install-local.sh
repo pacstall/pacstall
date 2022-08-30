@@ -288,7 +288,7 @@ fi' | sudo tee "$debian/DEBIAN/postrm" > /dev/null
 	sudo chmod -x "$debian/DEBIAN/postrm"
 	sudo chmod 755 "$debian/DEBIAN/postrm"
 
-	if ! sudo dpkg-deb -b "$debian" > /dev/null; then
+	if ! sudo dpkg-deb -b "$debian.deb" > /dev/null; then
 		fancy_message error "Could not create package"
 		error_log 5 "install $PACKAGE"
 		fancy_message info "Cleaning up"
