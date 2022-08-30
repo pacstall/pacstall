@@ -212,16 +212,16 @@ function makedeb() {
 				fi
 			else
 				# Add to the suggests anyway. They won't get installed but can be queried
-				printf "Suggests:" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-				printf " %s\n" "${optdeps[@]}" | awk -F': ' '{print $1}' | tr '\n' ',' | head -c -1 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-				printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+				printf "Suggests:" | sudo tee -a "$debian/DEBIAN/control" > /dev/null
+				printf " %s\n" "${optdeps[@]}" | awk -F': ' '{print $1}' | tr '\n' ',' | head -c -1 | sudo tee -a "$debian/DEBIAN/control" > /dev/null
+				printf "\n" | sudo tee -a "$debian/DEBIAN/control" > /dev/null
 			fi
 		fi
 	fi
 
 	if [[ -n $deps ]]; then
 		deps="$(echo "${deps}" | sed -e 's/^[[:space:]]*//')"
-		printf "Depends: %s\n" "${deps//' '/' , '}" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		printf "Depends: %s\n" "${deps//' '/' , '}" | sudo tee -a "$debian/DEBIAN/control" > /dev/null
 	fi
 
 	printf "Architecture: all
@@ -288,7 +288,8 @@ fi' | sudo tee "$debian/DEBIAN/postrm" > /dev/null
 	sudo chmod -x "$debian/DEBIAN/postrm"
 	sudo chmod 755 "$debian/DEBIAN/postrm"
 
-	if ! sudo dpkg-deb -b "$debian.deb" > /dev/null; then
+	cd "$STOWDIR"
+	if ! sudo dpkg-deb -b "$name" > /dev/null; then
 		fancy_message error "Could not create package"
 		error_log 5 "install $PACKAGE"
 		fancy_message info "Cleaning up"
