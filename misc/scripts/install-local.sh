@@ -251,7 +251,7 @@ function makedeb() {
 	deblog "Description" "$description"
 
 if [[ $(type -t removescript) == function ]]; then
-	echo '#!/usr/bin/env bash
+	echo '#!/bin/bash
 function ask() {
 	local default reply
 	if [[ ${2:-} = "Y" ]]; then
@@ -294,7 +294,7 @@ fi
 	sudo chmod 755 "$STOWDIR/$name/DEBIAN/postrm"
 
 	if [[ $(type -t postinst) == function ]]; then
-		echo '#!/usr/bin/env bash
+		echo '#!/bin/bash
 set -e' | sudo tee "$STOWDIR/$name/DEBIAN/postinst" >/dev/null
 		echo "$(declare -f postinst)
 postinst" | sudo tee -a "$STOWDIR/$name/DEBIAN/postinst" >/dev/null
