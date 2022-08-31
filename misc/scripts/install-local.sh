@@ -293,6 +293,13 @@ fi
 	sudo chmod -x "$STOWDIR/$name/DEBIAN/postrm"
 	sudo chmod 755 "$STOWDIR/$name/DEBIAN/postrm"
 
+	if [[ $(type -t postinst) == function ]]; then
+		echo '#!/usr/bin/env bash
+set -e' | sudo tee "$STOWDIR/$name/DEBIAN/postinst" >/dev/null
+		echo "$(declare -f postinst)
+postinst" | sudo tee -a "$STOWDIR/$name/DEBIAN/postinst" >/dev/null
+	fi
+
 	cd "$STOWDIR"
 	if ! sudo dpkg-deb -b --root-owner-group "$name" > /dev/null; then
 		fancy_message error "Could not create package"
@@ -640,13 +647,13 @@ trap - SIGINT
 prompt_optdepends
 
 fancy_message info "Running functions"
-bash -ceuo pipefail 'source "$pacfile";
-fancy_message sub "prepare";
-echo "prepare" > /tmp/pacstall-func
+bash -ceuo pipefail 'source "$pacfile"
+fancy_message sub "prepare"
+echo prepare > /tmp/pacstall-func
 prepare; fancy_message sub "build"
-echo "build" > /tmp/pacstall-func
+echo build > /tmp/pacstall-func
 build; fancy_message sub "install"
-echo "install" > /tmp/pacstall-func
+echo install > /tmp/pacstall-func
 install' || {
 	error_log 5 "$(< "/tmp/pacstall-func") $PACKAGE"
 	echo -ne "\t"
@@ -678,17 +685,6 @@ makedeb
 
 # `hash -r` updates PATH database
 hash -r
-if type -t postinst > /dev/null 2>&1; then
-	export -f postinst || true
-	bash -ceuo pipefail "source '$pacfile' && postinst" || {
-		error_log 5 "postinst hook"
-		fancy_message error "Could not run postinst hook successfully"
-		sudo dpkg -r "$name" > /dev/null
-		fancy_message info "Cleaning up"
-		cleanup
-		exit 1
-	}
-fi
 
 fancy_message info "Performing post install operations"
 fancy_message sub "Storing pacscript"
