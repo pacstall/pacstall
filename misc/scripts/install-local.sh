@@ -251,6 +251,7 @@ function makedeb() {
 
 if [[ $(type -t removescript) == function ]]; then
 	echo '#!/bin/bash
+set -e
 function ask() {
 	local default reply
 	if [[ ${2:-} = "Y" ]]; then
