@@ -335,7 +335,7 @@ Pin: version *
 Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 		return 0
 	else
-		fancy_message info "Package built at ${BGreen}$debian.deb${NC}"
+		fancy_message info "Package built at ${BGreen}$STOWDIR/$name.deb${NC}"
 		exit 0
 	fi
 }
