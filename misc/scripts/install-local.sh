@@ -310,30 +310,34 @@ postinst" | sudo tee -a "$STOWDIR/$name/DEBIAN/postinst" >/dev/null
 		cleanup
 		return 1
 	fi
-	export PACSTALL_INSTALL=1
 
-	# --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
-	if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install "$STOWDIR/$name.deb" -y --allow-downgrades 2> /dev/null; then
-		echo -ne "\t"
-		fancy_message error "Failed to install $name deb"
-		error_log 8 "install $PACKAGE"
-		sudo dpkg -r --force-all "$name" > /dev/null
-		fancy_message info "Cleaning up"
-		cleanup
-		return 1
-	fi
+	if [[ $PACSTALL_INSTALL != 0 ]]; then
 
-	sudo rm -rf "$STOWDIR/$name"
-	#sudo rm -rf "$SRCDIR.deb"
+		# --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
+		if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install "$STOWDIR/$name.deb" -y --allow-downgrades 2> /dev/null; then
+			echo -ne "\t"
+			fancy_message error "Failed to install $name deb"
+			error_log 8 "install $PACKAGE"
+			sudo dpkg -r --force-all "$name" > /dev/null
+			fancy_message info "Cleaning up"
+			cleanup
+			return 1
+		fi
 
-	if ! [[ -d /etc/apt/preferences.d/ ]]; then
-		sudo mkdir -p /etc/apt/preferences.d
-	fi
-	echo "Package: ${name}
+		sudo rm -rf "$STOWDIR/$name"
+		#sudo rm -rf "$SRCDIR.deb"
+
+		if ! [[ -d /etc/apt/preferences.d/ ]]; then
+			sudo mkdir -p /etc/apt/preferences.d
+		fi
+		echo "Package: ${name}
 Pin: version *
 Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
-	unset PACSTALL_INSTALL
-	return 0
+		return 0
+	else
+		fancy_message info "Package built at ${BGreen}$debian.deb${NC}"
+		exit 0
+	fi
 }
 
 ask "Do you want to view/edit the pacscript" N

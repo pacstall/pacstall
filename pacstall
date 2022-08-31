@@ -373,6 +373,11 @@ while [[ $1 != "--" ]]; do
 			export DISABLE_PROMPTS=yes
 			;;
 
+		-n | --no-install)
+			fancy_message info "Package will be built and not installed"
+			export PACSTALL_INSTALL=0
+			;;
+
 		-h | --help)
 			echo -e "Usage: pacstall [-h] [-V] {-I,-Il,-S,-R,-D,-A,-U,-L,-Up,-Qi} [-P] [-K]
 
