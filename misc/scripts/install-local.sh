@@ -49,7 +49,7 @@ function trap_ctrlc() {
 	echo ""
 	fancy_message warn "Interrupted, cleaning up"
 	if dpkg-query -W -f='${Status}' "$name" 2> /dev/null | grep -q -E "ok installed|ok unpacked"; then
-		sudo dpkg -r --force-all "$name" > /dev/null
+		sudo apt-get purge "$name" -y > /dev/null
 	fi
 	sudo rm -f /etc/apt/preferences.d/"${name:-$PACKAGE}-pin"
 	cleanup
