@@ -373,7 +373,7 @@ while [[ $1 != "--" ]]; do
 			export DISABLE_PROMPTS=yes
 			;;
 
-		-n | --no-install)
+		-N | --no-install)
 			fancy_message info "Package will be built and not installed"
 			export PACSTALL_INSTALL=0
 			;;
