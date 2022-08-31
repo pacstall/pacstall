@@ -231,7 +231,6 @@ function makedeb() {
 	fi
 
 	deblog "Architecture" "all"
-	deblog "Essential" "no"
 	deblog "Section" "Pacstall"
 	deblog "Priority" "optional"
 
