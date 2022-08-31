@@ -294,7 +294,7 @@ fi
 	#sudo chmod 755 "$SRCDIR/DEBIAN/postrm"
 
 	cd "$STOWDIR"
-	if ! sudo dpkg-deb -b "$name" > /dev/null; then
+	if ! sudo dpkg-deb -b --root-owner-group "$name" > /dev/null; then
 		fancy_message error "Could not create package"
 		error_log 5 "install $PACKAGE"
 		fancy_message info "Cleaning up"
