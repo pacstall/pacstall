@@ -300,6 +300,8 @@ set -e' | sudo tee "$STOWDIR/$name/DEBIAN/postinst" >/dev/null
 postinst" | sudo tee -a "$STOWDIR/$name/DEBIAN/postinst" >/dev/null
 	fi
 
+	deblog "Installed-Size" "$(du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | awk '{print $1}')"
+
 	cd "$STOWDIR"
 	if ! sudo dpkg-deb -b --root-owner-group "$name" > /dev/null; then
 		fancy_message error "Could not create package"
