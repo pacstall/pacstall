@@ -36,6 +36,7 @@ function cleanup() {
 		sudo rm -rf /tmp/pacstall-pacdep
 	else
 		sudo rm -rf "${SRCDIR:?}"/*
+		sudo rm -rf "${STOWDIR:-/usr/src/pacstall}/${name:?}"
 		sudo rm -rf /tmp/pacstall/*
 	fi
 	rm -f /tmp/pacstall-func
@@ -290,8 +291,8 @@ rm -f $LOGDIR/$name
 fi" | sudo tee -a "$STOWDIR/$name/DEBIAN/postrm" >/dev/null
 fi
 
-	#sudo chmod -x "$SRCDIR/DEBIAN/postrm"
-	#sudo chmod 755 "$SRCDIR/DEBIAN/postrm"
+	sudo chmod -x "$STOWDIR/$name/DEBIAN/postrm"
+	sudo chmod 755 "$STOWDIR/$name/DEBIAN/postrm"
 
 	cd "$STOWDIR"
 	if ! sudo dpkg-deb -b --root-owner-group "$name" > /dev/null; then
