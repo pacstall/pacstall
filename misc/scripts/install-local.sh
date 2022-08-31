@@ -220,7 +220,7 @@ function prompt_optdepends() {
 }
 
 function makedeb() {
-	sudo rm -f "${SRCDIR:?}.deb"
+	sudo rm -f "$SRCDIR/$name.deb"
 	fancy_message info "Packaging $name"
 	deblog "Package" "$name"
 
@@ -325,7 +325,7 @@ postinst" | sudo tee -a "$STOWDIR/$name/DEBIAN/postinst" >/dev/null
 		fi
 
 		sudo rm -rf "$STOWDIR/$name"
-		#sudo rm -rf "$SRCDIR.deb"
+		sudo rm -rf "$SRCDIR/$name.deb"
 
 		if ! [[ -d /etc/apt/preferences.d/ ]]; then
 			sudo mkdir -p /etc/apt/preferences.d
@@ -336,6 +336,9 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 		return 0
 	else
 		fancy_message info "Package built at ${BGreen}$STOWDIR/$name.deb${NC}"
+		fancy_message info "Moving ${BGreen}$STOWDIR/$name${NC} to ${BGreen}/tmp/pacstall-no-build/$name${NC}"
+		sudo mkdir -p "/tmp/pacstall-no-build/$name"
+		sudo mv "$STOWDIR/$name" "/tmp/pacstall-no-build/$name"
 		exit 0
 	fi
 }
