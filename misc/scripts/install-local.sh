@@ -287,8 +287,7 @@ function fancy_message() {
 hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/postrm" >/dev/null
 echo "$(declare -f removescript)
 removescript
-rm -f $LOGDIR/$name
-fi" | sudo tee -a "$STOWDIR/$name/DEBIAN/postrm" >/dev/null
+rm -f $LOGDIR/$name" | sudo tee -a "$STOWDIR/$name/DEBIAN/postrm" >/dev/null
 fi
 
 	sudo chmod -x "$STOWDIR/$name/DEBIAN/postrm"
