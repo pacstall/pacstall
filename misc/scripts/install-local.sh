@@ -36,7 +36,8 @@ function cleanup() {
 		sudo rm -rf /tmp/pacstall-pacdep
 	else
 		sudo rm -rf "${SRCDIR:?}"/*
-		sudo rm -rf "${STOWDIR:-/usr/src/pacstall}/${name:?}"
+		# just in case we quit before $name is declared, we should be able to remove a fake directory so it doesn't exit out the script
+		sudo rm -rf "${STOWDIR:-/usr/src/pacstall}/${name:-raaaaaaaandom}"
 		sudo rm -rf /tmp/pacstall/*
 	fi
 	rm -f /tmp/pacstall-func
@@ -220,9 +221,9 @@ function prompt_optdepends() {
 }
 
 function generate_changelog() {
-	echo -e "$name ($version) $(lsb_release -sc); urgency=low\n"
-	echo -e "* Version now at $version.\n"
-	echo -e "-- $maintainer $(date +"%a, %d %b %Y %T %z")\n"
+	echo -e "$name ($version) $(lsb_release -sc); urgency=medium\n"
+	echo -e "  * Version now at $version.\n"
+	echo -e " -- $maintainer  $(date +"%a, %d %b %Y %T %z")"
 }
 
 function makedeb() {
