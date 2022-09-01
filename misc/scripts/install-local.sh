@@ -219,6 +219,12 @@ function prompt_optdepends() {
 	fi
 }
 
+function generate_changelog() {
+	echo -e "$name ($version) $(lsb_release -sc); urgency=low\n"
+	echo -e "* Version now at $version.\n"
+	echo -e "-- $maintainer $(date +"%a, %d %b %Y %T %z")\n"
+}
+
 function makedeb() {
 	sudo rm -f "$SRCDIR/$name.deb"
 	sudo rm -rf "$SRCDIR/$name"
@@ -302,6 +308,8 @@ postinst" | sudo tee -a "$STOWDIR/$name/DEBIAN/postinst" >/dev/null
 	fi
 
 	deblog "Installed-Size" "$(du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | awk '{print $1}')"
+
+	generate_changelog | sudo tee -a "$STOWDIR/$name/DEBIAN/changelog" >/dev/null
 
 	cd "$STOWDIR"
 	if ! sudo dpkg-deb -b --root-owner-group "$name" > /dev/null; then
