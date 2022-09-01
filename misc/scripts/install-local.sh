@@ -221,6 +221,7 @@ function prompt_optdepends() {
 
 function makedeb() {
 	sudo rm -f "$SRCDIR/$name.deb"
+	sudo rm -rf "$SRCDIR/$name"
 	fancy_message info "Packaging $name"
 	deblog "Package" "$name"
 
