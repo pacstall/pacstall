@@ -151,7 +151,7 @@ function deblog() {
 
 function clean_builddir() {
 	sudo rm -rf "${STOWDIR}/${name:?}"
-	sudo rm -r "${STOWDIR}/${name}.deb"
+	sudo rm -f "${STOWDIR}/${name}.deb"
 }
 
 function prompt_optdepends() {
