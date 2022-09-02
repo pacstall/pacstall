@@ -149,6 +149,11 @@ function deblog() {
 	echo "$key: $content" | sudo tee -a "$STOWDIR/$name/DEBIAN/control" >/dev/null
 }
 
+function clean_builddir() {
+	sudo rm -rf "${STOWDIR}/${name:?}"
+	sudo rm -r "${STOWDIR}/${name}.deb"
+}
+
 function prompt_optdepends() {
 	local deps="${depends}"
 	if [[ ${#optdepends[@]} -ne 0 ]]; then
@@ -313,7 +318,7 @@ postinst" | sudo tee -a "$STOWDIR/$name/DEBIAN/postinst" >/dev/null
 	generate_changelog | sudo tee -a "$STOWDIR/$name/DEBIAN/changelog" >/dev/null
 
 	cd "$STOWDIR"
-	if ! sudo dpkg-deb -b --root-owner-group "$name" > /dev/null; then
+	if ! sudo dpkg-deb -b --root-owner-group --threads-max="$(nproc)" "$name" > /dev/null; then
 		fancy_message error "Could not create package"
 		error_log 5 "install $PACKAGE"
 		fancy_message info "Cleaning up"
@@ -381,6 +386,7 @@ if ! source "$PACKAGE".pacscript; then
 	return 1
 fi
 
+clean_builddir
 mkdir -p "$STOWDIR/$name/DEBIAN"
 
 if type pkgver > /dev/null 2>&1; then
