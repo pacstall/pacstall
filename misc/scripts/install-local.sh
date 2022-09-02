@@ -232,15 +232,13 @@ function generate_changelog() {
 }
 
 function makedeb() {
-	sudo rm -f "$SRCDIR/$name.deb"
-	sudo rm -rf "$SRCDIR/$name"
 	fancy_message info "Packaging $name"
-	deblog "Package" "$name"
+	deblog "Package" "${name}"
 
 	if [[ $version =~ ^[0-9] ]]; then
-		deblog "Version" "$version-1"
+		deblog "Version" "${version}-1"
 	else
-		deblog "Version" "0$version-1"
+		deblog "Version" "0${version}-1"
 	fi
 
 	deblog "Architecture" "all"
@@ -260,10 +258,15 @@ function makedeb() {
 
 	deblog "Provides" "${comma_gives}"
 	deblog "Maintainer" "${maintainer:-Pacstall <pacstall@pm.me>}"
-	deblog "Description" "$description"
+	deblog "Description" "${description}"
 
-if [[ $(type -t removescript) == function ]]; then
-	echo '#!/bin/bash
+	for i in {removescript,postinst}; do
+		case $i in
+			removescript) local deb_post_file="postrm" ;;
+			postinst) local deb_post_file="postinst" ;;
+		esac
+		if [[ $(type -t $i) == function ]]; then
+			echo '#!/bin/bash
 set -e
 function ask() {
 	local default reply
@@ -297,21 +300,15 @@ function fancy_message() {
 	esac
 }
 
-hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/postrm" >/dev/null
-echo "$(declare -f removescript)
-removescript
-rm -f $LOGDIR/$name" | sudo tee -a "$STOWDIR/$name/DEBIAN/postrm" >/dev/null
-fi
-
-	sudo chmod -x "$STOWDIR/$name/DEBIAN/postrm"
-	sudo chmod 755 "$STOWDIR/$name/DEBIAN/postrm"
-
-	if [[ $(type -t postinst) == function ]]; then
-		echo '#!/bin/bash
-set -e' | sudo tee "$STOWDIR/$name/DEBIAN/postinst" >/dev/null
-		echo "$(declare -f postinst)
-postinst" | sudo tee -a "$STOWDIR/$name/DEBIAN/postinst" >/dev/null
-	fi
+hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
+			echo -e "$(declare -f "$i")\n$i" | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
+			if [[ $i == "removescript" ]]; then
+				echo "sudo rm -f $LOGDIR/$name" | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
+			fi
+			sudo chmod -x "$STOWDIR/$name/DEBIAN/$deb_post_file"
+			sudo chmod 755 "$STOWDIR/$name/DEBIAN/$deb_post_file"
+		fi
+	done
 
 	deblog "Installed-Size" "$(du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | awk '{print $1}')"
 
