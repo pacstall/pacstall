@@ -384,7 +384,7 @@ if ! source "$PACKAGE".pacscript; then
 fi
 
 clean_builddir
-mkdir -p "$STOWDIR/$name/DEBIAN"
+sudo mkdir -p "$STOWDIR/$name/DEBIAN"
 
 if type pkgver > /dev/null 2>&1; then
 	version=$(pkgver) > /dev/null
