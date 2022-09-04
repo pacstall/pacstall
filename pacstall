@@ -412,6 +412,8 @@ Options:
 		Disable prompts.
 	${BOLD}-K${NC}, ${BOLD}--keep${NC}
 		Keep the build files.
+	${BOLD}-N${NC}, ${BOLD}--no-install${NC}
+		Build the deb but do not install.
 	${BOLD}-V${NC}, ${BOLD}--version${NC}
 		Display the version number.
 	${BOLD}-h${NC}, ${BOLD}--help${NC}
