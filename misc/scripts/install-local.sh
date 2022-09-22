@@ -301,7 +301,7 @@ function fancy_message() {
 }
 
 hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
-			echo -e "$(declare -f "$i")\n$i" | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
+			echo -e "export STOWDIR=${STOWDIR}\n$(declare -f "$i")\n$i" | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
 			if [[ $i == "removescript" ]]; then
 				echo "sudo rm -f $LOGDIR/$name" | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
 			fi
