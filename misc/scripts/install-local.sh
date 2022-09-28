@@ -574,7 +574,7 @@ else
 				return 1
 			fi
 			# unzip file
-			unzip -q "${url##*/}" 1>&1 2> /dev/null
+			unzip -qf "${url##*/}" 1>&1 2> /dev/null
 			# cd into it
 			cd ./*/ 2> /dev/null || {
 				error_log 1 "install $PACKAGE"
