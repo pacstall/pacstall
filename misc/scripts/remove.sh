@@ -22,98 +22,15 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-function fn_exists() {
-	declare -F "$1" > /dev/null
-}
-
-# Removal starts from here
-if ! source "$LOGDIR/$PACKAGE" > /dev/null 2>&1; then
+if ! dpkg -l "$PACKAGE" &>/dev/null; then
 	fancy_message error "$PACKAGE is not installed or not properly symlinked"
 	error_log 3 "remove $PACKAGE"
 	exit 1
 fi
 
-if ! source /var/cache/pacstall/"${PACKAGE}"/"${_version}"/"${PACKAGE}".pacscript > /dev/null 2>&1; then
-	fancy_message error "$PACKAGE is not installed or not properly symlinked"
+sudo apt-get purge "$PACKAGE" -y || {
 	error_log 1 "remove $PACKAGE"
 	exit 1
-fi
-
-case "$url" in
-	*.deb)
-		if ! sudo apt remove -y "$gives" 2> /dev/null; then
-			fancy_message warn "Failed to remove the package"
-			error_log 1 "remove $PACKAGE"
-			exit 1
-		fi
-
-		if fn_exists removescript; then
-			fancy_message info "Running post removal script"
-			export -f ask fancy_message removescript
-			bash -ce "removescript" || {
-				error_log 2 "removescript $PACKAGE"
-				fancy_message error "Could not run removescript properly"
-				exit 1
-			}
-		fi
-		sudo rm -f "$LOGDIR/$PACKAGE"
-		return 0
-		;;
-
-	*)
-		sudo mkdir -p "$STOWDIR"
-		if ! cd "$STOWDIR" 2> /dev/null; then
-			error_log 1 "remove $PACKAGE"
-			fancy_message error "Could not enter ${STOWDIR}"
-			exit 1
-		fi
-
-		if [[ ! -d $PACKAGE ]]; then
-			fancy_message error "$PACKAGE is not installed or not properly symlinked"
-			error_log 1 "remove $PACKAGE"
-			exit 1
-		fi
-
-		fancy_message info "Removing symlinks"
-		sudo stow --target="/" -D "$PACKAGE"
-
-		fancy_message info "Removing package directory"
-		sudo rm -rf "$PACKAGE"
-		# Update PATH database
-		hash -r
-
-		if fn_exists removescript; then
-			fancy_message info "Running post removal script"
-			export -f ask fancy_message removescript
-			bash -ce ". /var/cache/pacstall/${PACKAGE}/${_version}/${PACKAGE}.pacscript; removescript" || {
-				error_log 2 "removescript $PACKAGE"
-				fancy_message error "Could not run removescript properly"
-				exit 1
-			}
-		fi
-
-		if [[ -n $_dependencies ]]; then
-			fancy_message info "You may want to remove ${BLUE}$_dependencies${NC}"
-		fi
-
-		fancy_message info "Removing dummy package"
-		export PACSTALL_REMOVE=1
-
-		if ! sudo --preserve-env=PACSTALL_REMOVE apt-get purge -y "$name" 2> /dev/null; then
-			fancy_message error "Failed to remove dummy package"
-			error_log 1 "remove $PACKAGE"
-			exit 1
-		fi
-
-		fancy_message sub "Removing apt pin"
-		sudo rm -f /etc/apt/preferences.d/"${name}-pin"
-
-		sudo rm -f "$LOGDIR/$PACKAGE"
-		fancy_message info "Package removed successfully"
-		return 0
-		;;
-esac
-
-error_log 1 "remove $PACKAGE"
-exit 1
+}
+exit 0
 # vim:set ft=sh ts=4 sw=4 noet:

@@ -24,7 +24,8 @@
 
 function cleanup() {
 	if [[ -n $KEEP ]]; then
-		mkdir -p /"tmp/pacstall-keep/$name"
+		sudo rm -r "/tmp/pacstall-keep/$name"
+		mkdir -p "/tmp/pacstall-keep/$name"
 		if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
 			sudo mv /tmp/pacstall-pacdep/* "/tmp/pacstall-keep/$name"
 		else
@@ -36,6 +37,8 @@ function cleanup() {
 		sudo rm -rf /tmp/pacstall-pacdep
 	else
 		sudo rm -rf "${SRCDIR:?}"/*
+		# just in case we quit before $name is declared, we should be able to remove a fake directory so it doesn't exit out the script
+		sudo rm -rf "${STOWDIR:-/usr/src/pacstall}/${name:-raaaaaaaandom}"
 		sudo rm -rf /tmp/pacstall/*
 	fi
 	rm -f /tmp/pacstall-func
@@ -48,7 +51,7 @@ function trap_ctrlc() {
 	echo ""
 	fancy_message warn "Interrupted, cleaning up"
 	if dpkg-query -W -f='${Status}' "$name" 2> /dev/null | grep -q -E "ok installed|ok unpacked"; then
-		sudo dpkg -r --force-all "$name" > /dev/null
+		sudo apt-get purge "$name" -y > /dev/null
 	fi
 	sudo rm -f /etc/apt/preferences.d/"${name:-$PACKAGE}-pin"
 	cleanup
@@ -141,19 +144,18 @@ function log() {
 	fi
 }
 
-function makeVirtualDeb {
-	# creates empty .deb package (with only the control file) for apt integration
-	# implements $(gives) variable
-	fancy_message info "Preparing package"
-	sudo mkdir -p "$SRCDIR/$name-pacstall/DEBIAN"
-	printf "Package: %s\n" "$name" | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+function deblog() {
+	local key="$1"
+	local content="$2"
+	echo "$key: $content" | sudo tee -a "$STOWDIR/$name/DEBIAN/control" >/dev/null
+}
 
-	if [[ $version =~ ^[0-9] ]]; then
-		printf "Version: %s-1\n" "$version" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-	else
-		printf "Version: 0%s-1\n" "$version" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-	fi
+function clean_builddir() {
+	sudo rm -rf "${STOWDIR}/${name:?}"
+	sudo rm -f "${STOWDIR}/${name}.deb"
+}
 
+function prompt_optdepends() {
 	local deps="${depends}"
 	if [[ ${#optdepends[@]} -ne 0 ]]; then
 		for i in "${optdepends[@]}"; do
@@ -180,8 +182,6 @@ function makeVirtualDeb {
 				deps+=" ${opt}"
 			fi
 		done
-
-		fancy_message info "Installing dependencies"
 
 		if [[ ${#optdeps[@]} -ne 0 ]]; then
 			fancy_message sub "Optional dependencies"
@@ -215,26 +215,40 @@ function makeVirtualDeb {
 				fi
 			else
 				# Add to the suggests anyway. They won't get installed but can be queried
-				printf "Suggests:" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-				printf " %s\n" "${optdeps[@]}" | awk -F': ' '{print $1}' | tr '\n' ',' | head -c -1 | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
-				printf "\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+				deblog "Suggests" "$(echo "${optdeps[@]}" | awk -F': ' '{print $1}' | tr '\n' ',' | head -c -1)"
 			fi
 		fi
 	fi
 
 	if [[ -n $deps ]]; then
 		deps="$(echo "${deps}" | sed -e 's/^[[:space:]]*//')"
-		printf "Depends: %s\n" "${deps//' '/' , '}" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		deblog "Depends" "${deps//' '/', '}"
+	fi
+}
+
+function generate_changelog() {
+	echo -e "$name ($version) $(lsb_release -sc); urgency=medium\n"
+	echo -e "  * Version now at $version.\n"
+	echo -e " -- $maintainer  $(date +"%a, %d %b %Y %T %z")"
+}
+
+function makedeb() {
+	fancy_message info "Packaging $name"
+	deblog "Package" "${name}"
+
+	if [[ $version =~ ^[0-9] ]]; then
+		deblog "Version" "${version}-1"
+	else
+		deblog "Version" "0${version}-1"
 	fi
 
-	printf "Architecture: all
-Essential: no
-Section: Pacstall
-Priority: optional\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+	deblog "Architecture" "all"
+	deblog "Section" "Pacstall"
+	deblog "Priority" "optional"
 
 	if [[ -n $replace ]]; then
-		echo -e "Conflicts: ${replace//' '/', '}
-Replace: ${replace//' '/', '}" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
+		deblog "Conflicts" "${replace//' '/', '}"
+		deblog "Replace" "${replace//' '/', '}"
 	fi
 
 	if echo "$gives" | grep -q ",\|\\s"; then
@@ -242,11 +256,19 @@ Replace: ${replace//' '/', '}" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/cont
 	else
 		local comma_gives="${gives:-$name}"
 	fi
-	printf '%s\n' "Provides: ${comma_gives}
-Maintainer: ${maintainer:-Pacstall <pacstall@pm.me>}
-Description: This is a symbolic package used by pacstall, may be removed with apt or dpkg. $description\n" | sudo tee -a "$SRCDIR/$name-pacstall/DEBIAN/control" > /dev/null
 
-	echo '#!/usr/bin/env bash
+	deblog "Provides" "${comma_gives}"
+	deblog "Maintainer" "${maintainer:-Pacstall <pacstall@pm.me>}"
+	deblog "Description" "${description}"
+
+	for i in {removescript,postinst}; do
+		case $i in
+			removescript) local deb_post_file="postrm" ;;
+			postinst) local deb_post_file="postinst" ;;
+		esac
+		if [[ $(type -t $i) == function ]]; then
+			echo '#!/bin/bash
+set -e
 function ask() {
 	local default reply
 	if [[ ${2:-} = "Y" ]]; then
@@ -278,58 +300,60 @@ function fancy_message() {
 		*) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
 	esac
 }
-if [[ -z $PACSTALL_REMOVE ]] && [[ -z $PACSTALL_INSTALL ]]; then
-	source /var/cache/pacstall/'"$name"'/'"$version"'/'"$name"'.pacscript 2>&1 /dev/null
-	sudo mkdir -p '"$STOWDIR"'
-	cd '"$STOWDIR"'
-	stow --target="/" -D '"$name"' 2> /dev/null
-	rm -rf '"$name"' 2> /dev/null
-	hash -r
-	if declare -F removescript >/dev/null ; then
-		export -f ask fancy_message removescript || true
-		bash -ceuo pipefail "source /var/cache/pacstall/'"$name"'/'"$version"'/'"$name"'.pacscript; removescript" || {
-			fancy_message error "Could not run removescript properly"
-		}
-	fi
-	rm -f '"$LOGDIR"'/'"$name"'
-else unset PACSTALL_REMOVE
-fi' | sudo tee "$SRCDIR/$name-pacstall/DEBIAN/postrm" > /dev/null
 
-	sudo chmod -x "$SRCDIR/$name-pacstall/DEBIAN/postrm"
-	sudo chmod 755 "$SRCDIR/$name-pacstall/DEBIAN/postrm"
+hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
+			echo -e "export STOWDIR=${STOWDIR}\n$(declare -f "$i")\n$i" | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
+			if [[ $i == "removescript" ]]; then
+				echo "sudo rm -f $LOGDIR/$name" | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
+			fi
+			sudo chmod -x "$STOWDIR/$name/DEBIAN/$deb_post_file"
+			sudo chmod 755 "$STOWDIR/$name/DEBIAN/$deb_post_file"
+		fi
+	done
 
-	if ! sudo dpkg-deb -b "$SRCDIR/$name-pacstall" > /dev/null; then
-		fancy_message error "Could not create dummy package"
+	deblog "Installed-Size" "$(du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | awk '{print $1}')"
+
+	generate_changelog | sudo tee -a "$STOWDIR/$name/DEBIAN/changelog" >/dev/null
+
+	cd "$STOWDIR"
+	if ! sudo dpkg-deb -b --root-owner-group "$name" > /dev/null; then
+		fancy_message error "Could not create package"
 		error_log 5 "install $PACKAGE"
 		fancy_message info "Cleaning up"
 		cleanup
 		return 1
 	fi
-	export PACSTALL_INSTALL=1
 
-	fancy_message sub "Required dependencies"
-	# --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
-	if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install "$SRCDIR/$name-pacstall.deb" -y --allow-downgrades 2> /dev/null; then
-		echo -ne "\t"
-		fancy_message error "Failed to install dependencies"
-		error_log 8 "install $PACKAGE"
-		sudo dpkg -r --force-all "$name" > /dev/null
-		fancy_message info "Cleaning up"
-		cleanup
-		return 1
-	fi
+	if [[ $PACSTALL_INSTALL != 0 ]]; then
 
-	sudo rm -rf "$SRCDIR/$name-pacstall"
-	sudo rm "$SRCDIR/$name-pacstall.deb"
+		# --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
+		if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install --reinstall "$STOWDIR/$name.deb" -y --allow-downgrades 2> /dev/null; then
+			echo -ne "\t"
+			fancy_message error "Failed to install $name deb"
+			error_log 8 "install $PACKAGE"
+			sudo dpkg -r --force-all "$name" > /dev/null
+			fancy_message info "Cleaning up"
+			cleanup
+			return 1
+		fi
 
-	if ! [[ -d /etc/apt/preferences.d/ ]]; then
-		sudo mkdir -p /etc/apt/preferences.d
-	fi
-	echo "Package: ${name}
+		sudo rm -rf "$STOWDIR/$name"
+		sudo rm -rf "$SRCDIR/$name.deb"
+
+		if ! [[ -d /etc/apt/preferences.d/ ]]; then
+			sudo mkdir -p /etc/apt/preferences.d
+		fi
+		echo "Package: ${name}
 Pin: version *
 Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
-	unset PACSTALL_INSTALL
-	return 0
+		return 0
+	else
+		fancy_message info "Package built at ${BGreen}$STOWDIR/$name.deb${NC}"
+		fancy_message info "Moving ${BGreen}$STOWDIR/$name${NC} to ${BGreen}/tmp/pacstall-no-build/$name${NC}"
+		sudo mkdir -p "/tmp/pacstall-no-build/$name"
+		sudo mv "$STOWDIR/$name" "/tmp/pacstall-no-build/$name"
+		exit 0
+	fi
 }
 
 ask "Do you want to view/edit the pacscript" N
@@ -359,6 +383,9 @@ if ! source "$PACKAGE".pacscript; then
 	cleanup
 	return 1
 fi
+
+clean_builddir
+sudo mkdir -p "$STOWDIR/$name/DEBIAN"
 
 if type pkgver > /dev/null 2>&1; then
 	version=$(pkgver) > /dev/null
@@ -467,10 +494,6 @@ if [[ -n $build_depends ]]; then
 	fi
 fi
 
-if [[ $url != *".deb" ]] && ! makeVirtualDeb; then
-	return 1
-fi
-
 function hashcheck() {
 	inputHash=$hash
 	# Get hash of file
@@ -551,7 +574,7 @@ else
 				return 1
 			fi
 			# unzip file
-			unzip -q "${url##*/}" 1>&1 2> /dev/null
+			unzip -qf "${url##*/}" 1>&1 2> /dev/null
 			# cd into it
 			cd ./*/ 2> /dev/null || {
 				error_log 1 "install $PACKAGE"
@@ -637,21 +660,23 @@ fi
 export srcdir="$PWD"
 sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2> /dev/null
 
-export pkgdir="/usr/src/pacstall/$name"
+export pkgdir="$STOWDIR/$name"
 export -f ask fancy_message select_options
 
 # Trap so that we can clean up (hopefully without messing up anything)
 trap cleanup ERR
 trap - SIGINT
 
+prompt_optdepends
+
 fancy_message info "Running functions"
-bash -ceuo pipefail 'source "$pacfile";
-fancy_message sub "prepare";
-echo "prepare" > /tmp/pacstall-func
+bash -ceuo pipefail 'source "$pacfile"
+fancy_message sub "prepare"
+echo prepare > /tmp/pacstall-func
 prepare; fancy_message sub "build"
-echo "build" > /tmp/pacstall-func
+echo build > /tmp/pacstall-func
 build; fancy_message sub "install"
-echo "install" > /tmp/pacstall-func
+echo install > /tmp/pacstall-func
 install' || {
 	error_log 5 "$(< "/tmp/pacstall-func") $PACKAGE"
 	echo -ne "\t"
@@ -678,54 +703,11 @@ cd "$HOME" 2> /dev/null || (
 # Metadata writing
 log
 
-fancy_message info "Symlinking files"
-sudo mkdir -p "$STOWDIR"
-if ! cd "$STOWDIR" 2> /dev/null; then
-	error_log 1 "install $PACKAGE"
-	fancy_message error "Could not enter into ${STOWDIR}"
-	sudo dpkg -r "$name" > /dev/null
-	fancy_message info "Cleaning up"
-	cleanup
-	exit 1
-fi
 
-# By default (I think), stow symlinks to the directory behind it (..), but we want to symlink to /, or in other words, symlink files from pkg/usr to /usr
-if ! command -v stow > /dev/null; then
-	# If stow failed to install, install it
-	if ! sudo apt-get install stow -y; then
-		fancy_message error "Failed to install the pacstall dependency stow"
-		error_log 15 "install $PACKAGE"
-		sudo dpkg -r "$name" > /dev/null
-		fancy_message info "Cleaning up"
-		cleanup
-		return 1
-	fi
-fi
-
-# Magic time. This installs the package to /, so `/usr/src/pacstall/foo/usr/bin/foo` -> `/usr/bin/foo`
-# stow will fail to symlink packages if files already exist on the system; this is just an error
-if ! sudo stow --target="/" "$PACKAGE"; then
-	fancy_message error "Package contains links to files that exist on the system"
-	error_log 14 "install $PACKAGE"
-	sudo dpkg -r "$name" > /dev/null
-	fancy_message info "Cleaning up"
-	cleanup
-	return 1
-fi
+makedeb
 
 # `hash -r` updates PATH database
 hash -r
-if type -t postinst > /dev/null 2>&1; then
-	export -f postinst || true
-	bash -ceuo pipefail "source '$pacfile' && postinst" || {
-		error_log 5 "postinst hook"
-		fancy_message error "Could not run postinst hook successfully"
-		sudo dpkg -r "$name" > /dev/null
-		fancy_message info "Cleaning up"
-		cleanup
-		exit 1
-	}
-fi
 
 fancy_message info "Performing post install operations"
 fancy_message sub "Storing pacscript"
@@ -744,6 +726,7 @@ sudo chmod o+r /var/cache/pacstall/"$PACKAGE"/"$version"/"$PACKAGE".pacscript
 
 fancy_message sub "Cleaning up"
 cleanup
+
 return 0
 
 # vim:set ft=sh ts=4 sw=4 noet:

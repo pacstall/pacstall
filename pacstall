@@ -373,6 +373,11 @@ while [[ $1 != "--" ]]; do
 			export DISABLE_PROMPTS=yes
 			;;
 
+		-N | --no-install)
+			fancy_message info "Package will be built and not installed"
+			export PACSTALL_INSTALL=0
+			;;
+
 		-h | --help)
 			echo -e "Usage: pacstall [-h] [-V] {-I,-Il,-S,-R,-D,-A,-U,-L,-Up,-Qi} [-P] [-K]
 
@@ -407,6 +412,8 @@ Options:
 		Disable prompts.
 	${BOLD}-K${NC}, ${BOLD}--keep${NC}
 		Keep the build files.
+	${BOLD}-N${NC}, ${BOLD}--no-install${NC}
+		Build the deb but do not install.
 	${BOLD}-V${NC}, ${BOLD}--version${NC}
 		Display the version number.
 	${BOLD}-h${NC}, ${BOLD}--help${NC}
