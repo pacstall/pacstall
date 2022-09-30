@@ -114,35 +114,37 @@ function log() {
 	fi
 
 	# Metadata writing
-	echo "_name=\"$PACKAGE"\" | sudo tee "$LOGDIR"/"$PACKAGE" > /dev/null
+	{
+	echo "_name=\"$name"\"
 	if [[ -n ${gives} ]]; then
-		echo "_gives=\"${gives}"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+		echo "_gives=\"${gives}"\"
 	fi
-	echo "_version=\"$version"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-	echo "_description=\"$description"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-	echo "_date=\"$(date)"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-	echo "_maintainer=\"$maintainer"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+	echo "_version=\"$version"\"
+	echo "_description=\"$description"\"
+	echo "_date=\"$(date)"\"
+	echo "_maintainer=\"$maintainer"\"
 	if [[ -n $depends ]]; then
-		echo "_dependencies=\"$depends"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+		echo "_dependencies=\"$depends"\"
 	fi
 	if [[ -n $build_depends ]]; then
-		echo "_build_dependencies=\"$build_depends"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+		echo "_build_dependencies=\"$build_depends"\"
 	fi
 	if [[ -n $pacdeps ]]; then
-		echo "_pacdeps=\"$pacdeps"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+		echo "_pacdeps=\"$pacdeps"\"
 	fi
 	if [[ -n $ppa ]]; then
-		echo "_ppa=\"$ppa"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+		echo "_ppa=\"$ppa"\"
 	fi
 	if test -f /tmp/pacstall-pacdeps-"$PACKAGE"; then
-		echo '_pacstall_depends="true"' | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+		echo '_pacstall_depends="true"'
 	fi
 	if [[ $local == 'no' ]]; then
-		echo "_remoterepo=\"$pURL"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+		echo "_remoterepo=\"$pURL"\"
 		if [[ $branch == 'yes' ]]; then
-			echo "_remotebranch=\"$pBRANCH"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+			echo "_remotebranch=\"$pBRANCH"\"
 		fi
 	fi
+	} | sudo tee "$LOGDIR/$name" > /dev/null
 }
 
 function deblog() {
