@@ -115,23 +115,7 @@ function log() {
 
 	# Metadata writing
 	{
-	echo "_name=\"$name"\"
-	if [[ -n ${gives} ]]; then
-		echo "_gives=\"${gives}"\"
-	fi
-	echo "_version=\"$version"\"
-	echo "_description=\"$description"\"
 	echo "_date=\"$(date)"\"
-	echo "_maintainer=\"$maintainer"\"
-	if [[ -n $depends ]]; then
-		echo "_dependencies=\"$depends"\"
-	fi
-	if [[ -n $build_depends ]]; then
-		echo "_build_dependencies=\"$build_depends"\"
-	fi
-	if [[ -n $pacdeps ]]; then
-		echo "_pacdeps=\"$pacdeps"\"
-	fi
 	if [[ -n $ppa ]]; then
 		echo "_ppa=\"$ppa"\"
 	fi

@@ -34,42 +34,34 @@ fi
 
 source "$LOGDIR/$PACKAGE"
 
-if [[ $PACKAGE == *-deb ]]; then
-	size="$(apt-cache --no-all-versions show "${_gives}" | grep Installed-Size | cut -d' ' -f 2 | numfmt --to=iec)"
-else
-	size="$(du -sh "$STOWDIR"/"$PACKAGE" 2> /dev/null | awk '{print $1}')"
-fi
+function get_field() {
+	# input 1: package
+	# input 2: field
+	dpkg -s "$1" | grep --color=never "^$2: " | sed "s/$2: //"
+}
 
-echo -e "${BGreen}name${NORMAL}: $PACKAGE"
-echo -e "${BGreen}version${NORMAL}: $_version"
+echo -e "${BGreen}name${NORMAL}: $(get_field $PACKAGE Package)"
+echo -e "${BGreen}version${NORMAL}: $(get_field $PACKAGE Version)"
 if [[ -n ${size} ]]; then
-	echo -e "${BGreen}size${NORMAL}: $size"
+	echo -e "${BGreen}size${NORMAL}: $(get_field $PACKAGE Installed-Size | cut -d' ' -f 2 | numfmt --to=iec)"
 fi
-echo -e "${BGreen}description${NORMAL}: ""$_description"""
-echo -e "${BGreen}date installed${NORMAL}: ""$_date"""
+echo -e "${BGreen}description${NORMAL}: $(get_field $PACKAGE Description)"
+echo -e "${BGreen}date installed${NORMAL}: $_date"
 
 if [[ -n $_remoterepo ]]; then
-	echo -e "${BGreen}remote repo${NORMAL}: ""$_remoterepo"""
+	echo -e "${BGreen}remote repo${NORMAL}: $_remoterepo"
 fi
 if [[ -n $_maintainer ]]; then
-	echo -e "${BGreen}maintainer${NORMAL}: ""$_maintainer"""
+	echo -e "${BGreen}maintainer${NORMAL}: $(get_field $PACKAGE Maintainer)"
 fi
 if [[ -n $_ppa ]]; then
-	echo -e "${BGreen}ppa${NORMAL}: ""$_ppa"""
+	echo -e "${BGreen}ppa${NORMAL}: $_ppa"
 fi
 if [[ -n $_pacdeps ]]; then
-	echo -e "${BGreen}pacstall dependencies${NORMAL}: ""$_pacdeps"""
+	echo -e "${BGreen}pacstall dependencies${NORMAL}: $_pacdeps"
 fi
 if [[ -n $_dependencies ]]; then
-	echo -e "${BGreen}dependencies${NORMAL}: ""$_dependencies"""
-fi
-if [[ -n $_build_dependencies ]]; then
-	echo -e "${BGreen}build dependencies${NORMAL}: ""$_build_dependencies"""
-fi
-if [[ -n $_pacstall_depends ]]; then
-	echo -e "${BGreen}install type${NORMAL}: installed as dependency"
-else
-	echo -e "${BGreen}install type${NORMAL}: explicitly installed"
+	echo -e "${BGreen}dependencies${NORMAL}: $(get_field $PACKAGE Depends | tr -d ',')"
 fi
 exit 0
 # vim:set ft=sh ts=4 sw=4 noet:
