@@ -703,11 +703,10 @@ cd "$HOME" 2> /dev/null || (
 	fancy_message warn "Could not enter into ${HOME}"
 )
 
+makedeb
+
 # Metadata writing
 log
-
-
-makedeb
 
 # `hash -r` updates PATH database
 hash -r
