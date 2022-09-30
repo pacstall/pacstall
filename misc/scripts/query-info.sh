@@ -42,7 +42,7 @@ function get_field() {
 	else
 		local input="${1}"
 	fi
-	local output="$(dpkg -s "${_pkgname:-$input}" | grep --color=never "^$2: " | sed "s/$2: //")"
+	local output="$(dpkg -s "$input" | grep --color=never "^$2: " | sed "s/$2: //")"
 	if [[ -z $output ]]; then
 		echo "Unknown/None"
 	else
