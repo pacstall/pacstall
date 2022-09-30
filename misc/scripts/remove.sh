@@ -23,7 +23,7 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 if ! dpkg -l "$PACKAGE" &>/dev/null; then
-	fancy_message error "$PACKAGE is not installed or not properly symlinked"
+	fancy_message error "$PACKAGE is not installed"
 	error_log 3 "remove $PACKAGE"
 	exit 1
 fi
