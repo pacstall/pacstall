@@ -294,14 +294,19 @@ function fancy_message() {
 hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
 		{
 			echo -e "export STOWDIR=${STOWDIR}"
+			echo -e "export name=${name}"
+			echo -e "export pkgname=${pkgname}"
+			echo -e "export pkgdir=${pkgdir}"
+			echo -e "export version=${version}"
+			echo -e "export maintainer=${maintainer}"
 			echo -e "$(declare -f "$i")\n$i"
 		} | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
 		fi
 	done
 	echo -e "sudo rm -f $LOGDIR/$name" | sudo tee -a "$STOWDIR/$name/DEBIAN/postrm" >/dev/null
 	for i in {postrm,postinst}; do
-		sudo chmod -x "$STOWDIR/$name/DEBIAN/$i" 2>&1 1>/dev/null
-		sudo chmod 755 "$STOWDIR/$name/DEBIAN/$i" 2>&1 1>/dev/null
+		sudo chmod -x "$STOWDIR/$name/DEBIAN/$i" 1>/dev/null 2>&1
+		sudo chmod 755 "$STOWDIR/$name/DEBIAN/$i" 1>/dev/null 2>&1
 	done
 
 	deblog "Installed-Size" "$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | awk '{print $1}')"
