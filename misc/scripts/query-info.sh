@@ -65,7 +65,7 @@ if [[ -n $_pacdeps ]]; then
 fi
 echo -e "${BGreen}dependencies${NORMAL}: $(get_field $PACKAGE Depends | tr -d ',')"
 if [[ -n $_pacstall_depends ]]; then
-	echo -e "${BGreen}install type${NORMAL}: implicitly installed"
+	echo -e "${BGreen}install type${NORMAL}: installed as dependency"
 else
 	echo -e "${BGreen}install type${NORMAL}: explicitly installed"
 fi
