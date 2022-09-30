@@ -225,11 +225,11 @@ function makedeb() {
 	deblog "Package" "${name}"
 
 	if [[ $version =~ ^[0-9] ]]; then
-		deblog "Version" "${version}-1"
-		export version="${version}-1"
+		deblog "Version" "${version}"
+		export version="${version}"
 	else
-		deblog "Version" "0${version}-1"
-		export version="0${version}-1"
+		deblog "Version" "0${version}"
+		export version="0${version}"
 	fi
 
 	deblog "Architecture" "all"
