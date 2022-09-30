@@ -115,6 +115,7 @@ function log() {
 
 	# Metadata writing
 	{
+	echo "_version=\"$version"\"
 	echo "_date=\"$(date)"\"
 	if [[ -n $ppa ]]; then
 		echo "_ppa=\"$ppa"\"
@@ -225,8 +226,10 @@ function makedeb() {
 
 	if [[ $version =~ ^[0-9] ]]; then
 		deblog "Version" "${version}-1"
+		export version="${version}-1"
 	else
 		deblog "Version" "0${version}-1"
+		export version="0${version}-1"
 	fi
 
 	deblog "Architecture" "all"
