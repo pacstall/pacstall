@@ -37,7 +37,12 @@ source "$LOGDIR/$PACKAGE"
 function get_field() {
 	# input 1: package
 	# input 2: field
-	local output="$(dpkg -s "${_pkgname:-$_name}" | grep --color=never "^$2: " | sed "s/$2: //")"
+	if [[ $1 == *"-deb" ]]; then
+		local input="${1//-deb}"
+	else
+		local input="${1}"
+	fi
+	local output="$(dpkg -s "${_pkgname:-$input}" | grep --color=never "^$2: " | sed "s/$2: //")"
 	if [[ -z $output ]]; then
 		echo "Unknown/None"
 	else
