@@ -405,8 +405,6 @@ Commands:
 		Upgrade all installed packages.
 	${BOLD}-Qi${NC}, ${BOLD}--query-info${NC} <package>
 		Query information about a package.
-	${BOLD}-T${NC}, ${BOLD}--tree${NC} <package>
-		Display a tree list of a packages files
 
 Options:
 	${BOLD}-P${NC}, ${BOLD}--disable-prompts${NC}
@@ -699,18 +697,6 @@ Options:
 		-Qi | --query-info)
 			PACKAGE=$2
 			source "$STGDIR/scripts/query-info.sh"
-			exit 0
-			;;
-
-		-T | --tree)
-			PACKAGE="$2"
-
-			if [[ ! -d "$STOWDIR/$PACKAGE" ]]; then
-				fancy_message error "$PACKAGE does not exist"
-				exit 1
-			fi
-
-			tree -C "$STOWDIR/$PACKAGE" | sed "s/\/usr\/src\/pacstall\/$PACKAGE/\//g"
 			exit 0
 			;;
 
