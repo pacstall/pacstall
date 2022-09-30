@@ -312,7 +312,7 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
 		fi
 	done
 
-	deblog "Installed-Size" "$(du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | awk '{print $1}')"
+	deblog "Installed-Size" "$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | awk '{print $1}')"
 
 	generate_changelog | sudo tee -a "$STOWDIR/$name/DEBIAN/changelog" >/dev/null
 
