@@ -293,10 +293,10 @@ function fancy_message() {
 
 hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
 			echo -e "export STOWDIR=${STOWDIR}\n$(declare -f "$i")\n$i" | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
-			echo "sudo rm -f $LOGDIR/$name" | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
 			sudo chmod -x "$STOWDIR/$name/DEBIAN/$deb_post_file"
 			sudo chmod 755 "$STOWDIR/$name/DEBIAN/$deb_post_file"
 		fi
+		echo "sudo rm -f $LOGDIR/$name" | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
 	done
 
 	deblog "Installed-Size" "$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | awk '{print $1}')"
