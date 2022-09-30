@@ -374,6 +374,7 @@ while [[ $1 != "--" ]]; do
 			;;
 
 		-N | --no-install)
+			export PACDEB_DIR="$PWD"
 			fancy_message info "Package will be built and not installed"
 			export PACSTALL_INSTALL=0
 			;;

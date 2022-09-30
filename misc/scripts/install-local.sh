@@ -349,8 +349,10 @@ Pin: version *
 Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 		return 0
 	else
-		fancy_message info "Package built at ${BGreen}$STOWDIR/$name.deb${NC}"
+		sudo mv "$STOWDIR/$name.deb" "$PACDEB_DIR"
+		fancy_message info "Package built at ${BGreen}$PACDEB_DIR/$name.deb${NC}"
 		fancy_message info "Moving ${BGreen}$STOWDIR/$name${NC} to ${BGreen}/tmp/pacstall-no-build/$name${NC}"
+		sudo rm -rf "/tmp/pacstall-no-build/$name"
 		sudo mkdir -p "/tmp/pacstall-no-build/$name"
 		sudo mv "$STOWDIR/$name" "/tmp/pacstall-no-build/$name"
 		exit 0
