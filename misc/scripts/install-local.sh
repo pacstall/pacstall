@@ -292,11 +292,11 @@ function fancy_message() {
 }
 
 hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
-		fi
 		{
 			echo -e "export STOWDIR=${STOWDIR}"
 			echo -e "$(declare -f "$i")\n$i"
 		} | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
+		fi
 	done
 	echo -e "sudo rm -f $LOGDIR/$name" | sudo tee -a "$STOWDIR/$name/DEBIAN/postrm" >/dev/null
 	for i in {postrm,postinst}; do
