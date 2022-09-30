@@ -34,8 +34,10 @@ set -l pacstall_k_grouped -KI -KIl -KUp -KP -KPI -KPIl -KPUp -PK -PKI -PKIl -PKU
 set -l pacstall_pk -PK -KP
 set -l pacstall_n -n --no-install
 set -l pacstall_n_cmds -I --install -Il --install-local
-set -l pacstall_n_grouped -NI -NIl -NP -NPI -NPIl-PN -PNI -PNIl -IN -IlN -INP -IlNP -IPN -IlPN -NKI -NKIl -NKP -NKPI -NKPIl -PKN -PKNI -PKNIl -KPIN -KPIlN -KINP -NIlNPK -IKPN -IlKPN
-set -l pacstall_pk -PN -NP
+set -l pacstall_n_grouped -NI -NIl -NP -NPI -NPIl -PN -PNI -PNIl -IN -IlN -INP -IlNP -IPN -IlPN -NKI -NKIl -NKP -NKPI -NKPIl -PKN -PKNI -PKNIl -KPIN -KPIlN -KINP -NIlNPK -IKPN -IlKPN
+set -l pacstall_np -PN -NP
+set -l pacstall_nk -NK -KN
+set -l pacstall_nkp -PNK -KNP -NKP -PKN
 
 # Completion for normal commands
 complete -f --command pacstall -n "not _seen $pacstall_cmds" -o S -l search -d 'Search for package'
