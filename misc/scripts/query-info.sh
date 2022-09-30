@@ -64,5 +64,10 @@ if [[ -n $_pacdeps ]]; then
 	echo -e "${BGreen}pacstall dependencies${NORMAL}: $_pacdeps"
 fi
 echo -e "${BGreen}dependencies${NORMAL}: $(get_field $PACKAGE Depends | tr -d ',')"
+if [[ -n $_pacstall_depends ]]; then
+	echo -e "${BGreen}install type${NORMAL}: implicitly installed"
+else
+	echo -e "${BGreen}install type${NORMAL}: explicitly installed"
+fi
 exit 0
 # vim:set ft=sh ts=4 sw=4 noet:
