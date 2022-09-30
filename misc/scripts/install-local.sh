@@ -563,6 +563,7 @@ else
 				return 1
 			fi
 			# unzip file
+			fancy_message info "Extracting ${url##*/}"
 			unzip -qo "${url##*/}" 1>&1 2>/dev/null
 			# cd into it
 			cd ./*/ 2> /dev/null || {
@@ -637,6 +638,7 @@ else
 			if ! hashcheck "${url##*/}"; then
 				return 1
 			fi
+			fancy_message info "Extracting ${url##*/}"
 			tar -xf "${url##*/}" 1>&1 2> /dev/null
 			cd ./*/ 2> /dev/null || {
 				error_log 1 "install $PACKAGE"
