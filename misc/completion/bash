@@ -25,9 +25,9 @@ _pacstall() {
 	cur=${COMP_WORDS[COMP_CWORD]}
 	prev=${COMP_WORDS[1]}
 
-	if [[ "-P --disable-prompts -K --keep" =~ (^|[[:space:]])"$prev"($|[[:space:]]) ]]; then
+	if [[ "-P --disable-prompts -K --keep -N --no-install" =~ (^|[[:space:]])"$prev"($|[[:space:]]) ]]; then
 		prev=${COMP_WORDS[2]}
-		if [[ "-P --disable-prompts -K --keep" =~ (^|[[:space:]])"$prev"($|[[:space:]]) ]]; then
+		if [[ "-P --disable-prompts -K --keep -N --no-install" =~ (^|[[:space:]])"$prev"($|[[:space:]]) ]]; then
 			prev=${COMP_WORDS[3]}
 		fi
 	fi
