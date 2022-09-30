@@ -37,7 +37,12 @@ source "$LOGDIR/$PACKAGE"
 function get_field() {
 	# input 1: package
 	# input 2: field
-	dpkg -s "$1" | grep --color=never "^$2: " | sed "s/$2: //"
+	local output="$(dpkg -s "$1" | grep --color=never "^$2: " | sed "s/$2: //")"
+	if [[ -z $output ]]; then
+		echo "Unknown/None"
+	else
+		echo $output
+	fi
 }
 
 echo -e "${BGreen}name${NORMAL}: $(get_field $PACKAGE Package)"
@@ -51,17 +56,13 @@ echo -e "${BGreen}date installed${NORMAL}: $_date"
 if [[ -n $_remoterepo ]]; then
 	echo -e "${BGreen}remote repo${NORMAL}: $_remoterepo"
 fi
-if [[ -n $_maintainer ]]; then
-	echo -e "${BGreen}maintainer${NORMAL}: $(get_field $PACKAGE Maintainer)"
-fi
+echo -e "${BGreen}maintainer${NORMAL}: $(get_field $PACKAGE Maintainer)"
 if [[ -n $_ppa ]]; then
 	echo -e "${BGreen}ppa${NORMAL}: $_ppa"
 fi
 if [[ -n $_pacdeps ]]; then
 	echo -e "${BGreen}pacstall dependencies${NORMAL}: $_pacdeps"
 fi
-if [[ -n $_dependencies ]]; then
-	echo -e "${BGreen}dependencies${NORMAL}: $(get_field $PACKAGE Depends | tr -d ',')"
-fi
+echo -e "${BGreen}dependencies${NORMAL}: $(get_field $PACKAGE Depends | tr -d ',')"
 exit 0
 # vim:set ft=sh ts=4 sw=4 noet:
