@@ -253,8 +253,8 @@ function makedeb() {
 
 	for i in {removescript,postinst}; do
 		case $i in
-			removescript) local deb_post_file="postrm" ;;
-			postinst) local deb_post_file="postinst" ;;
+			removescript) export deb_post_file="postrm" ;;
+			postinst) export deb_post_file="postinst" ;;
 		esac
 		if [[ $(type -t $i) == function ]]; then
 			echo '#!/bin/bash
@@ -292,11 +292,16 @@ function fancy_message() {
 }
 
 hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
-			echo -e "export STOWDIR=${STOWDIR}\n$(declare -f "$i")\n$i" | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
-			sudo chmod -x "$STOWDIR/$name/DEBIAN/$deb_post_file"
-			sudo chmod 755 "$STOWDIR/$name/DEBIAN/$deb_post_file"
 		fi
-		echo "sudo rm -f $LOGDIR/$name" | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
+		{
+			echo -e "export STOWDIR=${STOWDIR}"
+			echo -e "$(declare -f "$i")\n$i"
+		} | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
+	done
+	echo -e "sudo rm -f $LOGDIR/$name" | sudo tee -a "$STOWDIR/$name/DEBIAN/postrm" >/dev/null
+	for i in {postrm,postinst}; do
+		sudo chmod -x "$STOWDIR/$name/DEBIAN/$i" >/dev/null
+		sudo chmod 755 "$STOWDIR/$name/DEBIAN/$i" >/dev/null
 	done
 
 	deblog "Installed-Size" "$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | awk '{print $1}')"
