@@ -41,6 +41,7 @@ function cleanup() {
 		sudo rm -rf "${STOWDIR:-/usr/src/pacstall}/${name:-raaaaaaaandom}"
 		sudo rm -rf /tmp/pacstall/*
 	fi
+	sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
 	rm -f /tmp/pacstall-func
 	rm -f /tmp/pacstall-select-options
 	unset name version url build_depends depends breaks replace description hash removescript optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall 2> /dev/null
