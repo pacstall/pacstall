@@ -24,7 +24,7 @@
 
 function cleanup() {
 	if [[ -n $KEEP ]]; then
-		sudo rm -r "/tmp/pacstall-keep/$name"
+		sudo rm -rf "/tmp/pacstall-keep/$name"
 		mkdir -p "/tmp/pacstall-keep/$name"
 		if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
 			sudo mv /tmp/pacstall-pacdep/* "/tmp/pacstall-keep/$name"
