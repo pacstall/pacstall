@@ -341,8 +341,8 @@ done
 set -- "${argument_list[@]}"
 
 function lock() {
-	ignore_short="-S -D -A -V -L -Qi -h"
-	ignore_long="--search --download --add-repo --version --query-info --help"
+	ignore_short="-S -D -A -V -L -Qi -T -h"
+	ignore_long="--search --download --add-repo --version --query-info --tree --help"
 	ignore="$ignore_short $ignore_long"
 	if [[ $ignore =~ (^|[[:space:]])"$1"($|[[:space:]]) ]]; then
 		return 1
@@ -380,7 +380,7 @@ while [[ $1 != "--" ]]; do
 			;;
 
 		-h | --help)
-			echo -e "Usage: pacstall [-h] [-V] {-I,-Il,-S,-R,-D,-A,-U,-L,-Up,-Qi} [-P] [-K] [-N]
+			echo -e "Usage: pacstall [-h] [-V] {-I,-Il,-S,-R,-D,-A,-U,-L,-Up,-Qi,-T} [-P] [-K] [-N]
 
 An AUR inspired package manager for Ubuntu.
 
@@ -405,6 +405,8 @@ Commands:
 		Upgrade all installed packages.
 	${BOLD}-Qi${NC}, ${BOLD}--query-info${NC} <package>
 		Query information about a package.
+	${BOLD}-T${NC}, ${BOLD}--tree${NC} <package>
+		Display a tree graph of a package.
 
 Options:
 	${BOLD}-P${NC}, ${BOLD}--disable-prompts${NC}
@@ -691,6 +693,17 @@ Options:
 			if [[ -s "LOGFILE" ]]; then
 				exit 1
 			fi
+			exit 0
+			;;
+
+		-T | --tree)
+			PACKAGE="$2"
+
+			if [[ -z $PACKAGE ]]; then
+				fancy_message error "No package specified"
+				exit 1
+			fi
+			dpkg --listfiles "$PACKAGE" | tail -n +2 | sed -e "s/[^-][^\/]*\//  │/g" -e "s/│\([^ ]\)/│──\1/"
 			exit 0
 			;;
 
