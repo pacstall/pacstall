@@ -154,6 +154,10 @@ function ask() {
 	# Ask the question (not using "read -p" as it uses stderr not stdout)
 	echo -ne "$1 [$prompt] "
 
+	if [[ ${DISABLE_PROMPTS:-z} == "z" ]]; then
+		export DISABLE_PROMPTS="no"
+	fi
+
 	if [[ $DISABLE_PROMPTS == "yes" ]]; then
 		read -r reply <&0
 		# Detect if script is running non-interactively
