@@ -154,7 +154,7 @@ function ask() {
 	# Ask the question (not using "read -p" as it uses stderr not stdout)
 	echo -ne "$1 [$prompt] "
 
-	if [[ -z $DISABLE_PROMPTS ]]; then
+	if [[ $DISABLE_PROMPTS == "yes" ]]; then
 		read -r reply <&0
 		# Detect if script is running non-interactively
 		# Which implies that the input is being piped into the script
@@ -252,7 +252,7 @@ function select_options() {
 	else
 		echo -ne "${message} [${BOLD}$( seq -s ' ' 1 "$length" )${NC}] [${BIGreen}Y${NC}/${RED}n${NC}] "
 	fi
-	if [[ -z $DISABLE_PROMPTS ]]; then
+	if [[ $DISABLE_PROMPTS == "yes" ]]; then
 		read -r input <&0
 		if [[ $NON_INTERACTIVE ]]; then
 			if [[ -z $input ]]; then
