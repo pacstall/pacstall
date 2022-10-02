@@ -707,6 +707,11 @@ Options:
 				fancy_message error "No package specified"
 				exit 1
 			fi
+			if ! [[ -f /var/log/pacstall/metadata/$PACKAGE ]]; then
+				fancy_message error "Package is not installed"
+				exit 1
+			fi
+
 			dpkg --listfiles "$PACKAGE" | tail -n +2 | sed -e "s/[^-][^\/]*\//  │/g" -e "s/│\([^ ]\)/│──\1/"
 			exit 0
 			;;
