@@ -193,7 +193,7 @@ function ask() {
 		export DISABLE_PROMPTS="no"
 	fi
 
-	if [[ $DISABLE_PROMPTS == "yes" ]]; then
+	if [[ $DISABLE_PROMPTS == "no" ]]; then
 		read -r reply <&0
 		# Detect if script is running non-interactively
 		# Which implies that the input is being piped into the script
