@@ -305,7 +305,7 @@ function select_options() {
 	fi
 	if [[ -z $input ]] || [[ $input =~ ^[Yy]$ ]]; then
 		seq -s ' ' 1 "$length" | tee /tmp/pacstall-select-options >/dev/null
-	elif [[ $input =~ ^[Nn]$ ]]; then
+	elif [[ $input == "0" ]] || [[ $input =~ ^[Nn]$ ]]; then
 		echo "n" | tee /tmp/pacstall-select-options >/dev/null
 	elif ! [[ $input =~ [a-zA-Z]+ ]] || [[ $input =~ ^[0-9]+$ ]]; then
 		for i in "${input[@]}"; do
