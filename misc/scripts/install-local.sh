@@ -295,10 +295,8 @@ function fancy_message() {
 
 hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
 		{
-			echo -e "export STOWDIR=${STOWDIR}"
 			echo -e "export name=${name}"
 			echo -e "export pkgname=${pkgname}"
-			echo -e "export pkgdir=${pkgdir}"
 			echo -e "export version=${version}"
 			echo -e "export maintainer=\"${maintainer}\""
 			echo -e "$(declare -f "$i")\n$i"
