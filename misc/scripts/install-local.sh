@@ -305,7 +305,7 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
 		} | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
 		fi
 	done
-	echo -e "sudo rm -f $LOGDIR/$name" | sudo tee -a "$STOWDIR/$name/DEBIAN/postrm" >/dev/null
+	echo -e "sudo rm -f $LOGDIR/$name\nsudo rm -f /etc/apt/preferences.d/$name.pin" | sudo tee -a "$STOWDIR/$name/DEBIAN/postrm" >/dev/null
 	for i in {postrm,postinst}; do
 		sudo chmod -x "$STOWDIR/$name/DEBIAN/$i" 1>/dev/null 2>&1
 		sudo chmod 755 "$STOWDIR/$name/DEBIAN/$i" 1>/dev/null 2>&1
