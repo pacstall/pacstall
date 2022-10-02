@@ -200,6 +200,7 @@ function prompt_optdepends() {
 						deps+=" ${s%%: *}"
 					fi
 				done
+				fancy_message info "Selecting packages ${BCyan}${deps}${NC}"
 				if pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
 					sudo dpkg -r --force-all "$name" > /dev/null
 				fi
