@@ -200,7 +200,9 @@ function prompt_optdepends() {
 						deps+=" ${s%%: *}"
 					fi
 				done
-				fancy_message info "Selecting packages ${BCyan}${deps}${NC}"
+				if [[ -n $deps ]]; then
+					fancy_message info "Selecting packages ${BCyan}$(sed -e 's/^[[:space:]]*//' <<< "$deps")${NC}"
+				fi
 				if pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
 					sudo dpkg -r --force-all "$name" > /dev/null
 				fi
@@ -212,7 +214,7 @@ function prompt_optdepends() {
 	fi
 
 	if [[ -n $deps ]]; then
-		deps="$(echo "${deps}" | sed -e 's/^[[:space:]]*//')"
+		deps="$(sed -e 's/^[[:space:]]*//' <<< "$deps")"
 		deblog "Depends" "${deps//' '/', '}"
 	fi
 }
