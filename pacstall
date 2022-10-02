@@ -291,7 +291,7 @@ function select_options() {
 	else
 		echo -ne "${message} [${BOLD}$( seq -s ' ' 1 "$length" )${NC}] [${BIGreen}Y${NC}/${RED}n${NC}] "
 	fi
-	if [[ $DISABLE_PROMPTS == "yes" ]]; then
+	if [[ $DISABLE_PROMPTS == "no" ]]; then
 		read -r input <&0
 		if [[ $NON_INTERACTIVE ]]; then
 			if [[ -z $input ]]; then
