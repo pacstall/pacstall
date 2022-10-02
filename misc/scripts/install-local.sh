@@ -122,7 +122,7 @@ function log() {
 	if [[ -n $ppa ]]; then
 		echo "_ppa=\"$ppa"\"
 	fi
-	if test -f /tmp/pacstall-pacdeps-"$name"; then
+	if [[ -f /tmp/pacstall-pacdeps-"$name" ]]; then
 		echo '_pacstall_depends="true"'
 	fi
 	if [[ $local == 'no' ]]; then
