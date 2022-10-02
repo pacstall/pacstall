@@ -297,6 +297,10 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
 		{
 			echo -e "export name=${name}"
 			echo -e "export pkgname=${pkgname}"
+			echo -e "export pkgdir=${pkgdir}"
+			if [[ -n "${gives}" ]]; then
+				echo -e "export gives=${gives}"
+			fi
 			echo -e "export version=${version}"
 			echo -e "export maintainer=\"${maintainer}\""
 			echo -e "$(declare -f "$i")\n$i"
