@@ -305,6 +305,7 @@ function select_options() {
 	fi
 	if [[ -z $input ]] || [[ $input =~ ^[Yy]$ ]]; then
 		seq -s ' ' 1 "$length" | tee /tmp/pacstall-select-options >/dev/null
+		fancy_message info "Selecting packages ${BCyan}$(cat /tmp/pacstall-select-options)${NC}"
 	elif [[ $input =~ ^[Nn]$ ]]; then
 		echo "n" | tee /tmp/pacstall-select-options >/dev/null
 	elif ! [[ $input =~ [a-zA-Z]+ ]] || [[ $input =~ ^[0-9]+$ ]]; then
@@ -328,6 +329,7 @@ function select_options() {
 			fi
 		done
 		echo "${out[@]}" | tee /tmp/pacstall-select-options >/dev/null
+		fancy_message info "Selecting packages ${BCyan}$(cat /tmp/pacstall-select-options)${NC}"
 	else
 		select_options "$message" "$length"
 	fi
