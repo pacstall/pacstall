@@ -165,7 +165,7 @@ function prompt_optdepends() {
 				continue
 			fi
 			# Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
-			# Add to the optdeps list if not to display the question
+			# If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of it's status
 			if ! dpkg-query -W -f='${Status}' "${opt}" 2> /dev/null | grep "^install ok installed" > /dev/null 2>&1; then
 				optdeps+=("${optdep}")
 			else
@@ -195,13 +195,16 @@ function prompt_optdepends() {
 			if [[ "${choices[0]}" != "n" ]]; then
 				for i in "${choices[@]}"; do
 					(( i-- ))
-					s="${optdeps[$i]}"
+					local s="${optdeps[$i]}"
+					# does `s` actually exist in the optdeps array?
 					if [[ -n $s ]]; then
+						# then add it, and strip the `:`
 						deps+=" ${s%%: *}"
+						local not_installed_yet_optdeps+=("${s%%: *}")
 					fi
 				done
 				if [[ -n $deps ]]; then
-					fancy_message info "Selecting packages ${BCyan}$(sed -e 's/^[[:space:]]*//' <<< "$deps")${NC}"
+					fancy_message info "Selecting packages ${BCyan}${not_installed_yet_optdeps[*]}${NC}"
 				fi
 				if pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
 					sudo dpkg -r --force-all "$name" > /dev/null
