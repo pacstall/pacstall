@@ -35,8 +35,8 @@ sudo chown "$PACSTALL_USER" -R /tmp/pacstall
 
 sudo mkdir -p /usr/share/bash-completion/completions
 
-if [[ -z $(apt -qq list lsb-release) ]]; then
-	sudo apt install lsb-release -y
+if ! dpkg -s lsb-release >/dev/null 2>&1; then
+	sudo apt-get install lsb-release -y
 fi
 
 STGDIR="/usr/share/pacstall"
