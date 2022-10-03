@@ -404,6 +404,7 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 		return 0
 	else
 		sudo mv "$STOWDIR/$name.deb" "$PACDEB_DIR"
+		sudo chown "$PACSTALL_USER":"$PACSTALL_USER" "$PACDEB_DIR/$name.deb"
 		fancy_message info "Package built at ${BGreen}$PACDEB_DIR/$name.deb${NC}"
 		fancy_message info "Moving ${BGreen}$STOWDIR/$name${NC} to ${BGreen}/tmp/pacstall-no-build/$name${NC}"
 		sudo rm -rf "/tmp/pacstall-no-build/$name"
