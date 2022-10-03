@@ -261,7 +261,7 @@ function createdeb() {
 
     sudo gzip -9n "$DATA_LOCATION"
     sudo gzip -9n "$CONTROL_LOCATION"
-    sudo ar -rU "$name".deb debian-binary control.tar.gz data.tar.gz >/dev/null
+    sudo ar -rU "$name".deb debian-binary control.tar.gz data.tar.gz >/dev/null 2>&1
     sudo mv "$name".deb ..
     sudo rm -f debian-binary control.tar.gz data.tar.gz
 }
