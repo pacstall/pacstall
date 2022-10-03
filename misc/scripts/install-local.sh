@@ -231,40 +231,40 @@ function generate_changelog() {
 function createdeb() {
 	local name="$1"
 	local gzip_flags="-6n"
-    cd "$STOWDIR/$name"
-    echo "2.0" | sudo tee debian-binary >/dev/null
-    sudo tar -cf "$PWD/control.tar" -T /dev/null
-    local CONTROL_LOCATION="$PWD/control.tar"
-    # avoid having to cd back
-    (
-    # create control.tar
-    cd DEBIAN
-    for i in *; do
+	cd "$STOWDIR/$name"
+	echo "2.0" | sudo tee debian-binary >/dev/null
+	sudo tar -cf "$PWD/control.tar" -T /dev/null
+	local CONTROL_LOCATION="$PWD/control.tar"
+	# avoid having to cd back
+	(
+	# create control.tar
+	cd DEBIAN
+	for i in *; do
 		if [[ -f $i ]]; then
 			local files_for_control+=("$i")
 		fi
-    done
-    for i in "${files_for_control[@]}"; do
+	done
+	for i in "${files_for_control[@]}"; do
 		sudo tar -rf "$CONTROL_LOCATION" "$i"
-    done
-    )
-    sudo tar -cf "$PWD/data.tar" -T /dev/null
-    local DATA_LOCATION="$PWD/data.tar"
-    # collect every top level dir except for DEBIAN
-    for i in *; do
+	done
+	)
+	sudo tar -cf "$PWD/data.tar" -T /dev/null
+	local DATA_LOCATION="$PWD/data.tar"
+	# collect every top level dir except for DEBIAN
+	for i in *; do
 		if [[ -d $i ]] && [[ $i != "DEBIAN" ]]; then
 			local files_for_data+=("$i")
-    	fi
-    done
-    for i in "${files_for_data[@]}"; do
-    	sudo tar -rf "$DATA_LOCATION" "$i"
-    done
-
-    sudo gzip "$gzip_flags" "$DATA_LOCATION"
-    sudo gzip "$gzip_flags" "$CONTROL_LOCATION"
-    sudo ar -rU "$name".deb debian-binary control.tar.gz data.tar.gz >/dev/null 2>&1
-    sudo mv "$name".deb ..
-    sudo rm -f debian-binary control.tar.gz data.tar.gz
+		fi
+	done
+	for i in "${files_for_data[@]}"; do
+		sudo tar -rf "$DATA_LOCATION" "$i"
+	done
+	
+	sudo gzip "$gzip_flags" "$DATA_LOCATION"
+	sudo gzip "$gzip_flags" "$CONTROL_LOCATION"
+	sudo ar -rU "$name".deb debian-binary control.tar.gz data.tar.gz >/dev/null 2>&1
+	sudo mv "$name".deb ..
+	sudo rm -f debian-binary control.tar.gz data.tar.gz
 }
 
 function makedeb() {
