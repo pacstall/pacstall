@@ -259,7 +259,7 @@ function createdeb() {
 	for i in "${files_for_data[@]}"; do
 		sudo tar -rf "$DATA_LOCATION" "$i"
 	done
-	
+
 	sudo gzip "$gzip_flags" "$DATA_LOCATION"
 	sudo gzip "$gzip_flags" "$CONTROL_LOCATION"
 	sudo ar -rU "$name".deb debian-binary control.tar.gz data.tar.gz >/dev/null 2>&1
