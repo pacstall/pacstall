@@ -409,6 +409,7 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 		sudo rm -rf "/tmp/pacstall-no-build/$name"
 		sudo mkdir -p "/tmp/pacstall-no-build/$name"
 		sudo mv "$STOWDIR/$name" "/tmp/pacstall-no-build/$name"
+		cleanup
 		exit 0
 	fi
 }
