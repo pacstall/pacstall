@@ -228,6 +228,43 @@ function generate_changelog() {
 	echo -e " -- $maintainer  $(date +"%a, %d %b %Y %T %z")"
 }
 
+function createdeb() {
+	local name="$1"
+	cd "$STOWDIR/$name"
+	echo "2.0" | sudo tee debian-binary >/dev/null
+	tar -cf "$PWD/control.tar" -T /dev/null
+	local CONTROL_LOCATION="$PWD/control.tar"
+	# avoid having to cd back
+	(
+	# create control.tar
+	cd DEBIAN
+	for i in *; do
+		if [[ -f $i ]]; then
+			local files_for_control+=("$i")
+		fi
+	done
+	for i in "${files_for_control[@]}"; do
+		tar -rf "$CONTROL_LOCATION" "$i"
+	done
+	)
+	tar -cf "$PWD/data.tar" -T /dev/null
+	local DATA_LOCATION="$PWD/data.tar"
+	# collect every top level dir except for DEBIAN
+	for i in *; do
+		if [[ -d $i ]] && [[ $i != "DEBIAN" ]]; then
+			local files_for_data+=("$i")
+		fi
+	done
+	for i in "${files_for_data[@]}"; do
+		tar -rf "$DATA_LOCATION" "$i"
+	done
+
+	gzip -9n "$DATA_LOCATION"
+	gzip -9n "$CONTROL_LOCATION"
+	ar r "$name".deb debian-binary control.tar.gz data.tar.gz
+	sudo rm -f debian-binary control.tar.gz data.tar.gz
+}
+
 function makedeb() {
 	fancy_message info "Packaging $name"
 	deblog "Package" "${name}"
@@ -326,7 +363,7 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
 	generate_changelog | sudo tee -a "$STOWDIR/$name/DEBIAN/changelog" >/dev/null
 
 	cd "$STOWDIR"
-	if ! sudo dpkg-deb -b --root-owner-group "$name" > /dev/null; then
+	if ! sudo createdeb "$name" > /dev/null; then
 		fancy_message error "Could not create package"
 		error_log 5 "install $PACKAGE"
 		fancy_message info "Cleaning up"
