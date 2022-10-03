@@ -241,9 +241,7 @@ function createdeb() {
     cd DEBIAN
     for i in *; do
 		if [[ -f $i ]]; then
-			echo -n "Adding: $i"
 			local files_for_control+=("$i")
-			echo -ne "\b"
 		fi
     done
     for i in "${files_for_control[@]}"; do
@@ -255,9 +253,7 @@ function createdeb() {
     # collect every top level dir except for DEBIAN
     for i in *; do
 		if [[ -d $i ]] && [[ $i != "DEBIAN" ]]; then
-			echo -n "Adding: $i"
 			local files_for_data+=("$i")
-			echo -ne "\b"
     	fi
     done
     for i in "${files_for_data[@]}"; do
