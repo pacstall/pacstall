@@ -40,6 +40,7 @@ function cleanup() {
 		# just in case we quit before $name is declared, we should be able to remove a fake directory so it doesn't exit out the script
 		sudo rm -rf "${STOWDIR:-/usr/src/pacstall}/${name:-raaaaaaaandom}"
 		sudo rm -rf /tmp/pacstall/*
+		sudo rm -rf /tmp/pacstall-func
 	fi
 	sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
 	rm -f /tmp/pacstall-func
