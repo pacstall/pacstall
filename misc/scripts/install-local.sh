@@ -230,6 +230,7 @@ function generate_changelog() {
 
 function createdeb() {
     local name="$1"
+	local gzip_flags="-6n"
     cd "$STOWDIR/$name"
     echo "2.0" | sudo tee debian-binary >/dev/null
     sudo tar -cf "$PWD/control.tar" -T /dev/null
@@ -240,7 +241,9 @@ function createdeb() {
     cd DEBIAN
     for i in *; do
 		if [[ -f $i ]]; then
+			echo -n "Adding: $i"
 			local files_for_control+=("$i")
+			echo -ne "\b"
 		fi
     done
     for i in "${files_for_control[@]}"; do
@@ -252,15 +255,17 @@ function createdeb() {
     # collect every top level dir except for DEBIAN
     for i in *; do
 		if [[ -d $i ]] && [[ $i != "DEBIAN" ]]; then
+			echo -n "Adding: $i"
 			local files_for_data+=("$i")
+			echo -ne "\b"
     	fi
     done
     for i in "${files_for_data[@]}"; do
     	sudo tar -rf "$DATA_LOCATION" "$i"
     done
 
-    sudo gzip -9n "$DATA_LOCATION"
-    sudo gzip -9n "$CONTROL_LOCATION"
+    sudo gzip "$gzip_flags" "$DATA_LOCATION"
+    sudo gzip "$gzip_flags" "$CONTROL_LOCATION"
     sudo ar -rU "$name".deb debian-binary control.tar.gz data.tar.gz >/dev/null 2>&1
     sudo mv "$name".deb ..
     sudo rm -f debian-binary control.tar.gz data.tar.gz
