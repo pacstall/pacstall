@@ -229,7 +229,7 @@ function generate_changelog() {
 }
 
 function createdeb() {
-    local name="$1"
+	local name="$1"
 	local gzip_flags="-6n"
     cd "$STOWDIR/$name"
     echo "2.0" | sudo tee debian-binary >/dev/null
