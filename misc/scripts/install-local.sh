@@ -364,7 +364,7 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
 	generate_changelog | sudo tee -a "$STOWDIR/$name/DEBIAN/changelog" >/dev/null
 
 	cd "$STOWDIR"
-	if ! sudo createdeb "$name" > /dev/null; then
+	if ! createdeb "$name" > /dev/null; then
 		fancy_message error "Could not create package"
 		error_log 5 "install $PACKAGE"
 		fancy_message info "Cleaning up"
