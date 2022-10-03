@@ -230,7 +230,13 @@ function generate_changelog() {
 
 function createdeb() {
 	local name="$1"
-	local gzip_flags="-6n"
+	if [[ $PACSTALL_INSTALL == "0" ]]; then
+		# We are not going to immediately install, meaning the user might want to share their deb with someone else, so create the highest compression. We want maximum compression over everything else
+		local gzip_flags="-9n"
+	else
+		# Immediate install, so we want fast build times over everything else
+		local gzip_flags="-2n"
+	fi
 	cd "$STOWDIR/$name"
 	echo "2.0" | sudo tee debian-binary >/dev/null
 	sudo tar -cf "$PWD/control.tar" -T /dev/null
