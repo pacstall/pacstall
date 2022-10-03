@@ -252,9 +252,7 @@ function createdeb() {
 		fi
 	done
 	fancy_message sub "Packing control.tar"
-	for i in "${files_for_control[@]}"; do
-		sudo tar -rf "$CONTROL_LOCATION" "$i"
-	done
+	sudo tar -rf "$CONTROL_LOCATION" "${files_for_control[@]}"
 	)
 	sudo tar -cf "$PWD/data.tar" -T /dev/null
 	local DATA_LOCATION="$PWD/data.tar"
@@ -265,9 +263,7 @@ function createdeb() {
 		fi
 	done
 	fancy_message sub "Packing data.tar"
-	for i in "${files_for_data[@]}"; do
-		sudo tar -rf "$DATA_LOCATION" "$i"
-	done
+	sudo tar -rf "$DATA_LOCATION" "${files_for_data[@]}"
 
 	fancy_message sub "Compressing"
 	sudo gzip "$gzip_flags" "$DATA_LOCATION" "$CONTROL_LOCATION"
