@@ -229,40 +229,41 @@ function generate_changelog() {
 }
 
 function createdeb() {
-	local name="$1"
-	cd "$STOWDIR/$name"
-	echo "2.0" | sudo tee debian-binary >/dev/null
-	tar -cf "$PWD/control.tar" -T /dev/null
-	local CONTROL_LOCATION="$PWD/control.tar"
-	# avoid having to cd back
-	(
-	# create control.tar
-	cd DEBIAN
-	for i in *; do
+    local name="$1"
+    cd "$STOWDIR/$name"
+    echo "2.0" | sudo tee debian-binary >/dev/null
+    sudo tar -cf "$PWD/control.tar" -T /dev/null
+    local CONTROL_LOCATION="$PWD/control.tar"
+    # avoid having to cd back
+    (
+    # create control.tar
+    cd DEBIAN
+    for i in *; do
 		if [[ -f $i ]]; then
 			local files_for_control+=("$i")
 		fi
-	done
-	for i in "${files_for_control[@]}"; do
-		tar -rf "$CONTROL_LOCATION" "$i"
-	done
-	)
-	tar -cf "$PWD/data.tar" -T /dev/null
-	local DATA_LOCATION="$PWD/data.tar"
-	# collect every top level dir except for DEBIAN
-	for i in *; do
+    done
+    for i in "${files_for_control[@]}"; do
+		sudo tar -rf "$CONTROL_LOCATION" "$i"
+    done
+    )
+    sudo tar -cf "$PWD/data.tar" -T /dev/null
+    local DATA_LOCATION="$PWD/data.tar"
+    # collect every top level dir except for DEBIAN
+    for i in *; do
 		if [[ -d $i ]] && [[ $i != "DEBIAN" ]]; then
 			local files_for_data+=("$i")
-		fi
-	done
-	for i in "${files_for_data[@]}"; do
-		tar -rf "$DATA_LOCATION" "$i"
-	done
+    	fi
+    done
+    for i in "${files_for_data[@]}"; do
+    	sudo tar -rf "$DATA_LOCATION" "$i"
+    done
 
-	gzip -9n "$DATA_LOCATION"
-	gzip -9n "$CONTROL_LOCATION"
-	ar r "$name".deb debian-binary control.tar.gz data.tar.gz
-	sudo rm -f debian-binary control.tar.gz data.tar.gz
+    sudo gzip -9n "$DATA_LOCATION"
+    sudo gzip -9n "$CONTROL_LOCATION"
+    sudo ar r "$name".deb debian-binary control.tar.gz data.tar.gz >/dev/null
+    sudo mv "$name".deb ..
+    sudo rm -f debian-binary control.tar.gz data.tar.gz
 }
 
 function makedeb() {
