@@ -250,6 +250,7 @@ function createdeb() {
 			local files_for_control+=("$i")
 		fi
 	done
+	fancy_message sub "Packing control.tar"
 	for i in "${files_for_control[@]}"; do
 		sudo tar -rf "$CONTROL_LOCATION" "$i"
 	done
@@ -262,12 +263,13 @@ function createdeb() {
 			local files_for_data+=("$i")
 		fi
 	done
+	fancy_message sub "Packing data.tar"
 	for i in "${files_for_data[@]}"; do
 		sudo tar -rf "$DATA_LOCATION" "$i"
 	done
-
-	sudo gzip "$gzip_flags" "$DATA_LOCATION"
-	sudo gzip "$gzip_flags" "$CONTROL_LOCATION"
+	
+	fancy_message sub "Compressing"
+	sudo gzip "$gzip_flags" "$DATA_LOCATION" "$CONTROL_LOCATION"
 	sudo ar -rU "$name".deb debian-binary control.tar.gz data.tar.gz >/dev/null 2>&1
 	sudo mv "$name".deb ..
 	sudo rm -f debian-binary control.tar.gz data.tar.gz
