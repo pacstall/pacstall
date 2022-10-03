@@ -235,7 +235,7 @@ function createdeb() {
 		local gzip_flags="-9n"
 	else
 		# Immediate install, so we want fast build times over everything else
-		local gzip_flags="-2n"
+		local gzip_flags="-1n"
 	fi
 	cd "$STOWDIR/$name"
 	echo "2.0" | sudo tee debian-binary >/dev/null
