@@ -61,12 +61,12 @@ function parseRepo() {
 
 	mapfile -t SPLIT < <(echo "$REPO" | tr "/" "\n")
 
-	if command echo "$REPO" | grep "file://" &> /dev/null; then
+	if echo "$REPO" | grep "file://" &> /dev/null; then
 		local REPODIR="$(getPath ${REPO})"
 		echo "\e]8;;$REPO\a$REPODIR\e]8;;\a"
-	elif command echo "$REPO" | grep "github" &> /dev/null; then
+	elif echo "$REPO" | grep "github" &> /dev/null; then
 		echo -e "\e]8;;https://github.com/${SPLIT[-3]}/${SPLIT[-2]}\a${SPLIT[-3]}/${SPLIT[-2]}\e]8;;\a"
-	elif command echo "$REPO" | grep "gitlab" &> /dev/null; then
+	elif echo "$REPO" | grep "gitlab" &> /dev/null; then
 		echo -e "\e]8;;https://gitlab.com/${SPLIT[-4]}/${SPLIT[-3]}\a${SPLIT[-4]}/${SPLIT[-3]}\e]8;;\a"
 	else
 		echo "\e]8;;$REPO\a$REPO\e]8;;\a"
