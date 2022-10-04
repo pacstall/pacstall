@@ -123,6 +123,9 @@ function log() {
 	if [[ -n $ppa ]]; then
 		echo "_ppa=\"$ppa"\"
 	fi
+	if [[ -n $gives ]]; then
+		echo "_gives=\"$gives"\"
+	fi
 	if [[ -f /tmp/pacstall-pacdeps-"$name" ]]; then
 		echo '_pacstall_depends="true"'
 	fi
