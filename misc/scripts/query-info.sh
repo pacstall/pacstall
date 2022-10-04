@@ -37,7 +37,7 @@ source "$LOGDIR/$PACKAGE"
 function get_field() {
 	# input 1: package
 	# input 2: field
-	local input="${gives:-$name}"
+	local input="${_gives:-$_name}"
 	local output="$(dpkg -s "$input" | grep --color=never "^$2: " | sed "s/$2: //")"
 	if [[ -n $output ]]; then
 		echo $output
