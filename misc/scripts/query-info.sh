@@ -43,9 +43,7 @@ function get_field() {
 		local input="${1}"
 	fi
 	local output="$(dpkg -s "$input" | grep --color=never "^$2: " | sed "s/$2: //")"
-	if [[ -z $output ]]; then
-		echo "Unknown/None"
-	else
+	if [[ -n $output ]]; then
 		echo $output
 	fi
 }
@@ -68,7 +66,10 @@ fi
 if [[ -n $_pacdeps ]]; then
 	echo -e "${BGreen}pacstall dependencies${NORMAL}: $_pacdeps"
 fi
-echo -e "${BGreen}dependencies${NORMAL}: $(get_field $PACKAGE Depends | tr -d ',')"
+deps=$(get_field $PACKAGE Depends | tr -d ',')
+if [[ -n $deps ]]; then
+	echo -e "${BGreen}dependencies${NORMAL}: ${deps}"
+fi
 if [[ -n $_pacstall_depends ]]; then
 	echo -e "${BGreen}install type${NORMAL}: installed as dependency"
 else
