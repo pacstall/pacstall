@@ -45,7 +45,7 @@ function cleanup() {
 	sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
 	rm -f /tmp/pacstall-func
 	rm -f /tmp/pacstall-select-options
-	unset name version url build_depends depends breaks replace description hash removescript optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall 2> /dev/null
+	unset name version url build_depends depends breaks replace description hash removescript optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall gives 2> /dev/null
 	unset -f pkgver 2> /dev/null
 }
 
@@ -774,7 +774,7 @@ sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
 if ! cd "$DIR" 2> /dev/null; then
 	error_log 1 "install $PACKAGE"
 	fancy_message error "Could not enter into ${DIR}"
-	sudo dpkg -r "$name" > /dev/null
+	sudo dpkg -r "${gives:-$name}" > /dev/null
 	fancy_message info "Cleaning up"
 	cleanup
 	exit 1
