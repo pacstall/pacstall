@@ -43,7 +43,7 @@ function cleanup() {
 	fi
 	sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
 	rm -f /tmp/pacstall-select-options
-	unset name version url build_depends depends breaks replace description hash removescript optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall gives 2> /dev/null
+	unset name version url build_depends depends breaks replace description hash removescript optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall gives pac_functions 2> /dev/null
 	unset -f pkgver 2> /dev/null
 }
 
