@@ -732,23 +732,26 @@ trap - SIGINT
 
 prompt_optdepends
 
-fancy_message info "Running functions"
-bash -ceuo pipefail 'source "$pacfile"
-fancy_message sub "prepare"
-echo prepare > /tmp/pacstall-func
-prepare; fancy_message sub "build"
-echo build > /tmp/pacstall-func
-build; fancy_message sub "install"
-echo install > /tmp/pacstall-func
-install' || {
-	error_log 5 "$(< "/tmp/pacstall-func") $PACKAGE"
-	echo -ne "\t"
-	fancy_message error "Could not $(< "/tmp/pacstall-func") $PACKAGE properly"
-	sudo dpkg -r "$name" > /dev/null
-	fancy_message info "Cleaning up"
-	cleanup
-	exit 1
-}
+for i in {prepare,build,install}; do
+	if [[ $(type -t "$i") == function ]]; then
+		pac_functions+=("$i")
+	fi
+done
+if [[ -n "${pac_functions[*]}" ]]; then
+	fancy_message info "Running functions"
+	for function in "${pac_functions[@]}"; do
+		bash -ceuo pipefail "source $pacfile
+		$function" || {
+			error_log 5 "$function $PACKAGE"
+			echo -ne "\t"
+			fancy_message error "Could not $function $PACKAGE properly"
+			sudo dpkg -r "$name" > /dev/null
+			fancy_message info "Cleaning up"
+			cleanup
+			exit 1
+		}
+	done
+fi
 
 trap - ERR
 
