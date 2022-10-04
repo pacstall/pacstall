@@ -136,6 +136,32 @@ function log() {
 	} | sudo tee "$LOGDIR/$name" > /dev/null
 }
 
+function compare_remote_version() (
+	local input="${1}"
+	source "$LOGDIR/$input" || return 1
+	if [[ -z ${_remoterepo} ]]; then
+		return
+	elif echo "${_remoterepo}" | grep "github.com" > /dev/null; then
+		local remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}"
+	elif echo "${_remoterepo}" | grep "gitlab.com" > /dev/null; then
+		local remoterepo="${_remoterepo}/-/raw/${_remotebranch}"
+	else
+		local remoterepo="${_remoterepo}"
+	fi
+	local remotever="$(source <(curl -s -- "$remoterepo"/packages/"$input"/"$input".pacscript) && type pkgver &> /dev/null && pkgver || echo "$version")" > /dev/null
+	if [[ $input == *"-git" ]]; then
+		if [[ $(pacstall -V $input) != "$remotever" ]]; then
+			echo "update"
+		else
+			echo "no"
+		fi
+	elif dpkg --compare-versions "$(pacstall -V $input)" lt "$remotever"; then
+		echo "update"
+	else
+		echo "no"
+	fi
+)
+
 function deblog() {
 	local key="$1"
 	local content="$2"
