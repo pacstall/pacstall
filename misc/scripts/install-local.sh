@@ -480,7 +480,7 @@ if [[ -n $pacdeps ]]; then
 				fancy_message warn "It's recommended to upgrade, as ${i} may have a newer version"
 			fi
 		elif fancy_message info "Installing $i" && ! pacstall "$cmd" "$i"; then
-			fancy_message error "Failed to install pacstall dependencies"
+			fancy_message error "Failed to install dependency"
 			error_log 8 "install $PACKAGE"
 			cleanup
 			return 1
