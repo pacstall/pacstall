@@ -738,6 +738,7 @@ done
 if [[ -n "${pac_functions[*]}" ]]; then
 	fancy_message info "Running functions"
 	for function in "${pac_functions[@]}"; do
+		fancy_message sub "Running $function"
 		bash -ceuo pipefail "source $pacfile
 		$function" || {
 			error_log 5 "$function $PACKAGE"
