@@ -502,9 +502,18 @@ if [[ -n $pacdeps ]]; then
 
 		[[ $KEEP ]] && cmd="-KPI" || cmd="-PI"
 		if pacstall -L | grep -E "(^| )${i}( |$)" > /dev/null 2>&1; then
-			fancy_message info "The pacstall dependency ${i} is already installed"
-			if [[ -z $UPGRADE ]]; then
-				fancy_message warn "It's recommended to upgrade, as ${i} may have a newer version"
+			pacstall_pacdep_status="$(compare_remote_version $i)"
+			if [[ -z $UPGRADE ]] && [[ $pacstall_pacdep_status == "update" ]]; then
+				fancy_message info "Found newer version for $i pacdep"
+				if ! pacstall "$cmd" "$i"; then
+					fancy_message error "Failed to install dependency"
+					error_log 8 "install $PACKAGE"
+					cleanup
+					return 1
+				fi
+			else
+				fancy_message info "The pacstall dependency ${i} is already installed and at latest version"
+
 			fi
 		elif fancy_message info "Installing $i" && ! pacstall "$cmd" "$i"; then
 			fancy_message error "Failed to install dependency"
