@@ -26,23 +26,6 @@ if [[ ! -d "/var/log/pacstall/error_log" ]]; then
 	sudo mkdir -p "/var/log/pacstall/error_log"
 	sudo chown "$PACSTALL_USER" -R /var/log/pacstall/error_log
 fi
-# Used with permission by zakariaGatter
-declare -A ErrMsg=( [1]="Unknown cause of failure."
-					[2]="Error in configuration file."
-					[3]="User specified an invalid option."
-					[4]="Error in user-supplied function in pacscript."
-					[5]="Failed to create a viable package."
-					[6]="A source or auxiliary file specified in the pacscript is missing."
-					[7]="The STOWDIR is missing."
-					[8]="Failed to install dependencies."
-					[9]="Failed to remove dependencies."
-					[10]="User attempted to run pacstall as root."
-					[11]="User lacks permissions to build or install to a given location."
-					[12]="Error parsing pacscript."
-					[13]="A package has already been built."
-					[14]="The package failed to install."
-					[15]="Programs necessary to run pacstall are missing."
-					[16]="Specified hash does not exist or failed to sign package." )
 
 # Used with permission by zakariaGatter
 declare -A ErrMsg=( [1]="Unknown cause of failure."
