@@ -495,7 +495,7 @@ Options:
 				if [[ ! -e "$STGDIR/repo/" ]]; then
 					sudo mkdir -p "$STGDIR/repo"
 					sudo touch "$STGDIR/repo/pacstallrepo.txt"
-					sudo pacstall -A
+					pacstall -A
 				fi
 
 				export type="install"
