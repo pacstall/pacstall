@@ -115,7 +115,9 @@ function log() {
 	# Metadata writing
 	{
 	echo "_name=\"$name"\"
-	echo "_pkgname=\"$pkgname"\"
+	if [[ -n $pkgname ]]; then
+		echo "_pkgname=\"$pkgname"\"
+	fi
 	echo "_version=\"$version"\"
 	echo "_date=\"$(date)"\"
 	if [[ -n $ppa ]]; then
