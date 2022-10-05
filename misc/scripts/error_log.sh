@@ -53,7 +53,7 @@ function error_log() {
 		touch "$LOGFILE"
 		find /var/log/pacstall/error_log/* -type f -ctime +14 -exec rm -rf {} \;
 	fi
-	echo -e "[ $(date) | $scope ] Error $code - ${ErrMsg[$code]} " >> "$LOGFILE"
+	echo -e "[ $(date) | $scope ] Error $code - ${ErrMsg[$code]}" >> "$LOGFILE"
 	return 0
 }
 
