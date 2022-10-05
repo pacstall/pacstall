@@ -77,8 +77,7 @@ function checks() {
 		exit 1
 	fi
 	if [[ -z $maintainer ]]; then
-		fancy_message warn "Package does not have a maintainer"
-		fancy_message warn "It maybe no longer maintained. Please be advised."
+		fancy_message warn "Package does not have a maintainer. Please be advised"
 	fi
 }
 
