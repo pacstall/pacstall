@@ -51,7 +51,7 @@ for i in "${list[@]}"; do
 	source "$LOGDIR/$i"
 
 	# localver is the current version of the package
-	localver=$(sed -n -e 's/_version=//p' "$LOGDIR"/"$i" | tr -d \")
+	localver="${_version}"
 
 	if [[ -z ${_remoterepo} ]]; then
 		# TODO: upgrade for local pacscripts
