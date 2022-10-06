@@ -252,7 +252,7 @@ function prompt_optdepends() {
 }
 
 function generate_changelog() {
-	echo -e "$name ($version) $(lsb_release -sc); urgency=medium\n"
+	echo -e "${pkgname:-$name} ($version) $(lsb_release -sc); urgency=medium\n"
 	echo -e "  * Version now at $version.\n"
 	echo -e " -- $maintainer  $(date +"%a, %d %b %Y %T %z")"
 }
@@ -295,14 +295,14 @@ function createdeb() {
 
 	fancy_message sub "Compressing"
 	sudo gzip "$gzip_flags" "$DATA_LOCATION" "$CONTROL_LOCATION"
-	sudo ar -rU "$name".deb debian-binary control.tar.gz data.tar.gz >/dev/null 2>&1
-	sudo mv "$name".deb ..
+	sudo ar -rU "${pkgname:-$name}".deb debian-binary control.tar.gz data.tar.gz >/dev/null 2>&1
+	sudo mv "${pkgname:-$name}".deb ..
 	sudo rm -f debian-binary control.tar.gz data.tar.gz
 }
 
 function makedeb() {
 	fancy_message info "Packaging $name"
-	deblog "Package" "${name}"
+	deblog "Package" "${pkgname:-$name}"
 
 	if [[ $version =~ ^[0-9] ]]; then
 		deblog "Version" "${version}"
