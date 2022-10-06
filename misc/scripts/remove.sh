@@ -22,13 +22,19 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-if ! dpkg -l "$PACKAGE" &>/dev/null; then
-	fancy_message error "$PACKAGE is not installed or not properly symlinked"
+source "$LOGDIR/$PACKAGE" || {
+	fancy_message error "$PACKAGE is not installed"
+	error_log 3 "remove $PACKAGE"
+	exit 1
+}
+
+if ! dpkg -l "${_gives:-$_name}" &>/dev/null; then
+	fancy_message error "$PACKAGE is not installed"
 	error_log 3 "remove $PACKAGE"
 	exit 1
 fi
 
-sudo apt-get purge "$PACKAGE" -y || {
+sudo apt-get purge "${_gives:-$_name}" -y || {
 	error_log 1 "remove $PACKAGE"
 	exit 1
 }

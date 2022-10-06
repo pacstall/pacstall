@@ -111,6 +111,41 @@ export On_IPurple='\033[0;105m' # Purple
 export On_ICyan='\033[0;106m'   # Cyan
 export On_IWhite='\033[0;107m'  # White
 
+# Pac-roll
+pac_text=" _________________________
+< you just got Pac-rolled >
+ -------------------------"
+
+ pac_body="
+  ⠀⠀⠀⠀⣀⠀⡀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀
+      ⣞⠑⡄⢠⠎⠀⠋⠀⠀⣜⠴⠒⡀⠀⡜⠁⠱⡀
+      ⡇⠀⡈⠁⠀⠀⠀⠀⠀⠁⠀⠘⠀⠲⠅⠀⠀⡇
+        ⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠀⢆
+    ⠀⢠⠃⠀⠄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡜⠀⠀
+    ⠀⢘⡃⠣⡀⠀⢰⢄⣧⠀⠀⠀⠀⠀⡆⡀⢀⡤⠀⡽⠀⠀
+    ⠀⢺⠀⠀⠀⠀⢀⡀⠑⢦⠀⢀⢌⡼⠁⢀⣀⠀⠘⢢⠀⠀
+    ⠀⢜⠁⠀⠀⡔⣿⣯⢇⠀⢀⠤⠤⢀⠐⢙⣿⢧⠀⠀⡇⠀
+    ⠠⠇⠀⠀⠀⠑⢵⣿⠖⡇⠈⠂⡈⠁⡗⠦⠥⠊⠀⡸⠀⠀
+    ⠀⠸⡀⠀⠀⠀⠀⠀⠀⠱⡤⠔⠙⢲⠁⠀⠀⠀⠀⡇⠀⠀
+    ⠀⠀⢰⠀⠀⠀⠀⠀⠀⠀⠱⣒⢲⡏⠀⠀⠀⠀⠠⣱⠀⠀
+    ⠀⠀⢀⠇⠀⠀⠀⠀⠀⠀⠀⠁⠊⠀⠀⠀⠀⠀⠀⠃⠀⠀
+    ⠀ ⠼⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢇
+    ⠀⠀⣿⢀⣠⠐⣰⢿⣯⡄⠀⠀⣠⡾⠁⣿⣿⣿⣶⣶⣶⣦⣤⣤⣀⣀⠀
+    ⣤⣴⣾⣿⣿⣰⣿⠛⡿⣇⣤⡾⠋⠀⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡀
+⠀⠀⢠⣶⣾⣿⣿⣿⣿⣿⣿⣿⣟⢀⡷⣮⣭⣤⣤⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⠀
+⠀⠀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⣿⣟⣛⣛⣻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄
+⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠈⣟⣚⣒⣒⣲⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄
+⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⡿⠶⠾⠯⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄
+⠀⠀⣿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⢿⣭⣿⣿⣟⣿⣿⣿⡏⠀⠉⠉⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷
+⠀⢠⣿⣿⣿⣿⣿⡿⢻⣿⣿⣿⡿⣻⣛⣛⣛⣛⢻⣿⣿⣿⣇⠀⠀⠀⠈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄
+⠀⠻⣿⣿⣿⣿⠅⠂⠰⣿⣿⣿⡇⣿⡿⢿⠯⠭⠭⣽⣿⣿⣿⣤⡀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣄
+⠀⣠⣿⣿⡿⠃⠀⠀⠀⢹⣿⣿⡷⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣤⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣰⣿⣿⣿⣣⣷⣄⠀⢠⣾⣿⣿⣇⣿⣿⣓⣒⣒⣺⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇
+⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⣿⣿⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣯⣿⣿⣿⣿⣿⣿⣿⣿⡟
+⠈⣿⣿⣿⣽⣿⣿⣿⣿⣿⣿⣿⡇⣿⣿⣿⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠉⠉⠉⠉⠉
+⠀⠈⠋⠛⠛⠛⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣻⣏⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⣾⣿⣿⣿⣿⣿⣿⣿⣿⡟⠉⠉⠉⠉⠉⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡀"
+
 # fancy_message allows visually appealing output.
 # Source the code block and run:
 #
@@ -120,11 +155,11 @@ function fancy_message() {
 	local MESSAGE="${2}"
 
 	case ${MESSAGE_TYPE} in
-		info) echo -e "[${BGreen}+${NC}] INFO: ${MESSAGE}" ;;
-		warn) echo >&2 -e "[${BYellow}*${NC}] WARNING: ${MESSAGE}" ;;
-		error) echo >&2 -e "[${BRed}!${NC}] ERROR: ${MESSAGE}" ;;
+		info) echo -e "[${BGreen}+${NC}] ${BOLD}INFO${NC}: ${MESSAGE}" ;;
+		warn) echo >&2 -e "[${BYellow}*${NC}] ${BOLD}WARNING${NC}: ${MESSAGE}" ;;
+		error) echo >&2 -e "[${BRed}!${NC}] ${BOLD}ERROR${NC}: ${MESSAGE}" ;;
 		sub) echo -e "\t[${BBlue}>${NC}] ${MESSAGE}" ;;
-		*) echo >&2 -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}" ;;
+		*) echo >&2 -e "[${BOLD}?${NORMAL}] ${BOLD}UNKNOWN${NC}: ${MESSAGE}" ;;
 	esac
 }
 
@@ -154,13 +189,17 @@ function ask() {
 	# Ask the question (not using "read -p" as it uses stderr not stdout)
 	echo -ne "$1 [$prompt] "
 
-	if [[ -z $DISABLE_PROMPTS ]]; then
+	if [[ ${DISABLE_PROMPTS:-z} == "z" ]]; then
+		export DISABLE_PROMPTS="no"
+	fi
+
+	if [[ $DISABLE_PROMPTS == "no" ]]; then
 		read -r reply <&0
 		# Detect if script is running non-interactively
 		# Which implies that the input is being piped into the script
 		if [[ $NON_INTERACTIVE ]]; then
 			if [[ -z $reply ]]; then
-				printf "%s" "$default"
+				echo -n "$default"
 			fi
 			echo "$reply"
 		fi
@@ -252,7 +291,7 @@ function select_options() {
 	else
 		echo -ne "${message} [${BOLD}$( seq -s ' ' 1 "$length" )${NC}] [${BIGreen}Y${NC}/${RED}n${NC}] "
 	fi
-	if [[ -z $DISABLE_PROMPTS ]]; then
+	if [[ $DISABLE_PROMPTS == "no" ]]; then
 		read -r input <&0
 		if [[ $NON_INTERACTIVE ]]; then
 			if [[ -z $input ]]; then
@@ -266,7 +305,7 @@ function select_options() {
 	fi
 	if [[ -z $input ]] || [[ $input =~ ^[Yy]$ ]]; then
 		seq -s ' ' 1 "$length" | tee /tmp/pacstall-select-options >/dev/null
-	elif [[ $input =~ ^[Nn]$ ]]; then
+	elif [[ $input == "0" ]] || [[ $input =~ ^[Nn]$ ]]; then
 		echo "n" | tee /tmp/pacstall-select-options >/dev/null
 	elif ! [[ $input =~ [a-zA-Z]+ ]] || [[ $input =~ ^[0-9]+$ ]]; then
 		for i in "${input[@]}"; do
@@ -317,7 +356,7 @@ for i in "${@}"; do
 	# Just add argument if doesn't start with a single hyphen.
 	if ! [[ ${i} =~ ^-[^-] ]]; then
 		# if argument is '-P' or '-K', add to beginning of argument list.
-		if [[ ${i} == "-P" ]] || [[ ${i} == "-K" ]]; then
+		if [[ ${i} == "-P" ]] || [[ ${i} == "-K" ]] || [[ ${i} == "-N" ]]; then
 			argument_list=("${i}" "${argument_list[@]}")
 		else
 			argument_list+=("${i}")
@@ -329,7 +368,7 @@ for i in "${@}"; do
 	# We remove the '-' prefix as we'll add it later.
 	for j in $(echo "${i}" | sed 's|^-||' | sed 's|[[:upper:]]| &|g'); do
 		# If current string is 'P', add to beginning of argument list.
-		if [[ ${j} == "P" ]] || [[ ${j} == "-disable-prompts" ]] || [[ ${j} == "K" ]] || [[ ${j} == "-keep" ]]; then
+		if [[ ${j} == "P" ]] || [[ ${j} == "-disable-prompts" ]] || [[ ${j} == "K" ]] || [[ ${j} == "-keep" ]] || [[ ${j} == "N" ]] || [[ ${j} == "-no-install" ]]; then
 			argument_list=("-${j}" "${argument_list[@]}")
 		else
 			argument_list+=("-${j}")
@@ -341,8 +380,8 @@ done
 set -- "${argument_list[@]}"
 
 function lock() {
-	ignore_short="-S -D -A -V -L -Qi -h"
-	ignore_long="--search --download --add-repo --version --query-info --help"
+	ignore_short="-S -D -A -V -L -Qi -T -h"
+	ignore_long="--search --download --add-repo --version --query-info --tree --help"
 	ignore="$ignore_short $ignore_long"
 	if [[ $ignore =~ (^|[[:space:]])"$1"($|[[:space:]]) ]]; then
 		return 1
@@ -374,12 +413,13 @@ while [[ $1 != "--" ]]; do
 			;;
 
 		-N | --no-install)
+			export PACDEB_DIR="$PWD"
 			fancy_message info "Package will be built and not installed"
 			export PACSTALL_INSTALL=0
 			;;
 
 		-h | --help)
-			echo -e "Usage: pacstall [-h] [-V] {-I,-Il,-S,-R,-D,-A,-U,-L,-Up,-Qi} [-P] [-K]
+			echo -e "Usage: pacstall [-h] [-V] {-I,-Il,-S,-R,-D,-A,-U,-L,-Up,-Qi,-T} [-P] [-K] [-N]
 
 An AUR inspired package manager for Ubuntu.
 
@@ -405,7 +445,7 @@ Commands:
 	${BOLD}-Qi${NC}, ${BOLD}--query-info${NC} <package>
 		Query information about a package.
 	${BOLD}-T${NC}, ${BOLD}--tree${NC} <package>
-		Display a tree list of a packages files
+		Display a tree graph of a package.
 
 Options:
 	${BOLD}-P${NC}, ${BOLD}--disable-prompts${NC}
@@ -437,6 +477,13 @@ Options:
 			trap "trap_ctrlc" 2
 
 			while [[ -n $2 ]]; do
+
+				if [[ $2 == "pac" ]]; then
+					echo -ne "$pac_text"
+					echo -e "$pac_body"
+					echo -e "~ Rick Pacsley ~"
+					exit 0
+				fi
 				export PACKAGE=$2
 				shift
 				if [[ -z $PACKAGE ]]; then
@@ -448,7 +495,7 @@ Options:
 				if [[ ! -e "$STGDIR/repo/" ]]; then
 					sudo mkdir -p "$STGDIR/repo"
 					sudo touch "$STGDIR/repo/pacstallrepo.txt"
-					sudo pacstall -A
+					pacstall -A
 				fi
 
 				export type="install"
@@ -588,7 +635,7 @@ Options:
 			PACKAGE="$2"
 
 			if [[ -z $PACKAGE ]]; then
-				echo -e "2.0.1 \033[1m\x1b[38;2;248;184;120mMellow${NC}"
+				echo -e "3.0.0 \033[1m\x1b[38;2;0;71;171mCobalt${NC}"
 				exit 0
 			else
 				# If pacstall -V was called with an argument, it's a package, so get the package version (useful for scripting)
@@ -625,7 +672,7 @@ Options:
 				exit 1
 			}
 
-			if curl --output /dev/null --silent --head --fail https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/pyproject.toml; then
+			if curl --output /dev/null --silent --head --fail https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/pyproject.toml || curl --output /dev/null --silent --head --fail https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/Cargo.toml; then
 				fancy_message error "The repository you are trying to upgrade to contains a version of pacstall that cannot be updated from $(pacstall -V)"
 				fancy_message error "Visit https://github.com/$USERNAME/pacstall/tree/$BRANCH for more information on how to reinstall. Most packages will also need to be reinstalled"
 				exit 1
@@ -695,21 +742,27 @@ Options:
 			exit 0
 			;;
 
-		-Qi | --query-info)
-			PACKAGE=$2
-			source "$STGDIR/scripts/query-info.sh"
-			exit 0
-			;;
-
 		-T | --tree)
 			PACKAGE="$2"
 
-			if [[ ! -d "$STOWDIR/$PACKAGE" ]]; then
-				fancy_message error "$PACKAGE does not exist"
+			if [[ -z $PACKAGE ]]; then
+				fancy_message error "No package specified"
+				exit 1
+			fi
+			if ! [[ -f $LOGDIR/$PACKAGE ]]; then
+				fancy_message error "Package is not installed"
 				exit 1
 			fi
 
-			tree -C "$STOWDIR/$PACKAGE" | sed "s/\/usr\/src\/pacstall\/$PACKAGE/\//g"
+			source "$LOGDIR/$PACKAGE"
+
+			dpkg --listfiles "${_gives:-$_name}" | sed -e "s/[^-][^\/]*\//  │/g" -e "s/│\([^ ]\)/│──\1/"
+			exit 0
+			;;
+
+		-Qi | --query-info)
+			PACKAGE=$2
+			source "$STGDIR/scripts/query-info.sh"
 			exit 0
 			;;
 

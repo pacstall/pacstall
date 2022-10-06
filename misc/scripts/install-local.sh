@@ -24,7 +24,7 @@
 
 function cleanup() {
 	if [[ -n $KEEP ]]; then
-		sudo rm -r "/tmp/pacstall-keep/$name"
+		sudo rm -rf "/tmp/pacstall-keep/$name"
 		mkdir -p "/tmp/pacstall-keep/$name"
 		if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
 			sudo mv /tmp/pacstall-pacdep/* "/tmp/pacstall-keep/$name"
@@ -41,10 +41,10 @@ function cleanup() {
 		sudo rm -rf "${STOWDIR:-/usr/src/pacstall}/${name:-raaaaaaaandom}"
 		sudo rm -rf /tmp/pacstall/*
 	fi
-	rm -f /tmp/pacstall-func
+	sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
 	rm -f /tmp/pacstall-select-options
-	unset name version url build_depends depends breaks replace description hash removescript optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall 2> /dev/null
-	unset -f pkgver 2> /dev/null
+	unset name version url build_depends depends breaks replace description hash optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall gives pac_functions 2> /dev/null
+	unset -f pkgver removescript prepare build install 2> /dev/null
 }
 
 function trap_ctrlc() {
@@ -77,8 +77,7 @@ function checks() {
 		exit 1
 	fi
 	if [[ -z $maintainer ]]; then
-		fancy_message warn "Package does not have a maintainer"
-		fancy_message warn "It maybe no longer maintained. Please be advised."
+		fancy_message warn "Package does not have a maintainer. Please be advised"
 	fi
 }
 
@@ -113,36 +112,56 @@ function log() {
 	fi
 
 	# Metadata writing
-	echo "_name=\"$PACKAGE"\" | sudo tee "$LOGDIR"/"$PACKAGE" > /dev/null
-	if [[ -n ${gives} ]]; then
-		echo "_gives=\"${gives}"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+	{
+	echo "_name=\"$name"\"
+	if [[ -n $pkgname ]]; then
+		echo "_pkgname=\"$pkgname"\"
 	fi
-	echo "_version=\"$version"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-	echo "_description=\"$description"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-	echo "_date=\"$(date)"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-	echo "_maintainer=\"$maintainer"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-	if [[ -n $depends ]]; then
-		echo "_dependencies=\"$depends"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-	fi
-	if [[ -n $build_depends ]]; then
-		echo "_build_dependencies=\"$build_depends"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-	fi
-	if [[ -n $pacdeps ]]; then
-		echo "_pacdeps=\"$pacdeps"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
-	fi
+	echo "_version=\"$version"\"
+	echo "_date=\"$(date)"\"
 	if [[ -n $ppa ]]; then
-		echo "_ppa=\"$ppa"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+		echo "_ppa=\"$ppa"\"
 	fi
-	if test -f /tmp/pacstall-pacdeps-"$PACKAGE"; then
-		echo '_pacstall_depends="true"' | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+	if [[ -n $gives ]]; then
+		echo "_gives=\"$gives"\"
+	fi
+	if [[ -f /tmp/pacstall-pacdeps-"$name" ]]; then
+		echo '_pacstall_depends="true"'
 	fi
 	if [[ $local == 'no' ]]; then
-		echo "_remoterepo=\"$pURL"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+		echo "_remoterepo=\"$pURL"\"
 		if [[ $branch == 'yes' ]]; then
-			echo "_remotebranch=\"$pBRANCH"\" | sudo tee -a "$LOGDIR"/"$PACKAGE" > /dev/null
+			echo "_remotebranch=\"$pBRANCH"\"
 		fi
 	fi
+	} | sudo tee "$LOGDIR/$name" > /dev/null
 }
+
+function compare_remote_version() (
+	local input="${1}"
+	source "$LOGDIR/$input" || return 1
+	if [[ -z ${_remoterepo} ]]; then
+		return
+	elif echo "${_remoterepo}" | grep "github.com" > /dev/null; then
+		local remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}"
+	elif echo "${_remoterepo}" | grep "gitlab.com" > /dev/null; then
+		local remoterepo="${_remoterepo}/-/raw/${_remotebranch}"
+	else
+		local remoterepo="${_remoterepo}"
+	fi
+	local remotever="$(source <(curl -s -- "$remoterepo"/packages/"$input"/"$input".pacscript) && type pkgver &> /dev/null && pkgver || echo "$version")" > /dev/null
+	if [[ $input == *"-git" ]]; then
+		if [[ $(pacstall -V $input) != "$remotever" ]]; then
+			echo "update"
+		else
+			echo "no"
+		fi
+	elif dpkg --compare-versions "$(pacstall -V $input)" lt "$remotever"; then
+		echo "update"
+	else
+		echo "no"
+	fi
+)
 
 function deblog() {
 	local key="$1"
@@ -175,7 +194,7 @@ function prompt_optdepends() {
 				continue
 			fi
 			# Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
-			# Add to the optdeps list if not to display the question
+			# If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of it's status
 			if ! dpkg-query -W -f='${Status}' "${opt}" 2> /dev/null | grep "^install ok installed" > /dev/null 2>&1; then
 				optdeps+=("${optdep}")
 			else
@@ -205,11 +224,17 @@ function prompt_optdepends() {
 			if [[ "${choices[0]}" != "n" ]]; then
 				for i in "${choices[@]}"; do
 					(( i-- ))
-					s="${optdeps[$i]}"
+					local s="${optdeps[$i]}"
+					# does `s` actually exist in the optdeps array?
 					if [[ -n $s ]]; then
+						# then add it, and strip the `:`
 						deps+=" ${s%%: *}"
+						local not_installed_yet_optdeps+=("${s%%: *}")
 					fi
 				done
+				if [[ -n $deps ]]; then
+					fancy_message info "Selecting packages ${BCyan}${not_installed_yet_optdeps[*]}${NC}"
+				fi
 				if pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
 					sudo dpkg -r --force-all "$name" > /dev/null
 				fi
@@ -221,25 +246,70 @@ function prompt_optdepends() {
 	fi
 
 	if [[ -n $deps ]]; then
-		deps="$(echo "${deps}" | sed -e 's/^[[:space:]]*//')"
+		deps="$(sed -e 's/^[[:space:]]*//' <<< "$deps")"
 		deblog "Depends" "${deps//' '/', '}"
 	fi
 }
 
 function generate_changelog() {
-	echo -e "$name ($version) $(lsb_release -sc); urgency=medium\n"
+	echo -e "${name} ($version) $(lsb_release -sc); urgency=medium\n"
 	echo -e "  * Version now at $version.\n"
 	echo -e " -- $maintainer  $(date +"%a, %d %b %Y %T %z")"
 }
 
+function createdeb() {
+	local name="$1"
+	if [[ $PACSTALL_INSTALL == "0" ]]; then
+		# We are not going to immediately install, meaning the user might want to share their deb with someone else, so create the highest compression. We want maximum compression over everything else
+		local gzip_flags="-9n"
+	else
+		# Immediate install, so we want fast build times over everything else
+		local gzip_flags="-1n"
+	fi
+	cd "$STOWDIR/$name"
+	echo "2.0" | sudo tee debian-binary >/dev/null
+	sudo tar -cf "$PWD/control.tar" -T /dev/null
+	local CONTROL_LOCATION="$PWD/control.tar"
+	# avoid having to cd back
+	(
+	# create control.tar
+	cd DEBIAN
+	for i in *; do
+		if [[ -f $i ]]; then
+			local files_for_control+=("$i")
+		fi
+	done
+	fancy_message sub "Packing control.tar"
+	sudo tar -rf "$CONTROL_LOCATION" "${files_for_control[@]}"
+	)
+	sudo tar -cf "$PWD/data.tar" -T /dev/null
+	local DATA_LOCATION="$PWD/data.tar"
+	# collect every top level dir except for DEBIAN
+	for i in *; do
+		if [[ -d $i ]] && [[ $i != "DEBIAN" ]]; then
+			local files_for_data+=("$i")
+		fi
+	done
+	fancy_message sub "Packing data.tar"
+	sudo tar -rf "$DATA_LOCATION" "${files_for_data[@]}"
+
+	fancy_message sub "Compressing"
+	sudo gzip "$gzip_flags" "$DATA_LOCATION" "$CONTROL_LOCATION"
+	sudo ar -rU "$name.deb" debian-binary control.tar.gz data.tar.gz >/dev/null 2>&1
+	sudo mv "$name.deb" ..
+	sudo rm -f debian-binary control.tar.gz data.tar.gz
+}
+
 function makedeb() {
 	fancy_message info "Packaging $name"
-	deblog "Package" "${name}"
+	deblog "Package" "$name"
 
 	if [[ $version =~ ^[0-9] ]]; then
-		deblog "Version" "${version}-1"
+		deblog "Version" "${version}"
+		export version="${version}"
 	else
-		deblog "Version" "0${version}-1"
+		deblog "Version" "0${version}"
+		export version="0${version}"
 	fi
 
 	deblog "Architecture" "all"
@@ -263,8 +333,8 @@ function makedeb() {
 
 	for i in {removescript,postinst}; do
 		case $i in
-			removescript) local deb_post_file="postrm" ;;
-			postinst) local deb_post_file="postinst" ;;
+			removescript) export deb_post_file="postrm" ;;
+			postinst) export deb_post_file="postinst" ;;
 		esac
 		if [[ $(type -t $i) == function ]]; then
 			echo '#!/bin/bash
@@ -302,21 +372,33 @@ function fancy_message() {
 }
 
 hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
-			echo -e "export STOWDIR=${STOWDIR}\n$(declare -f "$i")\n$i" | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
-			if [[ $i == "removescript" ]]; then
-				echo "sudo rm -f $LOGDIR/$name" | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
+		{
+			echo -e "export name=\"${name}\""
+			if [[ -n "${pkgname}" ]]; then
+				echo -e "export pkgname=\"${pkgname}\""
 			fi
-			sudo chmod -x "$STOWDIR/$name/DEBIAN/$deb_post_file"
-			sudo chmod 755 "$STOWDIR/$name/DEBIAN/$deb_post_file"
+			echo -e "export pkgdir=\"${pkgdir}\""
+			if [[ -n "${gives}" ]]; then
+				echo -e "export gives=\"${gives}\""
+			fi
+			echo -e "export version=\"${version}\""
+			echo -e "export maintainer=\"${maintainer:-Pacstall <pacstall@pm.me>}\""
+			echo -e "$(declare -f "$i")\n$i"
+		} | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
 		fi
 	done
+	echo -e "sudo rm -f $LOGDIR/$name\nsudo rm -f /etc/apt/preferences.d/$name.pin" | sudo tee -a "$STOWDIR/$name/DEBIAN/postrm" >/dev/null
+	for i in {postrm,postinst}; do
+		sudo chmod -x "$STOWDIR/$name/DEBIAN/$i" 1>/dev/null 2>&1
+		sudo chmod 755 "$STOWDIR/$name/DEBIAN/$i" 1>/dev/null 2>&1
+	done
 
-	deblog "Installed-Size" "$(du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | awk '{print $1}')"
+	deblog "Installed-Size" "$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | awk '{print $1}')"
 
 	generate_changelog | sudo tee -a "$STOWDIR/$name/DEBIAN/changelog" >/dev/null
 
 	cd "$STOWDIR"
-	if ! sudo dpkg-deb -b --root-owner-group "$name" > /dev/null; then
+	if ! createdeb "$name"; then
 		fancy_message error "Could not create package"
 		error_log 5 "install $PACKAGE"
 		fancy_message info "Cleaning up"
@@ -348,10 +430,14 @@ Pin: version *
 Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 		return 0
 	else
-		fancy_message info "Package built at ${BGreen}$STOWDIR/$name.deb${NC}"
+		sudo mv "$STOWDIR/$name.deb" "$PACDEB_DIR"
+		sudo chown "$PACSTALL_USER":"$PACSTALL_USER" "$PACDEB_DIR/$name.deb"
+		fancy_message info "Package built at ${BGreen}$PACDEB_DIR/$name.deb${NC}"
 		fancy_message info "Moving ${BGreen}$STOWDIR/$name${NC} to ${BGreen}/tmp/pacstall-no-build/$name${NC}"
+		sudo rm -rf "/tmp/pacstall-no-build/$name"
 		sudo mkdir -p "/tmp/pacstall-no-build/$name"
 		sudo mv "$STOWDIR/$name" "/tmp/pacstall-no-build/$name"
+		cleanup
 		exit 0
 	fi
 }
@@ -417,12 +503,21 @@ if [[ -n $pacdeps ]]; then
 
 		[[ $KEEP ]] && cmd="-KPI" || cmd="-PI"
 		if pacstall -L | grep -E "(^| )${i}( |$)" > /dev/null 2>&1; then
-			fancy_message info "The pacstall dependency ${i} is already installed"
-			if [[ -z $UPGRADE ]]; then
-				fancy_message warn "It's recommended to upgrade, as ${i} may have a newer version"
+			pacstall_pacdep_status="$(compare_remote_version $i)"
+			if [[ -z $UPGRADE ]] && [[ $pacstall_pacdep_status == "update" ]]; then
+				fancy_message info "Found newer version for $i pacdep"
+				if ! pacstall "$cmd" "$i"; then
+					fancy_message error "Failed to install dependency"
+					error_log 8 "install $PACKAGE"
+					cleanup
+					return 1
+				fi
+			else
+				fancy_message info "The pacstall dependency ${i} is already installed and at latest version"
+
 			fi
 		elif fancy_message info "Installing $i" && ! pacstall "$cmd" "$i"; then
-			fancy_message error "Failed to install pacstall dependencies"
+			fancy_message error "Failed to install dependency"
 			error_log 8 "install $PACKAGE"
 			cleanup
 			return 1
@@ -574,7 +669,8 @@ else
 				return 1
 			fi
 			# unzip file
-			unzip -qf "${url##*/}" 1>&1 2> /dev/null
+			fancy_message info "Extracting ${url##*/}"
+			unzip -qo "${url##*/}" 1>&1 2>/dev/null
 			# cd into it
 			cd ./*/ 2> /dev/null || {
 				error_log 1 "install $PACKAGE"
@@ -648,6 +744,7 @@ else
 			if ! hashcheck "${url##*/}"; then
 				return 1
 			fi
+			fancy_message info "Extracting ${url##*/}"
 			tar -xf "${url##*/}" 1>&1 2> /dev/null
 			cd ./*/ 2> /dev/null || {
 				error_log 1 "install $PACKAGE"
@@ -669,23 +766,27 @@ trap - SIGINT
 
 prompt_optdepends
 
-fancy_message info "Running functions"
-bash -ceuo pipefail 'source "$pacfile"
-fancy_message sub "prepare"
-echo prepare > /tmp/pacstall-func
-prepare; fancy_message sub "build"
-echo build > /tmp/pacstall-func
-build; fancy_message sub "install"
-echo install > /tmp/pacstall-func
-install' || {
-	error_log 5 "$(< "/tmp/pacstall-func") $PACKAGE"
-	echo -ne "\t"
-	fancy_message error "Could not $(< "/tmp/pacstall-func") $PACKAGE properly"
-	sudo dpkg -r "$name" > /dev/null
-	fancy_message info "Cleaning up"
-	cleanup
-	exit 1
-}
+for i in {prepare,build,install}; do
+	if [[ $(type -t "$i") == function ]]; then
+		pac_functions+=("$i")
+	fi
+done
+if [[ -n "${pac_functions[*]}" ]]; then
+	fancy_message info "Running functions"
+	for function in "${pac_functions[@]}"; do
+		fancy_message sub "Running $function"
+		bash -ceuo pipefail "source $pacfile
+		$function" || {
+			error_log 5 "$function $PACKAGE"
+			echo -ne "\t"
+			fancy_message error "Could not $function $PACKAGE properly"
+			sudo dpkg -r "$name" > /dev/null
+			fancy_message info "Cleaning up"
+			cleanup
+			exit 1
+		}
+	done
+fi
 
 trap - ERR
 
@@ -700,11 +801,10 @@ cd "$HOME" 2> /dev/null || (
 	fancy_message warn "Could not enter into ${HOME}"
 )
 
+makedeb
+
 # Metadata writing
 log
-
-
-makedeb
 
 # `hash -r` updates PATH database
 hash -r
@@ -715,7 +815,7 @@ sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
 if ! cd "$DIR" 2> /dev/null; then
 	error_log 1 "install $PACKAGE"
 	fancy_message error "Could not enter into ${DIR}"
-	sudo dpkg -r "$name" > /dev/null
+	sudo dpkg -r "${gives:-$name}" > /dev/null
 	fancy_message info "Cleaning up"
 	cleanup
 	exit 1
