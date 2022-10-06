@@ -199,7 +199,7 @@ function ask() {
 		# Which implies that the input is being piped into the script
 		if [[ $NON_INTERACTIVE ]]; then
 			if [[ -z $reply ]]; then
-				printf "%s" "$default"
+				echo -n "$default"
 			fi
 			echo "$reply"
 		fi
