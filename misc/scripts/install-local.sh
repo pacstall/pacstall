@@ -40,6 +40,7 @@ function cleanup() {
 		# just in case we quit before $name is declared, we should be able to remove a fake directory so it doesn't exit out the script
 		sudo rm -rf "${STOWDIR:-/usr/src/pacstall}/${name:-raaaaaaaandom}"
 		sudo rm -rf /tmp/pacstall/*
+		sudo rm -rf /tmp/pacstall-gives
 	fi
 	sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
 	rm -f /tmp/pacstall-select-options
@@ -134,6 +135,9 @@ function log() {
 			echo "_remotebranch=\"$pBRANCH"\"
 		fi
 	fi
+	if [[ -n "${pacdeps[*]}" ]]; then
+		echo "_pacdeps=(${pacdeps[*]})"
+	fi
 	} | sudo tee "$LOGDIR/$name" > /dev/null
 }
 
@@ -175,7 +179,7 @@ function clean_builddir() {
 }
 
 function prompt_optdepends() {
-	local deps="${depends}"
+	IFS=' ' read -ar deps <<< "$depends"
 	if [[ ${#optdepends[@]} -ne 0 ]]; then
 		for i in "${optdepends[@]}"; do
 			if ! grep -q ':' <<< "${i}"; then
@@ -198,7 +202,7 @@ function prompt_optdepends() {
 			if ! dpkg-query -W -f='${Status}' "${opt}" 2> /dev/null | grep "^install ok installed" > /dev/null 2>&1; then
 				optdeps+=("${optdep}")
 			else
-				deps+=" ${opt}"
+				deps+=("${opt}")
 			fi
 		done
 
@@ -228,11 +232,11 @@ function prompt_optdepends() {
 					# does `s` actually exist in the optdeps array?
 					if [[ -n $s ]]; then
 						# then add it, and strip the `:`
-						deps+=" ${s%%: *}"
+						deps+=("${s%%: *}")
 						local not_installed_yet_optdeps+=("${s%%: *}")
 					fi
 				done
-				if [[ -n $deps ]]; then
+				if [[ -n ${deps[*]} ]]; then
 					fancy_message info "Selecting packages ${BCyan}${not_installed_yet_optdeps[*]}${NC}"
 				fi
 				if pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
@@ -245,9 +249,21 @@ function prompt_optdepends() {
 		fi
 	fi
 
-	if [[ -n $deps ]]; then
-		deps="$(sed -e 's/^[[:space:]]*//' <<< "$deps")"
-		deblog "Depends" "${deps//' '/', '}"
+	if [[ -n ${deps[*]} ]]; then
+		if [[ -n "${pacdeps[*]}" ]]; then
+			for i in "${pacdeps[@]}"; do
+				(
+				source "$LOGDIR/$i"
+				if [[ -n "$_gives" ]]; then
+					echo "$_gives" | tee -a /tmp/pacstall-gives >/dev/null
+				else
+					echo "$_name" | tee -a /tmp/pacstall-gives >/dev/null
+				fi
+				)
+			done
+			deps+=( $(cat /tmp/pacstall-gives) )
+		fi
+		deblog "Depends" "$(echo "${deps[@]}" | sed 's/ /, /g')"
 	fi
 }
 
