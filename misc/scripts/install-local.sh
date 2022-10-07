@@ -179,7 +179,9 @@ function clean_builddir() {
 }
 
 function prompt_optdepends() {
-	IFS=' ' read -ar deps <<< "$depends"
+	if [[ -n $depends ]]; then
+		deps=( $depends )
+	fi
 	if [[ ${#optdepends[@]} -ne 0 ]]; then
 		for i in "${optdepends[@]}"; do
 			if ! grep -q ':' <<< "${i}"; then
