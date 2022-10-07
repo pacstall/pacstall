@@ -160,7 +160,7 @@ function compare_remote_version() (
 		else
 			echo "no"
 		fi
-	elif dpkg --compare-versions "$(pacstall -V $input)" lt "$remotever"; then
+	elif dpkg --compare-versions "$(pacstall -V $input)" lt "$remotever" >/dev/null 2>&1; then
 		echo "update"
 	else
 		echo "no"
