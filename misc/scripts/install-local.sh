@@ -266,7 +266,7 @@ function prompt_optdepends() {
 			deps+=( $(cat /tmp/pacstall-gives) )
 		fi
 	fi
-	if [[ -n "$depends" ]]; then
+	if [[ -n "$depends" ]] || [[ -n "${deps[*]}" ]]; then
 		deblog "Depends" "$(echo "${deps[@]}" | sed 's/ /, /g')"
 	fi
 }
