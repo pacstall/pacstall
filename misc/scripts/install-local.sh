@@ -436,7 +436,7 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" >/dev/null
 			sudo dpkg -r --force-all "$name" > /dev/null
 			fancy_message info "Cleaning up"
 			cleanup
-			return 1
+			exit 1
 		fi
 
 		sudo rm -rf "$STOWDIR/$name"
