@@ -39,5 +39,12 @@ sudo apt-get purge "${_gives:-$_name}" -y || {
 	exit 1
 }
 
-sudo apt-get remove "${_pacdeps[@]}" -y
+if [[ -n "${_pacdeps[*]}" ]]; then
+	for i in "${_pacdeps[@]}"; do
+		(
+		source "$LOGDIR/$i"
+		sudo apt-get purge "${_gives:-$_name}" -y
+		)
+	done
+fi
 # vim:set ft=sh ts=4 sw=4 noet:
