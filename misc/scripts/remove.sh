@@ -38,5 +38,6 @@ sudo apt-get purge "${_gives:-$_name}" -y || {
 	error_log 1 "remove $PACKAGE"
 	exit 1
 }
-exit 0
+
+sudo apt-get remove "${_pacdeps[@]}" -y
 # vim:set ft=sh ts=4 sw=4 noet:
