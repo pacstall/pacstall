@@ -60,7 +60,7 @@ if [[ -n $_ppa ]]; then
 	echo -e "${BGreen}ppa${NORMAL}: $_ppa"
 fi
 if [[ -n $_pacdeps ]]; then
-	echo -e "${BGreen}pacstall dependencies${NORMAL}: $_pacdeps"
+	echo -e "${BGreen}pacstall dependencies${NORMAL}: ${_pacdeps[*]}"
 fi
 deps=$(get_field $PACKAGE Depends | tr -d ',')
 if [[ -n $deps ]]; then
