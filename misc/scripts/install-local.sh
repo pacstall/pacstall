@@ -134,6 +134,9 @@ function log() {
 			echo "_remotebranch=\"$pBRANCH"\"
 		fi
 	fi
+	if [[ -n "${pacdeps[*]}" ]]; then
+		echo "_pacdeps=(${pacdeps[@]})"
+	fi
 	} | sudo tee "$LOGDIR/$name" > /dev/null
 }
 
