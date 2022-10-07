@@ -264,7 +264,9 @@ function prompt_optdepends() {
 			deps+=( $(cat /tmp/pacstall-gives) )
 		fi
 	fi
-	deblog "Depends" "$(echo "${deps[@]}" | sed 's/ /, /g')"
+	if [[ -n "$depends" ]]; then
+		deblog "Depends" "$(echo "${deps[@]}" | sed 's/ /, /g')"
+	fi
 }
 
 function generate_changelog() {
