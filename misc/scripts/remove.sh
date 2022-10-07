@@ -28,6 +28,16 @@ source "$LOGDIR/$PACKAGE" || {
 	exit 1
 }
 
+if [[ -n "${_pacdeps[*]}" ]]; then
+	for i in "${_pacdeps[@]}"; do
+		pacstall -R "$i" || {
+				fancy_message error "Failed to remove $PACKAGE"
+				error_log 3 "remove $PACKAGE"
+				exit 1
+		}
+	done
+fi
+
 if ! dpkg -l "${_gives:-$_name}" &>/dev/null; then
 	fancy_message error "$PACKAGE is not installed"
 	error_log 3 "remove $PACKAGE"
