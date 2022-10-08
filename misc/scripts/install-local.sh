@@ -253,7 +253,7 @@ function prompt_optdepends() {
     if [[ -n ${deps[*]} ]]; then
         if [[ -n ${pacdeps[*]} ]]; then
             for i in "${pacdeps[@]}"; do
-                (
+                (   
                     source "$LOGDIR/$i"
                     if [[ -n $_gives ]]; then
                         echo "$_gives" | tee -a /tmp/pacstall-gives > /dev/null
@@ -290,7 +290,7 @@ function createdeb() {
     sudo tar -cf "$PWD/control.tar" -T /dev/null
     local CONTROL_LOCATION="$PWD/control.tar"
     # avoid having to cd back
-    (
+    (   
         # create control.tar
         cd DEBIAN
         for i in *; do
@@ -580,24 +580,23 @@ if ! pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
     fi
 fi
 
-# Get all uninstalled build depends
-build_depends=($build_depends)
-for build_dep in "${build_depends[@]}"; do
-    if dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null | grep "^install ok installed" > /dev/null 2>&1; then
-		build_depends_to_delete+=("${build_dep}")
-    fi
-done
-
-for target in "${build_depends_to_delete[@]}"; do
-	for i in "${!build_depends[@]}"; do
-		if [[ ${build_depends[i]} == "$target" ]]; then
-			unset 'build_depends[i]'
-		fi
-	done
-done
-
-# This echo makes it ignore empty strigs
 if [[ -n ${build_depends[*]} ]]; then
+    # Get all uninstalled build depends
+    build_depends=($build_depends)
+    for build_dep in "${build_depends[@]}"; do
+        if dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null | grep "^install ok installed" > /dev/null 2>&1; then
+            build_depends_to_delete+=("${build_dep}")
+        fi
+    done
+
+    for target in "${build_depends_to_delete[@]}"; do
+        for i in "${!build_depends[@]}"; do
+            if [[ ${build_depends[i]} == "$target" ]]; then
+                unset 'build_depends[i]'
+            fi
+        done
+    done
+
     fancy_message info "${BLUE}$name${NC} requires ${CYAN}$(echo -e "${build_depends[*]}")${NC} to install"
     ask "Do you want to remove them after installing ${BLUE}$name${NC}" N
     if [[ $answer -eq 0 ]]; then
