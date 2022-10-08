@@ -35,56 +35,56 @@ BGreen='\033[1;32m'
 BYellow='\033[1;33m'
 
 function fancy_message() {
-  # $1 = type , $2 = message
-  # Message types
-  # 0 - info
-  # 1 - warning
-  # 2 - error
-  if [[ -z ${1} ]] || [[ -z ${2} ]]; then
-    return
-  fi
+    # $1 = type , $2 = message
+    # Message types
+    # 0 - info
+    # 1 - warning
+    # 2 - error
+    if [[ -z ${1} ]] || [[ -z ${2} ]]; then
+        return
+    fi
 
-  local MESSAGE_TYPE="${1}"
-  local MESSAGE="${2}"
+    local MESSAGE_TYPE="${1}"
+    local MESSAGE="${2}"
 
-  case ${MESSAGE_TYPE} in
-    info) echo -e "[${BGreen}+${NC}] INFO: ${MESSAGE}" ;;
-    warn)   echo >&2 -e "[${BYellow}*${NC}] WARNING: ${MESSAGE}" ;;
-    error)   echo >&2 -e "[${BRed}!${NC}] ERROR: ${MESSAGE}" ;;
-    *)   echo >&2 -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}" ;;
-  esac
+    case ${MESSAGE_TYPE} in
+        info) echo -e "[${BGreen}+${NC}] INFO: ${MESSAGE}" ;;
+        warn) echo >&2 -e "[${BYellow}*${NC}] WARNING: ${MESSAGE}" ;;
+        error) echo >&2 -e "[${BRed}!${NC}] ERROR: ${MESSAGE}" ;;
+        *) echo >&2 -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}" ;;
+    esac
 }
 
 function check_url() {
-  http_code="$(curl -o /dev/null -s --head --write-out '%{http_code}\n' -- "${1}")"
-  case "${http_code}" in
-    000)
-      fancy_message error "Failed to download file, check your connection"
-      error_log 1 "get ${PACKAGE} pacscript"
-      return 1
-      ;;
-    404)
-      fancy_message error "The URL cannot be found"
-      return 1
-      ;;
-    200 | 301 | 302)
-      true
-      ;;
-    *)
-      fancy_message error "Failed with http code ${http_code}"
-      return 1
-      ;;
-  esac
+    http_code="$(curl -o /dev/null -s --head --write-out '%{http_code}\n' -- "${1}")"
+    case "${http_code}" in
+        000)
+            fancy_message error "Failed to download file, check your connection"
+            error_log 1 "get ${PACKAGE} pacscript"
+            return 1
+            ;;
+        404)
+            fancy_message error "The URL cannot be found"
+            return 1
+            ;;
+        200 | 301 | 302)
+            true
+            ;;
+        *)
+            fancy_message error "Failed with http code ${http_code}"
+            return 1
+            ;;
+    esac
 }
 
 if [[ ! -t 0 ]]; then
-  NON_INTERACTIVE=true
-  fancy_message warn "Reading input from pipe"
+    NON_INTERACTIVE=true
+    fancy_message warn "Reading input from pipe"
 fi
 
 if ! command -v apt &> /dev/null; then
-  fancy_message error "apt could not be found"
-  exit 1
+    fancy_message error "apt could not be found"
+    exit 1
 fi
 apt-get install -y -qq sudo wget iputils-ping
 
@@ -93,16 +93,16 @@ echo -e "|---${GREEN}Pacstall Installer${NC}---|"
 echo -e "|------------------------|"
 
 if [[ ${GITHUB_ACTIONS} != "true" ]]; then
-  check_url "https://github.com" || {
-    fancy_message error "Could not connect to the internet"
-    exit 1
-  }
+    check_url "https://github.com" || {
+        fancy_message error "Could not connect to the internet"
+        exit 1
+    }
 fi
 
 echo
 if [[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ]]; then
-  fancy_message info "Updating"
-  apt-get -qq update
+    fancy_message info "Updating"
+    apt-get -qq update
 fi
 
 fancy_message info "Installing packages"
@@ -110,8 +110,8 @@ fancy_message info "Installing packages"
 echo -ne "Do you want to install axel (faster downloads)? [${BGreen}Y${NC}/${RED}n${NC}] "
 read -r reply <&0
 case "$reply" in
-  N* | n*) ;;
-  *) apt-get install -qq -y axel ;;
+    N* | n*) ;;
+    *) apt-get install -qq -y axel ;;
 esac
 
 apt-get install -qq -y curl wget build-essential unzip tree bc git iputils-ping lsb-release
@@ -142,7 +142,7 @@ echo "https://raw.githubusercontent.com/pacstall/pacstall-programs/master" > $ST
 
 fancy_message info "Pulling scripts from GitHub"
 for i in {error_log.sh,add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
-  wget -q --show-progress -N https://raw.githubusercontent.com/pacstall/pacstall/master/misc/scripts/"$i" -P "$STGDIR/scripts" &
+    wget -q --show-progress -N https://raw.githubusercontent.com/pacstall/pacstall/master/misc/scripts/"$i" -P "$STGDIR/scripts" &
 done
 
 wget -q --show-progress --progress=bar:force -O "/bin/pacstall" "https://raw.githubusercontent.com/pacstall/pacstall/master/pacstall" &

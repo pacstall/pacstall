@@ -23,53 +23,53 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 if [[ -z $PACKAGE ]]; then
-  fancy_message error "You failed to specify a package"
-  exit 1
+    fancy_message error "You failed to specify a package"
+    exit 1
 fi
 
 if [[ ! -f "$LOGDIR/$PACKAGE" ]]; then
-  fancy_message error "Package does not exist"
-  exit 1
+    fancy_message error "Package does not exist"
+    exit 1
 fi
 
 source "$LOGDIR/$PACKAGE"
 
 function get_field() {
-  # input 1: package
-  # input 2: field
-  local input="${_gives:-$_name}"
-  local output="$(dpkg -s "$input" | grep --color=never "^$2: " | sed "s/$2: //")"
-  if [[ -n $output ]]; then
-    echo $output
-  fi
+    # input 1: package
+    # input 2: field
+    local input="${_gives:-$_name}"
+    local output="$(dpkg -s "$input" | grep --color=never "^$2: " | sed "s/$2: //")"
+    if [[ -n $output ]]; then
+        echo $output
+    fi
 }
 
 echo -e "${BGreen}name${NORMAL}: $(get_field $PACKAGE Package)"
 echo -e "${BGreen}version${NORMAL}: $(get_field $PACKAGE Version)"
 if [[ -n ${size} ]]; then
-  echo -e "${BGreen}size${NORMAL}: $(get_field $PACKAGE Installed-Size | cut -d' ' -f 2 | numfmt --to=iec)"
+    echo -e "${BGreen}size${NORMAL}: $(get_field $PACKAGE Installed-Size | cut -d' ' -f 2 | numfmt --to=iec)"
 fi
 echo -e "${BGreen}description${NORMAL}: $(get_field $PACKAGE Description)"
 echo -e "${BGreen}date installed${NORMAL}: $_date"
 
 if [[ -n $_remoterepo ]]; then
-  echo -e "${BGreen}remote repo${NORMAL}: $_remoterepo"
+    echo -e "${BGreen}remote repo${NORMAL}: $_remoterepo"
 fi
 echo -e "${BGreen}maintainer${NORMAL}: $(get_field $PACKAGE Maintainer)"
 if [[ -n $_ppa ]]; then
-  echo -e "${BGreen}ppa${NORMAL}: $_ppa"
+    echo -e "${BGreen}ppa${NORMAL}: $_ppa"
 fi
 if [[ -n $_pacdeps ]]; then
-  echo -e "${BGreen}pacstall dependencies${NORMAL}: ${_pacdeps[*]}"
+    echo -e "${BGreen}pacstall dependencies${NORMAL}: ${_pacdeps[*]}"
 fi
 deps=$(get_field $PACKAGE Depends | tr -d ',')
 if [[ -n $deps ]]; then
-  echo -e "${BGreen}dependencies${NORMAL}: ${deps}"
+    echo -e "${BGreen}dependencies${NORMAL}: ${deps}"
 fi
 if [[ -n $_pacstall_depends ]]; then
-  echo -e "${BGreen}install type${NORMAL}: installed as dependency"
+    echo -e "${BGreen}install type${NORMAL}: installed as dependency"
 else
-  echo -e "${BGreen}install type${NORMAL}: explicitly installed"
+    echo -e "${BGreen}install type${NORMAL}: explicitly installed"
 fi
 exit 0
 # vim:set ft=sh ts=4 sw=4 noet:
