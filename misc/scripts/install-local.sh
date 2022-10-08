@@ -580,31 +580,39 @@ if ! pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
     fi
 fi
 
-# Get all uninstalled build depends
-for build_dep in $build_depends; do
-    if dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null | grep "^install ok installed" > /dev/null 2>&1; then
-        build_depends=${build_depends/"${build_dep}"/}
-    fi
-done
+if [[ -n ${build_depends[*]} ]]; then
+    # Get all uninstalled build depends
+    build_depends=($build_depends)
+    for build_dep in "${build_depends[@]}"; do
+        if dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null | grep "^install ok installed" > /dev/null 2>&1; then
+            build_depends_to_delete+=("${build_dep}")
+        fi
+    done
 
-build_depends=$(echo "$build_depends" | tr -s ' ' | awk '{gsub(/^ +| +$/,"")} {print $0}')
+    for target in "${build_depends_to_delete[@]}"; do
+        for i in "${!build_depends[@]}"; do
+            if [[ ${build_depends[i]} == "$target" ]]; then
+                unset 'build_depends[i]'
+            fi
+        done
+    done
 
-# This echo makes it ignore empty strigs
-if [[ -n $build_depends ]]; then
-    fancy_message info "${BLUE}$name${NC} requires ${CYAN}$(echo -e "$build_depends")${NC} to install"
-    ask "Do you want to remove them after installing ${BLUE}$name${NC}" N
-    if [[ $answer -eq 0 ]]; then
-        NOBUILDDEP=0
-    else
-        NOBUILDDEP=1
-    fi
+    if [[ ${#build_depends[@]} -ne 0 ]]; then
+        fancy_message info "${BLUE}$name${NC} requires ${CYAN}$(echo -e "${build_depends[*]}")${NC} to install"
+        ask "Do you want to remove them after installing ${BLUE}$name${NC}" N
+        if [[ $answer -eq 0 ]]; then
+            NOBUILDDEP=0
+        else
+            NOBUILDDEP=1
+        fi
 
-    if ! sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 $build_depends; then
-        fancy_message error "Failed to install build dependencies"
-        error_log 8 "install $PACKAGE"
-        fancy_message info "Cleaning up"
-        cleanup
-        return 1
+        if ! sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 ${build_depends[*]}; then
+            fancy_message error "Failed to install build dependencies"
+            error_log 8 "install $PACKAGE"
+            fancy_message info "Cleaning up"
+            cleanup
+            return 1
+        fi
     fi
 fi
 
@@ -812,7 +820,7 @@ trap - ERR
 if [[ $NOBUILDDEP -eq 1 ]]; then
     fancy_message info "Purging build dependencies"
     # shellcheck disable=2086
-    sudo apt-get purge --auto-remove -y $build_depends
+    sudo apt-get purge --auto-remove -y ${build_depends[*]}
 fi
 
 cd "$HOME" 2> /dev/null || (
