@@ -38,5 +38,16 @@ sudo apt-get purge "${_gives:-$_name}" -y || {
 	error_log 1 "remove $PACKAGE"
 	exit 1
 }
-exit 0
+
+if [[ -n "${_pacdeps[*]}" ]]; then
+	for i in "${_pacdeps[@]}"; do
+		(
+		source "$LOGDIR/$i"
+		sudo apt-get purge "${_gives:-$_name}" -y
+		sudo rm -f /var/log/pacstall/metadata/"$_name"
+		)
+	done
+fi
+
+sudo rm -f /var/log/pacstall/metadata/"$_name"
 # vim:set ft=sh ts=4 sw=4 noet:
