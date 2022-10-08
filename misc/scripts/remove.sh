@@ -48,4 +48,6 @@ if [[ -n "${_pacdeps[*]}" ]]; then
 		)
 	done
 fi
+
+sudo rm -f /var/log/pacstall/metadata/"$_name"
 # vim:set ft=sh ts=4 sw=4 noet:
