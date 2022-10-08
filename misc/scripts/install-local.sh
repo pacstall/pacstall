@@ -584,8 +584,16 @@ fi
 build_depends=($build_depends)
 for build_dep in "${build_depends[@]}"; do
     if dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null | grep "^install ok installed" > /dev/null 2>&1; then
-        build_depends=("${build_depends[@]}/$build_dep")
+		build_depends_to_delete+=("${build_dep}")
     fi
+done
+
+for target in "${build_depends_to_delete[@]}"; do
+	for i in "${!build_depends[@]}"; do
+		if [[ ${build_depends[i]} == "$target" ]]; then
+			unset 'build_depends[i]'
+		fi
+	done
 done
 
 # This echo makes it ignore empty strigs
