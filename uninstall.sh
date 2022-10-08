@@ -39,35 +39,35 @@ BIGreen='\033[1;92m'
 BIRed='\033[1;91m'
 
 function fancy_message() {
-	# $1 = type , $2 = message
-	# Message types
-	# 0 - info
-	# 1 - warning
-	# 2 - error
-	if [[ -z ${1} ]] || [[ -z ${2} ]]; then
-		return
-	fi
+  # $1 = type , $2 = message
+  # Message types
+  # 0 - info
+  # 1 - warning
+  # 2 - error
+  if [[ -z ${1} ]] || [[ -z ${2} ]]; then
+    return
+  fi
 
-	local MESSAGE_TYPE="${1}"
-	local MESSAGE="${2}"
+  local MESSAGE_TYPE="${1}"
+  local MESSAGE="${2}"
 
-	case ${MESSAGE_TYPE} in
-		info) echo -e "[${BGreen}+${NC}] INFO: ${MESSAGE}" ;;
-		warn) >&2 echo -e "[${BYellow}*${NC}] WARNING: ${MESSAGE}" ;;
-		error) >&2 echo -e "[${BRed}!${NC}] ERROR: ${MESSAGE}" ;;
-		*) >&2 echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}" ;;
-	esac
+  case ${MESSAGE_TYPE} in
+    info) echo -e "[${BGreen}+${NC}] INFO: ${MESSAGE}" ;;
+    warn)   echo >&2 -e "[${BYellow}*${NC}] WARNING: ${MESSAGE}" ;;
+    error)   echo >&2 -e "[${BRed}!${NC}] ERROR: ${MESSAGE}" ;;
+    *)   echo >&2 -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}" ;;
+  esac
 }
 
 if [[ ! -t 0 ]]; then
-	NON_INTERACTIVE=true
-	fancy_message warn "Reading input from pipe"
+  NON_INTERACTIVE=true
+  fancy_message warn "Reading input from pipe"
 fi
 
 # Check if pacstall is installed
 if ! command -v pacstall &> /dev/null; then
-	fancy_message error "Pacstall is not installed!"
-	exit 1
+  fancy_message error "Pacstall is not installed!"
+  exit 1
 fi
 
 fancy_message info "You can keep the installed packages even after uninstalling Pacstall"
@@ -76,67 +76,67 @@ echo "	1. Remove Pacstall and installed packages."
 echo "	2. Remove Pacstall only (Keep installed packages)."
 
 while true; do
-	echo -ne "Type selection number [${BIRed}1${NC}/${BIGreen}2${NC}] "
-	read -r reply <&0
+  echo -ne "Type selection number [${BIRed}1${NC}/${BIGreen}2${NC}] "
+  read -r reply <&0
 
-	if [[ $reply -eq 1 ]]; then
-		fancy_message info "Removing Pacstall and installed packages..."
+  if [[ $reply -eq 1 ]]; then
+    fancy_message info "Removing Pacstall and installed packages..."
 
-		# Remove packages
-		if [[ -z $(pacstall -L) ]]; then
-			fancy_message warn "Nothing is installed using Pacstall yet"
-			fancy_message warn "Skipping package uninstallation"
-		else
-			for i in $(pacstall -L); do
-				pacstall -PR "$i"
-			done
-		fi
+    # Remove packages
+    if [[ -z $(pacstall -L) ]]; then
+      fancy_message warn "Nothing is installed using Pacstall yet"
+      fancy_message warn "Skipping package uninstallation"
+    else
+      for i in $(pacstall -L); do
+        pacstall -PR "$i"
+      done
+    fi
 
-		fancy_message info "Removing Pacstall"
-		sudo rm "$(command -v pacstall)"
+    fancy_message info "Removing Pacstall"
+    sudo rm "$(command -v pacstall)"
 
-		# Remove scripts and repos
-		fancy_message info "Removing scripts and repositories"
-		sudo rm -rf /usr/share/pacstall/
-		# Remove man page
-		fancy_message info "Removing man page"
-		sudo rm /usr/share/man/man8/pacstall.8.gz
+    # Remove scripts and repos
+    fancy_message info "Removing scripts and repositories"
+    sudo rm -rf /usr/share/pacstall/
+    # Remove man page
+    fancy_message info "Removing man page"
+    sudo rm /usr/share/man/man8/pacstall.8.gz
 
-		# Remove logs
-		fancy_message info "Removing log files"
-		sudo rm -rf /var/log/pacstall/
-		# Remove cache
-		fancy_message info "Removing cache"type selection number:
-		sudo rm -rf /var/cache/pacstall/
-		# Remove tmp files
-		fancy_message info "Removing temporary files"
-		sudo rm -rf /tmp/pacstall/
+    # Remove logs
+    fancy_message info "Removing log files"
+    sudo rm -rf /var/log/pacstall/
+    # Remove cache
+    fancy_message info "Removing cache"type selection number:
+    sudo rm -rf /var/cache/pacstall/
+    # Remove tmp files
+    fancy_message info "Removing temporary files"
+    sudo rm -rf /tmp/pacstall/
 
-		break
+    break
 
-	elif [[ $reply -eq 2 ]]; then
-		fancy_message info "Only uninstalling Pacstall..."
-		sudo rm "$(command -v pacstall)"
+  elif [[ $reply -eq 2 ]]; then
+    fancy_message info "Only uninstalling Pacstall..."
+    sudo rm "$(command -v pacstall)"
 
-		# Remove scripts and repos
-		fancy_message info "Removing scripts and repositories"
-		sudo rm -rf /usr/share/pacstall/
-		# Remove man page
-		fancy_message info "Removing man page"
-		sudo rm /usr/share/man/man8/pacstall.8.gz
+    # Remove scripts and repos
+    fancy_message info "Removing scripts and repositories"
+    sudo rm -rf /usr/share/pacstall/
+    # Remove man page
+    fancy_message info "Removing man page"
+    sudo rm /usr/share/man/man8/pacstall.8.gz
 
-		# Remove logs
-		fancy_message info "Removing log files"
-		sudo rm -rf /var/log/pacstall/
-		# Remove cache
-		fancy_message info "Removing cache"
-		sudo rm -rf /var/cache/pacstall/
-		# Remove tmp files
-		fancy_message info "Removing temporary files"
-		sudo rm -rf /tmp/pacstall/
+    # Remove logs
+    fancy_message info "Removing log files"
+    sudo rm -rf /var/log/pacstall/
+    # Remove cache
+    fancy_message info "Removing cache"
+    sudo rm -rf /var/cache/pacstall/
+    # Remove tmp files
+    fancy_message info "Removing temporary files"
+    sudo rm -rf /tmp/pacstall/
 
-		break
-	fi
+    break
+  fi
 done
 fancy_message info "Uninstallation complete. Thanks for using Pacstall!"
 # vim:set ft=sh ts=4 sw=4 noet:

@@ -25,42 +25,42 @@
 REPO="${2%/}"
 
 if echo "$REPO" | grep "github.com" > /dev/null; then
-	REPO="${REPO/'github.com'/'raw.githubusercontent.com'}"
-	if ! echo "$REPO" | grep "/tree/" > /dev/null; then
-		REPO="$REPO/master"
-		fancy_message warn "Assuming that git branch is ${GREEN}master${NC}"
-	else
-		REPO="${URL/'/tree/'/'/'}"
-	fi
+  REPO="${REPO/'github.com'/'raw.githubusercontent.com'}"
+  if ! echo "$REPO" | grep "/tree/" > /dev/null; then
+    REPO="$REPO/master"
+    fancy_message warn "Assuming that git branch is ${GREEN}master${NC}"
+  else
+    REPO="${URL/'/tree/'/'/'}"
+  fi
 elif echo "$REPO" | grep "gitlab.com" > /dev/null; then
-	if ! echo "$REPO" | grep "/tree/" > /dev/null; then
-		REPO="$REPO/-/raw/master"
-		fancy_message warn "Assuming that git branch is ${GREEN}master${NC}"
-	else
-		REPO="${REPO/"/tree/"/"/raw/"}"
-	fi
+  if ! echo "$REPO" | grep "/tree/" > /dev/null; then
+    REPO="$REPO/-/raw/master"
+    fancy_message warn "Assuming that git branch is ${GREEN}master${NC}"
+  else
+    REPO="${REPO/"/tree/"/"/raw/"}"
+  fi
 elif [[ -d $REPO ]] > /dev/null; then
-	if ! echo "$REPO" | grep "file://" > /dev/null; then
-		REPO="file://$(readlink -f $REPO)"
-	fi
+  if ! echo "$REPO" | grep "file://" > /dev/null; then
+    REPO="file://$(readlink -f $REPO)"
+  fi
 else
-	fancy_message warn "The repo link must be the root to the raw files"
-	fancy_message warn "Make sure the repo contains a package list"
+  fancy_message warn "The repo link must be the root to the raw files"
+  fancy_message warn "Make sure the repo contains a package list"
 
-	ask "Do you want to add \"$REPO\" to the repo list?" N
-	if [[ $answer -eq 0 ]]; then
-		exit 3
-	fi
+  ask "Do you want to add \"$REPO\" to the repo list?" N
+  if [[ $answer -eq 0 ]]; then
+    exit 3
+  fi
 fi
 
 if ! curl --head --location -s --fail -- "$REPO/packagelist" > /dev/null; then
-	fancy_message warn "If the URL is a private repo, edit ${CYAN}\e]8;;file://$STGDIR/repo/pacstallrepo.txt\a$STGDIR/repo/pacstallrepo.txt\e]8;;\a${NC}"
-	fancy_message error "packagelist file not found"
-	exit 3
+  fancy_message warn "If the URL is a private repo, edit ${CYAN}\e]8;;file://$STGDIR/repo/pacstallrepo.txt\a$STGDIR/repo/pacstallrepo.txt\e]8;;\a${NC}"
+  fancy_message error "packagelist file not found"
+  exit 3
 fi
 REPOLIST=()
 while IFS= read -r REPOURL; do
-	REPOLIST+=("${REPOURL} ")
+  REPOLIST+=("${REPOURL} ")
 done < "$STGDIR/repo/pacstallrepo.txt"
 REPOLIST+=("$REPO")
 

@@ -23,30 +23,30 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 source "$LOGDIR/$PACKAGE" || {
-	fancy_message error "$PACKAGE is not installed"
-	error_log 3 "remove $PACKAGE"
-	exit 1
+  fancy_message error "$PACKAGE is not installed"
+  error_log 3 "remove $PACKAGE"
+  exit 1
 }
 
-if ! dpkg -l "${_gives:-$_name}" &>/dev/null; then
-	fancy_message error "$PACKAGE is not installed"
-	error_log 3 "remove $PACKAGE"
-	exit 1
+if ! dpkg -l "${_gives:-$_name}" &> /dev/null; then
+  fancy_message error "$PACKAGE is not installed"
+  error_log 3 "remove $PACKAGE"
+  exit 1
 fi
 
 sudo apt-get purge "${_gives:-$_name}" -y || {
-	error_log 1 "remove $PACKAGE"
-	exit 1
+  error_log 1 "remove $PACKAGE"
+  exit 1
 }
 
-if [[ -n "${_pacdeps[*]}" ]]; then
-	for i in "${_pacdeps[@]}"; do
-		(
-		source "$LOGDIR/$i"
-		sudo apt-get purge "${_gives:-$_name}" -y
-		sudo rm -f /var/log/pacstall/metadata/"$_name"
-		)
-	done
+if [[ -n ${_pacdeps[*]}   ]]; then
+  for i in "${_pacdeps[@]}"; do
+    (
+      source "$LOGDIR/$i"
+      sudo apt-get purge "${_gives:-$_name}" -y
+      sudo rm -f /var/log/pacstall/metadata/"$_name"
+    )
+  done
 fi
 
 sudo rm -f /var/log/pacstall/metadata/"$_name"

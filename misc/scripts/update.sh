@@ -35,8 +35,8 @@ sudo chown "$PACSTALL_USER" -R /tmp/pacstall
 
 sudo mkdir -p /usr/share/bash-completion/completions
 
-if ! dpkg -s lsb-release >/dev/null 2>&1; then
-	sudo apt-get install lsb-release -y
+if ! dpkg -s lsb-release > /dev/null 2>&1; then
+  sudo apt-get install lsb-release -y
 fi
 
 STGDIR="/usr/share/pacstall"
@@ -44,13 +44,13 @@ tabs -4
 
 tty_settings=$(stty -g)
 old_version=($(pacstall -V))
-old_info=($(cat $STGDIR/repo/update 2>/dev/null || echo pacstall master))
+old_info=($(cat $STGDIR/repo/update 2> /dev/null || echo pacstall master))
 
 old_username="${old_info[0]}"
 old_branch="${old_info[1]}"
 
 for i in {error_log.sh,add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
-	sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/"$i" -P "$STGDIR/scripts" &
+  sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/"$i" -P "$STGDIR/scripts" &
 done
 
 sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/pacstall -P /bin &
@@ -58,7 +58,7 @@ sudo wget -q -O /usr/share/man/man8/pacstall.8.gz https://raw.githubusercontent.
 sudo wget -q -O /usr/share/bash-completion/completions/pacstall https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/completion/bash &
 
 if command -v fish &> /dev/null; then
-	sudo wget -q -O /usr/share/fish/vendor_completions.d/pacstall.fish https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/completion/fish &
+  sudo wget -q -O /usr/share/fish/vendor_completions.d/pacstall.fish https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/completion/fish &
 fi
 
 wait && stty "$tty_settings"
@@ -76,7 +76,7 @@ new_branch="${new_info[1]}"
 
 # Bling Bling update ascii
 if [[ ${new_branch} != "master" ]]; then
-	echo '
+  echo '
                                      ∩~-~∩
  _____               _        _ _   ξ ･×･ ξ
 |  __ \             | |      | | |  ξ　~　ξ
@@ -86,7 +86,7 @@ if [[ ${new_branch} != "master" ]]; then
 |_|   \__,_|\___|___/\__\__,_|_|_|  ξ_ξ ξ_ξ ξ_ξξ_ξ
 '
 else
-	echo '
+  echo '
     ____                  __        ____
    / __ \____ ___________/ /_____ _/ / /
   / /_/ / __ `/ ___/ ___/ __/ __ `/ / /
@@ -98,19 +98,19 @@ fi
 echo -e "[${BGreen}+${NC}] INFO: Updated from ${BGreen}${old_version}${NC} (${BGreen}${old_username} ${old_branch}${NC}) -> ${BGreen}${new_version}${NC} (${BGreen}${new_username} ${new_branch}${NC})"
 
 if [[ ${new_branch} != "master" ]]; then
-	echo -e "[${BGreen}+${NC}] INFO: You have updated to a development branch."
-	echo -e "[${BYellow}*${NC}] WARN: Please remember that bugs may arise, and that this branch may not be as stable as master."
+  echo -e "[${BGreen}+${NC}] INFO: You have updated to a development branch."
+  echo -e "[${BYellow}*${NC}] WARN: Please remember that bugs may arise, and that this branch may not be as stable as master."
 
 fi
 
 if [[ ${new_username} == "pacstall" ]]; then
-	echo -e "Useful links:"
-	echo -e "\t${BYellow}Website${NC}: ${BOLD}https://pacstall.dev${NORMAL}"
-	echo -e "\t${BPurple}Packages${NC}: ${BOLD}https://pacstall.dev/packages${NORMAL}"
-	echo -e "\t${BCyan}GitHub${NC}: ${BOLD}https://github.com/pacstall${NORMAL}"
-	echo -e "\t${BRed}Report Bugs${NC}: ${BOLD}https://github.com/${new_username}/pacstall/issues${NORMAL}"
-	echo -e "\t${BBlue}Discord${NC}: ${BOLD}https://discord.gg/yzrjXJV6K8${NORMAL}"
-	echo -e "\t${BGreen}Matrix${NC}: ${BOLD}https://matrix.to/#/#pacstall:matrix.org${NORMAL}"
+  echo -e "Useful links:"
+  echo -e "\t${BYellow}Website${NC}: ${BOLD}https://pacstall.dev${NORMAL}"
+  echo -e "\t${BPurple}Packages${NC}: ${BOLD}https://pacstall.dev/packages${NORMAL}"
+  echo -e "\t${BCyan}GitHub${NC}: ${BOLD}https://github.com/pacstall${NORMAL}"
+  echo -e "\t${BRed}Report Bugs${NC}: ${BOLD}https://github.com/${new_username}/pacstall/issues${NORMAL}"
+  echo -e "\t${BBlue}Discord${NC}: ${BOLD}https://discord.gg/yzrjXJV6K8${NORMAL}"
+  echo -e "\t${BGreen}Matrix${NC}: ${BOLD}https://matrix.to/#/#pacstall:matrix.org${NORMAL}"
 fi
 exit 0
 

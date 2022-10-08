@@ -151,16 +151,16 @@ pac_text=" _________________________
 #
 # `fancy_message {info,warn,error,sub} "What you want to say"`
 function fancy_message() {
-	local MESSAGE_TYPE="${1}"
-	local MESSAGE="${2}"
+  local MESSAGE_TYPE="${1}"
+  local MESSAGE="${2}"
 
-	case ${MESSAGE_TYPE} in
-		info) echo -e "[${BGreen}+${NC}] ${BOLD}INFO${NC}: ${MESSAGE}" ;;
-		warn) echo >&2 -e "[${BYellow}*${NC}] ${BOLD}WARNING${NC}: ${MESSAGE}" ;;
-		error) echo >&2 -e "[${BRed}!${NC}] ${BOLD}ERROR${NC}: ${MESSAGE}" ;;
-		sub) echo -e "\t[${BBlue}>${NC}] ${MESSAGE}" ;;
-		*) echo >&2 -e "[${BOLD}?${NORMAL}] ${BOLD}UNKNOWN${NC}: ${MESSAGE}" ;;
-	esac
+  case ${MESSAGE_TYPE} in
+    info) echo -e "[${BGreen}+${NC}] ${BOLD}INFO${NC}: ${MESSAGE}" ;;
+    warn) echo >&2 -e "[${BYellow}*${NC}] ${BOLD}WARNING${NC}: ${MESSAGE}" ;;
+    error) echo >&2 -e "[${BRed}!${NC}] ${BOLD}ERROR${NC}: ${MESSAGE}" ;;
+    sub) echo -e "\t[${BBlue}>${NC}] ${MESSAGE}" ;;
+    *) echo >&2 -e "[${BOLD}?${NORMAL}] ${BOLD}UNKNOWN${NC}: ${MESSAGE}" ;;
+  esac
 }
 
 # This is the ask function. You can source this code block and then run something like:
@@ -174,169 +174,169 @@ function fancy_message() {
 # Y=1 and N=0
 # You can specify {Y,N} or leave it out to prevent entering the default but this is not allowed in pacstall because of the -P flag which gives unattended install
 function ask() {
-	local prompt default reply
+  local prompt default reply
 
-	if [[ ${2:-} == 'Y' ]]; then
-		prompt="${BIGreen}Y${NC}/${RED}n${NC}"
-		default='Y'
-	elif [[ ${2:-} == 'N' ]]; then
-		prompt="${GREEN}y${NC}/${BIRed}N${NC}"
-		default='N'
-	else
-		prompt="${GREEN}y${NC}/${RED}n${NC}"
-	fi
+  if [[ ${2:-} == 'Y' ]]; then
+    prompt="${BIGreen}Y${NC}/${RED}n${NC}"
+    default='Y'
+  elif [[ ${2:-} == 'N' ]]; then
+    prompt="${GREEN}y${NC}/${BIRed}N${NC}"
+    default='N'
+  else
+    prompt="${GREEN}y${NC}/${RED}n${NC}"
+  fi
 
-	# Ask the question (not using "read -p" as it uses stderr not stdout)
-	echo -ne "$1 [$prompt] "
+  # Ask the question (not using "read -p" as it uses stderr not stdout)
+  echo -ne "$1 [$prompt] "
 
-	if [[ ${DISABLE_PROMPTS:-z} == "z" ]]; then
-		export DISABLE_PROMPTS="no"
-	fi
+  if [[ ${DISABLE_PROMPTS:-z} == "z" ]]; then
+    export DISABLE_PROMPTS="no"
+  fi
 
-	if [[ $DISABLE_PROMPTS == "no" ]]; then
-		read -r reply <&0
-		# Detect if script is running non-interactively
-		# Which implies that the input is being piped into the script
-		if [[ $NON_INTERACTIVE ]]; then
-			if [[ -z $reply ]]; then
-				echo -n "$default"
-			fi
-			echo "$reply"
-		fi
-	else
-		echo "$default"
-		reply=$default
-	fi
+  if [[ $DISABLE_PROMPTS == "no" ]]; then
+    read -r reply <&0
+    # Detect if script is running non-interactively
+    # Which implies that the input is being piped into the script
+    if [[ $NON_INTERACTIVE ]]; then
+      if [[ -z $reply ]]; then
+        echo -n "$default"
+      fi
+      echo "$reply"
+    fi
+  else
+    echo "$default"
+    reply=$default
+  fi
 
-	# Default?
-	if [[ -z $reply ]]; then
-		reply=$default
-	fi
+  # Default?
+  if [[ -z $reply ]]; then
+    reply=$default
+  fi
 
-	while true; do
-		# Check if the reply is valid
-		case "$reply" in
-			Y* | y*)
-				export answer=1
-				return 0 #return code for backwards compatibility
-				break
-				;;
-			N* | n*)
-				export answer=0
-				return 1 #return code
-				break
-				;;
-			*)
-				echo -ne "$1 [$prompt] "
-				read -r reply < /dev/tty
-				;;
-		esac
-	done
+  while true; do
+    # Check if the reply is valid
+    case "$reply" in
+      Y* | y*)
+        export answer=1
+        return 0 #return code for backwards compatibility
+        break
+        ;;
+      N* | n*)
+        export answer=0
+        return 1 #return code
+        break
+        ;;
+      *)
+        echo -ne "$1 [$prompt] "
+        read -r reply < /dev/tty
+        ;;
+    esac
+  done
 }
 
 function check_url() {
-	if [[ ${1} == "file://"* ]]; then
-		if [[ -f ${1/"file://"/} ]]; then
-			true
-		else
-			return 1
-		fi
-	else
-		http_code="$(curl --location -o /dev/null -s --head --write-out '%{http_code}\n' -- "${1}")"
-		case "${http_code}" in
-			000)
-				if [[ ${1} == *"packagelist" ]]; then
-					fancy_message error "Packagelist not found"
-				else
-					fancy_message error "Failed to download file, check your connection"
-				fi
-				error_log 1 "get ${PACKAGE} pacscript"
-				return 1
-				;;
-			404)
-				fancy_message error "The URL cannot be found"
-				return 1
-				;;
-			200 | 301 | 302)
-				true
-				;;
-			*)
-				fancy_message error "Failed with http code ${http_code}"
-				return 1
-				;;
-		esac
-	fi
+  if [[ ${1} == "file://"* ]]; then
+    if [[ -f ${1/"file://"/} ]]; then
+      true
+    else
+      return 1
+    fi
+  else
+    http_code="$(curl --location -o /dev/null -s --head --write-out '%{http_code}\n' -- "${1}")"
+    case "${http_code}" in
+      000)
+        if [[ ${1} == *"packagelist" ]]; then
+          fancy_message error "Packagelist not found"
+        else
+          fancy_message error "Failed to download file, check your connection"
+        fi
+        error_log 1 "get ${PACKAGE} pacscript"
+        return 1
+        ;;
+      404)
+        fancy_message error "The URL cannot be found"
+        return 1
+        ;;
+      200 | 301 | 302)
+        true
+        ;;
+      *)
+        fancy_message error "Failed with http code ${http_code}"
+        return 1
+        ;;
+    esac
+  fi
 }
 
 # use axel if available
 function download() {
-	sudo rm -f "${1##*/}"
-	if command -v axel > /dev/null; then
-		axel -ao "${1##*/}" "$1" || return 1
-	else
-		wget -q --show-progress --progress=bar:force -- "$1" 2>&1 || return 1
-	fi
+  sudo rm -f "${1##*/}"
+  if command -v axel > /dev/null; then
+    axel -ao "${1##*/}" "$1" || return 1
+  else
+    wget -q --show-progress --progress=bar:force -- "$1" 2>&1 || return 1
+  fi
 }
 
 # source this code block and run like so:
 # 	$ select_options "My message I want to send" "${#array[@]}"
 # This will then output the options given by the user to /tmp/pacstall-select-options, which you can then turn into another array
 function select_options() {
-	rm -f /tmp/pacstall-select-options
-	local message="${1}"
-	local length="${2}"
+  rm -f /tmp/pacstall-select-options
+  local message="${1}"
+  local length="${2}"
 
-	if [[ $length -ge 6 ]]; then
-		echo -ne "${message} [${BOLD}1..$length${NC}] [${BIGreen}Y${NC}/${RED}n${NC}] "
-	else
-		echo -ne "${message} [${BOLD}$( seq -s ' ' 1 "$length" )${NC}] [${BIGreen}Y${NC}/${RED}n${NC}] "
-	fi
-	if [[ $DISABLE_PROMPTS == "no" ]]; then
-		read -r input <&0
-		if [[ $NON_INTERACTIVE ]]; then
-			if [[ -z $input ]]; then
-				echo "Y"
-			fi
-			echo "$input"
-		fi
-	else
-		echo "Y"
-		input="Y"
-	fi
-	if [[ -z $input ]] || [[ $input =~ ^[Yy]$ ]]; then
-		seq -s ' ' 1 "$length" | tee /tmp/pacstall-select-options >/dev/null
-	elif [[ $input == "0" ]] || [[ $input =~ ^[Nn]$ ]]; then
-		echo "n" | tee /tmp/pacstall-select-options >/dev/null
-	elif ! [[ $input =~ [a-zA-Z]+ ]] || [[ $input =~ ^[0-9]+$ ]]; then
-		for i in "${input[@]}"; do
-			if [[ $i =~ [0-9]+-[0-9]+ ]] || [[ $i =~ [0-9]+..[0-9]+ ]]; then
-				case "$i" in
-					*-*)
-						split_arr=(${i//-/ })
-						;;
-					*..*)
-						split_arr=(${i//../ })
-						;;
-					*)
-						select_options "$message" "$length"
-						;;
-				esac
-				out+=( $(seq -s ' ' "${split_arr[0]}" "${split_arr[1]}") )
-				continue
-			else
-				out+=($i)
-			fi
-		done
-		echo "${out[@]}" | tee /tmp/pacstall-select-options >/dev/null
-	else
-		select_options "$message" "$length"
-	fi
+  if [[ $length -ge 6 ]]; then
+    echo -ne "${message} [${BOLD}1..$length${NC}] [${BIGreen}Y${NC}/${RED}n${NC}] "
+  else
+    echo -ne "${message} [${BOLD}$(seq -s ' ' 1 "$length")${NC}] [${BIGreen}Y${NC}/${RED}n${NC}] "
+  fi
+  if [[ $DISABLE_PROMPTS == "no" ]]; then
+    read -r input <&0
+    if [[ $NON_INTERACTIVE ]]; then
+      if [[ -z $input ]]; then
+        echo "Y"
+      fi
+      echo "$input"
+    fi
+  else
+    echo "Y"
+    input="Y"
+  fi
+  if [[ -z $input ]] || [[ $input =~ ^[Yy]$ ]]; then
+    seq -s ' ' 1 "$length" | tee /tmp/pacstall-select-options > /dev/null
+  elif [[ $input == "0" ]] || [[ $input =~ ^[Nn]$ ]]; then
+    echo "n" | tee /tmp/pacstall-select-options > /dev/null
+  elif ! [[ $input =~ [a-zA-Z]+ ]] || [[ $input =~ ^[0-9]+$ ]]; then
+    for i in "${input[@]}"; do
+      if [[ $i =~ [0-9]+-[0-9]+ ]] || [[ $i =~ [0-9]+..[0-9]+ ]]; then
+        case "$i" in
+          *-*)
+            split_arr=(${i//-/ })
+            ;;
+          *..*)
+            split_arr=(${i//../ })
+            ;;
+          *)
+            select_options "$message" "$length"
+            ;;
+        esac
+        out+=($(seq -s ' ' "${split_arr[0]}" "${split_arr[1]}"))
+        continue
+      else
+        out+=($i)
+      fi
+    done
+    echo "${out[@]}" | tee /tmp/pacstall-select-options > /dev/null
+  else
+    select_options "$message" "$length"
+  fi
 }
 
 # Error out when run as root
 if [[ $EUID -eq 0 ]]; then
-	fancy_message error "Pacstall can't be run as root. Please run as a normal user."
-	exit 1
+  fancy_message error "Pacstall can't be run as root. Please run as a normal user."
+  exit 1
 fi
 
 # run sudo apt update if it's been more than a week
@@ -345,81 +345,81 @@ fi
 source "$STGDIR/scripts/error_log.sh"
 
 if [[ ! -t 0 ]]; then
-	NON_INTERACTIVE=true
-	fancy_message warn "Reading input from pipe"
+  NON_INTERACTIVE=true
+  fancy_message warn "Reading input from pipe"
 fi
 
 # Separate grouped short options
 argument_list=()
 
 for i in "${@}"; do
-	# Just add argument if doesn't start with a single hyphen.
-	if ! [[ ${i} =~ ^-[^-] ]]; then
-		# if argument is '-P' or '-K', add to beginning of argument list.
-		if [[ ${i} == "-P" ]] || [[ ${i} == "-K" ]] || [[ ${i} == "-N" ]]; then
-			argument_list=("${i}" "${argument_list[@]}")
-		else
-			argument_list+=("${i}")
-		fi
-		continue
-	fi
+  # Just add argument if doesn't start with a single hyphen.
+  if ! [[ ${i} =~ ^-[^-] ]]; then
+    # if argument is '-P' or '-K', add to beginning of argument list.
+    if [[ ${i} == "-P" ]] || [[ ${i} == "-K" ]] || [[ ${i} == "-N" ]]; then
+      argument_list=("${i}" "${argument_list[@]}")
+    else
+      argument_list+=("${i}")
+    fi
+    continue
+  fi
 
-	# Add all arguments to the list of arguments.
-	# We remove the '-' prefix as we'll add it later.
-	for j in $(echo "${i}" | sed 's|^-||' | sed 's|[[:upper:]]| &|g'); do
-		# If current string is 'P', add to beginning of argument list.
-		if [[ ${j} == "P" ]] || [[ ${j} == "-disable-prompts" ]] || [[ ${j} == "K" ]] || [[ ${j} == "-keep" ]] || [[ ${j} == "N" ]] || [[ ${j} == "-no-install" ]]; then
-			argument_list=("-${j}" "${argument_list[@]}")
-		else
-			argument_list+=("-${j}")
-		fi
-	done
+  # Add all arguments to the list of arguments.
+  # We remove the '-' prefix as we'll add it later.
+  for j in $(echo "${i}" | sed 's|^-||' | sed 's|[[:upper:]]| &|g'); do
+    # If current string is 'P', add to beginning of argument list.
+    if [[ ${j} == "P" ]] || [[ ${j} == "-disable-prompts" ]] || [[ ${j} == "K" ]] || [[ ${j} == "-keep" ]] || [[ ${j} == "N" ]] || [[ ${j} == "-no-install" ]]; then
+      argument_list=("-${j}" "${argument_list[@]}")
+    else
+      argument_list+=("-${j}")
+    fi
+  done
 done
 
 # Set the new list of arguments
 set -- "${argument_list[@]}"
 
 function lock() {
-	ignore_short="-S -D -A -V -L -Qi -T -h"
-	ignore_long="--search --download --add-repo --version --query-info --tree --help"
-	ignore="$ignore_short $ignore_long"
-	if [[ $ignore =~ (^|[[:space:]])"$1"($|[[:space:]]) ]]; then
-		return 1
-	elif [[ $ignore =~ (^|[[:space:]])"$2"($|[[:space:]]) ]]; then
-		return 1
-	elif [[ $ignore =~ (^|[[:space:]])"$3"($|[[:space:]]) ]]; then
-		return 1
-	elif [[ -f "/tmp/pacstall-pacdeps-$3" ]]; then
-		return 1
-	elif [[ -f "/tmp/pacstall-pacdeps-$4" ]]; then
-		return 1
-	fi
-	pidof -o %PPID -x $0 > /dev/null && return 0 || return 1
+  ignore_short="-S -D -A -V -L -Qi -T -h"
+  ignore_long="--search --download --add-repo --version --query-info --tree --help"
+  ignore="$ignore_short $ignore_long"
+  if [[ $ignore =~ (^|[[:space:]])"$1"($|[[:space:]]) ]]; then
+    return 1
+  elif [[ $ignore =~ (^|[[:space:]])"$2"($|[[:space:]]) ]]; then
+    return 1
+  elif [[ $ignore =~ (^|[[:space:]])"$3"($|[[:space:]]) ]]; then
+    return 1
+  elif [[ -f "/tmp/pacstall-pacdeps-$3" ]]; then
+    return 1
+  elif [[ -f "/tmp/pacstall-pacdeps-$4" ]]; then
+    return 1
+  fi
+  pidof -o %PPID -x $0 > /dev/null && return 0 || return 1
 }
 
 while lock $1 $2 $3 $4; do
-	if [[ -z $first ]]; then
-		first=1
-		fancy_message warn "Pacstall is already running another instance"
-	fi
-	sleep 1
+  if [[ -z $first ]]; then
+    first=1
+    fancy_message warn "Pacstall is already running another instance"
+  fi
+  sleep 1
 done
 
 while [[ $1 != "--" ]]; do
-	case "$1" in
-		-P | --disable-prompts)
-			fancy_message warn "Prompts are disabled"
-			export DISABLE_PROMPTS=yes
-			;;
+  case "$1" in
+    -P | --disable-prompts)
+      fancy_message warn "Prompts are disabled"
+      export DISABLE_PROMPTS=yes
+      ;;
 
-		-N | --no-install)
-			export PACDEB_DIR="$PWD"
-			fancy_message info "Package will be built and not installed"
-			export PACSTALL_INSTALL=0
-			;;
+    -N | --no-install)
+      export PACDEB_DIR="$PWD"
+      fancy_message info "Package will be built and not installed"
+      export PACSTALL_INSTALL=0
+      ;;
 
-		-h | --help)
-			echo -e "Usage: pacstall [-h] [-V] {-I,-Il,-S,-R,-D,-A,-U,-L,-Up,-Qi,-T} [-P] [-K] [-N]
+    -h | --help)
+      echo -e "Usage: pacstall [-h] [-V] {-I,-Il,-S,-R,-D,-A,-U,-L,-Up,-Qi,-T} [-P] [-K] [-N]
 
 An AUR inspired package manager for Ubuntu.
 
@@ -458,325 +458,325 @@ Options:
 		Display the version number.
 	${BOLD}-h${NC}, ${BOLD}--help${NC}
 		Display this help message."
-			exit 0
-			;;
+      exit 0
+      ;;
 
-		-I | --install)
+    -I | --install)
 
-			if [[ -z $2 ]]; then
-				fancy_message error "You failed to specify a package"
-				exit 1
-			fi
+      if [[ -z $2 ]]; then
+        fancy_message error "You failed to specify a package"
+        exit 1
+      fi
 
-			function trap_ctrlc() {
-				fancy_message warn "The installation of $2 was interrupted, removing files"
-				rm -rf "${SRCDIR:?}"/* # :? makes bash error out in case SRCDIR is empty, saving us from yoinking /* directory by mistake
-				exit 2
-			}
-			# Begin trapping
-			trap "trap_ctrlc" 2
+      function trap_ctrlc() {
+        fancy_message warn "The installation of $2 was interrupted, removing files"
+        rm -rf "${SRCDIR:?}"/* # :? makes bash error out in case SRCDIR is empty, saving us from yoinking /* directory by mistake
+        exit 2
+      }
+      # Begin trapping
+      trap "trap_ctrlc" 2
 
-			while [[ -n $2 ]]; do
+      while [[ -n $2 ]]; do
 
-				if [[ $2 == "pac" ]]; then
-					echo -ne "$pac_text"
-					echo -e "$pac_body"
-					echo -e "~ Rick Pacsley ~"
-					exit 0
-				fi
-				export PACKAGE=$2
-				shift
-				if [[ -z $PACKAGE ]]; then
-					fancy_message error "You failed to specify a package"
-					exit 1
-				fi
+        if [[ $2 == "pac" ]]; then
+          echo -ne "$pac_text"
+          echo -e "$pac_body"
+          echo -e "~ Rick Pacsley ~"
+          exit 0
+        fi
+        export PACKAGE=$2
+        shift
+        if [[ -z $PACKAGE ]]; then
+          fancy_message error "You failed to specify a package"
+          exit 1
+        fi
 
-				# Make the directory if not exist
-				if [[ ! -e "$STGDIR/repo/" ]]; then
-					sudo mkdir -p "$STGDIR/repo"
-					sudo touch "$STGDIR/repo/pacstallrepo.txt"
-					pacstall -A
-				fi
+        # Make the directory if not exist
+        if [[ ! -e "$STGDIR/repo/" ]]; then
+          sudo mkdir -p "$STGDIR/repo"
+          sudo touch "$STGDIR/repo/pacstallrepo.txt"
+          pacstall -A
+        fi
 
-				export type="install"
-				export local="no"
+        export type="install"
+        export local="no"
 
-				check_url "https://github.com" || check_url "https://gitlab.com" || {
-					fancy_message error "Could not connect to the internet"
-					exit 1
-				}
+        check_url "https://github.com" || check_url "https://gitlab.com" || {
+          fancy_message error "Could not connect to the internet"
+          exit 1
+        }
 
-				if ! source "$STGDIR/scripts/search.sh"; then
-					fail_install=1
-					export fail_install
-					continue
-				fi
+        if ! source "$STGDIR/scripts/search.sh"; then
+          fail_install=1
+          export fail_install
+          continue
+        fi
 
-				specifyRepo $REPO
-				URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
+        specifyRepo $REPO
+        URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 
-				if ! source "$STGDIR/scripts/download.sh"; then
-					fail_install=1
-					export fail_install
-					fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
-					continue
-				fi
+        if ! source "$STGDIR/scripts/download.sh"; then
+          fail_install=1
+          export fail_install
+          fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
+          continue
+        fi
 
-				export REPO
-				if ! source "$STGDIR/scripts/install-local.sh"; then
-					fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
-					exit 1
-				fi
-			done
-			exit 0
-			;;
+        export REPO
+        if ! source "$STGDIR/scripts/install-local.sh"; then
+          fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
+          exit 1
+        fi
+      done
+      exit 0
+      ;;
 
-		-Il | --install-local)
+    -Il | --install-local)
 
-			if [[ -z $2 ]]; then
-				fancy_message error "You failed to specify a package"
-				exit 1
-			fi
+      if [[ -z $2 ]]; then
+        fancy_message error "You failed to specify a package"
+        exit 1
+      fi
 
-			while [[ -n $2 ]]; do
-				export local="yes"
+      while [[ -n $2 ]]; do
+        export local="yes"
 
-				PKGPATH="$(dirname "$2")"
-				PACKAGE="$(basename "$2" ".pacscript")" # Removes the suffix
-				export PACKAGE
+        PKGPATH="$(dirname "$2")"
+        PACKAGE="$(basename "$2" ".pacscript")" # Removes the suffix
+        export PACKAGE
 
-				# Check if we need to cd into the directory first
-				if [[ $PKGPATH == "." ]] && [[ ! -f "$PACKAGE".pacscript ]] && [[ -d $PACKAGE ]]; then
-					cd "$PACKAGE"
-				elif [[ -d $PKGPATH ]]; then
-					cd "$PKGPATH"
-				fi
+        # Check if we need to cd into the directory first
+        if [[ $PKGPATH == "." ]] && [[ ! -f "$PACKAGE".pacscript ]] && [[ -d $PACKAGE ]]; then
+          cd "$PACKAGE"
+        elif [[ -d $PKGPATH ]]; then
+          cd "$PKGPATH"
+        fi
 
-				# Check if the file exist
-				if [[ ! -f "$PACKAGE".pacscript ]]; then
-					fancy_message error "$2 does not exist"
-					shift
-					continue
-				fi
-				shift
+        # Check if the file exist
+        if [[ ! -f "$PACKAGE".pacscript ]]; then
+          fancy_message error "$2 does not exist"
+          shift
+          continue
+        fi
+        shift
 
-				check_url "https://github.com" || check_url "https://gitlab.com" || {
-					fancy_message error "Could not connect to the internet"
-					exit 1
-				}
+        check_url "https://github.com" || check_url "https://gitlab.com" || {
+          fancy_message error "Could not connect to the internet"
+          exit 1
+        }
 
-				if ! source "$STGDIR/scripts/install-local.sh"; then
-					fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
-					exit 1
-				fi
-				shift
-			done
-			if [[ -s "LOGFILE" ]]; then
-				exit 1
-			fi
-			exit 0
-			;;
+        if ! source "$STGDIR/scripts/install-local.sh"; then
+          fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
+          exit 1
+        fi
+        shift
+      done
+      if [[ -s "LOGFILE" ]]; then
+        exit 1
+      fi
+      exit 0
+      ;;
 
-		-S | --search)
+    -S | --search)
 
-			export SEARCH=$2
-			if [[ -z $SEARCH ]]; then
-				fancy_message error "You failed to specify a package"
-				exit 1
-			fi
+      export SEARCH=$2
+      if [[ -z $SEARCH ]]; then
+        fancy_message error "You failed to specify a package"
+        exit 1
+      fi
 
-			check_url "https://github.com" || check_url "https://gitlab.com" || {
-				fancy_message error "Could not connect to the internet"
-				exit 1
-			}
+      check_url "https://github.com" || check_url "https://gitlab.com" || {
+        fancy_message error "Could not connect to the internet"
+        exit 1
+      }
 
-			source "$STGDIR/scripts/search.sh"
-			exit 0
-			;;
+      source "$STGDIR/scripts/search.sh"
+      exit 0
+      ;;
 
-		-R | --remove)
+    -R | --remove)
 
-			if [[ -z $2 ]]; then
-				fancy_message error "You failed to specify a package"
-				exit 1
-			fi
+      if [[ -z $2 ]]; then
+        fancy_message error "You failed to specify a package"
+        exit 1
+      fi
 
-			while [[ -n $2 ]]; do
-				PACKAGE=$2
-				shift
-				if ! source "$STGDIR/scripts/remove.sh"; then
-					fancy_message error "Failed to remove ${GREEN}${PACKAGE}${NC}"
-				fi
-			done
-			if [[ -s "LOGFILE" ]]; then
-				exit 1
-			fi
-			exit 0
-			;;
+      while [[ -n $2 ]]; do
+        PACKAGE=$2
+        shift
+        if ! source "$STGDIR/scripts/remove.sh"; then
+          fancy_message error "Failed to remove ${GREEN}${PACKAGE}${NC}"
+        fi
+      done
+      if [[ -s "LOGFILE" ]]; then
+        exit 1
+      fi
+      exit 0
+      ;;
 
-		-A | --add-repo)
-			REPO="$2"
+    -A | --add-repo)
+      REPO="$2"
 
-			if [[ ! -f "$STGDIR/repo/pacstallrepo.txt" ]]; then
-				echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > "$STGDIR/repo/pacstallrepo.txt"
-				return 0
-			fi
+      if [[ ! -f "$STGDIR/repo/pacstallrepo.txt" ]]; then
+        echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > "$STGDIR/repo/pacstallrepo.txt"
+        return 0
+      fi
 
-			if [[ -n $REPO ]]; then
-				source "$STGDIR/scripts/add-repo.sh"
-				exit 0
-			else
-				fancy_message error "You failed to specify a repo to add"
-				exit 1
-			fi
-			;;
+      if [[ -n $REPO ]]; then
+        source "$STGDIR/scripts/add-repo.sh"
+        exit 0
+      else
+        fancy_message error "You failed to specify a repo to add"
+        exit 1
+      fi
+      ;;
 
-		-V | --version)
-			PACKAGE="$2"
+    -V | --version)
+      PACKAGE="$2"
 
-			if [[ -z $PACKAGE ]]; then
-				echo -e "3.0.0 \033[1m\x1b[38;2;0;71;171mCobalt${NC}"
-				exit 0
-			else
-				# If pacstall -V was called with an argument, it's a package, so get the package version (useful for scripting)
-				if pacstall -Qi "$PACKAGE" | grep 'version' | cut -d ":" -f2 | sed 's/ //g'; then
-					exit 0
-				else
-					fancy_message error "${GREEN}${PACKAGE}${NC} is not installed"
-					exit 1
-				fi
-			fi
-			;;
+      if [[ -z $PACKAGE ]]; then
+        echo -e "3.0.0 \033[1m\x1b[38;2;0;71;171mCobalt${NC}"
+        exit 0
+      else
+        # If pacstall -V was called with an argument, it's a package, so get the package version (useful for scripting)
+        if pacstall -Qi "$PACKAGE" | grep 'version' | cut -d ":" -f2 | sed 's/ //g'; then
+          exit 0
+        else
+          fancy_message error "${GREEN}${PACKAGE}${NC} is not installed"
+          exit 1
+        fi
+      fi
+      ;;
 
-		-U | --update)
-			USERNAME="$2"
-			BRANCH="$3"
-			# This stuff gives the ability for persistent updates
-			if [[ -z $BRANCH ]]; then
-				if [[ -f "$STGDIR/repo/update" ]]; then
-					BRANCH=$(sed 's/.*\ //' "$STGDIR/repo/update")
-				else
-					BRANCH="master"
-				fi
-			fi
-			if [[ -z $USERNAME ]]; then
-				if [[ -f "$STGDIR/repo/update" ]]; then
-					USERNAME=$(sed 's/\s.*$//' "$STGDIR/repo/update")
-				else
-					USERNAME="pacstall"
-				fi
-			fi
+    -U | --update)
+      USERNAME="$2"
+      BRANCH="$3"
+      # This stuff gives the ability for persistent updates
+      if [[ -z $BRANCH ]]; then
+        if [[ -f "$STGDIR/repo/update" ]]; then
+          BRANCH=$(sed 's/.*\ //' "$STGDIR/repo/update")
+        else
+          BRANCH="master"
+        fi
+      fi
+      if [[ -z $USERNAME ]]; then
+        if [[ -f "$STGDIR/repo/update" ]]; then
+          USERNAME=$(sed 's/\s.*$//' "$STGDIR/repo/update")
+        else
+          USERNAME="pacstall"
+        fi
+      fi
 
-			check_url "https://github.com" || check_url "https://gitlab.com" || {
-				fancy_message error "Could not connect to the internet"
-				exit 1
-			}
+      check_url "https://github.com" || check_url "https://gitlab.com" || {
+        fancy_message error "Could not connect to the internet"
+        exit 1
+      }
 
-			if curl --output /dev/null --silent --head --fail https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/pyproject.toml || curl --output /dev/null --silent --head --fail https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/Cargo.toml; then
-				fancy_message error "The repository you are trying to upgrade to contains a version of pacstall that cannot be updated from $(pacstall -V)"
-				fancy_message error "Visit https://github.com/$USERNAME/pacstall/tree/$BRANCH for more information on how to reinstall. Most packages will also need to be reinstalled"
-				exit 1
-			fi
-			sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/update.sh -P "$STGDIR/scripts" 2> /dev/null
-			source "$STGDIR/scripts/update.sh"
-			exit 0
-			;;
+      if curl --output /dev/null --silent --head --fail https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/pyproject.toml || curl --output /dev/null --silent --head --fail https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/Cargo.toml; then
+        fancy_message error "The repository you are trying to upgrade to contains a version of pacstall that cannot be updated from $(pacstall -V)"
+        fancy_message error "Visit https://github.com/$USERNAME/pacstall/tree/$BRANCH for more information on how to reinstall. Most packages will also need to be reinstalled"
+        exit 1
+      fi
+      sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/update.sh -P "$STGDIR/scripts" 2> /dev/null
+      source "$STGDIR/scripts/update.sh"
+      exit 0
+      ;;
 
-		-L | --list)
-			if ! /bin/ls -1aA "$LOGDIR"; then
-				fancy_message error "Nothing installed yet"
-				exit 1
-			fi
-			exit 0
-			;;
+    -L | --list)
+      if ! /bin/ls -1aA "$LOGDIR"; then
+        fancy_message error "Nothing installed yet"
+        exit 1
+      fi
+      exit 0
+      ;;
 
-		-D | --download)
+    -D | --download)
 
-			if [[ -z $2 ]]; then
-				fancy_message error "You failed to specify a package"
-				exit 1
-			fi
+      if [[ -z $2 ]]; then
+        fancy_message error "You failed to specify a package"
+        exit 1
+      fi
 
-			while [[ -n $2 ]]; do
-				PACKAGE=$2
-				shift
-				export type="download"
+      while [[ -n $2 ]]; do
+        PACKAGE=$2
+        shift
+        export type="download"
 
-				check_url "https://github.com" || check_url "https://gitlab.com" || {
-					fancy_message error "Could not connect to the internet"
-					exit 1
-				}
+        check_url "https://github.com" || check_url "https://gitlab.com" || {
+          fancy_message error "Could not connect to the internet"
+          exit 1
+        }
 
-				if ! source "$STGDIR/scripts/search.sh"; then
-					((i++))
-					continue
-				fi
+        if ! source "$STGDIR/scripts/search.sh"; then
+          ((i++))
+          continue
+        fi
 
-				specifyRepo $REPO
-				export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
+        specifyRepo $REPO
+        export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 
-				if ! source "$STGDIR/scripts/download.sh"; then
-					fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
-					continue
-				fi
+        if ! source "$STGDIR/scripts/download.sh"; then
+          fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
+          continue
+        fi
 
-				fancy_message info "${GREEN}${PACKAGE}${NC}'s pacscript is downloaded to ${GREEN}$(pwd)/$PACKAGE.pacscript${NC}"
-			done
+        fancy_message info "${GREEN}${PACKAGE}${NC}'s pacscript is downloaded to ${GREEN}$(pwd)/$PACKAGE.pacscript${NC}"
+      done
 
-			if [[ -s "LOGFILE" ]]; then
-				exit 1
-			fi
-			exit 0
-			;;
+      if [[ -s "LOGFILE" ]]; then
+        exit 1
+      fi
+      exit 0
+      ;;
 
-		-Up | --upgrade)
-			check_url "https://github.com" || check_url "https://gitlab.com" || {
-				fancy_message error "Could not connect to the internet"
-				exit 1
-			}
-			source "$STGDIR/scripts/upgrade.sh"
+    -Up | --upgrade)
+      check_url "https://github.com" || check_url "https://gitlab.com" || {
+        fancy_message error "Could not connect to the internet"
+        exit 1
+      }
+      source "$STGDIR/scripts/upgrade.sh"
 
-			if [[ -s "LOGFILE" ]]; then
-				exit 1
-			fi
-			exit 0
-			;;
+      if [[ -s "LOGFILE" ]]; then
+        exit 1
+      fi
+      exit 0
+      ;;
 
-		-T | --tree)
-			PACKAGE="$2"
+    -T | --tree)
+      PACKAGE="$2"
 
-			if [[ -z $PACKAGE ]]; then
-				fancy_message error "No package specified"
-				exit 1
-			fi
-			if ! [[ -f $LOGDIR/$PACKAGE ]]; then
-				fancy_message error "Package is not installed"
-				exit 1
-			fi
+      if [[ -z $PACKAGE ]]; then
+        fancy_message error "No package specified"
+        exit 1
+      fi
+      if ! [[ -f $LOGDIR/$PACKAGE ]]; then
+        fancy_message error "Package is not installed"
+        exit 1
+      fi
 
-			source "$LOGDIR/$PACKAGE"
+      source "$LOGDIR/$PACKAGE"
 
-			dpkg --listfiles "${_gives:-$_name}" | sed -e "s/[^-][^\/]*\//  │/g" -e "s/│\([^ ]\)/│──\1/"
-			exit 0
-			;;
+      dpkg --listfiles "${_gives:-$_name}" | sed -e "s/[^-][^\/]*\//  │/g" -e "s/│\([^ ]\)/│──\1/"
+      exit 0
+      ;;
 
-		-Qi | --query-info)
-			PACKAGE=$2
-			source "$STGDIR/scripts/query-info.sh"
-			exit 0
-			;;
+    -Qi | --query-info)
+      PACKAGE=$2
+      source "$STGDIR/scripts/query-info.sh"
+      exit 0
+      ;;
 
-		-K | --keep)
-			fancy_message info "Keeping build files"
-			KEEP=true
-			;;
+    -K | --keep)
+      fancy_message info "Keeping build files"
+      KEEP=true
+      ;;
 
-		*)
-			pacstall -h
-			exit 3
-			;;
-	esac
-	shift
+    *)
+      pacstall -h
+      exit 3
+      ;;
+  esac
+  shift
 done
 if [[ $1 == '--' ]]; then shift; fi
 
