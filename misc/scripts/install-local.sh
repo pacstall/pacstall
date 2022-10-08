@@ -583,7 +583,7 @@ fi
 # Get all uninstalled build depends
 for build_dep in $build_depends; do
     if dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null | grep "^install ok installed" > /dev/null 2>&1; then
-        build_depends=${build_depends/"${build_dep}"/}
+        build_depends=${build_depends/ "${build_dep}" /}
     fi
 done
 
