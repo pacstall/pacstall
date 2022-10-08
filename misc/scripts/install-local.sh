@@ -597,20 +597,22 @@ if [[ -n ${build_depends[*]} ]]; then
         done
     done
 
-    fancy_message info "${BLUE}$name${NC} requires ${CYAN}$(echo -e "${build_depends[*]}")${NC} to install"
-    ask "Do you want to remove them after installing ${BLUE}$name${NC}" N
-    if [[ $answer -eq 0 ]]; then
-        NOBUILDDEP=0
-    else
-        NOBUILDDEP=1
-    fi
+    if [[ ${#build_depends[@]} -ne 0 ]]; then
+        fancy_message info "${BLUE}$name${NC} requires ${CYAN}$(echo -e "${build_depends[*]}")${NC} to install"
+        ask "Do you want to remove them after installing ${BLUE}$name${NC}" N
+        if [[ $answer -eq 0 ]]; then
+            NOBUILDDEP=0
+        else
+            NOBUILDDEP=1
+        fi
 
-    if ! sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 ${build_depends[*]}; then
-        fancy_message error "Failed to install build dependencies"
-        error_log 8 "install $PACKAGE"
-        fancy_message info "Cleaning up"
-        cleanup
-        return 1
+        if ! sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 ${build_depends[*]}; then
+            fancy_message error "Failed to install build dependencies"
+            error_log 8 "install $PACKAGE"
+            fancy_message info "Cleaning up"
+            cleanup
+            return 1
+        fi
     fi
 fi
 
