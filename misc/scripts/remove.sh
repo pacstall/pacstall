@@ -44,6 +44,7 @@ if [[ -n "${_pacdeps[*]}" ]]; then
 		(
 		source "$LOGDIR/$i"
 		sudo apt-get purge "${_gives:-$_name}" -y
+		sudo rm -f /var/log/pacstall/metadata/"$_name"
 		)
 	done
 fi
