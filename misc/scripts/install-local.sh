@@ -390,19 +390,16 @@ function fancy_message() {
 	esac
 }
 
+function get_homedir() {
+	local PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER}}")
+	echo "/home/$PACSTALL_USER"
+}
+export homedir="$(get_homedir)"
+
 hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
             {
-                echo -e "export name=\"${name}\""
-                if [[ -n ${pkgname} ]]; then
-                    echo -e "export pkgname=\"${pkgname}\""
-                fi
-                echo -e "export pkgdir=\"${pkgdir}\""
-                if [[ -n ${gives} ]]; then
-                    echo -e "export gives=\"${gives}\""
-                fi
-                echo -e "export version=\"${version}\""
-                echo -e "export maintainer=\"${maintainer:-Pacstall <pacstall@pm.me>}\""
-                echo -e "$(declare -f "$i")\n$i"
+                cat "${pacfile}"
+                echo -e "$i"
             } | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
         fi
     done
