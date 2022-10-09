@@ -253,7 +253,7 @@ function prompt_optdepends() {
     if [[ -n ${deps[*]} ]]; then
         if [[ -n ${pacdeps[*]} ]]; then
             for i in "${pacdeps[@]}"; do
-                (
+                (   
                     source "$LOGDIR/$i"
                     if [[ -n $_gives ]]; then
                         echo "$_gives" | tee -a /tmp/pacstall-gives > /dev/null
@@ -290,7 +290,7 @@ function createdeb() {
     sudo tar -cf "$PWD/control.tar" -T /dev/null
     local CONTROL_LOCATION="$PWD/control.tar"
     # avoid having to cd back
-    (
+    (   
         # create control.tar
         cd DEBIAN
         for i in *; do
@@ -321,7 +321,7 @@ function createdeb() {
 
 function makedeb() {
     fancy_message info "Packaging $name"
-    deblog "Package" "$name"
+    deblog "Package" "${gives:-$name}"
 
     if [[ $version =~ ^[0-9] ]]; then
         deblog "Version" "${version}"
@@ -340,13 +340,6 @@ function makedeb() {
         deblog "Replace" "${replace//' '/', '}"
     fi
 
-    if echo "$gives" | grep -q ",\|\\s"; then
-        local comma_gives="${gives// /, }"
-    else
-        local comma_gives="${gives:-$name}"
-    fi
-
-    deblog "Provides" "${comma_gives}"
     deblog "Maintainer" "${maintainer:-Pacstall <pacstall@pm.me>}"
     deblog "Description" "${description}"
 
