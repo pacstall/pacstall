@@ -565,6 +565,7 @@ Options:
                     exit 1
                 }
 
+                export PACFILE="${PWD}/${PACKAGE}.pacscript"
                 if ! source "$STGDIR/scripts/install-local.sh"; then
                     fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
                     exit 1
