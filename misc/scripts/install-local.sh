@@ -335,6 +335,10 @@ function makedeb() {
     deblog "Section" "Pacstall"
     deblog "Priority" "optional"
 
+    if [[ -n ${provides[*]} ]]; then
+		deblog "Provides" "$(echo "${provides[@]}" | sed 's/ /, /g')"
+    fi
+
     if [[ -n $replace ]]; then
         deblog "Conflicts" "${replace//' '/', '}"
         deblog "Replace" "${replace//' '/', '}"
