@@ -321,7 +321,7 @@ function createdeb() {
 
 function makedeb() {
     fancy_message info "Packaging $name"
-    deblog "Package" "$name"
+    deblog "Package" "${gives:-$name}"
 
     if [[ $version =~ ^[0-9] ]]; then
         deblog "Version" "${version}"
@@ -340,13 +340,6 @@ function makedeb() {
         deblog "Replace" "${replace//' '/', '}"
     fi
 
-    if echo "$gives" | grep -q ",\|\\s"; then
-        local comma_gives="${gives// /, }"
-    else
-        local comma_gives="${gives:-$name}"
-    fi
-
-    deblog "Provides" "${comma_gives}"
     deblog "Maintainer" "${maintainer:-Pacstall <pacstall@pm.me>}"
     deblog "Description" "${description}"
 
