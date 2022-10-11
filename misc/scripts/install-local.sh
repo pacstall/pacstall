@@ -52,7 +52,7 @@ function trap_ctrlc() {
     echo ""
     fancy_message warn "Interrupted, cleaning up"
     if dpkg-query -W -f='${Status}' "$name" 2> /dev/null | grep -q -E "ok installed|ok unpacked"; then
-        sudo apt-get purge "$name" -y > /dev/null
+        sudo apt-get purge "${gives:-$name}" -y > /dev/null
     fi
     sudo rm -f /etc/apt/preferences.d/"${name:-$PACKAGE}-pin"
     cleanup
@@ -93,7 +93,6 @@ function cget() {
 
 # Logging metadata
 function log() {
-
     # Origin repo info parsing
     if [[ $local == 'no' ]]; then
         if echo "$REPO" | grep "github" > /dev/null; then
@@ -616,7 +615,7 @@ function hashcheck() {
         fancy_message error "Hashes don't match"
         error_log 16 "install $PACKAGE"
         if [[ $url != *".deb" ]]; then
-            sudo dpkg -r "$name" > /dev/null
+            sudo dpkg -r "${gives:-$name}" > /dev/null
         fi
 
         fancy_message info "Cleaning up"
@@ -729,7 +728,7 @@ else
             else
                 fancy_message error "Failed to install the package"
                 error_log 14 "install $PACKAGE"
-                sudo dpkg -r "$name" > /dev/null
+                sudo dpkg -r "${gives:-$name}" > /dev/null
                 fancy_message info "Cleaning up"
                 cleanup
                 return 1
