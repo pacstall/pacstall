@@ -242,7 +242,7 @@ function prompt_optdepends() {
                 fi
             else
                 # Add to the suggests anyway. They won't get installed but can be queried
-                deblog "Suggests" "$(echo "${optdeps[@]//:*/}" | sed 's/ /, /g')"
+                deblog "Suggests" "$(echo "${optdeps[@]//: */}" | sed 's/ /, /g')"
             fi
         fi
     fi
