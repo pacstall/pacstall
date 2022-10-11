@@ -210,10 +210,8 @@ function prompt_optdepends() {
         if [[ ${#optdeps[@]} -ne 0 ]]; then
             fancy_message sub "Optional dependencies"
             if [[ -n ${missing_optdeps[*]} ]]; then
-                for i in "${missing_optdeps[@]}"; do
-                    echo -ne "\t"
-                    fancy_message warn "${BLUE}$i${NC} does not exist in apt repositories"
-                done
+                echo -ne "\t"
+                fancy_message warn "${BLUE}${missing_optdeps[*]}${NC} does not exist in apt repositories"
             fi
             z=1
             for i in "${optdeps[@]}"; do
