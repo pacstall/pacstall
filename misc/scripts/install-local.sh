@@ -615,7 +615,7 @@ function hashcheck() {
         fancy_message error "Hashes don't match"
         error_log 16 "install $PACKAGE"
         if [[ $url != *".deb" ]]; then
-            sudo dpkg -r "${gives:-$name}" > /dev/null
+            sudo apt purge "${gives:-$name}" -y > /dev/null
         fi
 
         fancy_message info "Cleaning up"
@@ -728,7 +728,7 @@ else
             else
                 fancy_message error "Failed to install the package"
                 error_log 14 "install $PACKAGE"
-                sudo dpkg -r "${gives:-$name}" > /dev/null
+                sudo apt purge "${gives:-$name}" -y > /dev/null
                 fancy_message info "Cleaning up"
                 cleanup
                 return 1
