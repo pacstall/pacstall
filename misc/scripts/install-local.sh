@@ -223,6 +223,15 @@ function prompt_optdepends() {
             echo -ne "\t"
             select_options "Select optional dependencies to install" "${#optdeps[@]}"
             choices=($(cat /tmp/pacstall-select-options))
+			local choice_inc=0
+			for i in "${choices[@]}"; do
+				# have we gone over the maximum number in choices[@]?
+				if [[ "$i" -gt "${#optdeps[@]}" ]]; then
+					fancy_message warn "$i has exceeded the maximum number of optional dependencies. Skipping"
+					unset 'choices[$choice_inc]'
+				fi
+				(( choice_inc++ ))
+			done
             if [[ ${choices[0]} != "n" ]]; then
                 for i in "${choices[@]}"; do
                     ((i--))
