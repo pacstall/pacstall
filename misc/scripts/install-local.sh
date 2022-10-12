@@ -798,7 +798,7 @@ if [[ -n ${pac_functions[*]}   ]]; then
             error_log 5 "$function $PACKAGE"
             echo -ne "\t"
             fancy_message error "Could not $function $PACKAGE properly"
-            sudo dpkg -r "$name" > /dev/null
+            sudo dpkg -r "${gives:-$name}" > /dev/null
             fancy_message info "Cleaning up"
             cleanup
             exit 1

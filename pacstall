@@ -457,7 +457,15 @@ Options:
 	${BOLD}-V${NC}, ${BOLD}--version${NC}
 		Display the version number.
 	${BOLD}-h${NC}, ${BOLD}--help${NC}
-		Display this help message."
+		Display this help message.
+
+Helpful links:
+	${BOLD}https://github.com/pacstall/pacstall${NC}
+		Official Pacstall GitHub page
+	${BOLD}https://github.com/pacstall/pacstall-programs/issues${NC}
+		If you find a broken package, create an issue here
+	${BOLD}https://github.com/pacstall/pacstall/releases/latest${NC}
+		Link to the latest release of Pacstall"
             exit 0
             ;;
 
