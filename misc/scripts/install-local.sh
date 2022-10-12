@@ -227,11 +227,15 @@ function prompt_optdepends() {
             for i in "${choices[@]}"; do
                 # have we gone over the maximum number in choices[@]?
                 if [[ $i -gt ${#optdeps[@]} ]]; then
-                    fancy_message warn "${BGreen}$i${NC} has exceeded the maximum number of optional dependencies. Skipping"
+                    local skip_opt+=("$i")
                     unset 'choices[$choice_inc]'
                 fi
                 ((choice_inc++))
             done
+            if [[ -n ${skip_opt[*]} ]]; then
+                fancy_message warn "${BGreen}${skip_opt[*]}${NC} has exceeded the maximum number of optional dependencies. Skipping"
+            fi
+
             if [[ ${choices[0]} != "n" ]]; then
                 for i in "${choices[@]}"; do
                     ((i--))
@@ -259,7 +263,7 @@ function prompt_optdepends() {
     if [[ -n ${deps[*]} ]]; then
         if [[ -n ${pacdeps[*]} ]]; then
             for i in "${pacdeps[@]}"; do
-                (
+                (   
                     source "$LOGDIR/$i"
                     if [[ -n $_gives ]]; then
                         echo "$_gives" | tee -a /tmp/pacstall-gives > /dev/null
@@ -296,7 +300,7 @@ function createdeb() {
     sudo tar -cf "$PWD/control.tar" -T /dev/null
     local CONTROL_LOCATION="$PWD/control.tar"
     # avoid having to cd back
-    (
+    (   
         # create control.tar
         cd DEBIAN
         for i in *; do
