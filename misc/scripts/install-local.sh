@@ -223,15 +223,15 @@ function prompt_optdepends() {
             echo -ne "\t"
             select_options "Select optional dependencies to install" "${#optdeps[@]}"
             choices=($(cat /tmp/pacstall-select-options))
-			local choice_inc=0
-			for i in "${choices[@]}"; do
-				# have we gone over the maximum number in choices[@]?
-				if [[ "$i" -gt "${#optdeps[@]}" ]]; then
-					fancy_message warn "$i has exceeded the maximum number of optional dependencies. Skipping"
-					unset 'choices[$choice_inc]'
-				fi
-				(( choice_inc++ ))
-			done
+            local choice_inc=0
+            for i in "${choices[@]}"; do
+                # have we gone over the maximum number in choices[@]?
+                if [[ $i -gt ${#optdeps[@]} ]]; then
+                    fancy_message warn "${BGreen}$i${NC} has exceeded the maximum number of optional dependencies. Skipping"
+                    unset 'choices[$choice_inc]'
+                fi
+                ((choice_inc++))
+            done
             if [[ ${choices[0]} != "n" ]]; then
                 for i in "${choices[@]}"; do
                     ((i--))
@@ -259,7 +259,7 @@ function prompt_optdepends() {
     if [[ -n ${deps[*]} ]]; then
         if [[ -n ${pacdeps[*]} ]]; then
             for i in "${pacdeps[@]}"; do
-                (
+                (   
                     source "$LOGDIR/$i"
                     if [[ -n $_gives ]]; then
                         echo "$_gives" | tee -a /tmp/pacstall-gives > /dev/null
@@ -296,7 +296,7 @@ function createdeb() {
     sudo tar -cf "$PWD/control.tar" -T /dev/null
     local CONTROL_LOCATION="$PWD/control.tar"
     # avoid having to cd back
-    (
+    (   
         # create control.tar
         cd DEBIAN
         for i in *; do
@@ -342,7 +342,7 @@ function makedeb() {
     deblog "Priority" "optional"
 
     if [[ -n ${provides[*]} ]]; then
-		deblog "Provides" "$(echo "${provides[@]}" | sed 's/ /, /g')"
+        deblog "Provides" "$(echo "${provides[@]}" | sed 's/ /, /g')"
     fi
 
     if [[ -n $replace ]]; then
