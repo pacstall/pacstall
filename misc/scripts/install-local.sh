@@ -223,6 +223,19 @@ function prompt_optdepends() {
             echo -ne "\t"
             select_options "Select optional dependencies to install" "${#optdeps[@]}"
             choices=($(cat /tmp/pacstall-select-options))
+            local choice_inc=0
+            for i in "${choices[@]}"; do
+                # have we gone over the maximum number in choices[@]?
+                if [[ $i != "n" ]] && [[ $i != "y" ]] && [[ $i -gt ${#optdeps[@]} ]]; then
+                    local skip_opt+=("$i")
+                    unset 'choices[$choice_inc]'
+                fi
+                ((choice_inc++))
+            done
+            if [[ -n ${skip_opt[*]} ]]; then
+                fancy_message warn "${BGreen}${skip_opt[*]}${NC} has exceeded the maximum number of optional dependencies. Skipping"
+            fi
+
             if [[ ${choices[0]} != "n" ]]; then
                 for i in "${choices[@]}"; do
                     ((i--))
@@ -333,7 +346,7 @@ function makedeb() {
     deblog "Priority" "optional"
 
     if [[ -n ${provides[*]} ]]; then
-		deblog "Provides" "$(echo "${provides[@]}" | sed 's/ /, /g')"
+        deblog "Provides" "$(echo "${provides[@]}" | sed 's/ /, /g')"
     fi
 
     if [[ -n $replace ]]; then
