@@ -49,6 +49,11 @@ old_info=($(cat $STGDIR/repo/update 2> /dev/null || echo pacstall master))
 old_username="${old_info[0]}"
 old_branch="${old_info[1]}"
 
+if ! curl -s "https://raw.githubusercontent.com/$USERNAME/pacstall/$BRANCH/pacstall"; then
+    fancy_message error "Could not connect to GitHub"
+    exit 1
+fi
+
 for i in {error_log.sh,add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
     sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/"$i" -P "$STGDIR/scripts" &
 done
