@@ -490,36 +490,37 @@ Helpful links:
                     echo -e "~ Rick Pacsley ~"
                     exit 0
                 fi
-				if [[ ${PACKAGE##*.} == "pacscript" ]]; then
-                	export type="install"
-                	export local="yes"
-                	PKGPATH="$(dirname "$2")"
-                	# Check if we need to cd into the directory first
-                	if [[ $PKGPATH == "." ]] && [[ ! -f "$PACKAGE".pacscript ]] && [[ -d $PACKAGE ]]; then
-                	    cd "$PACKAGE"
-                	elif [[ -d $PKGPATH ]]; then
-                	    cd "$PKGPATH"
-                	fi
+                if [[ ${2##*.} == "pacscript" ]]; then
+                    export PACKAGE="$(basename "$2" ".pacscript")" # Removes the suffix
+                    export type="install"
+                    export local="yes"
+                    PKGPATH="$(dirname "$2")"
+                    # Check if we need to cd into the directory first
+                    if [[ $PKGPATH == "." ]] && [[ ! -f "$PACKAGE".pacscript ]] && [[ -d $PACKAGE ]]; then
+                        cd "$PACKAGE"
+                    elif [[ -d $PKGPATH ]]; then
+                        cd "$PKGPATH"
+                    fi
 
-               		export PACKAGE="$(basename "$2" ".pacscript")" # Removes the suffix
-                	# Check if the file exist
-                	if [[ ! -f "$PACKAGE".pacscript ]]; then
-                		fancy_message error "$2 does not exist"
-                		shift
-                		continue
-                	fi
-                	if ! source "$STGDIR/scripts/install-local.sh"; then
-                	    fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
-                	    exit 1
-                	fi
-            		if [[ -s "LOGFILE" ]]; then
-            		    exit 1
-            		fi
-				else
-                	export type="install"
-                	export local="no"
-                	export PACKAGE=$2
-				fi
+                    # Check if the file exist
+                    if [[ ! -f "$PACKAGE".pacscript ]]; then
+                        fancy_message error "$2 does not exist"
+                        shift
+                        continue
+                    fi
+                    if ! source "$STGDIR/scripts/install-local.sh"; then
+                        fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
+                        exit 1
+                    fi
+                    if [[ -s $LOGFILE ]]; then
+                        exit 1
+                    fi
+                    exit 0
+                else
+                    export type="install"
+                    export local="no"
+                    export PACKAGE=$2
+                fi
 
                 shift
                 if [[ -z $PACKAGE ]]; then
@@ -595,7 +596,7 @@ Helpful links:
                     fancy_message error "Failed to remove ${GREEN}${PACKAGE}${NC}"
                 fi
             done
-            if [[ -s "LOGFILE" ]]; then
+            if [[ -s $LOGFILE ]]; then
                 exit 1
             fi
             exit 0
@@ -716,7 +717,7 @@ Helpful links:
                 fancy_message info "${GREEN}${PACKAGE}${NC}'s pacscript is downloaded to ${GREEN}$(pwd)/$PACKAGE.pacscript${NC}"
             done
 
-            if [[ -s "LOGFILE" ]]; then
+            if [[ -s $LOGFILE ]]; then
                 exit 1
             fi
             exit 0
@@ -735,7 +736,7 @@ Helpful links:
             }
             source "$STGDIR/scripts/upgrade.sh"
 
-            if [[ -s "LOGFILE" ]]; then
+            if [[ -s $LOGFILE ]]; then
                 exit 1
             fi
             exit 0
