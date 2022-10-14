@@ -263,7 +263,7 @@ function prompt_optdepends() {
     if [[ -n ${deps[*]} ]]; then
         if [[ -n ${pacdeps[*]} ]]; then
             for i in "${pacdeps[@]}"; do
-                (
+                (   
                     source "$LOGDIR/$i"
                     if [[ -n $_gives ]]; then
                         echo "$_gives" | tee -a /tmp/pacstall-gives > /dev/null
@@ -300,7 +300,7 @@ function createdeb() {
     sudo tar -cf "$PWD/control.tar" -T /dev/null
     local CONTROL_LOCATION="$PWD/control.tar"
     # avoid having to cd back
-    (
+    (   
         # create control.tar
         cd DEBIAN
         for i in *; do
@@ -632,12 +632,10 @@ function hashcheck() {
         fancy_message error "Hashes don't match"
         error_log 16 "install $PACKAGE"
         if [[ $url != *".deb" ]]; then
-            sudo apt-get purge "${gives:-$name}" -y > /dev/null
+            fancy_message info "Cleaning up"
+            cleanup
+            return 1
         fi
-
-        fancy_message info "Cleaning up"
-        cleanup
-        return 1
     fi
     true
 }
