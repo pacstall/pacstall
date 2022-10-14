@@ -355,7 +355,7 @@ argument_list=()
 for i in "${@}"; do
     # Just add argument if doesn't start with a single hyphen.
     if ! [[ ${i} =~ ^-[^-] ]]; then
-        # if argument is '-P' or '-K', add to beginning of argument list.
+        # if argument is '-P', '-K', or '-B', add to beginning of argument list.
         if [[ ${i} == "-P" ]] || [[ ${i} == "-K" ]] || [[ ${i} == "-B" ]]; then
             argument_list=("${i}" "${argument_list[@]}")
         else
