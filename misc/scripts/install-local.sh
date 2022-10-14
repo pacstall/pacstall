@@ -632,7 +632,7 @@ function hashcheck() {
         fancy_message error "Hashes don't match"
         error_log 16 "install $PACKAGE"
         if [[ $url != *".deb" ]]; then
-            sudo apt purge "${gives:-$name}" -y > /dev/null
+            sudo apt-get purge "${gives:-$name}" -y > /dev/null
         fi
 
         fancy_message info "Cleaning up"
