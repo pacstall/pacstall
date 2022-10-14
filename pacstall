@@ -509,7 +509,7 @@ Helpful links:
                 export type="install"
                 export local="no"
 
-                check_url "https://github.com" || check_url "https://gitlab.com" || {
+                check_url "https://github.com" 2>/dev/null || check_url "https://gitlab.com" 2>/dev/null || {
                     fancy_message error "Could not connect to the internet"
                     exit 1
                 }
@@ -568,7 +568,7 @@ Helpful links:
                 fi
                 shift
 
-                check_url "https://github.com" || check_url "https://gitlab.com" || {
+                check_url "https://github.com" 2>/dev/null || check_url "https://gitlab.com" 2>/dev/null || {
                     fancy_message error "Could not connect to the internet"
                     exit 1
                 }
@@ -593,7 +593,7 @@ Helpful links:
                 exit 1
             fi
 
-            check_url "https://github.com" || check_url "https://gitlab.com" || {
+            check_url "https://github.com" 2>/dev/null || check_url "https://gitlab.com" 2>/dev/null || {
                 fancy_message error "Could not connect to the internet"
                 exit 1
             }
@@ -675,7 +675,7 @@ Helpful links:
                 fi
             fi
 
-            check_url "https://github.com" || check_url "https://gitlab.com" || {
+            check_url "https://github.com" 2>/dev/null || check_url "https://gitlab.com" 2>/dev/null || {
                 fancy_message error "Could not connect to the internet"
                 exit 1
             }
@@ -710,7 +710,7 @@ Helpful links:
                 shift
                 export type="download"
 
-                check_url "https://github.com" || check_url "https://gitlab.com" || {
+                check_url "https://github.com" 2>/dev/null || check_url "https://gitlab.com" 2>/dev/null || {
                     fancy_message error "Could not connect to the internet"
                     exit 1
                 }
@@ -738,7 +738,7 @@ Helpful links:
             ;;
 
         -Up | --upgrade)
-            check_url "https://github.com" || check_url "https://gitlab.com" || {
+            check_url "https://github.com" 2>/dev/null || check_url "https://gitlab.com" 2>/dev/null || {
                 fancy_message error "Could not connect to the internet"
                 exit 1
             }
