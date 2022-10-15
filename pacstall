@@ -515,51 +515,49 @@ Helpful links:
                     if [[ -s $LOGFILE ]]; then
                         exit 1
                     fi
-                    continue
                 else
                     export type="install"
                     export local="no"
                     export PACKAGE=$2
-                fi
+                    shift
+                    if [[ -z $PACKAGE ]]; then
+                        fancy_message error "You failed to specify a package"
+                        exit 1
+                    fi
 
-                shift
-                if [[ -z $PACKAGE ]]; then
-                    fancy_message error "You failed to specify a package"
-                    exit 1
-                fi
+                    # Make the directory if not exist
+                    if [[ ! -e "$STGDIR/repo/" ]]; then
+                        sudo mkdir -p "$STGDIR/repo"
+                        sudo touch "$STGDIR/repo/pacstallrepo.txt"
+                        pacstall -A
+                    fi
 
-                # Make the directory if not exist
-                if [[ ! -e "$STGDIR/repo/" ]]; then
-                    sudo mkdir -p "$STGDIR/repo"
-                    sudo touch "$STGDIR/repo/pacstallrepo.txt"
-                    pacstall -A
-                fi
+                    check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
+                        fancy_message error "Could not connect to the internet"
+                        exit 1
+                    }
 
-                check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
-                    fancy_message error "Could not connect to the internet"
-                    exit 1
-                }
+                    if ! source "$STGDIR/scripts/search.sh"; then
+                        fail_install=1
+                        export fail_install
+                        continue
+                    fi
 
-                if ! source "$STGDIR/scripts/search.sh"; then
-                    fail_install=1
-                    export fail_install
-                    continue
-                fi
+                    specifyRepo $REPO
+                    URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 
-                specifyRepo $REPO
-                URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
+                    if ! source "$STGDIR/scripts/download.sh"; then
+                        fail_install=1
+                        export fail_install
+                        fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
+                        continue
+                    fi
 
-                if ! source "$STGDIR/scripts/download.sh"; then
-                    fail_install=1
-                    export fail_install
-                    fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
-                    continue
-                fi
-
-                export REPO
-                if ! source "$STGDIR/scripts/install-local.sh"; then
-                    fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
-                    exit 1
+                    export REPO
+                    if ! source "$STGDIR/scripts/install-local.sh"; then
+                        fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
+                        exit 1
+                    fi
                 fi
             done
             exit 0
