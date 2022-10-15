@@ -551,17 +551,6 @@ Helpful links:
             exit 0
             ;;
 
-        -Il | --install-local)
-            shift
-            if [[ -n $* ]]; then
-                fancy_message warn "The '-Il' flag has been deprecated and merged with '-I'. You likely wanted to run this command: ${BICyan}$(basename $0) -I ${@: -1}.pacscript${NC}"
-                pacstall -I $@
-            else
-                fancy_message warn "The '-Il' flag has been deprecated and merged with '-I'."
-            fi
-            exit
-            ;;
-
         -S | --search)
 
             export SEARCH=$2
