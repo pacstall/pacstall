@@ -530,8 +530,6 @@ Helpful links:
                     }
 
                     if ! source "$STGDIR/scripts/search.sh"; then
-                        fail_install=1
-                        export fail_install
                         continue
                     fi
 
@@ -539,8 +537,6 @@ Helpful links:
                     URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 
                     if ! source "$STGDIR/scripts/download.sh"; then
-                        fail_install=1
-                        export fail_install
                         fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
                         continue
                     fi
