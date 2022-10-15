@@ -565,6 +565,11 @@ Helpful links:
             exit 0
             ;;
 
+        -Il | --install-local)
+            fancy_message error "The '-Il' flag has been deprecated and merged with '-I'. You likely wanted to run this command: ${BICyan}$0 -I <pkg>${NC}"
+            exit 1
+            ;;
+
         -S | --search)
 
             export SEARCH=$2
