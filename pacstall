@@ -356,7 +356,7 @@ for i in "${@}"; do
     # Just add argument if doesn't start with a single hyphen.
     if ! [[ ${i} =~ ^-[^-] ]]; then
         # if argument is '-P' or '-K', add to beginning of argument list.
-        if [[ ${i} == "-N" ]] || [[ ${i} == "-P" ]] || [[ ${i} == "-K" ]]; then
+        if [[ ${i} == "-B" ]] || [[ ${i} == "-P" ]] || [[ ${i} == "-K" ]]; then
             argument_list=("${i}" "${argument_list[@]}")
         else
             argument_list+=("${i}")
@@ -368,7 +368,7 @@ for i in "${@}"; do
     # We remove the '-' prefix as we'll add it later.
     for j in $(echo "${i}" | sed 's|^-||' | sed 's|[[:upper:]]| &|g'); do
         # If current string is 'P', add to beginning of argument list.
-        if [[ ${j} == "N" ]] || [[ ${j} == "-no-install" ]] || [[ ${j} == "P" ]] || [[ ${j} == "-disable-prompts" ]] || [[ ${j} == "K" ]] || [[ ${j} == "-keep" ]]; then
+        if [[ ${j} == "B" ]] || [[ ${j} == "-build-only" ]] || [[ ${j} == "P" ]] || [[ ${j} == "-disable-prompts" ]] || [[ ${j} == "K" ]] || [[ ${j} == "-keep" ]]; then
             argument_list=("-${j}" "${argument_list[@]}")
         else
             argument_list+=("-${j}")
@@ -412,14 +412,14 @@ while [[ $1 != "--" ]]; do
             export DISABLE_PROMPTS=yes
             ;;
 
-        -N | --no-install)
+        -B | --build-only)
             export PACDEB_DIR="$PWD"
             fancy_message info "Package will be built and not installed"
             export PACSTALL_INSTALL=0
             ;;
 
         -h | --help)
-            echo -e "Usage: pacstall [-h] [-V] {-I,-S,-R,-D,-A,-U,-L,-Up,-Qi,-T} [-P] [-K] [-N]
+            echo -e "Usage: pacstall [-h] [-V] {-I,-S,-R,-D,-A,-U,-L,-Up,-Qi,-T} [-P] [-K] [-B]
 
 An AUR inspired package manager for Ubuntu.
 
@@ -450,7 +450,7 @@ Options:
 		Disable prompts.
 	${BOLD}-K${NC}, ${BOLD}--keep${NC}
 		Keep the build files.
-	${BOLD}-N${NC}, ${BOLD}--no-install${NC}
+	${BOLD}-B${NC}, ${BOLD}--build-only${NC}
 		Build the deb but do not install.
 	${BOLD}-V${NC}, ${BOLD}--version${NC}
 		Display the version number.
