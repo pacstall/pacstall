@@ -515,7 +515,7 @@ Helpful links:
                     if [[ -s $LOGFILE ]]; then
                         exit 1
                     fi
-					continue
+                    continue
                 else
                     export type="install"
                     export local="no"
