@@ -33,7 +33,7 @@ set -l pacstall_k_cmds -I --install -Up --upgrade
 set -l pacstall_k_grouped -KI -KUp -KP -KPI -KPUp -PK -PKI -PKUp -IK -UpK -IKP -UpKP -IPK -UpPK
 set -l pacstall_pk -PK -KP
 set -l pacstall_n -n --no-install
-set -l pacstall_n_cmds -I --install 
+set -l pacstall_n_cmds -I --install
 set -l pacstall_n_grouped -NI -NP -NPI -PN -PNI -IN -INP -IPN -NKI -NKP -NKPI -PKN -PKNI -KPIN -KINP -IKPN
 set -l pacstall_np -PN -NP
 set -l pacstall_nk -NK -KN
