@@ -508,13 +508,6 @@ Helpful links:
                         shift
                         continue
                     fi
-                    if ! source "$STGDIR/scripts/install-local.sh"; then
-                        fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
-                        exit 1
-                    fi
-                    if [[ -s $LOGFILE ]]; then
-                        exit 1
-                    fi
                 else
                     export type="install"
                     export local="no"
@@ -552,12 +545,11 @@ Helpful links:
                         fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
                         continue
                     fi
-
                     export REPO
-                    if ! source "$STGDIR/scripts/install-local.sh"; then
-                        fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
-                        exit 1
-                    fi
+                fi
+                if ! source "$STGDIR/scripts/install-local.sh"; then
+                    fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
+                    exit 1
                 fi
             done
             exit 0
@@ -599,9 +591,6 @@ Helpful links:
                     fancy_message error "Failed to remove ${GREEN}${PACKAGE}${NC}"
                 fi
             done
-            if [[ -s $LOGFILE ]]; then
-                exit 1
-            fi
             exit 0
             ;;
 
@@ -719,10 +708,6 @@ Helpful links:
 
                 fancy_message info "${GREEN}${PACKAGE}${NC}'s pacscript is downloaded to ${GREEN}$(pwd)/$PACKAGE.pacscript${NC}"
             done
-
-            if [[ -s $LOGFILE ]]; then
-                exit 1
-            fi
             exit 0
             ;;
 
@@ -738,10 +723,6 @@ Helpful links:
                 exit 1
             }
             source "$STGDIR/scripts/upgrade.sh"
-
-            if [[ -s $LOGFILE ]]; then
-                exit 1
-            fi
             exit 0
             ;;
 
