@@ -558,7 +558,6 @@ Helpful links:
                 pacstall -I $@
             else
                 fancy_message warn "The '-Il' flag has been deprecated and merged with '-I'."
-                pacstall -I
             fi
             exit
             ;;
