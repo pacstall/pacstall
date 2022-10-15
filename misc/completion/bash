@@ -57,11 +57,6 @@ _pacstall() {
 			return
 			;;
 
-		-?(P)Il?(P) | -?(K)Il?(K) | -?(PK)Il?(PK) | -?(KP)Il?(KP) | --install-local)
-			COMPREPLY=($(compgen -W "$(find -maxdepth 1 -type f -name '*.pacscript' | sed 's/.pacscript//g' | sed 's/.\///g')" -- "$cur"))
-			return
-			;;
-
 		-?(P)D?(P) | --download)
 			COMPREPLY=($(compgen -W "$(sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | awk '!seen[$0]++')" -- "$cur"))
 			return

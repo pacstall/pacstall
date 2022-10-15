@@ -356,7 +356,7 @@ for i in "${@}"; do
     # Just add argument if doesn't start with a single hyphen.
     if ! [[ ${i} =~ ^-[^-] ]]; then
         # if argument is '-P' or '-K', add to beginning of argument list.
-        if [[ ${i} == "-P" ]] || [[ ${i} == "-K" ]] || [[ ${i} == "-N" ]]; then
+        if [[ ${i} == "-N" ]] || [[ ${i} == "-P" ]] || [[ ${i} == "-K" ]]; then
             argument_list=("${i}" "${argument_list[@]}")
         else
             argument_list+=("${i}")
@@ -368,7 +368,7 @@ for i in "${@}"; do
     # We remove the '-' prefix as we'll add it later.
     for j in $(echo "${i}" | sed 's|^-||' | sed 's|[[:upper:]]| &|g'); do
         # If current string is 'P', add to beginning of argument list.
-        if [[ ${j} == "P" ]] || [[ ${j} == "-disable-prompts" ]] || [[ ${j} == "K" ]] || [[ ${j} == "-keep" ]] || [[ ${j} == "N" ]] || [[ ${j} == "-no-install" ]]; then
+        if [[ ${j} == "N" ]] || [[ ${j} == "-no-install" ]] || [[ ${j} == "P" ]] || [[ ${j} == "-disable-prompts" ]] || [[ ${j} == "K" ]] || [[ ${j} == "-keep" ]]; then
             argument_list=("-${j}" "${argument_list[@]}")
         else
             argument_list+=("-${j}")
@@ -419,15 +419,13 @@ while [[ $1 != "--" ]]; do
             ;;
 
         -h | --help)
-            echo -e "Usage: pacstall [-h] [-V] {-I,-Il,-S,-R,-D,-A,-U,-L,-Up,-Qi,-T} [-P] [-K] [-N]
+            echo -e "Usage: pacstall [-h] [-V] {-I,-S,-R,-D,-A,-U,-L,-Up,-Qi,-T} [-P] [-K] [-N]
 
 An AUR inspired package manager for Ubuntu.
 
 Commands:
 	${BOLD}-I${NC}, ${BOLD}--install${NC} <package>
 		Install a package.
-	${BOLD}-Il${NC}, ${BOLD}--install-local${NC} <package>
-		Install a local pacscript.
 	${BOLD}-S${NC}, ${BOLD}--search${NC} <package>
 		Search for a package.
 	${BOLD}-R${NC}, ${BOLD}--remove${NC} <package>
@@ -492,96 +490,64 @@ Helpful links:
                     echo -e "~ Rick Pacsley ~"
                     exit 0
                 fi
-                export PACKAGE=$2
-                shift
-                if [[ -z $PACKAGE ]]; then
-                    fancy_message error "You failed to specify a package"
-                    exit 1
+                if [[ ${2##*.} == "pacscript" ]]; then
+                    export PACKAGE="$(basename "$2" ".pacscript")" # Removes the suffix
+                    export type="install"
+                    export local="yes"
+                    PKGPATH="$(dirname "$2")"
+                    # Check if we need to cd into the directory first
+                    if [[ $PKGPATH == "." ]] && [[ ! -f "$PACKAGE".pacscript ]] && [[ -d $PACKAGE ]]; then
+                        cd "$PACKAGE"
+                    elif [[ -d $PKGPATH ]]; then
+                        cd "$PKGPATH"
+                    fi
+
+                    # Check if the file exist
+                    if [[ ! -f "$PACKAGE".pacscript ]]; then
+                        fancy_message error "$2 does not exist"
+                        shift
+                        continue
+                    fi
+                else
+                    export type="install"
+                    export local="no"
+                    export PACKAGE=$2
+                    if [[ -z $PACKAGE ]]; then
+                        fancy_message error "You failed to specify a package"
+                        exit 1
+                    fi
+
+                    # Make the directory if not exist
+                    if [[ ! -e "$STGDIR/repo/" ]]; then
+                        sudo mkdir -p "$STGDIR/repo"
+                        sudo touch "$STGDIR/repo/pacstallrepo.txt"
+                        pacstall -A
+                    fi
+
+                    check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
+                        fancy_message error "Could not connect to the internet"
+                        exit 1
+                    }
+
+                    if ! source "$STGDIR/scripts/search.sh"; then
+                        continue
+                    fi
+
+                    specifyRepo $REPO
+                    URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
+
+                    if ! source "$STGDIR/scripts/download.sh"; then
+                        fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
+                        continue
+                    fi
+                    export REPO
                 fi
-
-                # Make the directory if not exist
-                if [[ ! -e "$STGDIR/repo/" ]]; then
-                    sudo mkdir -p "$STGDIR/repo"
-                    sudo touch "$STGDIR/repo/pacstallrepo.txt"
-                    pacstall -A
-                fi
-
-                export type="install"
-                export local="no"
-
-                check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
-                    fancy_message error "Could not connect to the internet"
-                    exit 1
-                }
-
-                if ! source "$STGDIR/scripts/search.sh"; then
-                    fail_install=1
-                    export fail_install
-                    continue
-                fi
-
-                specifyRepo $REPO
-                URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
-
-                if ! source "$STGDIR/scripts/download.sh"; then
-                    fail_install=1
-                    export fail_install
-                    fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
-                    continue
-                fi
-
-                export REPO
-                if ! source "$STGDIR/scripts/install-local.sh"; then
-                    fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
-                    exit 1
-                fi
-            done
-            exit 0
-            ;;
-
-        -Il | --install-local)
-
-            if [[ -z $2 ]]; then
-                fancy_message error "You failed to specify a package"
-                exit 1
-            fi
-
-            while [[ -n $2 ]]; do
-                export local="yes"
-
-                PKGPATH="$(dirname "$2")"
-                PACKAGE="$(basename "$2" ".pacscript")" # Removes the suffix
-                export PACKAGE
-
-                # Check if we need to cd into the directory first
-                if [[ $PKGPATH == "." ]] && [[ ! -f "$PACKAGE".pacscript ]] && [[ -d $PACKAGE ]]; then
-                    cd "$PACKAGE"
-                elif [[ -d $PKGPATH ]]; then
-                    cd "$PKGPATH"
-                fi
-
-                # Check if the file exist
-                if [[ ! -f "$PACKAGE".pacscript ]]; then
-                    fancy_message error "$2 does not exist"
-                    shift
-                    continue
-                fi
-                shift
-
-                check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
-                    fancy_message error "Could not connect to the internet"
-                    exit 1
-                }
-
                 if ! source "$STGDIR/scripts/install-local.sh"; then
                     fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
                     exit 1
                 fi
                 shift
             done
-            if [[ -s "LOGFILE" ]]; then
-                exit 1
-            fi
             exit 0
             ;;
 
@@ -616,9 +582,6 @@ Helpful links:
                     fancy_message error "Failed to remove ${GREEN}${PACKAGE}${NC}"
                 fi
             done
-            if [[ -s "LOGFILE" ]]; then
-                exit 1
-            fi
             exit 0
             ;;
 
@@ -736,10 +699,6 @@ Helpful links:
 
                 fancy_message info "${GREEN}${PACKAGE}${NC}'s pacscript is downloaded to ${GREEN}$(pwd)/$PACKAGE.pacscript${NC}"
             done
-
-            if [[ -s "LOGFILE" ]]; then
-                exit 1
-            fi
             exit 0
             ;;
 
@@ -755,10 +714,6 @@ Helpful links:
                 exit 1
             }
             source "$STGDIR/scripts/upgrade.sh"
-
-            if [[ -s "LOGFILE" ]]; then
-                exit 1
-            fi
             exit 0
             ;;
 
