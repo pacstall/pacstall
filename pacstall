@@ -566,7 +566,7 @@ Helpful links:
             ;;
 
         -Il | --install-local)
-            fancy_message error "The '-Il' flag has been deprecated and merged with '-I'. You likely wanted to run this command: ${BICyan}$(basename $0) -I <pkg>${NC}"
+            fancy_message error "The '-Il' flag has been deprecated and merged with '-I'. You likely wanted to run this command: ${BICyan}$(basename $0) -I <pkg>.pacscript${NC}"
             exit 1
             ;;
 
