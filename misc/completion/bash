@@ -25,9 +25,9 @@ _pacstall() {
 	cur=${COMP_WORDS[COMP_CWORD]}
 	prev=${COMP_WORDS[1]}
 
-	if [[ "-P --disable-prompts -K --keep -N --no-install" =~ (^|[[:space:]])"$prev"($|[[:space:]]) ]]; then
+	if [[ "-P --disable-prompts -K --keep -B --build-only" =~ (^|[[:space:]])"$prev"($|[[:space:]]) ]]; then
 		prev=${COMP_WORDS[2]}
-		if [[ "-P --disable-prompts -K --keep -N --no-install" =~ (^|[[:space:]])"$prev"($|[[:space:]]) ]]; then
+		if [[ "-P --disable-prompts -K --keep -B --build-only" =~ (^|[[:space:]])"$prev"($|[[:space:]]) ]]; then
 			prev=${COMP_WORDS[3]}
 		fi
 	fi
@@ -42,7 +42,7 @@ _pacstall() {
 			return
 			;;
 
-		-?(P)I?(P) | -?(K)I?(K) | -?(PK)I?(PK) | -?(KP)I?(KP) | --install)
+		-?(P)I?(P) | -?(K)I?(K) | -?(PK)I?(PK) | -?(KP)I?(KP) | -?(B)I?(B) | -?(BP)I?(BP) | -?(BK)I?(BK) | -?(BPK)I?(BPK) | -?(BKP)I?(BKP) | -?(PBK)I?(PBK) | -?(KBP)I?(KBP) | -?(PKB)I?(PKB) | --install)
 			COMPREPLY=($(compgen -W "$(sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | awk '!seen[$0]++')" -- "$cur"))
 			return
 			;;
@@ -63,7 +63,7 @@ _pacstall() {
 			;;
 
 		-?(P)K?(P) | --keep)
-			COMPREPLY=($(compgen -W "-I -Il -Up -PI -PIl -PUp" -- "$cur"))
+			COMPREPLY=($(compgen -W "-I -Up -PI -PUp" -- "$cur"))
 			return
 			;;
 
@@ -79,27 +79,31 @@ _pacstall() {
 			return
 			;;
 		-PK*)
-			COMPREPLY=($(compgen -W "-PKI -PKIl -PKUp" -- "$cur"))
+			COMPREPLY=($(compgen -W "-PKI -PKUp" -- "$cur"))
 			return
 			;;
 		-KP*)
-			COMPREPLY=($(compgen -W "-KPI -KPIl -KPUp" -- "$cur"))
+			COMPREPLY=($(compgen -W "-KPI -KPUp" -- "$cur"))
 			return
 			;;
 		-P*)
-			COMPREPLY=($(compgen -W "-PK -PI -PIl -PR -PUp -PKI -PKIl -PKR -PKUp" -- "$cur"))
+			COMPREPLY=($(compgen -W "-PK -PI -PR -PUp -PKI -PKR -PKUp" -- "$cur"))
 			return
 			;;
 		-K*)
-			COMPREPLY=($(compgen -W "-KP -KI -KIl -KUp -KPI -KPIl -KPUp" -- "$cur"))
+			COMPREPLY=($(compgen -W "-KP -KI -KUp -KPI -KPUp" -- "$cur"))
+			return
+			;;
+		-B*)
+			COMPREPLY=($(compgen -W "-BP -BI -BPI -BKI" -- "$cur"))
 			return
 			;;
 		*)
 			if [[ "-P" =~ (^|[[:space:]])${COMP_WORDS[COMP_CWORD - 1]}($|[[:space:]]) ]] || [[ "--disable-prompts" =~ (^|[[:space:]])${COMP_WORDS[COMP_CWORD - 1]}($|[[:space:]]) ]]; then
-				COMPREPLY=($(compgen -W "-I -Il -R -Up" -- "$cur"))
+				COMPREPLY=($(compgen -W "-I -R -Up" -- "$cur"))
 				return
 			fi
-			COMPREPLY=($(compgen -W "-I -Il -S -R -A -U -V -L -Up -Qi -T" -- "$cur"))
+			COMPREPLY=($(compgen -W "-I -S -R -A -U -V -L -Up -Qi -T" -- "$cur"))
 			return
 			;;
 	esac
