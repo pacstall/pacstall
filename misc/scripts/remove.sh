@@ -41,7 +41,7 @@ sudo apt-get purge "${_gives:-$_name}" -y || {
 
 if [[ -n ${_pacdeps[*]}   ]]; then
     for i in "${_pacdeps[@]}"; do
-        (   
+        (
             source "$LOGDIR/$i"
             sudo apt-get purge "${_gives:-$_name}" -y
             sudo rm -f /var/log/pacstall/metadata/"$_name"

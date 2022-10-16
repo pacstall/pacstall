@@ -44,7 +44,7 @@ touch /tmp/pacstall-up-urls
 fancy_message info "Checking for updates"
 
 N="$(nproc)"
-(   
+(
     for i in "${list[@]}"; do
         ((n = n % N))
             ((n++ == 0)) && wait
