@@ -234,6 +234,27 @@ function ask() {
     done
 }
 
+# Used for providing possible solutions to errors
+# The following color codes are used for specific scenarios
+# 	UGreen: files/URLS
+# 	UCyan: commands to run
+# 	UPurple: text
+# Make sure to quote ('') commands and files/URLS
+function suggested_solution() {
+    if [[ -z $PACSTALL_SUPPRESS_SOLUTIONS ]]; then
+        local inputs=("${@}")
+        if [[ ${#inputs[@]} -gt 1 ]]; then
+            local text="Suggested solutions are:"
+        else
+            local text="Suggested solution is:"
+        fi
+        echo -e "${BOLD}::${NC} ${text}"
+        for i in "${inputs[@]}"; do
+            echo -e "  ${BOLD}|${NC} $i"
+        done
+    fi
+}
+
 function check_url() {
     if [[ ${1} == "file://"* ]]; then
         if [[ -f ${1/"file://"/} ]]; then
@@ -247,6 +268,7 @@ function check_url() {
             000)
                 if [[ ${1} == *"packagelist" ]]; then
                     fancy_message error "Packagelist not found"
+                    suggested_solution "Confirm that '${UGreen}$1/packagelist${NC}' exists"
                 else
                     fancy_message error "Failed to download file, check your connection"
                 fi
@@ -255,6 +277,7 @@ function check_url() {
                 ;;
             404)
                 fancy_message error "The URL cannot be found"
+                suggested_solution "Confirm that '${UGreen}$1/packagelist${NC}' exists"
                 return 1
                 ;;
             200 | 301 | 302)
@@ -262,6 +285,7 @@ function check_url() {
                 ;;
             *)
                 fancy_message error "Failed with http code ${http_code}"
+                suggested_solution "Confirm that '${UGreen}$1/packagelist${NC}' is accessible"
                 return 1
                 ;;
         esac
@@ -526,6 +550,7 @@ Helpful links:
 
                     check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
                         fancy_message error "Could not connect to the internet"
+                        suggested_solution "Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
                         exit 1
                     }
 
@@ -538,6 +563,7 @@ Helpful links:
 
                     if ! source "$STGDIR/scripts/download.sh"; then
                         fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
+                        suggested_solution "Confirm that the package exists by running '${UCyan}pacstall -S $PACKAGE${NC}'" "Check your internet connection"
                         continue
                     fi
                     export REPO
@@ -561,6 +587,7 @@ Helpful links:
 
             check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
                 fancy_message error "Could not connect to the internet"
+                suggested_solution "Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
                 exit 1
             }
 
@@ -598,6 +625,7 @@ Helpful links:
                 exit 0
             else
                 fancy_message error "You failed to specify a repo to add"
+                suggested_solution "Add a repository to your command in the following format: '${UCyan}pacstall -A https://github.com/username/repository-name${NC}'" "Consult the pacstall man page by running '${UCyan}man pacstall${NC}', and searching for the term '${UPurple}-A${NC}'"
                 exit 1
             fi
             ;;
@@ -640,6 +668,7 @@ Helpful links:
 
             check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
                 fancy_message error "Could not connect to the internet"
+                suggested_solution "Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
                 exit 1
             }
 
@@ -681,6 +710,7 @@ Helpful links:
 
                 check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
                     fancy_message error "Could not connect to the internet"
+                    suggested_solution "Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
                     exit 1
                 }
 
@@ -694,6 +724,7 @@ Helpful links:
 
                 if ! source "$STGDIR/scripts/download.sh"; then
                     fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
+                    suggested_solution "Confirm that the package exists by running '${UCyan}pacstall -S $PACKAGE${NC}'" "Check your internet connection"
                     continue
                 fi
 
@@ -711,6 +742,7 @@ Helpful links:
 
             check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
                 fancy_message error "Could not connect to the internet"
+                suggested_solution "Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
                 exit 1
             }
             source "$STGDIR/scripts/upgrade.sh"
@@ -721,7 +753,7 @@ Helpful links:
             PACKAGE="$2"
 
             if [[ -z $PACKAGE ]]; then
-                fancy_message error "No package specified"
+                fancy_message error "You failed to specify a package"
                 exit 1
             fi
             if ! [[ -f $LOGDIR/$PACKAGE ]]; then

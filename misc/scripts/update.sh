@@ -49,7 +49,7 @@ old_info=($(cat $STGDIR/repo/update 2> /dev/null || echo pacstall master))
 old_username="${old_info[0]}"
 old_branch="${old_info[1]}"
 
-if ! curl -s --fail "https://raw.githubusercontent.com/$USERNAME/pacstall/$BRANCH/pacstall" >/dev/null; then
+if ! curl -s --fail "https://raw.githubusercontent.com/$USERNAME/pacstall/$BRANCH/pacstall" > /dev/null; then
     fancy_message error "Could not connect to GitHub"
     exit 1
 fi
