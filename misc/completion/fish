@@ -39,6 +39,13 @@ set -l pacstall_np -PN -NP
 set -l pacstall_nk -NK -KN
 set -l pacstall_nkp -PNK -KNP -NKP -PKN
 
+set -l pacstall_b -n --build-only
+set -l pacstall_b_cmds -I --install
+set -l pacstall_b_grouped -BI -BP -BPI -PB -PBI -IB -IBP -IPB -BKI -BKP -BKPI -PKB -PKBI -KPIB -KIBP -IKPB
+set -l pacstall_bp -PB -BP
+set -l pacstall_bk -BK -KB
+set -l pacstall_bkp -PBK -KBP -BKP -PKB
+
 # Completion for normal commands
 complete -f --command pacstall -n "not _seen $pacstall_cmds" -o S -l search -d 'Search for package'
 complete -f --command pacstall -n "not _seen $pacstall_cmds" -o A -l add-repo -d 'Add repository'
@@ -53,8 +60,9 @@ complete -f --command pacstall -n "not _seen $pacstall_cmds" -o I -l install -d 
 complete -f --command pacstall -n "not _seen $pacstall_cmds" -o R -l remove -d 'Remove package'
 complete -f --command pacstall -n "not _seen $pacstall_cmds" -o Up -l upgrade -d 'Upgrade packages'
 
-complete -f --command pacstall -n "_seen $pacstall_p_cmds && not _seen $pacstall_p $pacstall_pk" -o P -l disable-prompts -d 'Disable prompts'
-complete -f --command pacstall -n "_seen $pacstall_k_cmds && not _seen $pacstall_k $pacstall_pk" -o K -l keep -d 'Retain build dir'
+complete -f --command pacstall -n "_seen $pacstall_p_cmds && not _seen $pacstall_p $pacstall_pk $pacstall_nkp" -o P -l disable-prompts -d 'Disable prompts'
+complete -f --command pacstall -n "_seen $pacstall_k_cmds && not _seen $pacstall_k $pacstall_pk $pacstall_nkp" -o K -l keep -d 'Retain build dir'
+complete -f --command pacstall -n "_seen $pacstall_b_cmds && not _seen $pacstall_b $pacstall_pk $pacstall_nkp" -o K -l build-only -d 'Build package'
 
 # Completions for P commands
 
