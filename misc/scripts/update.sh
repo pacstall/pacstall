@@ -24,6 +24,27 @@
 
 # Update should be self-contained and should use mutable functions or variables
 # Color variables are ok, while "$USERNAME" and "$BRANCH" are needed
+BOLD=$(tput bold)
+export BOLD
+NORMAL=$(tput sgr0)
+export NORMAL
+export NC='\033[0m'
+export UCyan='\033[4;36m'
+
+function suggested_solution() {
+    if [[ -z $PACSTALL_SUPPRESS_SOLUTIONS ]]; then
+        local inputs=("${@}")
+        if [[ ${#inputs[@]} -gt 1 ]]; then
+            local text="Suggested solutions are:"
+        else
+            local text="Suggested solution is:"
+        fi
+        echo -e "${BOLD}::${NC} ${text}"
+        for i in "${inputs[@]}"; do
+            echo -e "  ${BOLD}|${NC} $i"
+        done
+    fi
+}
 
 sudo mkdir -p "/var/log/pacstall/metadata"
 sudo mkdir -p "/var/log/pacstall/error_log"
@@ -51,6 +72,7 @@ old_branch="${old_info[1]}"
 
 if ! curl -s --fail "https://raw.githubusercontent.com/$USERNAME/pacstall/$BRANCH/pacstall" > /dev/null; then
     fancy_message error "Invalid URL"
+    suggest_solution "Confirm that '${UCyan}https://raw.githubusercontent.com/$USERNAME/pacstall/$BRANCH/pacstall${NC}' is valid"
     exit 1
 fi
 
