@@ -248,9 +248,9 @@ function suggested_solution() {
         else
             local text="Suggested solution is:"
         fi
-        echo -e "${BOLD}::${NC} ${text}"
+        echo -e " ${BOLD}⠿${NC} ${text}"
         for i in "${inputs[@]}"; do
-            echo -e "  ${BOLD}|${NC} $i"
+            echo -e " ${BOLD}|${NC} $i"
         done
     fi
 }
