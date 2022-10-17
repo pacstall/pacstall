@@ -72,7 +72,7 @@ old_branch="${old_info[1]}"
 
 if ! curl -s --fail "https://raw.githubusercontent.com/$USERNAME/pacstall/$BRANCH/pacstall" > /dev/null; then
     fancy_message error "Invalid URL"
-    suggest_solution "Confirm that '${UCyan}https://raw.githubusercontent.com/$USERNAME/pacstall/$BRANCH/pacstall${NC}' is valid"
+    suggested_solution "Confirm that '${UCyan}https://raw.githubusercontent.com/$USERNAME/pacstall/$BRANCH/pacstall${NC}' is valid"
     exit 1
 fi
 
