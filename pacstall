@@ -625,7 +625,7 @@ Helpful links:
                 exit 0
             else
                 fancy_message error "You failed to specify a repo to add"
-                suggested_solution "Add a repository to your command in the following format: '${UCyan}pacstall -A https://github.com/username/repository-name${NC}'" "Consult the pacstall man page by running '${UCyan}man pacstall${NC}', and searching for the term '${UPurple}-A${NC}'"
+                suggested_solution "Add a repository to your command in the following format:" "'${UCyan}pacstall -A https://github.com/username/repository-name${NC}'" "Consult the pacstall man page by running '${UCyan}man pacstall${NC}', and searching for the term '${UPurple}-A${NC}'"
                 exit 1
             fi
             ;;
