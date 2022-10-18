@@ -502,7 +502,7 @@ fi
 
 # Run checks function
 if ! checks; then
-    fancy_message error "There was an error checking the script!"
+    fancy_message error "There was an error checking the script"
     error_log 6 "install $PACKAGE"
     fancy_message info "Cleaning up"
     cleanup
@@ -554,6 +554,7 @@ if ! pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
             if dpkg-query -W -f='${Status} ${Section}' "${pkg}" 2> /dev/null | grep "^install ok installed" | grep -v "Pacstall" > /dev/null 2>&1; then
                 # Check if anything in breaks variable is installed already
                 fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by apt"
+                suggested_solution "Remove the apt package by running '${UCyan}sudo apt remove $pkg${NC}'"
                 error_log 13 "install $PACKAGE"
                 fancy_message info "Cleaning up"
                 cleanup
@@ -562,6 +563,7 @@ if ! pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
             if [[ ${pkg} != "${name}" ]] && pacstall -L | grep -E "(^| )${pkg}( |$)" > /dev/null 2>&1; then
                 # Same thing, but check if anything is installed with pacstall
                 fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by pacstall"
+                suggested_solution "Remove the pacstall package by running '${UCyan}pacstall -R $pkg${NC}'"
                 error_log 13 "install $PACKAGE"
                 fancy_message info "Cleaning up"
                 cleanup
@@ -629,7 +631,7 @@ function hashcheck() {
     # Skip this test if the hash variable doesn't exist in the pacscript.
     if [[ $inputHash != "$fileHash" ]] && [[ -n ${hash} ]]; then
         # We bad
-        fancy_message error "Hashes don't match"
+        fancy_message error "Hashes do not match"
         error_log 16 "install $PACKAGE"
         if [[ $url != *".deb" ]]; then
             fancy_message info "Cleaning up"
