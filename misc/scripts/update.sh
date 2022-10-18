@@ -30,6 +30,7 @@ NORMAL=$(tput sgr0)
 export NORMAL
 export NC='\033[0m'
 export UCyan='\033[4;36m'
+export BPurple='\033[1;35m'
 
 function suggested_solution() {
     if [[ -z $PACSTALL_SUPPRESS_SOLUTIONS ]]; then
@@ -39,9 +40,9 @@ function suggested_solution() {
         else
             local text="Suggested solution is:"
         fi
-        echo -e " ${BOLD}⠿${NC} ${text}"
+        echo -e "[${BOLD}${BPurple}⠿${NC}] ${text}"
         for i in "${inputs[@]}"; do
-            echo -e " ${BOLD}|${NC} $i"
+            echo -e "    ${BOLD}|${NC} $i"
         done
     fi
 }
