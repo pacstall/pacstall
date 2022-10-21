@@ -28,7 +28,7 @@ if check_url "${URL}"; then
     if [[ $type == "install" ]]; then
         mkdir -p "$SRCDIR" || {
             if ! [[ -w $SRCDIR ]]; then
-                suggest_solution "Run '${UCyan}sudo chown -R $PACSTALL_USER:$PACSTALL_USER $SRCDIR'${NC}"A
+                suggested_solution "Run '${UCyan}sudo chown -R $PACSTALL_USER:$PACSTALL_USER $SRCDIR'${NC}"
             fi
         }
         if ! cd "$SRCDIR"; then
