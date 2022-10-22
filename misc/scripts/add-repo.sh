@@ -24,23 +24,23 @@
 
 REPO="${2%/}"
 
-if [[ $REPO == *"github.com"*   ]]; then
+if [[ $REPO == *"github.com"* ]]; then
     REPO="${REPO/'github.com'/'raw.githubusercontent.com'}"
-    if [[ $REPO == *"/tree/"*   ]]; then
+    if [[ $REPO != *"/tree/"* ]]; then
         REPO="$REPO/master"
         fancy_message warn "Assuming that git branch is ${GREEN}master${NC}"
     else
         REPO="${URL/'/tree/'/'/'}"
     fi
-elif [[ $REPO == *"gitlab.com"*   ]]; then
-    if [[ $REPO == *"/tree/"*   ]]; then
+elif [[ $REPO == *"gitlab.com"* ]]; then
+    if [[ $REPO == *"/tree/"* ]]; then
         REPO="$REPO/-/raw/master"
         fancy_message warn "Assuming that git branch is ${GREEN}master${NC}"
     else
         REPO="${REPO/"/tree/"/"/raw/"}"
     fi
 elif [[ -d $REPO ]] > /dev/null; then
-    if [[ $REPO != *"file://"*   ]]; then
+    if [[ $REPO != *"file://"* ]]; then
         REPO="file://$(readlink -f $REPO)"
     fi
 else
