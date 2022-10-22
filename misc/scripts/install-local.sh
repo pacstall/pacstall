@@ -95,12 +95,12 @@ function cget() {
 function log() {
     # Origin repo info parsing
     if [[ $local == 'no' ]]; then
-        if echo "$REPO" | grep "github" > /dev/null; then
+        if [[ "$REPO" == *"github"* ]]; then
             pURL="${REPO/'raw.githubusercontent.com'/'github.com'}"
             pURL="${pURL%/*}"
             pBRANCH="${REPO##*/}"
             branch="yes"
-        elif echo "$REPO" | grep "gitlab" > /dev/null; then
+        elif [[ "$REPO" == *"gitlab"* ]]; then
             pURL="${REPO%/-/raw/*}"
             pBRANCH="${REPO##*/-/raw/}"
             branch="yes"
