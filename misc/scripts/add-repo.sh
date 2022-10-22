@@ -33,7 +33,7 @@ if [[ $REPO == *"github.com"* ]]; then
         REPO="${URL/'/tree/'/'/'}"
     fi
 elif [[ $REPO == *"gitlab.com"* ]]; then
-    if [[ $REPO == *"/tree/"* ]]; then
+    if [[ $REPO != *"/tree/"* ]]; then
         REPO="$REPO/-/raw/master"
         fancy_message warn "Assuming that git branch is ${GREEN}master${NC}"
     else
