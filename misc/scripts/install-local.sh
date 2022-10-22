@@ -144,9 +144,9 @@ function compare_remote_version() (
     source "$LOGDIR/$input" || return 1
     if [[ -z ${_remoterepo} ]]; then
         return
-    elif echo "${_remoterepo}" | grep "github.com" > /dev/null; then
+    elif [[ "${_remoterepo}" == *"github.com"* ]]; then
         local remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}"
-    elif echo "${_remoterepo}" | grep "gitlab.com" > /dev/null; then
+    elif [[ "${_remoterepo}" == *"gitlab.com"* ]]; then
         local remoterepo="${_remoterepo}/-/raw/${_remotebranch}"
     else
         local remoterepo="${_remoterepo}"

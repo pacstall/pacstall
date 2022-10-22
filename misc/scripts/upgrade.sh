@@ -57,9 +57,9 @@ N="$(nproc)"
             if [[ -z ${_remoterepo} ]]; then
                 # TODO: upgrade for local pacscripts
                 return
-            elif echo "${_remoterepo}" | grep "github.com" > /dev/null; then
+            elif [[ "${_remoterepo}" == *"github.com"* ]]; then
                 remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}"
-            elif echo "${_remoterepo}" | grep "gitlab.com" > /dev/null; then
+            elif [[ "${_remoterepo}" == *"gitlab.com"* ]]; then
                 remoterepo="${_remoterepo}/-/raw/${_remotebranch}"
             else
                 remoterepo="${_remoterepo}"
