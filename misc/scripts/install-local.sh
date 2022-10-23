@@ -797,7 +797,7 @@ trap - SIGINT
 
 prompt_optdepends
 
-function trap_functions() {
+function fail_out_functions() {
     error_log 5 "$function $PACKAGE"
     echo -ne "\t"
     fancy_message error "Could not $function $PACKAGE properly"
@@ -816,9 +816,11 @@ if [[ -n ${pac_functions[*]} ]]; then
     fancy_message info "Running functions"
     for function in "${pac_functions[@]}"; do
         fancy_message sub "Running $function"
-        trap trap_functions ERR
+        trap fail_out_functions ERR
+        set -euo pipefail
         source "$pacfile"
         "$function"
+        set +euo pipefail
         trap - ERR
     done
 fi
