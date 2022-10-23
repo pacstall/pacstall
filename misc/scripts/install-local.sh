@@ -95,12 +95,12 @@ function cget() {
 function log() {
     # Origin repo info parsing
     if [[ $local == 'no' ]]; then
-        if [[ $REPO == *"github"* ]]; then
+        if [[ "$REPO" == *"github"* ]]; then
             pURL="${REPO/'raw.githubusercontent.com'/'github.com'}"
             pURL="${pURL%/*}"
             pBRANCH="${REPO##*/}"
             branch="yes"
-        elif [[ $REPO == *"gitlab"* ]]; then
+        elif [[ "$REPO" == *"gitlab"* ]]; then
             pURL="${REPO%/-/raw/*}"
             pBRANCH="${REPO##*/-/raw/}"
             branch="yes"
@@ -142,11 +142,11 @@ function log() {
 function compare_remote_version() (
     local input="${1}"
     source "$LOGDIR/$input" || return 1
-    if [[ -z ${_remoterepo} ]]; then
+    if [[ -z "${_remoterepo}" ]]; then
         return
-    elif [[ ${_remoterepo} == *"github.com"* ]]; then
+    elif [[ "${_remoterepo}" == *"github.com"* ]]; then
         local remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}"
-    elif [[ ${_remoterepo} == *"gitlab.com"* ]]; then
+    elif [[ "${_remoterepo}" == *"gitlab.com"* ]]; then
         local remoterepo="${_remoterepo}/-/raw/${_remotebranch}"
     else
         local remoterepo="${_remoterepo}"
