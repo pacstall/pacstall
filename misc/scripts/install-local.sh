@@ -263,7 +263,7 @@ function prompt_optdepends() {
     if [[ -n ${deps[*]} ]]; then
         if [[ -n ${pacdeps[*]} ]]; then
             for i in "${pacdeps[@]}"; do
-                (
+                (   
                     source "$LOGDIR/$i"
                     if [[ -n $_gives ]]; then
                         echo "$_gives" | tee -a /tmp/pacstall-gives > /dev/null
@@ -300,7 +300,7 @@ function createdeb() {
     sudo tar -cf "$PWD/control.tar" -T /dev/null
     local CONTROL_LOCATION="$PWD/control.tar"
     # avoid having to cd back
-    (
+    (   
         # create control.tar
         cd DEBIAN
         for i in *; do
@@ -798,10 +798,12 @@ trap - SIGINT
 prompt_optdepends
 
 function fail_out_functions() {
+    local func="$1"
     trap - ERR
-    error_log 5 "$1 $PACKAGE"
+    eval "$restoreshopt"
+    error_log 5 "$func $PACKAGE"
     echo -ne "\t"
-    fancy_message error "Could not $1 $PACKAGE properly"
+    fancy_message error "Could not $func $PACKAGE properly"
     sudo dpkg -r "${gives:-$name}" > /dev/null
     fancy_message info "Cleaning up"
     cleanup
@@ -815,16 +817,20 @@ function run_function() {
 }
 
 function safe_run() {
-    local restoreshopt="$(shopt -p)"
+    local func="$1"
+    export restoreshopt="$(shopt -p)
+$(shopt -p -o)"
     local -
-    shopt -o -s errexit errtrace
+    shopt -o -s errexit errtrace pipefail
 
-    trap "fail_out_functions '$1'" ERR
+    local restoretrap="$(trap -p ERR)"
+    trap "fail_out_functions '$func'" ERR
 
-    run_function "$1"
+    run_function "$func"
 
     trap - ERR
     eval "$restoreshopt"
+    eval "$restoretrap"
 }
 
 for i in {prepare,build,install}; do
