@@ -95,12 +95,12 @@ function cget() {
 function log() {
     # Origin repo info parsing
     if [[ $local == 'no' ]]; then
-        if [[ "$REPO" == *"github"* ]]; then
+        if [[ $REPO == *"github"* ]]; then
             pURL="${REPO/'raw.githubusercontent.com'/'github.com'}"
             pURL="${pURL%/*}"
             pBRANCH="${REPO##*/}"
             branch="yes"
-        elif [[ "$REPO" == *"gitlab"* ]]; then
+        elif [[ $REPO == *"gitlab"* ]]; then
             pURL="${REPO%/-/raw/*}"
             pBRANCH="${REPO##*/-/raw/}"
             branch="yes"
@@ -144,9 +144,9 @@ function compare_remote_version() (
     source "$LOGDIR/$input" || return 1
     if [[ -z ${_remoterepo} ]]; then
         return
-    elif [[ "${_remoterepo}" == *"github.com"* ]]; then
+    elif [[ ${_remoterepo} == *"github.com"* ]]; then
         local remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}"
-    elif [[ "${_remoterepo}" == *"gitlab.com"* ]]; then
+    elif [[ ${_remoterepo} == *"gitlab.com"* ]]; then
         local remoterepo="${_remoterepo}/-/raw/${_remotebranch}"
     else
         local remoterepo="${_remoterepo}"
@@ -612,7 +612,7 @@ if [[ -n ${build_depends[*]} ]]; then
             NOBUILDDEP=1
         fi
 
-        if ! sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 ${build_depends[*]}; then
+        if ! sudo apt-get install -y ${build_depends[*]}; then
             fancy_message error "Failed to install build dependencies"
             error_log 8 "install $PACKAGE"
             fancy_message info "Cleaning up"
@@ -797,25 +797,51 @@ trap - SIGINT
 
 prompt_optdepends
 
+function fail_out_functions() {
+    local func="$1"
+    trap - ERR
+    eval "$restoreshopt"
+    error_log 5 "$func $PACKAGE"
+    echo -ne "\t"
+    fancy_message error "Could not $func $PACKAGE properly"
+    sudo dpkg -r "${gives:-$name}" > /dev/null
+    fancy_message info "Cleaning up"
+    cleanup
+    exit 1
+}
+
+function run_function() {
+    local func="$1"
+    fancy_message sub "Running $func"
+    $func
+}
+
+function safe_run() {
+    local func="$1"
+    export restoreshopt="$(shopt -p)
+$(shopt -p -o)"
+    local -
+    shopt -o -s errexit errtrace pipefail
+
+    local restoretrap="$(trap -p ERR)"
+    trap "fail_out_functions '$func'" ERR
+
+    run_function "$func"
+
+    trap - ERR
+    eval "$restoreshopt"
+    eval "$restoretrap"
+}
+
 for i in {prepare,build,install}; do
     if [[ $(type -t "$i") == function ]]; then
         pac_functions+=("$i")
     fi
 done
-if [[ -n ${pac_functions[*]}   ]]; then
+if [[ -n ${pac_functions[*]} ]]; then
     fancy_message info "Running functions"
     for function in "${pac_functions[@]}"; do
-        fancy_message sub "Running $function"
-        bash -ceuo pipefail "source $pacfile
-		$function" || {
-            error_log 5 "$function $PACKAGE"
-            echo -ne "\t"
-            fancy_message error "Could not $function $PACKAGE properly"
-            sudo dpkg -r "${gives:-$name}" > /dev/null
-            fancy_message info "Cleaning up"
-            cleanup
-            exit 1
-        }
+        safe_run "$function"
     done
 fi
 
