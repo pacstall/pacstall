@@ -95,12 +95,12 @@ function cget() {
 function log() {
     # Origin repo info parsing
     if [[ $local == 'no' ]]; then
-        if [[ "$REPO" == *"github"* ]]; then
+        if [[ $REPO == *"github"* ]]; then
             pURL="${REPO/'raw.githubusercontent.com'/'github.com'}"
             pURL="${pURL%/*}"
             pBRANCH="${REPO##*/}"
             branch="yes"
-        elif [[ "$REPO" == *"gitlab"* ]]; then
+        elif [[ $REPO == *"gitlab"* ]]; then
             pURL="${REPO%/-/raw/*}"
             pBRANCH="${REPO##*/-/raw/}"
             branch="yes"
@@ -144,9 +144,9 @@ function compare_remote_version() (
     source "$LOGDIR/$input" || return 1
     if [[ -z ${_remoterepo} ]]; then
         return
-    elif [[ "${_remoterepo}" == *"github.com"* ]]; then
+    elif [[ ${_remoterepo} == *"github.com"* ]]; then
         local remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}"
-    elif [[ "${_remoterepo}" == *"gitlab.com"* ]]; then
+    elif [[ ${_remoterepo} == *"gitlab.com"* ]]; then
         local remoterepo="${_remoterepo}/-/raw/${_remotebranch}"
     else
         local remoterepo="${_remoterepo}"
@@ -797,6 +797,16 @@ trap - SIGINT
 
 prompt_optdepends
 
+function trap_functions() {
+    error_log 5 "$1 $PACKAGE"
+    echo -ne "\t"
+    fancy_message error "Could not $1 $PACKAGE properly"
+    sudo dpkg -r "${gives:-$name}" > /dev/null
+    fancy_message info "Cleaning up"
+    cleanup
+    exit 1
+}
+
 for i in {prepare,build,install}; do
     if [[ $(type -t "$i") == function ]]; then
         pac_functions+=("$i")
@@ -806,16 +816,10 @@ if [[ -n ${pac_functions[*]} ]]; then
     fancy_message info "Running functions"
     for function in "${pac_functions[@]}"; do
         fancy_message sub "Running $function"
-        set -ceuo pipefail "source $pacfile
-		$function" || {
-            error_log 5 "$function $PACKAGE"
-            echo -ne "\t"
-            fancy_message error "Could not $function $PACKAGE properly"
-            sudo dpkg -r "${gives:-$name}" > /dev/null
-            fancy_message info "Cleaning up"
-            cleanup
-            exit 1
-        }
+        trap trap_functions ERR
+        source "$pacfile"
+        "$function"
+        trap - ERR
     done
 fi
 
