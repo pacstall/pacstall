@@ -612,7 +612,7 @@ if [[ -n ${build_depends[*]} ]]; then
             NOBUILDDEP=1
         fi
 
-        if ! sudo apt-get install -y -qq -o=Dpkg::Use-Pty=0 ${build_depends[*]}; then
+        if ! sudo apt-get install -y ${build_depends[*]}; then
             fancy_message error "Failed to install build dependencies"
             error_log 8 "install $PACKAGE"
             fancy_message info "Cleaning up"
