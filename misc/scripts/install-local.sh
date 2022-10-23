@@ -799,6 +799,7 @@ prompt_optdepends
 
 function fail_out_functions() {
     set +euo pipefail
+	trap - ERR
     error_log 5 "$function $PACKAGE"
     echo -ne "\t"
     fancy_message error "Could not $function $PACKAGE properly"
