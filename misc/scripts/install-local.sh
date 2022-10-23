@@ -798,9 +798,9 @@ trap - SIGINT
 prompt_optdepends
 
 function trap_functions() {
-    error_log 5 "$1 $PACKAGE"
+    error_log 5 "$function $PACKAGE"
     echo -ne "\t"
-    fancy_message error "Could not $1 $PACKAGE properly"
+    fancy_message error "Could not $function $PACKAGE properly"
     sudo dpkg -r "${gives:-$name}" > /dev/null
     fancy_message info "Cleaning up"
     cleanup
