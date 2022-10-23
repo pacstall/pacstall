@@ -95,12 +95,12 @@ function cget() {
 function log() {
     # Origin repo info parsing
     if [[ $local == 'no' ]]; then
-        if echo "$REPO" | grep "github" > /dev/null; then
+        if [[ "$REPO" == *"github"* ]]; then
             pURL="${REPO/'raw.githubusercontent.com'/'github.com'}"
             pURL="${pURL%/*}"
             pBRANCH="${REPO##*/}"
             branch="yes"
-        elif echo "$REPO" | grep "gitlab" > /dev/null; then
+        elif [[ "$REPO" == *"gitlab"* ]]; then
             pURL="${REPO%/-/raw/*}"
             pBRANCH="${REPO##*/-/raw/}"
             branch="yes"
@@ -144,9 +144,9 @@ function compare_remote_version() (
     source "$LOGDIR/$input" || return 1
     if [[ -z ${_remoterepo} ]]; then
         return
-    elif echo "${_remoterepo}" | grep "github.com" > /dev/null; then
+    elif [[ "${_remoterepo}" == *"github.com"* ]]; then
         local remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}"
-    elif echo "${_remoterepo}" | grep "gitlab.com" > /dev/null; then
+    elif [[ "${_remoterepo}" == *"gitlab.com"* ]]; then
         local remoterepo="${_remoterepo}/-/raw/${_remotebranch}"
     else
         local remoterepo="${_remoterepo}"
@@ -416,7 +416,7 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
         sudo chmod 755 "$STOWDIR/$name/DEBIAN/$i" 1> /dev/null 2>&1
     done
 
-    deblog "Installed-Size" "$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | awk '{print $1}')"
+    deblog "Installed-Size" "$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | cut -d' ' -f1)"
 
     generate_changelog | sudo tee -a "$STOWDIR/$name/DEBIAN/changelog" > /dev/null
 
