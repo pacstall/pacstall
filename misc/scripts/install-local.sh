@@ -335,7 +335,6 @@ function makedeb() {
 	else
         fancy_message info "Packaging ${BGreen}$name${NC}"
 	fi
-    fancy_message info "Packaging ${gives:-$name}"
     deblog "Package" "${gives:-$name}"
 
     if [[ $version =~ ^[0-9] ]]; then
