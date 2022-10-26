@@ -330,6 +330,11 @@ function createdeb() {
 }
 
 function makedeb() {
+	if [[ -n $gives ]]; then
+        fancy_message info "Packaging ${BGreen}$name${NC} as ${BBlue}$gives${NC}"
+	else
+        fancy_message info "Packaging ${BGreen}$name${NC}"
+	fi
     fancy_message info "Packaging ${gives:-$name}"
     deblog "Package" "${gives:-$name}"
 
