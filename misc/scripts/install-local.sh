@@ -81,16 +81,6 @@ function checks() {
     fi
 }
 
-function cget() {
-    URL="$1"
-    BRANCH="$2"
-    # If BRANCH was not specified, default to master
-    if [[ -n $BRANCH ]]; then
-        BRANCH=master
-    fi
-    git ls-remote "$URL" "$BRANCH" | sed "s/refs\/heads\/.*//"
-}
-
 # Logging metadata
 function log() {
     # Origin repo info parsing
