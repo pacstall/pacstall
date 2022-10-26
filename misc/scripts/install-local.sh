@@ -330,7 +330,7 @@ function createdeb() {
 }
 
 function makedeb() {
-    fancy_message info "Packaging $name"
+    fancy_message info "Packaging ${gives:-$name}"
     deblog "Package" "${gives:-$name}"
 
     if [[ $version =~ ^[0-9] ]]; then
