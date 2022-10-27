@@ -320,7 +320,11 @@ function createdeb() {
 }
 
 function makedeb() {
-    fancy_message info "Packaging $name"
+	if [[ -n $gives ]]; then
+        fancy_message info "Packaging ${BGreen}$name${NC} as ${BBlue}$gives${NC}"
+	else
+        fancy_message info "Packaging ${BGreen}$name${NC}"
+	fi
     deblog "Package" "${gives:-$name}"
 
     if [[ $version =~ ^[0-9] ]]; then
