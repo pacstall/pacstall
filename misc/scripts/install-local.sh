@@ -49,8 +49,7 @@ function cleanup() {
 }
 
 function trap_ctrlc() {
-    echo ""
-    fancy_message warn "Interrupted, cleaning up"
+    fancy_message warn "\nInterrupted, cleaning up"
     if dpkg-query -W -f='${Status}' "$name" 2> /dev/null | grep -q -E "ok installed|ok unpacked"; then
         sudo apt-get purge "${gives:-$name}" -y > /dev/null
     fi
@@ -184,7 +183,7 @@ function prompt_optdepends() {
             local opt=${optdep%%: *}
             # Check if package exists in the repos, and if not, go to the next program
             if [[ -z "$(apt-cache search --names-only "^$opt\$")" ]]; then
-                missing_optdeps+=("${opt}")
+                local missing_optdeps+=("${opt}")
                 continue
             fi
             # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
@@ -241,7 +240,7 @@ function prompt_optdepends() {
                     fancy_message info "Selecting packages ${BCyan}${not_installed_yet_optdeps[*]}${NC}"
                 fi
                 if pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
-                    sudo dpkg -r --force-all "$name" > /dev/null
+                    sudo dpkg -r --force-all "${gives:-$name}" > /dev/null
                 fi
             else
                 # Add to the suggests anyway. They won't get installed but can be queried
@@ -617,9 +616,9 @@ if [[ -n ${build_depends[*]} ]]; then
 fi
 
 function hashcheck() {
-    inputHash=$hash
+    local inputHash=$hash
     # Get hash of file
-    fileHash="$(sha256sum "$1" | sed 's/\s.*$//')"
+    local fileHash="$(sha256sum "$1" | sed 's/\s.*$//')"
 
     # Check if the input hash is the same as of the downloaded file.
     # Skip this test if the hash variable doesn't exist in the pacscript.
