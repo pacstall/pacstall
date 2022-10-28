@@ -639,7 +639,7 @@ Helpful links:
             PACKAGE="$2"
 
             if [[ -z $PACKAGE ]]; then
-                echo -e "3.0.1 \033[1m\x1b[38;2;0;20;168mZaffre${NC}"
+                echo -e "3.0.2 \033[1m\x1b[38;2;46;39;135mPicotee${NC}"
                 exit 0
             else
                 # If pacstall -V was called with an argument, it's a package, so get the package version (useful for scripting)
