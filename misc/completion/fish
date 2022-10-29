@@ -113,7 +113,7 @@ complete -f --command pacstall -n "_seen $pacstall_pk && not _seen $pacstall_b $
 
 
 # Command type lists
-set -l package_cmds -I -PI -IP --install -S --search -D --download -KI -IK -KPI -KIP -PKI -PIK -IKP -IPK
+set -l package_cmds -I --install -S --search -D --download -PI -IP -KI -IK -BI -IB -KPI -KIP -PKI -PIK -IKP -IPK -BPI -BIP -PBI -PIB -IBP -IPB -KBI -KIB -BKI -BIK -IKB -IBK -BPKI -BKPI -PBKI -PKBI -KBPI -KPBI -BPIK -BKIP -PBIK -PKIB -KBIP -KPIB -BIPK -BIKP -PIBK -PIKB -KIBP -KIPB -IBPK -IBKP -IPBK -IPKB -IKBP -IKPB
 set -l log_cmds -R -PR -RP --remove -L --list -Qi --query-info -T --tree
 
 # Completion for the package related flags
