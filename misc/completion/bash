@@ -109,7 +109,7 @@ _pacstall() {
 		-KB*)
 			COMPREPLY=($(compgen -W "-KBI -KBPI" -- "$cur"))
 			return
-			;;		
+			;;
 		-PB*)
 			COMPREPLY=($(compgen -W "-PBI -PBKI" -- "$cur"))
 			return
@@ -117,7 +117,7 @@ _pacstall() {
 		-BP*)
 			COMPREPLY=($(compgen -W "-BPI -BPKI" -- "$cur"))
 			return
-			;;		
+			;;
 		-PK*)
 			COMPREPLY=($(compgen -W "-PKI -PKUp -PKBI" -- "$cur"))
 			return

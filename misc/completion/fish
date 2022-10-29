@@ -54,19 +54,19 @@ set -l pacstall_pk -PK -KP
 set -l pacstall_bkp -BPK -BKP -PBK -PKB -KBP -KPB
 
 # Completion for normal commands
-complete -x -c pacstall
-complete -x -c pacstall -n "not _seen $pacstall_cmds" -o S -l search -d 'Search for package'
-complete -x -c pacstall -n "not _seen $pacstall_cmds" -o A -l add-repo -d 'Add repository'
-complete -x -c pacstall -n "not _seen $pacstall_cmds" -o U -l update -d 'Update pacstall scripts'
-complete -x -c pacstall -n "not _seen $pacstall_cmds" -o V -l version -d 'Print pacstall version'
-complete -x -c pacstall -n "not _seen $pacstall_cmds" -o L -l list -d 'List packages installed'
-complete -x -c pacstall -n "not _seen $pacstall_cmds" -o D -l download -d 'Downloads package'
-complete -x -c pacstall -n "not _seen $pacstall_cmds" -o T -l tree -d 'Makes a tree of a package'
-complete -x -c pacstall -n "not _seen $pacstall_cmds" -o Qi -l query-info -d 'Get package info'
+complete -f -c pacstall
+complete -f -c pacstall -n "not _seen $pacstall_cmds" -o S -l search -d 'Search for package'
+complete -f -c pacstall -n "not _seen $pacstall_cmds" -o A -l add-repo -d 'Add repository'
+complete -f -c pacstall -n "not _seen $pacstall_cmds" -o U -l update -d 'Update pacstall scripts'
+complete -f -c pacstall -n "not _seen $pacstall_cmds" -o V -l version -d 'Print pacstall version'
+complete -f -c pacstall -n "not _seen $pacstall_cmds" -o L -l list -d 'List packages installed'
+complete -f -c pacstall -n "not _seen $pacstall_cmds" -o D -l download -d 'Downloads package'
+complete -f -c pacstall -n "not _seen $pacstall_cmds" -o T -l tree -d 'Makes a tree of a package'
+complete -f -c pacstall -n "not _seen $pacstall_cmds" -o Qi -l query-info -d 'Get package info'
 
-complete -x -c pacstall -n "not _seen $pacstall_cmds" -o I -l install -d 'Install package'
-complete -x -c pacstall -n "not _seen $pacstall_cmds" -o R -l remove -d 'Remove package'
-complete -x -c pacstall -n "not _seen $pacstall_cmds" -o Up -l upgrade -d 'Upgrade packages'
+complete -f -c pacstall -n "not _seen $pacstall_cmds" -o I -l install -d 'Install package'
+complete -f -c pacstall -n "not _seen $pacstall_cmds" -o R -l remove -d 'Remove package'
+complete -f -c pacstall -n "not _seen $pacstall_cmds" -o Up -l upgrade -d 'Upgrade packages'
 
 complete -f -c pacstall -n "_seen $pacstall_p_cmds $pacstall_b_grouped $pacstall_k_grouped && not _seen $pacstall_p $pacstall_pk $pacstall_bp $pacstall_bkp $pacstall_p_grouped" -o P -l disable-prompts -d 'Disable prompts'
 complete -f -c pacstall -n "_seen $pacstall_k_cmds $pacstall_p_grouped $pacstall_b_grouped && not _seen $pacstall_k $pacstall_pk $pacstall_bk $pacstall_bkp $pacstall_k_grouped $pacstall_r_cmds" -o K -l keep -d 'Retain build dir'
