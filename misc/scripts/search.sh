@@ -135,9 +135,9 @@ REPOMSG=1
 # Complete name if download, upgrade or install
 # Partial word if search
 if [[ -z $PACKAGE ]]; then
-    IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | grep -n -- "${SEARCH}" | cut -d : -f1 | awk '{print $0"-1"}' | bc)
+    IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | grep -n -- "${SEARCH}" | cut -d : -f1 | awk '{print $0-1}')
 else
-    IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | grep -n -- "^${PACKAGE}$" | cut -d : -f1 | awk '{print $0"-1"}' | bc)
+    IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | grep -n -- "^${PACKAGE}$" | cut -d : -f1 | awk '{print $0-1}')
 fi
 _LEN=($IDXSEARCH)
 LEN=${#_LEN[@]}

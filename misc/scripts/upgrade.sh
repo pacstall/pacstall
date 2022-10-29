@@ -69,7 +69,7 @@ N="$(nproc)"
 
             source "$STGDIR/scripts/search.sh"
 
-            IDXMATCH=$(printf "%s\n" "${REPOS[@]}" | grep -n -- "$remoterepo" | cut -d : -f1 | awk '{print $0"-1"}' | bc)
+            IDXMATCH=$(printf "%s\n" "${REPOS[@]}" | grep -n -- "$remoterepo" | cut -d : -f1 | awk '{print $0-1}')
 
             if [[ -n $IDXMATCH ]]; then
                 remotever=$(source <(curl -s -- "$remoterepo"/packages/"$i"/"$i".pacscript) && type pkgver &> /dev/null && pkgver || echo "$version") > /dev/null
