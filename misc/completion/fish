@@ -74,7 +74,7 @@ complete -f -c pacstall -n "_seen $pacstall_b_cmds $pacstall_p_grouped $pacstall
 
 # Completions for P commands
 
-complete -f -c pacstall -n "not _seen $pacstall_cmds" -o PR -d 'Remove package'
+complete -f -c pacstall -n "not _seen $pacstall_cmds" -o PR -d 'Disable and Remove'
 complete -f -c pacstall -n "_seen $pacstall_p && not _seen $pacstall_p_cmds $pacstall_k $pacstall_pk $pacstall_p_grouped" -o R -l remove -d 'Remove package'
 
 complete -f -c pacstall -n "not _seen $pacstall_cmds || _seen $pacstall_b $pacstall_k $pacstall_bk && not _seen $pacstall_p $pacstall_p_cmds $pacstall_p_grouped" -o PI -d 'Disable and Install'
