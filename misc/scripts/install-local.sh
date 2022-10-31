@@ -252,7 +252,7 @@ function prompt_optdepends() {
     if [[ -n ${deps[*]} ]]; then
         if [[ -n ${pacdeps[*]} ]]; then
             for i in "${pacdeps[@]}"; do
-                (
+                (   
                     source "$LOGDIR/$i"
                     if [[ -n $_gives ]]; then
                         echo "$_gives" | tee -a /tmp/pacstall-gives > /dev/null
@@ -289,7 +289,7 @@ function createdeb() {
     sudo tar -cf "$PWD/control.tar" -T /dev/null
     local CONTROL_LOCATION="$PWD/control.tar"
     # avoid having to cd back
-    (
+    (   
         # create control.tar
         cd DEBIAN
         for i in *; do
@@ -319,11 +319,11 @@ function createdeb() {
 }
 
 function makedeb() {
-	if [[ -n $gives ]]; then
+    if [[ -n $gives ]]; then
         fancy_message info "Packaging ${BGreen}$name${NC} as ${BBlue}$gives${NC}"
-	else
+    else
         fancy_message info "Packaging ${BGreen}$name${NC}"
-	fi
+    fi
     deblog "Package" "${gives:-$name}"
 
     if [[ $version =~ ^[0-9] ]]; then
@@ -461,7 +461,10 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 ask "Do you want to view/edit the pacscript" N
 if [[ $answer -eq 1 ]]; then
     if [[ -n $PACSTALL_EDITOR ]]; then
-        $PACSTALL_EDITOR "$PACKAGE".pacscript
+        $PACSTALL_EDITOR "$PACKAGE".pacscript || {
+            fancy_message warn "'$PACSTALL_EDITOR' not found, falling back to '$EDITOR'"
+            $EDITOR "$PACKAGE".pacscript
+        }
     elif [[ -n $EDITOR ]]; then
         $EDITOR "$PACKAGE".pacscript
     elif [[ -n $VISUAL ]]; then
