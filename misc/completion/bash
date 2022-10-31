@@ -42,7 +42,7 @@ _pacstall() {
 			return
 			;;
 
-		-?(P)I?(P) | -?(K)I?(K) | -?(PK)I?(PK) | -?(KP)I?(KP) | -?(B)I?(B) | -?(BP)I?(BP) | -?(BK)I?(BK) | -?(BPK)I?(BPK) | -?(BKP)I?(BKP) | -?(PBK)I?(PBK) | -?(KBP)I?(KBP) | -?(PKB)I?(PKB) | --install)
+		-?(P)I?(P) | -?(K)I?(K) | -?(PK)I?(PK) | -?(KP)I?(KP) | -?(B)I?(B) | -?(BP)I?(BP) | -?(BK)I?(BK) | -?(BPK)I?(BPK) | -?(BKP)I?(BKP) | -?(PBK)I?(PBK) | -?(KBP)I?(KBP) | -?(PKB)I?(PKB) | -?(KPB)I?(KPB) | --install)
 			COMPREPLY=($(compgen -W "$(sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | awk '!seen[$0]++')" -- "$cur"))
 			return
 			;;
@@ -78,29 +78,75 @@ _pacstall() {
 			COMPREPLY=($(compgen -W '$( _parse_help "$1" )' -- "$cur"))
 			return
 			;;
+		-BPK*)
+			COMPREPLY=($(compgen -W "-BPKI" -- "$cur"))
+			return
+			;;
+		-BKP*)
+			COMPREPLY=($(compgen -W "-BKPI" -- "$cur"))
+			return
+			;;
+		-PBK*)
+			COMPREPLY=($(compgen -W "-PBKI" -- "$cur"))
+			return
+			;;
+		-KBP*)
+			COMPREPLY=($(compgen -W "-KBPI" -- "$cur"))
+			return
+			;;
+		-PKB*)
+			COMPREPLY=($(compgen -W "-PKBI" -- "$cur"))
+			return
+			;;
+		-KPB*)
+			COMPREPLY=($(compgen -W "-KPBI" -- "$cur"))
+			return
+			;;
+		-BK*)
+			COMPREPLY=($(compgen -W "-BKI -BKPI" -- "$cur"))
+			return
+			;;
+		-KB*)
+			COMPREPLY=($(compgen -W "-KBI -KBPI" -- "$cur"))
+			return
+			;;
+		-PB*)
+			COMPREPLY=($(compgen -W "-PBI -PBKI" -- "$cur"))
+			return
+			;;
+		-BP*)
+			COMPREPLY=($(compgen -W "-BPI -BPKI" -- "$cur"))
+			return
+			;;
 		-PK*)
-			COMPREPLY=($(compgen -W "-PKI -PKUp" -- "$cur"))
+			COMPREPLY=($(compgen -W "-PKI -PKUp -PKBI" -- "$cur"))
 			return
 			;;
 		-KP*)
-			COMPREPLY=($(compgen -W "-KPI -KPUp" -- "$cur"))
+			COMPREPLY=($(compgen -W "-KPI -KPUp -KPBI" -- "$cur"))
 			return
 			;;
 		-P*)
-			COMPREPLY=($(compgen -W "-PK -PI -PR -PUp -PKI -PKR -PKUp" -- "$cur"))
+			COMPREPLY=($(compgen -W "-PK -PB -PI -PR -PUp -PKI -PKUp -PBI -PBKI" -- "$cur"))
 			return
 			;;
 		-K*)
-			COMPREPLY=($(compgen -W "-KP -KI -KUp -KPI -KPUp" -- "$cur"))
+			COMPREPLY=($(compgen -W "-KP -KB -KI -KUp -KPI -KPUp -KBP -KBPI" -- "$cur"))
 			return
 			;;
 		-B*)
-			COMPREPLY=($(compgen -W "-BP -BI -BPI -BKI" -- "$cur"))
+			COMPREPLY=($(compgen -W "-BP -BI -BPI -BKI -BPKI" -- "$cur"))
 			return
 			;;
 		*)
-			if [[ "-P" =~ (^|[[:space:]])${COMP_WORDS[COMP_CWORD - 1]}($|[[:space:]]) ]] || [[ "--disable-prompts" =~ (^|[[:space:]])${COMP_WORDS[COMP_CWORD - 1]}($|[[:space:]]) ]]; then
-				COMPREPLY=($(compgen -W "-I -R -Up" -- "$cur"))
+			if [[ "-B" =~ (^|[[:space:]])${COMP_WORDS[COMP_CWORD - 1]}($|[[:space:]]) ]] || [[ "--build-only" =~ (^|[[:space:]])${COMP_WORDS[COMP_CWORD - 1]}($|[[:space:]]) ]]; then
+				COMPREPLY=($(compgen -W "-P -K -I" -- "$cur"))
+				return
+			elif [[ "-K" =~ (^|[[:space:]])${COMP_WORDS[COMP_CWORD - 1]}($|[[:space:]]) ]] || [[ "--keep" =~ (^|[[:space:]])${COMP_WORDS[COMP_CWORD - 1]}($|[[:space:]]) ]]; then
+				COMPREPLY=($(compgen -W "-B -P -I -Up" -- "$cur"))
+				return
+			elif [[ "-P" =~ (^|[[:space:]])${COMP_WORDS[COMP_CWORD - 1]}($|[[:space:]]) ]] || [[ "--disable-prompts" =~ (^|[[:space:]])${COMP_WORDS[COMP_CWORD - 1]}($|[[:space:]]) ]]; then
+				COMPREPLY=($(compgen -W "-B -K -I -R -Up" -- "$cur"))
 				return
 			fi
 			COMPREPLY=($(compgen -W "-I -S -R -A -U -V -L -Up -Qi -T" -- "$cur"))
