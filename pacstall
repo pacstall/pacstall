@@ -434,6 +434,7 @@ while [[ $1 != "--" ]]; do
         -P | --disable-prompts)
             fancy_message warn "Prompts are disabled"
             export DISABLE_PROMPTS=yes
+            export DEBIAN_FRONTEND=noninteractive
             ;;
 
         -B | --build-only)
