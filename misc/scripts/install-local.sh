@@ -252,7 +252,7 @@ function prompt_optdepends() {
     if [[ -n ${deps[*]} ]]; then
         if [[ -n ${pacdeps[*]} ]]; then
             for i in "${pacdeps[@]}"; do
-                (
+                (   
                     source "$LOGDIR/$i"
                     if [[ -n $_gives ]]; then
                         echo "$_gives" | tee -a /tmp/pacstall-gives > /dev/null
@@ -289,7 +289,7 @@ function createdeb() {
     sudo tar -cf "$PWD/control.tar" -T /dev/null
     local CONTROL_LOCATION="$PWD/control.tar"
     # avoid having to cd back
-    (
+    (   
         # create control.tar
         cd DEBIAN
         for i in *; do
@@ -460,18 +460,23 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 
 ask "Do you want to view/edit the pacscript" N
 if [[ $answer -eq 1 ]]; then
-    if [[ -n $PACSTALL_EDITOR ]]; then
-        $PACSTALL_EDITOR "$PACKAGE".pacscript || {
-            fancy_message warn "'$PACSTALL_EDITOR' not found, falling back to '$EDITOR'"
+    (
+        if [[ -n $PACSTALL_EDITOR ]]; then
+            $PACSTALL_EDITOR "$PACKAGE".pacscript || {
+                fancy_message warn "'$PACSTALL_EDITOR' not found, falling back to '$EDITOR'"
+                $EDITOR "$PACKAGE".pacscript
+            }
+        elif [[ -n $EDITOR ]]; then
             $EDITOR "$PACKAGE".pacscript
-        }
-    elif [[ -n $EDITOR ]]; then
-        $EDITOR "$PACKAGE".pacscript
-    elif [[ -n $VISUAL ]]; then
-        $VISUAL "$PACKAGE".pacscript
-    else
+        elif [[ -n $VISUAL ]]; then
+            $VISUAL "$PACKAGE".pacscript
+        else
+            sensible-editor "$PACKAGE".pacscript
+        fi
+    ) || {
+        fancy_message warn "Editor not found, falling back to 'sensible-editor'"
         sensible-editor "$PACKAGE".pacscript
-    fi
+    }
 fi
 
 fancy_message info "Sourcing pacscript"
