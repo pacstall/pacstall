@@ -462,10 +462,7 @@ ask "Do you want to view/edit the pacscript" N
 if [[ $answer -eq 1 ]]; then
     (
         if [[ -n $PACSTALL_EDITOR ]]; then
-            $PACSTALL_EDITOR "$PACKAGE".pacscript || {
-                fancy_message warn "'$PACSTALL_EDITOR' not found, falling back to '$EDITOR'"
-                $EDITOR "$PACKAGE".pacscript
-            }
+            $PACSTALL_EDITOR "$PACKAGE".pacscript
         elif [[ -n $EDITOR ]]; then
             $EDITOR "$PACKAGE".pacscript
         elif [[ -n $VISUAL ]]; then
