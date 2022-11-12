@@ -425,7 +425,7 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
     if [[ $PACSTALL_INSTALL != 0 ]]; then
 
         # --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
-        if ! sudo --preserve-env=PACSTALL_INSTALL apt-get install --reinstall "$STOWDIR/$name.deb" -y --allow-downgrades 2> /dev/null; then
+        if ! sudo --preserve-env=PACSTALL_INSTALL --preserve-env=DEBIAN_INTERACTIVE apt-get install --reinstall "$STOWDIR/$name.deb" -y --allow-downgrades 2> /dev/null; then
             echo -ne "\t"
             fancy_message error "Failed to install $name deb"
             error_log 8 "install $PACKAGE"
