@@ -156,7 +156,11 @@ function compare_remote_version() (
 
 function get_incompatible_releases() {
     local distro_name="$(lsb_release -si 2> /dev/null | tr '[:upper:]' '[:lower:]')"
-    local distro_version_name="$(lsb_release -sc 2> /dev/null)"
+    if [[ "$(lsb_release -ds 2> /dev/null | tail -c 4)" == "sid" ]]; then
+        local distro_version_name="sid"
+    else
+        local distro_version_name="$(lsb_release -sc 2> /dev/null)"
+    fi
     local distro_version_number="$(lsb_release -sr 2> /dev/null)"
     local input=("$@")
     for key in "${input[@]}"; do
@@ -264,7 +268,7 @@ function prompt_optdepends() {
     if [[ -n ${deps[*]} ]]; then
         if [[ -n ${pacdeps[*]} ]]; then
             for i in "${pacdeps[@]}"; do
-                (
+                (   
                     source "$LOGDIR/$i"
                     if [[ -n $_gives ]]; then
                         echo "$_gives" | tee -a /tmp/pacstall-gives > /dev/null
@@ -301,7 +305,7 @@ function createdeb() {
     sudo tar -cf "$PWD/control.tar" -T /dev/null
     local CONTROL_LOCATION="$PWD/control.tar"
     # avoid having to cd back
-    (
+    (   
         # create control.tar
         cd DEBIAN
         for i in *; do
