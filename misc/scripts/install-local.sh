@@ -319,11 +319,11 @@ function createdeb() {
 }
 
 function makedeb() {
-	if [[ -n $gives ]]; then
+    if [[ -n $gives ]]; then
         fancy_message info "Packaging ${BGreen}$name${NC} as ${BBlue}$gives${NC}"
-	else
+    else
         fancy_message info "Packaging ${BGreen}$name${NC}"
-	fi
+    fi
     deblog "Package" "${gives:-$name}"
 
     if [[ $version =~ ^[0-9] ]]; then
@@ -460,15 +460,20 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 
 ask "Do you want to view/edit the pacscript" N
 if [[ $answer -eq 1 ]]; then
-    if [[ -n $PACSTALL_EDITOR ]]; then
-        $PACSTALL_EDITOR "$PACKAGE".pacscript
-    elif [[ -n $EDITOR ]]; then
-        $EDITOR "$PACKAGE".pacscript
-    elif [[ -n $VISUAL ]]; then
-        $VISUAL "$PACKAGE".pacscript
-    else
+    (
+        if [[ -n $PACSTALL_EDITOR ]]; then
+            $PACSTALL_EDITOR "$PACKAGE".pacscript
+        elif [[ -n $EDITOR ]]; then
+            $EDITOR "$PACKAGE".pacscript
+        elif [[ -n $VISUAL ]]; then
+            $VISUAL "$PACKAGE".pacscript
+        else
+            sensible-editor "$PACKAGE".pacscript
+        fi
+    ) || {
+        fancy_message warn "Editor not found, falling back to 'sensible-editor'"
         sensible-editor "$PACKAGE".pacscript
-    fi
+    }
 fi
 
 fancy_message info "Sourcing pacscript"
