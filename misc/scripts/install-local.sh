@@ -163,6 +163,8 @@ function get_incompatible_releases() {
     fi
     local distro_version_number="$(lsb_release -sr 2> /dev/null)"
     local input=("$@")
+	# convert the input to lowercase
+	input=( $(echo "${input[@]}" | tr '[:upper:]' '[:lower:]') )
     for key in "${input[@]}"; do
         if [[ $key == "${distro_name}:${distro_version_name}" ]] || [[ $key == "${distro_name}:${distro_version_number}" ]]; then
             return 1
