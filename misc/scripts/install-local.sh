@@ -172,17 +172,20 @@ function get_incompatible_releases() {
         if [[ $key == "*:"* ]]; then
             # check for `22.04` or `jammy`
             if [[ ${key#*:} == "${distro_version_number}" ]] || [[ ${key#*:} == "${distro_version_name}" ]]; then
+                fancy_message error "This Pacscript does not work on ${BBlue}${distro_version_name}/${distro_version_number}${NC}"
                 return 1
             fi
         # check for `ubuntu:*`
         elif [[ $key == *":*" ]]; then
             # check for `ubuntu`
             if [[ ${key%%:*} == "${distro_name}" ]]; then
+                fancy_message error "This Pacscript does not work on ${BBlue}${distro_name}${NC}"
                 return 1
             fi
         else
             # check for `ubuntu:jammy` or `ubuntu:22.04`
             if [[ $key == "${distro_name}:${distro_version_name}" ]] || [[ $key == "${distro_name}:${distro_version_number}" ]]; then
+                fancy_message error "This Pacscript does not work on ${BBlue}${distro_name}:${distro_version_name}/${distro_name}:${distro_version_number}${NC}"
                 return 1
             fi
         fi
@@ -287,7 +290,7 @@ function prompt_optdepends() {
     if [[ -n ${deps[*]} ]]; then
         if [[ -n ${pacdeps[*]} ]]; then
             for i in "${pacdeps[@]}"; do
-                (
+                (   
                     source "$LOGDIR/$i"
                     if [[ -n $_gives ]]; then
                         echo "$_gives" | tee -a /tmp/pacstall-gives > /dev/null
@@ -324,7 +327,7 @@ function createdeb() {
     sudo tar -cf "$PWD/control.tar" -T /dev/null
     local CONTROL_LOCATION="$PWD/control.tar"
     # avoid having to cd back
-    (
+    (   
         # create control.tar
         cd DEBIAN
         for i in *; do
@@ -523,9 +526,6 @@ fi
 
 if [[ -n ${incompatible[*]} ]]; then
     if ! get_incompatible_releases "${incompatible[@]}"; then
-        distro="$(lsb_release -si 2> /dev/null | tr '[:upper:]' '[:lower:]')"
-        distro_version="$(lsb_release -sc 2> /dev/null)"
-        fancy_message error "This Pacscript does not work on ${BBlue}$distro${NC}:${BBlue}$distro_version${NC}"
         cleanup
         exit 1
     fi
