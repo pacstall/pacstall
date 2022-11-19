@@ -163,11 +163,23 @@ function get_incompatible_releases() {
     fi
     local distro_version_number="$(lsb_release -sr 2> /dev/null)"
     local input=("$@")
-	# convert the input to lowercase
-	input=( $(echo "${input[@]}" | tr '[:upper:]' '[:lower:]') )
+    # convert the input to lowercase
+    input=($(echo "${input[@]}" | tr '[:upper:]' '[:lower:]'))
     for key in "${input[@]}"; do
-        if [[ $key == "${distro_name}:${distro_version_name}" ]] || [[ $key == "${distro_name}:${distro_version_number}" ]]; then
-            return 1
+        # check for *:bla
+        if [[ $key == "*:"* ]]; then
+            if [[ ${key#*:} == "${distro_version_number}" ]]; then
+                return 1
+            fi
+        # check for bla:*
+        elif [[ $key == *":*" ]]; then
+            if [[ ${key%%:*} == "${distro_version_name}" ]]; then
+                return 1
+            fi
+        else
+            if [[ $key == "${distro_name}:${distro_version_name}" ]] || [[ $key == "${distro_name}:${distro_version_number}" ]]; then
+                return 1
+            fi
         fi
     done
 }
@@ -270,7 +282,7 @@ function prompt_optdepends() {
     if [[ -n ${deps[*]} ]]; then
         if [[ -n ${pacdeps[*]} ]]; then
             for i in "${pacdeps[@]}"; do
-                (
+                (   
                     source "$LOGDIR/$i"
                     if [[ -n $_gives ]]; then
                         echo "$_gives" | tee -a /tmp/pacstall-gives > /dev/null
@@ -307,7 +319,7 @@ function createdeb() {
     sudo tar -cf "$PWD/control.tar" -T /dev/null
     local CONTROL_LOCATION="$PWD/control.tar"
     # avoid having to cd back
-    (
+    (   
         # create control.tar
         cd DEBIAN
         for i in *; do
