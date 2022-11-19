@@ -172,7 +172,7 @@ function get_incompatible_releases() {
         if [[ $key == "*:"* ]]; then
             # check for `22.04` or `jammy`
             if [[ ${key#*:} == "${distro_version_number}" ]] || [[ ${key#*:} == "${distro_version_name}" ]]; then
-                fancy_message error "This Pacscript does not work on ${BBlue}${distro_version_name}/${distro_version_number}${NC}"
+                fancy_message error "This Pacscript does not work on ${BBlue}${distro_version_name}${NC}/${BBlue}${distro_version_number}${NC}"
                 return 1
             fi
         # check for `ubuntu:*`
@@ -185,7 +185,7 @@ function get_incompatible_releases() {
         else
             # check for `ubuntu:jammy` or `ubuntu:22.04`
             if [[ $key == "${distro_name}:${distro_version_name}" ]] || [[ $key == "${distro_name}:${distro_version_number}" ]]; then
-                fancy_message error "This Pacscript does not work on ${BBlue}${distro_name}:${distro_version_name}/${distro_name}:${distro_version_number}${NC}"
+                fancy_message error "This Pacscript does not work on ${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${distro_name}:${distro_version_number}${NC}"
                 return 1
             fi
         fi
