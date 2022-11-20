@@ -164,9 +164,8 @@ function get_incompatible_releases() {
         local distro_version_name="$(lsb_release -sc 2> /dev/null)"
         local distro_version_number="$(lsb_release -sr 2> /dev/null)"
     fi
-    local input=("$@")
-    # convert the input to lowercase
-    input=($(echo "${input[@]}" | tr '[:upper:]' '[:lower:]'))
+    # lowercase
+    local input=("${@,,}")
     for key in "${input[@]}"; do
         # check for `*:jammy`
         if [[ $key == "*:"* ]]; then
