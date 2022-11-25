@@ -154,6 +154,43 @@ function compare_remote_version() (
     fi
 )
 
+function get_incompatible_releases() {
+    # example for this function is "ubuntu:jammy"
+    local distro_name="$(lsb_release -si 2> /dev/null | tr '[:upper:]' '[:lower:]')"
+    if [[ "$(lsb_release -ds 2> /dev/null | tail -c 4)" == "sid" ]]; then
+        local distro_version_name="sid"
+        local distro_version_number="sid"
+    else
+        local distro_version_name="$(lsb_release -sc 2> /dev/null)"
+        local distro_version_number="$(lsb_release -sr 2> /dev/null)"
+    fi
+    # lowercase
+    local input=("${@,,}")
+    for key in "${input[@]}"; do
+        # check for `*:jammy`
+        if [[ $key == "*:"* ]]; then
+            # check for `22.04` or `jammy`
+            if [[ ${key#*:} == "${distro_version_number}" ]] || [[ ${key#*:} == "${distro_version_name}" ]]; then
+                fancy_message error "This Pacscript does not work on ${BBlue}${distro_version_name}${NC}/${BBlue}${distro_version_number}${NC}"
+                return 1
+            fi
+        # check for `ubuntu:*`
+        elif [[ $key == *":*" ]]; then
+            # check for `ubuntu`
+            if [[ ${key%%:*} == "${distro_name}" ]]; then
+                fancy_message error "This Pacscript does not work on ${BBlue}${distro_name}${NC}"
+                return 1
+            fi
+        else
+            # check for `ubuntu:jammy` or `ubuntu:22.04`
+            if [[ $key == "${distro_name}:${distro_version_name}" ]] || [[ $key == "${distro_name}:${distro_version_number}" ]]; then
+                fancy_message error "This Pacscript does not work on ${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${distro_name}:${distro_version_number}${NC}"
+                return 1
+            fi
+        fi
+    done
+}
+
 function deblog() {
     local key="$1"
     local content="$2"
@@ -188,7 +225,7 @@ function prompt_optdepends() {
             fi
             # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
             # If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of it's status
-			if ! [[ "$(dpkg-query -W -f='${Status}' "${opt}" 2> /dev/null)" == "install ok installed" ]]; then
+            if ! [[ "$(dpkg-query -W -f='${Status}' "${opt}" 2> /dev/null)" == "install ok installed" ]]; then
                 optdeps+=("${optdep}")
             else
                 deps+=("${opt}")
@@ -491,6 +528,13 @@ if ! source "$PACKAGE".pacscript; then
     return 1
 fi
 
+if [[ -n ${incompatible[*]} ]]; then
+    if ! get_incompatible_releases "${incompatible[@]}"; then
+        cleanup
+        exit 1
+    fi
+fi
+
 clean_builddir
 sudo mkdir -p "$STOWDIR/$name/DEBIAN"
 
@@ -572,7 +616,7 @@ if ! pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
 
     if [[ -n $replace ]]; then
         # Ask user if they want to replace the program
-		if [[ "$(dpkg-query -W -f='${Status}' "$replace" 2> /dev/null)" == "ok installed" ]]; then
+        if [[ "$(dpkg-query -W -f='${Status}' "$replace" 2> /dev/null)" == "ok installed" ]]; then
             ask "This script replaces $replace. Do you want to proceed" N
             if [[ $answer -eq 0 ]]; then
                 fancy_message info "Cleaning up"
@@ -588,7 +632,7 @@ if [[ -n ${build_depends[*]} ]]; then
     # Get all uninstalled build depends
     build_depends=($build_depends)
     for build_dep in "${build_depends[@]}"; do
-		if [[ "$(dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null)" == "install ok installed" ]]; then
+        if [[ "$(dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null)" == "install ok installed" ]]; then
             build_depends_to_delete+=("${build_dep}")
         fi
     done
