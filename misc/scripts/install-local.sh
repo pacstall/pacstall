@@ -778,7 +778,7 @@ else
                     fancy_message error "Could not enter into ${DIR}"
                     exit 1
                 fi
-                sudo cp -r "$PACKAGE".pacscript "/var/cache/pacstall/"$PACKAGE"/${epoch+$epoch:}$version"
+                sudo cp -r "$PACKAGE".pacscript "/var/cache/pacstall/$PACKAGE/${epoch+$epoch:}$version"
                 sudo chmod o+r "/var/cache/pacstall/$PACKAGE/${epoch+$epoch:}$version/$PACKAGE.pacscript"
                 fancy_message info "Cleaning up"
                 cleanup
