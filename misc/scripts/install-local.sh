@@ -46,6 +46,7 @@ function cleanup() {
     rm -f /tmp/pacstall-select-options
     unset name version url build_depends depends breaks replace description hash optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall gives pac_functions 2> /dev/null
     unset -f pkgver removescript prepare build install 2> /dev/null
+    clean_logdir
 }
 
 function trap_ctrlc() {
@@ -289,7 +290,7 @@ function prompt_optdepends() {
     if [[ -n ${deps[*]} ]]; then
         if [[ -n ${pacdeps[*]} ]]; then
             for i in "${pacdeps[@]}"; do
-                (
+                (   
                     source "$LOGDIR/$i"
                     if [[ -n $_gives ]]; then
                         echo "$_gives" | tee -a /tmp/pacstall-gives > /dev/null
@@ -312,6 +313,15 @@ function generate_changelog() {
     echo -e " -- $maintainer  $(date +"%a, %d %b %Y %T %z")"
 }
 
+function clean_logdir() {
+    local files=("$(find -H "$LOGDIR" -maxdepth 0 -mtime +30)")
+    if [[ -n ${files[*]} ]]; then
+        # shellcheck disable=SC2086
+        # we need the ** for recursiveness
+        sudo find $LOGDIR/**.log -mtime +30 -type f -delete
+    fi
+}
+
 function createdeb() {
     local name="$1"
     if [[ $PACSTALL_INSTALL == "0" ]]; then
@@ -326,7 +336,7 @@ function createdeb() {
     sudo tar -cf "$PWD/control.tar" -T /dev/null
     local CONTROL_LOCATION="$PWD/control.tar"
     # avoid having to cd back
-    (
+    (   
         # create control.tar
         cd DEBIAN
         for i in *; do
@@ -497,7 +507,7 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 
 ask "Do you want to view/edit the pacscript" N
 if [[ $answer -eq 1 ]]; then
-    (
+    (   
         if [[ -n $PACSTALL_EDITOR ]]; then
             $PACSTALL_EDITOR "$PACKAGE".pacscript
         elif [[ -n $EDITOR ]]; then
@@ -855,7 +865,8 @@ function fail_out_functions() {
 function run_function() {
     local func="$1"
     fancy_message sub "Running $func"
-    $func
+    # https://stackoverflow.com/a/29163890 (shorthand for 2>&1 |)
+    $func |& sudo tee "$LOGFILE/$name-$func.log"
 }
 
 function safe_run() {
