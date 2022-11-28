@@ -290,7 +290,7 @@ function prompt_optdepends() {
     if [[ -n ${deps[*]} ]]; then
         if [[ -n ${pacdeps[*]} ]]; then
             for i in "${pacdeps[@]}"; do
-                (   
+                (
                     source "$LOGDIR/$i"
                     if [[ -n $_gives ]]; then
                         echo "$_gives" | tee -a /tmp/pacstall-gives > /dev/null
@@ -316,9 +316,7 @@ function generate_changelog() {
 function clean_logdir() {
     local files=("$(find -H "$LOGDIR" -maxdepth 0 -mtime +30)")
     if [[ -n ${files[*]} ]]; then
-        # shellcheck disable=SC2086
-        # we need the ** for recursiveness
-        sudo find $LOGDIR/**.log -mtime +30 -type f -delete
+		sudo rm -f "${files[@]}"
     fi
 }
 
@@ -336,7 +334,7 @@ function createdeb() {
     sudo tar -cf "$PWD/control.tar" -T /dev/null
     local CONTROL_LOCATION="$PWD/control.tar"
     # avoid having to cd back
-    (   
+    (
         # create control.tar
         cd DEBIAN
         for i in *; do
@@ -507,7 +505,7 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 
 ask "Do you want to view/edit the pacscript" N
 if [[ $answer -eq 1 ]]; then
-    (   
+    (
         if [[ -n $PACSTALL_EDITOR ]]; then
             $PACSTALL_EDITOR "$PACKAGE".pacscript
         elif [[ -n $EDITOR ]]; then
