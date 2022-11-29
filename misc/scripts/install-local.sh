@@ -864,7 +864,7 @@ function run_function() {
     local func="$1"
     fancy_message sub "Running $func"
     # https://stackoverflow.com/a/29163890 (shorthand for 2>&1 |)
-    $func |& sudo tee "/var/log/pacstall/error_log/$name-$func.log"
+	$func |& sudo tee "/var/log/pacstall/error_log/$(date)-$name-$func.log"
 }
 
 function safe_run() {
