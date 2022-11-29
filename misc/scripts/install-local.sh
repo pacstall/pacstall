@@ -314,7 +314,7 @@ function generate_changelog() {
 }
 
 function clean_logdir() {
-    local files=("$(find -H "$LOGDIR" -maxdepth 0 -mtime +30)")
+    local files=("$(find -H "/var/log/pacstall/error_log/" -maxdepth 0 -mtime +30)")
     if [[ -n ${files[*]} ]]; then
 		sudo rm -f "${files[@]}"
     fi
@@ -864,7 +864,7 @@ function run_function() {
     local func="$1"
     fancy_message sub "Running $func"
     # https://stackoverflow.com/a/29163890 (shorthand for 2>&1 |)
-    $func |& sudo tee "$LOGFILE/$name-$func.log"
+    $func |& sudo tee "/var/log/pacstall/error_log/$name-$func.log"
 }
 
 function safe_run() {
