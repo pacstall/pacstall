@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-source "$LOGDIR/$PACKAGE" || {
+source "$LOGDIR/$PACKAGE" 2>/dev/null || {
     fancy_message error "$PACKAGE is not installed"
     error_log 3 "remove $PACKAGE"
     exit 1
