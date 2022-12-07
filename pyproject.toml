@@ -60,7 +60,7 @@ codespell = "^2.1.0"
 isort = "^5.10.1"
 mypy = "^0.950"
 pre-commit = "^2.18.1"
-pyupgrade = "^2.32.0"
+pyupgrade = "^3.3.1"
 
 [tool.isort]
 balanced_wrapping = true
