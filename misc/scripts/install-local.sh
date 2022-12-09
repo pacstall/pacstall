@@ -44,8 +44,8 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset name version url build_depends depends breaks replace description hash optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall gives pac_functions 2> /dev/null
-    unset -f pkgver removescript prepare build install 2> /dev/null
+    unset name version url build_depends depends breaks replace description hash optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall gives epoch pac_functions 2> /dev/null
+    unset -f pkgver removescript prepare build install incompatible 2> /dev/null
 }
 
 function trap_ctrlc() {
@@ -105,7 +105,7 @@ function log() {
         if [[ -n $pkgname ]]; then
             echo "_pkgname=\"$pkgname"\"
         fi
-        echo "_version=\"$version"\"
+        echo "_version=\"${epoch+$epoch:}$version"\"
         echo "_date=\"$(date)"\"
         if [[ -n $ppa ]]; then
             echo "_ppa=\"$ppa"\"
@@ -140,7 +140,7 @@ function compare_remote_version() (
     else
         local remoterepo="${_remoterepo}"
     fi
-    local remotever="$(source <(curl -s -- "$remoterepo"/packages/"$input"/"$input".pacscript) && type pkgver &> /dev/null && pkgver || echo "$version")" > /dev/null
+    local remotever="$(source <(curl -s -- "$remoterepo"/packages/"$input"/"$input".pacscript) && type pkgver &> /dev/null && pkgver || echo "${epoch+$epoch:}$version")" > /dev/null
     if [[ $input == *"-git" ]]; then
         if [[ $(pacstall -V $input) != "$remotever" ]]; then
             echo "update"
@@ -307,8 +307,8 @@ function prompt_optdepends() {
 }
 
 function generate_changelog() {
-    echo -e "${name} ($version) $(lsb_release -sc); urgency=medium\n"
-    echo -e "  * Version now at $version.\n"
+    echo -e "${name} (${epoch+$epoch:}$version) $(lsb_release -sc); urgency=medium\n"
+    echo -e "  * Version now at ${epoch+$epoch:}$version.\n"
     echo -e " -- $maintainer  $(date +"%a, %d %b %Y %T %z")"
 }
 
@@ -364,11 +364,11 @@ function makedeb() {
     deblog "Package" "${gives:-$name}"
 
     if [[ $version =~ ^[0-9] ]]; then
-        deblog "Version" "${version}"
-        export version="${version}"
+        deblog "Version" "${epoch+$epoch:}$version"
+        export version="${epoch+$epoch:}$version"
     else
-        deblog "Version" "0${version}"
-        export version="0${version}"
+        deblog "Version" "0${epoch+$epoch:}$version"
+        export version="0${epoch+$epoch:}$version"
     fi
 
     deblog "Architecture" "all"
@@ -772,14 +772,14 @@ else
                 fi
 
                 fancy_message info "Storing pacscript"
-                sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
+                sudo mkdir -p "/var/cache/pacstall/$PACKAGE/${epoch+$epoch:}$version"
                 if ! cd "$DIR" 2> /dev/null; then
                     error_log 1 "install $PACKAGE"
                     fancy_message error "Could not enter into ${DIR}"
                     exit 1
                 fi
-                sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
-                sudo chmod o+r /var/cache/pacstall/"$PACKAGE"/"$version"/"$PACKAGE".pacscript
+                sudo cp -r "$PACKAGE".pacscript "/var/cache/pacstall/$PACKAGE/${epoch+$epoch:}$version"
+                sudo chmod o+r "/var/cache/pacstall/$PACKAGE/${epoch+$epoch:}$version/$PACKAGE.pacscript"
                 fancy_message info "Cleaning up"
                 cleanup
                 return 0
@@ -910,7 +910,7 @@ hash -r
 
 fancy_message info "Performing post install operations"
 fancy_message sub "Storing pacscript"
-sudo mkdir -p /var/cache/pacstall/"$PACKAGE"/"$version"
+sudo mkdir -p "/var/cache/pacstall/$PACKAGE/${epoch+$epoch:}$version"
 if ! cd "$DIR" 2> /dev/null; then
     error_log 1 "install $PACKAGE"
     fancy_message error "Could not enter into ${DIR}"
@@ -920,8 +920,8 @@ if ! cd "$DIR" 2> /dev/null; then
     exit 1
 fi
 
-sudo cp -r "$PACKAGE".pacscript /var/cache/pacstall/"$PACKAGE"/"$version"
-sudo chmod o+r /var/cache/pacstall/"$PACKAGE"/"$version"/"$PACKAGE".pacscript
+sudo cp -r "$PACKAGE".pacscript "/var/cache/pacstall/$PACKAGE/${epoch+$epoch:}$version"
+sudo chmod o+r "/var/cache/pacstall/$PACKAGE/${epoch+$epoch:}$version/$PACKAGE.pacscript"
 
 fancy_message sub "Cleaning up"
 cleanup
