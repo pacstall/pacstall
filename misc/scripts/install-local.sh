@@ -301,7 +301,7 @@ function prompt_optdepends() {
             deps+=($(cat /tmp/pacstall-gives))
         fi
     fi
-    if [[ -n $depends ]] || [[ -n ${deps[*]}  ]]; then
+    if [[ -n $depends ]] || [[ -n ${deps[*]} ]]; then
         deblog "Depends" "$(echo "${deps[@]}" | sed 's/ /, /g')"
     fi
 }
@@ -316,10 +316,14 @@ function createdeb() {
     local name="$1"
     if [[ $PACSTALL_INSTALL == "0" ]]; then
         # We are not going to immediately install, meaning the user might want to share their deb with someone else, so create the highest compression.
-		local xz_flags=("-9" "-T0")
+        local flags=("-9" "-T0")
+        local compression="xz"
+        local command="xz"
     else
-        # Immediate install, so we want fast build times over everything else
-		local xz_flags=("-1" "-T0")
+        # Immediate install (gzip), so we want fast build times over everything else
+        local flags=("-1n")
+        local compression="gz"
+        local command="gzip"
     fi
     cd "$STOWDIR/$name"
     echo "2.0" | sudo tee debian-binary > /dev/null
@@ -349,10 +353,10 @@ function createdeb() {
     sudo tar -rf "$DATA_LOCATION" "${files_for_data[@]}"
 
     fancy_message sub "Compressing"
-    sudo xz "${xz_flags[@]}" "$DATA_LOCATION" "$CONTROL_LOCATION"
-    sudo ar -rU "$name.deb" debian-binary control.tar.xz data.tar.xz > /dev/null 2>&1
+    sudo "$command" "${flags[@]}" "$DATA_LOCATION" "$CONTROL_LOCATION"
+    sudo ar -rU "$name.deb" debian-binary control.tar."$compression" data.tar."$compression" > /dev/null 2>&1
     sudo mv "$name.deb" ..
-    sudo rm -f debian-binary control.tar.xz data.tar.xz
+    sudo rm -f debian-binary control.tar."$compression" data.tar."$compression"
 }
 
 function makedeb() {
