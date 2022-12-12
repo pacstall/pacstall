@@ -301,7 +301,13 @@ function prompt_optdepends() {
             deps+=($(cat /tmp/pacstall-gives))
         fi
     fi
-    if [[ -n $depends ]] || [[ -n ${deps[*]}  ]]; then
+    if [[ -n $depends ]] || [[ -n ${deps[*]} ]]; then
+        for i in "${deps[@]}"; do
+            # if package is not installed
+            if ! [[ "$(dpkg-query -W -f='${Status}' "${i}" 2> /dev/null)" == "install ok installed" ]]; then
+                marked_auto_packages+=("$i")
+            fi
+        done
         deblog "Depends" "$(echo "${deps[@]}" | sed 's/ /, /g')"
     fi
 }
@@ -471,6 +477,7 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
             cleanup
             exit 1
         fi
+        sudo apt-mark auto "${marked_auto_packages[@]}" > /dev/null
 
         sudo rm -rf "$STOWDIR/$name"
         sudo rm -rf "$SRCDIR/$name.deb"
