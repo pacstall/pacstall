@@ -302,12 +302,6 @@ function prompt_optdepends() {
         fi
     fi
     if [[ -n $depends ]] || [[ -n ${deps[*]} ]]; then
-        for i in "${deps[@]}"; do
-            # if package is not installed
-            if ! [[ "$(dpkg-query -W -f='${Status}' "${i}" 2> /dev/null)" == "install ok installed" ]]; then
-                marked_auto_packages+=("$i")
-            fi
-        done
         deblog "Depends" "$(echo "${deps[@]}" | sed 's/ /, /g')"
     fi
 }
@@ -502,6 +496,16 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
     fi
 }
 
+function mark_packages_as_auto() {
+    local arrayed=($depends)
+    for i in "${arrayed[@]}"; do
+        # if package is not installed
+        if ! [[ "$(dpkg-query -W -f='${Status}' "${i}" 2> /dev/null)" == "install ok installed" ]]; then
+            marked_auto_packages+=("$i")
+        fi
+    done
+}
+
 ask "Do you want to view/edit the pacscript" N
 if [[ $answer -eq 1 ]]; then
     (
@@ -661,7 +665,8 @@ if [[ -n ${build_depends[*]} ]]; then
             NOBUILDDEP=1
         fi
 
-        if ! sudo apt-get install -y ${build_depends[*]}; then
+        mark_packages_as_auto
+        if ! sudo apt-get install -y ${build_depends[*]} ${depends[*]}; then
             fancy_message error "Failed to install build dependencies"
             error_log 8 "install $PACKAGE"
             fancy_message info "Cleaning up"
