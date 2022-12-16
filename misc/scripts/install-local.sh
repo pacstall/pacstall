@@ -845,6 +845,7 @@ trap cleanup ERR
 trap - SIGINT
 
 prompt_optdepends
+clean_logdir
 
 function fail_out_functions() {
     local func="$1"
