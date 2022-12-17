@@ -72,7 +72,7 @@ N="$(nproc)"
             IDXMATCH=$(printf "%s\n" "${REPOS[@]}" | grep -n -- "$remoterepo" | cut -d : -f1 | awk '{print $0-1}')
 
             if [[ -n $IDXMATCH ]]; then
-                remotever=$(source <(curl -s -- "$remoterepo"/packages/"$i"/"$i".pacscript) && type pkgver &> /dev/null && pkgver || echo "$version") > /dev/null
+                remotever=$(source <(curl -s -- "$remoterepo"/packages/"$i"/"$i".pacscript) && type pkgver &> /dev/null && pkgver || echo "${epoch:+$epoch:}$version") > /dev/null
                 remoteurl="${REPOS[$IDXMATCH]}"
             else
                 fancy_message warn "Package ${GREEN}${i}${CYAN} is not on ${CYAN}$(parseRepo "${remoterepo}")${NC} anymore"
