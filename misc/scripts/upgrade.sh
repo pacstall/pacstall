@@ -85,7 +85,7 @@ N="$(nproc)"
                     if [[ $IDX -eq $IDXMATCH ]]; then
                         continue
                     else
-                        ver=$(source <(curl -s -- "${REPOS[$IDX]}"/packages/"$i"/"$i".pacscript) && type pkgver &> /dev/null && pkgver || echo "$version") > /dev/null
+                        ver=$(source <(curl -s -- "${REPOS[$IDX]}"/packages/"$i"/"$i".pacscript) && type pkgver &> /dev/null && pkgver || echo "${epoch:+$epoch:}$version") > /dev/null
                         if ! ver_compare "$alterver" "$ver"; then
                             alterver="$ver"
                             alterurl="$REPO"
