@@ -312,6 +312,13 @@ function generate_changelog() {
     echo -e " -- $maintainer  $(date +"%a, %d %b %Y %T %z")"
 }
 
+function clean_logdir() {
+    local files=("$(find -H "/var/log/pacstall/error_log/" -maxdepth 1 -mtime +30)")
+    if [[ -n ${files[*]} ]]; then
+		sudo rm -f "${files[@]}"
+    fi
+}
+
 function createdeb() {
     local name="$1"
     if [[ $PACSTALL_INSTALL == "0" ]]; then
@@ -482,7 +489,7 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
         if ! [[ -d /etc/apt/preferences.d/ ]]; then
             sudo mkdir -p /etc/apt/preferences.d
         fi
-        echo "Package: ${name}
+        echo "Package: ${gives:-$name}
 Pin: version *
 Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
         return 0
@@ -842,6 +849,7 @@ trap cleanup ERR
 trap - SIGINT
 
 prompt_optdepends
+clean_logdir
 
 function fail_out_functions() {
     local func="$1"
@@ -859,7 +867,8 @@ function fail_out_functions() {
 function run_function() {
     local func="$1"
     fancy_message sub "Running $func"
-    $func
+    # NOTE: https://stackoverflow.com/a/29163890 (shorthand for 2>&1 |)
+	$func |& sudo tee "/var/log/pacstall/error_log/$(date +"%Y-%m-%d_%T")-$name-$func.log" && return "${PIPESTATUS[0]}"
 }
 
 function safe_run() {
