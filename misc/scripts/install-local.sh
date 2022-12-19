@@ -370,7 +370,7 @@ function makedeb() {
     fi
     deblog "Package" "${gives:-$name}"
 
-    if [[ $version =~ ^[0-9] ]]; then
+    if [[ $version =~ ^[0-9] ]] || [[ $name == *-git ]]; then
         deblog "Version" "${epoch+$epoch:}$version"
         export version="${epoch+$epoch:}$version"
     else
