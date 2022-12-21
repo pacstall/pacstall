@@ -487,6 +487,7 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
             cleanup
             exit 1
         fi
+        sudo apt-mark auto "${marked_auto_packages[@]}" > /dev/null
 
         sudo rm -rf "$STOWDIR/$name"
         sudo rm -rf "$SRCDIR/$name.deb"
@@ -509,6 +510,16 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
         cleanup
         exit 0
     fi
+}
+
+function mark_packages_as_auto() {
+    local arrayed=($depends)
+    for i in "${arrayed[@]}"; do
+        # if package is not installed
+        if ! [[ "$(dpkg-query -W -f='${Status}' "${i}" 2> /dev/null)" == "install ok installed" ]]; then
+            marked_auto_packages+=("$i")
+        fi
+    done
 }
 
 ask "Do you want to view/edit the pacscript" N
@@ -670,7 +681,8 @@ if [[ -n ${build_depends[*]} ]]; then
             NOBUILDDEP=1
         fi
 
-        if ! sudo apt-get install -y ${build_depends[*]}; then
+        mark_packages_as_auto
+        if ! sudo apt-get install -y ${build_depends[*]} ${depends[*]}; then
             fancy_message error "Failed to install build dependencies"
             error_log 8 "install $PACKAGE"
             fancy_message info "Cleaning up"
