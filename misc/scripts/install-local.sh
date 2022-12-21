@@ -64,10 +64,6 @@ function checks() {
         fancy_message error "Package does not contain name"
         exit 1
     fi
-    if [[ -z $gives && $name == *-deb ]]; then
-        fancy_message error "Deb package does not contain gives"
-        exit 1
-    fi
     if [[ -z $hash && $name != *-git ]]; then
         fancy_message warn "Package does not contain a hash"
     fi
@@ -114,7 +110,9 @@ function log() {
         if [[ -n $ppa ]]; then
             echo "_ppa=\"$ppa"\"
         fi
-        if [[ -n $gives ]]; then
+        if [[ $name == *-deb ]] && [[ -z $gives ]]; then
+            echo "_gives=\"$(dpkg -f ./"${url##*/}" | sed -n "s/^Package: //p")"\"
+        elif [[ -n $gives ]]; then
             echo "_gives=\"$gives"\"
         fi
         if [[ -f /tmp/pacstall-pacdeps-"$name" ]]; then
