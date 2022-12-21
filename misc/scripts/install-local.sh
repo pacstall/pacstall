@@ -64,6 +64,9 @@ function checks() {
         fancy_message error "Package does not contain name"
         exit 1
     fi
+    if [[ -z $gives && $name == *-deb ]]; then
+        fancy_message warn "Deb package does not contain gives"
+    fi
     if [[ -z $hash && $name != *-git ]]; then
         fancy_message warn "Package does not contain a hash"
     fi
