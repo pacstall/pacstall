@@ -64,6 +64,9 @@ function checks() {
         fancy_message error "Package does not contain name"
         exit 1
     fi
+    if [[ -z $gives && $name == *-deb ]]; then
+        fancy_message warn "Deb package does not contain gives"
+    fi
     if [[ -z $hash && $name != *-git ]]; then
         fancy_message warn "Package does not contain a hash"
     fi
@@ -110,7 +113,9 @@ function log() {
         if [[ -n $ppa ]]; then
             echo "_ppa=\"$ppa"\"
         fi
-        if [[ -n $gives ]]; then
+        if [[ $name == *-deb ]] && [[ -z $gives ]]; then
+            echo "_gives=\"$(dpkg -f ./"${url##*/}" | sed -n "s/^Package: //p")"\"
+        elif [[ -n $gives ]]; then
             echo "_gives=\"$gives"\"
         fi
         if [[ -f /tmp/pacstall-pacdeps-"$name" ]]; then
@@ -301,7 +306,7 @@ function prompt_optdepends() {
             deps+=($(cat /tmp/pacstall-gives))
         fi
     fi
-    if [[ -n $depends ]] || [[ -n ${deps[*]}  ]]; then
+    if [[ -n $depends ]] || [[ -n ${deps[*]} ]]; then
         deblog "Depends" "$(echo "${deps[@]}" | sed 's/ /, /g')"
     fi
 }
@@ -315,18 +320,22 @@ function generate_changelog() {
 function clean_logdir() {
     local files=("$(find -H "/var/log/pacstall/error_log/" -maxdepth 1 -mtime +30)")
     if [[ -n ${files[*]} ]]; then
-		sudo rm -f "${files[@]}"
+        sudo rm -f "${files[@]}"
     fi
 }
 
 function createdeb() {
     local name="$1"
     if [[ $PACSTALL_INSTALL == "0" ]]; then
-        # We are not going to immediately install, meaning the user might want to share their deb with someone else, so create the highest compression. We want maximum compression over everything else
-        local gzip_flags="-9n"
+        # We are not going to immediately install, meaning the user might want to share their deb with someone else, so create the highest compression.
+        local flags=("-9" "-T0")
+        local compression="xz"
+        local command="xz"
     else
-        # Immediate install, so we want fast build times over everything else
-        local gzip_flags="-1n"
+        # Immediate install (gzip), so we want fast build times over everything else
+        local flags=("-1n")
+        local compression="gz"
+        local command="gzip"
     fi
     cd "$STOWDIR/$name"
     echo "2.0" | sudo tee debian-binary > /dev/null
@@ -356,10 +365,10 @@ function createdeb() {
     sudo tar -rf "$DATA_LOCATION" "${files_for_data[@]}"
 
     fancy_message sub "Compressing"
-    sudo gzip "$gzip_flags" "$DATA_LOCATION" "$CONTROL_LOCATION"
-    sudo ar -rU "$name.deb" debian-binary control.tar.gz data.tar.gz > /dev/null 2>&1
+    sudo "$command" "${flags[@]}" "$DATA_LOCATION" "$CONTROL_LOCATION"
+    sudo ar -rU "$name.deb" debian-binary control.tar."$compression" data.tar."$compression" > /dev/null 2>&1
     sudo mv "$name.deb" ..
-    sudo rm -f debian-binary control.tar.gz data.tar.gz
+    sudo rm -f debian-binary control.tar."$compression" data.tar."$compression"
 }
 
 function makedeb() {
@@ -864,7 +873,7 @@ function run_function() {
     local func="$1"
     fancy_message sub "Running $func"
     # NOTE: https://stackoverflow.com/a/29163890 (shorthand for 2>&1 |)
-	$func |& sudo tee "/var/log/pacstall/error_log/$(date +"%Y-%m-%d_%T")-$name-$func.log" && return "${PIPESTATUS[0]}"
+    $func |& sudo tee "/var/log/pacstall/error_log/$(date +"%Y-%m-%d_%T")-$name-$func.log" && return "${PIPESTATUS[0]}"
 }
 
 function safe_run() {

@@ -47,7 +47,7 @@ N="$(nproc)"
 (
     for i in "${list[@]}"; do
         ((n = n % N))
-            ((n++ == 0)) && wait
+        ((n++ == 0)) && wait
         {
             source "$LOGDIR/$i"
 
@@ -57,9 +57,9 @@ N="$(nproc)"
             if [[ -z ${_remoterepo} ]]; then
                 # TODO: upgrade for local pacscripts
                 return
-            elif [[ "${_remoterepo}" == *"github.com"* ]]; then
+            elif [[ ${_remoterepo} == *"github.com"* ]]; then
                 remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}"
-            elif [[ "${_remoterepo}" == *"gitlab.com"* ]]; then
+            elif [[ ${_remoterepo} == *"gitlab.com"* ]]; then
                 remoterepo="${_remoterepo}/-/raw/${_remotebranch}"
             else
                 remoterepo="${_remoterepo}"
@@ -105,7 +105,8 @@ N="$(nproc)"
                     remoterepo="$alterver"
                     remoteurl="$alterurl"
                 fi
-            elif [[ $remotever == "$localver" ]]; then
+                # If the remote version equals the local version minus the first character (0) or they both equal the same
+            elif [[ $remotever == "${localver:1}" ]] || [[ $remotever == "$localver" ]]; then
                 return
             fi
 
