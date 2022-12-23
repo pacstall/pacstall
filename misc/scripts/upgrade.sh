@@ -48,7 +48,7 @@ N="$(nproc)"
     for i in "${list[@]}"; do
         ((n = n % N))
         ((n++ == 0)) && wait
-        {
+        (
             source "$LOGDIR/$i"
 
             # localver is the current version of the package
@@ -117,8 +117,9 @@ N="$(nproc)"
                     echo "$remoteurl" | tee -a /tmp/pacstall-up-urls > /dev/null
                 fi
             fi
-        } &
+        ) &
     done
+    wait
 )
 
 if [[ $(wc -l < /tmp/pacstall-up-list) -eq 0 ]]; then
