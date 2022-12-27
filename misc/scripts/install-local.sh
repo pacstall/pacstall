@@ -487,7 +487,9 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
             cleanup
             exit 1
         fi
-
+        if [[ -f /tmp/pacstall-pacdeps-"$name" ]]; then
+            sudo apt-mark auto "${gives:-$name}" 2> /dev/null
+        fi
         sudo rm -rf "$STOWDIR/$name"
         sudo rm -rf "$SRCDIR/$name.deb"
 
