@@ -320,7 +320,7 @@ function generate_changelog() {
 function clean_logdir() {
     local files=("$(find -H "/var/log/pacstall/error_log/" -maxdepth 1 -mtime +30)")
     if [[ -n ${files[*]} ]]; then
-        sudo rm -f "${files[@]}"
+        sudo rm -f ${files[@]}
     fi
 }
 
