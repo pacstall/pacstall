@@ -690,11 +690,9 @@ function hashcheck() {
         # We bad
         fancy_message error "Hashes do not match"
         error_log 16 "install $PACKAGE"
-        if [[ $url != *".deb" ]]; then
-            fancy_message info "Cleaning up"
-            cleanup
-            return 1
-        fi
+        fancy_message info "Cleaning up"
+        cleanup
+        exit 1
     fi
     true
 }
@@ -753,9 +751,7 @@ else
                 exit 1
             fi
             # hash the file
-            if ! hashcheck "${url##*/}"; then
-                return 1
-            fi
+            hashcheck "${url##*/}"
             # unzip file
             fancy_message info "Extracting ${url##*/}"
             unzip -qo "${url##*/}" 1>&1 2> /dev/null
@@ -773,9 +769,7 @@ else
                 cleanup
                 exit 1
             fi
-            if ! hashcheck "${url##*/}"; then
-                return 1
-            fi
+            hashcheck "${url##*/}"
             if sudo apt install -y -f ./"${url##*/}" 2> /dev/null; then
                 log
                 if type -t postinst > /dev/null 2>&1; then
@@ -816,9 +810,7 @@ else
                 cleanup
                 exit 1
             fi
-            if ! hashcheck "${url##*/}"; then
-                return 1
-            fi
+            hashcheck "${url##*/}"
             ;;
         *)
             if ! download "$url"; then
@@ -828,10 +820,7 @@ else
                 cleanup
                 exit 1
             fi
-            # I think you get it by now
-            if ! hashcheck "${url##*/}"; then
-                return 1
-            fi
+            hashcheck "${url##*/}"
             fancy_message info "Extracting ${url##*/}"
             tar -xf "${url##*/}" 1>&1 2> /dev/null
             cd ./*/ 2> /dev/null || {
