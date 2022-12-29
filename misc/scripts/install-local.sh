@@ -754,7 +754,8 @@ else
             fi
             # hash the file
             if ! hashcheck "${url##*/}"; then
-                return 1
+                cleanup
+                exit 1
             fi
             # unzip file
             fancy_message info "Extracting ${url##*/}"
@@ -774,7 +775,8 @@ else
                 exit 1
             fi
             if ! hashcheck "${url##*/}"; then
-                return 1
+                cleanup
+                exit 1
             fi
             if sudo apt install -y -f ./"${url##*/}" 2> /dev/null; then
                 log
@@ -817,7 +819,8 @@ else
                 exit 1
             fi
             if ! hashcheck "${url##*/}"; then
-                return 1
+                cleanup
+                exit 1
             fi
             ;;
         *)
@@ -830,7 +833,8 @@ else
             fi
             # I think you get it by now
             if ! hashcheck "${url##*/}"; then
-                return 1
+                cleanup
+                exit 1
             fi
             fancy_message info "Extracting ${url##*/}"
             tar -xf "${url##*/}" 1>&1 2> /dev/null
