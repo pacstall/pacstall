@@ -690,11 +690,9 @@ function hashcheck() {
         # We bad
         fancy_message error "Hashes do not match"
         error_log 16 "install $PACKAGE"
-        if [[ $url != *".deb" ]]; then
-            fancy_message info "Cleaning up"
-            cleanup
-            return 1
-        fi
+        fancy_message info "Cleaning up"
+        cleanup
+        exit 1
     fi
     true
 }
