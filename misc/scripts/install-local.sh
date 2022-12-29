@@ -875,6 +875,7 @@ $(shopt -p -o)"
     trap "fail_out_functions '$func'" ERR
 
     run_function "$func"
+    CURRENT_PATH="$PWD"
 
     trap - ERR
     eval "$restoreshopt"
@@ -889,6 +890,7 @@ done
 if [[ -n ${pac_functions[*]} ]]; then
     fancy_message info "Running functions"
     for function in "${pac_functions[@]}"; do
+        [[ -n $CURRENT_PATH ]] && cd "$CURRENT_PATH"
         safe_run "$function"
     done
 fi
