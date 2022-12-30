@@ -511,9 +511,16 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 }
 
 if [[ -n $PACSTALL_BUILD_CORES ]]; then
-    function nproc() {
-        echo "${PACSTALL_BUILD_CORES:-1}"
-    }
+    if [[ $PACSTALL_BUILD_CORES =~ '^[0-9]+$' ]]; then
+        function nproc() {
+            echo "${PACSTALL_BUILD_CORES:-1}"
+        }
+    else
+        fancy_message error "${UCyan}PACSTALL_BUILD_CORES${NC} is not an integer. Falling back to 1"
+        function nproc() {
+            echo "1"
+        }
+    fi
 fi
 
 ask "Do you want to view/edit the pacscript" N
