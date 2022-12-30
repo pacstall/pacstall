@@ -511,7 +511,7 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 }
 
 if [[ -n $PACSTALL_BUILD_CORES ]]; then
-    if [[ $PACSTALL_BUILD_CORES =~ '^[0-9]+$' ]]; then
+    if [[ $PACSTALL_BUILD_CORES =~ ^[0-9]+$ ]]; then
         function nproc() {
             echo "${PACSTALL_BUILD_CORES:-1}"
         }
