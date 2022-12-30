@@ -510,6 +510,12 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
     fi
 }
 
+if [[ -n $PACSTALL_BUILD_CORES ]]; then
+    function nproc() {
+        echo "${PACSTALL_BUILD_CORES:-1}"
+    }
+fi
+
 ask "Do you want to view/edit the pacscript" N
 if [[ $answer -eq 1 ]]; then
     (
