@@ -111,7 +111,7 @@ function log() {
         echo "_version=\"${epoch+$epoch:}$version"\"
         echo "_date=\"$(date)"\"
         if [[ -n $ppa ]]; then
-            echo "_ppa=\"$ppa"\"
+            echo "_ppa=(${ppa[*]})"
         fi
         if [[ $name == *-deb ]] && [[ -z $gives ]]; then
             echo "_gives=\"$(dpkg -f ./"${url##*/}" | sed -n "s/^Package: //p")"\"
