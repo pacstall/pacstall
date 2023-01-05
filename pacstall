@@ -578,11 +578,6 @@ Helpful links:
             exit 0
             ;;
 
-        -Il | --install-local)
-            fancy_message error "This flag is deprecated"
-            suggested_solution "Use the '${UCyan}-I${NC}' flag: '${UCyan}pacstall -I $2${NC}'"
-            exit 1
-            ;;
         -S | --search)
 
             export SEARCH=$2
