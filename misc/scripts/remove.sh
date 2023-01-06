@@ -41,7 +41,7 @@ sudo apt-get remove "${_gives:-$_name}" -y || {
 
 if [[ -n ${_ppa[*]} ]]; then
     for ppa in "${_ppa[@]}"; do
-        sudo add-apt-repository --remove ppa:"$ppa" -y
+		fancy_message warn "You may have dangling PPAs on your system. You can remove them using ${UCyan}sudo add-apt-repository --remove ppa:$ppa${NC}"
     done
 fi
 
