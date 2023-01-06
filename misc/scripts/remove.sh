@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-source "$LOGDIR/$PACKAGE" 2>/dev/null || {
+source "$LOGDIR/$PACKAGE" 2> /dev/null || {
     fancy_message error "$PACKAGE is not installed"
     error_log 3 "remove $PACKAGE"
     exit 1
@@ -38,6 +38,12 @@ sudo apt-get remove "${_gives:-$_name}" -y || {
     error_log 1 "remove $PACKAGE"
     exit 1
 }
+
+if [[ -n ${_ppa[*]} ]]; then
+    for ppa in "${_ppa[@]}"; do
+        fancy_message warn "You may have dangling PPAs on your system. You can remove them using ${UCyan}sudo add-apt-repository --remove ppa:$ppa${NC}"
+    done
+fi
 
 sudo rm -f /var/log/pacstall/metadata/"$_name"
 # vim:set ft=sh ts=4 sw=4 noet:
