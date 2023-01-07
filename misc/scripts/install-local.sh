@@ -269,8 +269,7 @@ function prompt_optdepends() {
                     # does `s` actually exist in the optdeps array?
                     if [[ -n $s ]]; then
                         # then add it, and strip the `:`
-                        deps+=("${s%%: *}")
-                        local not_installed_yet_optdeps+=("${s%%: *}")
+                        export not_installed_yet_optdeps+=("${s%%: *}")
                     fi
                 done
                 if [[ -n ${deps[*]} ]]; then
@@ -281,7 +280,8 @@ function prompt_optdepends() {
                 fi
             else
                 # Add to the suggests anyway. They won't get installed but can be queried
-                deblog "Suggests" "$(echo "${suggested_optdeps[@]//: */}" | sed 's/ /, /g')"
+                local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${suggested_optdeps[@]}")
+                deblog "Suggests" "$(echo "${final_merged_deps[@]//: */}" | sed 's/ /, /g')"
             fi
         fi
     fi
@@ -491,6 +491,10 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
         echo "Package: ${gives:-$name}
 Pin: version *
 Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
+        if [[ -n ${not_installed_yet_optdeps[*]} ]]; then
+            fancy_message info "Installing selected optional dependencies"
+            sudo -E apt-get install ${not_installed_yet_optdeps[*]} -y 2> /dev/null
+        fi
         return 0
     else
         sudo mv "$STOWDIR/$name.deb" "$PACDEB_DIR"
