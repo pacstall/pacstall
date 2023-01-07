@@ -639,7 +639,7 @@ Helpful links:
                 exit 0
             else
                 # If pacstall -V was called with an argument, it's a package, so get the package version (useful for scripting)
-                if source "$LOGDIR/$PACKAGE" 2> /dev/null && echo "$_version"; then
+                if source "$LOGDIR/$PACKAGE" 2> /dev/null && dpkg -s "${_gives:-$_name}" | grep --color=never "^Version: " | sed "s/Version: //"; then
                     exit 0
                 else
                     fancy_message error "${GREEN}${PACKAGE}${NC} is not installed"
