@@ -229,7 +229,13 @@ function prompt_optdepends() {
                 local missing_optdeps+=("${opt}")
                 continue
             fi
-            suggested_optdeps+=("${optdep}")
+            # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
+            # If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of it's status
+            if [[ "$(dpkg-query -W -f='${Status}' "${opt}" 2> /dev/null)" != "install ok installed" ]]; then
+                suggested_optdeps+=("${optdep}")
+            else
+                already_installed_optdeps+=("${opt}")
+            fi
         done
 
         if [[ ${#suggested_optdeps[@]} -ne 0 ]]; then
@@ -280,7 +286,7 @@ function prompt_optdepends() {
                 fi
             else
                 # Add to the suggests anyway. They won't get installed but can be queried
-                local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${suggested_optdeps[@]}")
+                local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${suggested_optdeps[@]}")
                 deblog "Suggests" "$(echo "${final_merged_deps[@]//: */}" | sed 's/ /, /g')"
             fi
         fi
