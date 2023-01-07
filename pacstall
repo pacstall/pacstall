@@ -635,7 +635,7 @@ Helpful links:
             PACKAGE="$2"
 
             if [[ -z $PACKAGE ]]; then
-                echo -e "3.1.1 \033[1m\x1b[38;2;255;241;230mCoconut${NC}"
+                echo -e "3.2.0 \033[1m\x1b[38;2;0;168;107mJade${NC}"
                 exit 0
             else
                 # If pacstall -V was called with an argument, it's a package, so get the package version (useful for scripting)
