@@ -229,10 +229,7 @@ function prompt_optdepends() {
                 local missing_optdeps+=("${opt}")
                 continue
             fi
-            # If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of it's status
-            if [[ "$(dpkg-query -W -f='${Status}' "${opt}" 2> /dev/null)" != "install ok installed" ]]; then
-                suggested_optdeps+=("${optdep}")
-            fi
+            suggested_optdeps+=("${optdep}")
         done
 
         if [[ ${#suggested_optdeps[@]} -ne 0 ]]; then
