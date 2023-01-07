@@ -116,7 +116,7 @@ pac_text=" _________________________
 < you just got Pac-rolled >
  -------------------------"
 
- pac_body="
+pac_body="
   ⠀⠀⠀⠀⣀⠀⡀⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀
       ⣞⠑⡄⢠⠎⠀⠋⠀⠀⣜⠴⠒⡀⠀⡜⠁⠱⡀
       ⡇⠀⡈⠁⠀⠀⠀⠀⠀⠁⠀⠘⠀⠲⠅⠀⠀⡇
@@ -176,10 +176,10 @@ function fancy_message() {
 function ask() {
     local prompt default reply
 
-    if [[ ${2:-} == 'Y' ]]; then
+    if [[ ${2-} == 'Y' ]]; then
         prompt="${BIGreen}Y${NC}/${RED}n${NC}"
         default='Y'
-    elif [[ ${2:-} == 'N' ]]; then
+    elif [[ ${2-} == 'N' ]]; then
         prompt="${GREEN}y${NC}/${BIRed}N${NC}"
         default='N'
     else
@@ -639,7 +639,7 @@ Helpful links:
                 exit 0
             else
                 # If pacstall -V was called with an argument, it's a package, so get the package version (useful for scripting)
-                if source "$LOGDIR/$PACKAGE" && echo "$_version"; then
+                if source "$LOGDIR/$PACKAGE" 2> /dev/null && echo "$_version"; then
                     exit 0
                 else
                     fancy_message error "${GREEN}${PACKAGE}${NC} is not installed"
