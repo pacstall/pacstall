@@ -222,7 +222,7 @@ function prompt_optdepends() {
 
         local suggested_optdeps=()
         for optdep in "${optdepends[@]}"; do
-            # Strip the description
+            # Strip the description, `opt` is now the canonical optdep name
             local opt=${optdep%%: *}
             # Check if package exists in the repos, and if not, go to the next program
             if [[ -z "$(apt-cache search --names-only "^$opt\$")" ]]; then
@@ -278,7 +278,7 @@ function prompt_optdepends() {
                         export not_installed_yet_optdeps+=("${s%%: *}")
                     fi
                 done
-                if [[ -n ${deps[*]} ]]; then
+                if [[ -n ${not_installed_yet_optdeps[*]} ]]; then
                     fancy_message info "Selecting packages ${BCyan}${not_installed_yet_optdeps[*]}${NC}"
                 fi
                 if pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
