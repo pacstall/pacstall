@@ -220,31 +220,29 @@ function prompt_optdepends() {
             fi
         done
 
-        local optdeps=()
+        local suggested_optdeps=()
         for optdep in "${optdepends[@]}"; do
+            # Strip the description
             local opt=${optdep%%: *}
             # Check if package exists in the repos, and if not, go to the next program
             if [[ -z "$(apt-cache search --names-only "^$opt\$")" ]]; then
                 local missing_optdeps+=("${opt}")
                 continue
             fi
-            # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
             # If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of it's status
-            if ! [[ "$(dpkg-query -W -f='${Status}' "${opt}" 2> /dev/null)" == "install ok installed" ]]; then
-                optdeps+=("${optdep}")
-            else
-                deps+=("${opt}")
+            if [[ "$(dpkg-query -W -f='${Status}' "${opt}" 2> /dev/null)" != "install ok installed" ]]; then
+                suggested_optdeps+=("${optdep}")
             fi
         done
 
-        if [[ ${#optdeps[@]} -ne 0 ]]; then
+        if [[ ${#suggested_optdeps[@]} -ne 0 ]]; then
             fancy_message sub "Optional dependencies"
             if [[ -n ${missing_optdeps[*]} ]]; then
                 echo -ne "\t"
                 fancy_message warn "${BLUE}${missing_optdeps[*]}${NC} does not exist in apt repositories"
             fi
             z=1
-            for i in "${optdeps[@]}"; do
+            for i in "${suggested_optdeps[@]}"; do
                 # print optdepends with bold package name
                 echo -e "\t\t[${BICyan}$z${NC}] ${BOLD}${i%%:*}${NC}:${i#*:}"
                 ((z++))
@@ -252,12 +250,12 @@ function prompt_optdepends() {
             unset z
             # tab over the next line
             echo -ne "\t"
-            select_options "Select optional dependencies to install" "${#optdeps[@]}"
+            select_options "Select optional dependencies to install" "${#suggested_optdeps[@]}"
             choices=($(cat /tmp/pacstall-select-options))
             local choice_inc=0
             for i in "${choices[@]}"; do
                 # have we gone over the maximum number in choices[@]?
-                if [[ $i != "n" ]] && [[ $i != "y" ]] && [[ $i -gt ${#optdeps[@]} ]]; then
+                if [[ $i != "n" ]] && [[ $i != "y" ]] && [[ $i -gt ${#suggested_optdeps[@]} ]]; then
                     local skip_opt+=("$i")
                     unset 'choices[$choice_inc]'
                 fi
@@ -270,7 +268,7 @@ function prompt_optdepends() {
             if [[ ${choices[0]} != "n" ]]; then
                 for i in "${choices[@]}"; do
                     ((i--))
-                    local s="${optdeps[$i]}"
+                    local s="${suggested_optdeps[$i]}"
                     # does `s` actually exist in the optdeps array?
                     if [[ -n $s ]]; then
                         # then add it, and strip the `:`
@@ -286,7 +284,7 @@ function prompt_optdepends() {
                 fi
             else
                 # Add to the suggests anyway. They won't get installed but can be queried
-                deblog "Suggests" "$(echo "${optdeps[@]//: */}" | sed 's/ /, /g')"
+                deblog "Suggests" "$(echo "${suggested_optdeps[@]//: */}" | sed 's/ /, /g')"
             fi
         fi
     fi
