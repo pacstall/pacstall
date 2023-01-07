@@ -499,7 +499,15 @@ Pin: version *
 Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
         if [[ -n ${not_installed_yet_optdeps[*]} ]]; then
             fancy_message info "Installing selected optional dependencies"
+            for pkg in "${not_installed_yet_optdeps[@]}"; do
+                if [[ "$(dpkg-query -W -f='${Status}' "${pkg}" 2> /dev/null)" != "install ok installed" ]]; then
+                    local to_mark_as_auto+=("$pkg")
+                fi
+            done
             sudo -E apt-get install ${not_installed_yet_optdeps[*]} -y 2> /dev/null
+            if [[ -n $to_mark_as_auto ]]; then
+                sudo apt-mark auto "$pkg" 2> /dev/null
+            fi
         fi
         return 0
     else
