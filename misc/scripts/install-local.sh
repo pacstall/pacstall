@@ -273,19 +273,20 @@ function prompt_optdepends() {
                     ((i--))
                     local s="${suggested_optdeps[$i]}"
                     # does `s` actually exist in the optdeps array?
-                    if [[ -n $s ]]; then
-                        # then add it, and strip the `:`
-                        export not_installed_yet_optdeps+=("${s%%: *}")
-                    fi
+					if [[ -n $s ]]; then
+						# then add it, and strip the `:`
+						export not_installed_yet_optdeps+=("${s%%: *}")
+					fi
                 done
-                if [[ -n ${not_installed_yet_optdeps[*]} ]]; then
-                    fancy_message info "Selecting packages ${BCyan}${not_installed_yet_optdeps[*]}${NC}"
-                fi
+				if [[ -n ${not_installed_yet_optdeps[*]} ]]; then
+					fancy_message info "Selecting packages ${BCyan}${not_installed_yet_optdeps[*]}${NC}"
+					local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${suggested_optdeps[@]}")
+					deblog "Suggests" "$(echo "${final_merged_deps[@]//: */}" | sed 's/ /, /g')"
+				fi
                 if pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
                     sudo dpkg -r --force-all "${gives:-$name}" > /dev/null
                 fi
             else
-                # Add to the suggests anyway. They won't get installed but can be queried
                 local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${suggested_optdeps[@]}")
                 deblog "Suggests" "$(echo "${final_merged_deps[@]//: */}" | sed 's/ /, /g')"
             fi
