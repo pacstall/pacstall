@@ -513,7 +513,7 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
                 fi
             done
             sudo -E apt-get install ${not_installed_yet_optdeps[*]} -y 2> /dev/null
-            if [[ -n $to_mark_as_auto ]]; then
+            if [[ -n ${to_mark_as_auto[*]} ]]; then
                 sudo apt-mark auto ${to_mark_as_auto[*]} 2> /dev/null
             fi
         fi
