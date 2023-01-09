@@ -273,16 +273,14 @@ function prompt_optdepends() {
                     for i in "${choices[@]}"; do
                         ((i--))
                         local s="${suggested_optdeps[$i]}"
-                        # does `s` actually exist in the optdeps array?
-                        if [[ -n $s ]]; then
-                            # then add it, and strip the `:`
-                            export not_installed_yet_optdeps+=("${s%%: *}")
-                        fi
+                        export not_installed_yet_optdeps+=("${s%%: *}")
                     done
                     if [[ -n ${not_installed_yet_optdeps[*]} ]]; then
                         fancy_message info "Selecting packages ${BCyan}${not_installed_yet_optdeps[*]}${NC}"
                         local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${suggested_optdeps[@]}")
                         deblog "Suggests" "$(echo "${final_merged_deps[@]//: */}" | sed 's/ /, /g')"
+                        fancy_message info "Installing selected optional dependencies"
+                        sudo -E apt-get install ${not_installed_yet_optdeps[*]} -y 2> /dev/null
                     fi
                     if pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
                         sudo dpkg -r --force-all "${gives:-$name}" > /dev/null
@@ -290,10 +288,6 @@ function prompt_optdepends() {
                 else
                     local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${suggested_optdeps[@]}")
                     deblog "Suggests" "$(echo "${final_merged_deps[@]//: */}" | sed 's/ /, /g')"
-                    if [[ -n ${not_installed_yet_optdeps[*]} ]]; then
-                        fancy_message info "Installing selected optional dependencies"
-                        sudo -E apt-get install ${not_installed_yet_optdeps[*]} -y 2> /dev/null
-                    fi
                 fi
             else # If `-B` is being used
                 for pkg in "${optdepends[@]}"; do
