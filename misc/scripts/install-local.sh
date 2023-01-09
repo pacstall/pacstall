@@ -288,16 +288,16 @@ function prompt_optdepends() {
                         sudo dpkg -r --force-all "${gives:-$name}" > /dev/null
                     fi
                 else
-					local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${suggested_optdeps[@]}")
-					deblog "Suggests" "$(echo "${final_merged_deps[@]//: */}" | sed 's/ /, /g')"
-					if [[ -n ${not_installed_yet_optdeps[*]} ]]; then
-						fancy_message info "Installing selected optional dependencies"
-						sudo -E apt-get install ${not_installed_yet_optdeps[*]} -y 2> /dev/null
-					fi
-				fi
-			else # If `-B` is being used
-				for pkg in "${optdepends[@]}"; do
-					local B_suggests+=("${pkg%%: *}")
+                    local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${suggested_optdeps[@]}")
+                    deblog "Suggests" "$(echo "${final_merged_deps[@]//: */}" | sed 's/ /, /g')"
+                    if [[ -n ${not_installed_yet_optdeps[*]} ]]; then
+                        fancy_message info "Installing selected optional dependencies"
+                        sudo -E apt-get install ${not_installed_yet_optdeps[*]} -y 2> /dev/null
+                    fi
+                fi
+            else # If `-B` is being used
+                for pkg in "${optdepends[@]}"; do
+                    local B_suggests+=("${pkg%%: *}")
                 done
                 deblog "Suggests" "$(echo "${B_suggests[@]//: */}" | sed 's/ /, /g')"
             fi
