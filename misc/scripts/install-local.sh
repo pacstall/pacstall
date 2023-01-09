@@ -288,12 +288,16 @@ function prompt_optdepends() {
                         sudo dpkg -r --force-all "${gives:-$name}" > /dev/null
                     fi
                 else
-                    local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${suggested_optdeps[@]}")
-                    deblog "Suggests" "$(echo "${final_merged_deps[@]//: */}" | sed 's/ /, /g')"
-                fi
-            else # If `-B` is being used
-                for pkg in "${optdepends[@]}"; do
-                    local B_suggests+=("${pkg%%: *}")
+					local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${suggested_optdeps[@]}")
+					deblog "Suggests" "$(echo "${final_merged_deps[@]//: */}" | sed 's/ /, /g')"
+					if [[ -n ${not_installed_yet_optdeps[*]} ]]; then
+						fancy_message info "Installing selected optional dependencies"
+						sudo -E apt-get install ${not_installed_yet_optdeps[*]} -y 2> /dev/null
+					fi
+				fi
+			else # If `-B` is being used
+				for pkg in "${optdepends[@]}"; do
+					local B_suggests+=("${pkg%%: *}")
                 done
                 deblog "Suggests" "$(echo "${B_suggests[@]//: */}" | sed 's/ /, /g')"
             fi
@@ -505,18 +509,6 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
         echo "Package: ${gives:-$name}
 Pin: version *
 Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
-        if [[ -n ${not_installed_yet_optdeps[*]} ]]; then
-            fancy_message info "Installing selected optional dependencies"
-            for pkg in "${not_installed_yet_optdeps[@]}"; do
-                if [[ "$(dpkg-query -W -f='${Status}' "${pkg}" 2> /dev/null)" != "install ok installed" ]]; then
-                    local to_mark_as_auto+=("$pkg")
-                fi
-            done
-            sudo -E apt-get install ${not_installed_yet_optdeps[*]} -y 2> /dev/null
-            if [[ -n ${to_mark_as_auto[*]} ]]; then
-                sudo apt-mark auto ${to_mark_as_auto[*]} 2> /dev/null
-            fi
-        fi
         return 0
     else
         sudo mv "$STOWDIR/$name.deb" "$PACDEB_DIR"
