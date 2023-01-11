@@ -681,7 +681,7 @@ if [[ -n ${build_depends[*]} ]]; then
     done
 
     if [[ ${#build_depends[@]} -ne 0 ]]; then
-        fancy_message info "${BLUE}$name${NC} requires ${CYAN}$(echo -e "${build_depends[*]}")${NC} to install"
+        fancy_message info "${BLUE}$name${NC} requires ${CYAN}${build_depends[*]}${NC} to install"
         ask "Do you want to remove them after installing ${BLUE}$name${NC}" N
         if [[ $answer -eq 0 ]]; then
             NOBUILDDEP=0
@@ -689,7 +689,7 @@ if [[ -n ${build_depends[*]} ]]; then
             NOBUILDDEP=1
         fi
 
-        if ! sudo apt-get install -y ${build_depends[*]}; then
+        if ! sudo apt-get install -y "${build_depends[@]}"; then
             fancy_message error "Failed to install build dependencies"
             error_log 8 "install $PACKAGE"
             fancy_message info "Cleaning up"
@@ -918,7 +918,7 @@ trap - ERR
 if [[ $NOBUILDDEP -eq 1 ]]; then
     fancy_message info "Purging build dependencies"
     # shellcheck disable=2086
-    sudo apt-get purge --auto-remove -y ${build_depends[*]}
+    sudo apt-get purge --auto-remove -y "${build_depends[@]}"
 fi
 
 cd "$HOME" 2> /dev/null || (
