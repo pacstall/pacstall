@@ -220,9 +220,10 @@ function prompt_optdepends() {
             fi
         done
 
-        local optdeps=()
+        local suggested_optdeps=()
         for optdep in "${optdepends[@]}"; do
-            local opt=${optdep%%: *}
+            # Strip the description, `opt` is now the canonical optdep name
+            local opt="${optdep%%: *}"
             # Check if package exists in the repos, and if not, go to the next program
             if [[ -z "$(apt-cache search --names-only "^$opt\$")" ]]; then
                 local missing_optdeps+=("${opt}")
@@ -230,63 +231,69 @@ function prompt_optdepends() {
             fi
             # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
             # If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of it's status
-            if ! [[ "$(dpkg-query -W -f='${Status}' "${opt}" 2> /dev/null)" == "install ok installed" ]]; then
-                optdeps+=("${optdep}")
+            if [[ "$(dpkg-query -W -f='${Status}' "${opt}" 2> /dev/null)" != "install ok installed" ]]; then
+                suggested_optdeps+=("${optdep}")
             else
-                deps+=("${opt}")
+                already_installed_optdeps+=("${opt}")
             fi
         done
 
-        if [[ ${#optdeps[@]} -ne 0 ]]; then
+        if [[ ${#suggested_optdeps[@]} -ne 0 ]]; then
             fancy_message sub "Optional dependencies"
             if [[ -n ${missing_optdeps[*]} ]]; then
                 echo -ne "\t"
                 fancy_message warn "${BLUE}${missing_optdeps[*]}${NC} does not exist in apt repositories"
             fi
-            z=1
-            for i in "${optdeps[@]}"; do
-                # print optdepends with bold package name
-                echo -e "\t\t[${BICyan}$z${NC}] ${BOLD}${i%%:*}${NC}:${i#*:}"
-                ((z++))
-            done
-            unset z
-            # tab over the next line
-            echo -ne "\t"
-            select_options "Select optional dependencies to install" "${#optdeps[@]}"
-            choices=($(cat /tmp/pacstall-select-options))
-            local choice_inc=0
-            for i in "${choices[@]}"; do
-                # have we gone over the maximum number in choices[@]?
-                if [[ $i != "n" ]] && [[ $i != "y" ]] && [[ $i -gt ${#optdeps[@]} ]]; then
-                    local skip_opt+=("$i")
-                    unset 'choices[$choice_inc]'
-                fi
-                ((choice_inc++))
-            done
-            if [[ -n ${skip_opt[*]} ]]; then
-                fancy_message warn "${BGreen}${skip_opt[*]}${NC} has exceeded the maximum number of optional dependencies. Skipping"
-            fi
-
-            if [[ ${choices[0]} != "n" ]]; then
-                for i in "${choices[@]}"; do
-                    ((i--))
-                    local s="${optdeps[$i]}"
-                    # does `s` actually exist in the optdeps array?
-                    if [[ -n $s ]]; then
-                        # then add it, and strip the `:`
-                        deps+=("${s%%: *}")
-                        local not_installed_yet_optdeps+=("${s%%: *}")
-                    fi
+            if [[ $PACSTALL_INSTALL != 0 ]]; then
+                z=1
+                for i in "${suggested_optdeps[@]}"; do
+                    # print optdepends with bold package name
+                    echo -e "\t\t[${BICyan}$z${NC}] ${BOLD}${i%%:*}${NC}:${i#*:}"
+                    ((z++))
                 done
-                if [[ -n ${deps[*]} ]]; then
-                    fancy_message info "Selecting packages ${BCyan}${not_installed_yet_optdeps[*]}${NC}"
+                unset z
+                # tab over the next line
+                echo -ne "\t"
+                select_options "Select optional dependencies to install" "${#suggested_optdeps[@]}"
+                choices=($(cat /tmp/pacstall-select-options))
+                local choice_inc=0
+                for i in "${choices[@]}"; do
+                    # have we gone over the maximum number in choices[@]?
+                    if [[ $i != "n" ]] && [[ $i != "y" ]] && [[ $i -gt ${#suggested_optdeps[@]} ]]; then
+                        local skip_opt+=("$i")
+                        unset 'choices[$choice_inc]'
+                    fi
+                    ((choice_inc++))
+                done
+                if [[ -n ${skip_opt[*]} ]]; then
+                    fancy_message warn "${BGreen}${skip_opt[*]}${NC} has exceeded the maximum number of optional dependencies. Skipping"
                 fi
-                if pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
-                    sudo dpkg -r --force-all "${gives:-$name}" > /dev/null
+
+                if [[ ${choices[0]} != "n" ]]; then
+                    for i in "${choices[@]}"; do
+                        ((i--))
+                        local s="${suggested_optdeps[$i]}"
+                        local not_installed_yet_optdeps+=("${s%%: *}")
+                    done
+                    if [[ -n ${not_installed_yet_optdeps[*]} ]]; then
+                        fancy_message info "Selecting packages ${BCyan}${not_installed_yet_optdeps[*]}${NC}"
+                        local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${suggested_optdeps[@]}")
+                        deblog "Suggests" "$(echo "${final_merged_deps[@]//: */}" | sed 's/ /, /g')"
+                        fancy_message info "Installing selected optional dependencies"
+                        sudo -E apt-get install "${not_installed_yet_optdeps[@]}" -y 2> /dev/null
+                    fi
+                    if pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
+                        sudo dpkg -r --force-all "${gives:-$name}" > /dev/null
+                    fi
+                else
+                    local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${suggested_optdeps[@]}")
+                    deblog "Suggests" "$(echo "${final_merged_deps[@]//: */}" | sed 's/ /, /g')"
                 fi
-            else
-                # Add to the suggests anyway. They won't get installed but can be queried
-                deblog "Suggests" "$(echo "${optdeps[@]//: */}" | sed 's/ /, /g')"
+            else # If `-B` is being used
+                for pkg in "${optdepends[@]}"; do
+                    local B_suggests+=("${pkg%%: *}")
+                done
+                deblog "Suggests" "$(echo "${B_suggests[@]//: */}" | sed 's/ /, /g')"
             fi
         fi
     fi
