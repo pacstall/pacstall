@@ -280,7 +280,7 @@ function prompt_optdepends() {
                         local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${suggested_optdeps[@]}")
                         deblog "Suggests" "$(echo "${final_merged_deps[@]//: */}" | sed 's/ /, /g')"
                         fancy_message info "Installing selected optional dependencies"
-                        sudo -E apt-get install ${not_installed_yet_optdeps[*]} -y 2> /dev/null
+                        sudo -E apt-get install "${not_installed_yet_optdeps[@]}" -y 2> /dev/null
                     fi
                     if pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
                         sudo dpkg -r --force-all "${gives:-$name}" > /dev/null
