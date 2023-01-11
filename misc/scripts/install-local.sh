@@ -273,7 +273,7 @@ function prompt_optdepends() {
                     for i in "${choices[@]}"; do
                         ((i--))
                         local s="${suggested_optdeps[$i]}"
-                        export not_installed_yet_optdeps+=("${s%%: *}")
+                        local not_installed_yet_optdeps+=("${s%%: *}")
                     done
                     if [[ -n ${not_installed_yet_optdeps[*]} ]]; then
                         fancy_message info "Selecting packages ${BCyan}${not_installed_yet_optdeps[*]}${NC}"
