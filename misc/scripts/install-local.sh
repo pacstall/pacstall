@@ -223,7 +223,7 @@ function prompt_optdepends() {
         local suggested_optdeps=()
         for optdep in "${optdepends[@]}"; do
             # Strip the description, `opt` is now the canonical optdep name
-            local opt=${optdep%%: *}
+            local opt="${optdep%%: *}"
             # Check if package exists in the repos, and if not, go to the next program
             if [[ -z "$(apt-cache search --names-only "^$opt\$")" ]]; then
                 local missing_optdeps+=("${opt}")
