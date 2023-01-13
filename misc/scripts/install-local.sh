@@ -549,7 +549,7 @@ if [[ $answer -eq 1 ]]; then
 fi
 
 fancy_message info "Sourcing pacscript"
-DIR=$(pwd)
+DIR="$PWD"
 homedir=~"$PACSTALL_USER"
 export homedir
 
@@ -744,7 +744,7 @@ if [[ -n $patch ]]; then
         wget -q "$i" -P PACSTALL_patchesdir &
     done
     wait
-    export PACPATCH=$(pwd)/PACSTALL_patchesdir
+    export PACPATCH="$PWD/PACSTALL_patchesdir"
 fi
 
 if [[ $name == *-git ]]; then
