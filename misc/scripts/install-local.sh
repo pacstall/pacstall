@@ -449,7 +449,7 @@ function fancy_message() {
 
 function get_homedir() {
 	local PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER}}")
-	echo "/home/$PACSTALL_USER"
+	echo ~"$PACSTALL_USER"
 }
 export homedir="$(get_homedir)"
 
@@ -550,7 +550,7 @@ fi
 
 fancy_message info "Sourcing pacscript"
 DIR=$(pwd)
-homedir="/home/$PACSTALL_USER"
+homedir=~"$PACSTALL_USER"
 export homedir
 
 pacfile=$(readlink -f "$PACKAGE".pacscript)
