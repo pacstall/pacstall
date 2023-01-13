@@ -729,7 +729,7 @@ Helpful links:
                     continue
                 fi
 
-                fancy_message info "${GREEN}${PACKAGE}${NC}'s pacscript is downloaded to ${GREEN}$(pwd)/$PACKAGE.pacscript${NC}"
+                fancy_message info "${GREEN}${PACKAGE}${NC}'s pacscript is downloaded to ${GREEN}${PWD}/$PACKAGE.pacscript${NC}"
             done
             exit 0
             ;;
