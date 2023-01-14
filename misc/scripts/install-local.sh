@@ -238,12 +238,14 @@ function prompt_optdepends() {
             fi
         done
 
-        if [[ ${#suggested_optdeps[@]} -ne 0 ]]; then
+        if [[ -n "${missing_optdeps[*]}" ]] || [[ ${#suggested_optdeps[@]} -ne 0 ]]; then
             fancy_message sub "Optional dependencies"
-            if [[ -n ${missing_optdeps[*]} ]]; then
-                echo -ne "\t"
-                fancy_message warn "${BLUE}${missing_optdeps[*]}${NC} does not exist in apt repositories"
-            fi
+        fi
+        if [[ -n ${missing_optdeps[*]} ]]; then
+            echo -ne "\t"
+            fancy_message warn "${BLUE}${missing_optdeps[*]}${NC} does not exist in apt repositories"
+        fi
+        if [[ ${#suggested_optdeps[@]} -ne 0 ]]; then
             if [[ $PACSTALL_INSTALL != 0 ]]; then
                 z=1
                 for i in "${suggested_optdeps[@]}"; do
