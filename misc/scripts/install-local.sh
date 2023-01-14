@@ -238,7 +238,7 @@ function prompt_optdepends() {
             fi
         done
 
-        if [[ -n ${missing_optdeps[@]} ]] || [[ ${#suggested_optdeps[@]} -ne 0 ]]; then
+        if [[ -n "${missing_optdeps[@]}" ]] || [[ ${#suggested_optdeps[@]} -ne 0 ]]; then
             fancy_message sub "Optional dependencies"
         fi
         if [[ -n ${missing_optdeps[*]} ]]; then
