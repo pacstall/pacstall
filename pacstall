@@ -635,7 +635,12 @@ Helpful links:
             PACKAGE="$2"
 
             if [[ -z $PACKAGE ]]; then
-                echo -e "3.2.0 \033[1m\x1b[38;2;0;168;107mJade${NC}"
+                version_number="3.3.0"
+                version_name="Iris"
+                version_red="152"
+                version_green="103"
+                version_blue="197"
+                echo -e "${version_number} \033[1m\x1b[38;2;${version_red};${version_green};${version_blue}m${version_name}${NC}"
                 exit 0
             else
                 # If pacstall -V was called with an argument, it's a package, so get the package version (useful for scripting)
