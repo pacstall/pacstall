@@ -635,11 +635,11 @@ Helpful links:
             PACKAGE="$2"
 
             if [[ -z $PACKAGE ]]; then
-                version_number="3.3.0"
-                version_name="Iris"
-                version_red="152"
-                version_green="103"
-                version_blue="197"
+                version_number="3.3.1"
+                version_name="Tyrian"
+                version_red="102"
+                version_green="2"
+                version_blue="60"
                 echo -e "${version_number} \033[1m\x1b[38;2;${version_red};${version_green};${version_blue}m${version_name}${NC}"
                 exit 0
             else
