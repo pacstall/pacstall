@@ -644,7 +644,7 @@ Helpful links:
                 exit 0
             else
                 # If pacstall -V was called with an argument, it's a package, so get the package version (useful for scripting)
-                if source "$LOGDIR/$PACKAGE" 2> /dev/null && dpkg-query --show-format='${Version}\n' --show "${_gives:-$_name}"; then
+                if source "$LOGDIR/$PACKAGE" 2> /dev/null && dpkg-query --showformat='${Version}\n' --show "${_gives:-$_name}"; then
                     exit 0
                 else
                     fancy_message error "${GREEN}${PACKAGE}${NC} is not installed"
