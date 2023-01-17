@@ -38,9 +38,9 @@ function get_field() {
     # input 1: package
     # input 2: field
     local input="${_gives:-$_name}"
-    local output="$(dpkg -s "$input" | grep --color=never "^$2: " | sed "s/$2: //")"
+    local output="$(dpkg-query --showformat="\${$2}\n" --show "$input")"
     if [[ -n $output ]]; then
-        echo $output
+        echo "$output"
     fi
 }
 
