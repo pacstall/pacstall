@@ -47,7 +47,7 @@ function get_field() {
 echo -e "${BGreen}name${NORMAL}: $(get_field $PACKAGE Package)"
 echo -e "${BGreen}version${NORMAL}: $(get_field $PACKAGE Version)"
 if [[ -n $_install_size ]]; then
-    echo -e "${BGreen}size${NORMAL}: $(get_field $PACKAGE Installed-Size)"
+    echo -e "${BGreen}size${NORMAL}: $_install_size"
 fi
 echo -e "${BGreen}description${NORMAL}: $(get_field $PACKAGE Description)"
 echo -e "${BGreen}date installed${NORMAL}: $_date"
