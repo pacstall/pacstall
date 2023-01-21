@@ -470,7 +470,7 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
     done
 
     deblog "Installed-Size" "$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | cut -d' ' -f1)"
-    export install_size="$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | cut -d' ' -f1)"
+    export install_size="$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | awk '{ print $1 }' | numfmt --to=iec)"
 
     generate_changelog | sudo tee -a "$STOWDIR/$name/DEBIAN/changelog" > /dev/null
 
