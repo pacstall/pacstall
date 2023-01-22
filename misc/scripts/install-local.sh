@@ -109,6 +109,7 @@ function log() {
             echo "_pkgname=\"$pkgname"\"
         fi
         echo "_version=\"${epoch+$epoch:}$version"\"
+        echo "_install_size=\"${install_size}"\"
         echo "_date=\"$(date)"\"
         if [[ -n $ppa ]]; then
             echo "_ppa=(${ppa[*]})"
@@ -238,7 +239,7 @@ function prompt_optdepends() {
             fi
         done
 
-        if [[ -n "${missing_optdeps[*]}" ]] || [[ ${#suggested_optdeps[@]} -ne 0 ]]; then
+        if [[ -n ${missing_optdeps[*]} ]] || [[ ${#suggested_optdeps[@]} -ne 0 ]]; then
             fancy_message sub "Optional dependencies"
         fi
         if [[ -n ${missing_optdeps[*]} ]]; then
@@ -468,7 +469,8 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
         sudo chmod 755 "$STOWDIR/$name/DEBIAN/$i" 1> /dev/null 2>&1
     done
 
-    deblog "Installed-Size" "$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | cut -d' ' -f1)"
+    deblog "Installed-Size" "$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | awk '{ print $1 }')"
+    export install_size="$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | awk '{ print $1 }' | numfmt --to=iec)"
 
     generate_changelog | sudo tee -a "$STOWDIR/$name/DEBIAN/changelog" > /dev/null
 
