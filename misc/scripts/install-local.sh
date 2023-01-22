@@ -794,12 +794,12 @@ else
                 exit 1
             fi
             hashcheck "${url##*/}"
-			if sudo apt install -y -f ./"${url##*/}" 2> /dev/null; then
-				log
-				if [[ -f /tmp/pacstall-pacdeps-"$name" ]]; then
-					sudo apt-mark auto "${gives:-$name}" 2> /dev/null
-				fi
-				if type -t postinst > /dev/null 2>&1; then
+            if sudo apt install -y -f ./"${url##*/}" 2> /dev/null; then
+                log
+                if [[ -f /tmp/pacstall-pacdeps-"$name" ]]; then
+                    sudo apt-mark auto "${gives:-$name}" 2> /dev/null
+                fi
+                if type -t postinst > /dev/null 2>&1; then
                     if ! postinst; then
                         error_log 5 "postinst hook"
                         fancy_message error "Could not run postinst hook successfully"
