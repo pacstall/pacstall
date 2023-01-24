@@ -295,11 +295,22 @@ function check_url() {
 # use axel if available
 function download() {
     sudo rm -f "${1##*/}"
-    if command -v axel > /dev/null; then
-        axel -ao "${1##*/}" "$1" || return 1
-    else
-        wget -q --show-progress --progress=bar:force -- "$1" 2>&1 || return 1
+    if [[ -z $PACSTALL_DOWNLOADER ]]; then
+        if command -v axel &> /dev/null; then
+            PACSTALL_DOWNLOADER=axel
+        else
+            PACSTALL_DOWNLOADER=wget
+        fi
     fi
+
+    case "$PACSTALL_DOWNLOADER" in
+        axel)
+            axel -ao "${1##*/}" "$1" || return 1
+            ;;
+        wget | *)
+            wget -q --show-progress --progress=bar:force -- "$1" 2>&1 || return 1
+            ;;
+    esac
 }
 
 # source this code block and run like so:
