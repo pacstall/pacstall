@@ -298,14 +298,19 @@ function download() {
     if [[ -z $PACSTALL_DOWNLOADER ]]; then
         if command -v axel &> /dev/null; then
             PACSTALL_DOWNLOADER=axel
-        else
+        elif command -v wget &> /dev/null; then
             PACSTALL_DOWNLOADER=wget
+        else
+            PACSTALL_DOWNLOADER=curl
         fi
     fi
 
     case "$PACSTALL_DOWNLOADER" in
         axel)
             axel -ao "${1##*/}" "$1" || return 1
+            ;;
+        curl)
+            curl -L -# -o "${1##*/}" "$1" || return 1
             ;;
         wget | *)
             wget -q --show-progress --progress=bar:force -- "$1" 2>&1 || return 1
