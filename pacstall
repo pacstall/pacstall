@@ -312,6 +312,9 @@ function download() {
         curl)
             curl -L -# -o "${1##*/}" "$1" || return 1
             ;;
+        null-wget)
+            wget -q -- "$1" 2>&1 || return 1
+            ;;
         wget | *)
             wget -q --show-progress --progress=bar:force -- "$1" 2>&1 || return 1
             ;;
