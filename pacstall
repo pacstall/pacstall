@@ -312,7 +312,7 @@ function download() {
         curl)
             curl -L -# -o "${1##*/}" "$1" || return 1
             ;;
-        null-wget)
+        quiet-wget)
             wget -q -- "$1" 2>&1 || return 1
             ;;
         wget | *)
