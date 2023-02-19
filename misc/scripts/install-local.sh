@@ -44,8 +44,8 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset name version url build_depends depends breaks replace description hash optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP optinstall gives epoch pac_functions 2> /dev/null
-    unset -f pkgver removescript prepare build install incompatible 2> /dev/null
+    unset name pkgname repology epoch url depends build_depends breaks replace gives description hash optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch pac_functions 2> /dev/null
+    unset -f pkgver postinst removescript prepare build install 2> /dev/null
 }
 
 function trap_ctrlc() {
