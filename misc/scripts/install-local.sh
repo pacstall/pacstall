@@ -202,6 +202,7 @@ function get_incompatible_arches() {
     local input=("${@}")
     for i in "${input[@]}"; do
         if [[ ${i} == "${current_arch}" ]]; then
+			fancy_message error "This Pacscript does not work on ${BBlue}${current_arch}${NC}"
             return 1
         fi
     done
