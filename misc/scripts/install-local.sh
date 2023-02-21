@@ -197,7 +197,7 @@ function get_incompatible_releases() {
     done
 }
 
-function get_incompatible_arches() {
+function is_compatible_arch() {
     local current_arch="$(dpkg --print-architecture)"
     local input=("${@}")
     if ! [[ " ${input[*]} " =~ " ${current_arch} " ]]; then
@@ -577,7 +577,7 @@ if ! source "$PACKAGE".pacscript; then
 fi
 
 if [[ -n ${arch[*]} ]]; then
-    if ! get_incompatible_arches "${arch[@]}"; then
+    if ! is_compatible_arch "${arch[@]}"; then
         cleanup
         exit 1
     fi
