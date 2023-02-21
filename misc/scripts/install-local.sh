@@ -578,8 +578,8 @@ if ! source "$PACKAGE".pacscript; then
     return 1
 fi
 
-if [[ -n ${arch[*]} ]]; then
-    if ! get_incompatible_arches "${arch[@]}"; then
+if [[ -n ${incompatible_arch[*]} ]]; then
+    if ! get_incompatible_arches "${incompatible_arch[@]}"; then
         cleanup
         exit 1
     fi
