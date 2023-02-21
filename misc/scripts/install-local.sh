@@ -200,12 +200,10 @@ function get_incompatible_releases() {
 function get_incompatible_arches() {
     local current_arch="$(dpkg --print-architecture)"
     local input=("${@}")
-    for i in "${input[@]}"; do
-        if [[ ${i} == "${current_arch}" ]]; then
-			fancy_message error "This Pacscript does not work on ${BBlue}${current_arch}${NC}"
-            return 1
-        fi
-    done
+    if ! [[ " ${input[*]} " =~ " ${current_arch} " ]]; then
+        fancy_message error "This Pacscript does not work on ${BBlue}${current_arch}${NC}"
+        return 1
+    fi
 }
 
 function deblog() {
@@ -578,8 +576,8 @@ if ! source "$PACKAGE".pacscript; then
     return 1
 fi
 
-if [[ -n ${incompatible_arch[*]} ]]; then
-    if ! get_incompatible_arches "${incompatible_arch[@]}"; then
+if [[ -n ${arch[*]} ]]; then
+    if ! get_incompatible_arches "${arch[@]}"; then
         cleanup
         exit 1
     fi
