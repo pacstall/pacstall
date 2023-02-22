@@ -200,7 +200,9 @@ function get_incompatible_releases() {
 function is_compatible_arch() {
     local current_arch="$(dpkg --print-architecture)"
     local input=("${@}")
-    if ! [[ " ${input[*]} " =~ " ${current_arch} " ]]; then
+    if [[ ${input[*]} == "any" ]]; then
+        return 0
+    elif ! [[ " ${input[*]} " =~ " ${current_arch} " ]]; then
         fancy_message error "This Pacscript does not work on ${BBlue}${current_arch}${NC}"
         return 1
     fi
