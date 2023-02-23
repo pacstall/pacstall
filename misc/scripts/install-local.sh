@@ -200,6 +200,7 @@ function get_incompatible_releases() {
 function is_compatible_arch() {
     local current_arch="$(dpkg --print-architecture)"
     local input=("${@}")
+    export CARCH="${current_arch}"
     if [[ ${input[*]} == "any" ]]; then
         return 0
     elif ! [[ " ${input[*]} " =~ " ${current_arch} " ]]; then
