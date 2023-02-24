@@ -44,7 +44,7 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset name pkgname repology epoch url depends build_depends breaks replace gives description hash optdepends ppa maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch pac_functions 2> /dev/null
+    unset name pkgname repology epoch url depends build_depends breaks replace gives description hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch pac_functions 2> /dev/null
     unset -f pkgver postinst removescript prepare build install 2> /dev/null
 }
 
@@ -195,6 +195,18 @@ function get_incompatible_releases() {
             fi
         fi
     done
+}
+
+function is_compatible_arch() {
+    local current_arch="$(dpkg --print-architecture)"
+    local input=("${@}")
+    export CARCH="${current_arch}"
+    if [[ ${input[*]} == "any" ]]; then
+        return 0
+    elif ! [[ " ${input[*]} " =~ " ${current_arch} " ]]; then
+        fancy_message error "This Pacscript does not work on ${BBlue}${current_arch}${NC}"
+        return 1
+    fi
 }
 
 function deblog() {
@@ -565,6 +577,13 @@ if ! source "$PACKAGE".pacscript; then
     fancy_message info "Cleaning up"
     cleanup
     return 1
+fi
+
+if [[ -n ${arch[*]} ]]; then
+    if ! is_compatible_arch "${arch[@]}"; then
+        cleanup
+        exit 1
+    fi
 fi
 
 if [[ -n ${incompatible[*]} ]]; then
