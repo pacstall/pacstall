@@ -136,6 +136,7 @@ function log() {
 
 function compare_remote_version() (
     local input="${1}"
+    unset -f pkgver 2> /dev/null
     source "$LOGDIR/$input" || return 1
     if [[ -z ${_remoterepo} ]]; then
         return
