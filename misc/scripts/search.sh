@@ -38,7 +38,7 @@ function getPath() {
 }
 
 function specifyRepo() {
-    mapfile -t SPLIT < <(echo "$1" | tr "/" "\n")
+    mapfile -t SPLIT < <(echo "${1//[\/]/$'\n'}")
 
     if [[ $1 == "file://"* ]] || [[ $1 == "/"* ]] || [[ $1 == "~"* ]] || [[ $1 == "."* ]]; then
         export URLNAME="$(getPath ${1})"
@@ -59,7 +59,7 @@ function specifyRepo() {
 function parseRepo() {
     local REPO="${1}"
 
-    mapfile -t SPLIT < <(echo "$REPO" | tr "/" "\n")
+    mapfile -t SPLIT < <(echo "${REPO//[\/]/$'\n'}")
 
     if [[ $REPO == *"file://"* ]]; then
         local REPODIR="$(getPath ${REPO})"
