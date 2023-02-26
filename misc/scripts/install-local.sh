@@ -137,7 +137,8 @@ function log() {
 function compare_remote_version() (
     local input="${1}"
     unset -f pkgver 2> /dev/null
-    source "$LOGDIR/$input" || return 1
+	# If pacscript does not exist, assume it's not installed and trigger an "update"
+    source "$LOGDIR/$input" || { echo "update" && return 0; }
     if [[ -z ${_remoterepo} ]]; then
         return
     elif [[ ${_remoterepo} == *"github.com"* ]]; then
