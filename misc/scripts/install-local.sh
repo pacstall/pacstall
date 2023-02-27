@@ -199,13 +199,11 @@ function get_incompatible_releases() {
 }
 
 function is_compatible_arch() {
-    local current_arch="$(dpkg --print-architecture)"
     local input=("${@}")
-    export CARCH="${current_arch}"
-    if [[ ${input[*]} == "any" ]]; then
+    if [[ ${input[*]} == "all" ]]; then
         return 0
-    elif ! [[ " ${input[*]} " =~ " ${current_arch} " ]]; then
-        fancy_message error "This Pacscript does not work on ${BBlue}${current_arch}${NC}"
+    elif ! [[ " ${input[*]} " =~ " ${CARCH} " ]]; then
+        fancy_message error "This Pacscript does not work on ${BBlue}${CARCH}${NC}"
         return 1
     fi
 }
@@ -580,6 +578,7 @@ if ! source "$PACKAGE".pacscript; then
     return 1
 fi
 
+export CARCH="$(dpkg --print-architecture)"
 if [[ -n ${arch[*]} ]]; then
     if ! is_compatible_arch "${arch[@]}"; then
         cleanup
