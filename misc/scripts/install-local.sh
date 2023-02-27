@@ -202,7 +202,7 @@ function is_compatible_arch() {
     local input=("${@}")
     if [[ " ${input[*]} " =~ " all " ]]; then
         fancy_message warn "${BBlue}all${NC} is deprecated. Use ${BBlue}any${NC} instead"
-		suggested_solution "Replace ${UPurple}arch${NC} with ${UCyan}$(echo "arch=(${arch[*]/all/any})")${NC}"
+		suggested_solution "Replace ${UPurple}arch${NC} with ${UCyan}arch=(${arch[*]/all/any})${NC}"
         return 0
     elif [[ " ${input[*]} " =~ " any " ]]; then
         return 0
