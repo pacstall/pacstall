@@ -654,9 +654,9 @@ Helpful links:
             PACKAGE="$2"
 
             if [[ -z $PACKAGE ]]; then
-                version_number="3.6.0"
-                version_name="Arctic"
-                declare -A pac_version=([red]="144" [green]="224" [blue]="247")
+                version_number="3.6.1"
+                version_name="Permafrost"
+                declare -A pac_version=([red]="190" [green]="237" [blue]="247")
                 echo -e "${version_number} \033[1m\x1b[38;2;${pac_version[red]};${pac_version[green]};${pac_version[blue]}m${version_name}${NC}"
                 exit 0
             else
