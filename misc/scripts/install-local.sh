@@ -200,7 +200,10 @@ function get_incompatible_releases() {
 
 function is_compatible_arch() {
     local input=("${@}")
-    if [[ ${input[*]} == "all" ]]; then
+    if [[ " ${input[*]} " =~ " all " ]]; then
+        fancy_message warn "${BBlue}all${NC} is deprecated. Use ${BBlue}any${NC} instead"
+        return 0
+    elif [[ " ${input[*]} " =~ " any " ]]; then
         return 0
     elif ! [[ " ${input[*]} " =~ " ${CARCH} " ]]; then
         fancy_message error "This Pacscript does not work on ${BBlue}${CARCH}${NC}"
