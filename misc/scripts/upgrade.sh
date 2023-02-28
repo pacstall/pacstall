@@ -139,8 +139,6 @@ ${BOLD}$(cat /tmp/pacstall-up-print)${NORMAL}\n"
     done < /tmp/pacstall-up-urls
 
     export local='no'
-    sudo mkdir -p "$SRCDIR"
-    sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" "$SRCDIR"
     if ! cd "$SRCDIR" 2> /dev/null; then
         error_log 1 "upgrade"
         fancy_message error "Could not enter ${SRCDIR}"
@@ -153,6 +151,8 @@ ${BOLD}$(cat /tmp/pacstall-up-print)${NORMAL}\n"
             continue
         fi
         REPO="${remotes[$i]}"
+        sudo mkdir -p "$SRCDIR"
+        sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" "$SRCDIR"
         export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
         if ! source "$STGDIR/scripts/download.sh"; then
             fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
