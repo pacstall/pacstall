@@ -46,6 +46,7 @@ function cleanup() {
     rm -f /tmp/pacstall-select-options
     unset name pkgname repology epoch url depends build_depends breaks replace gives description hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch pac_functions 2> /dev/null
     unset -f pkgver postinst removescript prepare build install 2> /dev/null
+    sudo rm -rf /tmp/pacstall
 }
 
 function trap_ctrlc() {
