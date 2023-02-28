@@ -25,15 +25,17 @@
 # This script downloads pacscripts from the interwebs
 
 if check_url "${URL}"; then
-    mkdir -p "$SRCDIR" || {
-        if ! [[ -w $SRCDIR ]]; then
-            suggested_solution "Run '${UCyan}sudo chown -R $PACSTALL_USER:$PACSTALL_USER $SRCDIR'${NC}"
+    if [[ $type == "install" ]]; then
+        mkdir -p "$SRCDIR" || {
+            if ! [[ -w $SRCDIR ]]; then
+                suggested_solution "Run '${UCyan}sudo chown -R $PACSTALL_USER:$PACSTALL_USER $SRCDIR'${NC}"
+            fi
+        }
+        if ! cd "$SRCDIR"; then
+            error_log 1 "install $PACKAGE"
+            fancy_message error "Could not enter ${SRCDIR}"
+            exit 1
         fi
-    }
-    if ! cd "$SRCDIR"; then
-        error_log 1 "install $PACKAGE"
-        fancy_message error "Could not enter ${SRCDIR}"
-        exit 1
     fi
 
     case "$URL" in
