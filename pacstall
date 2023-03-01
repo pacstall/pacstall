@@ -112,7 +112,7 @@ if [[ -z $NO_COLOR ]]; then
     export On_ICyan='\033[0;106m'   # Cyan
     export On_IWhite='\033[0;107m'  # White
 
-    declare -A pac_version=([red]="11" [green]="218" [blue]="81")
+    declare -A pac_version=([red]="5" [green]="71" [blue]="42")
 else
     declare -A pac_version=([red]="255" [green]="255" [blue]="255")
 fi
@@ -660,8 +660,8 @@ Helpful links:
             PACKAGE="$2"
 
             if [[ -z $PACKAGE ]]; then
-                version_number="3.7.0"
-                version_name="Malachite"
+                version_number="3.7.1"
+                version_name="Evergreen"
                 echo -e "${version_number} \033[1m\x1b[38;2;${pac_version[red]};${pac_version[green]};${pac_version[blue]}m${version_name}${NC}"
                 exit 0
             else
