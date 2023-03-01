@@ -550,7 +550,7 @@ if [[ -n $PACSTALL_BUILD_CORES ]]; then
     fi
 fi
 
-ask "Do you want to view/edit the pacscript" N
+ask "(${BPurple}$PACKAGE${NC}) Do you want to view/edit the pacscript" N
 if [[ $answer -eq 1 ]]; then
     (
         if [[ -n $PACSTALL_EDITOR ]]; then
@@ -984,6 +984,7 @@ sudo chmod o+r "/var/cache/pacstall/$PACKAGE/${epoch+$epoch:}$version/$PACKAGE.p
 fancy_message sub "Cleaning up"
 cleanup
 
+fancy_message info "Done installing ${BPurple}$PACKAGE${NC}"
 return 0
 
 # vim:set ft=sh ts=4 sw=4 noet:
