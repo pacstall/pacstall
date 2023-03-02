@@ -679,18 +679,21 @@ Helpful links:
             USERNAME="$2"
             BRANCH="$3"
             # This stuff gives the ability for persistent updates
-            if [[ -z $BRANCH ]]; then
-                if [[ -f "$STGDIR/repo/update" ]]; then
-                    BRANCH=$(sed 's/.*\ //' "$STGDIR/repo/update")
-                else
-                    BRANCH="master"
-                fi
-            fi
-            if [[ -z $USERNAME ]]; then
+            if [[ -z $BRANCH && -z $USERNAME ]]; then
                 if [[ -f "$STGDIR/repo/update" ]]; then
                     USERNAME=$(sed 's/\s.*$//' "$STGDIR/repo/update")
+                    BRANCH=$(sed 's/.*\ //' "$STGDIR/repo/update")
                 else
                     USERNAME="pacstall"
+                    BRANCH="master"
+                fi
+			fi
+            if [[ -z $BRANCH ]]; then
+                if [[ $USERNAME == *":"* ]]; then
+                    BRANCH=${USERNAME#*:}
+                    USERNAME=${USERNAME%:*}
+                else
+                    BRANCH="master"
                 fi
             fi
 
