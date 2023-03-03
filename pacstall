@@ -683,7 +683,7 @@ Helpful links:
                 if [[ -f "$STGDIR/repo/update" ]]; then
                     remote="$(< "$STGDIR/repo/update")"
                     USERNAME="${remote%% *}"
-                    BRANCH=$(sed 's/.*\ //' "$STGDIR/repo/update")
+                    BRANCH="${remote##* }"
                 else
                     USERNAME="pacstall"
                     BRANCH="master"
