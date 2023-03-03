@@ -681,7 +681,8 @@ Helpful links:
             # This stuff gives the ability for persistent updates
             if [[ -z $BRANCH && -z $USERNAME ]]; then
                 if [[ -f "$STGDIR/repo/update" ]]; then
-                    USERNAME=$(sed 's/\s.*$//' "$STGDIR/repo/update")
+                    remote="$(< "$STGDIR/repo/update")"
+                    USERNAME="${remote%% *}"
                     BRANCH=$(sed 's/.*\ //' "$STGDIR/repo/update")
                 else
                     USERNAME="pacstall"
