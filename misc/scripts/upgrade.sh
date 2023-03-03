@@ -33,13 +33,9 @@ export UPGRADE="yes"
 
 # Get the list of the installed packages
 mapfile -t list < <(pacstall -L)
-rm -f /tmp/pacstall-up-list
-rm -f /tmp/pacstall-up-print
-rm -f /tmp/pacstall-up-urls
-
-touch /tmp/pacstall-up-list
-touch /tmp/pacstall-up-print
-touch /tmp/pacstall-up-urls
+up_list="$(mktemp /tmp/XXXXXX-pacstall-up-list)"
+up_print="$(mktemp /tmp/XXXXXX-pacstall-up-print)"
+up_urls="$(mktemp /tmp/XXXXXX-pacstall-up-urls)"
 
 fancy_message info "Checking for updates"
 
@@ -112,9 +108,9 @@ N="$(nproc)"
 
             if [[ -n $remotever ]]; then
                 if [[ $i == *"-git" ]] || ver_compare "$localver" "$remotever"; then
-                    echo "$i" | tee -a /tmp/pacstall-up-list > /dev/null
-                    echo "\t${GREEN}${i}${CYAN} @ $(parseRepo "${remoteurl}")${NC} ( ${BLUE}${localver:-unknown}${NC} -> ${BLUE}${remotever:-unknown}${NC} )" | tee -a /tmp/pacstall-up-print > /dev/null
-                    echo "$remoteurl" | tee -a /tmp/pacstall-up-urls > /dev/null
+                    echo "$i" | tee -a "${up_list}" > /dev/null
+                    echo "\t${GREEN}${i}${CYAN} @ $(parseRepo "${remoteurl}")${NC} ( ${BLUE}${localver:-unknown}${NC} -> ${BLUE}${remotever:-unknown}${NC} )" | tee -a "${up_print}" > /dev/null
+                    echo "$remoteurl" | tee -a "${up_urls}" > /dev/null
                 fi
             fi
         ) &
@@ -122,21 +118,21 @@ N="$(nproc)"
     wait
 )
 
-if [[ $(wc -l < /tmp/pacstall-up-list) -eq 0 ]]; then
+if [[ $(wc -l < "${up_list}") -eq 0 ]]; then
     fancy_message info "Nothing to upgrade"
 else
     fancy_message info "Packages can be upgraded"
-    echo -e "Upgradable: $(wc -l < /tmp/pacstall-up-print)
-${BOLD}$(cat /tmp/pacstall-up-print)${NORMAL}\n"
+    echo -e "Upgradable: $(wc -l < "${up_print}")
+${BOLD}$(cat "${up_print}")${NORMAL}\n"
 
     upgrade=()
     while IFS= read -r line; do
         upgrade+=("$line")
-    done < /tmp/pacstall-up-list
+    done < "${up_list}"
 
     while IFS= read -r line; do
         remotes+=("$line")
-    done < /tmp/pacstall-up-urls
+    done < "${up_urls}"
 
     export local='no'
     for i in "${!upgrade[@]}"; do
@@ -162,7 +158,5 @@ ${BOLD}$(cat /tmp/pacstall-up-print)${NORMAL}\n"
     done
 fi
 
-rm -f /tmp/pacstall-up-list
-rm -f /tmp/pacstall-up-print
-rm -f /tmp/pacstall-up-urls
+rm -f "${up_list}" "${up_print}" "${up_urls}"
 # vim:set ft=sh ts=4 sw=4 noet:
