@@ -762,7 +762,7 @@ else
 fi
 
 sudo mkdir -p "${SRCDIR}"
-sudo chown "$PACSTALL_USER:$PACSTALL_USER" -R "${SRCDIR}"
+sudo chown -R "$PACSTALL_USER:$PACSTALL_USER" -R "${SRCDIR}"
 
 if [[ -n $patch ]]; then
     fancy_message info "Downloading patches"
