@@ -203,7 +203,7 @@ function is_compatible_arch() {
     local input=("${@}")
     if [[ " ${input[*]} " =~ " all " ]]; then
         fancy_message warn "${BBlue}all${NC} is deprecated. Use ${BBlue}any${NC} instead"
-		suggested_solution "Replace ${UPurple}arch${NC} with ${UCyan}arch=(${arch[*]/all/any})${NC}"
+        suggested_solution "Replace ${UPurple}arch${NC} with ${UCyan}arch=(${arch[*]/all/any})${NC}"
         return 0
     elif [[ " ${input[*]} " =~ " any " ]]; then
         return 0
@@ -729,14 +729,14 @@ if [[ -n ${build_depends[*]} ]]; then
 fi
 
 function hashcheck() {
-    local inputHash=$hash
+    local inputHash="${hash}"
     # Get hash of file
-    local fileHash="$(sha256sum "$1" | sed 's/\s.*$//')"
+    local fileHash="$(sha256sum "${1}")"
+    fileHash="${fileHash%% *}"
 
     # Check if the input hash is the same as of the downloaded file.
     # Skip this test if the hash variable doesn't exist in the pacscript.
-    if [[ $inputHash != "$fileHash" ]] && [[ -n ${hash} ]]; then
-        # We bad
+    if [[ -n "${hash}" ]] && [[ "${inputHash}" != "${fileHash}" ]]; then
         fancy_message error "Hashes do not match"
         error_log 16 "install $PACKAGE"
         fancy_message info "Cleaning up"
