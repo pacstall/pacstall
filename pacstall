@@ -688,7 +688,7 @@ Helpful links:
                     USERNAME="pacstall"
                     BRANCH="master"
                 fi
-			fi
+	fi
             if [[ -z $BRANCH ]]; then
                 if [[ $USERNAME == *":"* ]]; then
                     BRANCH="${USERNAME#*:}"
