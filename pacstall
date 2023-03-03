@@ -691,8 +691,8 @@ Helpful links:
 			fi
             if [[ -z $BRANCH ]]; then
                 if [[ $USERNAME == *":"* ]]; then
-                    BRANCH=${USERNAME#*:}
-                    USERNAME=${USERNAME%:*}
+                    BRANCH="${USERNAME#*:}"
+                    USERNAME="${USERNAME%:*}"
                 else
                     BRANCH="master"
                 fi
