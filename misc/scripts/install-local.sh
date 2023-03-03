@@ -736,8 +736,7 @@ function hashcheck() {
 
     # Check if the input hash is the same as of the downloaded file.
     # Skip this test if the hash variable doesn't exist in the pacscript.
-    if [[ -n ${hash} ]] && [[ ${inputHash} != "${fileHash}" ]]; then
-        # We bad
+    if [[ -n "${hash}" ]] && [[ "${inputHash}" != "${fileHash}" ]]; then
         fancy_message error "Hashes do not match"
         error_log 16 "install $PACKAGE"
         fancy_message info "Cleaning up"
