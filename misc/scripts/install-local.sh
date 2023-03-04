@@ -36,10 +36,8 @@ function cleanup() {
         rm -rf /tmp/pacstall-pacdeps-"$PACKAGE"
         sudo rm -rf /tmp/pacstall-pacdep
     else
-        sudo rm -rf "${SRCDIR:?}"/*
         # just in case we quit before $name is declared, we should be able to remove a fake directory so it doesn't exit out the script
         sudo rm -rf "${STOWDIR:-/usr/src/pacstall}/${name:-raaaaaaaandom}"
-        sudo rm -rf /tmp/pacstall/*
         sudo rm -rf /tmp/pacstall-gives
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
@@ -763,8 +761,8 @@ else
     fi
 fi
 
-sudo mkdir -p "/tmp/pacstall"
-sudo chown "$PACSTALL_USER" -R /tmp/pacstall
+sudo mkdir -p "${SRCDIR}"
+sudo chown -R "$PACSTALL_USER:$PACSTALL_USER" -R "${SRCDIR}"
 
 if [[ -n $patch ]]; then
     fancy_message info "Downloading patches"
