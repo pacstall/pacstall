@@ -24,21 +24,21 @@
 
 function cleanup() {
     if [[ -n $KEEP ]]; then
-        sudo rm -rf "/tmp/pacstall-keep/$name"
+        rm -rf "/tmp/pacstall-keep/$name"
         mkdir -p "/tmp/pacstall-keep/$name"
         if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
-            sudo mv /tmp/pacstall-pacdep/* "/tmp/pacstall-keep/$name"
+            mv /tmp/pacstall-pacdep/* "/tmp/pacstall-keep/$name"
         else
-            sudo mv /tmp/pacstall/* "/tmp/pacstall-keep/$name"
+            mv "${SRCDIR:?}"/* "/tmp/pacstall-keep/$name"
         fi
     fi
     if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
         rm -rf /tmp/pacstall-pacdeps-"$PACKAGE"
-        sudo rm -rf /tmp/pacstall-pacdep
+        rm -rf /tmp/pacstall-pacdep
     else
         # just in case we quit before $name is declared, we should be able to remove a fake directory so it doesn't exit out the script
         sudo rm -rf "${STOWDIR:-/usr/src/pacstall}/${name:-raaaaaaaandom}"
-        sudo rm -rf /tmp/pacstall-gives
+        rm -rf /tmp/pacstall-gives
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
@@ -523,13 +523,13 @@ Pin: version *
 Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
         return 0
     else
-        sudo mv "$STOWDIR/$name.deb" "$PACDEB_DIR"
+        mv "$STOWDIR/$name.deb" "$PACDEB_DIR"
         sudo chown "$PACSTALL_USER":"$PACSTALL_USER" "$PACDEB_DIR/$name.deb"
         fancy_message info "Package built at ${BGreen}$PACDEB_DIR/$name.deb${NC}"
         fancy_message info "Moving ${BGreen}$STOWDIR/$name${NC} to ${BGreen}/tmp/pacstall-no-build/$name${NC}"
-        sudo rm -rf "/tmp/pacstall-no-build/$name"
-        sudo mkdir -p "/tmp/pacstall-no-build/$name"
-        sudo mv "$STOWDIR/$name" "/tmp/pacstall-no-build/$name"
+        rm -rf "/tmp/pacstall-no-build/$name"
+        mkdir -p "/tmp/pacstall-no-build/$name"
+        mv "$STOWDIR/$name" "/tmp/pacstall-no-build/$name"
         cleanup
         exit 0
     fi
@@ -763,8 +763,7 @@ else
     fi
 fi
 
-sudo mkdir -p "${SRCDIR}"
-sudo chown -R "$PACSTALL_USER:$PACSTALL_USER" -R "${SRCDIR}"
+mkdir -p "${SRCDIR}"
 
 if [[ -n $patch ]]; then
     fancy_message info "Downloading patches"
