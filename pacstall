@@ -600,6 +600,7 @@ Helpful links:
                 fi
                 shift
             done
+            sudo rm -rf "${SRCDIR:?}"
             exit 0
             ;;
 

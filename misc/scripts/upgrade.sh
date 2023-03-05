@@ -135,6 +135,13 @@ ${BOLD}$(cat "${up_print}")${NORMAL}\n"
     done < "${up_urls}"
 
     export local='no'
+    sudo mkdir -p "$SRCDIR"
+    sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" "$SRCDIR"
+    if ! cd "$SRCDIR" 2> /dev/null; then
+        error_log 1 "upgrade"
+        fancy_message error "Could not enter ${SRCDIR}"
+        exit 1
+    fi
     for i in "${!upgrade[@]}"; do
         PACKAGE=${upgrade[$i]}
         ask "Do you want to upgrade ${GREEN}${PACKAGE}${NC}?" Y
@@ -142,13 +149,6 @@ ${BOLD}$(cat "${up_print}")${NORMAL}\n"
             continue
         fi
         REPO="${remotes[$i]}"
-        sudo mkdir -p "$SRCDIR"
-        sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" "$SRCDIR"
-        if ! cd "$SRCDIR" 2> /dev/null; then
-            error_log 1 "upgrade"
-            fancy_message error "Could not enter ${SRCDIR}"
-            exit 1
-        fi
         export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
         if ! source "$STGDIR/scripts/download.sh"; then
             fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
