@@ -596,6 +596,7 @@ Helpful links:
                 fi
                 if ! source "$STGDIR/scripts/install-local.sh"; then
                     fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
+            		sudo rm -rf "${SRCDIR:?}"
                     exit 1
                 fi
                 shift

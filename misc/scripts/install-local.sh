@@ -740,7 +740,7 @@ function hashcheck() {
         error_log 16 "install $PACKAGE"
         fancy_message info "Cleaning up"
         cleanup
-        exit 1
+		return 1
     fi
     true
 }
@@ -799,7 +799,7 @@ else
                 exit 1
             fi
             # hash the file
-            hashcheck "${url##*/}"
+            hashcheck "${url##*/}" || return 1
             # unzip file
             fancy_message info "Extracting ${url##*/}"
             unzip -qo "${url##*/}" 1>&1 2> /dev/null
@@ -817,7 +817,7 @@ else
                 cleanup
                 exit 1
             fi
-            hashcheck "${url##*/}"
+            hashcheck "${url##*/}" || return 1
             if sudo apt install -y -f ./"${url##*/}" 2> /dev/null; then
                 log
                 if [[ -f /tmp/pacstall-pacdeps-"$name" ]]; then
@@ -861,7 +861,7 @@ else
                 cleanup
                 exit 1
             fi
-            hashcheck "${url##*/}"
+            hashcheck "${url##*/}" || return 1
             ;;
         *)
             if ! download "$url"; then
@@ -871,7 +871,7 @@ else
                 cleanup
                 exit 1
             fi
-            hashcheck "${url##*/}"
+            hashcheck "${url##*/}" || return 1
             fancy_message info "Extracting ${url##*/}"
             tar -xf "${url##*/}" 1>&1 2> /dev/null
             cd ./*/ 2> /dev/null || {
