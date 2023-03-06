@@ -135,8 +135,7 @@ ${BOLD}$(cat "${up_print}")${NORMAL}\n"
     done < "${up_urls}"
 
     export local='no'
-    sudo mkdir -p "$SRCDIR"
-    sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" "$SRCDIR"
+    mkdir -p "$SRCDIR"
     if ! cd "$SRCDIR" 2> /dev/null; then
         error_log 1 "upgrade"
         fancy_message error "Could not enter ${SRCDIR}"
