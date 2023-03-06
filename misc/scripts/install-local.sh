@@ -963,9 +963,6 @@ makedeb
 # Metadata writing
 log
 
-# `hash -r` updates PATH database
-hash -r
-
 fancy_message info "Performing post install operations"
 fancy_message sub "Storing pacscript"
 sudo mkdir -p "/var/cache/pacstall/$PACKAGE/${epoch+$epoch:}$version"
