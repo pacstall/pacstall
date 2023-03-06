@@ -24,7 +24,6 @@
 
 if [[ ! -d "/var/log/pacstall/error_log" ]]; then
     sudo mkdir -p "/var/log/pacstall/error_log"
-    sudo chown "$PACSTALL_USER" -R /var/log/pacstall/error_log
 fi
 
 # Used with permission by zakariaGatter
@@ -50,10 +49,10 @@ function error_log() {
     local scope="${2}"
 
     if [[ ! -f $LOGFILE ]]; then
-        touch "$LOGFILE"
-        find /var/log/pacstall/error_log/* -type f -ctime +14 -exec rm -rf {} \;
+        sudo touch "$LOGFILE"
+        find /var/log/pacstall/error_log/* -type f -ctime +14 -exec sudo rm -rf {} \;
     fi
-    echo -e "[ $(date) | $scope ] Error $code - ${ErrMsg[$code]}" >> "$LOGFILE"
+    echo -e "[ $(date) | $scope ] Error $code - ${ErrMsg[$code]}" | sudo tee "$LOGFILE" > /dev/null
     return 0
 }
 
