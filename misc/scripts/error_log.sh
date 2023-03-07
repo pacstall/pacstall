@@ -52,7 +52,7 @@ function error_log() {
         sudo touch "$LOGFILE"
         find /var/log/pacstall/error_log/* -type f -ctime +14 -exec sudo rm -rf {} \;
     fi
-    echo -e "[ $(date) | $scope ] Error $code - ${ErrMsg[$code]}" | sudo tee "$LOGFILE" > /dev/null
+    echo -e "[ $(date) | $scope ] Error $code - ${ErrMsg[$code]}" | sudo tee -a "$LOGFILE" > /dev/null
     return 0
 }
 
