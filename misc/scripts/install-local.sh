@@ -45,6 +45,7 @@ function cleanup() {
     unset name pkgname repology epoch url depends build_depends breaks replace gives description hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch pac_functions 2> /dev/null
     unset -f pkgver postinst removescript prepare build install 2> /dev/null
     sudo rm -rf "${SRCDIR:?}"/*
+    sudo rm "${pacfile:?}"
 }
 
 function trap_ctrlc() {
@@ -571,9 +572,10 @@ DIR="$PWD"
 homedir="$(eval echo ~"$PACSTALL_USER")"
 export homedir
 
-pacfile=$(readlink -f "$PACKAGE".pacscript)
+sudo mv "${PACKAGE}.pacscript" /tmp
+pacfile=$(readlink -f "/tmp/${PACKAGE}.pacscript")
 export pacfile
-if ! source "$PACKAGE".pacscript; then
+if ! source "${pacfile}"; then
     fancy_message error "Could not source pacscript"
     error_log 12 "install $PACKAGE"
     fancy_message info "Cleaning up"
@@ -838,7 +840,7 @@ else
                     fancy_message error "Could not enter into ${DIR}"
                     exit 1
                 fi
-                sudo cp -r "$PACKAGE".pacscript "/var/cache/pacstall/$PACKAGE/${epoch+$epoch:}$version"
+                sudo cp -r "${pacfile}" "/var/cache/pacstall/$PACKAGE/${epoch+$epoch:}$version"
                 sudo chmod o+r "/var/cache/pacstall/$PACKAGE/${epoch+$epoch:}$version/$PACKAGE.pacscript"
                 fancy_message info "Cleaning up"
                 cleanup
@@ -974,7 +976,7 @@ if ! cd "$DIR" 2> /dev/null; then
     exit 1
 fi
 
-sudo cp -r "$PACKAGE".pacscript "/var/cache/pacstall/$PACKAGE/${epoch+$epoch:}$version"
+sudo cp -r "${pacfile}" "/var/cache/pacstall/$PACKAGE/${epoch+$epoch:}$version"
 sudo chmod o+r "/var/cache/pacstall/$PACKAGE/${epoch+$epoch:}$version/$PACKAGE.pacscript"
 
 fancy_message sub "Cleaning up"
