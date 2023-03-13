@@ -27,14 +27,14 @@ function cleanup() {
         rm -rf "/tmp/pacstall-keep/$name"
         mkdir -p "/tmp/pacstall-keep/$name"
         if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
-            mv /tmp/pacstall-pacdep/* "/tmp/pacstall-keep/$name"
+            sudo mv /tmp/pacstall-pacdep/* "/tmp/pacstall-keep/$name"
         else
-            mv "${SRCDIR:?}"/* "/tmp/pacstall-keep/$name"
+            sudo mv "${SRCDIR:?}"/* "/tmp/pacstall-keep/$name"
         fi
     fi
     if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
-        rm -rf /tmp/pacstall-pacdeps-"$PACKAGE"
-        rm -rf /tmp/pacstall-pacdep
+        sudo rm -rf /tmp/pacstall-pacdeps-"$PACKAGE"
+        sudo rm -rf /tmp/pacstall-pacdep
     else
         # just in case we quit before $name is declared, we should be able to remove a fake directory so it doesn't exit out the script
         sudo rm -rf "${STOWDIR:-/usr/src/pacstall}/${name:-raaaaaaaandom}"
@@ -44,7 +44,7 @@ function cleanup() {
     rm -f /tmp/pacstall-select-options
     unset name pkgname repology epoch url depends build_depends breaks replace gives description hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch pac_functions 2> /dev/null
     unset -f pkgver postinst removescript prepare build install 2> /dev/null
-	sudo rm -rf "${SRCDIR:?}"/*
+    sudo rm -rf "${SRCDIR:?}"/*
 }
 
 function trap_ctrlc() {
@@ -741,7 +741,7 @@ function hashcheck() {
         error_log 16 "install $PACKAGE"
         fancy_message info "Cleaning up"
         cleanup
-		return 1
+        return 1
     fi
     true
 }
