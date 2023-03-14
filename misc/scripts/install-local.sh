@@ -654,7 +654,7 @@ if [[ -n $pacdeps ]]; then
     done
 fi
 
-cd ~ && cd -
+{ cd ~ && cd -; } > /dev/null
 if ! pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
     if [[ -n $breaks ]]; then
         for pkg in $breaks; do
