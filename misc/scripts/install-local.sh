@@ -36,6 +36,7 @@ function cleanup() {
         sudo rm -rf /tmp/pacstall-pacdeps-"$PACKAGE"
         sudo rm -rf /tmp/pacstall-pacdep
     else
+        sudo rm -rf "${SRCDIR:?}"/*
         # just in case we quit before $name is declared, we should be able to remove a fake directory so it doesn't exit out the script
         sudo rm -rf "${STOWDIR:-/usr/src/pacstall}/${name:-raaaaaaaandom}"
         rm -rf /tmp/pacstall-gives
@@ -44,7 +45,6 @@ function cleanup() {
     rm -f /tmp/pacstall-select-options
     unset name pkgname repology epoch url depends build_depends breaks replace gives description hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch pac_functions 2> /dev/null
     unset -f pkgver postinst removescript prepare build install 2> /dev/null
-    sudo rm -rf "${SRCDIR:?}"/*
     sudo rm "${pacfile:?}"
 }
 
