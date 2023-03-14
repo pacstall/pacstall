@@ -572,7 +572,7 @@ DIR="$PWD"
 homedir="$(eval echo ~"$PACSTALL_USER")"
 export homedir
 
-sudo mv "${PACKAGE}.pacscript" /tmp
+sudo cp "${PACKAGE}.pacscript" /tmp
 pacfile=$(readlink -f "/tmp/${PACKAGE}.pacscript")
 export pacfile
 if ! source "${pacfile}"; then
