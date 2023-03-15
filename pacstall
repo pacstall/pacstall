@@ -597,7 +597,7 @@ Helpful links:
                 if ! source "$STGDIR/scripts/install-local.sh"; then
                     fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
                     if ! [[ -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
-                        rm -rf "${SRCDIR:?}"
+                        sudo rm -rf "${SRCDIR:?}"
                     fi
                     exit 1
                 fi
