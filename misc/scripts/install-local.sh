@@ -316,20 +316,18 @@ function prompt_optdepends() {
         fi
     fi
 
-    if [[ -n ${deps[*]} ]]; then
-        if [[ -n ${pacdeps[*]} ]]; then
-            for i in "${pacdeps[@]}"; do
-                (
-                    source "$LOGDIR/$i"
-                    if [[ -n $_gives ]]; then
-                        echo "$_gives" | tee -a /tmp/pacstall-gives > /dev/null
-                    else
-                        echo "$_name" | tee -a /tmp/pacstall-gives > /dev/null
-                    fi
-                )
-            done
-            deps+=($(cat /tmp/pacstall-gives))
-        fi
+    if [[ -n ${pacdeps[*]} ]]; then
+        for i in "${pacdeps[@]}"; do
+            (
+                source "$LOGDIR/$i"
+                if [[ -n ${_gives} ]]; then
+                    echo "${_gives}" | tee -a /tmp/pacstall-gives > /dev/null
+                else
+                    echo "${_name}" | tee -a /tmp/pacstall-gives > /dev/null
+                fi
+            )
+        done
+        deps+=($(< /tmp/pacstall-gives))
     fi
     if [[ -n $depends ]] || [[ -n ${deps[*]} ]]; then
         deblog "Depends" "$(echo "${deps[@]}" | sed 's/ /, /g')"
