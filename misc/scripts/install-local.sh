@@ -778,9 +778,9 @@ if [[ -n $patch ]]; then
 fi
 
 if [[ -n $PACSTALL_PAYLOAD ]]; then
-	file_name=${PACSTALL_PAYLOAD##*/}
+	file_name="${PACSTALL_PAYLOAD##*/}"
 else
-	file_name=${url##*/}
+	file_name="${url##*/}"
 fi
 
 if [[ $name == *-git ]]; then
