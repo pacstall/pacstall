@@ -321,6 +321,7 @@ function download() {
         quiet-wget)
             wget -q -- "$1" 2>&1 || return 1
             ;;
+        payload) ;;
         wget | *)
             wget -q --show-progress --progress=bar:force -- "$1" 2>&1 || return 1
             ;;
@@ -453,6 +454,22 @@ while lock $1 $2 $3 $4; do
     fi
     sleep 1
 done
+
+if [[ -n $PACSTALL_PAYLOAD ]]; then
+    export PACSTALL_DOWNLOADER="payload"
+
+    if [[ ! -f $PACSTALL_PAYLOAD ]]; then
+        fancy_message error "Payload not found"
+        exit 1
+    fi
+    mkdir -p /tmp/pacstall
+    cp "$PACSTALL_PAYLOAD" /tmp/pacstall/
+elif [[ $PACSTALL_PAYLOAD == "" ]]; then
+    fancy_message error "Payload cannot be empty"
+    exit 1
+else
+    :
+fi
 
 while [[ $1 != "--" ]]; do
     case "$1" in
