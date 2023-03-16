@@ -82,15 +82,15 @@ else
     fi
 fi
 for i in {error_log.sh,add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
-    sudo curl -q -o "$STGDIR/scripts/$i" "$REPO/misc/scripts/$i" &
+    sudo curl -s -o "$STGDIR/scripts/$i" "$REPO/misc/scripts/$i" &
 done
 
-sudo curl -q -o /bin/pacstall "$REPO/pacstall" &
-sudo curl -q -o /usr/share/man/man8/pacstall.8.gz "$REPO/misc/pacstall.8.gz" &
-sudo curl -q -o /usr/share/bash-completion/completions/pacstall "$REPO/misc/completion/bash" &
+sudo curl -s -o /bin/pacstall "$REPO/pacstall" &
+sudo curl -s -o /usr/share/man/man8/pacstall.8.gz "$REPO/misc/pacstall.8.gz" &
+sudo curl -s -o /usr/share/bash-completion/completions/pacstall "$REPO/misc/completion/bash" &
 
 if command -v fish &> /dev/null; then
-    sudo curl -q -o /usr/share/fish/vendor_completions.d/pacstall.fish "$REPO/misc/completion/fish" &
+    sudo curl -s -o /usr/share/fish/vendor_completions.d/pacstall.fish "$REPO/misc/completion/fish" &
 fi
 
 wait && stty "$tty_settings"
