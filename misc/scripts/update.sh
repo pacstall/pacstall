@@ -71,22 +71,26 @@ old_info=($(cat $STGDIR/repo/update 2> /dev/null || echo pacstall master))
 old_username="${old_info[0]}"
 old_branch="${old_info[1]}"
 
-if ! curl -s --fail "https://raw.githubusercontent.com/$USERNAME/pacstall/$BRANCH/pacstall" > /dev/null; then
-    fancy_message error "Invalid URL"
-    suggested_solution "Confirm that '${UCyan}https://raw.githubusercontent.com/$USERNAME/pacstall/$BRANCH/pacstall${NC}' is valid"
-    exit 1
+if [[ -n $GIT_USER ]]; then
+    REPO="file://$PWD"
+else
+    REPO="https://raw.githubusercontent.com/$USERNAME/pacstall/$BRANCH"
+    if ! curl -s --fail "$REPO/pacstall" > /dev/null; then
+        fancy_message error "Invalid URL"
+        suggested_solution "Confirm that '${UCyan}$REPO/pacstall${NC}' is valid"
+        exit 1
+    fi
 fi
-
 for i in {error_log.sh,add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
-    sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/"$i" -P "$STGDIR/scripts" &
+    sudo curl -q -o "$STGDIR/scripts/$i" "$REPO/misc/scripts/$i" &
 done
 
-sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/pacstall -P /bin &
-sudo wget -q -O /usr/share/man/man8/pacstall.8.gz https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/pacstall.8.gz &
-sudo wget -q -O /usr/share/bash-completion/completions/pacstall https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/completion/bash &
+sudo curl -q -o /bin/pacstall "$REPO/pacstall" &
+sudo curl -q -o /usr/share/man/man8/pacstall.8.gz "$REPO/misc/pacstall.8.gz" &
+sudo curl -q -o /usr/share/bash-completion/completions/pacstall "$REPO/misc/completion/bash" &
 
 if command -v fish &> /dev/null; then
-    sudo wget -q -O /usr/share/fish/vendor_completions.d/pacstall.fish https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/completion/fish &
+    sudo curl -q -o /usr/share/fish/vendor_completions.d/pacstall.fish "$REPO/misc/completion/fish" &
 fi
 
 wait && stty "$tty_settings"
