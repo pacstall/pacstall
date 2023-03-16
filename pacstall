@@ -462,8 +462,8 @@ if [[ -n $PACSTALL_PAYLOAD ]]; then
         fancy_message error "Payload not found"
         exit 1
     fi
-    mkdir -p /tmp/pacstall
-    cp "$PACSTALL_PAYLOAD" /tmp/pacstall/
+    mkdir -p "${SRCDIR:?}"
+    cp "$PACSTALL_PAYLOAD" "${SRCDIR:?}"
 fi
 
 while [[ $1 != "--" ]]; do
