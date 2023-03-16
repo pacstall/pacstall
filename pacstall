@@ -679,15 +679,19 @@ Helpful links:
             ;;
 
         -U | --update)
-			if [[ $2 == "." || -d $2 ]]; then
-				cd "${2}"
-				mapfile -d":" GIT_USER < <(git remote get-url origin)
-				USERNAME="${GIT_USER[1]%%/*}"
-				BRANCH="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
-			else
-				USERNAME="$2"
-				BRANCH="$3"
-			fi
+            if [[ $2 == "." && -d $2 ]]; then
+                cd "${2}"
+                if ! git -C . rev-parse; then
+                    fancy_message error "$PWD is not a git repository"
+                    exit 1
+                fi
+                mapfile -d":" GIT_USER < <(git remote get-url origin)
+                USERNAME="${GIT_USER[1]%%/*}"
+                BRANCH="$(git rev-parse --abbrev-ref HEAD 2> /dev/null)"
+            else
+                USERNAME="$2"
+                BRANCH="$3"
+            fi
             # This stuff gives the ability for persistent updates
             if [[ -z $BRANCH && -z $USERNAME ]]; then
                 if [[ -f "$STGDIR/repo/update" ]]; then
