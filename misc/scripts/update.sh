@@ -98,7 +98,11 @@ wait && stty "$tty_settings"
 sudo chmod +x /bin/pacstall
 sudo chmod +x /usr/share/pacstall/scripts/*
 
-echo "$USERNAME $BRANCH" | sudo tee "$STGDIR/repo/update" > /dev/null
+if [[ -n $GIT_USER ]]; then
+    echo "pacstall master" | sudo tee "$STGDIR/repo/update" > /dev/null
+else
+    echo "$USERNAME $BRANCH" | sudo tee "$STGDIR/repo/update" > /dev/null
+fi
 
 new_info=($(cat $STGDIR/repo/update))
 new_version=($(pacstall -V))
