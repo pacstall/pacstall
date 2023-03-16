@@ -464,7 +464,7 @@ if [[ -n $PACSTALL_PAYLOAD ]]; then
     fi
     mkdir -p /tmp/pacstall
     cp "$PACSTALL_PAYLOAD" /tmp/pacstall/
-elif [[ $PACSTALL_PAYLOAD == "" ]]; then
+elif [[ -n $PACSTALL_PAYLOAD && $PACSTALL_PAYLOAD == "" ]]; then
     fancy_message error "Payload cannot be empty"
     exit 1
 else
