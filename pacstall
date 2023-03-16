@@ -446,7 +446,7 @@ function lock() {
     elif [[ -f "/tmp/pacstall-pacdeps-$4" ]]; then
         return 1
     fi
-    pidof -o %PPID -x $0 > /dev/null && return 0 || return 1
+    pidof -o %PPID -x "$0" > /dev/null && return 0 || return 1
 }
 
 while lock $1 $2 $3 $4; do
@@ -587,7 +587,7 @@ Helpful links:
                         continue
                     fi
 
-                    specifyRepo $REPO
+                    specifyRepo "$REPO"
                     URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 
                     if ! source "$STGDIR/scripts/download.sh"; then
@@ -757,7 +757,7 @@ Helpful links:
                     continue
                 fi
 
-                specifyRepo $REPO
+                specifyRepo "$REPO"
                 export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 
                 if ! source "$STGDIR/scripts/download.sh"; then
