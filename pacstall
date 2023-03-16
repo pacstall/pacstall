@@ -358,22 +358,25 @@ function select_options() {
         echo "n" | tee /tmp/pacstall-select-options > /dev/null
     elif ! [[ $input =~ [a-zA-Z]+ ]] || [[ $input =~ ^[0-9]+$ ]]; then
         for i in "${input[@]}"; do
+            local out
+            local split_arr
             if [[ $i =~ [0-9]+-[0-9]+ ]] || [[ $i =~ [0-9]+..[0-9]+ ]]; then
                 case "$i" in
                     *-*)
-                        split_arr=(${i//-/ })
+                        mapfile -d" " split_arr <<< "${i//-/ }"
                         ;;
                     *..*)
-                        split_arr=(${i//../ })
+                        mapfile -d" " split_arr <<< "${i//../ }"
                         ;;
                     *)
                         select_options "$message" "$length"
                         ;;
                 esac
+                # We can't use mapfile for this because it will overwrite
                 out+=($(seq -s ' ' "${split_arr[0]}" "${split_arr[1]}"))
                 continue
             else
-                out+=($i)
+                out+=("$i")
             fi
         done
         echo "${out[@]}" | tee /tmp/pacstall-select-options > /dev/null
