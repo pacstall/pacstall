@@ -679,9 +679,9 @@ Helpful links:
             ;;
 
         -U | --update)
-            if [[ $2 == "." && -d $2 ]]; then
+            if [[ $2 == "." && -d $2 && -z $3 ]]; then
                 cd "${2}"
-                if ! git -C . rev-parse; then
+                if ! git -C . rev-parse 2> /dev/null; then
                     fancy_message error "$PWD is not a git repository"
                     exit 1
                 fi
