@@ -229,8 +229,10 @@ function prompt_optdepends() {
     fi
     if [[ ${#optdepends[@]} -ne 0 ]]; then
         for i in "${optdepends[@]}"; do
-            if ! grep -q ':' <<< "${i}"; then
+            # Should cover `foo:i386: baz`, `foo: baz`, but not `foo:baz`
+            if [[ $i != *": "* ]]; then
                 fancy_message error "${i} does not have a description"
+                fancy_message info "Cleaning up"
                 cleanup
                 return 1
             fi
@@ -488,8 +490,8 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
         sudo chmod 755 "$STOWDIR/$name/DEBIAN/$i" 1> /dev/null 2>&1
     done
 
-    deblog "Installed-Size" "$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | awk '{ print $1 }')"
-    export install_size="$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | awk '{ print $1 }' | numfmt --to=iec)"
+    deblog "Installed-Size" "$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | cut -d$'\t' -f1)"
+    export install_size="$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | cut -d$'\t' -f1 | numfmt --to=iec)"
 
     generate_changelog | sudo tee -a "$STOWDIR/$name/DEBIAN/changelog" > /dev/null
 
@@ -907,7 +909,7 @@ export -f ask fancy_message select_options
 trap cleanup ERR
 trap - SIGINT
 
-prompt_optdepends
+prompt_optdepends || return 1
 clean_logdir
 
 function fail_out_functions() {
