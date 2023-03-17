@@ -376,7 +376,7 @@ function select_options() {
                         select_options "$message" "$length"
                         ;;
                 esac
-                split_arr+=($(seq -s ' ' "${split_arr[0]}" "${split_arr[1]}"))
+                out+=($(seq -s ' ' "${split_arr[0]}" "${split_arr[1]}"))
                 continue
             else
                 out+=("$i")
