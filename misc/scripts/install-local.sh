@@ -333,8 +333,9 @@ function prompt_optdepends() {
             done < /tmp/pacstall-gives
         fi
     fi
-    if [[ -n $depends ]] || [[ -n ${deps[*]} ]]; then
-        deblog "Depends" "$(echo "${deps[@]}" | sed 's/ /, /g')"
+    if [[ -n ${deps[*]} || -n "${not_installed_yet_optdeps[*]}" ]]; then
+        local all_deps_to_install=("${not_installed_yet_optdeps[@]}" "${deps[@]}")
+        deblog "Depends" "$(echo "${all_deps_to_install[@]}" | sed 's/ /, /g')"
     fi
 }
 
