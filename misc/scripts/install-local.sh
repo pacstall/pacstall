@@ -232,6 +232,7 @@ function prompt_optdepends() {
             # Should cover `foo:i386: baz`, `foo: baz`, but not `foo:baz`
             if [[ $i != *": "* ]]; then
                 fancy_message error "${i} does not have a description"
+                fancy_message info "Cleaning up"
                 cleanup
                 return 1
             fi
@@ -908,7 +909,7 @@ export -f ask fancy_message select_options
 trap cleanup ERR
 trap - SIGINT
 
-prompt_optdepends
+prompt_optdepends || return 1
 clean_logdir
 
 function fail_out_functions() {
