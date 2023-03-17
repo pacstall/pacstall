@@ -662,6 +662,7 @@ Helpful links:
             fi
 
             if [[ -n $REPO ]]; then
+				# shellcheck source=./misc/scripts/add-repo.sh
                 source "$STGDIR/scripts/add-repo.sh"
                 exit 0
             else
@@ -725,6 +726,7 @@ Helpful links:
                 exit 1
             fi
             sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/update.sh -P "$STGDIR/scripts" 2> /dev/null
+			# shellcheck source=./misc/scripts/update.sh
             source "$STGDIR/scripts/update.sh"
             exit 0
             ;;
@@ -761,6 +763,7 @@ Helpful links:
                     exit 1
                 }
 
+				# shellcheck source=./misc/scripts/search.sh
                 if ! source "$STGDIR/scripts/search.sh"; then
                     continue
                 fi
@@ -768,6 +771,7 @@ Helpful links:
                 specifyRepo "$REPO"
                 export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 
+				# shellcheck source=./misc/scripts/download.sh
                 if ! source "$STGDIR/scripts/download.sh"; then
                     fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
                     suggested_solution "Confirm that the package exists by running '${UCyan}pacstall -S $PACKAGE${NC}'" "Check your internet connection"
@@ -791,6 +795,7 @@ Helpful links:
                 suggested_solution "Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
                 exit 1
             }
+			# shellcheck source=./misc/scripts/upgrade.sh
             source "$STGDIR/scripts/upgrade.sh"
             exit 0
             ;;
@@ -815,6 +820,7 @@ Helpful links:
 
         -Qi | --query-info)
             PACKAGE=$2
+			# shellcheck source=./misc/scripts/query-info.sh
             source "$STGDIR/scripts/query-info.sh"
             exit 0
             ;;
