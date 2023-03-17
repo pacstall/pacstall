@@ -41,7 +41,7 @@ elif [[ $REPO == *"gitlab.com"* ]]; then
     fi
 elif [[ -d $REPO ]] > /dev/null; then
     if [[ $REPO != *"file://"* ]]; then
-        REPO="file://$(readlink -f $REPO)"
+        REPO="file://$(readlink -f "$REPO")"
     fi
 else
     fancy_message warn "The repo link must be the root to the raw files"
