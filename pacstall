@@ -394,6 +394,7 @@ fi
 # run sudo apt update if it's been more than a week
 [[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ]] && sudo apt-get update -qq
 
+# shellcheck source=./misc/scripts/error_log.sh
 source "$STGDIR/scripts/error_log.sh"
 
 if [[ ! -t 0 ]]; then
@@ -583,6 +584,7 @@ Helpful links:
                         exit 1
                     }
 
+                    # shellcheck source=./misc/scripts/search.sh
                     if ! source "$STGDIR/scripts/search.sh"; then
                         continue
                     fi
@@ -590,6 +592,7 @@ Helpful links:
                     specifyRepo "$REPO"
                     URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 
+                    # shellcheck source=./misc/scripts/download.sh
                     if ! source "$STGDIR/scripts/download.sh"; then
                         fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
                         suggested_solution "Confirm that the package exists by running '${UCyan}pacstall -S $PACKAGE${NC}'" "Check your internet connection"
@@ -597,6 +600,7 @@ Helpful links:
                     fi
                     export REPO
                 fi
+                # shellcheck source=./misc/scripts/install-local.sh
                 if ! source "$STGDIR/scripts/install-local.sh"; then
                     fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
                     if ! [[ -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
@@ -623,6 +627,7 @@ Helpful links:
                 exit 1
             }
 
+            # shellcheck source=./misc/scripts/search.sh
             source "$STGDIR/scripts/search.sh"
             exit 0
             ;;
@@ -637,6 +642,7 @@ Helpful links:
             while [[ -n $2 ]]; do
                 PACKAGE=$2
                 shift
+                # shellcheck source=./misc/scripts/search.sh
                 if ! source "$STGDIR/scripts/remove.sh"; then
                     fancy_message error "Failed to remove ${GREEN}${PACKAGE}${NC}"
                 fi
@@ -753,7 +759,6 @@ Helpful links:
                 }
 
                 if ! source "$STGDIR/scripts/search.sh"; then
-                    ((i++))
                     continue
                 fi
 
