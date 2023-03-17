@@ -341,7 +341,7 @@ function select_options() {
         echo -ne "${message} [${BOLD}$(seq -s ' ' 1 "$length")${NC}] [${BIGreen}Y${NC}/${RED}n${NC}] "
     fi
     if [[ $DISABLE_PROMPTS == "no" ]]; then
-        read -r input <&0
+        read -ra input <&0
         if [[ $NON_INTERACTIVE ]]; then
             if [[ -z $input ]]; then
                 echo "Y"
@@ -358,8 +358,8 @@ function select_options() {
         echo "n" | tee /tmp/pacstall-select-options > /dev/null
     elif ! [[ $input =~ [a-zA-Z]+ ]] || [[ $input =~ ^[0-9]+$ ]]; then
         for i in "${input[@]}"; do
-            local out
-            local split_arr
+			unset split_arr
+            local out split_arr
             if [[ $i =~ [0-9]+-[0-9]+ ]] || [[ $i =~ [0-9]+..[0-9]+ ]]; then
                 case "$i" in
                     *-*)
