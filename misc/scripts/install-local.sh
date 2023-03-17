@@ -32,8 +32,8 @@ function cleanup() {
             sudo mv "${SRCDIR:?}"/* "/tmp/pacstall-keep/$name"
         fi
     fi
-    if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
-        sudo rm -rf /tmp/pacstall-pacdeps-"$PACKAGE"
+    if [[ -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
+        sudo rm -rf "/tmp/pacstall-pacdeps-$PACKAGE"
         sudo rm -rf /tmp/pacstall-pacdep
     else
         sudo rm -rf "${SRCDIR:?}"/*
@@ -53,7 +53,7 @@ function trap_ctrlc() {
     if dpkg-query -W -f='${Status}' "$name" 2> /dev/null | grep -q -E "ok installed|ok unpacked"; then
         sudo apt-get purge "${gives:-$name}" -y > /dev/null
     fi
-    sudo rm -f /etc/apt/preferences.d/"${name:-$PACKAGE}-pin"
+    sudo rm -f "/etc/apt/preferences.d/${name:-$PACKAGE}-pin"
     cleanup
     exit 1
 }
