@@ -342,7 +342,7 @@ function select_options() {
         echo -ne "${message} [${BOLD}$(seq -s ' ' 1 "$length")${NC}] [${BIGreen}Y${NC}/${RED}n${NC}] "
     fi
     if [[ $DISABLE_PROMPTS == "no" ]]; then
-        read -r input <&0
+        read -ra input <&0
         if [[ $NON_INTERACTIVE ]]; then
             if [[ -z $input ]]; then
                 echo "Y"
@@ -359,22 +359,28 @@ function select_options() {
         echo "n" | tee /tmp/pacstall-select-options > /dev/null
     elif ! [[ $input =~ [a-zA-Z]+ ]] || [[ $input =~ ^[0-9]+$ ]]; then
         for i in "${input[@]}"; do
+			unset split_arr
+            local out split_arr
             if [[ $i =~ [0-9]+-[0-9]+ ]] || [[ $i =~ [0-9]+..[0-9]+ ]]; then
                 case "$i" in
                     *-*)
-                        split_arr=(${i//-/ })
+                        for line in ${i//-/ }; do
+                            split_arr+=("$line")
+                        done
                         ;;
                     *..*)
-                        split_arr=(${i//../ })
+                        for line in ${i//../ }; do
+                            split_arr+=("$line")
+                        done
                         ;;
                     *)
                         select_options "$message" "$length"
                         ;;
                 esac
-                out+=($(seq -s ' ' "${split_arr[0]}" "${split_arr[1]}"))
+                out+=($(seq "${split_arr[0]}" "${split_arr[1]}"))
                 continue
             else
-                out+=($i)
+                out+=("$i")
             fi
         done
         echo "${out[@]}" | tee /tmp/pacstall-select-options > /dev/null
@@ -392,6 +398,7 @@ fi
 # run sudo apt update if it's been more than a week
 [[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ]] && sudo apt-get update -qq
 
+# shellcheck source=./misc/scripts/error_log.sh
 source "$STGDIR/scripts/error_log.sh"
 
 if [[ ! -t 0 ]]; then
@@ -444,7 +451,7 @@ function lock() {
     elif [[ -f "/tmp/pacstall-pacdeps-$4" ]]; then
         return 1
     fi
-    pidof -o %PPID -x $0 > /dev/null && return 0 || return 1
+    pidof -o %PPID -x "$0" > /dev/null && return 0 || return 1
 }
 
 while lock $1 $2 $3 $4; do
@@ -592,13 +599,15 @@ Helpful links:
                         exit 1
                     }
 
+                    # shellcheck source=./misc/scripts/search.sh
                     if ! source "$STGDIR/scripts/search.sh"; then
                         continue
                     fi
 
-                    specifyRepo $REPO
+                    specifyRepo "$REPO"
                     URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 
+                    # shellcheck source=./misc/scripts/download.sh
                     if ! source "$STGDIR/scripts/download.sh"; then
                         fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
                         suggested_solution "Confirm that the package exists by running '${UCyan}pacstall -S $PACKAGE${NC}'" "Check your internet connection"
@@ -606,6 +615,7 @@ Helpful links:
                     fi
                     export REPO
                 fi
+                # shellcheck source=./misc/scripts/install-local.sh
                 if ! source "$STGDIR/scripts/install-local.sh"; then
                     fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
                     if ! [[ -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
@@ -632,6 +642,7 @@ Helpful links:
                 exit 1
             }
 
+            # shellcheck source=./misc/scripts/search.sh
             source "$STGDIR/scripts/search.sh"
             exit 0
             ;;
@@ -646,6 +657,7 @@ Helpful links:
             while [[ -n $2 ]]; do
                 PACKAGE=$2
                 shift
+                # shellcheck source=./misc/scripts/remove.sh
                 if ! source "$STGDIR/scripts/remove.sh"; then
                     fancy_message error "Failed to remove ${GREEN}${PACKAGE}${NC}"
                 fi
@@ -662,6 +674,7 @@ Helpful links:
             fi
 
             if [[ -n $REPO ]]; then
+				# shellcheck source=./misc/scripts/add-repo.sh
                 source "$STGDIR/scripts/add-repo.sh"
                 exit 0
             else
@@ -725,6 +738,7 @@ Helpful links:
                 exit 1
             fi
             sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/update.sh -P "$STGDIR/scripts" 2> /dev/null
+			# shellcheck source=./misc/scripts/update.sh
             source "$STGDIR/scripts/update.sh"
             exit 0
             ;;
@@ -761,14 +775,15 @@ Helpful links:
                     exit 1
                 }
 
+				# shellcheck source=./misc/scripts/search.sh
                 if ! source "$STGDIR/scripts/search.sh"; then
-                    ((i++))
                     continue
                 fi
 
-                specifyRepo $REPO
+                specifyRepo "$REPO"
                 export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 
+				# shellcheck source=./misc/scripts/download.sh
                 if ! source "$STGDIR/scripts/download.sh"; then
                     fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
                     suggested_solution "Confirm that the package exists by running '${UCyan}pacstall -S $PACKAGE${NC}'" "Check your internet connection"
@@ -792,6 +807,7 @@ Helpful links:
                 suggested_solution "Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
                 exit 1
             }
+			# shellcheck source=./misc/scripts/upgrade.sh
             source "$STGDIR/scripts/upgrade.sh"
             exit 0
             ;;
@@ -816,6 +832,7 @@ Helpful links:
 
         -Qi | --query-info)
             PACKAGE=$2
+			# shellcheck source=./misc/scripts/query-info.sh
             source "$STGDIR/scripts/query-info.sh"
             exit 0
             ;;

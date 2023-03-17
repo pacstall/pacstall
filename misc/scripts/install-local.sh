@@ -32,8 +32,8 @@ function cleanup() {
             sudo mv "${SRCDIR:?}"/* "/tmp/pacstall-keep/$name"
         fi
     fi
-    if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
-        sudo rm -rf /tmp/pacstall-pacdeps-"$PACKAGE"
+    if [[ -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
+        sudo rm -rf "/tmp/pacstall-pacdeps-$PACKAGE"
         sudo rm -rf /tmp/pacstall-pacdep
     else
         sudo rm -rf "${SRCDIR:?}"/*
@@ -53,7 +53,7 @@ function trap_ctrlc() {
     if dpkg-query -W -f='${Status}' "$name" 2> /dev/null | grep -q -E "ok installed|ok unpacked"; then
         sudo apt-get purge "${gives:-$name}" -y > /dev/null
     fi
-    sudo rm -f /etc/apt/preferences.d/"${name:-$PACKAGE}-pin"
+    sudo rm -f "/etc/apt/preferences.d/${name:-$PACKAGE}-pin"
     cleanup
     exit 1
 }
@@ -97,7 +97,7 @@ function log() {
             pBRANCH="${REPO##*/-/raw/}"
             branch="yes"
         else
-            pURL=$REPO
+            pURL="$REPO"
             branch="no"
         fi
     fi
@@ -108,7 +108,7 @@ function log() {
         if [[ -n $pkgname ]]; then
             echo "_pkgname=\"$pkgname"\"
         fi
-        echo "_version=\"${epoch+$epoch:}$version"\"
+        echo "_version=\"${full_version}"\"
         echo "_install_size=\"${install_size}"\"
         echo "_date=\"$(date)"\"
         if [[ -n $ppa ]]; then
@@ -147,14 +147,14 @@ function compare_remote_version() (
     else
         local remoterepo="${_remoterepo}"
     fi
-    local remotever="$(source <(curl -s -- "$remoterepo"/packages/"$input"/"$input".pacscript) && type pkgver &> /dev/null && pkgver || echo "${epoch+$epoch:}$version")" > /dev/null
+    local remotever="$(source <(curl -s -- "$remoterepo/packages/$input/$input.pacscript") && type pkgver &> /dev/null && pkgver || echo "${full_version}")" > /dev/null
     if [[ $input == *"-git" ]]; then
-        if [[ $(pacstall -V $input) != "$remotever" ]]; then
+        if [[ $(pacstall -V "$input") != "$remotever" ]]; then
             echo "update"
         else
             echo "no"
         fi
-    elif dpkg --compare-versions "$(pacstall -V $input)" lt "$remotever" > /dev/null 2>&1; then
+    elif dpkg --compare-versions "$(pacstall -V "$input")" lt "$remotever" > /dev/null 2>&1; then
         echo "update"
     else
         echo "no"
@@ -225,7 +225,7 @@ function clean_builddir() {
 
 function prompt_optdepends() {
     if [[ -n $depends ]]; then
-        deps=($depends)
+        mapfile -t deps <<< "${depends// /$'\n'}"
     fi
     if [[ ${#optdepends[@]} -ne 0 ]]; then
         for i in "${optdepends[@]}"; do
@@ -273,7 +273,7 @@ function prompt_optdepends() {
                 # tab over the next line
                 echo -ne "\t"
                 select_options "Select optional dependencies to install" "${#suggested_optdeps[@]}"
-                choices=($(cat /tmp/pacstall-select-options))
+				read -ra choices < /tmp/pacstall-select-options
                 local choice_inc=0
                 for i in "${choices[@]}"; do
                     # have we gone over the maximum number in choices[@]?
@@ -316,18 +316,22 @@ function prompt_optdepends() {
         fi
     fi
 
-    if [[ -n ${pacdeps[*]} ]]; then
-        for i in "${pacdeps[@]}"; do
-            (
-                source "$LOGDIR/$i"
-                if [[ -n ${_gives} ]]; then
-                    echo "${_gives}" | tee -a /tmp/pacstall-gives > /dev/null
-                else
-                    echo "${_name}" | tee -a /tmp/pacstall-gives > /dev/null
-                fi
-            )
-        done
-        deps+=($(< /tmp/pacstall-gives))
+    if [[ -n ${deps[*]} ]]; then
+        if [[ -n ${pacdeps[*]} ]]; then
+            for i in "${pacdeps[@]}"; do
+                (
+                    source "$LOGDIR/$i"
+                    if [[ -n $_gives ]]; then
+                        echo "$_gives" | tee -a /tmp/pacstall-gives > /dev/null
+                    else
+                        echo "$_name" | tee -a /tmp/pacstall-gives > /dev/null
+                    fi
+                )
+            done
+            while IFS= read -r line; do
+                deps+=("$line")
+            done < /tmp/pacstall-gives
+        fi
     fi
     if [[ -n $depends ]] || [[ -n ${deps[*]} ]]; then
         deblog "Depends" "$(echo "${deps[@]}" | sed 's/ /, /g')"
@@ -335,8 +339,8 @@ function prompt_optdepends() {
 }
 
 function generate_changelog() {
-    echo -e "${name} (${epoch+$epoch:}$version) $(lsb_release -sc); urgency=medium\n"
-    echo -e "  * Version now at ${epoch+$epoch:}$version.\n"
+    echo -e "${name} (${full_version}) $(lsb_release -sc); urgency=medium\n"
+    echo -e "  * Version now at ${full_version}.\n"
     echo -e " -- $maintainer  $(date +"%a, %d %b %Y %T %z")"
 }
 
@@ -400,11 +404,11 @@ function makedeb() {
     deblog "Package" "${gives:-$name}"
 
     if [[ $version =~ ^[0-9] ]]; then
-        deblog "Version" "${epoch+$epoch:}$version"
-        export version="${epoch+$epoch:}$version"
+        deblog "Version" "${full_version}"
+        export version="${full_version}"
     else
-        deblog "Version" "0${epoch+$epoch:}$version"
-        export version="0${epoch+$epoch:}$version"
+        deblog "Version" "0${full_version}"
+        export version="0${full_version}"
     fi
 
     deblog "Architecture" "all"
@@ -424,11 +428,11 @@ function makedeb() {
     deblog "Description" "${description}"
 
     for i in {removescript,postinst}; do
-        case $i in
+        case "$i" in
             removescript) export deb_post_file="postrm" ;;
             postinst) export deb_post_file="postinst" ;;
         esac
-        if [[ $(type -t $i) == function ]]; then
+        if [[ $(type -t "$i") == function ]]; then
             echo '#!/bin/bash
 set -e
 function ask() {
@@ -581,6 +585,7 @@ if ! source "${pacfile}"; then
     return 1
 fi
 
+full_version="${epoch+$epoch:}$version"
 export CARCH="$(dpkg --print-architecture)"
 if [[ -n ${arch[*]} ]]; then
     if ! is_compatible_arch "${arch[@]}"; then
@@ -625,11 +630,11 @@ fi
 if [[ -n $pacdeps ]]; then
     for i in "${pacdeps[@]}"; do
         # If /tmp/pacstall-pacdeps-"$i" is available, it will trigger the logger to log it as a dependency
-        touch /tmp/pacstall-pacdeps-"$i"
+        touch "/tmp/pacstall-pacdeps-$i"
 
         [[ $KEEP ]] && cmd="-KPI" || cmd="-PI"
         if pacstall -L | grep -E "(^| )${i}( |$)" > /dev/null 2>&1; then
-            pacstall_pacdep_status="$(compare_remote_version $i)"
+            pacstall_pacdep_status="$(compare_remote_version "$i")"
             if [[ -z $UPGRADE ]] && [[ $pacstall_pacdep_status == "update" ]]; then
                 fancy_message info "Found newer version for $i pacdep"
                 if ! pacstall "$cmd" "$i"; then
@@ -648,7 +653,7 @@ if [[ -n $pacdeps ]]; then
             cleanup
             return 1
         fi
-        rm -f /tmp/pacstall-pacdeps-"$i"
+        rm -f "/tmp/pacstall-pacdeps-$i"
     done
 fi
 
@@ -685,14 +690,16 @@ if ! pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
                 cleanup
                 return 1
             fi
-            sudo apt-get remove -y $replace
+            mapfile -t replaces_tmp <<< "${replace// /$'\n'}"
+            sudo apt-get remove -y "${replaces_tmp[@]}"
+            unset replaces_tmp
         fi
     fi
 fi
 
 if [[ -n ${build_depends[*]} ]]; then
     # Get all uninstalled build depends
-    build_depends=($build_depends)
+    mapfile -t build_depends <<< "${build_depends// /$'\n'}"
     for build_dep in "${build_depends[@]}"; do
         if [[ "$(dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null)" == "install ok installed" ]]; then
             build_depends_to_delete+=("${build_dep}")
@@ -838,14 +845,14 @@ else
                 fi
 
                 fancy_message info "Storing pacscript"
-                sudo mkdir -p "/var/cache/pacstall/$PACKAGE/${epoch+$epoch:}$version"
+                sudo mkdir -p "/var/cache/pacstall/$PACKAGE/${full_version}"
                 if ! cd "$DIR" 2> /dev/null; then
                     error_log 1 "install $PACKAGE"
                     fancy_message error "Could not enter into ${DIR}"
                     exit 1
                 fi
-                sudo cp -r "${pacfile}" "/var/cache/pacstall/$PACKAGE/${epoch+$epoch:}$version"
-                sudo chmod o+r "/var/cache/pacstall/$PACKAGE/${epoch+$epoch:}$version/$PACKAGE.pacscript"
+                sudo cp -r "${pacfile}" "/var/cache/pacstall/$PACKAGE/${full_version}"
+                sudo chmod o+r "/var/cache/pacstall/$PACKAGE/${full_version}/$PACKAGE.pacscript"
                 fancy_message info "Cleaning up"
                 cleanup
                 return 0
@@ -970,7 +977,7 @@ log
 
 fancy_message info "Performing post install operations"
 fancy_message sub "Storing pacscript"
-sudo mkdir -p "/var/cache/pacstall/$PACKAGE/${epoch+$epoch:}$version"
+sudo mkdir -p "/var/cache/pacstall/$PACKAGE/${full_version}"
 if ! cd "$DIR" 2> /dev/null; then
     error_log 1 "install $PACKAGE"
     fancy_message error "Could not enter into ${DIR}"
@@ -980,8 +987,8 @@ if ! cd "$DIR" 2> /dev/null; then
     exit 1
 fi
 
-sudo cp -r "${pacfile}" "/var/cache/pacstall/$PACKAGE/${epoch+$epoch:}$version"
-sudo chmod o+r "/var/cache/pacstall/$PACKAGE/${epoch+$epoch:}$version/$PACKAGE.pacscript"
+sudo cp -r "${pacfile}" "/var/cache/pacstall/$PACKAGE/${full_version}"
+sudo chmod o+r "/var/cache/pacstall/$PACKAGE/${full_version}/$PACKAGE.pacscript"
 
 fancy_message sub "Cleaning up"
 cleanup

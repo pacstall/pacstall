@@ -26,7 +26,7 @@ function ver_compare() {
     local first second
     first="${1#${1/[0-9]*/}}"
     second="${2#${2/[0-9]*/}}"
-    return $(dpkg --compare-versions "$first" lt "$second")
+    return "$(dpkg --compare-versions "$first" lt "$second")"
 }
 
 export UPGRADE="yes"
@@ -63,12 +63,13 @@ N="$(nproc)"
 
             unset _remoterepo
 
+            # shellcheck source=./misc/scripts/search.sh
             source "$STGDIR/scripts/search.sh"
 
             IDXMATCH=$(printf "%s\n" "${REPOS[@]}" | awk "\$1 ~ /^${remoterepo//\//\\/}$/ {print NR-1}")
 
             if [[ -n $IDXMATCH ]]; then
-                remotever=$(source <(curl -s -- "$remoterepo"/packages/"$i"/"$i".pacscript) && type pkgver &> /dev/null && pkgver || echo "${epoch:+$epoch:}$version") > /dev/null
+                remotever=$(source <(curl -s -- "$remoterepo/packages/$i/$i.pacscript") && type pkgver &> /dev/null && pkgver || echo "${epoch:+$epoch:}$version") > /dev/null
                 remoteurl="${REPOS[$IDXMATCH]}"
             else
                 fancy_message warn "Package ${GREEN}${i}${CYAN} is not on ${CYAN}$(parseRepo "${remoterepo}")${NC} anymore"
@@ -149,10 +150,12 @@ ${BOLD}$(cat "${up_print}")${NORMAL}\n"
         fi
         REPO="${remotes[$i]}"
         export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
+        # shellcheck source=./misc/scripts/download.sh
         if ! source "$STGDIR/scripts/download.sh"; then
             fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
             continue
         fi
+        # shellcheck source=./misc/scripts/install-local.sh
         source "$STGDIR/scripts/install-local.sh"
     done
 fi

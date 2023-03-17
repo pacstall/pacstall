@@ -32,16 +32,16 @@ function getPath() {
     local path="${1}"
     path="${path/"file://"/}"
     path="${path/"~"/"$HOME"}"
-    path="$(readlink -f ${path})"
+    path="$(readlink -f "${path}")"
     path="${path/"$HOME"/"~"}"
-    echo $path
+    echo "${path}"
 }
 
 function specifyRepo() {
     mapfile -t SPLIT < <(echo "${1//[\/]/$'\n'}")
 
     if [[ $1 == "file://"* ]] || [[ $1 == "/"* ]] || [[ $1 == "~"* ]] || [[ $1 == "."* ]]; then
-        export URLNAME="$(getPath ${1})"
+        export URLNAME="$(getPath "${1}")"
     elif [[ $1 == *"github"* ]]; then
         export URLNAME="${SPLIT[-3]}/${SPLIT[-2]}"
     elif [[ $1 == *"gitlab"* ]]; then
@@ -62,7 +62,7 @@ function parseRepo() {
     mapfile -t SPLIT < <(echo "${REPO//[\/]/$'\n'}")
 
     if [[ $REPO == *"file://"* ]]; then
-        local REPODIR="$(getPath ${REPO})"
+        local REPODIR="$(getPath "${REPO}")"
         echo "\e]8;;$REPO\a$REPODIR\e]8;;\a"
     elif [[ $REPO == *"github"* ]]; then
         echo -e "\e]8;;https://github.com/${SPLIT[-3]}/${SPLIT[-2]}\a${SPLIT[-3]}/${SPLIT[-2]}\e]8;;\a"
@@ -76,7 +76,7 @@ function parseRepo() {
 if [[ $PACKAGE == *@* ]]; then
     REPONAME=${PACKAGE#*@}
     if [[ $REPONAME == "file://"* ]] || [[ $REPONAME == "/"* ]] || [[ $REPONAME == "~"* ]] || [[ $REPONAME == "."* ]]; then
-        REPONAME="$(getPath ${REPONAME})"
+        REPONAME="$(getPath "${REPONAME}")"
     fi
     PACKAGE=${PACKAGE%%@*}
 
@@ -119,7 +119,7 @@ while IFS= read -r URL; do
     fi
     if ! check_url "${URL}/packagelist"; then
         if [[ -z $REPOMSG ]]; then
-            fancy_message warn "Skipping repo $CYAN$(parseRepo ${URL})$NC"
+            fancy_message warn "Skipping repo $CYAN$(parseRepo "${URL}")$NC"
             fancy_message warn "You can remove or fix the URL by editing $CYAN$STGDIR/repo/pacstallrepo.txt$NC"
         fi
         continue

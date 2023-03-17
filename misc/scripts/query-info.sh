@@ -44,25 +44,25 @@ function get_field() {
     fi
 }
 
-echo -e "${BGreen}name${NORMAL}: $(get_field $PACKAGE Package)"
-echo -e "${BGreen}version${NORMAL}: $(get_field $PACKAGE Version)"
+echo -e "${BGreen}name${NORMAL}: $(get_field "$PACKAGE" Package)"
+echo -e "${BGreen}version${NORMAL}: $(get_field "$PACKAGE" Version)"
 if [[ -n $_install_size ]]; then
     echo -e "${BGreen}size${NORMAL}: $_install_size"
 fi
-echo -e "${BGreen}description${NORMAL}: $(get_field $PACKAGE Description)"
+echo -e "${BGreen}description${NORMAL}: $(get_field "$PACKAGE" Description)"
 echo -e "${BGreen}date installed${NORMAL}: $_date"
 
 if [[ -n $_remoterepo ]]; then
     echo -e "${BGreen}remote repo${NORMAL}: $_remoterepo"
 fi
-echo -e "${BGreen}maintainer${NORMAL}: $(get_field $PACKAGE Maintainer)"
+echo -e "${BGreen}maintainer${NORMAL}: $(get_field "$PACKAGE" Maintainer)"
 if [[ -n $_ppa ]]; then
     echo -e "${BGreen}ppa${NORMAL}: $_ppa"
 fi
 if [[ -n $_pacdeps ]]; then
     echo -e "${BGreen}pacstall dependencies${NORMAL}: ${_pacdeps[*]}"
 fi
-deps=$(get_field $PACKAGE Depends | tr -d ',')
+deps=$(get_field "$PACKAGE" Depends | tr -d ',')
 if [[ -n $deps ]]; then
     echo -e "${BGreen}dependencies${NORMAL}: ${deps}"
 fi
