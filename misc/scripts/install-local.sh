@@ -44,7 +44,7 @@ function cleanup() {
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
     unset name pkgname repology epoch url depends build_depends breaks replace gives description hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch pac_functions 2> /dev/null
-    unset -f pkgver postinst removescript prepare build install 2> /dev/null
+    unset -f pkgver postinst removescript preinst prepare build install 2> /dev/null
     sudo rm -f "${pacfile}"
 }
 
@@ -427,10 +427,11 @@ function makedeb() {
     deblog "Maintainer" "${maintainer:-Pacstall <pacstall@pm.me>}"
     deblog "Description" "${description}"
 
-    for i in {removescript,postinst}; do
+    for i in {removescript,postinst,preinst}; do
         case "$i" in
             removescript) export deb_post_file="postrm" ;;
             postinst) export deb_post_file="postinst" ;;
+            preinst) export deb_post_file="preinst" ;;
         esac
         if [[ $(type -t "$i") == function ]]; then
             echo '#!/bin/bash
@@ -481,7 +482,7 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
         fi
     done
     echo -e "sudo rm -f $LOGDIR/$name\nsudo rm -f /etc/apt/preferences.d/$name.pin" | sudo tee -a "$STOWDIR/$name/DEBIAN/postrm" > /dev/null
-    for i in {postrm,postinst}; do
+    for i in {postrm,postinst,preinst}; do
         sudo chmod -x "$STOWDIR/$name/DEBIAN/$i" 1> /dev/null 2>&1
         sudo chmod 755 "$STOWDIR/$name/DEBIAN/$i" 1> /dev/null 2>&1
     done
