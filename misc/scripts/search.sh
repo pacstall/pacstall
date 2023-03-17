@@ -128,6 +128,7 @@ while IFS= read -r URL; do
     mapfile -t PARTIALLIST < <(curl -s -- "$URL"/packagelist)
     URLLIST+=("${PARTIALLIST[@]/*/$URL}")
     PACKAGELIST+=("${PARTIALLIST[@]}")
+    unset PARTIALLIST
 done < "$STGDIR/repo/pacstallrepo.txt"
 
 REPOMSG=1
