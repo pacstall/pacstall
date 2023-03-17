@@ -775,6 +775,12 @@ if [[ -n $patch ]]; then
     export PACPATCH="$PWD/PACSTALL_patchesdir"
 fi
 
+if [[ -n $PACSTALL_PAYLOAD ]]; then
+	file_name="${PACSTALL_PAYLOAD##*/}"
+else
+	file_name="${url##*/}"
+fi
+
 if [[ $name == *-git ]]; then
     # git clone quietly, with no history, and if submodules are there, download with 10 jobs
     git clone --quiet --depth=1 --jobs=10 "$url"
@@ -799,10 +805,10 @@ else
                 exit 1
             fi
             # hash the file
-            hashcheck "${url##*/}" || return 1
+            hashcheck "${file_name}" || return 1
             # unzip file
-            fancy_message info "Extracting ${url##*/}"
-            unzip -qo "${url##*/}" 1>&1 2> /dev/null
+            fancy_message info "Extracting ${file_name}"
+            unzip -qo "${file_name}" 1>&1 2> /dev/null
             # cd into it
             cd ./*/ 2> /dev/null || {
                 error_log 1 "install $PACKAGE"
@@ -817,8 +823,8 @@ else
                 cleanup
                 exit 1
             fi
-            hashcheck "${url##*/}" || return 1
-            if sudo apt install -y -f ./"${url##*/}" 2> /dev/null; then
+            hashcheck "${file_name}" || return 1
+            if sudo apt install -y -f ./"${file_name}" 2> /dev/null; then
                 log
                 if [[ -f /tmp/pacstall-pacdeps-"$name" ]]; then
                     sudo apt-mark auto "${gives:-$name}" 2> /dev/null
@@ -861,7 +867,7 @@ else
                 cleanup
                 exit 1
             fi
-            hashcheck "${url##*/}" || return 1
+            hashcheck "${file_name}" || return 1
             ;;
         *)
             if ! download "$url"; then
@@ -871,9 +877,9 @@ else
                 cleanup
                 exit 1
             fi
-            hashcheck "${url##*/}" || return 1
-            fancy_message info "Extracting ${url##*/}"
-            tar -xf "${url##*/}" 1>&1 2> /dev/null
+            hashcheck "${file_name}" || return 1
+            fancy_message info "Extracting ${file_name}"
+            tar -xf "${file_name}" 1>&1 2> /dev/null
             cd ./*/ 2> /dev/null || {
                 error_log 1 "install $PACKAGE"
                 fancy_message warn "Could not enter into the downloaded archive"
