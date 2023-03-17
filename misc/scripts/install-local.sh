@@ -273,9 +273,7 @@ function prompt_optdepends() {
                 # tab over the next line
                 echo -ne "\t"
                 select_options "Select optional dependencies to install" "${#suggested_optdeps[@]}"
-                while IFS= read -r line; do
-                    choices+=("$line")
-                done < /tmp/pacstall-select-options
+				read -ra choices < /tmp/pacstall-select-options
                 local choice_inc=0
                 for i in "${choices[@]}"; do
                     # have we gone over the maximum number in choices[@]?
