@@ -645,7 +645,7 @@ Helpful links:
             while [[ -n $2 ]]; do
                 PACKAGE=$2
                 shift
-                # shellcheck source=./misc/scripts/search.sh
+                # shellcheck source=./misc/scripts/remove.sh
                 if ! source "$STGDIR/scripts/remove.sh"; then
                     fancy_message error "Failed to remove ${GREEN}${PACKAGE}${NC}"
                 fi
