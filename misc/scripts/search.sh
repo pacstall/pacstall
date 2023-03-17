@@ -38,6 +38,7 @@ function getPath() {
 }
 
 function specifyRepo() {
+    local SPLIT
     mapfile -t SPLIT < <(echo "${1//[\/]/$'\n'}")
 
     if [[ $1 == "file://"* ]] || [[ $1 == "/"* ]] || [[ $1 == "~"* ]] || [[ $1 == "."* ]]; then
@@ -58,7 +59,7 @@ function specifyRepo() {
 # terminals that support them
 function parseRepo() {
     local REPO="${1}"
-
+    local SPLIT
     mapfile -t SPLIT < <(echo "${REPO//[\/]/$'\n'}")
 
     if [[ $REPO == *"file://"* ]]; then

@@ -27,7 +27,7 @@ if [[ ! -d "/var/log/pacstall/error_log" ]]; then
 fi
 
 # Used with permission by zakariaGatter
-declare -A ErrMsg=([1]="Unknown cause of failure."
+declare -r -A ErrMsg=([1]="Unknown cause of failure."
     [2]="Error in configuration file."
     [3]="User specified an invalid option."
     [4]="Error in user-supplied function in pacscript."
