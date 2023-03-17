@@ -225,7 +225,7 @@ function clean_builddir() {
 
 function prompt_optdepends() {
     if [[ -n $depends ]]; then
-		mapfile -d" " deps <<< "${depends}"
+		mapfile -t deps <<< "${depends// /$'\n'}"
     fi
     if [[ ${#optdepends[@]} -ne 0 ]]; then
         for i in "${optdepends[@]}"; do
@@ -263,11 +263,9 @@ function prompt_optdepends() {
         fi
         if [[ ${#suggested_optdeps[@]} -ne 0 ]]; then
             if [[ $PACSTALL_INSTALL != 0 ]]; then
-                z=1
                 for i in "${suggested_optdeps[@]}"; do
                     # print optdepends with bold package name
-                    echo -e "\t\t[${BICyan}$z${NC}] ${BOLD}${i%%:*}${NC}:${i#*:}"
-                    ((z++))
+					echo -e "\t\t[${BICyan}$((i + 1))${NC}] ${BOLD}${i%%:*}${NC}:${i#*:}"
                 done
                 unset z
                 # tab over the next line
