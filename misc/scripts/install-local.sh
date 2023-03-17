@@ -97,7 +97,7 @@ function log() {
             pBRANCH="${REPO##*/-/raw/}"
             branch="yes"
         else
-            pURL=$REPO
+            pURL="$REPO"
             branch="no"
         fi
     fi
@@ -273,7 +273,9 @@ function prompt_optdepends() {
                 # tab over the next line
                 echo -ne "\t"
                 select_options "Select optional dependencies to install" "${#suggested_optdeps[@]}"
-                choices=($(cat /tmp/pacstall-select-options))
+                while IFS= read -r line; do
+                    choices+=("$line")
+                done < /tmp/pacstall-select-options
                 local choice_inc=0
                 for i in "${choices[@]}"; do
                     # have we gone over the maximum number in choices[@]?
@@ -428,11 +430,11 @@ function makedeb() {
     deblog "Description" "${description}"
 
     for i in {removescript,postinst}; do
-        case $i in
+        case "$i" in
             removescript) export deb_post_file="postrm" ;;
             postinst) export deb_post_file="postinst" ;;
         esac
-        if [[ $(type -t $i) == function ]]; then
+        if [[ $(type -t "$i") == function ]]; then
             echo '#!/bin/bash
 set -e
 function ask() {
