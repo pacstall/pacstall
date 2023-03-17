@@ -437,9 +437,9 @@ done
 set -- "${argument_list[@]}"
 
 function lock() {
-    ignore_short="-S -D -A -V -L -Qi -T -h"
-    ignore_long="--search --download --add-repo --version --query-info --tree --help"
-    ignore="$ignore_short $ignore_long"
+    local ignore_short="-S -D -A -V -L -Qi -T -h"
+    local ignore_long="--search --download --add-repo --version --query-info --tree --help"
+    local ignore="$ignore_short $ignore_long"
     if [[ $ignore =~ (^|[[:space:]])"$1"($|[[:space:]]) ]]; then
         return 1
     elif [[ $ignore =~ (^|[[:space:]])"$2"($|[[:space:]]) ]]; then
