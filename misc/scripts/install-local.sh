@@ -273,7 +273,7 @@ function prompt_optdepends() {
                 # tab over the next line
                 echo -ne "\t"
                 select_options "Select optional dependencies to install" "${#suggested_optdeps[@]}"
-				read -ra choices < /tmp/pacstall-select-options
+                read -ra choices < /tmp/pacstall-select-options
                 local choice_inc=0
                 for i in "${choices[@]}"; do
                     # have we gone over the maximum number in choices[@]?
@@ -783,9 +783,9 @@ if [[ -n $patch ]]; then
 fi
 
 if [[ -n $PACSTALL_PAYLOAD ]]; then
-	file_name="${PACSTALL_PAYLOAD##*/}"
+    file_name="${PACSTALL_PAYLOAD##*/}"
 else
-	file_name="${url##*/}"
+    file_name="${url##*/}"
 fi
 
 if [[ $name == *-git ]]; then
