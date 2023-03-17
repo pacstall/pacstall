@@ -115,7 +115,7 @@ new_username="${new_info[0]}"
 new_branch="${new_info[1]}"
 
 # Bling Bling update ascii
-if [[ ${new_branch} != "master" ]]; then
+if [[ -n ${GIT_USER} || ${new_branch} != "master" ]]; then
     echo '
                                      ∩~-~∩
  _____               _        _ _   ξ ･×･ ξ
