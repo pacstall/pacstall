@@ -363,16 +363,20 @@ function select_options() {
             if [[ $i =~ [0-9]+-[0-9]+ ]] || [[ $i =~ [0-9]+..[0-9]+ ]]; then
                 case "$i" in
                     *-*)
-                        mapfile -t -O"${#split_arr[@]}" -d" " split_arr <<< "${i//-/ }"
+                        for line in ${i//-/ }; do
+                            split_arr+=("$line")
+                        done
                         ;;
                     *..*)
-                        mapfile -t -O"${#split_arr[@]}" -d" " split_arr <<< "${i//../ }"
+                        for line in ${i//../ }; do
+                            split_arr+=("$line")
+                        done
                         ;;
                     *)
                         select_options "$message" "$length"
                         ;;
                 esac
-                mapfile -t -O"${#split_arr[@]}" split_arr < <(seq "${split_arr[0]}" "${split_arr[1]}")
+                split_arr+=($(seq -s ' ' "${split_arr[0]}" "${split_arr[1]}"))
                 continue
             else
                 out+=("$i")
