@@ -558,6 +558,8 @@ Helpful links:
                     echo -e "$pac_body"
                     echo -e "~ Rick Pacsley ~"
                     exit 0
+                else
+                    unset pac_body pac_text
                 fi
                 if [[ ${2##*.} == "pacscript" ]]; then
                     export PACKAGE="$(basename "$2" ".pacscript")" # Removes the suffix
