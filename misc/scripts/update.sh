@@ -65,7 +65,9 @@ STGDIR="/usr/share/pacstall"
 tabs -4
 
 tty_settings=$(stty -g)
+# shellcheck disable=SC2207
 old_version=($(pacstall -V))
+# shellcheck disable=SC2207
 old_info=($(cat $STGDIR/repo/update 2> /dev/null || echo pacstall master))
 
 old_username="${old_info[0]}"
@@ -104,7 +106,9 @@ else
     echo "$USERNAME $BRANCH" | sudo tee "$STGDIR/repo/update" > /dev/null
 fi
 
+# shellcheck disable=SC2207
 new_info=($(cat $STGDIR/repo/update))
+# shellcheck disable=SC2207
 new_version=($(pacstall -V))
 
 new_username="${new_info[0]}"
