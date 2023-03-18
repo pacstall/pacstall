@@ -269,7 +269,7 @@ function check_url() {
             return 1
         fi
     else
-        http_code="$(curl --location -o /dev/null -s --head --write-out '%{http_code}\n' -- "${1}")"
+        local http_code="$(curl --location -o /dev/null -s --head --write-out '%{http_code}\n' -- "${1}")"
         case "${http_code}" in
             000)
                 if [[ ${1} == *"packagelist" ]]; then
@@ -437,9 +437,9 @@ done
 set -- "${argument_list[@]}"
 
 function lock() {
-    ignore_short="-S -D -A -V -L -Qi -T -h"
-    ignore_long="--search --download --add-repo --version --query-info --tree --help"
-    ignore="$ignore_short $ignore_long"
+    local ignore_short="-S -D -A -V -L -Qi -T -h"
+    local ignore_long="--search --download --add-repo --version --query-info --tree --help"
+    local ignore="$ignore_short $ignore_long"
     if [[ $ignore =~ (^|[[:space:]])"$1"($|[[:space:]]) ]]; then
         return 1
     elif [[ $ignore =~ (^|[[:space:]])"$2"($|[[:space:]]) ]]; then
@@ -558,6 +558,8 @@ Helpful links:
                     echo -e "$pac_body"
                     echo -e "~ Rick Pacsley ~"
                     exit 0
+                else
+                    unset pac_body pac_text
                 fi
                 if [[ ${2##*.} == "pacscript" ]]; then
                     export PACKAGE="$(basename "$2" ".pacscript")" # Removes the suffix
