@@ -318,22 +318,20 @@ function prompt_optdepends() {
         fi
     fi
 
-    if [[ -n ${deps[*]} ]]; then
-        if [[ -n ${pacdeps[*]} ]]; then
-            for i in "${pacdeps[@]}"; do
-                (
-                    source "$LOGDIR/$i"
-                    if [[ -n $_gives ]]; then
-                        echo "$_gives" | tee -a /tmp/pacstall-gives > /dev/null
-                    else
-                        echo "$_name" | tee -a /tmp/pacstall-gives > /dev/null
-                    fi
-                )
-            done
-            while IFS= read -r line; do
-                deps+=("$line")
-            done < /tmp/pacstall-gives
-        fi
+    if [[ -n ${pacdeps[*]} ]]; then
+        for i in "${pacdeps[@]}"; do
+            (
+                source "$LOGDIR/$i"
+                if [[ -n $_gives ]]; then
+                    echo "$_gives" | tee -a /tmp/pacstall-gives > /dev/null
+                else
+                    echo "$_name" | tee -a /tmp/pacstall-gives > /dev/null
+                fi
+            )
+        done
+        while IFS= read -r line; do
+            deps+=("$line")
+        done < /tmp/pacstall-gives
     fi
     if [[ -n ${deps[*]} || -n ${not_installed_yet_optdeps[*]} ]]; then
         local all_deps_to_install=("${not_installed_yet_optdeps[@]}" "${deps[@]}")
