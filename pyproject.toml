@@ -59,7 +59,7 @@ black = "^22.3"
 codespell = "^2.1.0"
 isort = "^5.10.1"
 mypy = "^0.950"
-pre-commit = "^2.18.1"
+pre-commit = "^3.2.0"
 pyupgrade = "^2.32.0"
 
 [tool.isort]
