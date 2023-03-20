@@ -581,6 +581,7 @@ export homedir
 sudo cp "${PACKAGE}.pacscript" /tmp
 pacfile=$(readlink -f "/tmp/${PACKAGE}.pacscript")
 export pacfile
+export CARCH="$(dpkg --print-architecture)"
 if ! source "${pacfile}"; then
     fancy_message error "Could not source pacscript"
     error_log 12 "install $PACKAGE"
@@ -590,7 +591,6 @@ if ! source "${pacfile}"; then
 fi
 
 full_version="${epoch+$epoch:}$version"
-export CARCH="$(dpkg --print-architecture)"
 if [[ -n ${arch[*]} ]]; then
     if ! is_compatible_arch "${arch[@]}"; then
         cleanup
