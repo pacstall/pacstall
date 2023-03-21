@@ -367,11 +367,13 @@ function select_options() {
                         for line in ${i//-/ }; do
                             split_arr+=("$line")
                         done
+                        if ((${split_arr[0]} > ${split_arr[-1]})); then select_options "$message" "$length"; fi
                         ;;
                     *..*)
                         for line in ${i//../ }; do
                             split_arr+=("$line")
                         done
+                        if ((${split_arr[0]} > ${split_arr[-1]})); then select_options "$message" "$length"; fi
                         ;;
                     *)
                         select_options "$message" "$length"
