@@ -115,7 +115,7 @@ function log() {
             echo "_ppa=(${ppa[*]})"
         fi
         if [[ -n $homepage ]]; then
-            echo "_homepage=(${homepage})"
+            echo "_homepage=\"${homepage}"\"
         fi
         if [[ $name == *-deb ]] && [[ -z $gives ]]; then
             echo "_gives=\"$(dpkg -f ./"${url##*/}" | sed -n "s/^Package: //p")"\"
