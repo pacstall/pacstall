@@ -43,7 +43,7 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset name pkgname repology epoch url depends build_depends breaks replace gives description hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch pac_functions 2> /dev/null
+    unset name pkgname repology epoch url depends build_depends breaks replace gives description hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage pac_functions 2> /dev/null
     unset -f pkgver postinst removescript preinst prepare build install 2> /dev/null
     sudo rm -f "${pacfile}"
 }
@@ -113,6 +113,9 @@ function log() {
         echo "_date=\"$(date)"\"
         if [[ -n $ppa ]]; then
             echo "_ppa=(${ppa[*]})"
+        fi
+        if [[ -n $homepage ]]; then
+            echo "_homepage=\"${homepage}"\"
         fi
         if [[ $name == *-deb ]] && [[ -z $gives ]]; then
             echo "_gives=\"$(dpkg -f ./"${url##*/}" | sed -n "s/^Package: //p")"\"
@@ -423,6 +426,10 @@ function makedeb() {
     if [[ -n $replace ]]; then
         deblog "Conflicts" "${replace//' '/', '}"
         deblog "Replace" "${replace//' '/', '}"
+    fi
+
+    if [[ -n ${homepage} ]]; then
+        deblog "Homepage" "${homepage}"
     fi
 
     deblog "Maintainer" "${maintainer:-Pacstall <pacstall@pm.me>}"
