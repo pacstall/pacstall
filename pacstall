@@ -398,7 +398,7 @@ function is_package_installed() {
         if [[ ${line} == "${input}" ]]; then
             return 0
         fi
-    done < <("$(pacstall -L)")
+    done < <(pacstall -L)
     return 1
 }
 
