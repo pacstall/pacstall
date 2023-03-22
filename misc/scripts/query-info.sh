@@ -52,6 +52,9 @@ fi
 echo -e "${BGreen}description${NORMAL}: $(get_field "$PACKAGE" Description)"
 echo -e "${BGreen}date installed${NORMAL}: $_date"
 
+if [[ -n $_homepage ]]; then
+    echo -e "${BGreen}homepage${NORMAL}: $_homepage"
+fi
 if [[ -n $_remoterepo ]]; then
     echo -e "${BGreen}remote repo${NORMAL}: $_remoterepo"
 fi
