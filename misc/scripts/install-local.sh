@@ -43,7 +43,7 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset name pkgname repology epoch url depends build_depends breaks replace gives description hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage pac_functions 2> /dev/null
+    unset name pkgname repology epoch url depends build_depends breaks replace gives description hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pac_functions 2> /dev/null
     unset -f pkgver postinst removescript preinst prepare build install 2> /dev/null
     sudo rm -f "${pacfile}"
 }
@@ -494,6 +494,24 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
         sudo chmod -x "$STOWDIR/$name/DEBIAN/$i" 1> /dev/null 2>&1
         sudo chmod 755 "$STOWDIR/$name/DEBIAN/$i" 1> /dev/null 2>&1
     done
+
+    # Handle `backup` key
+    if [[ -n ${backup[*]} ]]; then
+        for file in "${backup[@]}"; do
+            if [[ ${file:0:1} == "/" ]]; then
+                fancy_message error "'${line}' cannot have leading '/'... Skipping" && continue
+                echo "/${file}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
+            elif [[ ${file:0:3} == "!rm" ]]; then
+                local split_rm_on_upgrade
+                read -ra split_rm_on_upgrade <<< "${file}"
+                if [[ -f $STOWDIR/$name/${split_rm_on_upgrade[1]} ]]; then
+                    fancy_message error "Package contains a conffile (${split_rm_on_upgrade[1]}) that dpkg will not be able to process... Skipping" && continue
+                fi
+                echo "remove-on-upgrade /${split_rm_on_upgrade[1]}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
+                unset split_rm_on_upgrade
+            fi
+        done
+    fi
 
     deblog "Installed-Size" "$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | cut -d$'\t' -f1)"
     export install_size="$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | cut -d$'\t' -f1 | numfmt --to=iec)"
