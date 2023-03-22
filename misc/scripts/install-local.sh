@@ -515,7 +515,7 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
             if [[ ${split_rm_on_upgrade[0]} == "rm" ]]; then
                 echo "remove-on-upgrade /${split_rm_on_upgrade[1]}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
             else
-                echo "/${split_rm_on_upgrade[1]}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
+                echo "/${split_rm_on_upgrade[0]}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
             fi
 
         done
