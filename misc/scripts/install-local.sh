@@ -685,7 +685,7 @@ if ! is_package_installed "${name}"; then
 
     if [[ -n $replace ]]; then
         # Ask user if they want to replace the program
-        if [[ "$(dpkg-query -W -f='${Status}' "$replace" 2> /dev/null)" == "install ok installed" ]]; then
+        if [[ "$(dpkg-query -W -f='${Status}' "$replace" 2> /dev/null)" == "ok installed" ]]; then
             ask "This script replaces $replace. Do you want to proceed" N
             if [[ $answer -eq 0 ]]; then
                 fancy_message info "Cleaning up"
@@ -703,7 +703,7 @@ if [[ -n ${build_depends[*]} ]]; then
     # Get all uninstalled build depends
     mapfile -t build_depends <<< "${build_depends// /$'\n'}"
     for build_dep in "${build_depends[@]}"; do
-        if [[ "$(dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null)" =~ ^(install ok installed) ]]; then
+        if [[ "$(dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null)" == "install ok installed" ]]; then
             build_depends_to_delete+=("${build_dep}")
         fi
     done
