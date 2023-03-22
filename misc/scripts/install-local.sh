@@ -50,7 +50,7 @@ function cleanup() {
 
 function trap_ctrlc() {
     fancy_message warn "\nInterrupted, cleaning up"
-    if dpkg-query -W -f='${Status}' "$name" 2> /dev/null | grep -q -E "ok installed|ok unpacked"; then
+	if [[ "$(dpkg-query -W -f='${Status}\n' "$name" 2> /dev/null)" =~ ^(ok installed|ok unpacked) ]]; then
         sudo apt-get purge "${gives:-$name}" -y > /dev/null
     fi
     sudo rm -f "/etc/apt/preferences.d/${name:-$PACKAGE}-pin"
@@ -662,7 +662,7 @@ fi
 if ! pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
     if [[ -n $breaks ]]; then
         for pkg in $breaks; do
-            if dpkg-query -W -f='${Status} ${Section}' "${pkg}" 2> /dev/null | grep "^install ok installed" | grep -v "Pacstall" > /dev/null 2>&1; then
+			if [[ "$(dpkg-query -W -f='${Status} ${Section}' "${pkg}" 2> /dev/null)" =~ ^(install ok installed Pacstall) ]]; then
                 # Check if anything in breaks variable is installed already
                 fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by apt"
                 suggested_solution "Remove the apt package by running '${UCyan}sudo apt remove $pkg${NC}'"
