@@ -498,20 +498,26 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
     # Handle `backup` key
     if [[ -n ${backup[*]} ]]; then
         for file in "${backup[@]}"; do
-            if [[ ${file:0:1} == "/" ]]; then
-                fancy_message error "'${line}' cannot have leading '/'... Skipping" && continue
-                echo "/${file}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
-            elif [[ ${file:0:2} == "rm" ]]; then
-                local split_rm_on_upgrade
-                read -ra split_rm_on_upgrade <<< "${file}"
-                if [[ -f $STOWDIR/$name/${split_rm_on_upgrade[1]} ]]; then
-                    fancy_message error "Package contains a conffile (${split_rm_on_upgrade[1]}) that dpkg will not be able to process... Skipping" && continue
-                fi
-                echo "remove-on-upgrade /${split_rm_on_upgrade[1]}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
-                unset split_rm_on_upgrade
-            else
-                echo "/${file}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
+            read -ra split_rm_on_upgrade <<< "${file}"
+            # The `backup` key can only have 1 or 2 elements max
+            if ! [[ ${#split_rm_on_upgrade} =~ (1|2) ]]; then
+                fancy_message warn "'${split_rm_on_upgrade[*]}' is not a valid key... Skipping" && continue
             fi
+            if [[ ${split_rm_on_upgrade[0]} == "rm" ]]; then
+                # We can't have *just* `rm`
+                if [[ -z ${split_rm_on_upgrade[1]} ]]; then
+                    fancy_message warn "Key '${split_rm_on_upgrade[*]}' contains no path... Skipping" && continue
+                fi
+                if [[ -f $STOWDIR/$name/${split_rm_on_upgrade[1]} ]]; then
+                    fancy_message warn "Package contains a conffile (${split_rm_on_upgrade[1]}) that dpkg will not be able to process... Skipping" && continue
+                fi
+            fi
+            if [[ ${split_rm_on_upgrade[0]} == "rm" ]]; then
+                echo "remove-on-upgrade /${split_rm_on_upgrade[1]}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
+            else
+                echo "/${split_rm_on_upgrade[1]}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
+            fi
+
         done
     fi
 
