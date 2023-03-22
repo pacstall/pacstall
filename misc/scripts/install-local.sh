@@ -501,7 +501,7 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
             if [[ ${file:0:1} == "/" ]]; then
                 fancy_message error "'${line}' cannot have leading '/'... Skipping" && continue
                 echo "/${file}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
-            elif [[ ${file:0:3} == "!rm" ]]; then
+            elif [[ ${file:0:2} == "rm" ]]; then
                 local split_rm_on_upgrade
                 read -ra split_rm_on_upgrade <<< "${file}"
                 if [[ -f $STOWDIR/$name/${split_rm_on_upgrade[1]} ]]; then
