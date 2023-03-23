@@ -391,6 +391,17 @@ function select_options() {
     fi
 }
 
+# Return 0 if exists, 1 if not
+function is_package_installed() {
+    local input="${1}"
+    while read -r line; do
+        if [[ ${line} == "${input}" ]]; then
+            return 0
+        fi
+    done < <(pacstall -L)
+    return 1
+}
+
 # Error out when run as root
 if [[ $EUID -eq 0 ]]; then
     fancy_message error "Pacstall can't be run as root. Please run as a normal user."

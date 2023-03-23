@@ -50,7 +50,7 @@ function cleanup() {
 
 function trap_ctrlc() {
     fancy_message warn "\nInterrupted, cleaning up"
-    if dpkg-query -W -f='${Status}' "$name" 2> /dev/null | grep -q -E "ok installed|ok unpacked"; then
+    if [[ "$(dpkg-query -W -f='${Status}\n' "$name" 2> /dev/null)" =~ ^(install ok installed|ok unpacked) ]]; then
         sudo apt-get purge "${gives:-$name}" -y > /dev/null
     fi
     sudo rm -f "/etc/apt/preferences.d/${name:-$PACKAGE}-pin"
@@ -305,7 +305,7 @@ function prompt_optdepends() {
                         fancy_message info "Installing selected optional dependencies"
                         sudo -E apt-get install "${not_installed_yet_optdeps[@]}" -y 2> /dev/null
                     fi
-                    if pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
+                    if is_package_installed "${name}"; then
                         sudo dpkg -r --force-all "${gives:-$name}" > /dev/null
                     fi
                 else
@@ -642,7 +642,7 @@ if [[ -n $pacdeps ]]; then
         touch "/tmp/pacstall-pacdeps-$i"
 
         [[ $KEEP ]] && cmd="-KPI" || cmd="-PI"
-        if pacstall -L | grep -E "(^| )${i}( |$)" > /dev/null 2>&1; then
+        if is_package_installed "${i}"; then
             pacstall_pacdep_status="$(compare_remote_version "$i")"
             if [[ -z $UPGRADE ]] && [[ $pacstall_pacdep_status == "update" ]]; then
                 fancy_message info "Found newer version for $i pacdep"
@@ -666,10 +666,10 @@ if [[ -n $pacdeps ]]; then
     done
 fi
 
-if ! pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
+if ! is_package_installed "${name}"; then
     if [[ -n $breaks ]]; then
         for pkg in $breaks; do
-            if dpkg-query -W -f='${Status} ${Section}' "${pkg}" 2> /dev/null | grep "^install ok installed" | grep -v "Pacstall" > /dev/null 2>&1; then
+            if [[ "$(dpkg-query -W -f='${Status} ${Section}' "${pkg}" 2> /dev/null)" =~ ^(install ok installed Pacstall) ]]; then
                 # Check if anything in breaks variable is installed already
                 fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by apt"
                 suggested_solution "Remove the apt package by running '${UCyan}sudo apt remove $pkg${NC}'"
@@ -678,7 +678,7 @@ if ! pacstall -L | grep -E "(^| )${name}( |$)" > /dev/null 2>&1; then
                 cleanup
                 return 1
             fi
-            if [[ ${pkg} != "${name}" ]] && pacstall -L | grep -E "(^| )${pkg}( |$)" > /dev/null 2>&1; then
+            if [[ ${pkg} != "${name}" ]] && is_package_installed "${pkg}"; then
                 # Same thing, but check if anything is installed with pacstall
                 fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by pacstall"
                 suggested_solution "Remove the pacstall package by running '${UCyan}pacstall -R $pkg${NC}'"

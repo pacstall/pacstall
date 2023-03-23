@@ -49,7 +49,6 @@ function suggested_solution() {
 
 sudo mkdir -p "/var/log/pacstall/metadata"
 sudo mkdir -p "/var/log/pacstall/error_log"
-find /var/log/pacstall/* -maxdepth 1 | grep -v metadata | grep -v error_log | xargs -I{} sudo mv {} /var/log/pacstall/metadata
 sudo chown "$PACSTALL_USER" -R /var/log/pacstall/error_log
 
 sudo mkdir -p "/tmp/pacstall"
