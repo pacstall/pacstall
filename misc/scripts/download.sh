@@ -40,7 +40,7 @@ if check_url "${URL}"; then
 
     case "$URL" in
         *.pacscript | *packagelist)
-            FILE=$(basename "$URL")
+            FILE="${URL##*/}"
             if ! curl --location -s -- "$URL" > "$FILE"; then
                 error_log 1 "download $PACKAGE"
                 fancy_message error "Could not download ${URL}"
