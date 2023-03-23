@@ -517,7 +517,6 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
             else
                 echo "/${split_rm_on_upgrade[0]}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
             fi
-
         done
     fi
 
