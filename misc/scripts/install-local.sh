@@ -500,10 +500,10 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
         for file in "${backup[@]}"; do
             read -ra split_rm_on_upgrade <<< "${file}"
             # The `backup` key can only have 1 or 2 elements max
-            if ! [[ ${#split_rm_on_upgrade} =~ (1|2) ]]; then
+            if ! [[ ${#split_rm_on_upgrade[@]} =~ (1|2) ]]; then
                 fancy_message warn "'${split_rm_on_upgrade[*]}' is not a valid key... Skipping" && continue
             fi
-            if [[ ${split_rm_on_upgrade[0]} == "rm" ]]; then
+            if [[ ${split_rm_on_upgrade[0]} == "!r" ]]; then
                 # We can't have *just* `rm`
                 if [[ -z ${split_rm_on_upgrade[1]} ]]; then
                     fancy_message warn "Key '${split_rm_on_upgrade[*]}' contains no path... Skipping" && continue
@@ -515,7 +515,7 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
                     fancy_message warn "Package contains a conffile (${split_rm_on_upgrade[1]}) that dpkg will not be able to process... Skipping" && continue
                 fi
             fi
-            if [[ ${split_rm_on_upgrade[0]} == "rm" ]]; then
+            if [[ ${split_rm_on_upgrade[0]} == "!r" ]]; then
                 echo "remove-on-upgrade /${split_rm_on_upgrade[1]}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
             else
                 if [[ ${split_rm_on_upgrade[0]:0:1} == "/" ]]; then
