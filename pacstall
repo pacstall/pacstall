@@ -564,7 +564,8 @@ Helpful links:
                     unset pac_body pac_text
                 fi
                 if [[ ${2##*.} == "pacscript" ]]; then
-                    export PACKAGE="$(basename "$2" ".pacscript")" # Removes the suffix
+                    export PACKAGE="${2%.pacscript}"
+                    PACKAGE="${PACKAGE##*/}"
                     export type="install"
                     export local="yes"
                     PKGPATH="$(dirname "$2")"
