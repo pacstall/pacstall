@@ -508,6 +508,9 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
                 if [[ -z ${split_rm_on_upgrade[1]} ]]; then
                     fancy_message warn "Key '${split_rm_on_upgrade[*]}' contains no path... Skipping" && continue
                 fi
+                if [[ ${split_rm_on_upgrade[1]:0:1} == "/" ]]; then
+                    fancy_message warn "'${split_rm_on_upgrade[1]}' cannot contain a leading '/'... Skipping" && continue
+                fi
                 if [[ -f $STOWDIR/$name/${split_rm_on_upgrade[1]} ]]; then
                     fancy_message warn "Package contains a conffile (${split_rm_on_upgrade[1]}) that dpkg will not be able to process... Skipping" && continue
                 fi
@@ -515,6 +518,9 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
             if [[ ${split_rm_on_upgrade[0]} == "rm" ]]; then
                 echo "remove-on-upgrade /${split_rm_on_upgrade[1]}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
             else
+                if [[ ${split_rm_on_upgrade[0]:0:1} == "/" ]]; then
+                    fancy_message warn "'${split_rm_on_upgrade[1]}' cannot contain a leading '/'... Skipping" && continue
+                fi
                 echo "/${split_rm_on_upgrade[0]}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
             fi
         done
