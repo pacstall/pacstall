@@ -508,7 +508,7 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
                     fancy_message warn "'${file}' cannot contain empty path... Skipping" && continue
                 fi
                 # `r:/usr/share/pac.conf`
-                if [[ ${file:3:1} == "/" ]]; then
+                if [[ ${file:2:1} == "/" ]]; then
                     fancy_message warn "'${file}' cannot contain path starting with '/'... Skipping" && continue
                 fi
                 if [[ -f "$STOWDIR/$name/${file:2}" ]]; then
