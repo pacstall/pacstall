@@ -439,7 +439,7 @@ function makedeb() {
     while IFS=$'\n' read -r line; do
         if [[ -z ${line} ]]; then
             # Description states that empty lines must contain a single period after the period.
-            local description+=(".")
+            local description_arr+=(".")
         else
             local description_arr+=("$line")
         fi
@@ -452,7 +452,6 @@ function makedeb() {
             done
         )"
     else
-        # shellcheck disable=SC2128
         deblog "Description" "${description}"
     fi
 
