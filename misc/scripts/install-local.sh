@@ -498,30 +498,28 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
     # Handle `backup` key
     if [[ -n ${backup[*]} ]]; then
         for file in "${backup[@]}"; do
-            read -ra split_rm_on_upgrade <<< "${file}"
-            # The `backup` key can only have 1 or 2 elements max
-            if ! [[ ${#split_rm_on_upgrade[@]} =~ (1|2) ]]; then
-                fancy_message warn "'${split_rm_on_upgrade[*]}' is not a valid key... Skipping" && continue
+            if [[ -z ${file} ]]; then
+                fancy_message warn "Empty key... Skipping" && continue
             fi
-            if [[ ${split_rm_on_upgrade[0]} == "!r" ]]; then
-                # We can't have *just* `rm`
-                if [[ -z ${split_rm_on_upgrade[1]} ]]; then
-                    fancy_message warn "Key '${split_rm_on_upgrade[*]}' contains no path... Skipping" && continue
+            # `r:usr/share/pac.conf`
+            if [[ ${file:0:2} == "r:" ]]; then
+                # `r:`
+                if [[ -z ${file:2} ]]; then
+                    fancy_message warn "'${file}' cannot contain empty path... Skipping" && continue
                 fi
-                if [[ ${split_rm_on_upgrade[1]:0:1} == "/" ]]; then
-                    fancy_message warn "'${split_rm_on_upgrade[1]}' cannot contain a leading '/'... Skipping" && continue
+                # `r:/usr/share/pac.conf`
+                if [[ ${file:3:1} == "/" ]]; then
+                    fancy_message warn "'${file}' cannot contain path starting with '/'... Skipping" && continue
                 fi
-                if [[ -f $STOWDIR/$name/${split_rm_on_upgrade[1]} ]]; then
-                    fancy_message warn "Package contains a conffile (${split_rm_on_upgrade[1]}) that dpkg will not be able to process... Skipping" && continue
+                if [[ -f "$STOWDIR/$name/${file:2}" ]]; then
+                    fancy_message warn "'${file}' is inside the package... Skipping" && continue
                 fi
-            fi
-            if [[ ${split_rm_on_upgrade[0]} == "!r" ]]; then
-                echo "remove-on-upgrade /${split_rm_on_upgrade[1]}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
+                echo "remove-on-upgrade /${file:2}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
             else
-                if [[ ${split_rm_on_upgrade[0]:0:1} == "/" ]]; then
-                    fancy_message warn "'${split_rm_on_upgrade[1]}' cannot contain a leading '/'... Skipping" && continue
+                if [[ ${file:0:1} == "/" ]]; then
+                    fancy_message warn "'${file}' cannot contain path starting with '/'... Skipping" && continue
                 fi
-                echo "/${split_rm_on_upgrade[0]}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
+                echo "/${file}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
             fi
         done
     fi
