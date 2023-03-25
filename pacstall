@@ -337,9 +337,9 @@ function select_options() {
     local length="${2}"
 
     if [[ $length -ge 6 ]]; then
-        echo -ne "${message} [${BOLD}1..$length${NC}] [${BIGreen}Y${NC}/${RED}n${NC}] "
+		echo -ne "${message} [${BOLD}1-$length${NC} or ${BIGreen}Y${NC}] "
     else
-        echo -ne "${message} [${BOLD}$(seq -s ' ' 1 "$length")${NC}] [${BIGreen}Y${NC}/${RED}n${NC}] "
+		echo -ne "${message} [${BOLD}$(seq -s ' ' 1 "$length")${NC} or ${BIGreen}Y${NC}] "
     fi
     if [[ $DISABLE_PROMPTS == "no" ]]; then
         read -ra input <&0
