@@ -217,8 +217,9 @@ function is_compatible_arch() {
 
 function deblog() {
     local key="$1"
-    local content="$2"
-    echo "$key: $content" | sudo tee -a "$STOWDIR/$name/DEBIAN/control" > /dev/null
+    shift
+    local content=("$@")
+    echo "$key: ${content[*]}" | sudo tee -a "$STOWDIR/$name/DEBIAN/control" > /dev/null
 }
 
 function clean_builddir() {
@@ -433,7 +434,26 @@ function makedeb() {
     fi
 
     deblog "Maintainer" "${maintainer:-Pacstall <pacstall@pm.me>}"
-    deblog "Description" "${description}"
+
+    # Do we have a long description? (longer than 2 lines)
+    while IFS=$'\n' read -r line; do
+        if [[ -z ${line} ]]; then
+            # Description states that empty lines must contain a single period after the period.
+            local description_arr+=(".")
+        else
+            local description_arr+=("$line")
+        fi
+    done <<< "${description}"
+    if ((${#description_arr[@]} > 1)); then
+        deblog "Description" "$(
+            echo "${description_arr[0]}"
+            for ((i = 1; i < "${#description_arr[@]}"; i++)); do
+                echo -e " ${description_arr[i]}"
+            done
+        )"
+    else
+        deblog "Description" "${description}"
+    fi
 
     for i in {removescript,postinst,preinst}; do
         case "$i" in
