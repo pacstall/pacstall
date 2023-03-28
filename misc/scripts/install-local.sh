@@ -43,7 +43,7 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset name pkgname repology epoch url depends build_depends breaks replace gives description hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage pac_functions 2> /dev/null
+    unset name pkgname repology epoch url depends build_depends breaks replace gives description hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pac_functions 2> /dev/null
     unset -f pkgver postinst removescript preinst prepare build install 2> /dev/null
     sudo rm -f "${pacfile}"
 }
@@ -514,6 +514,35 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
         sudo chmod -x "$STOWDIR/$name/DEBIAN/$i" 1> /dev/null 2>&1
         sudo chmod 755 "$STOWDIR/$name/DEBIAN/$i" 1> /dev/null 2>&1
     done
+
+    # Handle `backup` key
+    if [[ -n ${backup[*]} ]]; then
+        for file in "${backup[@]}"; do
+            if [[ -z ${file} ]]; then
+                fancy_message warn "Empty key... Skipping" && continue
+            fi
+            # `r:usr/share/pac.conf`
+            if [[ ${file:0:2} == "r:" ]]; then
+                # `r:`
+                if [[ -z ${file:2} ]]; then
+                    fancy_message warn "'${file}' cannot contain empty path... Skipping" && continue
+                fi
+                # `r:/usr/share/pac.conf`
+                if [[ ${file:2:1} == "/" ]]; then
+                    fancy_message warn "'${file}' cannot contain path starting with '/'... Skipping" && continue
+                fi
+                if [[ -f "$STOWDIR/$name/${file:2}" ]]; then
+                    fancy_message warn "'${file}' is inside the package... Skipping" && continue
+                fi
+                echo "remove-on-upgrade /${file:2}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
+            else
+                if [[ ${file:0:1} == "/" ]]; then
+                    fancy_message warn "'${file}' cannot contain path starting with '/'... Skipping" && continue
+                fi
+                echo "/${file}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
+            fi
+        done
+    fi
 
     deblog "Installed-Size" "$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | cut -d$'\t' -f1)"
     export install_size="$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | cut -d$'\t' -f1 | numfmt --to=iec)"
