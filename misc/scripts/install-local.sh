@@ -270,6 +270,7 @@ function prompt_optdepends() {
         if [[ ${#suggested_optdeps[@]} -ne 0 ]]; then
             if [[ $PACSTALL_INSTALL != 0 ]]; then
                 z=1
+				echo -e "\t\t[${BIRed}0${NC}] Select none"
                 for i in "${suggested_optdeps[@]}"; do
                     # print optdepends with bold package name
                     echo -e "\t\t[${BICyan}$z${NC}] ${BOLD}${i%%:*}${NC}:${i#*:}"
@@ -293,7 +294,7 @@ function prompt_optdepends() {
                     fancy_message warn "${BGreen}${skip_opt[*]}${NC} has exceeded the maximum number of optional dependencies. Skipping"
                 fi
 
-                if [[ ${choices[0]} != "n" ]]; then
+                if [[ ${choices[0]} != "n" && ${choices[0]} != "0" ]]; then
                     for i in "${choices[@]}"; do
                         ((i--))
                         local s="${suggested_optdeps[$i]}"
