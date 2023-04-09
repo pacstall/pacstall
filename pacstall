@@ -300,7 +300,11 @@ function check_url() {
 
 # use axel if available
 function download() {
-    sudo rm -f "${1##*/}"
+    if [[ -n ${PACSTALL_PAYLOAD} ]]; then
+        return
+    else
+        sudo rm -f "${1##*/}"
+    fi
     if [[ -z $PACSTALL_DOWNLOADER ]]; then
         if command -v axel &> /dev/null; then
             PACSTALL_DOWNLOADER=axel
