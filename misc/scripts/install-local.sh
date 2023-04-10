@@ -861,7 +861,7 @@ if [[ $name == *-git ]]; then
     # Check the integrity
     git fsck --full
 else
-    case "$url" in
+    case "${url,,}" in
         *.zip)
             if ! download "$url"; then
                 error_log 1 "download $PACKAGE"
@@ -925,7 +925,7 @@ else
                 return 1
             fi
             ;;
-        *.AppImage)
+        *.appimage)
             if ! download "$url"; then
                 error_log 1 "download $PACKAGE"
                 fancy_message error "Failed to download package"
