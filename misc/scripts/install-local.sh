@@ -228,6 +228,7 @@ function clean_builddir() {
 }
 
 function prompt_optdepends() {
+    local deps optdep
     if [[ -n $depends ]]; then
         if is_array depends; then
             deps=("${depends[@]}")
