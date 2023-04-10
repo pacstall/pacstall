@@ -229,7 +229,7 @@ function clean_builddir() {
 
 function prompt_optdepends() {
     if [[ -n $depends ]]; then
-        if is_array "${depends}"; then
+        if is_array depends; then
             deps=("${depends[@]}")
         else
             mapfile -t deps <<< "${depends// /$'\n'}"
