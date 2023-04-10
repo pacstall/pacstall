@@ -233,6 +233,7 @@ function prompt_optdepends() {
             deps=("${depends[@]}")
         else
             mapfile -t deps <<< "${depends// /$'\n'}"
+            fancy_message warn "Using '${BCyan}depends${NC}' as a variable instead of array is deprecated"
         fi
     fi
     if [[ ${#optdepends[@]} -ne 0 ]]; then
@@ -724,6 +725,7 @@ if ! is_package_installed "${name}"; then
     if [[ -n $breaks ]]; then
         if ! is_array breaks; then
             mapfile -t breaks <<< "${breaks// /$'\n'}"
+            fancy_message warn "Using '${BCyan}breaks${NC}' as a variable instead of array is deprecated"
         fi
         for pkg in "${breaks[@]}"; do
             if [[ "$(dpkg-query -W -f='${Status} ${Section}' "${pkg}" 2> /dev/null)" =~ ^(install ok installed Pacstall) ]]; then
@@ -767,6 +769,7 @@ if [[ -n ${build_depends[*]} ]]; then
     # Get all uninstalled build depends
     if ! is_array build_depends; then
         mapfile -t build_depends <<< "${build_depends// /$'\n'}"
+        fancy_message warn "Using '${BCyan}build_depends${NC}' as a variable instead of array is deprecated"
     fi
     for build_dep in "${build_depends[@]}"; do
         if [[ "$(dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null)" == "install ok installed" ]]; then
