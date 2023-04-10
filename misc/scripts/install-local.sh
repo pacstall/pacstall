@@ -762,7 +762,9 @@ fi
 
 if [[ -n ${build_depends[*]} ]]; then
     # Get all uninstalled build depends
-    mapfile -t build_depends <<< "${build_depends// /$'\n'}"
+    if ! is_array build_depends; then
+        mapfile -t build_depends <<< "${build_depends// /$'\n'}"
+    fi
     for build_dep in "${build_depends[@]}"; do
         if [[ "$(dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null)" == "install ok installed" ]]; then
             build_depends_to_delete+=("${build_dep}")
