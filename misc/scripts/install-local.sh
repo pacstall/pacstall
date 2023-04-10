@@ -722,7 +722,10 @@ fi
 
 if ! is_package_installed "${name}"; then
     if [[ -n $breaks ]]; then
-        for pkg in $breaks; do
+        if ! is_array breaks; then
+            mapfile -t breaks <<< "${breaks// /$'\n'}"
+        fi
+        for pkg in "${breaks[@]}"; do
             if [[ "$(dpkg-query -W -f='${Status} ${Section}' "${pkg}" 2> /dev/null)" =~ ^(install ok installed Pacstall) ]]; then
                 # Check if anything in breaks variable is installed already
                 fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by apt"
