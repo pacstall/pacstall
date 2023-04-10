@@ -229,7 +229,11 @@ function clean_builddir() {
 
 function prompt_optdepends() {
     if [[ -n $depends ]]; then
-        mapfile -t deps <<< "${depends// /$'\n'}"
+        if is_array "${depends}"; then
+            deps=("${depends[@]}")
+        else
+            mapfile -t deps <<< "${depends// /$'\n'}"
+        fi
     fi
     if [[ ${#optdepends[@]} -ne 0 ]]; then
         for i in "${optdepends[@]}"; do
@@ -270,7 +274,7 @@ function prompt_optdepends() {
         if [[ ${#suggested_optdeps[@]} -ne 0 ]]; then
             if [[ $PACSTALL_INSTALL != 0 ]]; then
                 z=1
-				echo -e "\t\t[${BIRed}0${NC}] Select none"
+                echo -e "\t\t[${BIRed}0${NC}] Select none"
                 for i in "${suggested_optdeps[@]}"; do
                     # print optdepends with bold package name
                     echo -e "\t\t[${BICyan}$z${NC}] ${BOLD}${i%%:*}${NC}:${i#*:}"

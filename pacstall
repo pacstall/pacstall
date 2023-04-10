@@ -404,6 +404,17 @@ function is_package_installed() {
     return 1
 }
 
+function is_array() {
+    local input raw
+    input="${1}"
+    raw="$(declare -p "${input}" 2> /dev/null)"
+    if [[ ${raw} == "declare -a ${input}"* ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 # Error out when run as root
 if [[ $EUID -eq 0 ]]; then
     fancy_message error "Pacstall can't be run as root. Please run as a normal user."
