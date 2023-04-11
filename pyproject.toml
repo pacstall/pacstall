@@ -49,7 +49,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-httpx = "^0.23.0"
+httpx = "^0.24.0"
 rich = "^12.4.4"
 typer = "^0.4.1"
 shellingham = "^1.4.0"
