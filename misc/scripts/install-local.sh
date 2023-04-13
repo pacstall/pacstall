@@ -228,8 +228,14 @@ function clean_builddir() {
 }
 
 function prompt_optdepends() {
+    local deps optdep
     if [[ -n $depends ]]; then
-        mapfile -t deps <<< "${depends// /$'\n'}"
+        if is_array depends; then
+            deps=("${depends[@]}")
+        else
+            mapfile -t deps <<< "${depends// /$'\n'}"
+            fancy_message warn "Using '${BCyan}depends${NC}' as a variable instead of array is deprecated"
+        fi
     fi
     if [[ ${#optdepends[@]} -ne 0 ]]; then
         for i in "${optdepends[@]}"; do
@@ -270,7 +276,7 @@ function prompt_optdepends() {
         if [[ ${#suggested_optdeps[@]} -ne 0 ]]; then
             if [[ $PACSTALL_INSTALL != 0 ]]; then
                 z=1
-				echo -e "\t\t[${BIRed}0${NC}] Select none"
+                echo -e "\t\t[${BIRed}0${NC}] Select none"
                 for i in "${suggested_optdeps[@]}"; do
                     # print optdepends with bold package name
                     echo -e "\t\t[${BICyan}$z${NC}] ${BOLD}${i%%:*}${NC}:${i#*:}"
@@ -718,7 +724,11 @@ fi
 
 if ! is_package_installed "${name}"; then
     if [[ -n $breaks ]]; then
-        for pkg in $breaks; do
+        if ! is_array breaks; then
+            mapfile -t breaks <<< "${breaks// /$'\n'}"
+            fancy_message warn "Using '${BCyan}breaks${NC}' as a variable instead of array is deprecated"
+        fi
+        for pkg in "${breaks[@]}"; do
             if [[ "$(dpkg-query -W -f='${Status} ${Section}' "${pkg}" 2> /dev/null)" =~ ^(install ok installed Pacstall) ]]; then
                 # Check if anything in breaks variable is installed already
                 fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by apt"
@@ -758,7 +768,10 @@ fi
 
 if [[ -n ${build_depends[*]} ]]; then
     # Get all uninstalled build depends
-    mapfile -t build_depends <<< "${build_depends// /$'\n'}"
+    if ! is_array build_depends; then
+        mapfile -t build_depends <<< "${build_depends// /$'\n'}"
+        fancy_message warn "Using '${BCyan}build_depends${NC}' as a variable instead of array is deprecated"
+    fi
     for build_dep in "${build_depends[@]}"; do
         if [[ "$(dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null)" == "install ok installed" ]]; then
             build_depends_to_delete+=("${build_dep}")
