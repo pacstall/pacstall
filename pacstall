@@ -416,7 +416,7 @@ function is_array() {
 }
 
 # Error out when run as root
-if [[ $EUID -eq 0 ]]; then
+if ((EUID == 0)); then
     fancy_message error "Pacstall can't be run as root. Please run as a normal user."
     exit 1
 fi

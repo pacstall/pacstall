@@ -617,7 +617,7 @@ if [[ -n $PACSTALL_BUILD_CORES ]]; then
 fi
 
 ask "(${BPurple}$PACKAGE${NC}) Do you want to view/edit the pacscript" N
-if [[ $answer -eq 1 ]]; then
+if ((answer == 1)); then
     (
         if [[ -n $PACSTALL_EDITOR ]]; then
             $PACSTALL_EDITOR "$PACKAGE".pacscript
@@ -754,7 +754,7 @@ if ! is_package_installed "${name}"; then
         # Ask user if they want to replace the program
         if [[ "$(dpkg-query -W -f='${Status}' "$replace" 2> /dev/null)" == "ok installed" ]]; then
             ask "This script replaces $replace. Do you want to proceed" N
-            if [[ $answer -eq 0 ]]; then
+            if ((answer == 0)); then
                 fancy_message info "Cleaning up"
                 cleanup
                 return 1
@@ -789,7 +789,7 @@ if [[ -n ${build_depends[*]} ]]; then
     if [[ ${#build_depends[@]} -ne 0 ]]; then
         fancy_message info "${BLUE}$name${NC} requires ${CYAN}${build_depends[*]}${NC} to install"
         ask "Do you want to remove them after installing ${BLUE}$name${NC}" N
-        if [[ $answer -eq 0 ]]; then
+        if ((answer == 0)); then
             NOBUILDDEP=0
         else
             NOBUILDDEP=1
@@ -1031,7 +1031,7 @@ fi
 
 trap - ERR
 
-if [[ $NOBUILDDEP -eq 1 ]]; then
+if ((NOBUILDDEP == 1)); then
     fancy_message info "Purging build dependencies"
     # shellcheck disable=2086
     sudo apt-get purge --auto-remove -y "${build_depends[@]}"
