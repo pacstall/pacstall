@@ -48,12 +48,12 @@ _pacstall() {
             ;;
 
         -?(P)R?(P) | --remove)
-            COMPREPLY=($(compgen -W "$(ls -1aA /var/log/pacstall/metadata)" -- $cur))
+            COMPREPLY=($(compgen -W "$(command ls -1aA /var/log/pacstall/metadata)" -- $cur))
             return
             ;;
 
         -?(P)Qi?(P) | --query-info)
-            COMPREPLY=($(compgen -W "$(ls -1aAp /var/log/pacstall/metadata)" -- $cur))
+            COMPREPLY=($(compgen -W "$(command ls -1aAp /var/log/pacstall/metadata)" -- $cur))
             return
             ;;
 
@@ -68,7 +68,7 @@ _pacstall() {
             ;;
 
         -T | --tree)
-            COMPREPLY=($(compgen -W "$(ls -1aAp /var/log/pacstall/metadata)" -- $cur))
+            COMPREPLY=($(compgen -W "$(command ls -1aAp /var/log/pacstall/metadata)" -- $cur))
             return
             ;;
     esac
