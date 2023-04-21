@@ -488,7 +488,7 @@ while lock $1 $2 $3 $4; do
     sleep 1
 done
 
-if [[ -n $PACSTALL_PAYLOAD ]]; then
+if [[ -n $PACSTALL_PAYLOAD && ! -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
     export PACSTALL_DOWNLOADER="payload"
 
     if [[ ! -f $PACSTALL_PAYLOAD ]]; then
