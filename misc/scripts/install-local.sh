@@ -309,7 +309,7 @@ function prompt_optdepends() {
                     if [[ -n ${not_installed_yet_optdeps[*]} ]]; then
                         fancy_message info "Selecting packages ${BCyan}${not_installed_yet_optdeps[*]}${NC}"
                         local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${suggested_optdeps[@]}")
-                        deblog "Suggests" "$(echo "${final_merged_deps[@]//: */}" | sed 's/ /, /g')"
+                        deblog "Suggests" "$(sed 's/ /, /g' <<< "${final_merged_deps[@]//: */}")"
                         fancy_message info "Installing selected optional dependencies"
                         sudo -E apt-get install "${not_installed_yet_optdeps[@]}" -y 2> /dev/null
                     fi
@@ -318,13 +318,13 @@ function prompt_optdepends() {
                     fi
                 else
                     local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${suggested_optdeps[@]}")
-                    deblog "Suggests" "$(echo "${final_merged_deps[@]//: */}" | sed 's/ /, /g')"
+                    deblog "Suggests" "$(sed 's/ /, /g' <<< "${final_merged_deps[@]//: */}")"
                 fi
             else # If `-B` is being used
                 for pkg in "${optdepends[@]}"; do
                     local B_suggests+=("${pkg%%: *}")
                 done
-                deblog "Suggests" "$(echo "${B_suggests[@]//: */}" | sed 's/ /, /g')"
+                deblog "Suggests" "$(sed 's/ /, /g' <<< "${B_suggests[@]//: */}")"
             fi
         fi
     fi
@@ -346,7 +346,7 @@ function prompt_optdepends() {
     fi
     if [[ -n ${deps[*]} || -n ${not_installed_yet_optdeps[*]} ]]; then
         local all_deps_to_install=("${not_installed_yet_optdeps[@]}" "${deps[@]}")
-        deblog "Depends" "$(echo "${all_deps_to_install[@]}" | sed 's/ /, /g')"
+        deblog "Depends" "$(sed 's/ /, /g' <<< "${all_deps_to_install[@]}")"
     fi
 }
 
@@ -428,12 +428,12 @@ function makedeb() {
     deblog "Priority" "optional"
 
     if [[ -n ${provides[*]} ]]; then
-        deblog "Provides" "$(echo "${provides[@]}" | sed 's/ /, /g')"
+        deblog "Provides" "$(sed 's/ /, /g' <<< "${provides[@]}")"
     fi
 
     if [[ -n $replace ]]; then
-        deblog "Conflicts" "$(echo "${replace[@]}" | sed 's/ /, /g')"
-        deblog "Replace" "$(echo "${replace[@]}" | sed 's/ /, /g')"
+        deblog "Conflicts" "$(sed 's/ /, /g' <<< "${replace[@]}")"
+        deblog "Replace" "$(sed 's/ /, /g' <<< "${replace[@]}")"
     fi
 
     if [[ -n ${homepage} ]]; then
