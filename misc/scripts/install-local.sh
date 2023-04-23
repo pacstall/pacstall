@@ -432,8 +432,8 @@ function makedeb() {
     fi
 
     if [[ -n $replace ]]; then
-        deblog "Conflicts" "${replace//' '/', '}"
-        deblog "Replace" "${replace//' '/', '}"
+        deblog "Conflicts" "$(echo "${replace[@]}" | sed 's/ /, /g')"
+        deblog "Replace" "$(echo "${replace[@]}" | sed 's/ /, /g')"
     fi
 
     if [[ -n ${homepage} ]]; then
@@ -750,19 +750,23 @@ if ! is_package_installed "${name}"; then
         done
     fi
 
-    if [[ -n $replace ]]; then
-        # Ask user if they want to replace the program
-        if [[ "$(dpkg-query -W -f='${Status}' "$replace" 2> /dev/null)" == "ok installed" ]]; then
-            ask "This script replaces $replace. Do you want to proceed" N
-            if ((answer == 0)); then
-                fancy_message info "Cleaning up"
-                cleanup
-                return 1
-            fi
-            mapfile -t replaces_tmp <<< "${replace// /$'\n'}"
-            sudo apt-get remove -y "${replaces_tmp[@]}"
-            unset replaces_tmp
+    if [[ -n ${replace[*]} ]]; then
+        if ! is_array replace; then
+            mapfile -t replace <<< "${replace// /$'\n'}"
+            fancy_message warn "Using '${BCyan}replace${NC}' as a variable instead of array is deprecated"
         fi
+        # Ask user if they want to replace the program
+        for pkg in "${replace[@]}"; do
+            if [[ "$(dpkg-query -W -f='${Status}' "${pkg}" 2> /dev/null)" == "ok installed" ]]; then
+                ask "This script replaces ${pkg}. Do you want to proceed" N
+                if ((answer == 0)); then
+                    fancy_message info "Cleaning up"
+                    cleanup
+                    return 1
+                fi
+                sudo apt-get remove -y "${pkg}"
+            fi
+        done
     fi
 fi
 
