@@ -1030,7 +1030,6 @@ trap - ERR
 
 if ((NOBUILDDEP == 1)); then
     fancy_message info "Purging build dependencies"
-    # shellcheck disable=2086
     sudo apt-get purge --auto-remove -y "${not_installed_yet_builddepends[@]}"
 fi
 
