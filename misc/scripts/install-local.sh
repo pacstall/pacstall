@@ -777,21 +777,14 @@ if [[ -n ${build_depends[*]} ]]; then
         fancy_message warn "Using '${BCyan}build_depends${NC}' as a variable instead of array is deprecated"
     fi
     for build_dep in "${build_depends[@]}"; do
-        if [[ "$(dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null)" == "install ok installed" ]]; then
-            export build_depends_to_delete+=("${build_dep}")
+        if [[ "$(dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null)" != "install ok installed" ]]; then
+			# If not installed yet, we can mark it as possibly removable
+            not_installed_yet_builddepends+=("${build_dep}")
         fi
     done
 
-    for target in "${build_depends_to_delete[@]}"; do
-        for i in "${!build_depends[@]}"; do
-            if [[ ${build_depends[i]} == "$target" ]]; then
-                unset 'build_depends[i]'
-            fi
-        done
-    done
-
     if [[ ${#build_depends[@]} -ne 0 ]]; then
-        fancy_message info "${BLUE}$name${NC} requires ${CYAN}${build_depends[*]}${NC} to install"
+        fancy_message info "${BLUE}$name${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to install"
         ask "Do you want to remove them after installing ${BLUE}$name${NC}" N
         if ((answer == 0)); then
             NOBUILDDEP=0
@@ -799,7 +792,7 @@ if [[ -n ${build_depends[*]} ]]; then
             NOBUILDDEP=1
         fi
 
-        if ! sudo apt-get install -y "${build_depends[@]}"; then
+        if ! sudo apt-get install -y "${not_installed_yet_builddepends[@]}"; then
             fancy_message error "Failed to install build dependencies"
             error_log 8 "install $PACKAGE"
             fancy_message info "Cleaning up"
@@ -1038,7 +1031,7 @@ trap - ERR
 if ((NOBUILDDEP == 1)); then
     fancy_message info "Purging build dependencies"
     # shellcheck disable=2086
-    sudo apt-get purge --auto-remove -y "${build_depends_to_delete[@]}"
+    sudo apt-get purge --auto-remove -y "${not_installed_yet_builddepends[@]}"
 fi
 
 cd "$HOME" 2> /dev/null || (
