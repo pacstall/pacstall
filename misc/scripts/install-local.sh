@@ -778,7 +778,7 @@ if [[ -n ${build_depends[*]} ]]; then
     fi
     for build_dep in "${build_depends[@]}"; do
         if [[ "$(dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null)" == "install ok installed" ]]; then
-            build_depends_to_delete+=("${build_dep}")
+            export build_depends_to_delete+=("${build_dep}")
         fi
     done
 
@@ -1038,7 +1038,7 @@ trap - ERR
 if ((NOBUILDDEP == 1)); then
     fancy_message info "Purging build dependencies"
     # shellcheck disable=2086
-    sudo apt-get purge --auto-remove -y "${build_depends[@]}"
+    sudo apt-get purge --auto-remove -y "${build_depends_to_delete[@]}"
 fi
 
 cd "$HOME" 2> /dev/null || (
