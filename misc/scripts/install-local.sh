@@ -50,7 +50,7 @@ function cleanup() {
 
 function trap_ctrlc() {
     fancy_message warn "\nInterrupted, cleaning up"
-    if [[ "$(dpkg-query -W -f='${Status}\n' "$name" 2> /dev/null)" =~ ^(install ok installed|ok unpacked) ]]; then
+    if dpkg -s "${name}" 2> /dev/null 1>&2; then
         sudo apt-get purge "${gives:-$name}" -y > /dev/null
     fi
     sudo rm -f "/etc/apt/preferences.d/${name:-$PACKAGE}-pin"
@@ -259,7 +259,7 @@ function prompt_optdepends() {
             fi
             # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
             # If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of it's status
-            if [[ "$(dpkg-query -W -f='${Status}' "${opt}" 2> /dev/null)" != "install ok installed" ]]; then
+            if ! dpkg -s "${opt}" 2> /dev/null 1>&2; then
                 suggested_optdeps+=("${optdep}")
             else
                 already_installed_optdeps+=("${opt}")
@@ -729,7 +729,7 @@ if ! is_package_installed "${name}"; then
             fancy_message warn "Using '${BCyan}breaks${NC}' as a variable instead of array is deprecated"
         fi
         for pkg in "${breaks[@]}"; do
-            if [[ "$(dpkg-query -W -f='${Status} ${Section}' "${pkg}" 2> /dev/null)" =~ ^(install ok installed Pacstall) ]]; then
+            if dpkg -s "${pkg}" 2> /dev/null 1>&2; then
                 # Check if anything in breaks variable is installed already
                 fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by apt"
                 suggested_solution "Remove the apt package by running '${UCyan}sudo apt remove $pkg${NC}'"
@@ -757,7 +757,7 @@ if ! is_package_installed "${name}"; then
         fi
         # Ask user if they want to replace the program
         for pkg in "${replace[@]}"; do
-            if [[ "$(dpkg-query -W -f='${Status}' "${pkg}" 2> /dev/null)" == "ok installed" ]]; then
+            if dpkg -s "${pkg}" 2> /dev/null 1>&2; then
                 ask "This script replaces ${pkg}. Do you want to proceed" N
                 if ((answer == 0)); then
                     fancy_message info "Cleaning up"
@@ -777,8 +777,8 @@ if [[ -n ${build_depends[*]} ]]; then
         fancy_message warn "Using '${BCyan}build_depends${NC}' as a variable instead of array is deprecated"
     fi
     for build_dep in "${build_depends[@]}"; do
-        if [[ "$(dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null)" != "install ok installed" ]]; then
-			# If not installed yet, we can mark it as possibly removable
+        if ! dpkg -s "${build_dep}" 2> /dev/null 1>&2; then
+            # If not installed yet, we can mark it as possibly removable
             not_installed_yet_builddepends+=("${build_dep}")
         fi
     done
