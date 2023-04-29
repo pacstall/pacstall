@@ -112,7 +112,7 @@ if [[ -z $NO_COLOR ]]; then
     export On_ICyan='\033[0;106m'   # Cyan
     export On_IWhite='\033[0;107m'  # White
 
-    declare -A pac_version=([red]="222" [green]="111" [blue]="161")
+    declare -A pac_version=([red]="250" [green]="246" [blue]="240")
 else
     declare -A pac_version=([red]="255" [green]="255" [blue]="255")
 fi
@@ -249,7 +249,7 @@ function ask() {
 function suggested_solution() {
     if [[ -z $PACSTALL_SUPPRESS_SOLUTIONS ]]; then
         local inputs=("${@}")
-        if [[ ${#inputs[@]} -gt 1 ]]; then
+        if ((${#inputs[@]} > 1)); then
             local text="Suggested solutions are:"
         else
             local text="Suggested solution is:"
@@ -338,7 +338,7 @@ function select_options() {
     local message="${1}"
     local length="${2}"
 
-    if [[ $length -ge 6 ]]; then
+    if ((length >= 6)); then
         echo -ne "${message} [${BOLD}1-$length${NC} or ${BIGreen}Y${NC}] "
     else
         echo -ne "${message} [${BOLD}$(seq -s ' ' 1 "$length")${NC} or ${BIGreen}Y${NC}] "
@@ -402,6 +402,11 @@ function is_package_installed() {
         fi
     done < <(pacstall -L)
     return 1
+}
+
+# Returns 0 if exists, 1 if not
+function is_apt_package_installed() {
+    dpkg -s "${1:?}" 2> /dev/null 1>&2
 }
 
 function is_array() {
@@ -594,7 +599,7 @@ Helpful links:
                     export local="yes"
                     PKGPATH="$(dirname "$2")"
                     # Check if we need to cd into the directory first
-                    if [[ $PKGPATH == "." ]] && [[ ! -f "$PACKAGE".pacscript ]] && [[ -d $PACKAGE ]]; then
+                    if [[ $PKGPATH == "." && ! -f "$PACKAGE".pacscript && -d $PACKAGE ]]; then
                         cd "$PACKAGE"
                     elif [[ -d $PKGPATH ]]; then
                         cd "$PKGPATH"
@@ -717,8 +722,8 @@ Helpful links:
             PACKAGE="$2"
 
             if [[ -z $PACKAGE ]]; then
-                version_number="3.11.1"
-                version_name="Thulian"
+                version_number="3.12.0"
+                version_name="Lily"
                 echo -e "${version_number} \033[1m\x1b[38;2;${pac_version[red]};${pac_version[green]};${pac_version[blue]}m${version_name}${NC}"
                 exit 0
             else

@@ -50,7 +50,7 @@ function cleanup() {
 
 function trap_ctrlc() {
     fancy_message warn "\nInterrupted, cleaning up"
-    if [[ "$(dpkg-query -W -f='${Status}\n' "$name" 2> /dev/null)" =~ ^(install ok installed|ok unpacked) ]]; then
+    if is_apt_package_installed "${name}"; then
         sudo apt-get purge "${gives:-$name}" -y > /dev/null
     fi
     sudo rm -f "/etc/apt/preferences.d/${name:-$PACKAGE}-pin"
@@ -259,7 +259,7 @@ function prompt_optdepends() {
             fi
             # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
             # If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of it's status
-            if [[ "$(dpkg-query -W -f='${Status}' "${opt}" 2> /dev/null)" != "install ok installed" ]]; then
+            if ! is_apt_package_installed "${opt}"; then
                 suggested_optdeps+=("${optdep}")
             else
                 already_installed_optdeps+=("${opt}")
@@ -290,7 +290,7 @@ function prompt_optdepends() {
                 local choice_inc=0
                 for i in "${choices[@]}"; do
                     # have we gone over the maximum number in choices[@]?
-                    if [[ $i != "n" ]] && [[ $i != "y" ]] && [[ $i -gt ${#suggested_optdeps[@]} ]]; then
+                    if [[ $i != "n" && $i != "y" ]] && ((i > ${#suggested_optdeps[@]})); then
                         local skip_opt+=("$i")
                         unset 'choices[$choice_inc]'
                     fi
@@ -309,7 +309,7 @@ function prompt_optdepends() {
                     if [[ -n ${not_installed_yet_optdeps[*]} ]]; then
                         fancy_message info "Selecting packages ${BCyan}${not_installed_yet_optdeps[*]}${NC}"
                         local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${suggested_optdeps[@]}")
-                        deblog "Suggests" "$(echo "${final_merged_deps[@]//: */}" | sed 's/ /, /g')"
+                        deblog "Suggests" "$(sed 's/ /, /g' <<< "${final_merged_deps[@]//: */}")"
                         fancy_message info "Installing selected optional dependencies"
                         sudo -E apt-get install "${not_installed_yet_optdeps[@]}" -y 2> /dev/null
                     fi
@@ -318,13 +318,13 @@ function prompt_optdepends() {
                     fi
                 else
                     local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${suggested_optdeps[@]}")
-                    deblog "Suggests" "$(echo "${final_merged_deps[@]//: */}" | sed 's/ /, /g')"
+                    deblog "Suggests" "$(sed 's/ /, /g' <<< "${final_merged_deps[@]//: */}")"
                 fi
             else # If `-B` is being used
                 for pkg in "${optdepends[@]}"; do
                     local B_suggests+=("${pkg%%: *}")
                 done
-                deblog "Suggests" "$(echo "${B_suggests[@]//: */}" | sed 's/ /, /g')"
+                deblog "Suggests" "$(sed 's/ /, /g' <<< "${B_suggests[@]//: */}")"
             fi
         fi
     fi
@@ -346,7 +346,7 @@ function prompt_optdepends() {
     fi
     if [[ -n ${deps[*]} || -n ${not_installed_yet_optdeps[*]} ]]; then
         local all_deps_to_install=("${not_installed_yet_optdeps[@]}" "${deps[@]}")
-        deblog "Depends" "$(echo "${all_deps_to_install[@]}" | sed 's/ /, /g')"
+        deblog "Depends" "$(sed 's/ /, /g' <<< "${all_deps_to_install[@]}")"
     fi
 }
 
@@ -393,7 +393,7 @@ function createdeb() {
     local DATA_LOCATION="$PWD/data.tar"
     # collect every top level dir except for DEBIAN
     for i in *; do
-        if [[ -d $i ]] && [[ $i != "DEBIAN" ]]; then
+        if [[ -d $i && $i != "DEBIAN" ]]; then
             local files_for_data+=("$i")
         fi
     done
@@ -428,12 +428,12 @@ function makedeb() {
     deblog "Priority" "optional"
 
     if [[ -n ${provides[*]} ]]; then
-        deblog "Provides" "$(echo "${provides[@]}" | sed 's/ /, /g')"
+        deblog "Provides" "$(sed 's/ /, /g' <<< "${provides[@]}")"
     fi
 
     if [[ -n $replace ]]; then
-        deblog "Conflicts" "${replace//' '/', '}"
-        deblog "Replace" "${replace//' '/', '}"
+        deblog "Conflicts" "$(sed 's/ /, /g' <<< "${replace[@]}")"
+        deblog "Replace" "$(sed 's/ /, /g' <<< "${replace[@]}")"
     fi
 
     if [[ -n ${homepage} ]]; then
@@ -492,7 +492,7 @@ function ask() {
 function fancy_message() {
 	local MESSAGE_TYPE="${1}"
 	local MESSAGE="${2}"
-	local BOLD=$(tput bold)
+	local BOLD="\033[1m"
 	local NC="\033[0m"
 	case ${MESSAGE_TYPE} in
 		info) echo -e "[${BOLD}+${NC}] INFO: ${MESSAGE}";;
@@ -700,7 +700,7 @@ if [[ -n $pacdeps ]]; then
         [[ $KEEP ]] && cmd="-KPI" || cmd="-PI"
         if is_package_installed "${i}"; then
             pacstall_pacdep_status="$(compare_remote_version "$i")"
-            if [[ -z $UPGRADE ]] && [[ $pacstall_pacdep_status == "update" ]]; then
+            if [[ -z $UPGRADE && $pacstall_pacdep_status == "update" ]]; then
                 fancy_message info "Found newer version for $i pacdep"
                 if ! pacstall "$cmd" "$i"; then
                     fancy_message error "Failed to install dependency"
@@ -729,7 +729,7 @@ if ! is_package_installed "${name}"; then
             fancy_message warn "Using '${BCyan}breaks${NC}' as a variable instead of array is deprecated"
         fi
         for pkg in "${breaks[@]}"; do
-            if [[ "$(dpkg-query -W -f='${Status} ${Section}' "${pkg}" 2> /dev/null)" =~ ^(install ok installed Pacstall) ]]; then
+            if is_apt_package_installed "${pkg}"; then
                 # Check if anything in breaks variable is installed already
                 fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by apt"
                 suggested_solution "Remove the apt package by running '${UCyan}sudo apt remove $pkg${NC}'"
@@ -750,19 +750,23 @@ if ! is_package_installed "${name}"; then
         done
     fi
 
-    if [[ -n $replace ]]; then
-        # Ask user if they want to replace the program
-        if [[ "$(dpkg-query -W -f='${Status}' "$replace" 2> /dev/null)" == "ok installed" ]]; then
-            ask "This script replaces $replace. Do you want to proceed" N
-            if ((answer == 0)); then
-                fancy_message info "Cleaning up"
-                cleanup
-                return 1
-            fi
-            mapfile -t replaces_tmp <<< "${replace// /$'\n'}"
-            sudo apt-get remove -y "${replaces_tmp[@]}"
-            unset replaces_tmp
+    if [[ -n ${replace[*]} ]]; then
+        if ! is_array replace; then
+            mapfile -t replace <<< "${replace// /$'\n'}"
+            fancy_message warn "Using '${BCyan}replace${NC}' as a variable instead of array is deprecated"
         fi
+        # Ask user if they want to replace the program
+        for pkg in "${replace[@]}"; do
+            if is_apt_package_installed "${pkg}"; then
+                ask "This script replaces ${pkg}. Do you want to proceed" N
+                if ((answer == 0)); then
+                    fancy_message info "Cleaning up"
+                    cleanup
+                    return 1
+                fi
+                sudo apt-get remove -y "${pkg}"
+            fi
+        done
     fi
 fi
 
@@ -773,21 +777,14 @@ if [[ -n ${build_depends[*]} ]]; then
         fancy_message warn "Using '${BCyan}build_depends${NC}' as a variable instead of array is deprecated"
     fi
     for build_dep in "${build_depends[@]}"; do
-        if [[ "$(dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null)" == "install ok installed" ]]; then
-            build_depends_to_delete+=("${build_dep}")
+        if ! is_apt_package_installed "${build_dep}"; then
+            # If not installed yet, we can mark it as possibly removable
+            not_installed_yet_builddepends+=("${build_dep}")
         fi
     done
 
-    for target in "${build_depends_to_delete[@]}"; do
-        for i in "${!build_depends[@]}"; do
-            if [[ ${build_depends[i]} == "$target" ]]; then
-                unset 'build_depends[i]'
-            fi
-        done
-    done
-
-    if [[ ${#build_depends[@]} -ne 0 ]]; then
-        fancy_message info "${BLUE}$name${NC} requires ${CYAN}${build_depends[*]}${NC} to install"
+    if ((${#not_installed_yet_builddepends[@]} != 0)); then
+        fancy_message info "${BLUE}$name${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to install"
         ask "Do you want to remove them after installing ${BLUE}$name${NC}" N
         if ((answer == 0)); then
             NOBUILDDEP=0
@@ -795,7 +792,7 @@ if [[ -n ${build_depends[*]} ]]; then
             NOBUILDDEP=1
         fi
 
-        if ! sudo apt-get install -y "${build_depends[@]}"; then
+        if ! sudo apt-get install -y "${not_installed_yet_builddepends[@]}"; then
             fancy_message error "Failed to install build dependencies"
             error_log 8 "install $PACKAGE"
             fancy_message info "Cleaning up"
@@ -813,7 +810,7 @@ function hashcheck() {
 
     # Check if the input hash is the same as of the downloaded file.
     # Skip this test if the hash variable doesn't exist in the pacscript.
-    if [[ -n ${hash} ]] && [[ ${inputHash} != "${fileHash}" ]]; then
+    if [[ -n ${hash} && ${inputHash} != "${fileHash}" ]]; then
         fancy_message error "Hashes do not match"
         fancy_message sub "Got:      ${BRed}${fileHash}${NC}"
         fancy_message sub "Expected: ${BGreen}${inputHash}${NC}"
@@ -1033,8 +1030,7 @@ trap - ERR
 
 if ((NOBUILDDEP == 1)); then
     fancy_message info "Purging build dependencies"
-    # shellcheck disable=2086
-    sudo apt-get purge --auto-remove -y "${build_depends[@]}"
+    sudo apt-get purge --auto-remove -y "${not_installed_yet_builddepends[@]}"
 fi
 
 cd "$HOME" 2> /dev/null || (

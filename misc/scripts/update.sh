@@ -35,7 +35,7 @@ export BPurple='\033[1;35m'
 function suggested_solution() {
     if [[ -z $PACSTALL_SUPPRESS_SOLUTIONS ]]; then
         local inputs=("${@}")
-        if [[ ${#inputs[@]} -gt 1 ]]; then
+        if ((${#inputs[@]} > 1)); then
             local text="Suggested solutions are:"
         else
             local text="Suggested solution is:"
