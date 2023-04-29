@@ -48,7 +48,7 @@ else
     fancy_message warn "Make sure the repo contains a package list"
 
     ask "Do you want to add \"$REPO\" to the repo list?" N
-	if ((answer == 0)); then
+    if ((answer == 0)); then
         exit 3
     fi
 fi

@@ -79,7 +79,7 @@ N="$(nproc)"
             if [[ $i != *"-git" ]]; then
                 alterver="0.0.0"
                 for IDX in "${!REPOS[@]}"; do
-					if ((IDX == IDXMATCH)); then
+                    if ((IDX == IDXMATCH)); then
                         continue
                     else
                         ver=$(source <(curl -s -- "${REPOS[$IDX]}"/packages/"$i"/"$i".pacscript) && type pkgver &> /dev/null && pkgver || echo "${epoch:+$epoch:}$version") > /dev/null
@@ -93,7 +93,7 @@ N="$(nproc)"
                     if ver_compare "$remotever" "$alterver"; then
                         echo -e "${GREEN}${i}${CYAN} has a newer version at ${CYAN}$(parseRepo "${alterurl}")${NC}."
                         ask "Keep the package from the current repo?" Y
-						if ((answer == 0)); then
+                        if ((answer == 0)); then
                             remoterepo="$alterver"
                             remoteurl="$alterurl"
                         fi
@@ -145,7 +145,7 @@ ${BOLD}$(cat "${up_print}")${NORMAL}\n"
     for i in "${!upgrade[@]}"; do
         PACKAGE=${upgrade[$i]}
         ask "Do you want to upgrade ${GREEN}${PACKAGE}${NC}?" Y
-		if ((answer == 0)); then
+        if ((answer == 0)); then
             continue
         fi
         REPO="${remotes[$i]}"
