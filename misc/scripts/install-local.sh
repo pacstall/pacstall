@@ -492,7 +492,7 @@ function ask() {
 function fancy_message() {
 	local MESSAGE_TYPE="${1}"
 	local MESSAGE="${2}"
-	local BOLD=$(tput bold)
+	local BOLD="\033[1m"
 	local NC="\033[0m"
 	case ${MESSAGE_TYPE} in
 		info) echo -e "[${BOLD}+${NC}] INFO: ${MESSAGE}";;
