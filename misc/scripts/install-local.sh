@@ -783,7 +783,7 @@ if [[ -n ${build_depends[*]} ]]; then
         fi
     done
 
-    if [[ ${#build_depends[@]} -ne 0 ]]; then
+	if ((${#not_installed_yet_builddepends[@]} != 0)); then
         fancy_message info "${BLUE}$name${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to install"
         ask "Do you want to remove them after installing ${BLUE}$name${NC}" N
         if ((answer == 0)); then
