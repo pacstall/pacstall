@@ -290,7 +290,7 @@ function prompt_optdepends() {
                 local choice_inc=0
                 for i in "${choices[@]}"; do
                     # have we gone over the maximum number in choices[@]?
-                    if [[ $i != "n" ]] && [[ $i != "y" ]] && [[ $i -gt ${#suggested_optdeps[@]} ]]; then
+					if [[ $i != "n" && $i != "y" ]] && ((i > ${#suggested_optdeps[@]})); then
                         local skip_opt+=("$i")
                         unset 'choices[$choice_inc]'
                     fi
@@ -393,7 +393,7 @@ function createdeb() {
     local DATA_LOCATION="$PWD/data.tar"
     # collect every top level dir except for DEBIAN
     for i in *; do
-        if [[ -d $i ]] && [[ $i != "DEBIAN" ]]; then
+        if [[ -d $i && $i != "DEBIAN" ]]; then
             local files_for_data+=("$i")
         fi
     done
@@ -700,7 +700,7 @@ if [[ -n $pacdeps ]]; then
         [[ $KEEP ]] && cmd="-KPI" || cmd="-PI"
         if is_package_installed "${i}"; then
             pacstall_pacdep_status="$(compare_remote_version "$i")"
-            if [[ -z $UPGRADE ]] && [[ $pacstall_pacdep_status == "update" ]]; then
+            if [[ -z $UPGRADE && $pacstall_pacdep_status == "update" ]]; then
                 fancy_message info "Found newer version for $i pacdep"
                 if ! pacstall "$cmd" "$i"; then
                     fancy_message error "Failed to install dependency"
@@ -817,7 +817,7 @@ function hashcheck() {
 
     # Check if the input hash is the same as of the downloaded file.
     # Skip this test if the hash variable doesn't exist in the pacscript.
-    if [[ -n ${hash} ]] && [[ ${inputHash} != "${fileHash}" ]]; then
+    if [[ -n ${hash} && ${inputHash} != "${fileHash}" ]]; then
         fancy_message error "Hashes do not match"
         fancy_message sub "Got:      ${BRed}${fileHash}${NC}"
         fancy_message sub "Expected: ${BGreen}${inputHash}${NC}"
