@@ -480,8 +480,13 @@ function ask() {
 		echo -ne "$1 [y/N] "
 	fi
 	default=${2:-}
-	read -r reply <&0
-	if [[ -z $reply ]]; then
+	if [[ -z ${DISABLE_PROMPTS} && ${DEBIAN_FRONTEND} != "noninteractive" ]]; then
+		read -r reply <&0
+		if [[ -z $reply ]]; then
+			reply=$default
+		fi
+	else
+		echo "$default"
 		reply=$default
 	fi
 	case "$reply" in
