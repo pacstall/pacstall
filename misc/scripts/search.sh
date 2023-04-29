@@ -88,7 +88,7 @@ if [[ $PACKAGE == *@* ]]; then
             IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | awk "\$1 ~ /^${PACKAGE}$/ {print NR-1}")
             _LEN=($IDXSEARCH)
             LEN=${#_LEN[@]}
-			if ((LEN == 0)); then
+            if ((LEN == 0)); then
                 fancy_message warn "There is no package with the name $IRed${PACKAGE%%@*}$NC in the repo $CYAN$REPONAME$NC"
                 error_log 3 "search $PACKAGE@$REPONAME"
                 exit 1
@@ -113,7 +113,7 @@ while IFS= read -r URL; do
         sed -i "s#${URL}#file://$(readlink -f ${URL})#g" "$STGDIR/repo/pacstallrepo.txt" 2> /dev/null \
             || fancy_message warn "Add \"file://\" to the local repo absolute path on \e]8;;file://$STGDIR/repo/pacstallrepo.txt\a$CYAN$STGDIR/repo/pacstallrepo.txt$NC\e]8;;\a"
         URL="file://$(readlink -f ${URL})"
-    elif [[ ${URL} == "file://"* ]] && [[ ${URL} == *"/~/"* ]]; then
+    elif [[ ${URL} == "file://"* && ${URL} == *"/~/"* ]]; then
         sed -i "s#${URL}#${URL/'~'/$HOME}#g" "$STGDIR/repo/pacstallrepo.txt" 2> /dev/null \
             || fancy_message warn "Replace '~' with the full home path on \e]8;;file://$STGDIR/repo/pacstallrepo.txt\a$CYAN$STGDIR/repo/pacstallrepo.txt$NC\e]8;;\a"
         URL="${URL/'~'/$HOME}"
@@ -175,7 +175,7 @@ elif [[ -z $PACKAGE ]]; then
 # Variable $type used for the prompt
 else
     # If there is only one result, proceed
-	if ((LEN == 1)); then
+    if ((LEN == 1)); then
         export PACKAGE=${PACKAGELIST[$IDXSEARCH]}
         export REPO=${URLLIST[$IDXSEARCH]}
         return 0
@@ -193,7 +193,7 @@ else
         if [[ -n $PACSTALLREPO ]]; then
             # Overwrite last question
             ask "\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the official repo?" Y
-			if ((answer == 1)); then
+            if ((answer == 1)); then
                 export PACKAGE=${PACKAGELIST[$PACSTALLREPO]}
                 export REPO=${URLLIST[$PACSTALLREPO]}
                 unset PACSTALLREPO
@@ -207,7 +207,7 @@ else
             fi
             # Overwrite last question
             ask "\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo "${URLLIST[$IDX]}")$NC?" Y
-			if ((answer == 1)); then
+            if ((answer == 1)); then
                 export PACKAGE=${PACKAGELIST[$IDX]}
                 export REPO=${URLLIST[$IDX]}
                 return 0
