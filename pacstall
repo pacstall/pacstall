@@ -249,7 +249,7 @@ function ask() {
 function suggested_solution() {
     if [[ -z $PACSTALL_SUPPRESS_SOLUTIONS ]]; then
         local inputs=("${@}")
-		if ((${#inputs[@]} > 1)); then
+        if ((${#inputs[@]} > 1)); then
             local text="Suggested solutions are:"
         else
             local text="Suggested solution is:"
@@ -338,7 +338,7 @@ function select_options() {
     local message="${1}"
     local length="${2}"
 
-	if ((length >= 6)); then
+    if ((length >= 6)); then
         echo -ne "${message} [${BOLD}1-$length${NC} or ${BIGreen}Y${NC}] "
     else
         echo -ne "${message} [${BOLD}$(seq -s ' ' 1 "$length")${NC} or ${BIGreen}Y${NC}] "

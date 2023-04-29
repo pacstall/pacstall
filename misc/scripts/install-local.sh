@@ -290,7 +290,7 @@ function prompt_optdepends() {
                 local choice_inc=0
                 for i in "${choices[@]}"; do
                     # have we gone over the maximum number in choices[@]?
-					if [[ $i != "n" && $i != "y" ]] && ((i > ${#suggested_optdeps[@]})); then
+                    if [[ $i != "n" && $i != "y" ]] && ((i > ${#suggested_optdeps[@]})); then
                         local skip_opt+=("$i")
                         unset 'choices[$choice_inc]'
                     fi
