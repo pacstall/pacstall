@@ -50,7 +50,7 @@ function cleanup() {
 
 function trap_ctrlc() {
     fancy_message warn "\nInterrupted, cleaning up"
-    if [[ "$(dpkg-query -W -f='${Status}\n' "$name" 2> /dev/null)" =~ ^(install ok installed|ok unpacked) ]]; then
+    if is_apt_package_installed "${name}"; then
         sudo apt-get purge "${gives:-$name}" -y > /dev/null
     fi
     sudo rm -f "/etc/apt/preferences.d/${name:-$PACKAGE}-pin"
@@ -259,7 +259,7 @@ function prompt_optdepends() {
             fi
             # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
             # If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of it's status
-            if [[ "$(dpkg-query -W -f='${Status}' "${opt}" 2> /dev/null)" != "install ok installed" ]]; then
+            if ! is_apt_package_installed "${opt}"; then
                 suggested_optdeps+=("${optdep}")
             else
                 already_installed_optdeps+=("${opt}")
@@ -734,7 +734,7 @@ if ! is_package_installed "${name}"; then
             fancy_message warn "Using '${BCyan}breaks${NC}' as a variable instead of array is deprecated"
         fi
         for pkg in "${breaks[@]}"; do
-            if [[ "$(dpkg-query -W -f='${Status} ${Section}' "${pkg}" 2> /dev/null)" =~ ^(install ok installed Pacstall) ]]; then
+            if is_apt_package_installed "${pkg}"; then
                 # Check if anything in breaks variable is installed already
                 fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by apt"
                 suggested_solution "Remove the apt package by running '${UCyan}sudo apt remove $pkg${NC}'"
@@ -762,7 +762,7 @@ if ! is_package_installed "${name}"; then
         fi
         # Ask user if they want to replace the program
         for pkg in "${replace[@]}"; do
-            if [[ "$(dpkg-query -W -f='${Status}' "${pkg}" 2> /dev/null)" == "ok installed" ]]; then
+            if is_apt_package_installed "${pkg}"; then
                 ask "This script replaces ${pkg}. Do you want to proceed" N
                 if ((answer == 0)); then
                     fancy_message info "Cleaning up"
@@ -782,21 +782,14 @@ if [[ -n ${build_depends[*]} ]]; then
         fancy_message warn "Using '${BCyan}build_depends${NC}' as a variable instead of array is deprecated"
     fi
     for build_dep in "${build_depends[@]}"; do
-        if [[ "$(dpkg-query -W -f='${Status}' "${build_dep}" 2> /dev/null)" == "install ok installed" ]]; then
-            build_depends_to_delete+=("${build_dep}")
+        if ! is_apt_package_installed "${build_dep}"; then
+            # If not installed yet, we can mark it as possibly removable
+            not_installed_yet_builddepends+=("${build_dep}")
         fi
     done
 
-    for target in "${build_depends_to_delete[@]}"; do
-        for i in "${!build_depends[@]}"; do
-            if [[ ${build_depends[i]} == "$target" ]]; then
-                unset 'build_depends[i]'
-            fi
-        done
-    done
-
-    if [[ ${#build_depends[@]} -ne 0 ]]; then
-        fancy_message info "${BLUE}$name${NC} requires ${CYAN}${build_depends[*]}${NC} to install"
+    if ((${#not_installed_yet_builddepends[@]} != 0)); then
+        fancy_message info "${BLUE}$name${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to install"
         ask "Do you want to remove them after installing ${BLUE}$name${NC}" N
         if ((answer == 0)); then
             NOBUILDDEP=0
@@ -804,7 +797,7 @@ if [[ -n ${build_depends[*]} ]]; then
             NOBUILDDEP=1
         fi
 
-        if ! sudo apt-get install -y "${build_depends[@]}"; then
+        if ! sudo apt-get install -y "${not_installed_yet_builddepends[@]}"; then
             fancy_message error "Failed to install build dependencies"
             error_log 8 "install $PACKAGE"
             fancy_message info "Cleaning up"
@@ -1042,8 +1035,7 @@ trap - ERR
 
 if ((NOBUILDDEP == 1)); then
     fancy_message info "Purging build dependencies"
-    # shellcheck disable=2086
-    sudo apt-get purge --auto-remove -y "${build_depends[@]}"
+    sudo apt-get purge --auto-remove -y "${not_installed_yet_builddepends[@]}"
 fi
 
 cd "$HOME" 2> /dev/null || (
