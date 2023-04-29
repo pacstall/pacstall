@@ -404,6 +404,11 @@ function is_package_installed() {
     return 1
 }
 
+# Returns 0 if exists, 1 if not
+function is_apt_package_installed() {
+    dpkg -s "${1:?}" 2> /dev/null 1>&2
+}
+
 function is_array() {
     local input raw
     input="${1}"
