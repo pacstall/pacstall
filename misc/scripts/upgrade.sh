@@ -124,7 +124,7 @@ if (($(wc -l < "${up_list}") == 0)); then
 else
     fancy_message info "Packages can be upgraded"
     echo -e "Upgradable: $(wc -l < "${up_print}")
-${BOLD}$(cat "${up_print}")${NORMAL}\n"
+${BOLD}$(cat "${up_print}")${NC}\n"
 
     upgrade=()
     while IFS= read -r line; do

@@ -500,7 +500,7 @@ function fancy_message() {
 		warn) echo -e "[${BOLD}*${NC}] WARNING: ${MESSAGE}";;
 		error) echo -e "[${BOLD}!${NC}] ERROR: ${MESSAGE}";;
 		sub) echo -e "\t[${BOLD}>${NC}] ${MESSAGE}" ;;
-		*) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
+		*) echo -e "[${BOLD}?${NC}] UNKNOWN: ${MESSAGE}";;
 	esac
 }
 
