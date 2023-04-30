@@ -166,7 +166,8 @@ function compare_remote_version() (
 
 function get_incompatible_releases() {
     # example for this function is "ubuntu:jammy"
-    local distro_name="$(lsb_release -si 2> /dev/null | tr '[:upper:]' '[:lower:]')"
+    local distro_name="$(lsb_release -si 2> /dev/null)"
+	distro_name="${distro_name,,}"
     if [[ "$(lsb_release -ds 2> /dev/null | tail -c 4)" == "sid" ]]; then
         local distro_version_name="sid"
         local distro_version_number="sid"
