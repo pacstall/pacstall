@@ -44,36 +44,36 @@ function get_field() {
     fi
 }
 
-echo -e "${BGreen}name${NORMAL}: $(get_field "$PACKAGE" Package)"
-echo -e "${BGreen}version${NORMAL}: $(get_field "$PACKAGE" Version)"
+echo -e "${BGreen}name${NC}: $(get_field "$PACKAGE" Package)"
+echo -e "${BGreen}version${NC}: $(get_field "$PACKAGE" Version)"
 if [[ -n $_install_size ]]; then
-    echo -e "${BGreen}size${NORMAL}: $_install_size"
+    echo -e "${BGreen}size${NC}: $_install_size"
 fi
-echo -e "${BGreen}description${NORMAL}: $(get_field "$PACKAGE" Description)"
-echo -e "${BGreen}date installed${NORMAL}: $_date"
+echo -e "${BGreen}description${NC}: $(get_field "$PACKAGE" Description)"
+echo -e "${BGreen}date installed${NC}: $_date"
 
 if [[ -n $_homepage ]]; then
-    echo -e "${BGreen}homepage${NORMAL}: $_homepage"
+    echo -e "${BGreen}homepage${NC}: $_homepage"
 fi
 if [[ -n $_remoterepo ]]; then
-    echo -e "${BGreen}remote repo${NORMAL}: $_remoterepo"
+    echo -e "${BGreen}remote repo${NC}: $_remoterepo"
 fi
-echo -e "${BGreen}maintainer${NORMAL}: $(get_field "$PACKAGE" Maintainer)"
+echo -e "${BGreen}maintainer${NC}: $(get_field "$PACKAGE" Maintainer)"
 if [[ -n $_ppa ]]; then
-    echo -e "${BGreen}ppa${NORMAL}: $_ppa"
+    echo -e "${BGreen}ppa${NC}: $_ppa"
 fi
 if [[ -n $_pacdeps ]]; then
-    echo -e "${BGreen}pacstall dependencies${NORMAL}: ${_pacdeps[*]}"
+    echo -e "${BGreen}pacstall dependencies${NC}: ${_pacdeps[*]}"
 fi
 deps=$(get_field "$PACKAGE" Depends)
 deps="${deps//,}"
 if [[ -n $deps ]]; then
-    echo -e "${BGreen}dependencies${NORMAL}: ${deps}"
+    echo -e "${BGreen}dependencies${NC}: ${deps}"
 fi
 if [[ -n $_pacstall_depends ]]; then
-    echo -e "${BGreen}install type${NORMAL}: installed as dependency"
+    echo -e "${BGreen}install type${NC}: installed as dependency"
 else
-    echo -e "${BGreen}install type${NORMAL}: explicitly installed"
+    echo -e "${BGreen}install type${NC}: explicitly installed"
 fi
 exit 0
 # vim:set ft=sh ts=4 sw=4 noet:

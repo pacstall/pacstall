@@ -26,8 +26,6 @@
 # Color variables are ok, while "$USERNAME" and "$BRANCH" are needed
 BOLD=$(tput bold)
 export BOLD
-NORMAL=$(tput sgr0)
-export NORMAL
 export NC='\033[0m'
 export UCyan='\033[4;36m'
 export BPurple='\033[1;35m'
@@ -149,12 +147,12 @@ fi
 
 if [[ ${new_username} == "pacstall" ]]; then
     echo -e "Useful links:"
-    echo -e "\t${BYellow}Website${NC}: ${BOLD}https://pacstall.dev${NORMAL}"
-    echo -e "\t${BPurple}Packages${NC}: ${BOLD}https://pacstall.dev/packages${NORMAL}"
-    echo -e "\t${BCyan}GitHub${NC}: ${BOLD}https://github.com/pacstall${NORMAL}"
-    echo -e "\t${BRed}Report Bugs${NC}: ${BOLD}https://github.com/${new_username}/pacstall/issues${NORMAL}"
-    echo -e "\t${BBlue}Discord${NC}: ${BOLD}https://discord.gg/yzrjXJV6K8${NORMAL}"
-    echo -e "\t${BGreen}Matrix${NC}: ${BOLD}https://matrix.to/#/#pacstall:matrix.org${NORMAL}"
+    echo -e "\t${BYellow}Website${NC}: ${BOLD}https://pacstall.dev${NC}"
+    echo -e "\t${BPurple}Packages${NC}: ${BOLD}https://pacstall.dev/packages${NC}"
+    echo -e "\t${BCyan}GitHub${NC}: ${BOLD}https://github.com/pacstall${NC}"
+    echo -e "\t${BRed}Report Bugs${NC}: ${BOLD}https://github.com/${new_username}/pacstall/issues${NC}"
+    echo -e "\t${BBlue}Discord${NC}: ${BOLD}https://discord.gg/yzrjXJV6K8${NC}"
+    echo -e "\t${BGreen}Matrix${NC}: ${BOLD}https://matrix.to/#/#pacstall:matrix.org${NC}"
 fi
 exit 0
 

@@ -39,8 +39,6 @@ export PACSTALL_INSTALL=1
 # Colors
 BOLD=$(tput bold)
 export BOLD
-NORMAL=$(tput sgr0)
-export NORMAL
 export NC='\033[0m'
 # Courtesy of https://stackoverflow.com/a/28938235/13449010
 
@@ -168,7 +166,7 @@ function fancy_message() {
         warn) echo >&2 -e "[${BYellow}*${NC}] ${BOLD}WARNING${NC}: ${MESSAGE}" ;;
         error) echo >&2 -e "[${BRed}!${NC}] ${BOLD}ERROR${NC}: ${MESSAGE}" ;;
         sub) echo -e "\t[${BBlue}>${NC}] ${MESSAGE}" ;;
-        *) echo >&2 -e "[${BOLD}?${NORMAL}] ${BOLD}UNKNOWN${NC}: ${MESSAGE}" ;;
+        *) echo >&2 -e "[${BOLD}?${NC}] ${BOLD}UNKNOWN${NC}: ${MESSAGE}" ;;
     esac
 }
 
