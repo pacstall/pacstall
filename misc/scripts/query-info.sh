@@ -65,7 +65,8 @@ fi
 if [[ -n $_pacdeps ]]; then
     echo -e "${BGreen}pacstall dependencies${NORMAL}: ${_pacdeps[*]}"
 fi
-deps=$(get_field "$PACKAGE" Depends | tr -d ',')
+deps=$(get_field "$PACKAGE" Depends)
+deps="${deps//,}"
 if [[ -n $deps ]]; then
     echo -e "${BGreen}dependencies${NORMAL}: ${deps}"
 fi
