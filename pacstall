@@ -33,6 +33,9 @@ export STOWDIR="/usr/src/pacstall"
 
 export PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER}}")
 
+# (( )) doesn't like uninitialized vars
+export PACSTALL_INSTALL=1
+
 # Colors
 BOLD=$(tput bold)
 export BOLD
