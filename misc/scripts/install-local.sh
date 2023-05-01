@@ -117,7 +117,7 @@ function log() {
         if [[ -n $homepage ]]; then
             echo "_homepage=\"${homepage}"\"
         fi
-        if [[ $name == *-deb ]] && [[ -z $gives ]]; then
+        if [[ -z $gives && $name == *-deb ]]; then
             echo "_gives=\"$(dpkg -f ./"${url##*/}" | sed -n "s/^Package: //p")"\"
         elif [[ -n $gives ]]; then
             echo "_gives=\"$gives"\"
@@ -166,7 +166,8 @@ function compare_remote_version() (
 
 function get_incompatible_releases() {
     # example for this function is "ubuntu:jammy"
-    local distro_name="$(lsb_release -si 2> /dev/null | tr '[:upper:]' '[:lower:]')"
+    local distro_name="$(lsb_release -si 2> /dev/null)"
+	distro_name="${distro_name,,}"
     if [[ "$(lsb_release -ds 2> /dev/null | tail -c 4)" == "sid" ]]; then
         local distro_version_name="sid"
         local distro_version_number="sid"
@@ -237,7 +238,7 @@ function prompt_optdepends() {
             fancy_message warn "Using '${BCyan}depends${NC}' as a variable instead of array is deprecated"
         fi
     fi
-    if [[ ${#optdepends[@]} -ne 0 ]]; then
+    if ((${#optdepends[@]} != 0)); then
         for i in "${optdepends[@]}"; do
             # Should cover `foo:i386: baz`, `foo: baz`, but not `foo:baz`
             if [[ $i != *": "* ]]; then
@@ -266,15 +267,15 @@ function prompt_optdepends() {
             fi
         done
 
-        if [[ -n ${missing_optdeps[*]} ]] || [[ ${#suggested_optdeps[@]} -ne 0 ]]; then
+        if [[ -n ${missing_optdeps[*]} ]] || ((${#suggested_optdeps[@]} != 0)); then
             fancy_message sub "Optional dependencies"
         fi
         if [[ -n ${missing_optdeps[*]} ]]; then
             echo -ne "\t"
             fancy_message warn "${BLUE}${missing_optdeps[*]}${NC} does not exist in apt repositories"
         fi
-        if [[ ${#suggested_optdeps[@]} -ne 0 ]]; then
-            if [[ $PACSTALL_INSTALL != 0 ]]; then
+        if ((${#suggested_optdeps[@]} != 0)); then
+            if ((PACSTALL_INSTALL != 0)); then
                 z=1
                 echo -e "\t\t[${BIRed}0${NC}] Select none"
                 for i in "${suggested_optdeps[@]}"; do
@@ -362,7 +363,7 @@ function clean_logdir() {
 
 function createdeb() {
     local name="$1"
-    if [[ $PACSTALL_INSTALL == "0" ]]; then
+    if ((PACSTALL_INSTALL == 0)); then
         # We are not going to immediately install, meaning the user might want to share their deb with someone else, so create the highest compression.
         local flags=("-9" "-T0")
         local compression="xz"
@@ -499,7 +500,7 @@ function fancy_message() {
 		warn) echo -e "[${BOLD}*${NC}] WARNING: ${MESSAGE}";;
 		error) echo -e "[${BOLD}!${NC}] ERROR: ${MESSAGE}";;
 		sub) echo -e "\t[${BOLD}>${NC}] ${MESSAGE}" ;;
-		*) echo -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}";;
+		*) echo -e "[${BOLD}?${NC}] UNKNOWN: ${MESSAGE}";;
 	esac
 }
 
@@ -565,7 +566,7 @@ hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
         return 1
     fi
 
-    if [[ $PACSTALL_INSTALL != 0 ]]; then
+    if ((PACSTALL_INSTALL != 0)); then
 
         # --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
         if ! sudo -E apt-get install --reinstall "$STOWDIR/$name.deb" -y --allow-downgrades 2> /dev/null; then

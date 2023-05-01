@@ -24,7 +24,6 @@
 
 # Colors
 BOLD=$(tput bold)
-NORMAL=$(tput sgr0)
 NC="\033[0m"
 
 RED='\033[0;31m'
@@ -40,7 +39,7 @@ function fancy_message() {
     # 0 - info
     # 1 - warning
     # 2 - error
-    if [[ -z ${1} ]] || [[ -z ${2} ]]; then
+    if [[ -z ${1} || -z ${2} ]]; then
         return
     fi
 
@@ -51,7 +50,7 @@ function fancy_message() {
         info) echo -e "[${BGreen}+${NC}] INFO: ${MESSAGE}" ;;
         warn) echo >&2 -e "[${BYellow}*${NC}] WARNING: ${MESSAGE}" ;;
         error) echo >&2 -e "[${BRed}!${NC}] ERROR: ${MESSAGE}" ;;
-        *) echo >&2 -e "[${BOLD}?${NORMAL}] UNKNOWN: ${MESSAGE}" ;;
+        *) echo >&2 -e "[${BOLD}?${NC}] UNKNOWN: ${MESSAGE}" ;;
     esac
 }
 

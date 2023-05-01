@@ -33,11 +33,12 @@ export STOWDIR="/usr/src/pacstall"
 
 export PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER}}")
 
+# (( )) doesn't like uninitialized vars
+export PACSTALL_INSTALL=1
+
 # Colors
 BOLD=$(tput bold)
 export BOLD
-NORMAL=$(tput sgr0)
-export NORMAL
 export NC='\033[0m'
 # Courtesy of https://stackoverflow.com/a/28938235/13449010
 
@@ -165,13 +166,13 @@ function fancy_message() {
         warn) echo >&2 -e "[${BYellow}*${NC}] ${BOLD}WARNING${NC}: ${MESSAGE}" ;;
         error) echo >&2 -e "[${BRed}!${NC}] ${BOLD}ERROR${NC}: ${MESSAGE}" ;;
         sub) echo -e "\t[${BBlue}>${NC}] ${MESSAGE}" ;;
-        *) echo >&2 -e "[${BOLD}?${NORMAL}] ${BOLD}UNKNOWN${NC}: ${MESSAGE}" ;;
+        *) echo >&2 -e "[${BOLD}?${NC}] ${BOLD}UNKNOWN${NC}: ${MESSAGE}" ;;
     esac
 }
 
 # This is the ask function. You can source this code block and then run something like:
 # ask "Do you like the color blue? " Y
-# if [[ $answer -eq 1 ]]; then
+# if ((answer == 1)); then
 #   echo "You like blue"
 # else
 #   echo "You don't like blue"
@@ -357,7 +358,7 @@ function select_options() {
     fi
     if [[ -z $input ]] || [[ $input =~ ^[Yy]$ ]]; then
         seq -s ' ' 1 "$length" | tee /tmp/pacstall-select-options > /dev/null
-    elif [[ $input == "0" ]] || [[ $input =~ ^[Nn]$ ]]; then
+    elif ((input == 0)) || [[ $input =~ ^[Nn]$ ]]; then
         echo "n" | tee /tmp/pacstall-select-options > /dev/null
     elif ! [[ $input =~ [a-zA-Z]+ ]] || [[ $input =~ ^[0-9]+$ ]]; then
         for i in "${input[@]}"; do
@@ -575,7 +576,7 @@ Helpful links:
             fi
 
             function trap_ctrlc() {
-                fancy_message warn "The installation of $2 was interrupted, removing files"
+                fancy_message warn "The installation of ${PACKAGE:-package} was interrupted, removing files"
                 rm -rf "${SRCDIR:?}"/* # :? makes bash error out in case SRCDIR is empty, saving us from yoinking /* directory by mistake
                 exit 2
             }
