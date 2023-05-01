@@ -37,8 +37,7 @@ export PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER}}")
 export PACSTALL_INSTALL=1
 
 # Colors
-BOLD=$(tput bold)
-export BOLD
+export BOLD='\033[1m'
 export NC='\033[0m'
 # Courtesy of https://stackoverflow.com/a/28938235/13449010
 
