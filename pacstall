@@ -407,7 +407,7 @@ function is_package_installed() {
 
 # Returns 0 if exists, 1 if not
 function is_apt_package_installed() {
-    dpkg -s "${1:?}" 2> /dev/null 1>&2
+    dpkg -s "${1}" 2> /dev/null 1>&2
 }
 
 function is_array() {
