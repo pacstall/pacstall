@@ -24,8 +24,7 @@
 
 # Update should be self-contained and should use mutable functions or variables
 # Color variables are ok, while "$USERNAME" and "$BRANCH" are needed
-BOLD=$(tput bold)
-export BOLD
+export BOLD='\033[1m'
 export NC='\033[0m'
 export UCyan='\033[4;36m'
 export BPurple='\033[1;35m'
