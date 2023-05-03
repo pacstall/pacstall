@@ -471,46 +471,51 @@ function makedeb() {
         esac
         if [[ $(type -t "$i") == function ]]; then
             echo '#!/bin/bash
-set -e
 function ask(){
-	local default reply
-	if [[ ${2-} == "Y" ]]; then
-		echo -ne "$1 [Y/n] ";default="Y"
-	elif [[ ${2-} == "N" ]]; then
-		echo -ne "$1 [y/N] "
-	fi
-	default=${2-}
-	read -r reply <&0
-	[[ -z $reply ]] && reply=$default
-	case "$reply" in
-		Y*|y*)export answer=1;return 0;;
-		N*|n*)export answer=0;return 1;;
-	esac
+local default reply
+if [[ ${2-} == "Y" ]];then
+echo -ne "$1 [Y/n] "
+default="Y"
+elif [[ ${2-} == "N" ]];then
+echo -ne "$1 [y/N] "
+fi
+default=${2-}
+read -r reply <&0
+if [[ -z $reply ]];then
+reply=$default
+fi
+case "$reply" in
+Y*|y*)export \
+answer=1
+return 0
+;;
+N*|n*)export \
+answer=0
+return 1
+esac
 }
 function fancy_message(){
-	local MESSAGE_TYPE="${1}"
-	local MESSAGE="${2}"
-	local BOLD="\033[1m"
-	local NC="\033[0m"
-	case ${MESSAGE_TYPE} in
-		info)echo -e "[${BOLD}+${NC}] INFO: ${MESSAGE}";;
-		warn)echo -e "[${BOLD}*${NC}] WARNING: ${MESSAGE}";;
-		error)echo -e "[${BOLD}!${NC}] ERROR: ${MESSAGE}";;
-		sub)echo -e "\t[${BOLD}>${NC}] ${MESSAGE}";;
-		*)echo -e "[${BOLD}?${NC}] UNKNOWN: ${MESSAGE}";;
-	esac
+local MESSAGE_TYPE="$1"
+local MESSAGE="$2"
+local BOLD="\033[1m"
+local NC="\033[0m"
+case $MESSAGE_TYPE in
+info)echo -e "[$BOLD+$NC] INFO: $MESSAGE";;
+warn)echo -e "[$BOLD*$NC] WARNING: $MESSAGE";;
+error)echo -e "[$BOLD!$NC] ERROR: $MESSAGE";;
+sub)echo -e "	[$BOLD>$NC] $MESSAGE";;
+*)echo -e "[$BOLD?$NC] UNKNOWN: $MESSAGE"
+esac
 }
-
 function get_homedir(){
-	local PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER-${USER}}")
-	eval echo ~"$PACSTALL_USER"
+local PACSTALL_USER=$(logname 2>/dev/null||echo "${SUDO_USER:-$USER}")
+eval echo ~"$PACSTALL_USER"
 }
 export homedir="$(get_homedir)"
-
-if [[ -n $PACSTALL_BUILD_CORES ]]; then
-	declare -gr NCPU="${PACSTALL_BUILD_CORES-1}"
+if [[ -n $PACSTALL_BUILD_CORES ]];then
+declare -gr NCPU="${PACSTALL_BUILD_CORES:-1}"
 else
-	declare -gr NCPU="$(nproc)"
+declare -gr NCPU="$(nproc)"
 fi' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
             {
                 cat "${pacfile}"
