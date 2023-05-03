@@ -167,7 +167,7 @@ function compare_remote_version() (
 function get_incompatible_releases() {
     # example for this function is "ubuntu:jammy"
     local distro_name="$(lsb_release -si 2> /dev/null)"
-	distro_name="${distro_name,,}"
+    distro_name="${distro_name,,}"
     if [[ "$(lsb_release -ds 2> /dev/null | tail -c 4)" == "sid" ]]; then
         local distro_version_name="sid"
         local distro_version_number="sid"
@@ -604,17 +604,22 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
     fi
 }
 
+# NCPU is the core count
 if [[ -n $PACSTALL_BUILD_CORES ]]; then
     if [[ $PACSTALL_BUILD_CORES =~ ^[0-9]+$ ]]; then
         function nproc() {
             echo "${PACSTALL_BUILD_CORES:-1}"
         }
+        declare -rg NCPU="${PACSTALL_BUILD_CORES:-1}"
     else
         fancy_message error "${UCyan}PACSTALL_BUILD_CORES${NC} is not an integer. Falling back to 1"
         function nproc() {
             echo "1"
         }
+        declare -rg NCPU="1"
     fi
+else
+    declare -rg NCPU="$(nproc)"
 fi
 
 ask "(${BPurple}$PACKAGE${NC}) Do you want to view/edit the pacscript" N
