@@ -471,6 +471,7 @@ function makedeb() {
         esac
         if [[ $(type -t "$i") == function ]]; then
             echo '#!/bin/bash
+set -e
 function ask(){
 local default reply
 if [[ ${2-} == "Y" ]];then
@@ -483,12 +484,10 @@ default=${2-}
 read -r reply <&0
 [[ -z $reply ]] && reply=$default
 case "$reply" in
-Y*|y*)export \
-answer=1
+Y*|y*)export answer=1
 return 0
 ;;
-N*|n*)export \
-answer=0
+N*|n*)export answer=0
 return 1
 esac
 }
