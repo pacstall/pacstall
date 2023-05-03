@@ -481,9 +481,7 @@ echo -ne "$1 [y/N] "
 fi
 default=${2-}
 read -r reply <&0
-if [[ -z $reply ]];then
-reply=$default
-fi
+[[ -z $reply ]] && reply=$default
 case "$reply" in
 Y*|y*)export \
 answer=1
