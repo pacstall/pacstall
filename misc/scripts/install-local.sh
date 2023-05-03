@@ -510,6 +510,12 @@ function get_homedir() {
 }
 export homedir="$(get_homedir)"
 
+if [[ -n $PACSTALL_BUILD_CORES ]]; then
+	declare -gr NCPU="${PACSTALL_BUILD_CORES:-1}"
+else
+	declare -gr NCPU="$(nproc)"
+fi
+
 hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
             {
                 cat "${pacfile}"
