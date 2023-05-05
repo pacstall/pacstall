@@ -79,7 +79,7 @@ function checks() {
         return 1
     fi
     if [[ -z $description ]]; then
-        fancy_message error "Package must contain a description"
+        fancy_message error "Package does not contain a description"
         return 1
     fi
     if [[ -z $maintainer ]]; then
