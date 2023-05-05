@@ -62,7 +62,7 @@ function trap_ctrlc() {
 function checks() {
     if [[ -z $name ]]; then
         fancy_message error "Package does not contain name"
-        exit 1
+        return 1
     fi
     if [[ -z $gives && $name == *-deb ]]; then
         fancy_message warn "Deb package does not contain gives"
@@ -72,11 +72,15 @@ function checks() {
     fi
     if [[ -z $version ]]; then
         fancy_message error "Package does not contain version"
-        exit 1
+        return 1
     fi
     if [[ -z $url ]]; then
         fancy_message error "Package does not contain URL"
-        exit 1
+        return 1
+    fi
+    if [[ -z $description ]]; then
+        fancy_message error "Package does not contain a description"
+        return 1
     fi
     if [[ -z $maintainer ]]; then
         fancy_message warn "Package does not have a maintainer. Please be advised"
@@ -684,7 +688,6 @@ fi
 
 # Run checks function
 if ! checks; then
-    fancy_message error "There was an error checking the script"
     error_log 6 "install $PACKAGE"
     fancy_message info "Cleaning up"
     cleanup
