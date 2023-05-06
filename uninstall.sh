@@ -23,7 +23,7 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 # Colors
-BOLD=$(tput bold)
+BOLD='\033[1m'
 NC="\033[0m"
 
 RED='\033[0;31m'

@@ -37,8 +37,7 @@ export PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER}}")
 export PACSTALL_INSTALL=1
 
 # Colors
-BOLD=$(tput bold)
-export BOLD
+export BOLD='\033[1m'
 export NC='\033[0m'
 # Courtesy of https://stackoverflow.com/a/28938235/13449010
 
@@ -113,7 +112,7 @@ if [[ -z $NO_COLOR ]]; then
     export On_ICyan='\033[0;106m'   # Cyan
     export On_IWhite='\033[0;107m'  # White
 
-    declare -A pac_version=([red]="250" [green]="246" [blue]="240")
+    declare -A pac_version=([red]="247" [green]="250" [blue]="254")
 else
     declare -A pac_version=([red]="255" [green]="255" [blue]="255")
 fi
@@ -407,7 +406,7 @@ function is_package_installed() {
 
 # Returns 0 if exists, 1 if not
 function is_apt_package_installed() {
-    dpkg -s "${1:?}" 2> /dev/null 1>&2
+    dpkg -s "${1}" 2> /dev/null 1>&2
 }
 
 function is_array() {
@@ -723,8 +722,8 @@ Helpful links:
             PACKAGE="$2"
 
             if [[ -z $PACKAGE ]]; then
-                version_number="3.12.0"
-                version_name="Lily"
+                version_number="3.12.1"
+                version_name="Diantha"
                 echo -e "${version_number} \033[1m\x1b[38;2;${pac_version[red]};${pac_version[green]};${pac_version[blue]}m${version_name}${NC}"
                 exit 0
             else

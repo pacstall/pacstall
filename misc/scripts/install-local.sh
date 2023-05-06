@@ -62,7 +62,7 @@ function trap_ctrlc() {
 function checks() {
     if [[ -z $name ]]; then
         fancy_message error "Package does not contain name"
-        exit 1
+        return 1
     fi
     if [[ -z $gives && $name == *-deb ]]; then
         fancy_message warn "Deb package does not contain gives"
@@ -72,11 +72,15 @@ function checks() {
     fi
     if [[ -z $version ]]; then
         fancy_message error "Package does not contain version"
-        exit 1
+        return 1
     fi
     if [[ -z $url ]]; then
         fancy_message error "Package does not contain URL"
-        exit 1
+        return 1
+    fi
+    if [[ -z $description ]]; then
+        fancy_message error "Package does not contain a description"
+        return 1
     fi
     if [[ -z $maintainer ]]; then
         fancy_message warn "Package does not have a maintainer. Please be advised"
@@ -167,7 +171,7 @@ function compare_remote_version() (
 function get_incompatible_releases() {
     # example for this function is "ubuntu:jammy"
     local distro_name="$(lsb_release -si 2> /dev/null)"
-	distro_name="${distro_name,,}"
+    distro_name="${distro_name,,}"
     if [[ "$(lsb_release -ds 2> /dev/null | tail -c 4)" == "sid" ]]; then
         local distro_version_name="sid"
         local distro_version_number="sid"
@@ -472,45 +476,48 @@ function makedeb() {
         if [[ $(type -t "$i") == function ]]; then
             echo '#!/bin/bash
 set -e
-function ask() {
-	local default reply
-	if [[ ${2:-} = "Y" ]]; then
-		echo -ne "$1 [Y/n] "
-		default="Y"
-	elif [[ ${2:-} = "N" ]]; then
-		echo -ne "$1 [y/N] "
-	fi
-	default=${2:-}
-	read -r reply <&0
-	if [[ -z $reply ]]; then
-		reply=$default
-	fi
-	case "$reply" in
-		Y*|y*) export answer=1; return 0;;
-		N*|n*) export answer=0; return 1;;
-	esac
+function ask(){
+local default reply
+if [[ ${2-} == "Y" ]];then
+echo -ne "$1 [Y/n] "
+default="Y"
+elif [[ ${2-} == "N" ]];then
+echo -ne "$1 [y/N] "
+fi
+default=${2-}
+read -r reply <&0
+[[ -z $reply ]] && reply=$default
+case "$reply" in
+Y*|y*)export answer=1
+return 0
+;;
+N*|n*)export answer=0
+return 1
+esac
 }
-function fancy_message() {
-	local MESSAGE_TYPE="${1}"
-	local MESSAGE="${2}"
-	local BOLD="\033[1m"
-	local NC="\033[0m"
-	case ${MESSAGE_TYPE} in
-		info) echo -e "[${BOLD}+${NC}] INFO: ${MESSAGE}";;
-		warn) echo -e "[${BOLD}*${NC}] WARNING: ${MESSAGE}";;
-		error) echo -e "[${BOLD}!${NC}] ERROR: ${MESSAGE}";;
-		sub) echo -e "\t[${BOLD}>${NC}] ${MESSAGE}" ;;
-		*) echo -e "[${BOLD}?${NC}] UNKNOWN: ${MESSAGE}";;
-	esac
+function fancy_message(){
+local MESSAGE_TYPE="$1"
+local MESSAGE="$2"
+local BOLD="\033[1m"
+local NC="\033[0m"
+case $MESSAGE_TYPE in
+info)echo -e "[$BOLD+$NC] INFO: $MESSAGE";;
+warn)echo -e "[$BOLD*$NC] WARNING: $MESSAGE";;
+error)echo -e "[$BOLD!$NC] ERROR: $MESSAGE";;
+sub)echo -e "	[$BOLD>$NC] $MESSAGE";;
+*)echo -e "[$BOLD?$NC] UNKNOWN: $MESSAGE"
+esac
 }
-
-function get_homedir() {
-	local PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER}}")
-	eval echo ~"$PACSTALL_USER"
+function get_homedir(){
+local PACSTALL_USER=$(logname 2>/dev/null||echo "${SUDO_USER:-$USER}")
+eval echo ~"$PACSTALL_USER"
 }
 export homedir="$(get_homedir)"
-
-hash -r' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
+if [[ -n $PACSTALL_BUILD_CORES ]];then
+declare -gr NCPU="${PACSTALL_BUILD_CORES:-1}"
+else
+declare -gr NCPU="$(nproc)"
+fi' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
             {
                 cat "${pacfile}"
                 echo -e "$i"
@@ -604,17 +611,22 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
     fi
 }
 
+# NCPU is the core count
 if [[ -n $PACSTALL_BUILD_CORES ]]; then
     if [[ $PACSTALL_BUILD_CORES =~ ^[0-9]+$ ]]; then
         function nproc() {
             echo "${PACSTALL_BUILD_CORES:-1}"
         }
+        declare -rg NCPU="${PACSTALL_BUILD_CORES:-1}"
     else
         fancy_message error "${UCyan}PACSTALL_BUILD_CORES${NC} is not an integer. Falling back to 1"
         function nproc() {
             echo "1"
         }
+        declare -rg NCPU="1"
     fi
+else
+    declare -rg NCPU="$(nproc)"
 fi
 
 ask "(${BPurple}$PACKAGE${NC}) Do you want to view/edit the pacscript" N
@@ -676,7 +688,6 @@ fi
 
 # Run checks function
 if ! checks; then
-    fancy_message error "There was an error checking the script"
     error_log 6 "install $PACKAGE"
     fancy_message info "Cleaning up"
     cleanup
