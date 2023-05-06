@@ -770,7 +770,7 @@ if ! is_package_installed "${name}"; then
         # Ask user if they want to replace the program
         for pkg in "${replace[@]}"; do
             if is_apt_package_installed "${pkg}"; then
-                ask "This script replaces ${pkg}. Do you want to proceed" N
+                ask "This script replaces ${pkg}. Do you want to proceed" Y
                 if ((answer == 0)); then
                     fancy_message info "Cleaning up"
                     cleanup

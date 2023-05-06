@@ -34,7 +34,7 @@ if ! dpkg -l "${_gives:-$_name}" &> /dev/null; then
     exit 1
 fi
 
-sudo apt-get remove "${_gives:-$_name}" -y || {
+sudo apt-get purge "${_gives:-$_name}" -y || {
     error_log 1 "remove $PACKAGE"
     exit 1
 }
