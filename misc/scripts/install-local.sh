@@ -767,6 +767,18 @@ if ! is_package_installed "${name}"; then
             mapfile -t replace <<< "${replace// /$'\n'}"
             fancy_message warn "Using '${BCyan}replace${NC}' as a variable instead of array is deprecated"
         fi
+        # Ask user if they want to replace the program
+        for pkg in "${replace[@]}"; do
+            if is_apt_package_installed "${pkg}"; then
+                ask "This script replaces ${pkg}. Do you want to proceed" Y
+                if ((answer == 0)); then
+                    fancy_message info "Cleaning up"
+                    cleanup
+                    return 1
+                fi
+                sudo apt-get remove -y "${pkg}"
+            fi
+        done
     fi
 fi
 
