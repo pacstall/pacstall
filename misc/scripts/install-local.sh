@@ -64,6 +64,11 @@ function checks() {
         fancy_message error "Package does not contain name"
         return 1
     fi
+    if [[ $name != "$PACKAGE" ]]; then
+        fancy_message error "Package name does not match file"
+        suggested_solution "Change '${UPurple}name${NC}' to '${UCyan}$PACKAGE${NC}'" "Change package name to '${UCyan}$name${NC}'"
+        return 1
+    fi
     if [[ -z $gives && $name == *-deb ]]; then
         fancy_message warn "Deb package does not contain gives"
     fi
