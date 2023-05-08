@@ -519,9 +519,9 @@ eval echo ~"$PACSTALL_USER"
 }
 export homedir="$(get_homedir)"
 if [[ -n $PACSTALL_BUILD_CORES ]];then
-declare -gr NCPU="${PACSTALL_BUILD_CORES:-1}"
+declare -g NCPU="${PACSTALL_BUILD_CORES:-1}"
 else
-declare -gr NCPU="$(nproc)"
+declare -g NCPU="$(nproc)"
 fi' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
             {
                 cat "${pacfile}"
@@ -622,13 +622,13 @@ if [[ -n $PACSTALL_BUILD_CORES ]]; then
         function nproc() {
             echo "${PACSTALL_BUILD_CORES:-1}"
         }
-        declare -rg NCPU="${PACSTALL_BUILD_CORES:-1}"
+        declare -g NCPU="${PACSTALL_BUILD_CORES:-1}"
     else
         fancy_message error "${UCyan}PACSTALL_BUILD_CORES${NC} is not an integer. Falling back to 1"
         function nproc() {
             echo "1"
         }
-        declare -rg NCPU="1"
+        declare -g NCPU="1"
     fi
 else
     declare -rg NCPU="$(nproc)"
