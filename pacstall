@@ -25,7 +25,7 @@
 # Configuration
 export LC_ALL=C
 export LOGDIR="/var/log/pacstall/metadata"
-LOGFILE="/var/log/pacstall/error_log/$(date +"%F_%T.log")"
+LOGFILE="/var/log/pacstall/error_log/$(printf '%(%F_%T)T.log')"
 export LOGFILE
 export SRCDIR="/tmp/pacstall"
 export STGDIR="/usr/share/pacstall"
