@@ -24,13 +24,11 @@
 
 source "$LOGDIR/$PACKAGE" 2> /dev/null || {
     fancy_message error "$PACKAGE is not installed"
-    error_log 3 "remove $PACKAGE"
     exit 1
 }
 
 if ! dpkg -l "${_gives:-$_name}" &> /dev/null; then
     fancy_message error "$PACKAGE is not installed"
-    error_log 3 "remove $PACKAGE"
     exit 1
 fi
 
@@ -41,7 +39,7 @@ sudo apt-get purge "${_gives:-$_name}" -y || {
 
 if [[ -n ${_ppa[*]} ]]; then
     for ppa in "${_ppa[@]}"; do
-        fancy_message warn "You may have dangling PPAs on your system. You can remove them using ${UCyan}sudo add-apt-repository --remove ppa:$ppa${NC}"
+        fancy_message warn "You may have dangling PPAs on your system. You can remove them using '${UCyan}sudo add-apt-repository --remove ppa:$ppa${NC}'"
     done
 fi
 
