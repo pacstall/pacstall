@@ -363,7 +363,7 @@ function prompt_optdepends() {
 function generate_changelog() {
     echo -e "${name} (${full_version}) $(lsb_release -sc); urgency=medium\n"
     echo -e "  * Version now at ${full_version}.\n"
-    echo -e " -- $maintainer  $(date +"%a, %d %b %Y %T %z")"
+    echo -e " -- $maintainer  $(printf '%(%a, %d %b %Y %T %z)T')"
 }
 
 function clean_logdir() {
@@ -1011,7 +1011,7 @@ function run_function() {
     local func="$1"
     fancy_message sub "Running $func"
     # NOTE: https://stackoverflow.com/a/29163890 (shorthand for 2>&1 |)
-    $func |& sudo tee "/var/log/pacstall/error_log/$(date +"%Y-%m-%d_%T")-$name-$func.log" && return "${PIPESTATUS[0]}"
+    $func |& sudo tee "/var/log/pacstall/error_log/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log" && return "${PIPESTATUS[0]}"
 }
 
 function safe_run() {
