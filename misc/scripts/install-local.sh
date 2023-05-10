@@ -619,15 +619,11 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 # NCPU is the core count
 if [[ -n $PACSTALL_BUILD_CORES ]]; then
     if [[ $PACSTALL_BUILD_CORES =~ ^[0-9]+$ ]]; then
-        function nproc() {
-            echo "${PACSTALL_BUILD_CORES:-1}"
-        }
+        function nproc() { echo "${PACSTALL_BUILD_CORES:-1}"; }
         declare -g NCPU="${PACSTALL_BUILD_CORES:-1}"
     else
         fancy_message error "${UCyan}PACSTALL_BUILD_CORES${NC} is not an integer. Falling back to 1"
-        function nproc() {
-            echo "1"
-        }
+        function nproc() { echo "1"; }
         declare -g NCPU="1"
     fi
 else
