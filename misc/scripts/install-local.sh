@@ -418,7 +418,8 @@ function createdeb() {
 }
 
 function makedeb() {
-    if [[ -n $gives ]]; then
+    # It looks weird for it to say: `Packaging foo as foo`
+    if [[ -n $gives && $name != "$gives" ]]; then
         fancy_message info "Packaging ${BGreen}$name${NC} as ${BBlue}$gives${NC}"
     else
         fancy_message info "Packaging ${BGreen}$name${NC}"
