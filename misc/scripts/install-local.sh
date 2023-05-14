@@ -627,7 +627,7 @@ if [[ -n $PACSTALL_BUILD_CORES ]]; then
         declare -g NCPU="1"
     fi
 else
-    declare -rg NCPU="$(nproc)"
+    declare -g NCPU="$(nproc)"
 fi
 
 ask "(${BPurple}$PACKAGE${NC}) Do you want to view/edit the pacscript" N
