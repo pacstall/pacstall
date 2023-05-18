@@ -399,7 +399,7 @@ function createdeb() {
     sudo tar -cf "$PWD/control.tar" -T /dev/null
     local CONTROL_LOCATION="$PWD/control.tar"
     # avoid having to cd back
-    pushd DEBIAN > /dev/null
+    pushd DEBIAN > /dev/null || return 1
     for i in *; do
         if [[ -f $i ]]; then
             local files_for_control+=("$i")
@@ -407,7 +407,7 @@ function createdeb() {
     done
     fancy_message sub "Packing control.tar"
     sudo tar -rf "$CONTROL_LOCATION" "${files_for_control[@]}"
-    popd > /dev/null
+    popd > /dev/null || return 1
     sudo tar -cf "$PWD/data.tar" -T /dev/null
     local DATA_LOCATION="$PWD/data.tar"
     # collect every top level dir except for DEBIAN
