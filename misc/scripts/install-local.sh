@@ -323,7 +323,7 @@ function prompt_optdepends() {
                     if [[ -n ${not_installed_yet_optdeps[*]} ]]; then
                         fancy_message info "Selecting packages ${BCyan}${not_installed_yet_optdeps[*]}${NC}"
                         # final_merged_deps is a dep list of *every* type of dep we want to be logged into Suggests. This includes
-                        #	already installed optdeps, not yet installed ones (selected by user) and the rest
+                        # already installed optdeps, not yet installed ones (selected by user) and the rest
                         local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${suggested_optdeps[@]}")
                         deblog "Suggests" "$(sed 's/ /, /g' <<< "${final_merged_deps[@]//: */}")"
                         fancy_message info "Installing selected optional dependencies"
