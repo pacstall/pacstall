@@ -639,7 +639,7 @@ Helpful links:
                     fi
 
                     specifyRepo "$REPO"
-                    URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
+                    URL="${REPO:-https://raw.githubusercontent.com/pacstall/pacstall-programs/master}/packages/$PACKAGE/$PACKAGE.pacscript"
 
                     # shellcheck source=./misc/scripts/download.sh
                     if ! source "$STGDIR/scripts/download.sh"; then
