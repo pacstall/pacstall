@@ -638,8 +638,9 @@ Helpful links:
                         continue
                     fi
 
+		    # FIXME: URL is being eaten up and not supplying link on -Up function, so we are forcing it here
                     specifyRepo "$REPO"
-                    URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
+                    URL="${REPO:-https://raw.githubusercontent.com/pacstall/pacstall-programs/master}/packages/$PACKAGE/$PACKAGE.pacscript"
 
                     # shellcheck source=./misc/scripts/download.sh
                     if ! source "$STGDIR/scripts/download.sh"; then
