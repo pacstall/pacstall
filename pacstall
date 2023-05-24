@@ -454,7 +454,7 @@ for i in "${@}"; do
 
     # Add all arguments to the list of arguments.
     # We remove the '-' prefix as we'll add it later.
-    for j in $(echo "${i}" | sed 's|^-||' | sed 's|[[:upper:]]| &|g'); do
+    for j in $(echo "${i:1}" | sed 's|[[:upper:]]| &|g'); do
         # If current string is 'P', add to beginning of argument list.
         if [[ ${j} == "B" ]] || [[ ${j} == "-build-only" ]] || [[ ${j} == "P" ]] || [[ ${j} == "-disable-prompts" ]] || [[ ${j} == "K" ]] || [[ ${j} == "-keep" ]]; then
             argument_list=("-${j}" "${argument_list[@]}")
@@ -638,7 +638,7 @@ Helpful links:
                         continue
                     fi
 
-		    # FIXME: URL is being eaten up and not supplying link on -Up function, so we are forcing it here
+                    # FIXME: URL is being eaten up and not supplying link on -Up function, so we are forcing it here
                     specifyRepo "$REPO"
                     URL="${REPO:-https://raw.githubusercontent.com/pacstall/pacstall-programs/master}/packages/$PACKAGE/$PACKAGE.pacscript"
 
