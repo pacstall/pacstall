@@ -444,7 +444,7 @@ for i in "${@}"; do
     # Just add argument if doesn't start with a single hyphen.
     if ! [[ ${i} =~ ^-[^-] ]]; then
         # if argument is '-P' or '-K', add to beginning of argument list.
-        if [[ ${i} == "-B" ]] || [[ ${i} == "-P" ]] || [[ ${i} == "-K" ]]; then
+        if [[ ${i} == "-B" || ${i} == "-P" || ${i} == "-K" ]]; then
             argument_list=("${i}" "${argument_list[@]}")
         else
             argument_list+=("${i}")
@@ -454,14 +454,15 @@ for i in "${@}"; do
 
     # Add all arguments to the list of arguments.
     # We remove the '-' prefix as we'll add it later.
-    for j in $(echo "${i:1}" | sed 's|[[:upper:]]| &|g'); do
+    for j in $(sed 's|[[:upper:]]| &|g' <<< "${i:1}"); do
         # If current string is 'P', add to beginning of argument list.
-        if [[ ${j} == "B" ]] || [[ ${j} == "-build-only" ]] || [[ ${j} == "P" ]] || [[ ${j} == "-disable-prompts" ]] || [[ ${j} == "K" ]] || [[ ${j} == "-keep" ]]; then
+        if [[ ${j} == "B" || ${j} == "-build-only" || ${j} == "P" || ${j} == "-disable-prompts" || ${j} == "K" || ${j} == "-keep" ]]; then
             argument_list=("-${j}" "${argument_list[@]}")
         else
             argument_list+=("-${j}")
         fi
     done
+    unset j
 done
 
 # Set the new list of arguments
@@ -492,6 +493,7 @@ while lock $1 $2 $3 $4; do
     fi
     sleep 1
 done
+unset first
 
 if [[ -n $PACSTALL_PAYLOAD ]]; then
     export PACSTALL_DOWNLOADER="payload"
@@ -597,7 +599,7 @@ Helpful links:
                     PACKAGE="${PACKAGE##*/}"
                     export type="install"
                     export local="yes"
-                    PKGPATH="$(dirname "$2")"
+                    PKGPATH="${2%/*}"
                     # Check if we need to cd into the directory first
                     if [[ $PKGPATH == "." && ! -f "$PACKAGE".pacscript && -d $PACKAGE ]]; then
                         cd "$PACKAGE"
@@ -721,7 +723,6 @@ Helpful links:
 
         -V | --version)
             PACKAGE="$2"
-
             if [[ -z $PACKAGE ]]; then
                 version_number="3.13.0"
                 version_name="Immortelle"
@@ -739,6 +740,7 @@ Helpful links:
             ;;
 
         -U | --update)
+            # If the input is `.`, is a directory, and there is no other input
             if [[ $2 == "." && -d $2 && -z $3 ]]; then
                 cd "${2}"
                 if ! git -C . rev-parse 2> /dev/null; then
