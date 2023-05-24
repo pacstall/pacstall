@@ -772,7 +772,7 @@ if ! is_package_installed "${name}"; then
             if is_apt_package_installed "${pkg}" && ! is_package_installed "${pkg}"; then
                 # Check if anything in breaks variable is installed already
                 fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by apt"
-                suggested_solution "Remove the apt package by running '${UCyan}sudo apt remove $pkg${NC}'"
+                suggested_solution "Remove the apt package by running '${UCyan}sudo apt purge $pkg${NC}'"
                 error_log 13 "install $PACKAGE"
                 fancy_message info "Cleaning up"
                 cleanup
