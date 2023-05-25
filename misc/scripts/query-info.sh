@@ -28,7 +28,7 @@ if [[ -z $PACKAGE ]]; then
 fi
 
 if [[ ! -f "$LOGDIR/$PACKAGE" ]]; then
-    fancy_message error "Package does not exist"
+    fancy_message error "Package is not installed"
     exit 1
 fi
 
