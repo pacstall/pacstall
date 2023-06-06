@@ -424,6 +424,14 @@ function is_array() {
     fi
 }
 
+function is_function() {
+    if [[ $(type -t "${1}") == "function" ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 # Error out when run as root
 if ((EUID == 0)); then
     fancy_message error "Pacstall can't be run as root. Please run as a normal user."
