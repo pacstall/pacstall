@@ -691,7 +691,7 @@ homedir="$(eval echo ~"$PACSTALL_USER")"
 export homedir
 
 sudo cp "${PACKAGE}.pacscript" /tmp
-pacfile=$(readlink -f "/tmp/${PACKAGE}.pacscript")
+pacfile="$(readlink -f "/tmp/${PACKAGE}.pacscript")"
 export pacfile
 export CARCH="$(dpkg --print-architecture)"
 export DISTRO="$(set_distro)"
