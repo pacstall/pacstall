@@ -406,7 +406,11 @@ function is_package_installed() {
 
 # Returns 0 if exists, 1 if not
 function is_apt_package_installed() {
-    dpkg -s "${1}" 2> /dev/null 1>&2
+    if [[ $(dpkg-query -W --showformat='${db:Status-Status}' "${1}") != "installed" ]]; then
+        return 1
+    else
+        return 0
+    fi
 }
 
 function is_array() {
