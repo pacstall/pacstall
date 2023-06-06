@@ -173,6 +173,18 @@ function compare_remote_version() (
     fi
 )
 
+function set_distro() {
+    local distro_name="$(lsb_release -si 2> /dev/null)"
+    distro_name="${distro_name,,}"
+    if [[ "$(lsb_release -ds 2> /dev/null | tail -c 4)" == "sid" ]]; then
+        local distro_version_name="sid"
+        local distro_version_number="sid"
+    else
+        local distro_version_name="$(lsb_release -sc 2> /dev/null)"
+    fi
+    echo "${distro_name}:${distro_version_name}"
+}
+
 function get_incompatible_releases() {
     # example for this function is "ubuntu:jammy"
     local distro_name="$(lsb_release -si 2> /dev/null)"
@@ -209,7 +221,6 @@ function get_incompatible_releases() {
             fi
         fi
     done
-    export DISTRO="${distro_name}:${distro_version_name}"
 }
 
 function is_compatible_arch() {
@@ -683,6 +694,7 @@ sudo cp "${PACKAGE}.pacscript" /tmp
 pacfile=$(readlink -f "/tmp/${PACKAGE}.pacscript")
 export pacfile
 export CARCH="$(dpkg --print-architecture)"
+export DISTRO="$(set_distro)"
 if ! source "${pacfile}"; then
     fancy_message error "Could not source pacscript"
     error_log 12 "install $PACKAGE"
