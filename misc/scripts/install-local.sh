@@ -190,7 +190,7 @@ function get_incompatible_releases() {
         # check for `*:jammy`
         if [[ $key == "*:"* ]]; then
             # check for `22.04` or `jammy`
-            if [[ ${key#*:} == "${distro_version_number}" ]] || [[ ${key#*:} == "${distro_version_name}" ]]; then
+            if [[ ${key#*:} == "${distro_version_number}" || ${key#*:} == "${distro_version_name}" ]]; then
                 fancy_message error "This Pacscript does not work on ${BBlue}${distro_version_name}${NC}/${BBlue}${distro_version_number}${NC}"
                 return 1
             fi
@@ -203,12 +203,13 @@ function get_incompatible_releases() {
             fi
         else
             # check for `ubuntu:jammy` or `ubuntu:22.04`
-            if [[ $key == "${distro_name}:${distro_version_name}" ]] || [[ $key == "${distro_name}:${distro_version_number}" ]]; then
+            if [[ $key == "${distro_name}:${distro_version_name}" || $key == "${distro_name}:${distro_version_number}" ]]; then
                 fancy_message error "This Pacscript does not work on ${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${distro_name}:${distro_version_number}${NC}"
                 return 1
             fi
         fi
     done
+    export DISTRO="${distro_name}:${distro_version_name}"
 }
 
 function is_compatible_arch() {
@@ -750,7 +751,7 @@ if [[ -n $pacdeps ]]; then
                 fancy_message info "The pacstall dependency ${i} is already installed and at latest version"
 
             fi
-			# BUG: Pacstall installs pacdeps from main repo. In the RS version we should get the latest version of the pacdep from all repos and use that.
+            # BUG: Pacstall installs pacdeps from main repo. In the RS version we should get the latest version of the pacdep from all repos and use that.
         elif fancy_message info "Installing $i" && ! pacstall "$cmd" "$i"; then
             fancy_message error "Failed to install dependency"
             error_log 8 "install $PACKAGE"
