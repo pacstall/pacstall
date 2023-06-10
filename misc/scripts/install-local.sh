@@ -44,7 +44,7 @@ function cleanup() {
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
     unset name pkgname repology epoch url depends build_depends breaks replace gives description hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pac_functions 2> /dev/null
-    unset -f pkgver postinst removescript preinst prepare build install 2> /dev/null
+    unset -f pkgver postinst removescript preinst prepare build install package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
 
@@ -90,6 +90,15 @@ function checks() {
     if [[ -z $maintainer ]]; then
         fancy_message warn "Package does not have a maintainer. Please be advised"
     fi
+    if is_function install && is_function package; then
+        fancy_message error "Both 'install()' and 'package()' exist. One or the other can exist, but not both"
+        return 1
+    fi
+
+    if is_function install; then
+        fancy_message warn "'install()' is deprecated. Use 'package()' instead"
+    fi
+
 }
 
 # Logging metadata
@@ -506,7 +515,7 @@ function makedeb() {
             postinst) export deb_post_file="postinst" ;;
             preinst) export deb_post_file="preinst" ;;
         esac
-        if [[ $(type -t "$i") == function ]]; then
+        if is_function "$i"; then
             echo '#!/bin/bash
 set -e
 function ask(){
@@ -754,7 +763,7 @@ if [[ -n $pacdeps ]]; then
                 fancy_message info "The pacstall dependency ${i} is already installed and at latest version"
 
             fi
-			# BUG: Pacstall installs pacdeps from main repo. In the RS version we should get the latest version of the pacdep from all repos and use that.
+            # BUG: Pacstall installs pacdeps from main repo. In the RS version we should get the latest version of the pacdep from all repos and use that.
         elif fancy_message info "Installing $i" && ! pacstall "$cmd" "$i"; then
             fancy_message error "Failed to install dependency"
             error_log 8 "install $PACKAGE"
@@ -1057,8 +1066,8 @@ $(shopt -p -o)"
     eval "$restoretrap"
 }
 
-for i in {prepare,build,install}; do
-    if [[ $(type -t "$i") == function ]]; then
+for i in {prepare,build,install,package}; do
+    if is_function "$i"; then
         pac_functions+=("$i")
     fi
 done
