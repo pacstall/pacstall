@@ -419,9 +419,13 @@ function createdeb() {
     popd > /dev/null || return 1
     sudo tar -cf "$PWD/data.tar" -T /dev/null
     local DATA_LOCATION="$PWD/data.tar"
-    # collect every top level dir except for DEBIAN
+    # collect every top level file/dir except for deb stuff
     for i in *; do
-        if [[ -d $i && $i != "DEBIAN" ]]; then
+		if [[ -d $i || -f $i
+			&& $i != "DEBIAN"
+			&& $i != "data.tar"
+			&& $i != "control.tar"
+			&& $i != "debian-binary" ]]; then
             local files_for_data+=("$i")
         fi
     done
