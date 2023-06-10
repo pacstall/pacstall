@@ -182,6 +182,18 @@ function compare_remote_version() (
     fi
 )
 
+function set_distro() {
+    local distro_name="$(lsb_release -si 2> /dev/null)"
+    distro_name="${distro_name,,}"
+    if [[ "$(lsb_release -ds 2> /dev/null | tail -c 4)" == "sid" ]]; then
+        local distro_version_name="sid"
+        local distro_version_number="sid"
+    else
+        local distro_version_name="$(lsb_release -sc 2> /dev/null)"
+    fi
+    echo "${distro_name}:${distro_version_name}"
+}
+
 function get_incompatible_releases() {
     # example for this function is "ubuntu:jammy"
     local distro_name="$(lsb_release -si 2> /dev/null)"
@@ -199,7 +211,7 @@ function get_incompatible_releases() {
         # check for `*:jammy`
         if [[ $key == "*:"* ]]; then
             # check for `22.04` or `jammy`
-            if [[ ${key#*:} == "${distro_version_number}" ]] || [[ ${key#*:} == "${distro_version_name}" ]]; then
+            if [[ ${key#*:} == "${distro_version_number}" || ${key#*:} == "${distro_version_name}" ]]; then
                 fancy_message error "This Pacscript does not work on ${BBlue}${distro_version_name}${NC}/${BBlue}${distro_version_number}${NC}"
                 return 1
             fi
@@ -212,7 +224,7 @@ function get_incompatible_releases() {
             fi
         else
             # check for `ubuntu:jammy` or `ubuntu:22.04`
-            if [[ $key == "${distro_name}:${distro_version_name}" ]] || [[ $key == "${distro_name}:${distro_version_number}" ]]; then
+            if [[ $key == "${distro_name}:${distro_version_name}" || $key == "${distro_name}:${distro_version_number}" ]]; then
                 fancy_message error "This Pacscript does not work on ${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${distro_name}:${distro_version_number}${NC}"
                 return 1
             fi
@@ -692,9 +704,10 @@ homedir="$(eval echo ~"$PACSTALL_USER")"
 export homedir
 
 sudo cp "${PACKAGE}.pacscript" /tmp
-pacfile=$(readlink -f "/tmp/${PACKAGE}.pacscript")
+pacfile="$(readlink -f "/tmp/${PACKAGE}.pacscript")"
 export pacfile
 export CARCH="$(dpkg --print-architecture)"
+export DISTRO="$(set_distro)"
 if ! source "${pacfile}"; then
     fancy_message error "Could not source pacscript"
     error_log 12 "install $PACKAGE"
