@@ -219,7 +219,7 @@ function ask() {
         reply=$default
     fi
 
-    while true; do
+    while :; do
         # Check if the reply is valid
         case "$reply" in
             Y* | y*)
@@ -263,9 +263,7 @@ function suggested_solution() {
 
 function check_url() {
     if [[ ${1} == "file://"* ]]; then
-        if [[ -f ${1/"file://"/} ]]; then
-            true
-        else
+        if ! [[ -f ${1/"file://"/} ]]; then
             return 1
         fi
     else
@@ -287,7 +285,7 @@ function check_url() {
                 return 1
                 ;;
             200 | 301 | 302)
-                true
+                return 0
                 ;;
             *)
                 fancy_message error "Failed with http code ${http_code}"
