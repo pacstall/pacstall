@@ -433,13 +433,8 @@ function createdeb() {
     local DATA_LOCATION="$PWD/data.tar"
     # collect every top level file/dir except for deb stuff
     for i in *; do
-		if [[ -d $i || -f $i
-			&& $i != "DEBIAN"
-			&& $i != "data.tar"
-			&& $i != "control.tar"
-			&& $i != "debian-binary" ]]; then
-            local files_for_data+=("$i")
-        fi
+        [[ $i =~ ^(DEBIAN|control.tar|data.tar|debian-binary)$ ]] && continue
+        local files_for_data+=("$i")
     done
     fancy_message sub "Packing data.tar"
     sudo tar -rf "$DATA_LOCATION" "${files_for_data[@]}"
