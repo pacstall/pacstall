@@ -41,7 +41,7 @@ function dep_tree.load_traits() {
     local -n out_arr
     pkg="${1:?No pkg given to dep_tree.load_traits}"
     out_arr="${2:?No arr given to dep_tree.load_traits}"
-    unset -n _pacstall_depends _pacdeps 2> /dev/null
+    unset _pacstall_depends _pacdeps 2> /dev/null
     source "${LOGDIR}/${pkg}"
 
     if [[ -n ${_pacstall_depends} ]]; then
@@ -90,6 +90,7 @@ function dep_tree.loop_traits() {
         echo "Loading traits of ${i}"
         local -A arr=()
         dep_tree.load_traits "$i" arr
+		unset _pacstall_depends _pacdeps 2> /dev/null
         dep_tree.sort_traits_into_array "$i" arr class_one class_two class_three
     done
     echo -ne "\033[2K\r"
