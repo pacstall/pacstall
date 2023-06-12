@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-# The order we prefer is only pacdeps (class 1), pacdeps+deps (class 2), everything else (class 3)
+# The order we prefer is pkgs with only pacdeps (class 1), pacdeps+deps (class 2), everything else (class 3)
 # If the pkg has _pacstall_depends, then we should always consider it not upgradable, and let `-I` handle it
 
 export LOGDIR="/var/log/pacstall/metadata"
@@ -41,8 +41,9 @@ function dep_tree.load_traits() {
 	local -n out_arr
 	pkg="${1:?No pkg given to dep_tree.load_traits}"
 	out_arr="${2:?No arr given to dep_tree.load_traits}"
-	unset '_pacstall_depends' '_pacdeps' 2> /dev/null
+	unset -n _pacstall_depends _pacdeps 2> /dev/null
 	source "${LOGDIR}/${pkg}"
+
 	if [[ -n ${_pacstall_depends} ]]; then
 		out_arr['upgrade']=false
 	else
