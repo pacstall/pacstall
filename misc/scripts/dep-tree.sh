@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-# The order we prefer is only pacdeps, pacdeps+deps, everything else
+# The order we prefer is only pacdeps (class 1), pacdeps+deps (class 2), everything else (class 3)
 # If the pkg has _pacstall_depends, then we should always consider it not upgradable, and let `-I` handle it
 
 export LOGDIR="/var/log/pacstall/metadata"
@@ -45,7 +45,6 @@ function dep_tree.load_traits() {
 	source "${LOGDIR}/${pkg}"
 	if [[ -n ${_pacstall_depends} ]]; then
 		out_arr['upgrade']=false
-		return 0
 	else
 		out_arr['upgrade']=true
 	fi
@@ -61,9 +60,38 @@ function dep_tree.load_traits() {
 	fi
 }
 
-while IFS= read -r i; do
-	declare -A arr=()
-	dep_tree.load_traits "$i" arr
-	echo -n "Package $i: "
-	declare -p arr
-done < <(pacstall -L)
+function dep_tree.sort_traits_into_array() {
+	local pkg="${1:?No pkg given to dep_tree.sort_traits_into_array}"
+	local -n trait c_one c_two c_three
+	local trait="${2:?No trait array given to dep_tree.sort_traits_into_array}"
+	c_one="${3:?No c_one array given to dep_tree.sort_traits_into_array}"
+	c_two="${4:?No c_two array given to dep_tree.sort_traits_into_array}"
+	c_three="${5:?No c_three array given to dep_tree.sort_traits_into_array}"
+
+	if [[ ${trait['upgrade']} == 'false' ]]; then
+		return 0
+	fi
+
+	if [[ ${trait['pacdeps']} == 'false' && ${trait['depends']} == 'false' ]]; then
+		c_one+=("${pkg}")
+	elif [[ ${trait['pacdeps']} == 'true' && ${trait['depends']} == 'false' ]]; then
+		c_two+=("${pkg}")
+	else
+		c_three+=("${pkg}")
+	fi
+}
+
+function dep_tree.loop_traits() {
+	local -n merged_array="${1:?No array given to dep_tree.loop_traits}"
+	shift
+	local class_one=() class_two=() class_three=() i
+	for i in "${@}"; do
+		local -A arr=()
+		dep_tree.load_traits "$i" arr
+		dep_tree.sort_traits_into_array "$i" arr class_one class_two class_three
+	done
+	merged_array=("${class_one[@]}" "${class_two[@]}" "${class_three[@]}")
+}
+
+dep_tree.loop_traits update_order $(pacstall -L)
+declare -p update_order
