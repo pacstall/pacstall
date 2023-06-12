@@ -25,6 +25,8 @@
 # The order we prefer is only pacdeps, pacdeps+deps, everything else
 # If the pkg has _pacstall_depends, then we should always consider it not upgradable, and let `-I` handle it
 
+export LOGDIR="/var/log/pacstall/metadata"
+
 function dep_tree.has_deps() {
 	local le_pkg="${1:?No pkg given to dep_tree.has_deps}"
 	if [[ -n $(dpkg-query '--showformat=${Depends}\n' --show "${le_pkg}") ]]; then
@@ -33,10 +35,13 @@ function dep_tree.has_deps() {
 		return 1
 	fi
 }
-function dep_tree.load_traits() (
-	local pkg out_arr
+
+function dep_tree.load_traits() {
+	local pkg
+	local -n out_arr
 	pkg="${1:?No pkg given to dep_tree.load_traits}"
-	declare -nA out_arr="${2:?No arr given to dep_tree.load_traits}"
+	out_arr="${2:?No arr given to dep_tree.load_traits}"
+	unset '_pacstall_depends' '_pacdeps' 2> /dev/null
 	source "${LOGDIR}/${pkg}"
 	if [[ -n ${_pacstall_depends} ]]; then
 		out_arr['upgrade']=false
@@ -49,11 +54,16 @@ function dep_tree.load_traits() (
 	else
 		out_arr['pacdeps']=false
 	fi
-	if dep_tree.has_deps "${pkg}"; then
+	if dep_tree.has_deps "${_gives:-${_name}}"; then
 		out_arr['depends']=true
 	else
 		out_arr['depends']=false
 	fi
-)
+}
 
-dep_tree.load_traits yad arr
+while IFS= read -r i; do
+	declare -A arr=()
+	dep_tree.load_traits "$i" arr
+	echo -n "Package $i: "
+	declare -p arr
+done < <(pacstall -L)
