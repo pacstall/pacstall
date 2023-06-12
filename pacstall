@@ -219,7 +219,7 @@ function ask() {
         reply=$default
     fi
 
-    while true; do
+    while :; do
         # Check if the reply is valid
         case "$reply" in
             Y* | y*)
@@ -263,9 +263,7 @@ function suggested_solution() {
 
 function check_url() {
     if [[ ${1} == "file://"* ]]; then
-        if [[ -f ${1/"file://"/} ]]; then
-            true
-        else
+        if ! [[ -f ${1/"file://"/} ]]; then
             return 1
         fi
     else
@@ -287,7 +285,7 @@ function check_url() {
                 return 1
                 ;;
             200 | 301 | 302)
-                true
+                return 0
                 ;;
             *)
                 fancy_message error "Failed with http code ${http_code}"
@@ -406,7 +404,11 @@ function is_package_installed() {
 
 # Returns 0 if exists, 1 if not
 function is_apt_package_installed() {
-    dpkg -s "${1}" 2> /dev/null 1>&2
+    if [[ $(dpkg-query -W --showformat='${db:Status-Status}' "${1}" &>/dev/null) != "installed" ]]; then
+        return 1
+    else
+        return 0
+    fi
 }
 
 function is_array() {
@@ -414,6 +416,14 @@ function is_array() {
     input="${1}"
     raw="$(declare -p "${input}" 2> /dev/null)"
     if [[ ${raw} == "declare -a ${input}"* ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+function is_function() {
+    if [[ $(type -t "${1}") == "function" ]]; then
         return 0
     else
         return 1

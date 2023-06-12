@@ -44,7 +44,7 @@ function cleanup() {
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
     unset name pkgname repology epoch url depends build_depends breaks replace gives description hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pac_functions 2> /dev/null
-    unset -f pkgver postinst removescript preinst prepare build install 2> /dev/null
+    unset -f pkgver postinst removescript preinst prepare build install package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
 
@@ -90,6 +90,15 @@ function checks() {
     if [[ -z $maintainer ]]; then
         fancy_message warn "Package does not have a maintainer. Please be advised"
     fi
+    if is_function install && is_function package; then
+        fancy_message error "Both 'install()' and 'package()' exist. One or the other can exist, but not both"
+        return 1
+    fi
+
+    if is_function install; then
+        fancy_message warn "'install()' is deprecated. Use 'package()' instead"
+    fi
+
 }
 
 # Logging metadata
@@ -173,6 +182,18 @@ function compare_remote_version() (
     fi
 )
 
+function set_distro() {
+    local distro_name="$(lsb_release -si 2> /dev/null)"
+    distro_name="${distro_name,,}"
+    if [[ "$(lsb_release -ds 2> /dev/null | tail -c 4)" == "sid" ]]; then
+        local distro_version_name="sid"
+        local distro_version_number="sid"
+    else
+        local distro_version_name="$(lsb_release -sc 2> /dev/null)"
+    fi
+    echo "${distro_name}:${distro_version_name}"
+}
+
 function get_incompatible_releases() {
     # example for this function is "ubuntu:jammy"
     local distro_name="$(lsb_release -si 2> /dev/null)"
@@ -190,7 +211,7 @@ function get_incompatible_releases() {
         # check for `*:jammy`
         if [[ $key == "*:"* ]]; then
             # check for `22.04` or `jammy`
-            if [[ ${key#*:} == "${distro_version_number}" ]] || [[ ${key#*:} == "${distro_version_name}" ]]; then
+            if [[ ${key#*:} == "${distro_version_number}" || ${key#*:} == "${distro_version_name}" ]]; then
                 fancy_message error "This Pacscript does not work on ${BBlue}${distro_version_name}${NC}/${BBlue}${distro_version_number}${NC}"
                 return 1
             fi
@@ -203,7 +224,7 @@ function get_incompatible_releases() {
             fi
         else
             # check for `ubuntu:jammy` or `ubuntu:22.04`
-            if [[ $key == "${distro_name}:${distro_version_name}" ]] || [[ $key == "${distro_name}:${distro_version_number}" ]]; then
+            if [[ $key == "${distro_name}:${distro_version_name}" || $key == "${distro_name}:${distro_version_number}" ]]; then
                 fancy_message error "This Pacscript does not work on ${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${distro_name}:${distro_version_number}${NC}"
                 return 1
             fi
@@ -410,11 +431,10 @@ function createdeb() {
     popd > /dev/null || return 1
     sudo tar -cf "$PWD/data.tar" -T /dev/null
     local DATA_LOCATION="$PWD/data.tar"
-    # collect every top level dir except for DEBIAN
+    # collect every top level file/dir except for deb stuff
     for i in *; do
-        if [[ -d $i && $i != "DEBIAN" ]]; then
-            local files_for_data+=("$i")
-        fi
+        [[ $i =~ ^(DEBIAN|control.tar|data.tar|debian-binary)$ ]] && continue
+        local files_for_data+=("$i")
     done
     fancy_message sub "Packing data.tar"
     sudo tar -rf "$DATA_LOCATION" "${files_for_data[@]}"
@@ -502,7 +522,7 @@ function makedeb() {
             postinst) export deb_post_file="postinst" ;;
             preinst) export deb_post_file="preinst" ;;
         esac
-        if [[ $(type -t "$i") == function ]]; then
+        if is_function "$i"; then
             echo '#!/bin/bash
 set -e
 function ask(){
@@ -679,9 +699,10 @@ homedir="$(eval echo ~"$PACSTALL_USER")"
 export homedir
 
 sudo cp "${PACKAGE}.pacscript" /tmp
-pacfile=$(readlink -f "/tmp/${PACKAGE}.pacscript")
+pacfile="$(readlink -f "/tmp/${PACKAGE}.pacscript")"
 export pacfile
 export CARCH="$(dpkg --print-architecture)"
+export DISTRO="$(set_distro)"
 if ! source "${pacfile}"; then
     fancy_message error "Could not source pacscript"
     error_log 12 "install $PACKAGE"
@@ -750,7 +771,7 @@ if [[ -n $pacdeps ]]; then
                 fancy_message info "The pacstall dependency ${i} is already installed and at latest version"
 
             fi
-			# BUG: Pacstall installs pacdeps from main repo. In the RS version we should get the latest version of the pacdep from all repos and use that.
+            # BUG: Pacstall installs pacdeps from main repo. In the RS version we should get the latest version of the pacdep from all repos and use that.
         elif fancy_message info "Installing $i" && ! pacstall "$cmd" "$i"; then
             fancy_message error "Failed to install dependency"
             error_log 8 "install $PACKAGE"
@@ -1053,8 +1074,8 @@ $(shopt -p -o)"
     eval "$restoretrap"
 }
 
-for i in {prepare,build,install}; do
-    if [[ $(type -t "$i") == function ]]; then
+for i in {prepare,build,install,package}; do
+    if is_function "$i"; then
         pac_functions+=("$i")
     fi
 done
