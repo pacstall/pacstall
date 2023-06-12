@@ -90,11 +90,10 @@ function dep_tree.loop_traits() {
     shift
     local class_one=() class_two=() class_three=() pacdeps_arr=() i
     for i in "${@}"; do
-        echo -n "Loading traits of ${i}"
+        echo "Loading traits of ${i}"
         local -A arr=()
         dep_tree.load_traits "$i" arr pacdeps_arr
         dep_tree.sort_traits_into_array "$i" arr class_one class_two class_three
-        echo -ne "\033[2K\rParsed ${i}"
     done
     echo -ne "\033[2K\r"
     merged_array=("${class_one[@]}" "${class_two[@]}" "${class_three[@]}")
