@@ -43,7 +43,7 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset name pkgname repology epoch url depends build_depends breaks replace gives description hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pac_functions 2> /dev/null
+    unset name pkgname repology pkgver epoch url depends build_depends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pac_functions 2> /dev/null
     unset -f pkgver postinst removescript preinst prepare build install package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
@@ -75,16 +75,22 @@ function checks() {
     if [[ -z $hash && $name != *-git ]]; then
         fancy_message warn "Package does not contain a hash"
     fi
-    if [[ -z $version ]]; then
-        fancy_message error "Package does not contain version"
+    if is_function pkgver; then
+        if [[ ! -v pkgver ]]; then
+            fancy_message error "Package contains 'pkgver()' but not the variable as well"
+            return 1
+        fi
+    elif [[ ! -v pkgver ]]; then
+        fancy_message error "Package does not contain pkgver"
         return 1
     fi
+
     if [[ -z $url ]]; then
         fancy_message error "Package does not contain URL"
         return 1
     fi
-    if [[ -z $description ]]; then
-        fancy_message error "Package does not contain a description"
+    if [[ -z $pkgdesc ]]; then
+        fancy_message error "Package does not contain a pkgdesc"
         return 1
     fi
     if [[ -z $maintainer ]]; then
@@ -158,9 +164,10 @@ function log() {
 function compare_remote_version() (
     local input="${1}"
     unset -f pkgver 2> /dev/null
+    unset -v pkgver 2> /dev/null
     source "$LOGDIR/$input" || return 1
     if [[ -z ${_remoterepo} ]]; then
-        return
+        return 0
     elif [[ ${_remoterepo} == *"github.com"* ]]; then
         local remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}"
     elif [[ ${_remoterepo} == *"gitlab.com"* ]]; then
@@ -168,14 +175,18 @@ function compare_remote_version() (
     else
         local remoterepo="${_remoterepo}"
     fi
-    local remotever="$(source <(curl -s -- "$remoterepo/packages/$input/$input.pacscript") && type pkgver &> /dev/null && pkgver || echo "${full_version}")" > /dev/null
+    local remotever="$(
+        source <(curl -s -- "$remoterepo/packages/$input/$input.pacscript") && if is_function pkgver; then
+            echo "${epoch+$epoch:}$(pkgver)"
+        else echo "${epoch+$epoch:}${pkgver}"; fi
+    )" > /dev/null
     if [[ $input == *"-git" ]]; then
         if [[ $(pacstall -V "$input") != "$remotever" ]]; then
             echo "update"
         else
             echo "no"
         fi
-    elif dpkg --compare-versions "$(pacstall -V "$input")" lt "$remotever" > /dev/null 2>&1; then
+    elif dpkg --compare-versions "$(pacstall -V "$input")" lt "$remotever" &> /dev/null; then
         echo "update"
     else
         echo "no"
@@ -504,7 +515,7 @@ function makedeb() {
         else
             local description_arr+=("$line")
         fi
-    done <<< "${description}"
+    done <<< "${pkgdesc}"
     if ((${#description_arr[@]} > 1)); then
         deblog "Description" "$(
             echo "${description_arr[0]}"
@@ -513,7 +524,7 @@ function makedeb() {
             done
         )"
     else
-        deblog "Description" "${description}"
+        deblog "Description" "${pkgdesc}"
     fi
 
     for i in {removescript,postinst,preinst}; do
@@ -711,7 +722,6 @@ if ! source "${pacfile}"; then
     return 1
 fi
 
-full_version="${epoch+$epoch:}$version"
 if [[ -n ${arch[*]} ]]; then
     if ! is_compatible_arch "${arch[@]}"; then
         cleanup
@@ -729,16 +739,18 @@ fi
 clean_builddir
 sudo mkdir -p "$STOWDIR/$name/DEBIAN"
 
-if type pkgver > /dev/null 2>&1; then
-    version=$(pkgver) > /dev/null
-fi
-
 # Run checks function
 if ! checks; then
     error_log 6 "install $PACKAGE"
     fancy_message info "Cleaning up"
     cleanup
     return 1
+fi
+
+if is_function pkgver; then
+    full_version="${epoch+$epoch:}$(pkgver)"
+else
+    full_version="${epoch+$epoch:}${pkgver}"
 fi
 
 # Trap Crtl+C just before the point cleanup is first needed
