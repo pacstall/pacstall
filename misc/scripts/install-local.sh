@@ -43,7 +43,7 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset name pkgname repology pkgver epoch url depends build_depends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pac_functions 2> /dev/null
+    unset name pkgname repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pac_functions 2> /dev/null
     unset -f pkgver postinst removescript preinst prepare build install package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
@@ -100,11 +100,6 @@ function checks() {
         fancy_message error "Both 'install()' and 'package()' exist. One or the other can exist, but not both"
         return 1
     fi
-
-    if is_function install; then
-        fancy_message warn "'install()' is deprecated. Use 'package()' instead"
-    fi
-
 }
 
 # Logging metadata
@@ -245,11 +240,7 @@ function get_incompatible_releases() {
 
 function is_compatible_arch() {
     local input=("${@}")
-    if [[ " ${input[*]} " =~ " all " ]]; then
-        fancy_message warn "${BBlue}all${NC} is deprecated. Use ${BBlue}any${NC} instead"
-        suggested_solution "Replace ${UPurple}arch${NC} with ${UCyan}arch=(${arch[*]/all/any})${NC}"
-        return 0
-    elif [[ " ${input[*]} " =~ " any " ]]; then
+    if [[ " ${input[*]} " =~ " any " ]]; then
         return 0
     elif ! [[ " ${input[*]} " =~ " ${CARCH} " ]]; then
         fancy_message error "This Pacscript does not work on ${BBlue}${CARCH}${NC}"
@@ -271,14 +262,7 @@ function clean_builddir() {
 
 function prompt_optdepends() {
     local deps optdep
-    if [[ -n $depends ]]; then
-        if is_array depends; then
-            deps=("${depends[@]}")
-        else
-            mapfile -t deps <<< "${depends// /$'\n'}"
-            fancy_message warn "Using '${BCyan}depends${NC}' as a variable instead of array is deprecated"
-        fi
-    fi
+    deps=("${depends[@]}")
     if ((${#optdepends[@]} != 0)); then
         for i in "${optdepends[@]}"; do
             # Should cover `foo:i386: baz`, `foo: baz`, but not `foo:baz`
@@ -796,10 +780,6 @@ fi
 
 if ! is_package_installed "${name}"; then
     if [[ -n $breaks ]]; then
-        if ! is_array breaks; then
-            mapfile -t breaks <<< "${breaks// /$'\n'}"
-            fancy_message warn "Using '${BCyan}breaks${NC}' as a variable instead of array is deprecated"
-        fi
         for pkg in "${breaks[@]}"; do
             # Do we have an apt package installed (but not pacstall)?
             if is_apt_package_installed "${pkg}" && ! is_package_installed "${pkg}"; then
@@ -824,10 +804,6 @@ if ! is_package_installed "${name}"; then
     fi
 
     if [[ -n ${replace[*]} ]]; then
-        if ! is_array replace; then
-            mapfile -t replace <<< "${replace// /$'\n'}"
-            fancy_message warn "Using '${BCyan}replace${NC}' as a variable instead of array is deprecated"
-        fi
         # Ask user if they want to replace the program
         for pkg in "${replace[@]}"; do
             if is_apt_package_installed "${pkg}"; then
@@ -843,13 +819,8 @@ if ! is_package_installed "${name}"; then
     fi
 fi
 
-if [[ -n ${build_depends[*]} ]]; then
-    # Get all uninstalled build depends
-    if ! is_array build_depends; then
-        mapfile -t build_depends <<< "${build_depends// /$'\n'}"
-        fancy_message warn "Using '${BCyan}build_depends${NC}' as a variable instead of array is deprecated"
-    fi
-    for build_dep in "${build_depends[@]}"; do
+if [[ -n ${makedepends[*]} ]]; then
+    for build_dep in "${makedepends[@]}"; do
         if ! is_apt_package_installed "${build_dep}"; then
             # If not installed yet, we can mark it as possibly removable
             not_installed_yet_builddepends+=("${build_dep}")
@@ -1086,7 +1057,7 @@ $(shopt -p -o)"
     eval "$restoretrap"
 }
 
-for i in {prepare,build,install,package}; do
+for i in {prepare,build,package}; do
     if is_function "$i"; then
         pac_functions+=("$i")
     fi
