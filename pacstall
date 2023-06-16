@@ -635,7 +635,7 @@ Helpful links:
                     # Make the directory if not exist
                     if [[ ! -e "$STGDIR/repo/" ]]; then
                         sudo mkdir -p "$STGDIR/repo"
-                        sudo touch "$STGDIR/repo/pacstallrepo.txt"
+                        sudo touch "$STGDIR/repo/pacstallrepo"
                         pacstall -A
                     fi
 
@@ -715,8 +715,8 @@ Helpful links:
         -A | --add-repo)
             REPO="$2"
 
-            if [[ ! -f "$STGDIR/repo/pacstallrepo.txt" ]]; then
-                echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > "$STGDIR/repo/pacstallrepo.txt"
+            if [[ ! -f "$STGDIR/repo/pacstallrepo" ]]; then
+                echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' sudo tee "$STGDIR/repo/pacstallrepo" > /dev/null
                 return 0
             fi
 
