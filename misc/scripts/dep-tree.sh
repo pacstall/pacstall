@@ -36,6 +36,30 @@ function dep_tree.has_deps() {
     fi
 }
 
+function dep_tree.is_section_pacstall() {
+    local le_pkg="${1:?No pkg given to dep_tree.is_section_pacstall}"
+    if [[ $(dpkg-query '--showformat=${Section}\n' --show "${le_pkg}" 2> /dev/null) == "Pacstall" ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+function dep_tree.has_pacdeps() {
+    local pkg="${1:?No pkg given to dep_tree.has_pacdeps}"
+    local deps i
+    mapfile -t deps < <(dpkg-query '--showformat=${Depends}\n' --show "${pkg}" 2> /dev/null | awk NF | tr -d ',')
+    if ((${#deps[@]} == 0)); then
+        return 1
+    fi
+    for i in "${deps[@]}"; do
+        if dep_tree.is_section_pacstall "${i}"; then
+            return 0
+        fi
+    done
+    return 1
+}
+
 function dep_tree.load_traits() {
     local pkg
     local -n out_arr
@@ -49,7 +73,7 @@ function dep_tree.load_traits() {
     else
         out_arr['upgrade']=true
     fi
-    if [[ -n ${_pacdeps[*]} ]]; then
+    if dep_tree.has_pacdeps "${pkg}"; then
         out_arr['pacdeps']=true
     else
         out_arr['pacdeps']=false
@@ -90,7 +114,7 @@ function dep_tree.loop_traits() {
         echo "Loading traits of ${i}"
         local -A arr=()
         dep_tree.load_traits "$i" arr
-		unset _pacstall_depends _pacdeps 2> /dev/null
+        unset _pacstall_depends _pacdeps 2> /dev/null
         dep_tree.sort_traits_into_array "$i" arr class_one class_two class_three
     done
     echo -ne "\033[2K\r"
