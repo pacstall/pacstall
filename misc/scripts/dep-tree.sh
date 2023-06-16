@@ -117,7 +117,6 @@ function dep_tree.loop_traits() {
         unset _pacstall_depends _pacdeps 2> /dev/null
         dep_tree.sort_traits_into_array "$i" arr class_one class_two class_three
     done
-    echo -ne "\033[2K\r"
     merged_array=("${class_one[@]}" "${class_two[@]}" "${class_three[@]}")
 }
 
