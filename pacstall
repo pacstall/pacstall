@@ -716,7 +716,7 @@ Helpful links:
             REPO="$2"
 
             if [[ ! -f "$STGDIR/repo/pacstallrepo" ]]; then
-                echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' sudo tee "$STGDIR/repo/pacstallrepo" > /dev/null
+                echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' | sudo tee "$STGDIR/repo/pacstallrepo" > /dev/null
                 return 0
             fi
 
