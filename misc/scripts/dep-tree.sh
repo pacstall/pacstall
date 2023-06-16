@@ -97,9 +97,9 @@ function dep_tree.sort_traits_into_array() {
         return 0
     fi
 
-    if [[ ${trait['pacdeps']} == 'true' && ${trait['depends']} == 'false' ]]; then
+    if [[ ${trait['pacdeps']} == 'true' ]]; then
         c_one+=("${pkg}")
-    elif [[ ${trait['pacdeps']} == 'false' && ${trait['depends']} == 'false' ]]; then
+    elif [[ ${trait['depends']} == 'false' ]]; then
         c_two+=("${pkg}")
     else
         c_three+=("${pkg}")
