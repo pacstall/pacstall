@@ -48,7 +48,7 @@ function dep_tree.is_section_pacstall() {
 function dep_tree.has_pacdeps() {
     local pkg="${1:?No pkg given to dep_tree.has_pacdeps}"
     local deps i
-    mapfile -t deps < <(dpkg-query '--showformat=${Depends}\n' --show "${pkg}" 2> /dev/null | awk NF | tr -d ',')
+    mapfile -t -d' ' deps < <(dpkg-query '--showformat=${Depends}\n' --show "${pkg}" 2> /dev/null | awk NF | tr -d ',')
     if ((${#deps[@]} == 0)); then
         return 1
     fi
