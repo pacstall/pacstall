@@ -73,7 +73,7 @@ function dep_tree.load_traits() {
     else
         out_arr['upgrade']=true
     fi
-    if dep_tree.has_pacdeps "${pkg}"; then
+	if dep_tree.has_pacdeps "${_gives:-${_name}}"; then
         out_arr['pacdeps']=true
     else
         out_arr['pacdeps']=false
