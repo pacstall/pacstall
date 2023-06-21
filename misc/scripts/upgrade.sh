@@ -22,6 +22,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+# shellcheck source=./misc/scripts/dep-tree.sh
+source "${STGDIR}/scripts/dep-tree.sh" || {
+    fancy_message error "Could not load dep-tree.sh"
+    return 1
+}
+
 function ver_compare() {
     local first second
     first="${1#${1/[0-9]*/}}"
@@ -31,13 +37,17 @@ function ver_compare() {
 
 export UPGRADE="yes"
 
+fancy_message info "Checking for updates"
+
 # Get the list of the installed packages
 mapfile -t list < <(pacstall -L)
+fancy_message info "Building dependency tree"
+dep_tree.loop_traits update_order "${list[@]}"
+list=("${update_order[@]}")
+
 up_list="$(mktemp /tmp/XXXXXX-pacstall-up-list)"
 up_print="$(mktemp /tmp/XXXXXX-pacstall-up-print)"
 up_urls="$(mktemp /tmp/XXXXXX-pacstall-up-urls)"
-
-fancy_message info "Checking for updates"
 
 N="$(nproc)"
 (
@@ -119,21 +129,18 @@ N="$(nproc)"
     wait
 )
 
-if (($(wc -l < "${up_list}") == 0)); then
+if [[ ! -s ${up_list} ]]; then
     fancy_message info "Nothing to upgrade"
 else
     fancy_message info "Packages can be upgraded"
     echo -e "Upgradable: $(wc -l < "${up_print}")
 ${BOLD}$(cat "${up_print}")${NC}\n"
 
-    upgrade=()
-    while IFS= read -r line; do
-        upgrade+=("$line")
-    done < "${up_list}"
-
-    while IFS= read -r line; do
-        remotes+=("$line")
-    done < "${up_urls}"
+    declare -A remotes=()
+    while read -r pkg && read -r remote <&3; do
+        upgrade+=("${pkg}")
+        remotes[pkg]="${remote}"
+    done < "${up_list}" 3< "${up_urls}"
 
     export local='no'
     mkdir -p "$SRCDIR"
@@ -142,14 +149,14 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
         fancy_message error "Could not enter ${SRCDIR}"
         exit 1
     fi
-    for i in "${!upgrade[@]}"; do
-        PACKAGE=${upgrade[$i]}
+    for i in "${upgrade[@]}"; do
+        PACKAGE="${i}"
         ask "Do you want to upgrade ${GREEN}${PACKAGE}${NC}" Y
         if ((answer == 0)); then
             continue
         fi
-        REPO="${remotes[$i]}"
-        export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
+        REPO="${remotes[PACKAGE]}"
+        export URL="${REPO}/packages/$PACKAGE/$PACKAGE.pacscript"
         # shellcheck source=./misc/scripts/download.sh
         if ! source "$STGDIR/scripts/download.sh"; then
             fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"

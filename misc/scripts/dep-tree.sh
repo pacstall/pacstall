@@ -25,20 +25,9 @@
 # The order we prefer is pkgs with only pacdeps (class 1), pacdeps+deps (class 2), everything else (class 3)
 # If the pkg has _pacstall_depends, then we should always consider it not upgradable, and let `-I` handle it
 
-export LOGDIR="/var/log/pacstall/metadata"
-
 function dep_tree.has_deps() {
     local le_pkg="${1:?No pkg given to dep_tree.has_deps}"
     if [[ -n $(dpkg-query '--showformat=${Depends}\n' --show "${le_pkg}") ]]; then
-        return 0
-    else
-        return 1
-    fi
-}
-
-function dep_tree.is_section_pacstall() {
-    local le_pkg="${1:?No pkg given to dep_tree.is_section_pacstall}"
-    if [[ $(dpkg-query '--showformat=${Section}\n' --show "${le_pkg}" 2> /dev/null) == "Pacstall" ]]; then
         return 0
     else
         return 1
@@ -73,7 +62,7 @@ function dep_tree.load_traits() {
     else
         out_arr['upgrade']=true
     fi
-	if dep_tree.has_pacdeps "${_gives:-${_name}}" || [[ -n "${_pacdeps[*]}" ]]; then
+    if [[ -n ${_pacdeps[*]} ]]; then
         out_arr['pacdeps']=true
     else
         out_arr['pacdeps']=false
@@ -119,6 +108,3 @@ function dep_tree.loop_traits() {
     done
     merged_array=("${class_one[@]}" "${class_two[@]}" "${class_three[@]}")
 }
-
-dep_tree.loop_traits update_order $(pacstall -L)
-declare -p update_order
