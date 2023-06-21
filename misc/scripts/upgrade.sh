@@ -158,7 +158,7 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
         if ((answer == 0)); then
             continue
         fi
-        REPO="${remotes[PACKAGE]}"
+        REPO="${remotes[${PACKAGE}]}"
         export URL="${REPO}/packages/$PACKAGE/$PACKAGE.pacscript"
         # shellcheck source=./misc/scripts/download.sh
         if ! source "$STGDIR/scripts/download.sh"; then
