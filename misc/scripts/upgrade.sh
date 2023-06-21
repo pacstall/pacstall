@@ -40,7 +40,10 @@ export UPGRADE="yes"
 fancy_message info "Checking for updates"
 
 # Get the list of the installed packages
-mapfile -t list < <(pacstall -L)
+mapfile -t list < <(pacstall -L | awk NF)
+if ((${#list[@]} == 0)); then
+    fancy_message info "Nothing to upgrade"
+fi
 fancy_message info "Building dependency tree"
 dep_tree.loop_traits update_order "${list[@]}"
 list=("${update_order[@]}")
