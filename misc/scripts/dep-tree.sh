@@ -100,7 +100,6 @@ function dep_tree.loop_traits() {
     shift
     local class_one=() class_two=() class_three=() i
     for i in "${@}"; do
-        echo "Loading traits of ${i}"
         local -A arr=()
         dep_tree.load_traits "$i" arr
         unset _pacstall_depends _pacdeps 2> /dev/null
