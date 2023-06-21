@@ -54,16 +54,16 @@ else
 fi
 
 if ! curl --head --location -s --fail -- "$REPO/packagelist" > /dev/null; then
-    fancy_message warn "If the URL is a private repo, edit ${CYAN}\e]8;;file://$STGDIR/repo/pacstallrepo.txt\a$STGDIR/repo/pacstallrepo.txt\e]8;;\a${NC}"
+    fancy_message warn "If the URL is a private repo, edit ${CYAN}\e]8;;file://$STGDIR/repo/pacstallrepo\a$STGDIR/repo/pacstallrepo\e]8;;\a${NC}"
     fancy_message error "packagelist file not found"
     exit 3
 fi
 REPOLIST=()
 while IFS= read -r REPOURL; do
     REPOLIST+=("${REPOURL} ")
-done < "$STGDIR/repo/pacstallrepo.txt"
+done < "$STGDIR/repo/pacstallrepo"
 REPOLIST+=("$REPO")
 
-printf "%s\n" "${REPOLIST[@]}" | sort -u | sudo tee "$STGDIR/repo/pacstallrepo.txt" > /dev/null
+printf "%s\n" "${REPOLIST[@]}" | sort -u | sudo tee "$STGDIR/repo/pacstallrepo" > /dev/null
 fancy_message info "The repo list has been updated"
 # vim:set ft=sh ts=4 sw=4 noet:
