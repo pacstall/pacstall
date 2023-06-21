@@ -142,7 +142,7 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
     declare -A remotes=()
     while read -r pkg && read -r remote <&3; do
         upgrade+=("${pkg}")
-        remotes[pkg]="${remote}"
+        remotes[${pkg}]="${remote}"
     done < "${up_list}" 3< "${up_urls}"
 
     export local='no'
