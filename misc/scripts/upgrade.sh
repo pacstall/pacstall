@@ -43,7 +43,7 @@ fancy_message info "Checking for updates"
 mapfile -t list < <(pacstall -L | awk NF)
 if ((${#list[@]} == 0)); then
     fancy_message info "Nothing to upgrade"
-	return 0
+    return 0
 fi
 fancy_message info "Building dependency tree"
 dep_tree.loop_traits update_order "${list[@]}"
@@ -145,6 +145,9 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
         upgrade+=("${pkg}")
         remotes[${pkg}]="${remote}"
     done < "${up_list}" 3< "${up_urls}"
+
+    dep_tree.loop_traits update_order "${upgrade[@]}"
+    upgrade=("${update_order[@]}")
 
     export local='no'
     mkdir -p "$SRCDIR"
