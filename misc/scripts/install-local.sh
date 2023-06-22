@@ -22,6 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+set -x
 function cleanup() {
     if [[ -n $KEEP ]]; then
         rm -rf "/tmp/pacstall-keep/$name"
@@ -759,7 +760,7 @@ if [[ -n $pacdeps ]]; then
         [[ $KEEP ]] && cmd="-KPI" || cmd="-PI"
         if is_package_installed "${i}"; then
             pacstall_pacdep_status="$(compare_remote_version "$i")"
-            if [[ -z $UPGRADE && $pacstall_pacdep_status == "update" ]]; then
+            if [[ $pacstall_pacdep_status == "update" ]]; then
                 fancy_message info "Found newer version for $i pacdep"
                 if ! pacstall "$cmd" "$i"; then
                     fancy_message error "Failed to install dependency"
