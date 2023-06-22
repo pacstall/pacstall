@@ -162,7 +162,7 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
             continue
         fi
         REPO="${remotes[${PACKAGE}]}"
-        export URL="${REPO}/packages/$PACKAGE/$PACKAGE.pacscript"
+        export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
         # shellcheck source=./misc/scripts/download.sh
         if ! source "$STGDIR/scripts/download.sh"; then
             fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
