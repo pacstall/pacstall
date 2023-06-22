@@ -123,9 +123,6 @@ function log() {
     # Metadata writing
     {
         echo "_name=\"$name"\"
-        if [[ -n $pkgname ]]; then
-            echo "_pkgname=\"$pkgname"\"
-        fi
         echo "_version=\"${full_version}"\"
         echo "_install_size=\"${install_size}"\"
         echo "_date=\"$(date)"\"
