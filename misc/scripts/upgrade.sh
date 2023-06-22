@@ -43,6 +43,7 @@ fancy_message info "Checking for updates"
 mapfile -t list < <(pacstall -L | awk NF)
 if ((${#list[@]} == 0)); then
     fancy_message info "Nothing to upgrade"
+	return 0
 fi
 fancy_message info "Building dependency tree"
 dep_tree.loop_traits update_order "${list[@]}"
