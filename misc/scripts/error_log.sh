@@ -50,7 +50,7 @@ function error_log() {
 
     if [[ ! -f $LOGFILE ]]; then
         sudo touch "$LOGFILE"
-        find /var/log/pacstall/error_log/* -type f -ctime +14 -exec sudo rm -rf {} \;
+        sudo find /var/log/pacstall/error_log/* -type f -ctime +14 -delete
     fi
     echo -e "[ $(date) | $scope ] Error $code - ${ErrMsg[$code]}" | sudo tee -a "$LOGFILE" > /dev/null
     return 0

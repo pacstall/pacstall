@@ -66,7 +66,7 @@ if [[ -n $_pacdeps ]]; then
     echo -e "${BGreen}pacstall dependencies${NC}: ${_pacdeps[*]}"
 fi
 deps=$(get_field "$PACKAGE" Depends)
-deps="${deps//,}"
+deps="${deps//,/}"
 if [[ -n $deps ]]; then
     echo -e "${BGreen}dependencies${NC}: ${deps}"
 fi

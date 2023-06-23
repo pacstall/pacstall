@@ -146,6 +146,7 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
         remotes[${pkg}]="${remote}"
     done < "${up_list}" 3< "${up_urls}"
 
+    dep_tree.loop_traits update_order "${upgrade[@]}"
     upgrade=("${update_order[@]}")
 
     export local='no'

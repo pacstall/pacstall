@@ -395,7 +395,10 @@ function generate_changelog() {
 }
 
 function clean_logdir() {
-    sudo find -H "/var/log/pacstall/error_log/" -maxdepth 1 -mtime +30 -exec rm -rf {} \;
+    if [[ ! -d /var/log/pacstall/error_log/ ]]; then
+        sudo mkdir -p "/var/log/pacstall/error_log"
+    fi
+    sudo find -H /var/log/pacstall/error_log/* -maxdepth 1 -mtime +30 -delete
 }
 
 function createdeb() {
