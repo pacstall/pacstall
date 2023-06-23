@@ -157,8 +157,8 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
         fancy_message error "Could not enter ${SRCDIR}"
         exit 1
     fi
-    for i in "${upgrade[@]}"; do
-        PACKAGE="${i}"
+    for to_upgrade in "${upgrade[@]}"; do
+        PACKAGE="${to_upgrade}"
         ask "Do you want to upgrade ${GREEN}${PACKAGE}${NC}" Y
         if ((answer == 0)); then
             continue
