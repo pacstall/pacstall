@@ -32,7 +32,7 @@ function ver_compare() {
     local first second
     first="${1#"${1/[0-9]*/}"}"
     second="${2#"${2/[0-9]*/}"}"
-	# shellcheck disable=SC2046
+    # shellcheck disable=SC2046
     return $(dpkg --compare-versions "$first" lt "$second")
 }
 

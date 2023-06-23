@@ -70,6 +70,7 @@ function dep_tree.load_traits() {
     if dep_tree.has_deps "${_gives:-${_name}}"; then
         out_arr['depends']=true
     else
+        # shellcheck disable=SC2034
         out_arr['depends']=false
     fi
 }
@@ -100,10 +101,12 @@ function dep_tree.loop_traits() {
     shift
     local class_one=() class_two=() class_three=() i
     for i in "${@}"; do
+        # shellcheck disable=SC2034
         local -A arr=()
         dep_tree.load_traits "$i" arr
         unset _pacstall_depends _pacdeps 2> /dev/null
         dep_tree.sort_traits_into_array "$i" arr class_one class_two class_three
     done
+    # shellcheck disable=SC2034
     merged_array=("${class_one[@]}" "${class_two[@]}" "${class_three[@]}")
 }
