@@ -34,21 +34,6 @@ function dep_tree.has_deps() {
     fi
 }
 
-function dep_tree.has_pacdeps() {
-    local pkg="${1:?No pkg given to dep_tree.has_pacdeps}"
-    local deps i
-    mapfile -t -d' ' deps < <(dpkg-query '--showformat=${Depends}\n' --show "${pkg}" 2> /dev/null | awk NF | tr -d ',')
-    if ((${#deps[@]} == 0)); then
-        return 1
-    fi
-    for i in "${deps[@]}"; do
-        if dep_tree.is_section_pacstall "${i}"; then
-            return 0
-        fi
-    done
-    return 1
-}
-
 function dep_tree.load_traits() {
     local pkg
     local -n out_arr
