@@ -40,10 +40,10 @@ function dep_tree.load_traits() {
     pkg="${1:?No pkg given to dep_tree.load_traits}"
     out_arr="${2:?No arr given to dep_tree.load_traits}"
     unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch 2> /dev/null
-	# shellcheck disable=SC1090
+    # shellcheck disable=SC1090
     source "${LOGDIR}/${pkg}"
 
-    if [[ -n ${_pacstall_depends} ]]; then
+    if [[ -n ${_pacstall_depends} ]] || [[ -z ${_remoterepo} ]]; then
         out_arr['upgrade']=false
     else
         out_arr['upgrade']=true

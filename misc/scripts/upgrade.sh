@@ -65,10 +65,7 @@ N="$(nproc)"
             # localver is the current version of the package
             localver="${_version}"
 
-            if [[ -z ${_remoterepo} ]]; then
-                # TODO: upgrade for local pacscripts
-                return
-            elif [[ ${_remoterepo} == *"github.com"* ]]; then
+            if [[ ${_remoterepo} == *"github.com"* ]]; then
                 remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}"
             elif [[ ${_remoterepo} == *"gitlab.com"* ]]; then
                 remoterepo="${_remoterepo}/-/raw/${_remotebranch}"
