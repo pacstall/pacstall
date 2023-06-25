@@ -133,7 +133,7 @@ function dep_tree.loop_traits() {
 }
 
 function dep_tree.trim_pacdeps() {
-	local -n merged_array="${1:?Pass array to dep_tree.trim_pacdeps}"
+    local -n merged_array="${1:?Pass array to dep_tree.trim_pacdeps}"
     local i
     for i in "${merged_array[@]}"; do
         unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch 2> /dev/null

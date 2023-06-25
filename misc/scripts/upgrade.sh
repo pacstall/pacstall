@@ -48,6 +48,7 @@ if ((${#list[@]} == 0)); then
 fi
 fancy_message info "Building dependency tree"
 dep_tree.loop_traits update_order "${list[@]}"
+dep_tree.trim_pacdeps update_order
 list=("${update_order[@]}")
 
 up_list="$(mktemp /tmp/XXXXXX-pacstall-up-list)"
@@ -145,6 +146,7 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
     done < "${up_list}" 3< "${up_urls}"
 
     dep_tree.loop_traits update_order "${upgrade[@]}"
+    dep_tree.trim_pacdeps update_order
     upgrade=("${update_order[@]}")
 
     export local='no'
