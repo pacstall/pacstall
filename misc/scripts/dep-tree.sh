@@ -22,8 +22,35 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-# The order we prefer is pkgs with only pacdeps (class 1), pacdeps+deps (class 2), everything else (class 3)
-# If the pkg has _pacstall_depends, then we should always consider it not upgradable, and let `-I` handle it
+# The order we prefer is pkgs with only pacdeps (class 1), pacdeps+deps (class 2), everything else (class 3), and just pacdeps (class 4)
+
+function array.contains() {
+    local -n arra="${1:?No array passed to array.contains}"
+    local input="${2:?No input given to array.contains}"
+    local i
+    for i in "${arra[@]}"; do
+        if [[ ${i} == "${input}" ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+function array.remove() {
+    local array_name to_remove i
+    declare -n array_name="${1:?No array given to array.remove}"
+    to_remove="${2:?No element given to array.remove}"
+
+    for i in "${!array_name[@]}"; do
+        if [[ ${array_name[i]} == "${to_remove}" ]]; then
+            unset "array_name[${i}]" || return 1
+            # Adjust the indices so there are none are jumped
+            array_name=("${array_name[@]}")
+            break 2
+        fi
+    done
+    return 0
+}
 
 function dep_tree.has_deps() {
     local le_pkg="${1:?No pkg given to dep_tree.has_deps}"
@@ -43,7 +70,7 @@ function dep_tree.load_traits() {
     # shellcheck disable=SC1090
     source "${LOGDIR}/${pkg}"
 
-    if [[ -n ${_pacstall_depends} ]] || [[ -z ${_remoterepo} ]]; then
+    if [[ -z ${_remoterepo} ]]; then
         out_arr['upgrade']=false
     else
         out_arr['upgrade']=true
@@ -52,6 +79,11 @@ function dep_tree.load_traits() {
         out_arr['pacdeps']=true
     else
         out_arr['pacdeps']=false
+    fi
+    if [[ -n ${_pacstall_depends} ]]; then
+        out_arr['is_pacdep']=true
+    else
+        out_arr['is_pacdep']=false
     fi
     if dep_tree.has_deps "${_gives:-${_name}}"; then
         out_arr['depends']=true
@@ -63,11 +95,12 @@ function dep_tree.load_traits() {
 
 function dep_tree.sort_traits_into_array() {
     local pkg="${1:?No pkg given to dep_tree.sort_traits_into_array}"
-    local -n trait c_one c_two c_three
+    local -n trait c_one c_two c_three c_four
     local trait="${2:?No trait array given to dep_tree.sort_traits_into_array}"
     c_one="${3:?No c_one array given to dep_tree.sort_traits_into_array}"
     c_two="${4:?No c_two array given to dep_tree.sort_traits_into_array}"
     c_three="${5:?No c_three array given to dep_tree.sort_traits_into_array}"
+    c_four="${6:?No c_four array given to dep_tree.sort_traits_into_array}"
 
     if [[ ${trait['upgrade']} == 'false' ]]; then
         return 0
@@ -77,6 +110,8 @@ function dep_tree.sort_traits_into_array() {
         c_one+=("${pkg}")
     elif [[ ${trait['depends']} == 'false' ]]; then
         c_two+=("${pkg}")
+    elif [[ ${trait['is_pacdep']} == 'true' ]]; then
+        c_four+=("${pkg}")
     else
         c_three+=("${pkg}")
     fi
@@ -85,14 +120,30 @@ function dep_tree.sort_traits_into_array() {
 function dep_tree.loop_traits() {
     local -n merged_array="${1:?No array given to dep_tree.loop_traits}"
     shift
-    local class_one=() class_two=() class_three=() i
+    local class_one=() class_two=() class_three=() class_four=() i
     for i in "${@}"; do
         # shellcheck disable=SC2034
         local -A arr=()
         dep_tree.load_traits "$i" arr
         unset _pacstall_depends _pacdeps 2> /dev/null
-        dep_tree.sort_traits_into_array "$i" arr class_one class_two class_three
+        dep_tree.sort_traits_into_array "$i" arr class_one class_two class_three class_four
     done
     # shellcheck disable=SC2034
-    merged_array=("${class_one[@]}" "${class_two[@]}" "${class_three[@]}")
+    merged_array=("${class_one[@]}" "${class_two[@]}" "${class_three[@]}" "${class_four[@]}")
+}
+
+function dep_tree.trim_pacdeps() {
+	local -n merged_array="${1:?Pass array to dep_tree.trim_pacdeps}"
+    local i
+    for i in "${merged_array[@]}"; do
+        unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch 2> /dev/null
+        source "${LOGDIR}/${i}"
+        if [[ -n ${_pacdeps[*]} ]]; then
+            for z in "${_pacdeps[@]}"; do
+                if array.contains merged_array "${z}"; then
+                    array.remove merged_array "${z}"
+                fi
+            done
+        fi
+    done
 }
