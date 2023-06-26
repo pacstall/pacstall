@@ -27,13 +27,12 @@
 function array.contains() {
     local -n arra="${1:?No array passed to array.contains}"
     local input="${2:?No input given to array.contains}"
-    local i
-    for i in "${arra[@]}"; do
-        if [[ ${i} == "${input}" ]]; then
-            return 0
-        fi
-    done
-    return 1
+    # shellcheck disable=SC2076
+    if [[ " ${arra[*]} " =~ " ${input} " ]]; then
+        return 0
+    else
+        return 1
+    fi
 }
 
 function array.remove() {
@@ -133,6 +132,7 @@ function dep_tree.loop_traits() {
 }
 
 function dep_tree.trim_pacdeps() {
+    # shellcheck disable=SC2178
     local -n merged_array="${1:?Pass array to dep_tree.trim_pacdeps}"
     local i z
     for i in "${merged_array[@]}"; do
