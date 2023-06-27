@@ -102,6 +102,10 @@ else
     echo "$USERNAME $BRANCH" | sudo tee "$STGDIR/repo/update" > /dev/null
 fi
 
+if [[ -f ${STGDIR}/repo/pacstallrepo.txt ]]; then
+    sudo mv "${STGDIR}/repo/pacstallrepo.txt" "${STGDIR}/repo/pacstallrepo"
+fi
+
 # shellcheck disable=SC2207
 new_info=($(cat $STGDIR/repo/update))
 # shellcheck disable=SC2207

@@ -44,7 +44,7 @@ function cleanup() {
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
     unset name pkgname repology epoch url depends build_depends breaks replace gives description hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pac_functions 2> /dev/null
-    unset -f pkgver postinst removescript preinst prepare build install 2> /dev/null
+    unset -f pkgver postinst removescript preinst prepare build install package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
 
@@ -62,6 +62,11 @@ function trap_ctrlc() {
 function checks() {
     if [[ -z $name ]]; then
         fancy_message error "Package does not contain name"
+        return 1
+    fi
+    if [[ $name != "$PACKAGE" ]]; then
+        fancy_message error "Package name does not match file"
+        suggested_solution "Change '${UPurple}name${NC}' to '${UCyan}$PACKAGE${NC}'" "Change package name to '${UCyan}$name${NC}'"
         return 1
     fi
     if [[ -z $gives && $name == *-deb ]]; then
@@ -85,6 +90,15 @@ function checks() {
     if [[ -z $maintainer ]]; then
         fancy_message warn "Package does not have a maintainer. Please be advised"
     fi
+    if is_function install && is_function package; then
+        fancy_message error "Both 'install()' and 'package()' exist. One or the other can exist, but not both"
+        return 1
+    fi
+
+    if is_function install; then
+        fancy_message warn "'install()' is deprecated. Use 'package()' instead"
+    fi
+
 }
 
 # Logging metadata
@@ -168,6 +182,18 @@ function compare_remote_version() (
     fi
 )
 
+function set_distro() {
+    local distro_name="$(lsb_release -si 2> /dev/null)"
+    distro_name="${distro_name,,}"
+    if [[ "$(lsb_release -ds 2> /dev/null | tail -c 4)" == "sid" ]]; then
+        local distro_version_name="sid"
+        local distro_version_number="sid"
+    else
+        local distro_version_name="$(lsb_release -sc 2> /dev/null)"
+    fi
+    echo "${distro_name}:${distro_version_name}"
+}
+
 function get_incompatible_releases() {
     # example for this function is "ubuntu:jammy"
     local distro_name="$(lsb_release -si 2> /dev/null)"
@@ -185,7 +211,7 @@ function get_incompatible_releases() {
         # check for `*:jammy`
         if [[ $key == "*:"* ]]; then
             # check for `22.04` or `jammy`
-            if [[ ${key#*:} == "${distro_version_number}" ]] || [[ ${key#*:} == "${distro_version_name}" ]]; then
+            if [[ ${key#*:} == "${distro_version_number}" || ${key#*:} == "${distro_version_name}" ]]; then
                 fancy_message error "This Pacscript does not work on ${BBlue}${distro_version_name}${NC}/${BBlue}${distro_version_number}${NC}"
                 return 1
             fi
@@ -198,7 +224,7 @@ function get_incompatible_releases() {
             fi
         else
             # check for `ubuntu:jammy` or `ubuntu:22.04`
-            if [[ $key == "${distro_name}:${distro_version_name}" ]] || [[ $key == "${distro_name}:${distro_version_number}" ]]; then
+            if [[ $key == "${distro_name}:${distro_version_name}" || $key == "${distro_name}:${distro_version_number}" ]]; then
                 fancy_message error "This Pacscript does not work on ${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${distro_name}:${distro_version_number}${NC}"
                 return 1
             fi
@@ -280,6 +306,7 @@ function prompt_optdepends() {
         fi
         if ((${#suggested_optdeps[@]} != 0)); then
             if ((PACSTALL_INSTALL != 0)); then
+                # We do this so that arrays 'start at' 1 to the user
                 z=1
                 echo -e "\t\t[${BIRed}0${NC}] Select none"
                 for i in "${suggested_optdeps[@]}"; do
@@ -305,14 +332,19 @@ function prompt_optdepends() {
                     fancy_message warn "${BGreen}${skip_opt[*]}${NC} has exceeded the maximum number of optional dependencies. Skipping"
                 fi
 
+                # Did we get actual answers?
                 if [[ ${choices[0]} != "n" && ${choices[0]} != "0" ]]; then
                     for i in "${choices[@]}"; do
+                        # Set our user array that started at 1 down to 0 based
                         ((i--))
                         local s="${suggested_optdeps[$i]}"
                         local not_installed_yet_optdeps+=("${s%%: *}")
+                        unset s
                     done
                     if [[ -n ${not_installed_yet_optdeps[*]} ]]; then
                         fancy_message info "Selecting packages ${BCyan}${not_installed_yet_optdeps[*]}${NC}"
+                        # final_merged_deps is a dep list of *every* type of dep we want to be logged into Suggests. This includes
+                        # already installed optdeps, not yet installed ones (selected by user) and the rest
                         local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${suggested_optdeps[@]}")
                         deblog "Suggests" "$(sed 's/ /, /g' <<< "${final_merged_deps[@]//: */}")"
                         fancy_message info "Installing selected optional dependencies"
@@ -321,15 +353,18 @@ function prompt_optdepends() {
                     if is_package_installed "${name}"; then
                         sudo dpkg -r --force-all "${gives:-$name}" > /dev/null
                     fi
-                else
+                else # Did we get 0 or n?
+                    # Add everything to Suggests
                     local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${suggested_optdeps[@]}")
                     deblog "Suggests" "$(sed 's/ /, /g' <<< "${final_merged_deps[@]//: */}")"
                 fi
             else # If `-B` is being used
+                # We can log everything from optdepends to Suggests
                 for pkg in "${optdepends[@]}"; do
                     local B_suggests+=("${pkg%%: *}")
                 done
                 deblog "Suggests" "$(sed 's/ /, /g' <<< "${B_suggests[@]//: */}")"
+                unset pkg
             fi
         fi
     fi
@@ -345,10 +380,12 @@ function prompt_optdepends() {
                 fi
             )
         done
+        # Merge Depends and Pacdeps
         while IFS= read -r line; do
             deps+=("$line")
         done < /tmp/pacstall-gives
     fi
+    # Do we have any deps or optdeps scheduled for installation?
     if [[ -n ${deps[*]} || -n ${not_installed_yet_optdeps[*]} ]]; then
         local all_deps_to_install=("${not_installed_yet_optdeps[@]}" "${deps[@]}")
         deblog "Depends" "$(sed 's/ /, /g' <<< "${all_deps_to_install[@]}")"
@@ -356,9 +393,8 @@ function prompt_optdepends() {
 }
 
 function generate_changelog() {
-    echo -e "${name} (${full_version}) $(lsb_release -sc); urgency=medium\n"
-    echo -e "  * Version now at ${full_version}.\n"
-    echo -e " -- $maintainer  $(date +"%a, %d %b %Y %T %z")"
+    printf "%s (%s) %s; urgency=medium\n\n  * Version now at %s.\n\n -- %s %(%a, %d %b %Y %T %z)T\n" \
+        "${name}" "${full_version}" "$(lsb_release -sc)" "${full_version}" "${maintainer}"
 }
 
 function clean_logdir() {
@@ -378,29 +414,27 @@ function createdeb() {
         local compression="gz"
         local command="gzip"
     fi
-    cd "$STOWDIR/$name"
+    cd "$STOWDIR/$name" || return 1
+    # https://tldp.org/HOWTO/html_single/Debian-Binary-Package-Building-HOWTO/#AEN66
     echo "2.0" | sudo tee debian-binary > /dev/null
     sudo tar -cf "$PWD/control.tar" -T /dev/null
     local CONTROL_LOCATION="$PWD/control.tar"
     # avoid having to cd back
-    (
-        # create control.tar
-        cd DEBIAN
-        for i in *; do
-            if [[ -f $i ]]; then
-                local files_for_control+=("$i")
-            fi
-        done
-        fancy_message sub "Packing control.tar"
-        sudo tar -rf "$CONTROL_LOCATION" "${files_for_control[@]}"
-    )
+    pushd DEBIAN > /dev/null || return 1
+    for i in *; do
+        if [[ -f $i ]]; then
+            local files_for_control+=("$i")
+        fi
+    done
+    fancy_message sub "Packing control.tar"
+    sudo tar -rf "$CONTROL_LOCATION" "${files_for_control[@]}"
+    popd > /dev/null || return 1
     sudo tar -cf "$PWD/data.tar" -T /dev/null
     local DATA_LOCATION="$PWD/data.tar"
-    # collect every top level dir except for DEBIAN
+    # collect every top level file/dir except for deb stuff
     for i in *; do
-        if [[ -d $i && $i != "DEBIAN" ]]; then
-            local files_for_data+=("$i")
-        fi
+        [[ $i =~ ^(DEBIAN|control.tar|data.tar|debian-binary)$ ]] && continue
+        local files_for_data+=("$i")
     done
     fancy_message sub "Packing data.tar"
     sudo tar -rf "$DATA_LOCATION" "${files_for_data[@]}"
@@ -413,7 +447,8 @@ function createdeb() {
 }
 
 function makedeb() {
-    if [[ -n $gives ]]; then
+    # It looks weird for it to say: `Packaging foo as foo`
+    if [[ -n $gives && $name != "$gives" ]]; then
         fancy_message info "Packaging ${BGreen}$name${NC} as ${BBlue}$gives${NC}"
     else
         fancy_message info "Packaging ${BGreen}$name${NC}"
@@ -428,7 +463,17 @@ function makedeb() {
         export version="0${full_version}"
     fi
 
-    deblog "Architecture" "all"
+    if [[ -n ${arch[*]} ]]; then
+        # If we have any or all in the arch, then the package works everywhere
+        if [[ " ${arch[*]} " =~ " any " ]] || [[ " ${arch[*]} " =~ " all " ]]; then
+            deblog "Architecture" "all"
+        else # If it doesn't but arch[@] exists we should log the current arch as the build arch
+            deblog "Architecture" "$(dpkg --print-architecture)"
+        fi
+    else # If arch[@] does not exist, we log it as all according to
+        # https://github.com/pacstall/pacstall/wiki/Pacscript-101#arch
+        deblog "Architecture" "all"
+    fi
     deblog "Section" "Pacstall"
     deblog "Priority" "optional"
 
@@ -445,7 +490,11 @@ function makedeb() {
         deblog "Homepage" "${homepage}"
     fi
 
-    deblog "Maintainer" "${maintainer:-Pacstall <pacstall@pm.me>}"
+    if [[ -n ${maintainer} ]]; then
+        deblog "Maintainer" "${maintainer}"
+    else
+        deblog "Maintainer" "Pacstall <pacstall@pm.me>"
+    fi
 
     # Do we have a long description? (longer than 2 lines)
     while IFS=$'\n' read -r line; do
@@ -473,7 +522,7 @@ function makedeb() {
             postinst) export deb_post_file="postinst" ;;
             preinst) export deb_post_file="preinst" ;;
         esac
-        if [[ $(type -t "$i") == function ]]; then
+        if is_function "$i"; then
             echo '#!/bin/bash
 set -e
 function ask(){
@@ -514,9 +563,9 @@ eval echo ~"$PACSTALL_USER"
 }
 export homedir="$(get_homedir)"
 if [[ -n $PACSTALL_BUILD_CORES ]];then
-declare -gr NCPU="${PACSTALL_BUILD_CORES:-1}"
+declare -g NCPU="${PACSTALL_BUILD_CORES:-1}"
 else
-declare -gr NCPU="$(nproc)"
+declare -g NCPU="$(nproc)"
 fi' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
             {
                 cat "${pacfile}"
@@ -524,14 +573,16 @@ fi' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
             } | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
         fi
     done
-    echo -e "sudo rm -f $LOGDIR/$name\nsudo rm -f /etc/apt/preferences.d/$name.pin" | sudo tee -a "$STOWDIR/$name/DEBIAN/postrm" > /dev/null
-    for i in {postrm,postinst,preinst}; do
-        sudo chmod -x "$STOWDIR/$name/DEBIAN/$i" 1> /dev/null 2>&1
-        sudo chmod 755 "$STOWDIR/$name/DEBIAN/$i" 1> /dev/null 2>&1
+    echo -e "sudo rm -f $LOGDIR/$name\nsudo rm -f /etc/apt/preferences.d/$name-pin" | sudo tee -a "$STOWDIR/$name/DEBIAN/postrm" > /dev/null
+    local postfile
+    for postfile in {postrm,postinst,preinst}; do
+        sudo chmod -x "$STOWDIR/$name/DEBIAN/${postfile}" &> /dev/null
+        sudo chmod 755 "$STOWDIR/$name/DEBIAN/${postfile}" &> /dev/null
     done
 
     # Handle `backup` key
     if [[ -n ${backup[*]} ]]; then
+        local file
         for file in "${backup[@]}"; do
             if [[ -z ${file} ]]; then
                 fancy_message warn "Empty key... Skipping" && continue
@@ -574,7 +625,6 @@ fi' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
     fi
 
     if ((PACSTALL_INSTALL != 0)); then
-
         # --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
         if ! sudo -E apt-get install --reinstall "$STOWDIR/$name.deb" -y --allow-downgrades 2> /dev/null; then
             echo -ne "\t"
@@ -596,7 +646,7 @@ fi' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
         fi
         echo "Package: ${gives:-$name}
 Pin: version *
-Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
+Pin-Priority: -1" | sudo tee "/etc/apt/preferences.d/${name}-pin" > /dev/null
         return 0
     else
         sudo mv "$STOWDIR/$name.deb" "$PACDEB_DIR"
@@ -614,19 +664,15 @@ Pin-Priority: -1" | sudo tee /etc/apt/preferences.d/"${name}-pin" > /dev/null
 # NCPU is the core count
 if [[ -n $PACSTALL_BUILD_CORES ]]; then
     if [[ $PACSTALL_BUILD_CORES =~ ^[0-9]+$ ]]; then
-        function nproc() {
-            echo "${PACSTALL_BUILD_CORES:-1}"
-        }
-        declare -rg NCPU="${PACSTALL_BUILD_CORES:-1}"
+        function nproc() { echo "${PACSTALL_BUILD_CORES:-1}"; }
+        declare -g NCPU="${PACSTALL_BUILD_CORES:-1}"
     else
         fancy_message error "${UCyan}PACSTALL_BUILD_CORES${NC} is not an integer. Falling back to 1"
-        function nproc() {
-            echo "1"
-        }
-        declare -rg NCPU="1"
+        function nproc() { echo "1"; }
+        declare -g NCPU="1"
     fi
 else
-    declare -rg NCPU="$(nproc)"
+    declare -g NCPU="$(nproc)"
 fi
 
 ask "(${BPurple}$PACKAGE${NC}) Do you want to view/edit the pacscript" N
@@ -653,9 +699,10 @@ homedir="$(eval echo ~"$PACSTALL_USER")"
 export homedir
 
 sudo cp "${PACKAGE}.pacscript" /tmp
-pacfile=$(readlink -f "/tmp/${PACKAGE}.pacscript")
+pacfile="$(readlink -f "/tmp/${PACKAGE}.pacscript")"
 export pacfile
 export CARCH="$(dpkg --print-architecture)"
+export DISTRO="$(set_distro)"
 if ! source "${pacfile}"; then
     fancy_message error "Could not source pacscript"
     error_log 12 "install $PACKAGE"
@@ -724,6 +771,7 @@ if [[ -n $pacdeps ]]; then
                 fancy_message info "The pacstall dependency ${i} is already installed and at latest version"
 
             fi
+            # BUG: Pacstall installs pacdeps from main repo. In the RS version we should get the latest version of the pacdep from all repos and use that.
         elif fancy_message info "Installing $i" && ! pacstall "$cmd" "$i"; then
             fancy_message error "Failed to install dependency"
             error_log 8 "install $PACKAGE"
@@ -741,10 +789,11 @@ if ! is_package_installed "${name}"; then
             fancy_message warn "Using '${BCyan}breaks${NC}' as a variable instead of array is deprecated"
         fi
         for pkg in "${breaks[@]}"; do
-            if is_apt_package_installed "${pkg}"; then
+            # Do we have an apt package installed (but not pacstall)?
+            if is_apt_package_installed "${pkg}" && ! is_package_installed "${pkg}"; then
                 # Check if anything in breaks variable is installed already
                 fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by apt"
-                suggested_solution "Remove the apt package by running '${UCyan}sudo apt remove $pkg${NC}'"
+                suggested_solution "Remove the apt package by running '${UCyan}sudo apt purge $pkg${NC}'"
                 error_log 13 "install $PACKAGE"
                 fancy_message info "Cleaning up"
                 cleanup
@@ -770,7 +819,7 @@ if ! is_package_installed "${name}"; then
         # Ask user if they want to replace the program
         for pkg in "${replace[@]}"; do
             if is_apt_package_installed "${pkg}"; then
-                ask "This script replaces ${pkg}. Do you want to proceed" N
+                ask "This script replaces ${pkg}. Do you want to proceed" Y
                 if ((answer == 0)); then
                     fancy_message info "Cleaning up"
                     cleanup
@@ -857,9 +906,8 @@ if [[ -n $patch ]]; then
     fancy_message info "Downloading patches"
     mkdir -p PACSTALL_patchesdir
     for i in "${patch[@]}"; do
-        wget -q "$i" -P PACSTALL_patchesdir &
+        wget -q "$i" -P PACSTALL_patchesdir
     done
-    wait
     export PACPATCH="$PWD/PACSTALL_patchesdir"
 fi
 
@@ -881,7 +929,7 @@ if [[ $name == *-git ]]; then
         exit 1
     }
     # Check the integrity
-    git fsck --full
+    git fsck --full || return 1
 else
     case "${url,,}" in
         *.zip)
@@ -917,7 +965,7 @@ else
                 if [[ -f /tmp/pacstall-pacdeps-"$name" ]]; then
                     sudo apt-mark auto "${gives:-$name}" 2> /dev/null
                 fi
-                if type -t postinst > /dev/null 2>&1; then
+                if type -t postinst &> /dev/null; then
                     if ! postinst; then
                         error_log 5 "postinst hook"
                         fancy_message error "Could not run postinst hook successfully"
@@ -1006,7 +1054,7 @@ function run_function() {
     local func="$1"
     fancy_message sub "Running $func"
     # NOTE: https://stackoverflow.com/a/29163890 (shorthand for 2>&1 |)
-    $func |& sudo tee "/var/log/pacstall/error_log/$(date +"%Y-%m-%d_%T")-$name-$func.log" && return "${PIPESTATUS[0]}"
+    $func |& sudo tee "/var/log/pacstall/error_log/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log" && return "${PIPESTATUS[0]}"
 }
 
 function safe_run() {
@@ -1026,8 +1074,8 @@ $(shopt -p -o)"
     eval "$restoretrap"
 }
 
-for i in {prepare,build,install}; do
-    if [[ $(type -t "$i") == function ]]; then
+for i in {prepare,build,install,package}; do
+    if is_function "$i"; then
         pac_functions+=("$i")
     fi
 done

@@ -25,7 +25,7 @@
 # Configuration
 export LC_ALL=C
 export LOGDIR="/var/log/pacstall/metadata"
-LOGFILE="/var/log/pacstall/error_log/$(date +"%F_%T.log")"
+printf -v LOGFILE "/var/log/pacstall/error_log/%(%F_%T)T.log"
 export LOGFILE
 export SRCDIR="/tmp/pacstall"
 export STGDIR="/usr/share/pacstall"
@@ -112,7 +112,7 @@ if [[ -z $NO_COLOR ]]; then
     export On_ICyan='\033[0;106m'   # Cyan
     export On_IWhite='\033[0;107m'  # White
 
-    declare -A pac_version=([red]="247" [green]="250" [blue]="254")
+    declare -A pac_version=([red]="35" [green]="79" [blue]="30")
 else
     declare -A pac_version=([red]="255" [green]="255" [blue]="255")
 fi
@@ -219,7 +219,7 @@ function ask() {
         reply=$default
     fi
 
-    while true; do
+    while :; do
         # Check if the reply is valid
         case "$reply" in
             Y* | y*)
@@ -263,9 +263,7 @@ function suggested_solution() {
 
 function check_url() {
     if [[ ${1} == "file://"* ]]; then
-        if [[ -f ${1/"file://"/} ]]; then
-            true
-        else
+        if ! [[ -f ${1/"file://"/} ]]; then
             return 1
         fi
     else
@@ -287,7 +285,7 @@ function check_url() {
                 return 1
                 ;;
             200 | 301 | 302)
-                true
+                return 0
                 ;;
             *)
                 fancy_message error "Failed with http code ${http_code}"
@@ -406,7 +404,11 @@ function is_package_installed() {
 
 # Returns 0 if exists, 1 if not
 function is_apt_package_installed() {
-    dpkg -s "${1}" 2> /dev/null 1>&2
+    if [[ $(dpkg-query -W --showformat='${db:Status-Status}' "${1}" &>/dev/null) != "installed" ]]; then
+        return 1
+    else
+        return 0
+    fi
 }
 
 function is_array() {
@@ -414,6 +416,14 @@ function is_array() {
     input="${1}"
     raw="$(declare -p "${input}" 2> /dev/null)"
     if [[ ${raw} == "declare -a ${input}"* ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+function is_function() {
+    if [[ $(type -t "${1}") == "function" ]]; then
         return 0
     else
         return 1
@@ -444,7 +454,7 @@ for i in "${@}"; do
     # Just add argument if doesn't start with a single hyphen.
     if ! [[ ${i} =~ ^-[^-] ]]; then
         # if argument is '-P' or '-K', add to beginning of argument list.
-        if [[ ${i} == "-B" ]] || [[ ${i} == "-P" ]] || [[ ${i} == "-K" ]]; then
+        if [[ ${i} == "-B" || ${i} == "-P" || ${i} == "-K" ]]; then
             argument_list=("${i}" "${argument_list[@]}")
         else
             argument_list+=("${i}")
@@ -454,14 +464,15 @@ for i in "${@}"; do
 
     # Add all arguments to the list of arguments.
     # We remove the '-' prefix as we'll add it later.
-    for j in $(echo "${i}" | sed 's|^-||' | sed 's|[[:upper:]]| &|g'); do
+    for j in $(sed 's|[[:upper:]]| &|g' <<< "${i:1}"); do
         # If current string is 'P', add to beginning of argument list.
-        if [[ ${j} == "B" ]] || [[ ${j} == "-build-only" ]] || [[ ${j} == "P" ]] || [[ ${j} == "-disable-prompts" ]] || [[ ${j} == "K" ]] || [[ ${j} == "-keep" ]]; then
+        if [[ ${j} == "B" || ${j} == "-build-only" || ${j} == "P" || ${j} == "-disable-prompts" || ${j} == "K" || ${j} == "-keep" ]]; then
             argument_list=("-${j}" "${argument_list[@]}")
         else
             argument_list+=("-${j}")
         fi
     done
+    unset j
 done
 
 # Set the new list of arguments
@@ -492,6 +503,7 @@ while lock $1 $2 $3 $4; do
     fi
     sleep 1
 done
+unset first
 
 if [[ -n $PACSTALL_PAYLOAD && ! -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
     export PACSTALL_DOWNLOADER="payload"
@@ -597,7 +609,7 @@ Helpful links:
                     PACKAGE="${PACKAGE##*/}"
                     export type="install"
                     export local="yes"
-                    PKGPATH="$(dirname "$2")"
+                    PKGPATH="${2%/*}"
                     # Check if we need to cd into the directory first
                     if [[ $PKGPATH == "." && ! -f "$PACKAGE".pacscript && -d $PACKAGE ]]; then
                         cd "$PACKAGE"
@@ -623,7 +635,7 @@ Helpful links:
                     # Make the directory if not exist
                     if [[ ! -e "$STGDIR/repo/" ]]; then
                         sudo mkdir -p "$STGDIR/repo"
-                        sudo touch "$STGDIR/repo/pacstallrepo.txt"
+                        sudo touch "$STGDIR/repo/pacstallrepo"
                         pacstall -A
                     fi
 
@@ -638,8 +650,9 @@ Helpful links:
                         continue
                     fi
 
+                    # FIXME: URL is being eaten up and not supplying link on -Up function, so we are forcing it here
                     specifyRepo "$REPO"
-                    URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
+                    URL="${REPO:-https://raw.githubusercontent.com/pacstall/pacstall-programs/master}/packages/$PACKAGE/$PACKAGE.pacscript"
 
                     # shellcheck source=./misc/scripts/download.sh
                     if ! source "$STGDIR/scripts/download.sh"; then
@@ -702,8 +715,8 @@ Helpful links:
         -A | --add-repo)
             REPO="$2"
 
-            if [[ ! -f "$STGDIR/repo/pacstallrepo.txt" ]]; then
-                echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' > "$STGDIR/repo/pacstallrepo.txt"
+            if [[ ! -f "$STGDIR/repo/pacstallrepo" ]]; then
+                echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' | sudo tee "$STGDIR/repo/pacstallrepo" > /dev/null
                 return 0
             fi
 
@@ -720,10 +733,9 @@ Helpful links:
 
         -V | --version)
             PACKAGE="$2"
-
             if [[ -z $PACKAGE ]]; then
-                version_number="3.12.1"
-                version_name="Diantha"
+                version_number="3.14.1"
+                version_name="Pine"
                 echo -e "${version_number} \033[1m\x1b[38;2;${pac_version[red]};${pac_version[green]};${pac_version[blue]}m${version_name}${NC}"
                 exit 0
             else
@@ -738,6 +750,7 @@ Helpful links:
             ;;
 
         -U | --update)
+            # If the input is `.`, is a directory, and there is no other input
             if [[ $2 == "." && -d $2 && -z $3 ]]; then
                 cd "${2}"
                 if ! git -C . rev-parse 2> /dev/null; then

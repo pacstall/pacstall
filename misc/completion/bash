@@ -38,12 +38,12 @@ _pacstall() {
             ;;
 
         -?(P)S?(P) | --search)
-            COMPREPLY=($(compgen -W "$(sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | sort -u)" -- "$cur"))
+            COMPREPLY=($(compgen -W "$(xargs -I{} echo "{}/packagelist" < /usr/share/pacstall/repo/pacstallrepo | xargs -n 1 curl -s | sort -u)" -- "$cur"))
             return
             ;;
 
         -?(P)I?(P) | -?(K)I?(K) | -?(PK)I?(PK) | -?(KP)I?(KP) | -?(B)I?(B) | -?(BP)I?(BP) | -?(BK)I?(BK) | -?(BPK)I?(BPK) | -?(BKP)I?(BKP) | -?(PBK)I?(PBK) | -?(KBP)I?(KBP) | -?(PKB)I?(PKB) | -?(KPB)I?(KPB) | --install)
-            COMPREPLY=($(compgen -W "$(sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | sort -u)" -- "$cur"))
+            COMPREPLY=($(compgen -W "$(xargs -I{} echo "{}/packagelist" < /usr/share/pacstall/repo/pacstallrepo | xargs -n 1 curl -s | sort -u)" -- "$cur"))
             return
             ;;
 
@@ -58,7 +58,7 @@ _pacstall() {
             ;;
 
         -?(P)D?(P) | --download)
-            COMPREPLY=($(compgen -W "$(sed -e 's/$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo.txt | xargs -n 1 curl -s | sort -u)" -- "$cur"))
+            COMPREPLY=($(compgen -W "$(xargs -I{} echo "{}/packagelist" < /usr/share/pacstall/repo/pacstallrepo | xargs -n 1 curl -s | sort -u)" -- "$cur"))
             return
             ;;
 

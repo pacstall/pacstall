@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-# This script searches for packages in all repos saved on pacstallrepo.txt
+# This script searches for packages in all repos saved on pacstallrepo
 
 if [[ -n $UPGRADE ]]; then
     PACKAGE="$i"
@@ -97,7 +97,7 @@ if [[ $PACKAGE == *@* ]]; then
             export REPO="$URL"
             return 0
         fi
-    done < "$STGDIR/repo/pacstallrepo.txt"
+    done < "$STGDIR/repo/pacstallrepo"
 
     fancy_message warn "$IRed$REPONAME$NC is not on your repo list or does not exist"
     error_log 3 "search $PACKAGE@$REPONAME"
@@ -110,18 +110,18 @@ PACKAGELIST=()
 URLLIST=()
 while IFS= read -r URL; do
     if [[ ${URL} == "/"* ]] || [[ ${URL} == "~"* ]] || [[ ${URL} == "."* ]]; then
-        sed -i "s#${URL}#file://$(readlink -f ${URL})#g" "$STGDIR/repo/pacstallrepo.txt" 2> /dev/null \
-            || fancy_message warn "Add \"file://\" to the local repo absolute path on \e]8;;file://$STGDIR/repo/pacstallrepo.txt\a$CYAN$STGDIR/repo/pacstallrepo.txt$NC\e]8;;\a"
+        sed -i "s#${URL}#file://$(readlink -f ${URL})#g" "$STGDIR/repo/pacstallrepo" 2> /dev/null \
+            || fancy_message warn "Add \"file://\" to the local repo absolute path on \e]8;;file://$STGDIR/repo/pacstallrepo\a$CYAN$STGDIR/repo/pacstallrepo$NC\e]8;;\a"
         URL="file://$(readlink -f ${URL})"
     elif [[ ${URL} == "file://"* && ${URL} == *"/~/"* ]]; then
-        sed -i "s#${URL}#${URL/'~'/$HOME}#g" "$STGDIR/repo/pacstallrepo.txt" 2> /dev/null \
-            || fancy_message warn "Replace '~' with the full home path on \e]8;;file://$STGDIR/repo/pacstallrepo.txt\a$CYAN$STGDIR/repo/pacstallrepo.txt$NC\e]8;;\a"
+        sed -i "s#${URL}#${URL/'~'/$HOME}#g" "$STGDIR/repo/pacstallrepo" 2> /dev/null \
+            || fancy_message warn "Replace '~' with the full home path on \e]8;;file://$STGDIR/repo/pacstallrepo\a$CYAN$STGDIR/repo/pacstallrepo$NC\e]8;;\a"
         URL="${URL/'~'/$HOME}"
     fi
     if ! check_url "${URL}/packagelist"; then
         if [[ -z $REPOMSG ]]; then
             fancy_message warn "Skipping repo $CYAN$(parseRepo "${URL}")$NC"
-            fancy_message warn "You can remove or fix the URL by editing $CYAN$STGDIR/repo/pacstallrepo.txt$NC"
+            fancy_message warn "You can remove or fix the URL by editing $CYAN$STGDIR/repo/pacstallrepo$NC"
         fi
         continue
     fi
@@ -129,7 +129,7 @@ while IFS= read -r URL; do
     URLLIST+=("${PARTIALLIST[@]/*/$URL}")
     PACKAGELIST+=("${PARTIALLIST[@]}")
     unset PARTIALLIST
-done < "$STGDIR/repo/pacstallrepo.txt"
+done < "$STGDIR/repo/pacstallrepo"
 
 REPOMSG=1
 
