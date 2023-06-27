@@ -46,13 +46,15 @@ if ((${#list[@]} == 0)); then
     fancy_message info "Nothing to upgrade"
     return 0
 fi
-fancy_message info "Building dependency tree"
+fancy_message sub "Building dependency tree"
 dep_tree.loop_traits update_order "${list[@]}"
 list=("${update_order[@]}")
 
 up_list="$(mktemp /tmp/XXXXXX-pacstall-up-list)"
 up_print="$(mktemp /tmp/XXXXXX-pacstall-up-print)"
 up_urls="$(mktemp /tmp/XXXXXX-pacstall-up-urls)"
+
+fancy_message sub "Checking versions"
 
 N="$(nproc)"
 (

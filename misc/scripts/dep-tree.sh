@@ -121,12 +121,15 @@ function dep_tree.loop_traits() {
     shift
     local class_one=() class_two=() class_three=() class_four=() i
     for i in "${@}"; do
+        echo -n "Loading traits of ${i}"
         # shellcheck disable=SC2034
         local -A arr=()
         dep_tree.load_traits "$i" arr
         unset _pacstall_depends _pacdeps 2> /dev/null
         dep_tree.sort_traits_into_array "$i" arr class_one class_two class_three class_four
+        echo -ne "\033[2K\rParsed ${i}"
     done
+    echo -ne "\033[2K\r"
     # shellcheck disable=SC2034
     merged_array=("${class_one[@]}" "${class_two[@]}" "${class_three[@]}" "${class_four[@]}")
 }
