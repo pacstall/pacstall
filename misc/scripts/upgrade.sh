@@ -136,7 +136,8 @@ N="$(nproc)"
 if [[ ! -s ${up_list} ]]; then
     fancy_message info "Nothing to upgrade"
 else
-    fancy_message info "\nPackages can be upgraded"
+    echo
+    fancy_message info "Packages can be upgraded"
     echo -e "Upgradable: $(wc -l < "${up_print}")
 ${BOLD}$(cat "${up_print}")${NC}\n"
 
