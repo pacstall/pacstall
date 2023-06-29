@@ -123,9 +123,6 @@ function log() {
     # Metadata writing
     {
         echo "_name=\"$name"\"
-        if [[ -n $pkgname ]]; then
-            echo "_pkgname=\"$pkgname"\"
-        fi
         echo "_version=\"${full_version}"\"
         echo "_install_size=\"${install_size}"\"
         echo "_date=\"$(date)"\"
@@ -398,7 +395,10 @@ function generate_changelog() {
 }
 
 function clean_logdir() {
-    sudo find -H "/var/log/pacstall/error_log/" -maxdepth 1 -mtime +30 -exec rm -rf {} \;
+    if [[ ! -d /var/log/pacstall/error_log/ ]]; then
+        sudo mkdir -p "/var/log/pacstall/error_log"
+    fi
+    sudo find -H /var/log/pacstall/error_log/* -maxdepth 1 -mtime +30 -delete
 }
 
 function createdeb() {
@@ -759,7 +759,7 @@ if [[ -n $pacdeps ]]; then
         [[ $KEEP ]] && cmd="-KPI" || cmd="-PI"
         if is_package_installed "${i}"; then
             pacstall_pacdep_status="$(compare_remote_version "$i")"
-            if [[ -z $UPGRADE && $pacstall_pacdep_status == "update" ]]; then
+            if [[ $pacstall_pacdep_status == "update" ]]; then
                 fancy_message info "Found newer version for $i pacdep"
                 if ! pacstall "$cmd" "$i"; then
                     fancy_message error "Failed to install dependency"
