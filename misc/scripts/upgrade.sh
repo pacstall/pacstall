@@ -41,7 +41,7 @@ export UPGRADE="yes"
 fancy_message info "Checking for updates"
 
 # Get the list of the installed packages
-mapfile -t list < <(pacstall -L | awk NF)
+mapfile -t list < <(pacstall -L)
 if ((${#list[@]} == 0)); then
     fancy_message info "Nothing to upgrade"
     return 0
