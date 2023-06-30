@@ -7,7 +7,7 @@
 <a href="https://github.com/pacstall/pacstall-programs"><img src="https://img.shields.io/github/commit-activity/m/pacstall/pacstall-programs?style=flat-square&label=user%20repo%20activity"></a><br>
 <a href="https://discord.gg/yzrjXJV6K8"><img src="https://img.shields.io/discord/839818021207801878?color=5865F2&label=Discord&logo=discord&logoColor=FFFFFF&style=flat-square"></a>
 <a href="https://matrix.to/#/#pacstall:matrix.org"><img src="https://img.shields.io/matrix/pacstall:matrix.org?color=888888&label=Matrix&logo=Matrix&style=flat-square"></a>
-<a href="https://www.reddit.com/r/pacstall/"><img src="https://img.shields.io/reddit/subreddit-subscribers/pacstall?logo=reddit&logoColor=white&style=flat-square"></a>
+<a href="https://lemmy.ml/c/pacstall/"><img src="https://img.shields.io/badge/Lemmy-red?logo=lemmy&logoColor=white&style=flat-square"></a>
 
 </p>
 
