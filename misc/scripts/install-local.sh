@@ -398,7 +398,7 @@ function clean_logdir() {
     if [[ ! -d /var/log/pacstall/error_log/ ]]; then
         sudo mkdir -p "/var/log/pacstall/error_log"
     fi
-    sudo find -H /var/log/pacstall/error_log/* -maxdepth 1 -mtime +30 -delete
+    sudo find -H /var/log/pacstall/error_log/ -maxdepth 1 -mtime +30 -delete
 }
 
 function createdeb() {
