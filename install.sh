@@ -135,12 +135,12 @@ chown "$PACSTALL_USER" -R "/var/log/pacstall/error_log"
 mkdir -p "/usr/share/man/man8"
 mkdir -p "/usr/share/bash-completion/completions"
 
-rm -f "$STGDIR/repo/pacstallrepo.txt" > /dev/null
-touch "$STGDIR/repo/pacstallrepo.txt"
-echo "https://raw.githubusercontent.com/pacstall/pacstall-programs/master" > $STGDIR/repo/pacstallrepo.txt
+rm -f "$STGDIR/repo/pacstallrepo" > /dev/null
+touch "$STGDIR/repo/pacstallrepo"
+echo "https://raw.githubusercontent.com/pacstall/pacstall-programs/master" > $STGDIR/repo/pacstallrepo
 
 fancy_message info "Pulling scripts from GitHub"
-for i in {error_log.sh,add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
+for i in {error_log.sh,add-repo.sh,search.sh,dep-tree.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
     wget -q --show-progress -N https://raw.githubusercontent.com/pacstall/pacstall/master/misc/scripts/"$i" -P "$STGDIR/scripts" &
 done
 

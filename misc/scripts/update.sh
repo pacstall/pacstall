@@ -79,7 +79,7 @@ else
         exit 1
     fi
 fi
-for i in {error_log.sh,add-repo.sh,search.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
+for i in {error_log.sh,add-repo.sh,search.sh,dep-tree.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
     sudo curl -s -o "$STGDIR/scripts/$i" "$REPO/misc/scripts/$i" &
 done
 
@@ -100,6 +100,10 @@ if [[ -n $GIT_USER ]]; then
     echo "pacstall master" | sudo tee "$STGDIR/repo/update" > /dev/null
 else
     echo "$USERNAME $BRANCH" | sudo tee "$STGDIR/repo/update" > /dev/null
+fi
+
+if [[ -f ${STGDIR}/repo/pacstallrepo.txt ]]; then
+    sudo mv "${STGDIR}/repo/pacstallrepo.txt" "${STGDIR}/repo/pacstallrepo"
 fi
 
 # shellcheck disable=SC2207
