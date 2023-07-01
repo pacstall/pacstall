@@ -126,6 +126,9 @@ function log() {
         echo "_version=\"${full_version}"\"
         echo "_install_size=\"${install_size}"\"
         echo "_date=\"$(date)"\"
+        if [[ -n $maintainer ]]; then
+            echo "_maintainer=\"${maintainer}"\"
+        fi
         if [[ -n $ppa ]]; then
             echo "_ppa=(${ppa[*]})"
         fi
