@@ -22,22 +22,39 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+# shellcheck source=./misc/scripts/dep-tree.sh
+source "${STGDIR}/scripts/dep-tree.sh" || {
+    fancy_message error "Could not load dep-tree.sh"
+    return 1
+}
+
 function ver_compare() {
     local first second
-    first="${1#${1/[0-9]*/}}"
-    second="${2#${2/[0-9]*/}}"
+    first="${1#"${1/[0-9]*/}"}"
+    second="${2#"${2/[0-9]*/}"}"
+    # shellcheck disable=SC2046
     return $(dpkg --compare-versions "$first" lt "$second")
 }
 
 export UPGRADE="yes"
 
+fancy_message info "Checking for updates"
+
 # Get the list of the installed packages
 mapfile -t list < <(pacstall -L)
+if ((${#list[@]} == 0)); then
+    fancy_message info "Nothing to upgrade"
+    return 0
+fi
+fancy_message sub "Building dependency tree"
+dep_tree.loop_traits update_order "${list[@]}"
+list=("${update_order[@]}")
+
 up_list="$(mktemp /tmp/XXXXXX-pacstall-up-list)"
 up_print="$(mktemp /tmp/XXXXXX-pacstall-up-print)"
 up_urls="$(mktemp /tmp/XXXXXX-pacstall-up-urls)"
 
-fancy_message info "Checking for updates"
+fancy_message sub "Checking versions"
 
 N="$(nproc)"
 (
@@ -50,10 +67,7 @@ N="$(nproc)"
             # localver is the current version of the package
             localver="${_version}"
 
-            if [[ -z ${_remoterepo} ]]; then
-                # TODO: upgrade for local pacscripts
-                return
-            elif [[ ${_remoterepo} == *"github.com"* ]]; then
+            if [[ ${_remoterepo} == *"github.com"* ]]; then
                 remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}"
             elif [[ ${_remoterepo} == *"gitlab.com"* ]]; then
                 remoterepo="${_remoterepo}/-/raw/${_remotebranch}"
@@ -119,21 +133,23 @@ N="$(nproc)"
     wait
 )
 
-if (($(wc -l < "${up_list}") == 0)); then
+if [[ ! -s ${up_list} ]]; then
     fancy_message info "Nothing to upgrade"
 else
+    echo
     fancy_message info "Packages can be upgraded"
     echo -e "Upgradable: $(wc -l < "${up_print}")
 ${BOLD}$(cat "${up_print}")${NC}\n"
 
-    upgrade=()
-    while IFS= read -r line; do
-        upgrade+=("$line")
-    done < "${up_list}"
+    declare -A remotes=()
+    while read -r pkg && read -r remote <&3; do
+        upgrade+=("${pkg}")
+        remotes[${pkg}]="${remote}"
+    done < "${up_list}" 3< "${up_urls}"
 
-    while IFS= read -r line; do
-        remotes+=("$line")
-    done < "${up_urls}"
+    dep_tree.loop_traits update_order "${upgrade[@]}"
+    dep_tree.trim_pacdeps update_order
+    upgrade=("${update_order[@]}")
 
     export local='no'
     mkdir -p "$SRCDIR"
@@ -142,13 +158,13 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
         fancy_message error "Could not enter ${SRCDIR}"
         exit 1
     fi
-    for i in "${!upgrade[@]}"; do
-        PACKAGE=${upgrade[$i]}
+    for to_upgrade in "${upgrade[@]}"; do
+        PACKAGE="${to_upgrade}"
         ask "Do you want to upgrade ${GREEN}${PACKAGE}${NC}" Y
         if ((answer == 0)); then
             continue
         fi
-        REPO="${remotes[$i]}"
+        REPO="${remotes[${PACKAGE}]}"
         export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
         # shellcheck source=./misc/scripts/download.sh
         if ! source "$STGDIR/scripts/download.sh"; then
