@@ -301,7 +301,7 @@ function download() {
     if [[ $PACSTALL_DOWNLOADER != "payload" ]]; then
         sudo rm -f "${1##*/}"
     fi
-    if [[ -z $PACSTALL_DOWNLOADER ]]; then
+    if [[ -z $PACSTALL_DOWNLOADER || -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
         if command -v axel &> /dev/null; then
             PACSTALL_DOWNLOADER=axel
         elif command -v wget &> /dev/null; then
@@ -505,7 +505,7 @@ while lock $1 $2 $3 $4; do
 done
 unset first
 
-if [[ -n $PACSTALL_PAYLOAD ]]; then
+if [[ -n $PACSTALL_PAYLOAD && ! -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
     export PACSTALL_DOWNLOADER="payload"
 
     if [[ ! -f $PACSTALL_PAYLOAD ]]; then

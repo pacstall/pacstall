@@ -911,7 +911,7 @@ if [[ -n $patch ]]; then
     export PACPATCH="$PWD/PACSTALL_patchesdir"
 fi
 
-if [[ -n $PACSTALL_PAYLOAD ]]; then
+if [[ -n $PACSTALL_PAYLOAD && ! -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
     file_name="${PACSTALL_PAYLOAD##*/}"
 else
     file_name="${url##*/}"
