@@ -845,7 +845,7 @@ Helpful links:
                     fi
                 done
             else
-                echo "${packages_installed[*]}"
+				printf '%s\n' "${packages_installed[@]}"
             fi
             exit 0
             ;;
