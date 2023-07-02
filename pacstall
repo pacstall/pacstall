@@ -430,6 +430,10 @@ function is_function() {
     fi
 }
 
+function size_of_deb() {
+    dpkg-query '--showformat=${Installed-Size}\n' --show "${1:?}" | numfmt --to=iec 2> /dev/null
+}
+
 # Error out when run as root
 if ((EUID == 0)); then
     fancy_message error "Pacstall can't be run as root. Please run as a normal user."
@@ -812,9 +816,41 @@ Helpful links:
                 exit 1
             fi
 
-            if ! /bin/ls -1aA "$LOGDIR"; then
+            cd "${LOGDIR}" || exit 1
+            shopt -s nullglob
+            packages_installed=(*)
+            if ((${#packages_installed[@]} == 0)); then
                 fancy_message error "Nothing installed yet"
                 exit 1
+            fi
+
+            if [[ -t 1 ]]; then
+                for pkg in "${packages_installed[@]}"; do
+                    unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch _maintainer 2> /dev/null
+                    source ./"${pkg}"
+                    echo -e "${BYellow}~${NC} ${BGreen}${_name}${BPurple}@${BCyan}${_version}${NC}"
+                    if [[ -n ${_gives} ]]; then
+                        echo -e "   ${BBlue}gives${NC}        : ${BOLD}${_gives}${NC}"
+                    fi
+                    echo -e "   ${BBlue}maintainer${NC}   : ${BOLD}${_maintainer:-$(dpkg-query '--showformat=${Maintainer}\n' --show "${_gives:-$_name}")}${NC}"
+                    if [[ ${_name} == *-deb ]]; then
+                        size="$(size_of_deb "${_gives:-$_name}")"
+                        if [[ -n ${_size} ]]; then
+                            echo -e "   ${BBlue}size${NC}         : ${BOLD}${size}${NC}"
+                        else
+                            echo -e "   ${BBlue}size${NC}         : ${BOLD}unknown${NC}"
+                        fi
+                    else
+                        echo -e "   ${BBlue}size${NC}         : ${BOLD}${_install_size:-unknown}${NC}"
+                    fi
+                    echo -e "   ${BBlue}repository${NC}   : ${BOLD}${_remoterepo:-local}${NC}"
+                    echo -e "   ${BBlue}install date${NC} : ${BOLD}${_date:-unknown}${NC}"
+                    if [[ ${pkg} != "${packages_installed[-1]}" ]]; then
+                        echo
+                    fi
+                done
+            else
+                printf '%s\n' "${packages_installed[@]}"
             fi
             exit 0
             ;;
