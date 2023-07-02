@@ -714,6 +714,7 @@ if ! source "${pacfile}"; then
     return 1
 fi
 
+# Running `-B` on a deb package doesn't make sense, so let's download instead
 if ((PACSTALL_INSTALL == 0)) && [[ ${name} == *-deb ]]; then
     if ! download "${url}"; then
         fancy_message error "Failed to download '${url}'"
