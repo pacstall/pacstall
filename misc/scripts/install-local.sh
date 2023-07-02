@@ -125,7 +125,7 @@ function log() {
         echo "_name=\"$name"\"
         echo "_version=\"${full_version}"\"
         echo "_install_size=\"${install_size}"\"
-        echo "_date=\"$(date)"\"
+        printf '_date=\"%(%a %b %_d %r %Z %Y)T\"\n'
         if [[ -n $maintainer ]]; then
             echo "_maintainer=\"${maintainer}"\"
         fi
