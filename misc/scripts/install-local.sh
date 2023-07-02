@@ -170,12 +170,12 @@ function compare_remote_version() (
     fi
     local remotever="$(source <(curl -s -- "$remoterepo/packages/$input/$input.pacscript") && type pkgver &> /dev/null && pkgver || echo "${full_version}")" > /dev/null
     if [[ $input == *"-git" ]]; then
-        if [[ $(pacstall -V "$input") != "$remotever" ]]; then
+        if [[ $(pacstall -Qi "$input" version) != "$remotever" ]]; then
             echo "update"
         else
             echo "no"
         fi
-    elif dpkg --compare-versions "$(pacstall -V "$input")" lt "$remotever" > /dev/null 2>&1; then
+    elif dpkg --compare-versions "$(pacstall -Qi "$input" version)" lt "$remotever" > /dev/null 2>&1; then
         echo "update"
     else
         echo "no"
