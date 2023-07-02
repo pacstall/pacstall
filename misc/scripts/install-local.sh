@@ -718,7 +718,6 @@ if ((PACSTALL_INSTALL == 0)) && [[ ${name} == *-deb ]]; then
     return 0
 fi
 
-full_version="${epoch+$epoch:}${pkgver}"
 if [[ -n ${arch[*]} ]]; then
     if ! is_compatible_arch "${arch[@]}"; then
         cleanup
