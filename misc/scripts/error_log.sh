@@ -47,12 +47,15 @@ declare -r -A ErrMsg=([1]="Unknown cause of failure."
 function error_log() {
     local code="${1}"
     local scope="${2}"
+    local time
 
     if [[ ! -f $LOGFILE ]]; then
         sudo touch "$LOGFILE"
         sudo find /var/log/pacstall/error_log/ -type f -ctime +14 -delete
     fi
-    printf '[ %(%a %b %_d %r %Z %Y)T | %s ] Error %s - %s\n' "${scope}" "${code}" "${ErrMsg[$code]}" | sudo tee -a "$LOGFILE" > /dev/null
+
+    printf -v time '%(%a %b %_d %r %Z %Y)T'
+    echo -e "[ ${time} | ${scope} ] Error ${code} - ${ErrMsg[${code}]}" | sudo tee -a "$LOGFILE" > /dev/null
     return 0
 }
 
