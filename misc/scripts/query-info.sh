@@ -44,36 +44,72 @@ function get_field() {
     fi
 }
 
-echo -e "${BGreen}name${NC}: $(get_field "$PACKAGE" Package)"
-echo -e "${BGreen}version${NC}: $(get_field "$PACKAGE" Version)"
-if [[ -n $_install_size ]]; then
-    echo -e "${BGreen}size${NC}: $_install_size"
+name="$(get_field "$PACKAGE" Package)"
+version="$(get_field "$PACKAGE" Version)"
+if [[ -n ${_install_size} ]]; then
+    size="${_install_size}"
 fi
-echo -e "${BGreen}description${NC}: $(get_field "$PACKAGE" Description)"
-echo -e "${BGreen}date installed${NC}: $_date"
-
-if [[ -n $_homepage ]]; then
-    echo -e "${BGreen}homepage${NC}: $_homepage"
+description="$(get_field "$PACKAGE" Description)"
+date_installed="${_date}"
+if [[ -n ${_homepage} ]]; then
+    homepage="${_homepage}"
 fi
-if [[ -n $_remoterepo ]]; then
-    echo -e "${BGreen}remote repo${NC}: $_remoterepo"
+if [[ -n ${_remoterepo} ]]; then
+    remote_repo="${_remoterepo}"
 fi
-echo -e "${BGreen}maintainer${NC}: $(get_field "$PACKAGE" Maintainer)"
+maintainer="$(get_field "$PACKAGE" Maintainer)"
 if [[ -n $_ppa ]]; then
-    echo -e "${BGreen}ppa${NC}: $_ppa"
+    ppa="${_ppa}"
 fi
-if [[ -n $_pacdeps ]]; then
-    echo -e "${BGreen}pacstall dependencies${NC}: ${_pacdeps[*]}"
+if [[ -n ${_pacdeps} ]]; then
+    pacstall_dependencies="${_pacdeps[*]}"
 fi
 deps=$(get_field "$PACKAGE" Depends)
 deps="${deps//,/}"
-if [[ -n $deps ]]; then
-    echo -e "${BGreen}dependencies${NC}: ${deps}"
+if [[ -n ${deps} ]]; then
+    dependencies="${deps}"
 fi
-if [[ -n $_pacstall_depends ]]; then
-    echo -e "${BGreen}install type${NC}: installed as dependency"
+if [[ -n ${_pacstall_depends} ]]; then
+    install_type="installed as dependency"
 else
-    echo -e "${BGreen}install type${NC}: explicitly installed"
+    install_type="explicitly installed"
 fi
+
+if [[ -n ${QUERY} ]]; then
+    query="${!QUERY}"
+    if [[ -z ${query} ]]; then
+        fancy_message error "Key '${QUERY}' does not exist"
+        exit 1
+    else
+        echo "${query}"
+        exit 0
+    fi
+fi
+
+echo -e "${BGreen}name${NC}: ${name}"
+echo -e "${BGreen}version${NC}: ${version}"
+if [[ -v size ]]; then
+    echo -e "${BGreen}size${NC}: ${size}"
+fi
+echo -e "${BGreen}description${NC}: ${description}"
+echo -e "${BGreen}date installed${NC}: ${date_installed}"
+
+if [[ -v homepage ]]; then
+    echo -e "${BGreen}homepage${NC}: ${homepage}"
+fi
+if [[ -v remote_repo ]]; then
+    echo -e "${BGreen}remote repo${NC}: ${remote_repo}"
+fi
+echo -e "${BGreen}maintainer${NC}: ${maintainer}"
+if [[ -v ppa ]]; then
+    echo -e "${BGreen}ppa${NC}: ${ppa}"
+fi
+if [[ -v pacstall_dependencies ]]; then
+    echo -e "${BGreen}pacstall dependencies${NC}: ${pacstall_dependencies}"
+fi
+if [[ -v dependencies ]]; then
+    echo -e "${BGreen}dependencies${NC}: ${dependencies}"
+fi
+echo -e "${BGreen}install type${NC}: ${install_type}"
 exit 0
 # vim:set ft=sh ts=4 sw=4 noet:
