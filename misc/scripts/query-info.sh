@@ -51,7 +51,9 @@ if [[ -n ${_install_size} ]]; then
 fi
 description="$(get_field "$PACKAGE" Description)"
 date_installed="${_date}"
-homepage="${_homepage}"
+if [[ -n ${_homepage} ]]; then
+    homepage="${_homepage}"
+fi
 if [[ -n ${_remoterepo} ]]; then
     remote_repo="${_remoterepo}"
 fi
