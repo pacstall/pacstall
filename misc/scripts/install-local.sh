@@ -714,6 +714,14 @@ if ! source "${pacfile}"; then
     return 1
 fi
 
+if ((PACSTALL_INSTALL == 0)) && [[ ${name} == *-deb ]]; then
+    if ! download "${url}"; then
+        fancy_message error "Failed to download '${url}'"
+        return 1
+    fi
+    return 0
+fi
+
 full_version="${epoch+$epoch:}$version"
 if [[ -n ${arch[*]} ]]; then
     if ! is_compatible_arch "${arch[@]}"; then
