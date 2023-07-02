@@ -126,7 +126,10 @@ function log() {
         echo "_name=\"$name"\"
         echo "_version=\"${full_version}"\"
         echo "_install_size=\"${install_size}"\"
-        echo "_date=\"$(date)"\"
+        printf '_date=\"%(%a %b %_d %r %Z %Y)T\"\n'
+        if [[ -n $maintainer ]]; then
+            echo "_maintainer=\"${maintainer}"\"
+        fi
         if [[ -n $ppa ]]; then
             echo "_ppa=(${ppa[*]})"
         fi
@@ -173,12 +176,12 @@ function compare_remote_version() (
         else echo "${epoch+$epoch:}${pkgver}"; fi
     )" > /dev/null
     if [[ $input == *"-git" ]]; then
-        if [[ $(pacstall -V "$input") != "$remotever" ]]; then
+        if [[ $(pacstall -Qi "$input" version) != "$remotever" ]]; then
             echo "update"
         else
             echo "no"
         fi
-    elif dpkg --compare-versions "$(pacstall -V "$input")" lt "$remotever" &> /dev/null; then
+    elif dpkg --compare-versions "$(pacstall -Qi "$input" version)" lt "$remotever" > /dev/null 2>&1; then
         echo "update"
     else
         echo "no"
@@ -706,6 +709,16 @@ if ! source "${pacfile}"; then
     return 1
 fi
 
+# Running `-B` on a deb package doesn't make sense, so let's download instead
+if ((PACSTALL_INSTALL == 0)) && [[ ${name} == *-deb ]]; then
+    if ! download "${url}"; then
+        fancy_message error "Failed to download '${url}'"
+        return 1
+    fi
+    return 0
+fi
+
+full_version="${epoch+$epoch:}${pkgver}"
 if [[ -n ${arch[*]} ]]; then
     if ! is_compatible_arch "${arch[@]}"; then
         cleanup
@@ -894,7 +907,7 @@ if [[ -n $patch ]]; then
     export PACPATCH="$PWD/PACSTALL_patchesdir"
 fi
 
-if [[ -n $PACSTALL_PAYLOAD ]]; then
+if [[ -n $PACSTALL_PAYLOAD && ! -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
     file_name="${PACSTALL_PAYLOAD##*/}"
 else
     file_name="${url##*/}"
