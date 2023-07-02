@@ -43,7 +43,7 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset name pkgname repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pac_functions 2> /dev/null
+    unset name pkgname repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel pac_functions 2> /dev/null
     unset -f pkgver postinst removescript preinst prepare build install package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
@@ -60,14 +60,15 @@ function trap_ctrlc() {
 
 # run checks to verify script works
 function checks() {
+    local ret=0
     if [[ -z $name ]]; then
         fancy_message error "Package does not contain name"
-        return 1
+        ret=1
     fi
     if [[ $name != "$PACKAGE" ]]; then
         fancy_message error "Package name does not match file"
         suggested_solution "Change '${UPurple}name${NC}' to '${UCyan}$PACKAGE${NC}'" "Change package name to '${UCyan}$name${NC}'"
-        return 1
+        ret=1
     fi
     if [[ -z $gives && $name == *-deb ]]; then
         fancy_message warn "Deb package does not contain gives"
@@ -76,30 +77,31 @@ function checks() {
         fancy_message warn "Package does not contain a hash"
     fi
     if is_function pkgver; then
-        if [[ ! -v pkgver ]]; then
+        if [[ -z $pkgver ]]; then
             fancy_message error "Package contains 'pkgver()' but not the variable as well"
-            return 1
+            ret=1
         fi
-    elif [[ ! -v pkgver ]]; then
+    elif [[ -z $pkgver ]]; then
         fancy_message error "Package does not contain pkgver"
-        return 1
+        ret=1
     fi
 
     if [[ -z $url ]]; then
         fancy_message error "Package does not contain URL"
-        return 1
+        ret=1
     fi
     if [[ -z $pkgdesc ]]; then
         fancy_message error "Package does not contain a pkgdesc"
-        return 1
+        ret=1
     fi
     if [[ -z $maintainer ]]; then
         fancy_message warn "Package does not have a maintainer. Please be advised"
     fi
     if is_function install && is_function package; then
         fancy_message error "Both 'install()' and 'package()' exist. One or the other can exist, but not both"
-        return 1
+        ret=1
     fi
+    return "${ret}"
 }
 
 # Logging metadata
