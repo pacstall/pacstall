@@ -37,19 +37,21 @@ source "$LOGDIR/$PACKAGE"
 function get_field() {
     # input 1: package
     # input 2: field
+    # input 3: out_var
     local input="${_gives:-$_name}"
+    local -n out_var="${3:?}"
     local output="$(dpkg-query --showformat="\${$2}\n" --show "$input")"
     if [[ -n $output ]]; then
-        echo "$output"
+        out_var="${output}"
     fi
 }
 
-name="$(get_field "$PACKAGE" Package)"
-version="$(get_field "$PACKAGE" Version)"
+get_field "$PACKAGE" Package name
+get_field "$PACKAGE" Version version
 if [[ -n ${_install_size} ]]; then
     size="${_install_size}"
 fi
-description="$(get_field "$PACKAGE" Description)"
+get_field "$PACKAGE" Description description
 date_installed="${_date}"
 if [[ -n ${_homepage} ]]; then
     homepage="${_homepage}"
@@ -57,14 +59,14 @@ fi
 if [[ -n ${_remoterepo} ]]; then
     remote_repo="${_remoterepo}"
 fi
-maintainer="$(get_field "$PACKAGE" Maintainer)"
+get_field "$PACKAGE" Maintainer maintainer
 if [[ -n $_ppa ]]; then
     ppa="${_ppa}"
 fi
 if [[ -n ${_pacdeps} ]]; then
     pacstall_dependencies="${_pacdeps[*]}"
 fi
-deps=$(get_field "$PACKAGE" Depends)
+get_field "$PACKAGE" Depends deps
 deps="${deps//,/}"
 if [[ -n ${deps} ]]; then
     dependencies="${deps}"
