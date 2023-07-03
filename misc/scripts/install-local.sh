@@ -43,8 +43,8 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset name pkgname repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel pac_functions 2> /dev/null
-    unset -f pkgver postinst removescript preinst prepare build install package 2> /dev/null
+    unset name repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel pac_functions 2> /dev/null
+    unset -f pkgver post_install post_remove pre_install prepare build package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
 
@@ -516,11 +516,11 @@ function makedeb() {
         deblog "Description" "${pkgdesc}"
     fi
 
-    for i in {removescript,postinst,preinst}; do
+    for i in {post_remove,post_install,pre_install}; do
         case "$i" in
-            removescript) export deb_post_file="postrm" ;;
-            postinst) export deb_post_file="postinst" ;;
-            preinst) export deb_post_file="preinst" ;;
+            post_remove) export deb_post_file="postrm" ;;
+            post_install) export deb_post_file="postinst" ;;
+            pre_install) export deb_post_file="preinst" ;;
         esac
         if is_function "$i"; then
             echo '#!/bin/bash
@@ -962,10 +962,10 @@ else
                 if [[ -f /tmp/pacstall-pacdeps-"$name" ]]; then
                     sudo apt-mark auto "${gives:-$name}" 2> /dev/null
                 fi
-                if type -t postinst &> /dev/null; then
-                    if ! postinst; then
-                        error_log 5 "postinst hook"
-                        fancy_message error "Could not run postinst hook successfully"
+                if type -t post_install &> /dev/null; then
+                    if ! post_install; then
+                        error_log 5 "post_install hook"
+                        fancy_message error "Could not run post_install hook successfully"
                         exit 1
                     fi
                 fi
