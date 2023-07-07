@@ -174,8 +174,8 @@ function compare_remote_version() (
     fi
     local remotever="$(
         source <(curl -s -- "$remoterepo/packages/$input/$input.pacscript") && if is_function pkgver; then
-            echo "${epoch+$epoch:}$(pkgver)"
-        else echo "${epoch+$epoch:}${pkgver}"; fi
+            echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
+        else echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(pkgver)"; fi
     )" > /dev/null
     if [[ $input == *"-git" ]]; then
         if [[ $(pacstall -Qi "$input" version) != "$remotever" ]]; then
@@ -746,7 +746,7 @@ if ! checks; then
 fi
 
 if is_function pkgver; then
-	full_version="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(pkgver)"
+    full_version="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(pkgver)"
 else
     full_version="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
 fi
