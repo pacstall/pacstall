@@ -153,7 +153,9 @@ function log() {
             fi
         fi
         if [[ -n ${pacdeps[*]} ]]; then
-            echo "_pacdeps=(${pacdeps[*]})"
+            _pacdeps=("${pacdeps[@]}")
+            declare -p _pacdeps
+            unset _pacdeps
         fi
     } | sudo tee "$LOGDIR/$name" > /dev/null
 }

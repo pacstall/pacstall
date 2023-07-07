@@ -430,10 +430,6 @@ function is_function() {
     fi
 }
 
-function size_of_deb() {
-    dpkg-query '--showformat=${Installed-Size}\n' --show "${1:?}" | numfmt --to=iec 2> /dev/null
-}
-
 # Error out when run as root
 if ((EUID == 0)); then
     fancy_message error "Pacstall can't be run as root. Please run as a normal user."
@@ -823,7 +819,7 @@ Helpful links:
                     fi
                     echo -e "   ${BBlue}maintainer${NC}   : ${BOLD}${_maintainer:-$(dpkg-query '--showformat=${Maintainer}\n' --show "${_gives:-$_name}")}${NC}"
                     if [[ ${_name} == *-deb ]]; then
-                        size="$(size_of_deb "${_gives:-$_name}")"
+                        size="$(dpkg-query '--showformat=${Installed-Size}\n' --show "${_gives:-$_name}" | numfmt --to=iec 2> /dev/null)"
                         if [[ -n ${_size} ]]; then
                             echo -e "   ${BBlue}size${NC}         : ${BOLD}${size}${NC}"
                         else
