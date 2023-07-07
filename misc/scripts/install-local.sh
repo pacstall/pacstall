@@ -746,9 +746,9 @@ if ! checks; then
 fi
 
 if is_function pkgver; then
-    full_version="${epoch+$epoch:}$(pkgver)"
+	full_version="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(pkgver)"
 else
-    full_version="${epoch+$epoch:}${pkgver}"
+    full_version="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
 fi
 
 # Trap Crtl+C just before the point cleanup is first needed
