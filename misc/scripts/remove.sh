@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-source "$LOGDIR/$PACKAGE" 2> /dev/null || {
+source "$METADIR/$PACKAGE" 2> /dev/null || {
     fancy_message error "$PACKAGE is not installed"
     exit 1
 }
@@ -43,5 +43,5 @@ if [[ -n ${_ppa[*]} ]]; then
     done
 fi
 
-sudo rm -f /var/log/pacstall/metadata/"$_name"
+sudo rm -f "${METADIR:?}/${_name}"
 # vim:set ft=sh ts=4 sw=4 noet:

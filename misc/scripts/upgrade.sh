@@ -62,7 +62,7 @@ N="$(nproc)"
         ((n = n % N))
         ((n++ == 0)) && wait
         (
-            source "$LOGDIR/$i"
+            source "$METADIR/$i"
 
             # localver is the current version of the package
             localver="${_version}"
@@ -87,7 +87,7 @@ N="$(nproc)"
                 remoteurl="${REPOS[$IDXMATCH]}"
             else
                 fancy_message warn "Package ${GREEN}${i}${CYAN} is not on ${CYAN}$(parseRepo "${remoterepo}")${NC} anymore"
-                sudo sed -i "/_remote/d" "$LOGDIR/$i"
+                sudo sed -i "/_remote/d" "$METADIR/$i"
             fi
 
             if [[ $i != *"-git" ]]; then

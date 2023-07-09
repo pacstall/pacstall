@@ -22,8 +22,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-if [[ ! -d "/var/log/pacstall/error_log" ]]; then
-    sudo mkdir -p "/var/log/pacstall/error_log"
+if [[ ! -d ${LOGDIR} ]]; then
+    sudo mkdir -p "${LOGDIR}"
 fi
 
 # Used with permission by zakariaGatter
@@ -51,7 +51,7 @@ function error_log() {
 
     if [[ ! -f $LOGFILE ]]; then
         sudo touch "$LOGFILE"
-        sudo find /var/log/pacstall/error_log/ -type f -ctime +14 -delete
+        sudo find "${LOGDIR:-/var/log/pacstall/error_log/}" -type f -ctime +14 -delete
     fi
 
     printf -v time '%(%a %b %_d %r %Z %Y)T'
