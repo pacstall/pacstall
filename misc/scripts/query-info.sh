@@ -27,12 +27,12 @@ if [[ -z $PACKAGE ]]; then
     exit 1
 fi
 
-if [[ ! -f "$LOGDIR/$PACKAGE" ]]; then
+if [[ ! -f "$METADIR/$PACKAGE" ]]; then
     fancy_message error "Package is not installed"
     exit 1
 fi
 
-source "$LOGDIR/$PACKAGE"
+source "$METADIR/$PACKAGE"
 
 function get_field() {
     # input 1: package

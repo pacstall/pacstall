@@ -115,7 +115,7 @@ esac
 
 apt-get install -qq -y curl wget build-essential unzip git iputils-ping lsb-release
 
-LOGDIR="/var/log/pacstall/metadata"
+LOGDIR="/var/lib/pacstall/metadata"
 STGDIR="/usr/share/pacstall"
 SRCDIR="/tmp/pacstall"
 PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER}}")
