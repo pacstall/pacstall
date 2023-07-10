@@ -47,7 +47,9 @@ if ((${#list[@]} == 0)); then
     return 0
 fi
 fancy_message sub "Building dependency tree"
+tput civis # Hide cursor
 dep_tree.loop_traits update_order "${list[@]}"
+tput cnorm # Show cursor again
 list=("${update_order[@]}")
 
 up_list="$(mktemp /tmp/XXXXXX-pacstall-up-list)"
