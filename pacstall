@@ -805,7 +805,7 @@ Helpful links:
             cd "${METADIR}" || exit 1
             shopt -s nullglob
             packages_installed=(*)
-            if ((${#packages_installed[@]} == 0)) [[ -t 1 ]]; then
+            if ((${#packages_installed[@]} == 0)) && [[ -t 1 ]]; then
                 fancy_message error "Nothing installed yet"
                 exit 1
             fi
