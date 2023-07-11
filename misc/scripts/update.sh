@@ -59,8 +59,8 @@ fi
 
 # Pre 4.0.0 metadata dir changes
 if [[ -d "/var/log/pacstall/metadata/" ]]; then
-    sudo mv -p "/var/log/pacstall/metadata/" "/var/lib/pacstall/metadata/" \  \
-        && sudo rm -rf "/var/log/pacstall/metadata/"
+    sudo mkdir -p "/var/lib/pacstall/metadata/"
+    sudo cp -r "/var/log/pacstall/metadata/"* "/var/lib/pacstall/metadata/" && sudo rm -rf "/var/log/pacstall/metadata/"
 fi
 
 STGDIR="/usr/share/pacstall"
