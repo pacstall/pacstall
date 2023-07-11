@@ -24,8 +24,9 @@
 
 # Configuration
 export LC_ALL=C
-export LOGDIR="/var/log/pacstall/metadata"
-printf -v LOGFILE "/var/log/pacstall/error_log/%(%F_%T)T.log"
+export METADIR="/var/lib/pacstall/metadata"
+export LOGDIR="/var/log/pacstall/error_log"
+printf -v LOGFILE "${LOGDIR}/%(%F_%T)T.log"
 export LOGFILE
 export SRCDIR="/tmp/pacstall"
 export STGDIR="/usr/share/pacstall"
@@ -797,15 +798,17 @@ Helpful links:
                 exit 1
             fi
 
-            if [[ ! -d ${LOGDIR} ]]; then
+            if [[ ! -d ${METADIR} ]]; then
                 exit 1
             fi
 
-            cd "${LOGDIR}" || exit 1
+            cd "${METADIR}" || exit 1
             shopt -s nullglob
             packages_installed=(*)
-            if ((${#packages_installed[@]} == 0)); then
+            if ((${#packages_installed[@]} == 0)) && [[ -t 1 ]]; then
                 fancy_message error "Nothing installed yet"
+                exit 1
+            else
                 exit 1
             fi
 
@@ -902,12 +905,12 @@ Helpful links:
                 fancy_message error "You failed to specify a package"
                 exit 1
             fi
-            if ! [[ -f $LOGDIR/$PACKAGE ]]; then
+            if ! [[ -f $METADIR/$PACKAGE ]]; then
                 fancy_message error "Package is not installed"
                 exit 1
             fi
 
-            source "$LOGDIR/$PACKAGE"
+            source "$METADIR/$PACKAGE"
 
             dpkg --listfiles "${_gives:-$_name}" | sed -e "s/[^-][^\/]*\//  │/g" -e "s/│\([^ ]\)/│──\1/"
             exit 0

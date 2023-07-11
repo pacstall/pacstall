@@ -47,7 +47,9 @@ if ((${#list[@]} == 0)); then
     return 0
 fi
 fancy_message sub "Building dependency tree"
+tput civis # Hide cursor
 dep_tree.loop_traits update_order "${list[@]}"
+tput cnorm # Show cursor again
 list=("${update_order[@]}")
 
 up_list="$(mktemp /tmp/XXXXXX-pacstall-up-list)"
@@ -62,7 +64,7 @@ N="$(nproc)"
         ((n = n % N))
         ((n++ == 0)) && wait
         (
-            source "$LOGDIR/$i"
+            source "$METADIR/$i"
 
             # localver is the current version of the package
             localver="${_version}"
@@ -87,7 +89,7 @@ N="$(nproc)"
                 remoteurl="${REPOS[$IDXMATCH]}"
             else
                 fancy_message warn "Package ${GREEN}${i}${CYAN} is not on ${CYAN}$(parseRepo "${remoterepo}")${NC} anymore"
-                sudo sed -i "/_remote/d" "$LOGDIR/$i"
+                sudo sed -i "/_remote/d" "$METADIR/$i"
             fi
 
             if [[ $i != *"-git" ]]; then

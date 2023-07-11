@@ -44,7 +44,7 @@ function suggested_solution() {
     fi
 }
 
-sudo mkdir -p "/var/log/pacstall/metadata"
+sudo mkdir -p "/var/lib/pacstall/metadata"
 sudo mkdir -p "/var/log/pacstall/error_log"
 sudo chown "$PACSTALL_USER" -R /var/log/pacstall/error_log
 
@@ -55,6 +55,12 @@ sudo mkdir -p /usr/share/bash-completion/completions
 
 if ! dpkg -s lsb-release > /dev/null 2>&1; then
     sudo apt-get install lsb-release -y
+fi
+
+# Pre 4.0.0 metadata dir changes
+if [[ -d "/var/log/pacstall/metadata/" ]]; then
+    sudo mkdir -p "/var/lib/pacstall/metadata/"
+    sudo cp -r "/var/log/pacstall/metadata/"* "/var/lib/pacstall/metadata/" && sudo rm -rf "/var/log/pacstall/metadata/"
 fi
 
 STGDIR="/usr/share/pacstall"

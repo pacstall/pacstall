@@ -157,14 +157,13 @@ function log() {
             declare -p _pacdeps
             unset _pacdeps
         fi
-    } | sudo tee "$LOGDIR/$name" > /dev/null
+    } | sudo tee "$METADIR/$name" > /dev/null
 }
 
 function compare_remote_version() (
     local input="${1}"
     unset -f pkgver 2> /dev/null
-    unset -v pkgver 2> /dev/null
-    source "$LOGDIR/$input" || return 1
+    source "$METADIR/$input" || return 1
     if [[ -z ${_remoterepo} ]]; then
         return 0
     elif [[ ${_remoterepo} == *"github.com"* ]]; then
@@ -371,7 +370,7 @@ function prompt_optdepends() {
     if [[ -n ${pacdeps[*]} ]]; then
         for i in "${pacdeps[@]}"; do
             (
-                source "$LOGDIR/$i"
+                source "$METADIR/$i"
                 if [[ -n $_gives ]]; then
                     echo "$_gives" | tee -a /tmp/pacstall-gives > /dev/null
                 else
@@ -397,10 +396,10 @@ function generate_changelog() {
 }
 
 function clean_logdir() {
-    if [[ ! -d /var/log/pacstall/error_log/ ]]; then
-        sudo mkdir -p "/var/log/pacstall/error_log"
+    if [[ ! -d ${LOGDIR} ]]; then
+        sudo mkdir -p "${LOGDIR}"
     fi
-    sudo find -H /var/log/pacstall/error_log/ -maxdepth 1 -mtime +30 -delete
+    sudo find -H "${LOGDIR:-/var/log/pacstall/error_log/}" -maxdepth 1 -mtime +30 -delete
 }
 
 function createdeb() {
@@ -575,7 +574,7 @@ fi' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
             } | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
         fi
     done
-    echo -e "sudo rm -f $LOGDIR/$name\nsudo rm -f /etc/apt/preferences.d/$name-pin" | sudo tee -a "$STOWDIR/$name/DEBIAN/postrm" > /dev/null
+    echo -e "sudo rm -f $METADIR/$name\nsudo rm -f /etc/apt/preferences.d/$name-pin" | sudo tee -a "$STOWDIR/$name/DEBIAN/postrm" > /dev/null
     local postfile
     for postfile in {postrm,postinst,preinst}; do
         sudo chmod -x "$STOWDIR/$name/DEBIAN/${postfile}" &> /dev/null
@@ -1053,7 +1052,7 @@ function run_function() {
     local func="$1"
     fancy_message sub "Running $func"
     # NOTE: https://stackoverflow.com/a/29163890 (shorthand for 2>&1 |)
-    $func |& sudo tee "/var/log/pacstall/error_log/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log" && return "${PIPESTATUS[0]}"
+    $func |& sudo tee "${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log" && return "${PIPESTATUS[0]}"
 }
 
 function safe_run() {

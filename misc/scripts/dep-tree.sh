@@ -67,7 +67,7 @@ function dep_tree.load_traits() {
     out_arr="${2:?No arr given to dep_tree.load_traits}"
     unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch 2> /dev/null
     # shellcheck disable=SC1090
-    source "${LOGDIR}/${pkg}"
+    source "${METADIR}/${pkg}"
 
     if [[ -z ${_remoterepo} ]]; then
         out_arr['upgrade']=false
@@ -141,7 +141,7 @@ function dep_tree.trim_pacdeps() {
     for i in "${merged_array[@]}"; do
         unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch 2> /dev/null
         # shellcheck disable=SC1090
-        source "${LOGDIR}/${i}"
+        source "${METADIR}/${i}"
         if [[ -n ${_pacdeps[*]} ]]; then
             for z in "${_pacdeps[@]}"; do
                 if array.contains merged_array "${z}"; then
