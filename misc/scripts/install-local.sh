@@ -65,17 +65,31 @@ function checks() {
         fancy_message error "Package does not contain name"
         ret=1
     fi
+
     if [[ $name != "$PACKAGE" ]]; then
         fancy_message error "Package name does not match file"
         suggested_solution "Change '${UPurple}name${NC}' to '${UCyan}$PACKAGE${NC}'" "Change package name to '${UCyan}$name${NC}'"
         ret=1
     fi
+
     if [[ -z $gives && $name == *-deb ]]; then
         fancy_message warn "Deb package does not contain gives"
     fi
+
     if [[ -z $hash && $name != *-git ]]; then
         fancy_message warn "Package does not contain a hash"
     fi
+
+    if [[ -v pkgrel ]]; then
+        if [[ -z ${pkgrel} ]]; then
+            fancy_message error "'pkgrel' is empty"
+            ret=1
+        elif [[ ! ${pkgrel} =~ ^[0-9]+$ ]]; then
+            fancy_message error "'pkgrel' must be an unsigned integer"
+            ret=1
+        fi
+    fi
+
     if is_function pkgver; then
         if [[ -z $pkgver ]]; then
             fancy_message error "Package contains 'pkgver()' but not the variable as well"
@@ -86,22 +100,40 @@ function checks() {
             fancy_message error "'pkgver()' has no output"
             ret=1
         fi
+    elif [[ -n $pkgver ]]; then
+        if ! dpkg --validate-version "${pkgver}" 2> /dev/null; then
+            fancy_message error "'pkgver' is not formatted correctly"
+            ret=1
+        fi
     elif [[ -z $pkgver ]]; then
         fancy_message error "Package does not contain pkgver"
         ret=1
+    fi
+
+    if [[ -v epoch ]]; then
+        if [[ -z ${epoch} ]]; then
+            fancy_message error "'epoch' is empty"
+            ret=1
+        elif [[ ! ${epoch} =~ ^[0-9]+$ ]]; then
+            fancy_message error "'epoch' must be an unsigned integer"
+            ret=1
+        fi
     fi
 
     if [[ -z $url ]]; then
         fancy_message error "Package does not contain URL"
         ret=1
     fi
+
     if [[ -z $pkgdesc ]]; then
         fancy_message error "Package does not contain a pkgdesc"
         ret=1
     fi
+
     if [[ -z $maintainer ]]; then
         fancy_message warn "Package does not have a maintainer. Please be advised"
     fi
+
     if is_function install && is_function package; then
         fancy_message error "Both 'install()' and 'package()' exist. One or the other can exist, but not both"
         ret=1
