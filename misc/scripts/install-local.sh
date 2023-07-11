@@ -241,9 +241,12 @@ function is_compatible_arch() {
     elif [[ " ${input[*]} " =~ " any " ]]; then
         return 0
     elif [[ -n "${FARCH[*]}" ]]; then
-        if [[ " ${input[*]} " =~ " ${FARCH[*]} " ]]; then
+        if [[ " ${FARCH[*]} " =~ " ${input[*]} " ]]; then
             fancy_message warn "This package is for ${BBlue}${input[*]}${NC}, which is a foreign architecture"
             return 0
+        else
+            fancy_message warn "This Pacscript does not work on ${BBlue}${CARCH}${NC}"
+            return 1
         fi
     elif ! [[ " ${input[*]} " =~ " ${CARCH} " ]]; then
         fancy_message error "This Pacscript does not work on ${BBlue}${CARCH}${NC}"
