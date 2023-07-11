@@ -60,7 +60,7 @@ function trap_ctrlc() {
 
 # run checks to verify script works
 function checks() {
-    local ret=0
+    local ret=0 lint_pkgver
     if [[ -z $name ]]; then
         fancy_message error "Package does not contain name"
         ret=1
@@ -79,6 +79,11 @@ function checks() {
     if is_function pkgver; then
         if [[ -z $pkgver ]]; then
             fancy_message error "Package contains 'pkgver()' but not the variable as well"
+            ret=1
+        fi
+        lint_pkgver="$(pkgver)"
+        if [[ -z ${lint_pkgver} ]]; then
+            fancy_message error "'pkgver()' has no output"
             ret=1
         fi
     elif [[ -z $pkgver ]]; then
