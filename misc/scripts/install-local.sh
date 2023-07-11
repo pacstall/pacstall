@@ -242,7 +242,7 @@ function is_compatible_arch() {
         return 0
     elif [[ -n "${FARCH[*]}" ]]; then
         if [[ " ${input[*]} " =~ " ${FARCH[*]} " ]]; then
-            fancy_message warn "This package is for a ${BBlue}foreign architecture${NC}"
+            fancy_message warn "This package is for ${BBlue}${input[*]}${NC}, which is a foreign architecture"
             return 0
         fi
     elif ! [[ " ${input[*]} " =~ " ${CARCH} " ]]; then
