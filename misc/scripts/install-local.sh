@@ -352,9 +352,6 @@ function prompt_optdepends() {
                         fancy_message info "Installing selected optional dependencies"
                         sudo -E apt-get install "${not_installed_yet_optdeps[@]}" -y 2> /dev/null
                     fi
-                    if is_package_installed "${name}"; then
-                        sudo dpkg -r --force-all "${gives:-$name}" > /dev/null
-                    fi
                 else # Did we get 0 or n?
                     # Add everything to Suggests
                     local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${suggested_optdeps[@]}")
