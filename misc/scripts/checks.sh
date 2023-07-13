@@ -155,12 +155,10 @@ function lint_pkgdesc() {
 }
 
 function lint_maintainer() {
-    local ret=0
     if [[ -z $maintainer ]]; then
         fancy_message warn "Package does not have a maintainer. Please be advised"
-        ret=1
     fi
-    return "${ret}"
+    return 0
 }
 
 function lint_makedepends() {
@@ -365,8 +363,8 @@ function lint_arch() {
                 ret=1
             fi
         done
-        return "${ret}"
     fi
+    return "${ret}"
 }
 
 function checks() {
