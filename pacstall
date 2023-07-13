@@ -820,7 +820,7 @@ Helpful links:
             if ((${#packages_installed[@]} == 0)) && [[ -t 1 ]]; then
                 fancy_message error "Nothing installed yet"
                 exit 1
-            else
+            elif ((${#packages_installed[@]} == 0)); then
                 exit 1
             fi
 
