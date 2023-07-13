@@ -431,6 +431,18 @@ function is_function() {
     fi
 }
 
+function array.contains() {
+    local -n arra="${1:?No array passed to array.contains}"
+    local input="${2:?No input given to array.contains}"
+    # shellcheck disable=SC2076
+    if [[ " ${arra[*]} " =~ " ${input} " ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+
 # Error out when run as root
 if ((EUID == 0)); then
     fancy_message error "Pacstall can't be run as root. Please run as a normal user."

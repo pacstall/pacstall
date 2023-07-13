@@ -24,17 +24,6 @@
 
 # The order we prefer is pkgs with only pacdeps (class 1), pacdeps+deps (class 2), everything else (class 3), and just pacdeps (class 4)
 
-function array.contains() {
-    local -n arra="${1:?No array passed to array.contains}"
-    local input="${2:?No input given to array.contains}"
-    # shellcheck disable=SC2076
-    if [[ " ${arra[*]} " =~ " ${input} " ]]; then
-        return 0
-    else
-        return 1
-    fi
-}
-
 function array.remove() {
     local array_name to_remove i
     declare -n array_name="${1:?No array given to array.remove}"
