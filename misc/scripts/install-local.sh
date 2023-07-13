@@ -202,9 +202,9 @@ function get_incompatible_releases() {
 
 function is_compatible_arch() {
     local input=("${@}")
-    if [[ " ${input[*]} " =~ " any " ]]; then
+    if array.contains input "any"; then
         return 0
-    elif ! [[ " ${input[*]} " =~ " ${CARCH} " ]]; then
+    elif ! array.contains input "${CARCH}"; then
         fancy_message error "This Pacscript does not work on ${BBlue}${CARCH}${NC}"
         return 1
     fi
@@ -412,7 +412,7 @@ function makedeb() {
 
     if [[ -n ${arch[*]} ]]; then
         # If we have any or all in the arch, then the package works everywhere
-        if [[ " ${arch[*]} " =~ " any " ]] || [[ " ${arch[*]} " =~ " all " ]]; then
+        if array.contains arch "any"; then
             deblog "Architecture" "all"
         else # If it doesn't but arch[@] exists we should log the current arch as the build arch
             deblog "Architecture" "$(dpkg --print-architecture)"
