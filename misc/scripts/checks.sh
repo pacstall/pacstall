@@ -48,7 +48,7 @@ function lint_name() {
         fancy_message error "'name' contains uppercase characters"
         ret=1
     fi
-    if [[ ! $name =~ ^[a-z0-9.\-+]+$ ]]; then
+    if [[ $name == *[^[:alnum:]+.-]* ]]; then
         fancy_message error "'name' contains characters that are not lowercase, digits, minus, or periods"
         ret=1
     fi
@@ -164,216 +164,215 @@ function lint_maintainer() {
 }
 
 function lint_makedepends() {
-	local ret=0 makedepend idx=0
-	if [[ -n "${makedepends[*]}" ]]; then
-		for makedepend in "${makedepends[@]}"; do
-			if [[ -z "${makedepend}" ]]; then
-				fancy_message error "'makedepends' index '${idx}' cannot be empty"
-				ret=1
-			fi
-			((idx++))
-		done
-	fi
-	return "${ret}"
+    local ret=0 makedepend idx=0
+    if [[ -n ${makedepends[*]} ]]; then
+        for makedepend in "${makedepends[@]}"; do
+            if [[ -z ${makedepend} ]]; then
+                fancy_message error "'makedepends' index '${idx}' cannot be empty"
+                ret=1
+            fi
+            ((idx++))
+        done
+    fi
+    return "${ret}"
 }
 
 function lint_depends() {
-	local ret=0 depend idx=0
-	if [[ -n "${depends[*]}" ]]; then
-		for depend in "${depends[@]}"; do
-			if [[ -z "${depend}" ]]; then
-				fancy_message error "'depends' index '${idx}' cannot be empty"
-				ret=1
-			fi
-			((idx++))
-		done
-	fi
-	return "${ret}"
+    local ret=0 depend idx=0
+    if [[ -n ${depends[*]} ]]; then
+        for depend in "${depends[@]}"; do
+            if [[ -z ${depend} ]]; then
+                fancy_message error "'depends' index '${idx}' cannot be empty"
+                ret=1
+            fi
+            ((idx++))
+        done
+    fi
+    return "${ret}"
 }
 
 function lint_pacdeps() {
-	local ret=0 pacdep idx=0
-	if [[ -n "${pacdeps[*]}" ]]; then
-		for pacdep in "${pacdeps[@]}"; do
-			if [[ -z "${pacdep}" ]]; then
-				fancy_message error "'pacdeps' index '${idx}' cannot be empty"
-				ret=1
-			fi
-			((idx++))
-		done
-	fi
-	return "${ret}"
+    local ret=0 pacdep idx=0
+    if [[ -n ${pacdeps[*]} ]]; then
+        for pacdep in "${pacdeps[@]}"; do
+            if [[ -z ${pacdep} ]]; then
+                fancy_message error "'pacdeps' index '${idx}' cannot be empty"
+                ret=1
+            fi
+            ((idx++))
+        done
+    fi
+    return "${ret}"
 }
 
 function lint_ppa() {
-	local ret=0 el_ppa idx=0
-	if [[ -n "${ppa[*]}" ]]; then
-		for el_ppa in "${ppa[@]}"; do
-			if [[ -z "${el_ppa}" ]]; then
-				fancy_message error "'ppa' index '${idx}' cannot be empty"
-				ret=1
-			fi
-			((idx++))
-		done
-		if ((ret != 0)); then
-			return 1
-		fi
-		idx=0
-		for el_ppa in "${ppa[@]}"; do
-			if [[ $el_ppa =~ ^ppa: ]]; then
-				fancy_message error "'ppa' index '${idx}' cannot start with 'ppa:'"
-				ret=1
-			fi
-			((idx++))
-		done
-		idx=0
-		for el_ppa in "${ppa[@]}"; do
-			if [[ ! $el_ppa =~ ^[a-zA-Z0-9]+\/[a-zA-Z0-9]+ ]]; then
-				fancy_message error "'ppa' index '${idx}' is improperly formatted"
-				ret=1
-			fi
-			((idx++))
-		done
-	fi
-	return "${ret}"
+    local ret=0 el_ppa idx=0
+    if [[ -n ${ppa[*]} ]]; then
+        for el_ppa in "${ppa[@]}"; do
+            if [[ -z ${el_ppa} ]]; then
+                fancy_message error "'ppa' index '${idx}' cannot be empty"
+                ret=1
+            fi
+            ((idx++))
+        done
+        if ((ret != 0)); then
+            return 1
+        fi
+        idx=0
+        for el_ppa in "${ppa[@]}"; do
+            if [[ $el_ppa =~ ^ppa: ]]; then
+                fancy_message error "'ppa' index '${idx}' cannot start with 'ppa:'"
+                ret=1
+            fi
+            ((idx++))
+        done
+        idx=0
+        for el_ppa in "${ppa[@]}"; do
+            if [[ ! $el_ppa =~ ^[a-zA-Z0-9]+\/[a-zA-Z0-9]+ ]]; then
+                fancy_message error "'ppa' index '${idx}' is improperly formatted"
+                ret=1
+            fi
+            ((idx++))
+        done
+    fi
+    return "${ret}"
 }
 
 function lint_optdepends() {
-	local ret=0 optdepend idx=0
-	if [[ -n "${optdepends[*]}" ]]; then
-		for optdepend in "${optdepends[@]}"; do
-			if [[ -z "${optdepend}" ]]; then
-				fancy_message error "'optdepends' index '${idx}' cannot be empty"
-				ret=1
-			elif [[ ! $optdepend =~ ^[a-zA-Z0-9]+(:[a-zA-Z0-9]+)?: [a-zA-Z0-9 ]+$ ]]; then
-				fancy_message error "'optdepends' index '${idx}' is not formatted correctly"
-				ret=1
-			fi
-			((idx++))
-		done
-	fi
-	return "${ret}"
+    local ret=0 optdepend idx=0
+    if [[ -n ${optdepends[*]} ]]; then
+        for optdepend in "${optdepends[@]}"; do
+            if [[ -z ${optdepend} ]]; then
+                fancy_message error "'optdepends' index '${idx}' cannot be empty"
+                ret=1
+            elif [[ $optdepend != *": "* ]]; then
+                fancy_message error "'optdepends' index '${idx}' is not formatted correctly"
+                ret=1
+            fi
+            ((idx++))
+        done
+    fi
+    return "${ret}"
 }
 
 function lint_breaks() {
-	local ret=0 break idx=0
-	if [[ -n "${breaks[*]}" ]]; then
-		for break in "${breaks[@]}"; do
-			if [[ -z "${break}" ]]; then
-				fancy_message error "'breaks' index '${idx}' cannot be empty"
-				ret=1
-			fi
-			((idx++))
-		done
-	fi
-	return "${ret}"
+    local ret=0 break idx=0
+    if [[ -n ${breaks[*]} ]]; then
+        for break in "${breaks[@]}"; do
+            if [[ -z ${break} ]]; then
+                fancy_message error "'breaks' index '${idx}' cannot be empty"
+                ret=1
+            fi
+            ((idx++))
+        done
+    fi
+    return "${ret}"
 }
 
 function lint_replace() {
-	local ret=0 repl idx=0
-	if [[ -n "${replace[*]}" ]]; then
-		for repl in "${replace[@]}"; do
-			if [[ -z "${repl}" ]]; then
-				fancy_message error "'replace' index '${idx}' cannot be empty"
-				ret=1
-			fi
-			((idx++))
-		done
-	fi
-	return "${ret}"
+    local ret=0 repl idx=0
+    if [[ -n ${replace[*]} ]]; then
+        for repl in "${replace[@]}"; do
+            if [[ -z ${repl} ]]; then
+                fancy_message error "'replace' index '${idx}' cannot be empty"
+                ret=1
+            fi
+            ((idx++))
+        done
+    fi
+    return "${ret}"
 }
 
 function lint_hash() {
-	local ret=0
-	if [[ -n "${hash}" ]]; then
-		if ((${#hash} != 64)); then
-			fancy_message error "'hash' is improperly formatted"
-			ret=1
-		fi
-	fi
-	return "${ret}"
+    local ret=0
+    if [[ -n ${hash} ]]; then
+        if ((${#hash} != 64)); then
+            fancy_message error "'hash' is improperly formatted"
+            ret=1
+        fi
+    fi
+    return "${ret}"
 }
 
 function lint_patch() {
-	local ret=0 el_patch idx=0
-	if [[ -n "${patch[*]}" ]]; then
-		for el_patch in "${patch[@]}"; do
-			if [[ -z "${el_patch}" ]]; then
-				fancy_message error "'patch' index '${idx}' cannot be empty"
-				ret=1
-			fi
-			((idx++))
-		done
-	fi
-	return "${ret}"
+    local ret=0 el_patch idx=0
+    if [[ -n ${patch[*]} ]]; then
+        for el_patch in "${patch[@]}"; do
+            if [[ -z ${el_patch} ]]; then
+                fancy_message error "'patch' index '${idx}' cannot be empty"
+                ret=1
+            fi
+            ((idx++))
+        done
+    fi
+    return "${ret}"
 }
 
 function lint_provides() {
-	local ret=0 provide idx=0
-	if [[ -n "${provides[*]}" ]]; then
-		for provide in "${provides[@]}"; do
-			if [[ -z "${provide}" ]]; then
-				fancy_message error "'provides' index '${idx}' cannot be empty"
-				ret=1
-			fi
-			((idx++))
-		done
-	fi
-	return "${ret}"
+    local ret=0 provide idx=0
+    if [[ -n ${provides[*]} ]]; then
+        for provide in "${provides[@]}"; do
+            if [[ -z ${provide} ]]; then
+                fancy_message error "'provides' index '${idx}' cannot be empty"
+                ret=1
+            fi
+            ((idx++))
+        done
+    fi
+    return "${ret}"
 }
 
 function lint_incompatible() {
-	local ret=0 incompat idx=0
-	if [[ -n "${incompatible[*]}" ]]; then
-		for incompat in "${incompatible[@]}"; do
-			if [[ -z "${incompat}" ]]; then
-				fancy_message error "'incompatible' index '${idx}' cannot be empty"
-				ret=1
-			fi
-			((idx++))
-		done
-		idx=0
-		for incompat in "${incompatible[@]}"; do
-			if [[ ! $incompat =~ ^[a-zA-Z0-9*]+:[a-zA-Z0-9*]+$ ]] && [[ $incompat != "*:*" ]]; then
-				fancy_message error "'incompatible' index '${idx}' is improperly formatted"
-				ret=1
-			fi
-			((idx++))
-		done
-	fi
-	return "${ret}"
+    local ret=0 incompat idx=0
+    if [[ -n ${incompatible[*]} ]]; then
+        for incompat in "${incompatible[@]}"; do
+            if [[ -z ${incompat} ]]; then
+                fancy_message error "'incompatible' index '${idx}' cannot be empty"
+                ret=1
+            fi
+            ((idx++))
+        done
+        idx=0
+        for incompat in "${incompatible[@]}"; do
+            if [[ ! $incompat =~ ^[a-zA-Z0-9*]+:[a-zA-Z0-9*]+$ ]] && [[ $incompat != "*:*" ]]; then
+                fancy_message error "'incompatible' index '${idx}' is improperly formatted"
+                ret=1
+            fi
+            ((idx++))
+        done
+    fi
+    return "${ret}"
 }
 
 function lint_arch() {
-	local ret=0 el_arch z idx=0 known_archs=("any")
-	mapfile -t -O"${#known_archs[@]}" known_archs < <(dpkg-architecture --list-known)
-	if [[ -n "${arch[@]}" ]]; then
-		for el_arch in "${arch[@]}"; do
-			if [[ -z "${el_arch}" ]]; then
-				fancy_message error "'arch' index '${idx}' cannot be empty"
-				ret=1
-			fi
-			((idx++))
-		done
-		# Fail point
-		if ((ret != 0)); then
-			return 1
-		fi
-		for el_arch in "${arch[@]}"; do
-			if ! array.contains known_archs "${el_arch}"; then
-				fancy_message error "'${el_arch}' is not a valid architecture"
-				ret=1
-			fi
-		done
-		return "${ret}"
-	fi
+    local ret=0 el_arch idx=0 known_archs=("any")
+    mapfile -t -O"${#known_archs[@]}" known_archs < <(dpkg-architecture --list-known)
+    if [[ -n ${arch[*]} ]]; then
+        for el_arch in "${arch[@]}"; do
+            if [[ -z ${el_arch} ]]; then
+                fancy_message error "'arch' index '${idx}' cannot be empty"
+                ret=1
+            fi
+            ((idx++))
+        done
+        # Fail point
+        if ((ret != 0)); then
+            return 1
+        fi
+        for el_arch in "${arch[@]}"; do
+            if ! array.contains known_archs "${el_arch}"; then
+                fancy_message error "'${el_arch}' is not a valid architecture"
+                ret=1
+            fi
+        done
+        return "${ret}"
+    fi
 }
 
-
 function checks() {
-	local ret=0 check linting_checks=(lint_name lint_gives lint_pkgrel lint_epoch lint_version lint_url lint_pkgdesc lint_maintainer lint_makedepends lint_depends lint_pacdeps lint_ppa lint_optdepends lint_breaks lint_replace lint_hash lint_patch lint_provides lint_incompatible lint_arch)
-	for check in "${linting_checks[@]}"; do
-		"${check}" || ret=1
-	done
-	return "${ret}"
+    local ret=0 check linting_checks=(lint_name lint_gives lint_pkgrel lint_epoch lint_version lint_url lint_pkgdesc lint_maintainer lint_makedepends lint_depends lint_pacdeps lint_ppa lint_optdepends lint_breaks lint_replace lint_hash lint_patch lint_provides lint_incompatible lint_arch)
+    for check in "${linting_checks[@]}"; do
+        "${check}" || ret=1
+    done
+    return "${ret}"
 }

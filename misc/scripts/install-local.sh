@@ -22,9 +22,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-source "${STGDIR}/checks.sh" || {
-	fancy_message error "Could not find checks.sh"
-	return 1
+source "${STGDIR}/scripts/checks.sh" || {
+    fancy_message error "Could not find checks.sh"
+    return 1
 }
 
 function cleanup() {
@@ -226,16 +226,6 @@ function prompt_optdepends() {
     local deps optdep
     deps=("${depends[@]}")
     if ((${#optdepends[@]} != 0)); then
-        for i in "${optdepends[@]}"; do
-            # Should cover `foo:i386: baz`, `foo: baz`, but not `foo:baz`
-            if [[ $i != *": "* ]]; then
-                fancy_message error "${i} does not have a description"
-                fancy_message info "Cleaning up"
-                cleanup
-                return 1
-            fi
-        done
-
         local suggested_optdeps=()
         for optdep in "${optdepends[@]}"; do
             # Strip the description, `opt` is now the canonical optdep name
