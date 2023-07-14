@@ -205,8 +205,18 @@ function is_compatible_arch() {
     if array.contains input "any"; then
         return 0
     elif ! array.contains input "${CARCH}"; then
-        fancy_message error "This Pacscript does not work on ${BBlue}${CARCH}${NC}"
-        return 1
+        if [[ -n ${FARCH[*]} ]]; then
+            if [[ " ${FARCH[*]} " =~ " ${input[*]} " ]]; then
+                fancy_message warn "This package is for ${BBlue}${input[*]}${NC}, which is a foreign architecture"
+                return 0
+            else
+                fancy_message error "This Pacscript does not work on ${BBlue}${CARCH}${NC}"
+                return 1
+            fi
+        else
+            fancy_message error "This Pacscript does not work on ${BBlue}${CARCH}${NC}"
+            return 1
+        fi
     fi
 }
 
@@ -648,6 +658,8 @@ export homedir
 sudo cp "${PACKAGE}.pacscript" /tmp
 pacfile="$(readlink -f "/tmp/${PACKAGE}.pacscript")"
 export pacfile
+mapfile -t FARCH < <(dpkg --print-foreign-architectures)
+export FARCH
 export CARCH="$(dpkg --print-architecture)"
 export DISTRO="$(set_distro)"
 if ! source "${pacfile}"; then
