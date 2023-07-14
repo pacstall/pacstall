@@ -402,7 +402,7 @@ function makedeb() {
     fi
     deblog "Package" "${gives:-$name}"
 
-    if [[ $version =~ ^[0-9] ]]; then
+    if [[ $pkgver =~ ^[0-9] ]]; then
         deblog "Version" "${full_version}"
         export version="${full_version}"
     else
