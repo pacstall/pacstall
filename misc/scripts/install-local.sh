@@ -824,7 +824,7 @@ function hashcheck() {
         cleanup
         return 1
     fi
-    true
+    return 0
 }
 
 fancy_message info "Retrieving packages"
