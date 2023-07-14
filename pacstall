@@ -432,14 +432,15 @@ function is_function() {
 }
 
 function array.contains() {
+    local check
     local -n arra="${1:?No array passed to array.contains}"
     local input="${2:?No input given to array.contains}"
-    # shellcheck disable=SC2076
-    if [[ " ${arra[*]} " =~ " ${input} " ]]; then
-        return 0
-    else
-        return 1
-    fi
+    for check in "${arra[@]}"; do
+        if [[ ${check} == "${input}" ]]; then
+            return 0
+        fi
+    done
+    return 1
 }
 
 # Error out when run as root
