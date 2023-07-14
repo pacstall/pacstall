@@ -75,7 +75,7 @@ function lint_gives() {
             fancy_message error "'gives' contains uppercase characters"
             ret=1
         fi
-        if [[ ! $gives =~ ^[a-z0-9.\-+]+$ ]]; then
+        if [[ $gives == *[^[:alnum:]+.-]* ]]; then
             fancy_message error "'gives' contains characters that are not lowercase, digits, minus, or periods"
             ret=1
         fi
