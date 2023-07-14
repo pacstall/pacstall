@@ -345,7 +345,6 @@ function lint_incompatible() {
 function lint_arch() {
     local ret=0 el_arch idx=0 known_archs=("any")
     if [[ -n ${arch[*]} ]]; then
-        mapfile -t -O"${#known_archs[@]}" known_archs < <(dpkg-architecture --list-known)
         for el_arch in "${arch[@]}"; do
             if [[ -z ${el_arch} ]]; then
                 fancy_message error "'arch' index '${idx}' cannot be empty"
@@ -357,6 +356,7 @@ function lint_arch() {
         if ((ret != 0)); then
             return 1
         fi
+        mapfile -t -O"${#known_archs[@]}" known_archs < <(dpkg-architecture --list-known)
         for el_arch in "${arch[@]}"; do
             if ! array.contains known_archs "${el_arch}"; then
                 fancy_message error "'${el_arch}' is not a valid architecture"
