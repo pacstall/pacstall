@@ -22,6 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+# shellcheck source=./misc/scripts/checks.sh
 source "${STGDIR}/scripts/checks.sh" || {
     fancy_message error "Could not find checks.sh"
     return 1
