@@ -84,7 +84,7 @@ if [[ $PACKAGE == *@* ]]; then
     while IFS= read -r URL; do
         specifyRepo "$URL"
         if [[ $URLNAME == "$REPONAME" ]]; then
-            mapfile -t PACKAGELIST < <(curl -s -- "$URL"/packagelist)
+            mapfile -t PACKAGELIST < <(curl -s -- "$URL")
             IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | awk "\$1 ~ /^${PACKAGE}$/ {print NR-1}")
             _LEN=($IDXSEARCH)
             LEN=${#_LEN[@]}
