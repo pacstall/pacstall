@@ -273,7 +273,7 @@ function check_url() {
             000)
                 if [[ ${1} == *"packagelist" ]]; then
                     fancy_message error "Packagelist not found"
-                    suggested_solution "Confirm that '${UGreen}$1/packagelist${NC}' exists"
+                    suggested_solution "Confirm that '${UGreen}$1${NC}' exists"
                 else
                     fancy_message error "Failed to download file, check your connection"
                 fi
@@ -282,7 +282,7 @@ function check_url() {
                 ;;
             404)
                 fancy_message error "The URL cannot be found"
-                suggested_solution "Confirm that '${UGreen}$1/packagelist${NC}' exists"
+                suggested_solution "Confirm that '${UGreen}$1${NC}' exists"
                 return 1
                 ;;
             200 | 301 | 302)
@@ -290,7 +290,7 @@ function check_url() {
                 ;;
             *)
                 fancy_message error "Failed with http code ${http_code}"
-                suggested_solution "Confirm that '${UGreen}$1/packagelist${NC}' is accessible"
+                suggested_solution "Confirm that '${UGreen}$1${NC}' is accessible"
                 return 1
                 ;;
         esac
