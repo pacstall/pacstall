@@ -917,6 +917,13 @@ else
                 exit 1
             fi
             hashcheck "${file_name}" || return 1
+            if type -t preinst &> /dev/null; then
+                if ! preinst; then
+                    error_log 5 "preinst hook"
+                    fancy_message error "Could not run preinst hook successfully"
+                    exit 1
+                fi
+            fi
             if sudo apt install -y -f ./"${file_name}" 2> /dev/null; then
                 log
                 if [[ -f /tmp/pacstall-pacdeps-"$name" ]]; then
