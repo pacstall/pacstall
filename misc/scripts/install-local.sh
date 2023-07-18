@@ -917,9 +917,9 @@ else
                 exit 1
             fi
             hashcheck "${file_name}" || return 1
-            if type -t preinst &> /dev/null; then
-                if ! preinst; then
-                    error_log 5 "preinst hook"
+            if type -t pre_install &> /dev/null; then
+                if ! pre_install; then
+                    error_log 5 "pre_install hook"
                     fancy_message error "Could not run preinst hook successfully"
                     exit 1
                 fi
