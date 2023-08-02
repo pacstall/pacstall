@@ -108,7 +108,7 @@ N="$(nproc)"
                 if [[ -n $remotever ]]; then
                     if ver_compare "$remotever" "$alterver"; then
                         echo -e "${GREEN}${i}${CYAN} has a newer version at ${CYAN}$(parseRepo "${alterurl}")${NC}."
-                        ask "Keep the package from the current repo" Y
+                        ask "Keep the package from the current repo?" Y
                         if ((answer == 0)); then
                             remoterepo="$alterver"
                             remoteurl="$alterurl"
@@ -162,7 +162,7 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
     fi
     for to_upgrade in "${upgrade[@]}"; do
         PACKAGE="${to_upgrade}"
-        ask "Do you want to upgrade ${GREEN}${PACKAGE}${NC}" Y
+        ask "Do you want to upgrade ${GREEN}${PACKAGE}${NC}?" Y
         if ((answer == 0)); then
             continue
         fi
