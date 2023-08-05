@@ -22,6 +22,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+# shellcheck source=./misc/scripts/checks.sh
+source "${STGDIR}/scripts/checks.sh" || {
+    fancy_message error "Could not find checks.sh"
+    return 1
+}
+
 function cleanup() {
     if [[ -n $KEEP ]]; then
         rm -rf "/tmp/pacstall-keep/$name"
@@ -43,8 +49,8 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset name pkgname repology epoch url depends build_depends breaks replace gives description hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pac_functions 2> /dev/null
-    unset -f pkgver postinst removescript preinst prepare build install package 2> /dev/null
+    unset name repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel pac_functions 2> /dev/null
+    unset -f pkgver post_install post_remove pre_install prepare build package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
 
@@ -56,49 +62,6 @@ function trap_ctrlc() {
     sudo rm -f "/etc/apt/preferences.d/${name:-$PACKAGE}-pin"
     cleanup
     exit 1
-}
-
-# run checks to verify script works
-function checks() {
-    if [[ -z $name ]]; then
-        fancy_message error "Package does not contain name"
-        return 1
-    fi
-    if [[ $name != "$PACKAGE" ]]; then
-        fancy_message error "Package name does not match file"
-        suggested_solution "Change '${UPurple}name${NC}' to '${UCyan}$PACKAGE${NC}'" "Change package name to '${UCyan}$name${NC}'"
-        return 1
-    fi
-    if [[ -z $gives && $name == *-deb ]]; then
-        fancy_message warn "Deb package does not contain gives"
-    fi
-    if [[ -z $hash && $name != *-git ]]; then
-        fancy_message warn "Package does not contain a hash"
-    fi
-    if [[ -z $version ]]; then
-        fancy_message error "Package does not contain version"
-        return 1
-    fi
-    if [[ -z $url ]]; then
-        fancy_message error "Package does not contain URL"
-        return 1
-    fi
-    if [[ -z $description ]]; then
-        fancy_message error "Package does not contain a description"
-        return 1
-    fi
-    if [[ -z $maintainer ]]; then
-        fancy_message warn "Package does not have a maintainer. Please be advised"
-    fi
-    if is_function install && is_function package; then
-        fancy_message error "Both 'install()' and 'package()' exist. One or the other can exist, but not both"
-        return 1
-    fi
-
-    if is_function install; then
-        fancy_message warn "'install()' is deprecated. Use 'package()' instead"
-    fi
-
 }
 
 # Logging metadata
@@ -162,7 +125,7 @@ function compare_remote_version() (
     unset -f pkgver 2> /dev/null
     source "$METADIR/$input" || return 1
     if [[ -z ${_remoterepo} ]]; then
-        return
+        return 0
     elif [[ ${_remoterepo} == *"github.com"* ]]; then
         local remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}"
     elif [[ ${_remoterepo} == *"gitlab.com"* ]]; then
@@ -170,7 +133,13 @@ function compare_remote_version() (
     else
         local remoterepo="${_remoterepo}"
     fi
-    local remotever="$(source <(curl -s -- "$remoterepo/packages/$input/$input.pacscript") && type pkgver &> /dev/null && pkgver || echo "${full_version}")" > /dev/null
+    local remotever="$(
+        source <(curl -s -- "$remoterepo/packages/$input/$input.pacscript") && if is_function pkgver; then
+            echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(pkgver)"
+        else
+            echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
+        fi
+    )" > /dev/null
     if [[ $input == *"-git" ]]; then
         if [[ $(pacstall -Qi "$input" version) != "$remotever" ]]; then
             echo "update"
@@ -236,13 +205,9 @@ function get_incompatible_releases() {
 
 function is_compatible_arch() {
     local input=("${@}")
-    if [[ " ${input[*]} " =~ " all " ]]; then
-        fancy_message warn "${BBlue}all${NC} is deprecated. Use ${BBlue}any${NC} instead"
-        suggested_solution "Replace ${UPurple}arch${NC} with ${UCyan}arch=(${arch[*]/all/any})${NC}"
+    if array.contains input "any"; then
         return 0
-    elif [[ " ${input[*]} " =~ " any " ]]; then
-        return 0
-    elif ! [[ " ${input[*]} " =~ " ${CARCH} " ]]; then
+    elif ! array.contains input "${CARCH}"; then
         if [[ -n ${FARCH[*]} ]]; then
             if [[ " ${FARCH[*]} " =~ " ${input[*]} " ]]; then
                 fancy_message warn "This package is for ${BBlue}${input[*]}${NC}, which is a foreign architecture"
@@ -272,25 +237,8 @@ function clean_builddir() {
 
 function prompt_optdepends() {
     local deps optdep
-    if [[ -n $depends ]]; then
-        if is_array depends; then
-            deps=("${depends[@]}")
-        else
-            mapfile -t deps <<< "${depends// /$'\n'}"
-            fancy_message warn "Using '${BCyan}depends${NC}' as a variable instead of array is deprecated"
-        fi
-    fi
+    deps=("${depends[@]}")
     if ((${#optdepends[@]} != 0)); then
-        for i in "${optdepends[@]}"; do
-            # Should cover `foo:i386: baz`, `foo: baz`, but not `foo:baz`
-            if [[ $i != *": "* ]]; then
-                fancy_message error "${i} does not have a description"
-                fancy_message info "Cleaning up"
-                cleanup
-                return 1
-            fi
-        done
-
         local suggested_optdeps=()
         for optdep in "${optdepends[@]}"; do
             # Strip the description, `opt` is now the canonical optdep name
@@ -467,7 +415,7 @@ function makedeb() {
     fi
     deblog "Package" "${gives:-$name}"
 
-    if [[ $version =~ ^[0-9] ]]; then
+    if [[ $pkgver =~ ^[0-9] ]]; then
         deblog "Version" "${full_version}"
         export version="${full_version}"
     else
@@ -477,7 +425,7 @@ function makedeb() {
 
     if [[ -n ${arch[*]} ]]; then
         # If we have any or all in the arch, then the package works everywhere
-        if [[ " ${arch[*]} " =~ " any " ]] || [[ " ${arch[*]} " =~ " all " ]]; then
+        if array.contains arch "any"; then
             deblog "Architecture" "all"
         else # If it doesn't but arch[@] exists we should log the current arch as the build arch
             deblog "Architecture" "$(dpkg --print-architecture)"
@@ -516,7 +464,7 @@ function makedeb() {
         else
             local description_arr+=("$line")
         fi
-    done <<< "${description}"
+    done <<< "${pkgdesc}"
     if ((${#description_arr[@]} > 1)); then
         deblog "Description" "$(
             echo "${description_arr[0]}"
@@ -525,14 +473,14 @@ function makedeb() {
             done
         )"
     else
-        deblog "Description" "${description}"
+        deblog "Description" "${pkgdesc}"
     fi
 
-    for i in {removescript,postinst,preinst}; do
+    for i in {post_remove,post_install,pre_install}; do
         case "$i" in
-            removescript) export deb_post_file="postrm" ;;
-            postinst) export deb_post_file="postinst" ;;
-            preinst) export deb_post_file="preinst" ;;
+            post_remove) export deb_post_file="postrm" ;;
+            post_install) export deb_post_file="postinst" ;;
+            pre_install) export deb_post_file="preinst" ;;
         esac
         if is_function "$i"; then
             echo '#!/bin/bash
@@ -734,7 +682,6 @@ if ((PACSTALL_INSTALL == 0)) && [[ ${name} == *-deb ]]; then
     return 0
 fi
 
-full_version="${epoch+$epoch:}$version"
 if [[ -n ${arch[*]} ]]; then
     if ! is_compatible_arch "${arch[@]}"; then
         cleanup
@@ -752,16 +699,18 @@ fi
 clean_builddir
 sudo mkdir -p "$STOWDIR/$name/DEBIAN"
 
-if type pkgver > /dev/null 2>&1; then
-    version=$(pkgver) > /dev/null
-fi
-
 # Run checks function
 if ! checks; then
     error_log 6 "install $PACKAGE"
     fancy_message info "Cleaning up"
     cleanup
     return 1
+fi
+
+if is_function pkgver; then
+    full_version="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(pkgver)"
+else
+    full_version="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
 fi
 
 # Trap Crtl+C just before the point cleanup is first needed
@@ -807,10 +756,6 @@ fi
 
 if ! is_package_installed "${name}"; then
     if [[ -n $breaks ]]; then
-        if ! is_array breaks; then
-            mapfile -t breaks <<< "${breaks// /$'\n'}"
-            fancy_message warn "Using '${BCyan}breaks${NC}' as a variable instead of array is deprecated"
-        fi
         for pkg in "${breaks[@]}"; do
             # Do we have an apt package installed (but not pacstall)?
             if is_apt_package_installed "${pkg}" && ! is_package_installed "${pkg}"; then
@@ -835,10 +780,6 @@ if ! is_package_installed "${name}"; then
     fi
 
     if [[ -n ${replace[*]} ]]; then
-        if ! is_array replace; then
-            mapfile -t replace <<< "${replace// /$'\n'}"
-            fancy_message warn "Using '${BCyan}replace${NC}' as a variable instead of array is deprecated"
-        fi
         # Ask user if they want to replace the program
         for pkg in "${replace[@]}"; do
             if is_apt_package_installed "${pkg}"; then
@@ -854,13 +795,8 @@ if ! is_package_installed "${name}"; then
     fi
 fi
 
-if [[ -n ${build_depends[*]} ]]; then
-    # Get all uninstalled build depends
-    if ! is_array build_depends; then
-        mapfile -t build_depends <<< "${build_depends// /$'\n'}"
-        fancy_message warn "Using '${BCyan}build_depends${NC}' as a variable instead of array is deprecated"
-    fi
-    for build_dep in "${build_depends[@]}"; do
+if [[ -n ${makedepends[*]} ]]; then
+    for build_dep in "${makedepends[@]}"; do
         if ! is_apt_package_installed "${build_dep}"; then
             # If not installed yet, we can mark it as possibly removable
             not_installed_yet_builddepends+=("${build_dep}")
@@ -903,7 +839,7 @@ function hashcheck() {
         cleanup
         return 1
     fi
-    true
+    return 0
 }
 
 fancy_message info "Retrieving packages"
@@ -983,9 +919,9 @@ else
                 exit 1
             fi
             hashcheck "${file_name}" || return 1
-            if type -t preinst &> /dev/null; then
-                if ! preinst; then
-                    error_log 5 "preinst hook"
+            if type -t pre_install &> /dev/null; then
+                if ! pre_install; then
+                    error_log 5 "pre_install hook"
                     fancy_message error "Could not run preinst hook successfully"
                     exit 1
                 fi
@@ -995,10 +931,10 @@ else
                 if [[ -f /tmp/pacstall-pacdeps-"$name" ]]; then
                     sudo apt-mark auto "${gives:-$name}" 2> /dev/null
                 fi
-                if type -t postinst &> /dev/null; then
-                    if ! postinst; then
-                        error_log 5 "postinst hook"
-                        fancy_message error "Could not run postinst hook successfully"
+                if type -t post_install &> /dev/null; then
+                    if ! post_install; then
+                        error_log 5 "post_install hook"
+                        fancy_message error "Could not run post_install hook successfully"
                         exit 1
                     fi
                 fi
@@ -1104,7 +1040,7 @@ $(shopt -p -o)"
     eval "$restoretrap"
 }
 
-for i in {prepare,build,install,package}; do
+for i in {prepare,build,package}; do
     if is_function "$i"; then
         pac_functions+=("$i")
     fi
