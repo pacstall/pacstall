@@ -122,7 +122,7 @@ new_branch="${new_info[1]}"
 
 # TODO: Remove this after 4.0.0 drops
 if [[ ${old_version} != "4.0.0" && ${new_version} == "4.0.0" ]]; then
-    curl -s https://raw.githubusercontent.com/Elsie19/pacstall-4.0.0-scripts/master/convert.sh | bash
+    curl -s https://raw.githubusercontent.com/pacstall/pacstall-4.0.0-scripts/master/convert.sh | bash
 fi
 
 # Bling Bling update ascii
