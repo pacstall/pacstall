@@ -242,7 +242,7 @@ function prompt_optdepends() {
             # Strip the description, `opt` is now the canonical optdep name
             local opt="${optdep%%: *}"
             # Check if package exists in the repos, and if not, go to the next program
-            if [[ -z "$(apt-cache search --names-only "^$opt\$")" ]]; then
+            if [[ -z "$(apt-cache search --no-generate --names-only "^$opt\$" 2> /dev/null || apt-cache search --names-only "^$opt\$")" ]]; then
                 local missing_optdeps+=("${opt}")
                 continue
             fi
@@ -633,7 +633,7 @@ else
     declare -g NCPU="$(nproc)"
 fi
 
-ask "(${BPurple}$PACKAGE${NC}) Do you want to view/edit the pacscript" N
+ask "(${BPurple}$PACKAGE${NC}) Do you want to view/edit the pacscript?" N
 if ((answer == 1)); then
     (
         if [[ -n $PACSTALL_EDITOR ]]; then
@@ -781,7 +781,7 @@ if ! is_package_installed "${name}"; then
         # Ask user if they want to replace the program
         for pkg in "${replace[@]}"; do
             if is_apt_package_installed "${pkg}"; then
-                ask "This script replaces ${pkg}. Do you want to proceed" Y
+                ask "This script replaces ${pkg}. Do you want to proceed?" Y
                 if ((answer == 0)); then
                     fancy_message info "Cleaning up"
                     cleanup
@@ -803,7 +803,7 @@ if [[ -n ${makedepends[*]} ]]; then
 
     if ((${#not_installed_yet_builddepends[@]} != 0)); then
         fancy_message info "${BLUE}$name${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to install"
-        ask "Do you want to remove them after installing ${BLUE}$name${NC}" N
+        ask "Do you want to remove them after installing ${BLUE}$name${NC}?" N
         if ((answer == 0)); then
             NOBUILDDEP=0
         else
