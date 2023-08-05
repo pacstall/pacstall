@@ -120,6 +120,11 @@ new_version=($(pacstall -V))
 new_username="${new_info[0]}"
 new_branch="${new_info[1]}"
 
+# TODO: Remove this after 4.0.0 drops
+if [[ ${old_version} != "4.0.0" && ${new_version} == "4.0.0" ]]; then
+    curl -s https://raw.githubusercontent.com/Elsie19/pacstall-4.0.0-scripts/master/convert.sh | bash
+fi
+
 # Bling Bling update ascii
 if [[ -n ${GIT_USER} || ${new_branch} != "master" ]]; then
     echo '
