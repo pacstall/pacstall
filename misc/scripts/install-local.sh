@@ -604,7 +604,8 @@ fi' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
         if ! [[ -d /etc/apt/preferences.d/ ]]; then
             sudo mkdir -p /etc/apt/preferences.d
         fi
-        echo "Package: ${gives:-$name}
+        local combined_pinning=("${provides[@]}" "${gives:-${name}}")
+        echo "Package: ${combined_pinning[*]}
 Pin: version *
 Pin-Priority: -1" | sudo tee "/etc/apt/preferences.d/${name}-pin" > /dev/null
         return 0
