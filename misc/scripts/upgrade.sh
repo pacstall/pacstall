@@ -118,8 +118,7 @@ N="$(nproc)"
                     remoterepo="$alterver"
                     remoteurl="$alterurl"
                 fi
-                # If the remote version equals the local version minus the first character (0) or they both equal the same
-            elif [[ $remotever == "${localver:1}" ]] || [[ $remotever == "$localver" ]]; then
+            elif [[ $remotever == "${localver}" ]]; then
                 return
             fi
 
