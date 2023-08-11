@@ -2,7 +2,7 @@ name: Feature request
 description: Suggest an idea for Pacstall
 labels: ["enhancement", "triage"]
 assignees:
-  - Henryws
+  - Elsie19
   - wizard-28
 body:
   - type: textarea
