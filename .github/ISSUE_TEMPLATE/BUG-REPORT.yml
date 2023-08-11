@@ -3,7 +3,7 @@ description: Create a report to help us improve
 labels: ["bug", "triage"]
 assignees:
   - wizard-28
-  - Elsie19 
+  - Elsie19
 body:
   - type: textarea
     id: description
