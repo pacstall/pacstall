@@ -467,7 +467,7 @@ function getMasks_offending_pkg() {
         source "${METADIR}/${pkg}"
         if [[ -n ${_mask[*]} ]]; then
             if array.contains _mask "${pkgname}"; then
-                echo "${pkgname}"
+                echo "${pkg}"
                 return 0
             fi
         fi
