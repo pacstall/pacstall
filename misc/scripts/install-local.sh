@@ -695,6 +695,7 @@ getMasks masked_packages
 if ((${#masked_packages[@]} != 0)); then
     if array.contains masked_packages "${name:-${PACKAGE}}"; then
         offending_pkg="$(getMasks_offending_pkg "${name:-${PACKAGE}}")"
+        # shellcheck disable=SC2181
         if (($? == 0)); then
             fancy_message error "The package ${BBlue}${offending_pkg}${NC} is masking ${BBlue}${name:-${PACKAGE}}${NC}. By installing the masked package, you may cause damage to your operating system"
             exit 1
