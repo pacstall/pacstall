@@ -694,8 +694,14 @@ masked_packages=()
 getMasks masked_packages
 if ((${#masked_packages[@]} != 0)); then
     if array.contains masked_packages "${name:-${PACKAGE}}"; then
-        fancy_message error "The package ${BBlue}${any_masks}${NC} is masking ${BBlue}${name:-${PACKAGE}}${NC}. By installing the masked package, you may cause damage to your operating system"
-        exit 1
+        offending_pkg="$(getMasks_offending_pkg "${name:-${PACKAGE}}")"
+        if (($? == 0)); then
+            fancy_message error "The package ${BBlue}${offending_pkg}${NC} is masking ${BBlue}${name:-${PACKAGE}}${NC}. By installing the masked package, you may cause damage to your operating system"
+            exit 1
+        else
+            fancy_message error "Somehow, 'getMasks' found masked packages that match the package you want to install, but 'getMasks_offending_pkg' could not find it. Report this upstream"
+            exit 1
+        fi
     fi
 fi
 

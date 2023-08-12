@@ -457,6 +457,25 @@ function getMasks() {
     done
 }
 
+function getMasks_offending_pkg() {
+    local pkgname="${1}"
+    mapfile -t pkgs < <(pacstall -L)
+    if ((${#pkgs[@]} == 0)); then
+        return 0
+    fi
+    for pkg in "${pkgs[@]}"; do
+        source "${METADIR}/${pkg}"
+        if [[ -n ${_mask[*]} ]]; then
+            if array.contains _mask "${pkgname}"; then
+                echo "${pkgname}"
+                return 0
+            fi
+        fi
+        unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch _mask 2> /dev/null
+    done
+    return 1
+}
+
 # Error out when run as root
 if ((EUID == 0)); then
     fancy_message error "Pacstall can't be run as root. Please run as a normal user."
