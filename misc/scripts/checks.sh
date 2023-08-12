@@ -367,8 +367,22 @@ function lint_arch() {
     return "${ret}"
 }
 
+function lint_mask() {
+    local ret=0 masked idx=0
+    if [[ -n ${mask[*]} ]]; then
+        for masked in "${mask[@]}"; do
+            if [[ -z ${masked} ]]; then
+                fancy_message error "'mask' index '${idx}' cannot be empty"
+                ret=1
+            fi
+            ((idx++))
+        done
+    fi
+    return "${ret}"
+}
+
 function checks() {
-    local ret=0 check linting_checks=(lint_name lint_gives lint_pkgrel lint_epoch lint_version lint_url lint_pkgdesc lint_maintainer lint_makedepends lint_depends lint_pacdeps lint_ppa lint_optdepends lint_breaks lint_replace lint_hash lint_patch lint_provides lint_incompatible lint_arch)
+    local ret=0 check linting_checks=(lint_name lint_gives lint_pkgrel lint_epoch lint_version lint_url lint_pkgdesc lint_maintainer lint_makedepends lint_depends lint_pacdeps lint_ppa lint_optdepends lint_breaks lint_replace lint_hash lint_patch lint_provides lint_incompatible lint_arch lint_mask)
     for check in "${linting_checks[@]}"; do
         "${check}" || ret=1
     done
