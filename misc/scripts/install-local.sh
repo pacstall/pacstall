@@ -744,9 +744,6 @@ if [[ -n $pacdeps ]]; then
                     cleanup
                     return 1
                 fi
-            else
-                fancy_message info "The pacstall dependency ${i} is already installed and at latest version"
-
             fi
             # BUG: Pacstall installs pacdeps from main repo. In the RS version we should get the latest version of the pacdep from all repos and use that.
         elif fancy_message info "Installing $i" && ! pacstall "$cmd" "$i"; then
