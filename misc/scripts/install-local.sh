@@ -810,13 +810,6 @@ if [[ -n ${makedepends[*]} ]]; then
 
     if ((${#not_installed_yet_builddepends[@]} != 0)); then
         fancy_message info "${BLUE}$name${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to install"
-        ask "Do you want to remove them after installing ${BLUE}$name${NC}?" N
-        if ((answer == 0)); then
-            NOBUILDDEP=0
-        else
-            NOBUILDDEP=1
-        fi
-
         if ! sudo apt-get install -y "${not_installed_yet_builddepends[@]}"; then
             fancy_message error "Failed to install build dependencies"
             error_log 8 "install $PACKAGE"
@@ -1058,11 +1051,6 @@ if [[ -n ${pac_functions[*]} ]]; then
 fi
 
 trap - ERR
-
-if ((NOBUILDDEP == 1)); then
-    fancy_message info "Purging build dependencies"
-    sudo apt-get purge --auto-remove -y "${not_installed_yet_builddepends[@]}"
-fi
 
 cd "$HOME" 2> /dev/null || (
     error_log 1 "install $PACKAGE"
