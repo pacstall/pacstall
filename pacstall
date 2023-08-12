@@ -824,7 +824,7 @@ Helpful links:
 
             if [[ -t 1 ]]; then
                 for pkg in "${packages_installed[@]}"; do
-                    unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch _maintainer 2> /dev/null
+                    unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch _maintainer _mask 2> /dev/null
                     source ./"${pkg}"
                     echo -e "${BYellow}~${NC} ${BGreen}${_name}${BPurple}@${BCyan}${_version}${NC}"
                     if [[ -n ${_gives} ]]; then

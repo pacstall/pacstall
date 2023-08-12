@@ -65,7 +65,7 @@ function getMasks() {
         if [[ -n ${_mask[*]} ]]; then
             masks+=("${_mask[@]}")
         fi
-        unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch 2> /dev/null
+        unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch _mask 2> /dev/null
     done
 }
 
