@@ -439,6 +439,10 @@ function makedeb() {
     deblog "Section" "Pacstall"
     deblog "Priority" "optional"
 
+    if [[ -n ${makedepends[*]} ]]; then
+        deblog "Build-Depends" "$(sed 's/ /, /g' <<< "${makedepends[@]}")"
+    fi
+
     if [[ -n ${provides[*]} ]]; then
         deblog "Provides" "$(sed 's/ /, /g' <<< "${provides[@]}")"
     fi
