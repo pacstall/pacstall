@@ -49,7 +49,7 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset name repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel pac_functions 2> /dev/null
+    unset name repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel mask pac_functions 2> /dev/null
     unset -f pkgver post_install post_remove pre_install prepare build package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
@@ -116,6 +116,11 @@ function log() {
             _pacdeps=("${pacdeps[@]}")
             declare -p _pacdeps
             unset _pacdeps
+        fi
+        if [[ -n ${mask[*]} ]]; then
+            _mask=("${mask[@]}")
+            declare -p _mask
+            unset _mask
         fi
     } | sudo tee "$METADIR/$name" > /dev/null
 }
@@ -362,6 +367,22 @@ function clean_logdir() {
     fi
     sudo find -H "${LOGDIR:-/var/log/pacstall/error_log/}" -maxdepth 1 -mtime +30 -delete
 }
+
+function check_masks() (
+	local inputs=("${@}")
+	local pkg
+	if [[ -z $(pacstall -L) ]]; then
+		return 0
+	fi
+	for pkg in "${METADIR}"/*; do
+		source "${pkg}"
+		if array.contains inputs "${_name}"; then
+			echo "${_name}"
+			return 1
+		fi
+	done
+	return 0
+)
 
 function createdeb() {
     local name="$1"
@@ -683,6 +704,14 @@ if ((PACSTALL_INSTALL == 0)) && [[ ${name} == *-deb ]]; then
         return 1
     fi
     return 0
+fi
+
+if [[ -n "${mask[*]}" ]]; then
+	any_masks="$(check_masks "${mask[@]}")"
+	if (($? != 0)); then
+		fancy_message error "The package ${BBlue}${any_masks}${NC} is masking ${BBlue}${name:-${PACKAGE}}${NC}. By installing the masked package, you may cause damage to your operating system"
+		exit 1
+	fi
 fi
 
 if [[ -n ${arch[*]} ]]; then
