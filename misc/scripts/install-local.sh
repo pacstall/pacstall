@@ -368,22 +368,6 @@ function clean_logdir() {
     sudo find -H "${LOGDIR:-/var/log/pacstall/error_log/}" -maxdepth 1 -mtime +30 -delete
 }
 
-function check_masks() (
-    local inputs=("${@}")
-    local pkg
-    if [[ -z $(pacstall -L) ]]; then
-        return 0
-    fi
-    for pkg in "${METADIR}"/*; do
-        source "${pkg}"
-        if array.contains inputs "${_name}"; then
-            echo "${_name}"
-            return 1
-        fi
-    done
-    return 0
-)
-
 function createdeb() {
     local name="$1"
     if ((PACSTALL_INSTALL == 0)); then
@@ -706,9 +690,10 @@ if ((PACSTALL_INSTALL == 0)) && [[ ${name} == *-deb ]]; then
     return 0
 fi
 
-if [[ -n ${mask[*]} ]]; then
-    any_masks="$(check_masks "${mask[@]}")"
-    if (($? != 0)); then
+masked_packages=()
+getMasks masked_packages
+if ((${#masked_packages[@]} != 0)); then
+    if array.contains masked_packages "${name:-${PACKAGE}}"; then
         fancy_message error "The package ${BBlue}${any_masks}${NC} is masking ${BBlue}${name:-${PACKAGE}}${NC}. By installing the masked package, you may cause damage to your operating system"
         exit 1
     fi

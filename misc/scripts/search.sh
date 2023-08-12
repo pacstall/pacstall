@@ -53,22 +53,6 @@ function specifyRepo() {
 
 }
 
-function getMasks() {
-    local pkgs pkg
-    local -n masks="${1}"
-    mapfile -t pkgs < <(pacstall -L)
-    if ((${#pkgs[@]} == 0)); then
-        return 0
-    fi
-    for pkg in "${pkgs[@]}"; do
-        source "${METADIR}/${pkg}"
-        if [[ -n ${_mask[*]} ]]; then
-            masks+=("${_mask[@]}")
-        fi
-        unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch _mask 2> /dev/null
-    done
-}
-
 # Parses github and gitlab URL's
 # url -> maintainer/repo
 # Also adds hyperlink for the

@@ -441,6 +441,22 @@ function array.contains() {
     return 1
 }
 
+function getMasks() {
+    local pkgs pkg
+    local -n masks="${1}"
+    mapfile -t pkgs < <(pacstall -L)
+    if ((${#pkgs[@]} == 0)); then
+        return 0
+    fi
+    for pkg in "${pkgs[@]}"; do
+        source "${METADIR}/${pkg}"
+        if [[ -n ${_mask[*]} ]]; then
+            masks+=("${_mask[@]}")
+        fi
+        unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch _mask 2> /dev/null
+    done
+}
+
 # Error out when run as root
 if ((EUID == 0)); then
     fancy_message error "Pacstall can't be run as root. Please run as a normal user."
