@@ -156,7 +156,7 @@ if ((${#any_masks[@]} != 0)); then
     i=0
     for pkg in "${PACKAGELIST[@]}"; do
         if array.contains any_masks "${pkg}"; then
-            unset "${PACKAGELIST[$i]}"
+            unset PACKAGELIST[$i]
         fi
         ((i++))
     done
