@@ -54,18 +54,18 @@ function specifyRepo() {
 }
 
 function getMasks() {
-	local pkgs pkg
-	local -n masks="${1}"
-	mapfile -t pkgs < <(pacstall -L)
-	if ((${#pkgs[@]} == 0)); then
-		return 0
-	fi
-	for pkg in "${pkgs[@]}"; do
-		source "${METADIR}/${pkg}"
-		if [[ -n "${_mask[*]}" ]]; then
-			masks+=("${_mask[@]}")
-		fi
-	done
+    local pkgs pkg
+    local -n masks="${1}"
+    mapfile -t pkgs < <(pacstall -L)
+    if ((${#pkgs[@]} == 0)); then
+        return 0
+    fi
+    for pkg in "${pkgs[@]}"; do
+        source "${METADIR}/${pkg}"
+        if [[ -n ${_mask[*]} ]]; then
+            masks+=("${_mask[@]}")
+        fi
+    done
 }
 
 # Parses github and gitlab URL's
@@ -152,16 +152,15 @@ REPOMSG=1
 any_masks=()
 getMasks any_masks
 if ((${#any_masks[@]} != 0)); then
-	i=0
-	for pkg in "${PACKAGELIST[@]}"; do
-		if array.contains any_masks "${pkg}"; then
-			unset "${PACKAGELIST[$i]}"
-		done
-		((i++))
-	done
-	PACKAGELIST=("${PACKAGELIST[@]}")
+    i=0
+    for pkg in "${PACKAGELIST[@]}"; do
+        if array.contains any_masks "${pkg}"; then
+            unset "${PACKAGELIST[$i]}"
+        fi
+        ((i++))
+    done
+    PACKAGELIST=("${PACKAGELIST[@]}")
 fi
-
 
 # Gets index of packages that the search returns
 # Complete name if download, upgrade or install

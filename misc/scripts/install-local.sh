@@ -369,19 +369,19 @@ function clean_logdir() {
 }
 
 function check_masks() (
-	local inputs=("${@}")
-	local pkg
-	if [[ -z $(pacstall -L) ]]; then
-		return 0
-	fi
-	for pkg in "${METADIR}"/*; do
-		source "${pkg}"
-		if array.contains inputs "${_name}"; then
-			echo "${_name}"
-			return 1
-		fi
-	done
-	return 0
+    local inputs=("${@}")
+    local pkg
+    if [[ -z $(pacstall -L) ]]; then
+        return 0
+    fi
+    for pkg in "${METADIR}"/*; do
+        source "${pkg}"
+        if array.contains inputs "${_name}"; then
+            echo "${_name}"
+            return 1
+        fi
+    done
+    return 0
 )
 
 function createdeb() {
@@ -706,12 +706,12 @@ if ((PACSTALL_INSTALL == 0)) && [[ ${name} == *-deb ]]; then
     return 0
 fi
 
-if [[ -n "${mask[*]}" ]]; then
-	any_masks="$(check_masks "${mask[@]}")"
-	if (($? != 0)); then
-		fancy_message error "The package ${BBlue}${any_masks}${NC} is masking ${BBlue}${name:-${PACKAGE}}${NC}. By installing the masked package, you may cause damage to your operating system"
-		exit 1
-	fi
+if [[ -n ${mask[*]} ]]; then
+    any_masks="$(check_masks "${mask[@]}")"
+    if (($? != 0)); then
+        fancy_message error "The package ${BBlue}${any_masks}${NC} is masking ${BBlue}${name:-${PACKAGE}}${NC}. By installing the masked package, you may cause damage to your operating system"
+        exit 1
+    fi
 fi
 
 if [[ -n ${arch[*]} ]]; then
