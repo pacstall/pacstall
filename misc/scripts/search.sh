@@ -159,6 +159,7 @@ if ((${#any_masks[@]} != 0)); then
 		done
 		((i++))
 	done
+	PACKAGELIST=("${PACKAGELIST[@]}")
 fi
 
 
