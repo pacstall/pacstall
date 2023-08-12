@@ -60,7 +60,7 @@ if [[ -n ${_remoterepo} ]]; then
     remote_repo="${_remoterepo}"
 fi
 get_field "$PACKAGE" Maintainer maintainer
-if [[ -n $_ppa ]]; then
+if [[ -n ${_ppa} ]]; then
     ppa="${_ppa}"
 fi
 if [[ -n ${_pacdeps} ]]; then
@@ -75,6 +75,10 @@ if [[ -n ${_pacstall_depends} ]]; then
     install_type="installed as dependency"
 else
     install_type="explicitly installed"
+fi
+
+if [[ -n ${_mask[*]} ]]; then
+    mask="${_mask[*]}"
 fi
 
 if [[ -n ${QUERY} ]]; then
@@ -101,6 +105,9 @@ if [[ -v homepage ]]; then
 fi
 if [[ -v remote_repo ]]; then
     echo -e "${BGreen}remote repo${NC}: ${remote_repo}"
+fi
+if [[ -v mask ]]; then
+    echo -e "${BGreen}mask${NC}: ${mask}"
 fi
 echo -e "${BGreen}maintainer${NC}: ${maintainer}"
 if [[ -v ppa ]]; then
