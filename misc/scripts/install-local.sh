@@ -535,7 +535,7 @@ declare -g NCPU="$(nproc)"
 fi' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
             {
                 cat "${pacfile}"
-                echo -e "$i"
+                echo -e "\n$i"
             } | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
         fi
     done
