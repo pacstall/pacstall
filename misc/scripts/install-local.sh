@@ -49,7 +49,7 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset name repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel pac_functions 2> /dev/null
+    unset name repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel mask pac_functions 2> /dev/null
     unset -f pkgver post_install post_remove pre_install prepare build package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
@@ -116,6 +116,11 @@ function log() {
             _pacdeps=("${pacdeps[@]}")
             declare -p _pacdeps
             unset _pacdeps
+        fi
+        if [[ -n ${mask[*]} ]]; then
+            _mask=("${mask[@]}")
+            declare -p _mask
+            unset _mask
         fi
     } | sudo tee "$METADIR/$name" > /dev/null
 }
@@ -687,6 +692,22 @@ if ((PACSTALL_INSTALL == 0)) && [[ ${name} == *-deb ]]; then
         return 1
     fi
     return 0
+fi
+
+masked_packages=()
+getMasks masked_packages
+if ((${#masked_packages[@]} != 0)); then
+    if array.contains masked_packages "${name:-${PACKAGE}}"; then
+        offending_pkg="$(getMasks_offending_pkg "${name:-${PACKAGE}}")"
+        # shellcheck disable=SC2181
+        if (($? == 0)); then
+            fancy_message error "The package ${BBlue}${offending_pkg}${NC} is masking ${BBlue}${name:-${PACKAGE}}${NC}. By installing the masked package, you may cause damage to your operating system"
+            exit 1
+        else
+            fancy_message error "Somehow, 'getMasks' found masked packages that match the package you want to install, but 'getMasks_offending_pkg' could not find it. Report this upstream"
+            exit 1
+        fi
+    fi
 fi
 
 if [[ -n ${arch[*]} ]]; then

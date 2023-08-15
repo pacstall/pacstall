@@ -133,6 +133,20 @@ done < "$STGDIR/repo/pacstallrepo"
 
 REPOMSG=1
 
+# Remove any `mask` from output
+any_masks=()
+getMasks any_masks
+if ((${#any_masks[@]} != 0)); then
+    i=0
+    for pkg in "${PACKAGELIST[@]}"; do
+        if array.contains any_masks "${pkg}"; then
+            unset "PACKAGELIST[$i]"
+        fi
+        ((i++))
+    done
+    PACKAGELIST=("${PACKAGELIST[@]}")
+fi
+
 # Gets index of packages that the search returns
 # Complete name if download, upgrade or install
 # Partial word if search
