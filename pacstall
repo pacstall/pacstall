@@ -444,7 +444,7 @@ function array.contains() {
 function getMasks() {
     local pkgs pkg
     local -n masks="${1}"
-    mapfile -t pkgs < <(pacstall -L)
+    mapfile -t pkgs < <(pacstall -L 2>/dev/null)
     if ((${#pkgs[@]} == 0)); then
         return 0
     fi
