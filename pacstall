@@ -37,6 +37,9 @@ export PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER}}")
 # (( )) doesn't like uninitialized vars
 export PACSTALL_INSTALL=1
 
+# declare verbose debug output
+declare -gx PS4=$'\U1F50D \E[0;10m\E[1m\033[1;31m\033[1;37m[\033[1;35m${BASH_SOURCE[0]##*/}:\033[1;34m${FUNCNAME[0]:-NOFUNC}():\033[1;33m${LINENO}\033[1;37m] - \033[1;33mDEBUG: \E[0;10m'
+
 # Colors
 export BOLD='\033[1m'
 export NC='\033[0m'
