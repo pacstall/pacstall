@@ -137,14 +137,15 @@ REPOMSG=1
 any_masks=()
 getMasks any_masks
 if ((${#any_masks[@]} != 0)); then
-    i=0
+    mask_itr=0
     for pkg in "${PACKAGELIST[@]}"; do
         if array.contains any_masks "${pkg}"; then
-            unset "PACKAGELIST[$i]"
+            unset "PACKAGELIST[$mask_itr]"
         fi
-        ((i++))
+        ((mask_itr++))
     done
     PACKAGELIST=("${PACKAGELIST[@]}")
+    unset mask_itr
 fi
 
 # Gets index of packages that the search returns
