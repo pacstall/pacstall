@@ -148,13 +148,10 @@ fi
 
 echo -e "[${BGreen}+${NC}] INFO: Updated from ${BGreen}${old_version}${NC} (${BGreen}${old_username} ${old_branch}${NC}) -> ${BGreen}${new_version}${NC} (${BGreen}${new_username} ${new_branch}${NC})"
 
-if [[ ${new_branch} != "master" ]]; then
-    echo -e "[${BGreen}+${NC}] INFO: You have updated to a development branch."
-    echo -e "[${BYellow}*${NC}] WARN: Please remember that bugs may arise, and that this branch may not be as stable as master."
-elif [[ -n $GIT_USER ]]; then
+if [[ -n $GIT_USER ]]; then
     echo -e "[${BGreen}+${NC}] INFO: You have updated to a local branch."
     echo -e "[${BYellow}*${NC}] WARN: Remember that you must update with '${BCyan}pacstall -U .${NC}' to update to this repo again, otherwise run '${BCyan}pacstall -U${NC}'."
-else
+elif [[ ${new_branch} != "master" ]]; then
     echo -e "[${BGreen}+${NC}] INFO: You have updated to a development branch."
     echo -e "[${BYellow}*${NC}] WARN: Please remember that bugs may arise, and that this branch may not be as stable as master."
 fi
