@@ -372,9 +372,9 @@ function createdeb() {
     local name="$1"
     if ((PACSTALL_INSTALL == 0)); then
         # We are not going to immediately install, meaning the user might want to share their deb with someone else, so create the highest compression.
-        local flags=("-9" "-T0")
-        local compression="xz"
-        local command="xz"
+        local flags=("-19" "-T0" "-q")
+        local compression="zst"
+        local command="zstd"
     else
         # Immediate install (gzip), so we want fast build times over everything else
         local flags=("-1n")
