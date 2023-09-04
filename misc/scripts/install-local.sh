@@ -172,6 +172,41 @@ function set_distro() {
     echo "${distro_name}:${distro_version_name}"
 }
 
+function get_compatible_releases() {
+    # example for this function is "ubuntu:jammy"
+    local distro_name="$(lsb_release -si 2> /dev/null)"
+    distro_name="${distro_name,,}"
+    if [[ "$(lsb_release -ds 2> /dev/null | tail -c 4)" == "sid" ]]; then
+        local distro_version_name="sid"
+        local distro_version_number="sid"
+    else
+        local distro_version_name="$(lsb_release -sc 2> /dev/null)"
+        local distro_version_number="$(lsb_release -sr 2> /dev/null)"
+    fi
+    # lowercase
+    local input=("${@,,}")
+    for key in "${input[@]}"; do
+        # check for `*:jammy`
+        if [[ $key == "*:"* ]]; then
+            # check for `22.04` or `jammy`
+            if [[ ${key#*:} == "${distro_version_number}" || ${key#*:} == "${distro_version_name}" ]]; then
+                return 0
+            fi
+        # check for `ubuntu:*`
+        elif [[ $key == *":*" ]]; then
+            # check for `ubuntu`
+            if [[ ${key%%:*} == "${distro_name}" ]]; then
+                return 0
+            fi
+        elif [[ $key == "${distro_name}:${distro_version_name}" || $key == "${distro_name}:${distro_version_number}" ]]; then
+            # check for `ubuntu:jammy` or `ubuntu:22.04`
+            return 0
+        else
+            echo "This Pacscript does not work on ${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${distro_name}:${distro_version_number}${NC}"
+        fi
+    done
+}
+
 function get_incompatible_releases() {
     # example for this function is "ubuntu:jammy"
     local distro_name="$(lsb_release -si 2> /dev/null)"
@@ -717,7 +752,12 @@ if [[ -n ${arch[*]} ]]; then
     fi
 fi
 
-if [[ -n ${incompatible[*]} ]]; then
+if [[ -n ${compatible[*]} ]]; then
+    if ! get_compatible_releases "${compatible[@]}"; then
+        cleanup
+        exit 1
+    fi
+elif [[ -n ${incompatible[*]} ]]; then
     if ! get_incompatible_releases "${incompatible[@]}"; then
         cleanup
         exit 1

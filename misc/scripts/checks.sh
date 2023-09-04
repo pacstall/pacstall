@@ -320,9 +320,37 @@ function lint_provides() {
     return "${ret}"
 }
 
+function lint_compatible() {
+    local ret=0 compat idx=0
+    if [[ -n ${compatible[*]} ]]; then
+        if [[ -n ${incompatible[*]} ]]; then
+            fancy_message error "'compatible' and 'incompatible' indeces cannot both be provided"
+        fi
+        for compat in "${compatible[@]}"; do
+            if [[ -z ${compat} ]]; then
+                fancy_message error "'compatible' index '${idx}' cannot be empty"
+                ret=1
+            fi
+            ((idx++))
+        done
+        idx=0
+        for compat in "${compatible[@]}"; do
+            if [[ $compat != *:* ]] || [[ $compat == "*:*" ]]; then
+                fancy_message error "'compatible' index '${idx}' is improperly formatted"
+                ret=1
+            fi
+            ((idx++))
+        done
+    fi
+    return "${ret}"
+}
+
 function lint_incompatible() {
     local ret=0 incompat idx=0
     if [[ -n ${incompatible[*]} ]]; then
+        if [[ -n ${compatible[*]} ]]; then
+            fancy_message error "'compatible' and 'incompatible' indeces cannot both be provided"
+        fi
         for incompat in "${incompatible[@]}"; do
             if [[ -z ${incompat} ]]; then
                 fancy_message error "'incompatible' index '${idx}' cannot be empty"
@@ -382,7 +410,7 @@ function lint_mask() {
 }
 
 function checks() {
-    local ret=0 check linting_checks=(lint_name lint_gives lint_pkgrel lint_epoch lint_version lint_url lint_pkgdesc lint_maintainer lint_makedepends lint_depends lint_pacdeps lint_ppa lint_optdepends lint_breaks lint_replace lint_hash lint_patch lint_provides lint_incompatible lint_arch lint_mask)
+    local ret=0 check linting_checks=(lint_name lint_gives lint_pkgrel lint_epoch lint_version lint_url lint_pkgdesc lint_maintainer lint_makedepends lint_depends lint_pacdeps lint_ppa lint_optdepends lint_breaks lint_replace lint_hash lint_patch lint_provides lint_compatible lint_incompatible lint_arch lint_mask)
     for check in "${linting_checks[@]}"; do
         "${check}" || ret=1
     done
