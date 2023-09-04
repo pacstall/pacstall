@@ -202,7 +202,8 @@ function get_compatible_releases() {
             # check for `ubuntu:jammy` or `ubuntu:22.04`
             return 0
         else
-            echo "This Pacscript does not work on ${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${distro_name}:${distro_version_number}${NC}"
+            fancy_message error "This Pacscript does not work on ${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${distro_name}:${distro_version_number}${NC}"
+			return 1
         fi
     done
 }
