@@ -325,6 +325,7 @@ function lint_compatible() {
     if [[ -n ${compatible[*]} ]]; then
         if [[ -n ${incompatible[*]} ]]; then
             fancy_message error "'compatible' and 'incompatible' indeces cannot both be provided"
+			ret=1
         fi
         for compat in "${compatible[@]}"; do
             if [[ -z ${compat} ]]; then
@@ -350,6 +351,7 @@ function lint_incompatible() {
     if [[ -n ${incompatible[*]} ]]; then
         if [[ -n ${compatible[*]} ]]; then
             fancy_message error "'compatible' and 'incompatible' indeces cannot both be provided"
+			ret=1
         fi
         for incompat in "${incompatible[@]}"; do
             if [[ -z ${incompat} ]]; then
