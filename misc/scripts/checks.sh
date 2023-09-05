@@ -324,11 +324,11 @@ function lint_incompatible() {
     local ret=0 incompat compat idx=0 comp_err=0
     if [[ -n ${compatible[*]} ]]; then
         if [[ -n ${incompatible[*]} ]]; then
-		    if [[ ${comp_err} != 1 ]]; then
-            	fancy_message error "'compatible' and 'incompatible' indeces cannot both be provided"
-				comp_error=1
-			fi
-			ret=1
+            if [[ ${comp_err} != 1 ]]; then
+                fancy_message error "'compatible' and 'incompatible' indeces cannot both be provided"
+                comp_error=1
+            fi
+            ret=1
         fi
         for compat in "${compatible[@]}"; do
             if [[ -z ${compat} ]]; then
@@ -348,10 +348,10 @@ function lint_incompatible() {
     elif [[ -n ${incompatible[*]} ]]; then
         if [[ -n ${compatible[*]} ]]; then
             if [[ ${comp_err} != 1 ]]; then
-            	fancy_message error "'compatible' and 'incompatible' indeces cannot both be provided"
-				comp_error=1
-			fi
-			ret=1
+                fancy_message error "'compatible' and 'incompatible' indeces cannot both be provided"
+                comp_error=1
+            fi
+            ret=1
         fi
         for incompat in "${incompatible[@]}"; do
             if [[ -z ${incompat} ]]; then
