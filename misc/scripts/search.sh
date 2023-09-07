@@ -35,7 +35,7 @@ function getPath() {
     path="${path/"~"/"$HOME"}"
     path="$(readlink -f "${path}")"
     path="${path/"$HOME"/"~"}"
-    printf -v "${var}" "${path}"
+    printf -v "${var}" "%s" "${path}"
 }
 
 function specifyRepo() {
