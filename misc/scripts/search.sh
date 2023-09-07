@@ -30,7 +30,7 @@ fi
 
 function getPath() {
     local path="${1}"
-	local var="${2}"
+    local var="${2}"
     path="${path/"file://"/}"
     path="${path/"~"/"$HOME"}"
     path="$(readlink -f "${path}")"
@@ -43,7 +43,7 @@ function specifyRepo() {
     mapfile -t SPLIT < <(echo "${1//[\/]/$'\n'}")
 
     if [[ $1 == "file://"* ]] || [[ $1 == "/"* ]] || [[ $1 == "~"* ]] || [[ $1 == "."* ]]; then
-		export URLNAME
+        export URLNAME
         getPath "${1}" URLNAME
     elif [[ $1 == *"github"* ]]; then
         export URLNAME="${SPLIT[-3]}/${SPLIT[-2]}"
