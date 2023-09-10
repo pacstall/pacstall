@@ -60,7 +60,7 @@ if ! curl --head --location -s --fail -- "$REPO/packagelist" > /dev/null; then
 fi
 REPOLIST=()
 while IFS= read -r REPOURL; do
-    REPOLIST+=("${REPOURL} ")
+    REPOLIST+=("${REPOURL}")
 done < "$STGDIR/repo/pacstallrepo"
 REPOLIST+=("$REPO")
 
