@@ -321,8 +321,38 @@ function lint_provides() {
 }
 
 function lint_incompatible() {
-    local ret=0 incompat idx=0
-    if [[ -n ${incompatible[*]} ]]; then
+    local ret=0 incompat compat idx=0 comp_err=0
+    if [[ -n ${compatible[*]} ]]; then
+        if [[ -n ${incompatible[*]} ]]; then
+            if [[ ${comp_err} != 1 ]]; then
+                fancy_message error "'compatible' and 'incompatible' indeces cannot both be provided"
+                comp_error=1
+            fi
+            ret=1
+        fi
+        for compat in "${compatible[@]}"; do
+            if [[ -z ${compat} ]]; then
+                fancy_message error "'compatible' index '${idx}' cannot be empty"
+                ret=1
+            fi
+            ((idx++))
+        done
+        idx=0
+        for compat in "${compatible[@]}"; do
+            if [[ $compat != *:* ]] || [[ $compat == "*:*" ]]; then
+                fancy_message error "'compatible' index '${idx}' is improperly formatted"
+                ret=1
+            fi
+            ((idx++))
+        done
+    elif [[ -n ${incompatible[*]} ]]; then
+        if [[ -n ${compatible[*]} ]]; then
+            if [[ ${comp_err} != 1 ]]; then
+                fancy_message error "'compatible' and 'incompatible' indeces cannot both be provided"
+                comp_error=1
+            fi
+            ret=1
+        fi
         for incompat in "${incompatible[@]}"; do
             if [[ -z ${incompat} ]]; then
                 fancy_message error "'incompatible' index '${idx}' cannot be empty"
