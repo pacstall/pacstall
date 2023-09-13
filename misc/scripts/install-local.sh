@@ -212,9 +212,9 @@ function get_incompatible_releases() {
 
 function is_compatible_arch() {
     local input=("${@}")
-    if array.contains input "any"; then
+    if [[ " ${input[*]} " =~ " any " ]]; then
         return 0
-    elif ! array.contains input "${CARCH}"; then
+    elif ! [[ " ${input[*]} " =~ " ${CARCH} " ]]; then
         if [[ -n ${FARCH[*]} ]]; then
             if [[ " ${FARCH[*]} " =~ " ${input[*]} " ]]; then
                 fancy_message warn "This package is for ${BBlue}${input[*]}${NC}, which is a foreign architecture"
