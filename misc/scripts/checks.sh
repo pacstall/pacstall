@@ -325,7 +325,7 @@ function lint_incompatible() {
     if [[ -n ${compatible[*]} ]]; then
         if [[ -n ${incompatible[*]} ]]; then
             if [[ ${comp_err} != 1 ]]; then
-                fancy_message error "'compatible' and 'incompatible' indeces cannot both be provided"
+                fancy_message error "'compatible' and 'incompatible' indices cannot both be provided"
                 comp_error=1
             fi
             ret=1
@@ -348,7 +348,7 @@ function lint_incompatible() {
     elif [[ -n ${incompatible[*]} ]]; then
         if [[ -n ${compatible[*]} ]]; then
             if [[ ${comp_err} != 1 ]]; then
-                fancy_message error "'compatible' and 'incompatible' indeces cannot both be provided"
+                fancy_message error "'compatible' and 'incompatible' indices cannot both be provided"
                 comp_error=1
             fi
             ret=1
