@@ -707,6 +707,7 @@ homedir="$(eval echo ~"$PACSTALL_USER")"
 export homedir
 
 sudo cp "${PACKAGE}.pacscript" /tmp
+sudo chown "$PACSTALL_USER":"$PACSTALL_USER" "/tmp/${PACKAGE}.pacscript"
 pacfile="$(readlink -f "/tmp/${PACKAGE}.pacscript")"
 export pacfile
 mapfile -t FARCH < <(dpkg --print-foreign-architectures)
