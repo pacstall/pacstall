@@ -113,7 +113,7 @@ case "$reply" in
     *) apt-get install -qq -y axel ;;
 esac
 
-apt-get install -qq -y curl wget build-essential unzip git iputils-ping lsb-release
+apt-get install -qq -y curl wget build-essential unzip git zstd iputils-ping lsb-release
 
 LOGDIR="/var/lib/pacstall/metadata"
 STGDIR="/usr/share/pacstall"
