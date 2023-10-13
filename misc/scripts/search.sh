@@ -45,10 +45,12 @@ function specifyRepo() {
     if [[ $1 == "file://"* ]] || [[ $1 == "/"* ]] || [[ $1 == "~"* ]] || [[ $1 == "."* ]]; then
         export URLNAME
         getPath "${1}" URLNAME
+    elif [[ $1 == "github:"* ]] || [[ $1 == "gitlab:"* ]]; then
+        export URLNAME="${1}"
     elif [[ $1 == *"github"* ]]; then
-        export URLNAME="${SPLIT[-3]}/${SPLIT[-2]}"
+        export URLNAME="github:${SPLIT[-3]}/${SPLIT[-2]}"
     elif [[ $1 == *"gitlab"* ]]; then
-        export URLNAME="${SPLIT[-4]}/${SPLIT[-3]}"
+        export URLNAME="gitlab:${SPLIT[-4]}/${SPLIT[-3]}"
     else
         export URLNAME="$REPO"
     fi
@@ -68,35 +70,56 @@ function parseRepo() {
         getPath "${REPO}" REPODIR
         echo "\e]8;;$REPO\a$REPODIR\e]8;;\a"
     elif [[ $REPO == *"github"* ]]; then
-        echo -e "\e]8;;https://github.com/${SPLIT[-3]}/${SPLIT[-2]}\a${SPLIT[-3]}/${SPLIT[-2]}\e]8;;\a"
+        echo -e "\e]8;;https://github.com/${SPLIT[-3]}/${SPLIT[-2]}\agithub:${SPLIT[-3]}/${SPLIT[-2]}\e]8;;\a"
     elif [[ $REPO == *"gitlab"* ]]; then
-        echo -e "\e]8;;https://gitlab.com/${SPLIT[-4]}/${SPLIT[-3]}\a${SPLIT[-4]}/${SPLIT[-3]}\e]8;;\a"
+        echo -e "\e]8;;https://gitlab.com/${SPLIT[-4]}/${SPLIT[-3]}\agitlab:${SPLIT[-4]}/${SPLIT[-3]}\e]8;;\a"
     else
         echo "\e]8;;$REPO\a$REPO\e]8;;\a"
     fi
 }
 
-if [[ $PACKAGE == *@* ]]; then
-    REPONAME=${PACKAGE#*@}
+# Repo specific search
+if [[ $SEARCH == *@* ]] || [[ $PACKAGE == *@* ]]; then
+    if [[ -n $SEARCH ]]; then
+        REPONAME=${SEARCH#*@}
+        SEARCH=${SEARCH%%@*}
+    else
+        REPONAME=${PACKAGE#*@}
+        PACKAGE=${PACKAGE%%@*}
+    fi
     if [[ $REPONAME == "file://"* ]] || [[ $REPONAME == "/"* ]] || [[ $REPONAME == "~"* ]] || [[ $REPONAME == "."* ]]; then
         getPath "${REPONAME}" REPONAME
+    else
+        specifyRepo "$REPONAME"
+        REPONAME="$URLNAME"
     fi
-    PACKAGE=${PACKAGE%%@*}
 
     while IFS= read -r URL; do
         specifyRepo "$URL"
-        if [[ $URLNAME == "$REPONAME" ]]; then
+        if [[ "$URLNAME" == "$REPONAME" ]]; then
             mapfile -t PACKAGELIST < <(curl -s -- "$URL"/packagelist)
-            IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | awk "\$1 ~ /^${PACKAGE}$/ {print NR-1}")
+            if [[ -n $SEARCH ]]; then
+                IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | awk "\$1 ~ /${SEARCH}/ {print NR-1}")
+            else
+                IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | awk "\$1 ~ /^${PACKAGE}$/ {print NR-1}")
+            fi
             _LEN=($IDXSEARCH)
             LEN=${#_LEN[@]}
             if ((LEN == 0)); then
-                fancy_message warn "There is no package with the name $IRed${PACKAGE%%@*}$NC in the repo $CYAN$REPONAME$NC"
+                if [[ -n $SEARCH ]]; then
+                    fancy_message warn "There is no package with the name $IRed${SEARCH%%@*}$NC in the repo $CYAN$REPONAME$NC"
+                else
+                    fancy_message warn "There is no package with the name $IRed${PACKAGE%%@*}$NC in the repo $CYAN$REPONAME$NC"
+                fi
                 error_log 3 "search $PACKAGE@$REPONAME"
                 exit 1
             fi
-            export PACKAGE
-            export REPO="$URL"
+            if [[ -n $SEARCH ]]; then
+                echo -e "$GREEN${PACKAGELIST[$IDXSEARCH]} $PURPLE@ $CYAN$(parseRepo "$URL") $NC"
+            else
+                export PACKAGE
+                export REPO="$URL"
+            fi
             return 0
         fi
     done < "$STGDIR/repo/pacstallrepo"
@@ -153,7 +176,7 @@ fi
 # Gets index of packages that the search returns
 # Complete name if download, upgrade or install
 # Partial word if search
-if [[ -z $PACKAGE ]]; then
+if [[ -n $SEARCH ]]; then
     IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | awk "\$1 ~ /${SEARCH}/ {print NR-1}")
 else
     IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | awk "\$1 ~ /^${PACKAGE}$/ {print NR-1}")
@@ -183,7 +206,7 @@ elif [[ -n $UPGRADE ]]; then
     export REPOS
     return 0
 # Check if its being used for search
-elif [[ -z $PACKAGE ]]; then
+elif [[ -n $SEARCH ]]; then
     for IDX in $IDXSEARCH; do
         echo -e "$GREEN${PACKAGELIST[$IDX]} $PURPLE@ $CYAN$(parseRepo "${URLLIST[$IDX]}") $NC"
     done

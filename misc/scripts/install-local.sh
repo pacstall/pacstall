@@ -49,7 +49,7 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset name repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel mask pac_functions 2> /dev/null
+    unset name repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel mask pac_functions repo 2> /dev/null
     unset -f pkgver post_install post_remove pre_install prepare build package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
@@ -800,6 +800,9 @@ if [[ -n $pacdeps ]]; then
         touch "/tmp/pacstall-pacdeps-$i"
 
         [[ $KEEP ]] && cmd="-KPI" || cmd="-PI"
+        if pacstall -S "${i}@${REPO}"; then
+            repo="@${REPO}"
+        fi
         if is_package_installed "${i}"; then
             pacstall_pacdep_status="$(compare_remote_version "$i")"
             if [[ $pacstall_pacdep_status == "update" ]]; then
@@ -815,12 +818,13 @@ if [[ -n $pacdeps ]]; then
 
             fi
             # BUG: Pacstall installs pacdeps from main repo. In the RS version we should get the latest version of the pacdep from all repos and use that.
-        elif fancy_message info "Installing $i" && ! pacstall "$cmd" "$i"; then
+        elif fancy_message info "Installing $i" && ! pacstall "$cmd" "${i}${repo}"; then
             fancy_message error "Failed to install dependency"
             error_log 8 "install $PACKAGE"
             cleanup
             return 1
         fi
+        unset repo
         rm -f "/tmp/pacstall-pacdeps-$i"
     done
 fi
