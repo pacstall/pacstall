@@ -185,27 +185,32 @@ function get_compatible_releases() {
     fi
     # lowercase
     local input=("${@,,}")
+    local is_compat=false
     for key in "${input[@]}"; do
         # check for `*:jammy`
         if [[ $key == "*:"* ]]; then
             # check for `22.04` or `jammy`
             if [[ ${key#*:} == "${distro_version_number}" || ${key#*:} == "${distro_version_name}" ]]; then
+                is_compat=true
                 return 0
             fi
         # check for `ubuntu:*`
         elif [[ $key == *":*" ]]; then
             # check for `ubuntu`
             if [[ ${key%%:*} == "${distro_name}" ]]; then
+                is_compat=true
                 return 0
             fi
         elif [[ $key == "${distro_name}:${distro_version_name}" || $key == "${distro_name}:${distro_version_number}" ]]; then
             # check for `ubuntu:jammy` or `ubuntu:22.04`
+            is_compat=true
             return 0
-        else
-            fancy_message error "This Pacscript does not work on ${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${distro_name}:${distro_version_number}${NC}"
-            return 1
         fi
     done
+    if [[ "${is_compat}" == "false" || "${is_compat}" != "true" ]]; then
+        fancy_message error "This Pacscript does not work on ${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${distro_name}:${distro_version_number}${NC}"
+        return 1
+    fi
 }
 
 function get_incompatible_releases() {
