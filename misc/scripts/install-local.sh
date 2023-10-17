@@ -480,6 +480,10 @@ function makedeb() {
     deblog "Section" "Pacstall"
     deblog "Priority" "optional"
 
+    if [[ $name == *-git ]]; then
+        deblog "Vcs-Git" "${url}"
+    fi
+
     if [[ -n ${makedepends[*]} ]]; then
         deblog "Build-Depends" "$(sed 's/ /, /g' <<< "${makedepends[@]}")"
     fi
