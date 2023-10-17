@@ -537,9 +537,9 @@ function lock() {
         return 1
     elif [[ $ignore =~ (^|[[:space:]])"$3"($|[[:space:]]) ]]; then
         return 1
-    elif [[ -f "/tmp/pacstall-pacdeps-$3" ]]; then
+    elif [[ -f "/tmp/pacstall-pacdeps-${3%%@*}" ]]; then
         return 1
-    elif [[ -f "/tmp/pacstall-pacdeps-$4" ]]; then
+    elif [[ -f "/tmp/pacstall-pacdeps-${4%%@*}" ]]; then
         return 1
     fi
     pidof -o %PPID -x "$0" > /dev/null && return 0 || return 1
