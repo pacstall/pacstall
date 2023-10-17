@@ -800,7 +800,7 @@ if [[ -n $pacdeps ]]; then
         touch "/tmp/pacstall-pacdeps-$i"
 
         [[ $KEEP ]] && cmd="-KPI" || cmd="-PI"
-        if pacstall -S "${i}@${REPO}"; then
+        if pacstall -S "${i}@${REPO}" &>/dev/null; then
             repo="@${REPO}"
         fi
         if is_package_installed "${i}"; then
