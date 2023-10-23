@@ -1108,8 +1108,6 @@ function run_function() {
                --setenv LOGDIR "$LOGDIR" --setenv STGDIR "$STGDIR" \
                --setenv STOWDIR "$STOWDIR" --setenv pkgdir "$pkgdir" \
                "./$func.tmp"
-
-    return $?
 }
 
 function safe_run() {
