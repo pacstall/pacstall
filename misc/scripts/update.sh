@@ -57,6 +57,10 @@ if ! dpkg -s lsb-release > /dev/null 2>&1; then
     sudo apt-get install lsb-release -y
 fi
 
+if ! dpkg -s bubblewrap > /dev/null 2>&1; then
+    sudo apt-get install bubblewrap -y
+fi
+
 # Pre 4.0.0 metadata dir changes
 if [[ -d "/var/log/pacstall/metadata/" ]]; then
     sudo mkdir -p "/var/lib/pacstall/metadata/"
