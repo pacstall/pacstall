@@ -1096,14 +1096,14 @@ function run_function() {
     local func="$1"
 
     echo "#! /bin/bash" | sudo tee "$func.tmp" > /dev/null
-    declare -f $func | sudo tee -a "$func.tmp" > /dev/null
+    declare -f "$func" | sudo tee -a "$func.tmp" > /dev/null
     echo "$func 2>&1 \"${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log\" && exit \"\${PIPESTATUS[0]}\"" | sudo tee -a "$func.tmp" > /dev/null
     sudo chmod +x "$func.tmp"
 
     fancy_message sub "Running $func"
     sudo bwrap --unshare-all --die-with-parent --new-session  \
                --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run \
-                --ro-bind / / --bind $STOWDIR $STOWDIR --bind $SRCDIR $SRCDIR \
+                --ro-bind / / --bind "$STOWDIR" "$STOWDIR" --bind "$SRCDIR" "$SRCDIR" \
                --setenv LOGDIR "$LOGDIR" --setenv STGDIR "$STGDIR" \
                --setenv STOWDIR "$STOWDIR" --setenv pkgdir "$pkgdir" \
                "./$func.tmp"
