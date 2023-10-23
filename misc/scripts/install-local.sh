@@ -1097,7 +1097,6 @@ function run_function() {
 
     echo "#! /bin/bash" | sudo tee "$func.tmp" > /dev/null
     declare -f $func | sudo tee -a "$func.tmp" > /dev/null
-    echo "export FAKEROOTDONTTRYCHOWN=true" | sudo tee -a "$func.tmp"   > /dev/null
     echo "$func 2>&1 \"${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log\" && exit \"\${PIPESTATUS[0]}\"" | sudo tee -a "$func.tmp" > /dev/null
     sudo chmod +x "$func.tmp"
 
