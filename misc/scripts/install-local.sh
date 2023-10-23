@@ -1068,8 +1068,7 @@ else
 fi
 
 export srcdir="$PWD"
-sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2> /dev/null
-
+sudo chown -R "root":"root" . 2> /dev/null
 export pkgdir="$STOWDIR/$name"
 export -f ask fancy_message select_options
 
@@ -1095,9 +1094,22 @@ function fail_out_functions() {
 
 function run_function() {
     local func="$1"
+
+    echo "#! /bin/bash" | sudo tee "$func.tmp" > /dev/null
+    declare -f $func | sudo tee -a "$func.tmp" > /dev/null
+    echo "export FAKEROOTDONTTRYCHOWN=true" | sudo tee -a "$func.tmp"   > /dev/null
+    echo "$func 2>&1 \"${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log\" && exit \"\${PIPESTATUS[0]}\"" | sudo tee -a "$func.tmp" > /dev/null
+    sudo chmod +x "$func.tmp"
+
     fancy_message sub "Running $func"
-    # NOTE: https://stackoverflow.com/a/29163890 (shorthand for 2>&1 |)
-    $func |& sudo tee "${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log" && return "${PIPESTATUS[0]}"
+    sudo bwrap --unshare-all --die-with-parent --new-session  \
+               --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run \
+                --ro-bind / / --bind $STOWDIR $STOWDIR --bind $SRCDIR $SRCDIR \
+               --setenv LOGDIR "$LOGDIR" --setenv STGDIR "$STGDIR" \
+               --setenv STOWDIR "$STOWDIR" --setenv pkgdir "$pkgdir" \
+               "./$func.tmp"
+
+    return $?
 }
 
 function safe_run() {
