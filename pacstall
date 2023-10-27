@@ -479,12 +479,6 @@ function getMasks_offending_pkg() {
     return 1
 }
 
-# Error out when run as root
-if ((EUID == 0)); then
-    fancy_message error "Pacstall can't be run as root. Please run as a normal user."
-    exit 1
-fi
-
 # run sudo apt update if it's been more than a week
 [[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ]] && sudo apt-get update -qq
 

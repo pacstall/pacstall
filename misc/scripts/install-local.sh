@@ -49,7 +49,8 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset name repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel mask pac_functions repo 2> /dev/null
+    sudo rm -f $envfile
+    unset name repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel mask pac_functions repo envfile 2> /dev/null
     unset -f pkgver post_install post_remove pre_install prepare build package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
@@ -125,6 +126,20 @@ function log() {
     } | sudo tee "$METADIR/$name" > /dev/null
 }
 
+function run_pkgver() {
+    tmpfile=$(sudo mktemp -p $PWD)
+    echo "#!/bin/bash" | sudo tee "$tmpfile" > /dev/null
+    echo "source ${envfile}" | sudo tee -a "$tmpfile" > /dev/null
+    echo "pkgver" | sudo tee -a "$tmpfile" > /dev/null
+    sudo chmod +rx "$tmpfile"
+
+    sudo env - bwrap --unshare-all --share-net --die-with-parent --new-session --ro-bind / /   \
+        --proc /proc --dev /dev --tmpfs /tmp --dev-bind /dev/null /dev/null \
+        --ro-bind $envfile $envfile --ro-bind $tmpfile $tmpfile \
+        "$tmpfile"
+    sudo rm "$tmpfile"
+}
+
 function compare_remote_version() (
     local input="${1}"
     unset -f pkgver 2> /dev/null
@@ -140,7 +155,7 @@ function compare_remote_version() (
     fi
     local remotever="$(
         source <(curl -s -- "$remoterepo/packages/$input/$input.pacscript") && if is_function pkgver; then
-            echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(pkgver)"
+            echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(run_pkgver)"
         elif [[ ${name} == *-deb ]]; then
             echo "${epoch+$epoch:}${pkgver}"
         else
@@ -722,7 +737,30 @@ mapfile -t FARCH < <(dpkg --print-foreign-architectures)
 export FARCH
 export CARCH="$(dpkg --print-architecture)"
 export DISTRO="$(set_distro)"
-if ! source "${pacfile}"; then
+
+function safe_source() {
+    export envfile=$(sudo mktemp -p $SRCDIR)
+    sudo chmod +r "$envfile"
+
+    tmpfile=$(sudo mktemp -p $SRCDIR)
+    echo "#!/bin/bash -a" | sudo tee "$tmpfile" > /dev/null
+    echo "mapfile -t OLD_ENV < <(compgen -A variable  -P \"--unset \")" | sudo tee -a "$tmpfile" > /dev/null
+    echo "source \"${pacfile}\"" | sudo tee -a "$tmpfile" > /dev/null
+    echo "/bin/env --unset LINES --unset COLUMNS --unset SHLVL --unset  _ \${OLD_ENV[@]} | \
+        /bin/sed -e 's/BASH_FUNC_//g;s/%%=() {/() {/g;s/^\(.*\)$/\1/g;\
+        s/^\(.[[:alnum:]_]*\)=\(.*\)/\1=\"\2/g;s/^\(.[[:alnum:]_]*\)=\(.*\)$/\1=\2\"/g' \
+        >> \"${envfile}\"" | sudo tee -a "$tmpfile" > /dev/null
+    sudo chmod +x "$tmpfile"
+    
+    sudo env - bwrap --unshare-all --die-with-parent --new-session \
+        --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run --dev-bind /dev/null /dev/null \
+        --ro-bind / / --bind $SRCDIR $SRCDIR  --setenv CARCH "$CARCH" --setenv DISTRO "$DISTRO" \
+        "$tmpfile"
+    sudo sed -i "s/BASH_FUNC_//g;s/%%=() {/() {/g;/^PPID=/d;/^EUID=/d" $envfile
+    sudo rm $tmpfile
+}
+
+if ! safe_source || ! source $envfile; then
     fancy_message error "Could not source pacscript"
     error_log 12 "install $PACKAGE"
     fancy_message info "Cleaning up"
@@ -786,7 +824,7 @@ if ! checks; then
 fi
 
 if is_function pkgver; then
-    full_version="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(pkgver)"
+    full_version="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(run_pkgver)"
 elif [[ ${name} == *-deb ]]; then
     full_version="${epoch+$epoch:}${pkgver}"
 else
@@ -1094,19 +1132,21 @@ function fail_out_functions() {
 
 function run_function() {
     local func="$1"
-
-    echo "#! /bin/bash" | sudo tee "$func.tmp" > /dev/null
-    declare -f "$func" | sudo tee -a "$func.tmp" > /dev/null
-    echo "$func 2>&1 \"${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log\" && exit \"\${PIPESTATUS[0]}\"" | sudo tee -a "$func.tmp" > /dev/null
-    sudo chmod +x "$func.tmp"
+    tmpfile=$(sudo mktemp -p $PWD)
+    echo "#!/bin/bash" | sudo tee "$tmpfile" > /dev/null
+    echo "source ${envfile}" | sudo tee -a "$tmpfile" > /dev/null
+    echo "$func 2>&1 \"${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log\" && exit \"\${PIPESTATUS[0]}\"" \
+        | sudo tee -a "$tmpfile" > /dev/null
+    sudo chmod +x "$tmpfile"
 
     fancy_message sub "Running $func"
-    sudo bwrap --unshare-all --die-with-parent --new-session  \
-               --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run \
-                --ro-bind / / --bind "$STOWDIR" "$STOWDIR" --bind "$SRCDIR" "$SRCDIR" \
-               --setenv LOGDIR "$LOGDIR" --setenv STGDIR "$STGDIR" \
-               --setenv STOWDIR "$STOWDIR" --setenv pkgdir "$pkgdir" \
-               "./$func.tmp"
+    sudo bwrap --unshare-all --die-with-parent --new-session --ro-bind / / \
+        --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run --dev-bind /dev/null /dev/null \
+        --bind "$STOWDIR" "$STOWDIR" --bind "$SRCDIR" "$SRCDIR" \
+        --setenv LOGDIR "$LOGDIR" --setenv STGDIR "$STGDIR" \
+        --setenv STOWDIR "$STOWDIR" --setenv pkgdir "$pkgdir" \
+        "$tmpfile"
+    sudo rm $tmpfile
 }
 
 function safe_run() {
