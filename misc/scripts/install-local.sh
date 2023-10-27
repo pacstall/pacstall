@@ -751,7 +751,7 @@ function safe_source() {
         s/^\(.[[:alnum:]_]*\)=\(.*\)/\1=\"\2/g;s/^\(.[[:alnum:]_]*\)=\(.*\)$/\1=\2\"/g' \
         >> \"${envfile}\"" | sudo tee -a "$tmpfile" > /dev/null
     sudo chmod +x "$tmpfile"
-    
+
     sudo env - bwrap --unshare-all --die-with-parent --new-session \
         --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run --dev-bind /dev/null /dev/null \
         --ro-bind / / --bind $SRCDIR $SRCDIR  --setenv CARCH "$CARCH" --setenv DISTRO "$DISTRO" \
