@@ -127,17 +127,16 @@ function log() {
 }
 
 function run_pkgver() {
-    tmpfile=$(sudo mktemp -p $PWD)
-    echo "#!/bin/bash" | sudo tee "$tmpfile" > /dev/null
+    tmpfile="$(sudo mktemp -p "${PWD}")"
+    echo "#!/bin/bash -e" | sudo tee "$tmpfile" > /dev/null
     echo "source ${envfile}" | sudo tee -a "$tmpfile" > /dev/null
     echo "pkgver" | sudo tee -a "$tmpfile" > /dev/null
     sudo chmod +rx "$tmpfile"
 
     sudo env - bwrap --unshare-all --share-net --die-with-parent --new-session --ro-bind / /   \
         --proc /proc --dev /dev --tmpfs /tmp --dev-bind /dev/null /dev/null \
-        --ro-bind $envfile $envfile --ro-bind $tmpfile $tmpfile \
-        "$tmpfile"
-    sudo rm "$tmpfile"
+        --ro-bind "$envfile" "$envfile" --ro-bind "$tmpfile" "$tmpfile" \
+        "$tmpfile" && sudo rm "$tmpfile"
 }
 
 function compare_remote_version() (
@@ -739,25 +738,24 @@ export CARCH="$(dpkg --print-architecture)"
 export DISTRO="$(set_distro)"
 
 function safe_source() {
-    export envfile=$(sudo mktemp -p $SRCDIR)
+    mkdir /tmp/pacstall 2>/dev/null
+    export envfile="$(sudo mktemp -p "${SRCDIR}")"
     sudo chmod +r "$envfile"
 
-    tmpfile=$(sudo mktemp -p $SRCDIR)
-    echo "#!/bin/bash -a" | sudo tee "$tmpfile" > /dev/null
+    tmpfile="$(sudo mktemp -p "${SRCDIR}")"
+    echo "#!/bin/bash -ae" | sudo tee "$tmpfile" > /dev/null
     echo "mapfile -t OLD_ENV < <(compgen -A variable  -P \"--unset \")" | sudo tee -a "$tmpfile" > /dev/null
     echo "source \"${pacfile}\"" | sudo tee -a "$tmpfile" > /dev/null
-    echo "/bin/env --unset LINES --unset COLUMNS --unset SHLVL --unset  _ \${OLD_ENV[@]} | \
-        /bin/sed -e 's/BASH_FUNC_//g;s/%%=() {/() {/g;s/^\(.*\)$/\1/g;\
-        s/^\(.[[:alnum:]_]*\)=\(.*\)/\1=\"\2/g;s/^\(.[[:alnum:]_]*\)=\(.*\)$/\1=\2\"/g' \
-        >> \"${envfile}\"" | sudo tee -a "$tmpfile" > /dev/null
+    echo "mapfile -t NEW_ENV < <(/bin/env -0 --unset  _ \${OLD_ENV[@]}  | \
+        sed -ze 's/BASH_FUNC_\(.*\)%%=\(.*\)$/\n/g;s/^\(.[[:alnum:]_]*\)=\(.*\)$/\1/g'|tr '\0' '\n')" | sudo tee -a "$tmpfile" > /dev/null
+    echo "declare -p \${NEW_ENV[@]} >> \"${envfile}\"" | sudo tee -a "$tmpfile" > /dev/null
+    echo "declare -pf >> \"${envfile}\"" | sudo tee -a "$tmpfile" > /dev/null
     sudo chmod +x "$tmpfile"
-    
+
     sudo env - bwrap --unshare-all --die-with-parent --new-session \
         --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run --dev-bind /dev/null /dev/null \
         --ro-bind / / --bind $SRCDIR $SRCDIR  --setenv CARCH "$CARCH" --setenv DISTRO "$DISTRO" \
-        "$tmpfile"
-    sudo sed -i "s/BASH_FUNC_//g;s/%%=() {/() {/g;/^PPID=/d;/^EUID=/d" $envfile
-    sudo rm $tmpfile
+        "$tmpfile" && sudo rm $tmpfile
 }
 
 if ! safe_source || ! source $envfile; then
@@ -1133,10 +1131,15 @@ function fail_out_functions() {
 function run_function() {
     local func="$1"
     tmpfile=$(sudo mktemp -p $PWD)
-    echo "#!/bin/bash" | sudo tee "$tmpfile" > /dev/null
+    echo "#!/bin/bash -a" | sudo tee "$tmpfile" > /dev/null
+    echo "mapfile -t OLD_ENV < <(compgen -A variable  -P \"--unset \")" | sudo tee -a "$tmpfile" > /dev/null
     echo "source ${envfile}" | sudo tee -a "$tmpfile" > /dev/null
-    echo "$func 2>&1 \"${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log\" && exit \"\${PIPESTATUS[0]}\"" \
-        | sudo tee -a "$tmpfile" > /dev/null
+    echo "$func 2>&1 \"${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log\" && FUNCSTATUS=\"\${PIPESTATUS[0]}\" && \
+        if [[ \$FUNCSTATUS ]]; then \
+            mapfile -t NEW_ENV < <(/bin/env -0 --unset  _ \${OLD_ENV[@]} | \
+                sed -ze 's/BASH_FUNC_\(.*\)%%=\(.*\)$/\n/g;s/^\(.[[:alnum:]_]*\)=\(.*\)$/\1/g'|tr '\0' '\n'); \
+            declare -p \${NEW_ENV[@]} >> \"${envfile}\"; \
+        fi && exit \$FUNCSTATUS" | sudo tee -a "$tmpfile" > /dev/null
     sudo chmod +x "$tmpfile"
 
     fancy_message sub "Running $func"
