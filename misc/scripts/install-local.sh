@@ -758,7 +758,7 @@ function safe_source() {
         "$tmpfile" && sudo rm $tmpfile
 }
 
-if ! safe_source || ! source $envfile; then
+if ! safe_source || ! source "$envfile"; then
     fancy_message error "Could not source pacscript"
     error_log 12 "install $PACKAGE"
     fancy_message info "Cleaning up"
