@@ -754,7 +754,7 @@ function safe_source() {
 
     sudo env - bwrap --unshare-all --die-with-parent --new-session \
         --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run --dev-bind /dev/null /dev/null \
-        --ro-bind / / --bind $SRCDIR $SRCDIR  --setenv CARCH "$CARCH" --setenv DISTRO "$DISTRO" \
+        --ro-bind / / --bind "$SRCDIR" "$SRCDIR" --setenv CARCH "$CARCH" --setenv DISTRO "$DISTRO" \
         "$tmpfile" && sudo rm $tmpfile
 }
 
