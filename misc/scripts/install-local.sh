@@ -49,8 +49,9 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    sudo rm -f $envfile
-    unset name repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel mask pac_functions repo envfile 2> /dev/null
+    sudo rm -f "$bwrapenv"
+    sudo rm -f "$safeenv"
+    unset name repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel mask pac_functions repo bwrapenv safeenv 2> /dev/null
     unset -f pkgver post_install post_remove pre_install prepare build package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
@@ -129,13 +130,13 @@ function log() {
 function run_pkgver() {
     tmpfile="$(sudo mktemp -p "${PWD}")"
     echo "#!/bin/bash -e" | sudo tee "$tmpfile" > /dev/null
-    echo "source ${envfile}" | sudo tee -a "$tmpfile" > /dev/null
+    echo "source ${bwrapenv}" | sudo tee -a "$tmpfile" > /dev/null
     echo "pkgver" | sudo tee -a "$tmpfile" > /dev/null
     sudo chmod +rx "$tmpfile"
 
     sudo env - bwrap --unshare-all --share-net --die-with-parent --new-session --ro-bind / /   \
         --proc /proc --dev /dev --tmpfs /tmp --dev-bind /dev/null /dev/null \
-        --ro-bind "$envfile" "$envfile" --ro-bind "$tmpfile" "$tmpfile" \
+        --ro-bind "$bwrapenv" "$bwrapenv" --ro-bind "$tmpfile" "$tmpfile" \
         "$tmpfile" && sudo rm "$tmpfile"
 }
 
@@ -739,26 +740,41 @@ export DISTRO="$(set_distro)"
 
 function safe_source() {
     mkdir /tmp/pacstall 2>/dev/null
-    export envfile="$(sudo mktemp -p "${SRCDIR}")"
-    sudo chmod +r "$envfile"
+    export bwrapenv="$(sudo mktemp -p "${SRCDIR}")"
+    export safeenv="$(sudo mktemp -p "${SRCDIR}")"
+    sudo chmod +r "$bwrapenv"
+    sudo chmod +r "$safeenv"
 
     tmpfile="$(sudo mktemp -p "${SRCDIR}")"
     echo "#!/bin/bash -ae" | sudo tee "$tmpfile" > /dev/null
-    echo "mapfile -t OLD_ENV < <(compgen -A variable  -P \"--unset \")" | sudo tee -a "$tmpfile" > /dev/null
+    echo "mapfile -t __OLD_ENV < <(compgen -A variable  -P \"--unset \")" | sudo tee -a "$tmpfile" > /dev/null
+    echo "readonly __OLD_ENV" | sudo tee -a "$tmpfile" > /dev/null
     echo "source \"${pacfile}\"" | sudo tee -a "$tmpfile" > /dev/null
-    echo "mapfile -t NEW_ENV < <(/bin/env -0 --unset  _ \${OLD_ENV[@]}  | \
+    # /bin/env returns variables and functions, with values, so we sed them out
+    echo "mapfile -t NEW_ENV < <(/bin/env -0 \${__OLD_ENV[@]} | \
         sed -ze 's/BASH_FUNC_\(.*\)%%=\(.*\)$/\n/g;s/^\(.[[:alnum:]_]*\)=\(.*\)$/\1/g'|tr '\0' '\n')" | sudo tee -a "$tmpfile" > /dev/null
-    echo "declare -p \${NEW_ENV[@]} >> \"${envfile}\"" | sudo tee -a "$tmpfile" > /dev/null
-    echo "declare -pf >> \"${envfile}\"" | sudo tee -a "$tmpfile" > /dev/null
+    # The env sourced inside of bwrap should contain everything from the pacscripts
+    echo "declare -p \${NEW_ENV[@]} >> \"${bwrapenv}\"" | sudo tee -a "$tmpfile" > /dev/null
+    echo "declare -pf >> \"${bwrapenv}\"" | sudo tee -a "$tmpfile" > /dev/null
+    # The Pacstall env should only receive the bare minimum of information needed
+    echo "echo > \"${safeenv}\"" | sudo tee -a "$tmpfile" > /dev/null
+    echo "for i in {name,repology,pkgver,epoch,url,depends,makedepends,breaks,replace,gives,pkgdesc,hash,optdepends,ppa,arch,maintainer,pacdeps,patch,provides,incompatible,optinstall,epoch,homepage,backup,pkgrel,mask}; do \
+            [[ -z \"\${!i}\" ]] || declare -p \$i >> \"${safeenv}\"; \
+        done" | sudo tee -a "$tmpfile" > /dev/null
+    echo "for i in {pkgver,post_install,post_remove,pre_install,prepare,build,package}; do \
+            [[ \$(type -t \"\$i\") == \"function\" ]] && declare -pf \$i >> \"${safeenv}\"; \
+        done" | sudo tee -a "$tmpfile" > /dev/null
     sudo chmod +x "$tmpfile"
 
-    sudo env - bwrap --unshare-all --die-with-parent --new-session \
+    sudo env - bwrap --unshare-all --die-with-parent --new-session --ro-bind / / \
         --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run --dev-bind /dev/null /dev/null \
-        --ro-bind / / --bind "$SRCDIR" "$SRCDIR" --setenv CARCH "$CARCH" --setenv DISTRO "$DISTRO" \
-        "$tmpfile" && sudo rm $tmpfile
+        --ro-bind "$pacfile" "$pacfile" --bind "$SRCDIR" "$SRCDIR" --ro-bind "$tmpfile" "$tmpfile" \
+        --setenv homedir "$homedir" --setenv CARCH "$CARCH" --setenv DISTRO "$DISTRO" --setenv NCPU "$NCPU" \
+    "$tmpfile" && sudo rm "$tmpfile"
 }
 
-if ! safe_source || ! source "$envfile"; then
+# Running source on an isolated env
+if ! safe_source || ! source "$safeenv"; then
     fancy_message error "Could not source pacscript"
     error_log 12 "install $PACKAGE"
     fancy_message info "Cleaning up"
@@ -1133,12 +1149,13 @@ function run_function() {
     tmpfile=$(sudo mktemp -p $PWD)
     echo "#!/bin/bash -a" | sudo tee "$tmpfile" > /dev/null
     echo "mapfile -t OLD_ENV < <(compgen -A variable  -P \"--unset \")" | sudo tee -a "$tmpfile" > /dev/null
-    echo "source ${envfile}" | sudo tee -a "$tmpfile" > /dev/null
+    echo "source ${bwrapenv}" | sudo tee -a "$tmpfile" > /dev/null
+    # Run function, save env changes, exit with status
     echo "$func 2>&1 \"${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log\" && FUNCSTATUS=\"\${PIPESTATUS[0]}\" && \
         if [[ \$FUNCSTATUS ]]; then \
-            mapfile -t NEW_ENV < <(/bin/env -0 --unset  _ \${OLD_ENV[@]} | \
+            mapfile -t NEW_ENV < <(/bin/env -0 \${OLD_ENV[@]} | \
                 sed -ze 's/BASH_FUNC_\(.*\)%%=\(.*\)$/\n/g;s/^\(.[[:alnum:]_]*\)=\(.*\)$/\1/g'|tr '\0' '\n'); \
-            declare -p \${NEW_ENV[@]} >> \"${envfile}\"; \
+            declare -p \${NEW_ENV[@]} >> \"${bwrapenv}\"; \
         fi && exit \$FUNCSTATUS" | sudo tee -a "$tmpfile" > /dev/null
     sudo chmod +x "$tmpfile"
 
