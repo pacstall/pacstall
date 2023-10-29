@@ -1145,7 +1145,7 @@ function fail_out_functions() {
 
 function run_function() {
     local func="$1"
-    tmpfile=$(sudo mktemp -p $PWD)
+    tmpfile="$(sudo mktemp -p "${PWD}")"
     echo "#!/bin/bash -a" | sudo tee "$tmpfile" > /dev/null
     echo "mapfile -t OLD_ENV < <(compgen -A variable  -P \"--unset \")" | sudo tee -a "$tmpfile" > /dev/null
     echo "source ${bwrapenv}" | sudo tee -a "$tmpfile" > /dev/null
