@@ -1165,7 +1165,7 @@ function run_function() {
         --setenv LOGDIR "$LOGDIR" --setenv STGDIR "$STGDIR" \
         --setenv STOWDIR "$STOWDIR" --setenv pkgdir "$pkgdir" \
         "$tmpfile"
-    sudo rm $tmpfile
+    sudo rm "$tmpfile"
 }
 
 function safe_run() {
