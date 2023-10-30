@@ -816,7 +816,7 @@ if [[ -n $pacdeps ]]; then
             pacstall_pacdep_status="$(compare_remote_version "$i")"
             if [[ $pacstall_pacdep_status == "update" ]]; then
                 fancy_message info "Found newer version for $i pacdep"
-                if ! pacstall "$cmd" "$i"; then
+                if ! pacstall "$cmd" "${i}${repo}"; then
                     fancy_message error "Failed to install dependency"
                     error_log 8 "install $PACKAGE"
                     cleanup
