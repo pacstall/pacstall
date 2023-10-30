@@ -116,7 +116,7 @@ if [[ -z $NO_COLOR ]]; then
     export On_ICyan='\033[0;106m'   # Cyan
     export On_IWhite='\033[0;107m'  # White
 
-    declare -A pac_version=([red]="5" [green]="144" [blue]="51")
+    declare -A pac_version=([red]="40" [green]="59" [blue]="31")
 fi
 
 # Pac-roll
@@ -781,8 +781,8 @@ Helpful links:
             ;;
 
         -V | --version)
-            version_number="4.2.0"
-            version_name="Weed"
+            version_number="4.2.1"
+            version_name="Kelp"
             echo -e "${version_number} \033[1m\x1b[38;2;${pac_version[red]:-255};${pac_version[green]:-255};${pac_version[blue]:-255}m${version_name}${NC}"
             exit 0
             ;;
