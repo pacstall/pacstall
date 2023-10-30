@@ -760,9 +760,9 @@ function safe_source() {
     echo "for i in {name,repology,pkgver,epoch,url,depends,makedepends,breaks,replace,gives,pkgdesc,hash,optdepends,ppa,arch,maintainer,pacdeps,patch,provides,incompatible,optinstall,epoch,homepage,backup,pkgrel,mask}; do \
             [[ -z \"\${!i}\" ]] || declare -p \$i >> \"${safeenv}\"; \
         done" | sudo tee -a "$tmpfile" > /dev/null
-    echo "for i in {pkgver,post_install,post_remove,pre_install,prepare,build,package}; do \
+    echo "[[ \$name == *'-deb' ]] || for i in {pkgver,post_install,post_remove,pre_install,prepare,build,package}; do \
             [[ \$(type -t \"\$i\") == \"function\" ]] && declare -pf \$i >> \"${safeenv}\"; \
-        done" | sudo tee -a "$tmpfile" > /dev/null
+        done || true" | sudo tee -a "$tmpfile" > /dev/null
     sudo chmod +x "$tmpfile"
 
     sudo env - bwrap --unshare-all --die-with-parent --new-session --ro-bind / / \
