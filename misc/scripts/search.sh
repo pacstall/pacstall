@@ -33,14 +33,14 @@ function getPath() {
     local var="${2}"
     path="${path/"file://"/}"
     path="${path/"~"/"$HOME"}"
-    path="$(readlink -f "${path}")"
+    path="$(realpath "${path}")"
     path="${path/"$HOME"/"~"}"
     printf -v "${var}" "%s" "${path}"
 }
 
 function specifyRepo() {
     local SPLIT
-    mapfile -t SPLIT < <(echo "${1//[\/]/$'\n'}")
+    mapfile -t SPLIT <<< "${1//[\/]/$'\n'}"
 
     if [[ $1 == "file://"* ]] || [[ $1 == "/"* ]] || [[ $1 == "~"* ]] || [[ $1 == "."* ]]; then
         export URLNAME
@@ -64,9 +64,9 @@ function specifyRepo() {
 function parseRepo() {
     local REPO="${1}"
     local SPLIT REPODIR
-    mapfile -t SPLIT < <(echo "${REPO//[\/]/$'\n'}")
+    mapfile -t SPLIT <<< "${REPO//[\/]/$'\n'}"
 
-    if [[ $REPO == *"file://"* ]]; then
+    if [[ $REPO == "file://"* ]]; then
         getPath "${REPO}" REPODIR
         echo "\e]8;;$REPO\a$REPODIR\e]8;;\a"
     elif [[ $REPO == *"github"* ]]; then
