@@ -1095,6 +1095,9 @@ function fail_out_functions() {
 function run_function() {
     local func="$1"
     fancy_message sub "Running $func"
+    if [[ ! -d ${LOGDIR} ]]; then
+        sudo mkdir -p "${LOGDIR}"
+    fi
     # NOTE: https://stackoverflow.com/a/29163890 (shorthand for 2>&1 |)
     $func |& sudo tee "${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log" && return "${PIPESTATUS[0]}"
 }
