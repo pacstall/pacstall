@@ -50,7 +50,7 @@ function cleanup() {
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
     sudo rm -f "$bwrapenv" "$safeenv"
-    unset name repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel mask pac_functions repo bwrapenv safeenv 2> /dev/null
+    unset name repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel mask pac_functions repo bwrapenv safeenv external_connection 2> /dev/null
     unset -f pkgver post_install post_remove pre_install prepare build package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
@@ -739,10 +739,12 @@ export DISTRO="$(set_distro)"
 
 function safe_source() {
     mkdir /tmp/pacstall 2>/dev/null
-    export bwrapenv="$(sudo mktemp -p "${SRCDIR}")"
-    export safeenv="$(sudo mktemp -p "${SRCDIR}")"
+    bwrapenv="$(sudo mktemp -p "${SRCDIR}")"
     sudo chmod +r "$bwrapenv"
+    export bwrapenv
+    safeenv="$(sudo mktemp -p "${SRCDIR}")"
     sudo chmod +r "$safeenv"
+    export safeenv
 
     tmpfile="$(sudo mktemp -p "${SRCDIR}")"
     echo "#!/bin/bash -ae" | sudo tee "$tmpfile" > /dev/null
@@ -757,7 +759,7 @@ function safe_source() {
     echo "declare -pf >> \"${bwrapenv}\"" | sudo tee -a "$tmpfile" > /dev/null
     # The Pacstall env should only receive the bare minimum of information needed
     echo "echo > \"${safeenv}\"" | sudo tee -a "$tmpfile" > /dev/null
-    echo "for i in {name,repology,pkgver,epoch,url,depends,makedepends,breaks,replace,gives,pkgdesc,hash,optdepends,ppa,arch,maintainer,pacdeps,patch,provides,incompatible,optinstall,epoch,homepage,backup,pkgrel,mask}; do \
+    echo "for i in {name,repology,pkgver,epoch,url,depends,makedepends,breaks,replace,gives,pkgdesc,hash,optdepends,ppa,arch,maintainer,pacdeps,patch,provides,incompatible,optinstall,epoch,homepage,backup,pkgrel,mask,external_connection}; do \
             [[ -z \"\${!i}\" ]] || declare -p \$i >> \"${safeenv}\"; \
         done" | sudo tee -a "$tmpfile" > /dev/null
     echo "[[ \$name == *'-deb' ]] || for i in {pkgver,post_install,post_remove,pre_install,prepare,build,package}; do \
@@ -779,6 +781,10 @@ if ! safe_source || ! source "$safeenv"; then
     fancy_message info "Cleaning up"
     cleanup
     return 1
+fi
+
+if [[ ${external_connection} == "true" ]]; then
+    fancy_message warn "This package will connect to the internet during its build process."
 fi
 
 # Running `-B` on a deb package doesn't make sense, so let's download instead
@@ -1159,7 +1165,11 @@ function run_function() {
     sudo chmod +x "$tmpfile"
 
     fancy_message sub "Running $func"
-    sudo bwrap --unshare-all --die-with-parent --new-session --ro-bind / / \
+    local share_net
+    if [[ ${external_connection} == "true" ]]; then
+        share_net="--share-net"
+    fi
+    sudo bwrap --unshare-all $share_net --die-with-parent --new-session --ro-bind / / \
         --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run --dev-bind /dev/null /dev/null \
         --bind "$STOWDIR" "$STOWDIR" --bind "$SRCDIR" "$SRCDIR" \
         --setenv LOGDIR "$LOGDIR" --setenv STGDIR "$STGDIR" \
@@ -1191,7 +1201,7 @@ for i in {prepare,build,package}; do
     fi
 done
 if [[ -n ${pac_functions[*]} ]]; then
-    fancy_message info "Running functions"
+    fancy_message info "Running functions" 
     for function in "${pac_functions[@]}"; do
         safe_run "$function"
     done
