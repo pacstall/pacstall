@@ -954,7 +954,7 @@ fi
 
 if [[ $name == *-git ]]; then
     # git clone quietly, with no history, and if submodules are there, download with 10 jobs
-    git clone --quiet --depth=1 --jobs=10 "$url"
+    git clone --quiet --depth=1 --recurse-submodules --jobs=10 "$url"
     # cd into the directory
     cd ./*/ 2> /dev/null || {
         error_log 1 "install $PACKAGE"
