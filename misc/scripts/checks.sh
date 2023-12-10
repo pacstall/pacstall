@@ -411,8 +411,24 @@ function lint_mask() {
     return "${ret}"
 }
 
+function lint_priority() {
+    shopt -s extglob
+    local ret=0
+    if [[ -v priority ]]; then
+        if [[ -z ${priority} ]]; then
+            fancy_message error "'priority' is empty"
+            ret=1
+        elif [[ ${priority} != @(required|important|standard|optional) ]]; then
+            fancy_message error "'priority' must be either: 'required', 'important', 'standard', or 'optional'"
+            ret=1
+        fi
+    fi
+    shopt -u extglob
+    return "${ret}"
+}
+
 function checks() {
-    local ret=0 check linting_checks=(lint_name lint_gives lint_pkgrel lint_epoch lint_version lint_url lint_pkgdesc lint_maintainer lint_makedepends lint_depends lint_pacdeps lint_ppa lint_optdepends lint_breaks lint_replace lint_hash lint_patch lint_provides lint_incompatible lint_arch lint_mask)
+    local ret=0 check linting_checks=(lint_name lint_gives lint_pkgrel lint_epoch lint_version lint_url lint_pkgdesc lint_maintainer lint_makedepends lint_depends lint_pacdeps lint_ppa lint_optdepends lint_breaks lint_replace lint_hash lint_patch lint_provides lint_incompatible lint_arch lint_mask lint_priority)
     for check in "${linting_checks[@]}"; do
         "${check}" || ret=1
     done
