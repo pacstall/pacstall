@@ -785,7 +785,8 @@ if ! checks; then
     return 1
 fi
 
-if [[ -n ${priority} && ${priority} == 'required' ]]; then
+# If priority exists and is required, and also that this package has not been installed before (first time)
+if [[ -n ${priority} && ${priority} == 'required' ]] && ! is_package_installed "${name}"; then
     ask "This package has 'priority=required', meaning once this is installed, it should be assumed to be uninstallable. Do you want to continue?" Y
     if ((answer != 0)); then
         cleanup
