@@ -326,7 +326,7 @@ function lint_incompatible() {
         if [[ -n ${incompatible[*]} ]]; then
             if [[ ${comp_err} != 1 ]]; then
                 fancy_message error "'compatible' and 'incompatible' indices cannot both be provided"
-                comp_error=1
+                comp_err=1
             fi
             ret=1
         fi
@@ -349,7 +349,7 @@ function lint_incompatible() {
         if [[ -n ${compatible[*]} ]]; then
             if [[ ${comp_err} != 1 ]]; then
                 fancy_message error "'compatible' and 'incompatible' indices cannot both be provided"
-                comp_error=1
+                comp_err=1
             fi
             ret=1
         fi
