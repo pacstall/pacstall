@@ -483,7 +483,13 @@ function makedeb() {
         deblog "Architecture" "all"
     fi
     deblog "Section" "Pacstall"
-    deblog "Priority" "${priority:-optional}"
+
+    if [[ ${priority} == "essential" ]]; then
+        deblog "Priority" "required"
+        deblog "Essential" "yes"
+    else
+        deblog "Priority" "${priority:-optional}"
+    fi
 
     if [[ $name == *-git ]]; then
         deblog "Vcs-Git" "${url}"
@@ -786,9 +792,9 @@ if ! checks; then
 fi
 
 # If priority exists and is required, and also that this package has not been installed before (first time)
-if [[ -n ${priority} && ${priority} == 'required' ]] && ! is_package_installed "${name}"; then
-    ask "This package has 'priority=required', meaning once this is installed, it should be assumed to be uninstallable. Do you want to continue?" Y
-    if ((answer != 0)); then
+if [[ -n ${priority} && ${priority} == 'essential' ]] && ! is_package_installed "${name}"; then
+    ask "This package has 'priority=essential', meaning once this is installed, it should be assumed to be uninstallable. Do you want to continue?" Y
+    if ((answer == 0)); then
         cleanup
         exit 1
     fi
@@ -881,7 +887,11 @@ if ! is_package_installed "${name}"; then
                     cleanup
                     return 1
                 fi
-                sudo apt-get remove -y "${pkg}"
+                if [[ ${priority} == "essential" ]]; then
+                    sudo apt-get remove -y "${pkg}" --allow-remove-essential
+                else
+                    sudo apt-get remove -y "${pkg}"
+                fi
             fi
         done
     fi

@@ -418,8 +418,8 @@ function lint_priority() {
         if [[ -z ${priority} ]]; then
             fancy_message error "'priority' is empty"
             ret=1
-        elif [[ ${priority} != @(required|important|standard|optional) ]]; then
-            fancy_message error "'priority' must be either: 'required', 'important', 'standard', or 'optional'"
+        elif [[ ${priority} != @(essential|required|important|standard|optional) ]]; then
+            fancy_message error "'priority' must be either: 'essential', 'required', 'important', 'standard', or 'optional'"
             ret=1
         fi
     fi
