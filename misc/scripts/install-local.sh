@@ -716,6 +716,7 @@ homedir="$(eval echo ~"$PACSTALL_USER")"
 export homedir
 
 sudo cp "${PACKAGE}.pacscript" /tmp
+sudo chmod a+r "/tmp/${PACKAGE}.pacscript"
 pacfile="$(readlink -f "/tmp/${PACKAGE}.pacscript")"
 export pacfile
 mapfile -t FARCH < <(dpkg --print-foreign-architectures)
@@ -776,6 +777,7 @@ fi
 
 clean_builddir
 sudo mkdir -p "$STOWDIR/$name/DEBIAN"
+sudo chmod a+rx "$STOWDIR" "$STOWDIR/$name" "$STOWDIR/$name/DEBIAN"
 
 # Run checks function
 if ! checks; then
