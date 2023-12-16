@@ -30,12 +30,12 @@ source "${STGDIR}/scripts/checks.sh" || {
 
 function cleanup() {
     if [[ -n $KEEP ]]; then
-        rm -rf "/tmp/pacstall-keep/$name"
-        mkdir -p "/tmp/pacstall-keep/$name"
+        rm -rf "/tmp/pacstall-keep/$pkgname"
+        mkdir -p "/tmp/pacstall-keep/$pkgname"
         if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
-            sudo mv /tmp/pacstall-pacdep/* "/tmp/pacstall-keep/$name"
+            sudo mv /tmp/pacstall-pacdep/* "/tmp/pacstall-keep/$pkgname"
         else
-            sudo mv "${SRCDIR:?}"/* "/tmp/pacstall-keep/$name"
+            sudo mv "${SRCDIR:?}"/* "/tmp/pacstall-keep/$pkgname"
         fi
     fi
     if [[ -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
@@ -43,23 +43,23 @@ function cleanup() {
         sudo rm -rf /tmp/pacstall-pacdep
     else
         sudo rm -rf "${SRCDIR:?}"/*
-        # just in case we quit before $name is declared, we should be able to remove a fake directory so it doesn't exit out the script
-        sudo rm -rf "${STOWDIR:-/usr/src/pacstall}/${name:-raaaaaaaandom}"
+        # just in case we quit before $pkgname is declared, we should be able to remove a fake directory so it doesn't exit out the script
+        sudo rm -rf "${STOWDIR:-/usr/src/pacstall}/${pkgname:-raaaaaaaandom}"
         rm -rf /tmp/pacstall-gives
     fi
-    sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
+    sudo rm -rf "${STOWDIR}/${pkgname:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset name repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel mask pac_functions repo 2> /dev/null
+    unset pkgname repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel mask pac_functions repo 2> /dev/null
     unset -f pkgver post_install post_remove pre_install prepare build package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
 
 function trap_ctrlc() {
     fancy_message warn "\nInterrupted, cleaning up"
-    if is_apt_package_installed "${name}"; then
-        sudo apt-get purge "${gives:-$name}" -y > /dev/null
+    if is_apt_package_installed "${pkgname}"; then
+        sudo apt-get purge "${gives:-$pkgname}" -y > /dev/null
     fi
-    sudo rm -f "/etc/apt/preferences.d/${name:-$PACKAGE}-pin"
+    sudo rm -f "/etc/apt/preferences.d/${pkgname:-$PACKAGE}-pin"
     cleanup
     exit 1
 }
@@ -85,7 +85,7 @@ function log() {
 
     # Metadata writing
     {
-        echo "_name=\"$name"\"
+        echo "_name=\"$pkgname"\"
         echo "_version=\"${full_version}"\"
         echo "_install_size=\"${install_size}"\"
         printf '_date=\"%(%a %b %_d %r %Z %Y)T\"\n'
@@ -98,12 +98,12 @@ function log() {
         if [[ -n $homepage ]]; then
             echo "_homepage=\"${homepage}"\"
         fi
-        if [[ -z $gives && $name == *-deb ]]; then
+        if [[ -z $gives && $pkgname == *-deb ]]; then
             echo "_gives=\"$(dpkg -f ./"${url##*/}" | sed -n "s/^Package: //p")"\"
         elif [[ -n $gives ]]; then
             echo "_gives=\"$gives"\"
         fi
-        if [[ -f /tmp/pacstall-pacdeps-"$name" ]]; then
+        if [[ -f /tmp/pacstall-pacdeps-"$pkgname" ]]; then
             echo '_pacstall_depends="true"'
         fi
         if [[ $local == 'no' ]]; then
@@ -122,7 +122,7 @@ function log() {
             declare -p _mask
             unset _mask
         fi
-    } | sudo tee "$METADIR/$name" > /dev/null
+    } | sudo tee "$METADIR/$pkgname" > /dev/null
 }
 
 function compare_remote_version() (
@@ -141,7 +141,7 @@ function compare_remote_version() (
     local remotever="$(
         source <(curl -s -- "$remoterepo/packages/$input/$input.pacscript") && if is_function pkgver; then
             echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(pkgver)"
-        elif [[ ${name} == *-deb ]]; then
+        elif [[ ${pkgname} == *-deb ]]; then
             echo "${epoch+$epoch:}${pkgver}"
         else
             echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
@@ -275,12 +275,12 @@ function deblog() {
     local key="$1"
     shift
     local content=("$@")
-    echo "$key: ${content[*]}" | sudo tee -a "$STOWDIR/$name/DEBIAN/control" > /dev/null
+    echo "$key: ${content[*]}" | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/control" > /dev/null
 }
 
 function clean_builddir() {
-    sudo rm -rf "${STOWDIR}/${name:?}"
-    sudo rm -f "${STOWDIR}/${name}.deb"
+    sudo rm -rf "${STOWDIR}/${pkgname:?}"
+    sudo rm -f "${STOWDIR}/${pkgname}.deb"
 }
 
 function prompt_optdepends() {
@@ -399,7 +399,7 @@ function prompt_optdepends() {
 
 function generate_changelog() {
     printf "%s (%s) %s; urgency=medium\n\n  * Version now at %s.\n\n -- %s %(%a, %d %b %Y %T %z)T\n" \
-        "${name}" "${full_version}" "$(lsb_release -sc)" "${full_version}" "${maintainer}"
+        "${pkgname}" "${full_version}" "$(lsb_release -sc)" "${full_version}" "${maintainer}"
 }
 
 function clean_logdir() {
@@ -456,12 +456,12 @@ function createdeb() {
 
 function makedeb() {
     # It looks weird for it to say: `Packaging foo as foo`
-    if [[ -n $gives && $name != "$gives" ]]; then
-        fancy_message info "Packaging ${BGreen}$name${NC} as ${BBlue}$gives${NC}"
+    if [[ -n $gives && $pkgname != "$gives" ]]; then
+        fancy_message info "Packaging ${BGreen}$pkgname${NC} as ${BBlue}$gives${NC}"
     else
-        fancy_message info "Packaging ${BGreen}$name${NC}"
+        fancy_message info "Packaging ${BGreen}$pkgname${NC}"
     fi
-    deblog "Package" "${gives:-$name}"
+    deblog "Package" "${gives:-$pkgname}"
 
     if [[ $pkgver =~ ^[0-9] ]]; then
         deblog "Version" "${full_version}"
@@ -491,7 +491,7 @@ function makedeb() {
         deblog "Priority" "${priority:-optional}"
     fi
 
-    if [[ $name == *-git ]]; then
+    if [[ $pkgname == *-git ]]; then
         deblog "Vcs-Git" "${url}"
     fi
 
@@ -588,18 +588,18 @@ if [[ -n $PACSTALL_BUILD_CORES ]];then
 declare -g NCPU="${PACSTALL_BUILD_CORES:-1}"
 else
 declare -g NCPU="$(nproc)"
-fi' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
+fi' | sudo tee "$STOWDIR/$pkgname/DEBIAN/$deb_post_file" > /dev/null
             {
                 cat "${pacfile}"
                 echo -e "\n$i"
-            } | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
+            } | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/$deb_post_file" > /dev/null
         fi
     done
-    echo -e "sudo rm -f $METADIR/$name\nsudo rm -f /etc/apt/preferences.d/$name-pin" | sudo tee -a "$STOWDIR/$name/DEBIAN/postrm" > /dev/null
+    echo -e "sudo rm -f $METADIR/$pkgname\nsudo rm -f /etc/apt/preferences.d/$pkgname-pin" | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/postrm" > /dev/null
     local postfile
     for postfile in {postrm,postinst,preinst}; do
-        sudo chmod -x "$STOWDIR/$name/DEBIAN/${postfile}" &> /dev/null
-        sudo chmod 755 "$STOWDIR/$name/DEBIAN/${postfile}" &> /dev/null
+        sudo chmod -x "$STOWDIR/$pkgname/DEBIAN/${postfile}" &> /dev/null
+        sudo chmod 755 "$STOWDIR/$pkgname/DEBIAN/${postfile}" &> /dev/null
     done
 
     # Handle `backup` key
@@ -619,26 +619,26 @@ fi' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
                 if [[ ${file:2:1} == "/" ]]; then
                     fancy_message warn "'${file}' cannot contain path starting with '/'... Skipping" && continue
                 fi
-                if [[ -f "$STOWDIR/$name/${file:2}" ]]; then
+                if [[ -f "$STOWDIR/$pkgname/${file:2}" ]]; then
                     fancy_message warn "'${file}' is inside the package... Skipping" && continue
                 fi
-                echo "remove-on-upgrade /${file:2}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
+                echo "remove-on-upgrade /${file:2}" | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/conffiles" > /dev/null
             else
                 if [[ ${file:0:1} == "/" ]]; then
                     fancy_message warn "'${file}' cannot contain path starting with '/'... Skipping" && continue
                 fi
-                echo "/${file}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
+                echo "/${file}" | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/conffiles" > /dev/null
             fi
         done
     fi
 
-    deblog "Installed-Size" "$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | cut -d$'\t' -f1)"
-    export install_size="$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | cut -d$'\t' -f1 | numfmt --to=iec)"
+    deblog "Installed-Size" "$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$pkgname" | cut -d$'\t' -f1)"
+    export install_size="$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$pkgname" | cut -d$'\t' -f1 | numfmt --to=iec)"
 
-    generate_changelog | sudo tee -a "$STOWDIR/$name/DEBIAN/changelog" > /dev/null
+    generate_changelog | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/changelog" > /dev/null
 
     cd "$STOWDIR"
-    if ! createdeb "$name"; then
+    if ! createdeb "$pkgname"; then
         fancy_message error "Could not create package"
         error_log 5 "install $PACKAGE"
         fancy_message info "Cleaning up"
@@ -648,37 +648,37 @@ fi' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
 
     if ((PACSTALL_INSTALL != 0)); then
         # --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
-        if ! sudo -E apt-get install --reinstall "$STOWDIR/$name.deb" -y --allow-downgrades 2> /dev/null; then
+        if ! sudo -E apt-get install --reinstall "$STOWDIR/$pkgname.deb" -y --allow-downgrades 2> /dev/null; then
             echo -ne "\t"
-            fancy_message error "Failed to install $name deb"
+            fancy_message error "Failed to install $pkgname deb"
             error_log 8 "install $PACKAGE"
-            sudo dpkg -r --force-all "$name" > /dev/null
+            sudo dpkg -r --force-all "$pkgname" > /dev/null
             fancy_message info "Cleaning up"
             cleanup
             exit 1
         fi
-        if [[ -f /tmp/pacstall-pacdeps-"$name" ]]; then
-            sudo apt-mark auto "${gives:-$name}" 2> /dev/null
+        if [[ -f /tmp/pacstall-pacdeps-"$pkgname" ]]; then
+            sudo apt-mark auto "${gives:-$pkgname}" 2> /dev/null
         fi
-        sudo rm -rf "$STOWDIR/$name"
-        sudo rm -rf "$SRCDIR/$name.deb"
+        sudo rm -rf "$STOWDIR/$pkgname"
+        sudo rm -rf "$SRCDIR/$pkgname.deb"
 
         if ! [[ -d /etc/apt/preferences.d/ ]]; then
             sudo mkdir -p /etc/apt/preferences.d
         fi
-        local combined_pinning=("${provides[@]}" "${gives:-${name}}")
+        local combined_pinning=("${provides[@]}" "${gives:-${pkgname}}")
         echo "Package: ${combined_pinning[*]}
 Pin: version *
-Pin-Priority: -1" | sudo tee "/etc/apt/preferences.d/${name}-pin" > /dev/null
+Pin-Priority: -1" | sudo tee "/etc/apt/preferences.d/${pkgname}-pin" > /dev/null
         return 0
     else
-        sudo mv "$STOWDIR/$name.deb" "$PACDEB_DIR"
-        sudo chown "$PACSTALL_USER":"$PACSTALL_USER" "$PACDEB_DIR/$name.deb"
-        fancy_message info "Package built at ${BGreen}$PACDEB_DIR/$name.deb${NC}"
-        fancy_message info "Moving ${BGreen}$STOWDIR/$name${NC} to ${BGreen}/tmp/pacstall-no-build/$name${NC}"
-        sudo rm -rf "/tmp/pacstall-no-build/$name"
-        mkdir -p "/tmp/pacstall-no-build/$name"
-        sudo mv "$STOWDIR/$name" "/tmp/pacstall-no-build/$name"
+        sudo mv "$STOWDIR/$pkgname.deb" "$PACDEB_DIR"
+        sudo chown "$PACSTALL_USER":"$PACSTALL_USER" "$PACDEB_DIR/$pkgname.deb"
+        fancy_message info "Package built at ${BGreen}$PACDEB_DIR/$pkgname.deb${NC}"
+        fancy_message info "Moving ${BGreen}$STOWDIR/$pkgname${NC} to ${BGreen}/tmp/pacstall-no-build/$pkgname${NC}"
+        sudo rm -rf "/tmp/pacstall-no-build/$pkgname"
+        mkdir -p "/tmp/pacstall-no-build/$pkgname"
+        sudo mv "$STOWDIR/$pkgname" "/tmp/pacstall-no-build/$pkgname"
         cleanup
         exit 0
     fi
@@ -738,7 +738,7 @@ if ! source "${pacfile}"; then
 fi
 
 # Running `-B` on a deb package doesn't make sense, so let's download instead
-if ((PACSTALL_INSTALL == 0)) && [[ ${name} == *-deb ]]; then
+if ((PACSTALL_INSTALL == 0)) && [[ ${pkgname} == *-deb ]]; then
     if ! download "${url}"; then
         fancy_message error "Failed to download '${url}'"
         return 1
@@ -749,11 +749,11 @@ fi
 masked_packages=()
 getMasks masked_packages
 if ((${#masked_packages[@]} != 0)); then
-    if array.contains masked_packages "${name:-${PACKAGE}}"; then
-        offending_pkg="$(getMasks_offending_pkg "${name:-${PACKAGE}}")"
+    if array.contains masked_packages "${pkgname:-${PACKAGE}}"; then
+        offending_pkg="$(getMasks_offending_pkg "${pkgname:-${PACKAGE}}")"
         # shellcheck disable=SC2181
         if (($? == 0)); then
-            fancy_message error "The package ${BBlue}${offending_pkg}${NC} is masking ${BBlue}${name:-${PACKAGE}}${NC}. By installing the masked package, you may cause damage to your operating system"
+            fancy_message error "The package ${BBlue}${offending_pkg}${NC} is masking ${BBlue}${pkgname:-${PACKAGE}}${NC}. By installing the masked package, you may cause damage to your operating system"
             exit 1
         else
             fancy_message error "Somehow, 'getMasks' found masked packages that match the package you want to install, but 'getMasks_offending_pkg' could not find it. Report this upstream"
@@ -782,8 +782,8 @@ elif [[ -n ${incompatible[*]} ]]; then
 fi
 
 clean_builddir
-sudo mkdir -p "$STOWDIR/$name/DEBIAN"
-sudo chmod a+rx "$STOWDIR" "$STOWDIR/$name" "$STOWDIR/$name/DEBIAN"
+sudo mkdir -p "$STOWDIR/$pkgname/DEBIAN"
+sudo chmod a+rx "$STOWDIR" "$STOWDIR/$pkgname" "$STOWDIR/$pkgname/DEBIAN"
 
 # Run checks function
 if ! checks; then
@@ -794,7 +794,7 @@ if ! checks; then
 fi
 
 # If priority exists and is required, and also that this package has not been installed before (first time)
-if [[ -n ${priority} && ${priority} == 'essential' ]] && ! is_package_installed "${name}"; then
+if [[ -n ${priority} && ${priority} == 'essential' ]] && ! is_package_installed "${pkgname}"; then
     ask "This package has 'priority=essential', meaning once this is installed, it should be assumed to be uninstallable. Do you want to continue?" Y
     if ((answer == 0)); then
         cleanup
@@ -804,7 +804,7 @@ fi
 
 if is_function pkgver; then
     full_version="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(pkgver)"
-elif [[ ${name} == *-deb ]]; then
+elif [[ ${pkgname} == *-deb ]]; then
     full_version="${epoch+$epoch:}${pkgver}"
 else
     full_version="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
@@ -854,22 +854,22 @@ if [[ -n $pacdeps ]]; then
     done
 fi
 
-if ! is_package_installed "${name}"; then
+if ! is_package_installed "${pkgname}"; then
     if [[ -n $breaks ]]; then
         for pkg in "${breaks[@]}"; do
             # Do we have an apt package installed (but not pacstall)?
             if is_apt_package_installed "${pkg}" && ! is_package_installed "${pkg}"; then
                 # Check if anything in breaks variable is installed already
-                fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by apt"
+                fancy_message error "${RED}$pkgname${NC} breaks $pkg, which is currently installed by apt"
                 suggested_solution "Remove the apt package by running '${UCyan}sudo apt purge $pkg${NC}'"
                 error_log 13 "install $PACKAGE"
                 fancy_message info "Cleaning up"
                 cleanup
                 return 1
             fi
-            if [[ ${pkg} != "${name}" ]] && is_package_installed "${pkg}"; then
+            if [[ ${pkg} != "${pkgname}" ]] && is_package_installed "${pkg}"; then
                 # Same thing, but check if anything is installed with pacstall
-                fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by pacstall"
+                fancy_message error "${RED}$pkgname${NC} breaks $pkg, which is currently installed by pacstall"
                 suggested_solution "Remove the pacstall package by running '${UCyan}pacstall -R $pkg${NC}'"
                 error_log 13 "install $PACKAGE"
                 fancy_message info "Cleaning up"
@@ -908,7 +908,7 @@ if [[ -n ${makedepends[*]} ]]; then
     done
 
     if ((${#not_installed_yet_builddepends[@]} != 0)); then
-        fancy_message info "${BLUE}$name${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to install"
+        fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to install"
         if ! sudo apt-get install -y "${not_installed_yet_builddepends[@]}"; then
             fancy_message error "Failed to install build dependencies"
             error_log 8 "install $PACKAGE"
@@ -973,7 +973,7 @@ else
     file_name="${url##*/}"
 fi
 
-if [[ $name == *-git ]]; then
+if [[ $pkgname == *-git ]]; then
     # git clone quietly, with no history, and if submodules are there, download with 10 jobs
     git clone --quiet --depth=1 --recurse-submodules --jobs=10 "$url"
     # cd into the directory
@@ -1025,8 +1025,8 @@ else
             fi
             if sudo apt install -y -f ./"${file_name}" 2> /dev/null; then
                 log
-                if [[ -f /tmp/pacstall-pacdeps-"$name" ]]; then
-                    sudo apt-mark auto "${gives:-$name}" 2> /dev/null
+                if [[ -f /tmp/pacstall-pacdeps-"$pkgname" ]]; then
+                    sudo apt-mark auto "${gives:-$pkgname}" 2> /dev/null
                 fi
                 if type -t post_install &> /dev/null; then
                     if ! post_install; then
@@ -1052,7 +1052,7 @@ else
             else
                 fancy_message error "Failed to install the package"
                 error_log 14 "install $PACKAGE"
-                sudo apt purge "${gives:-$name}" -y > /dev/null
+                sudo apt purge "${gives:-$pkgname}" -y > /dev/null
                 fancy_message info "Cleaning up"
                 cleanup
                 return 1
@@ -1090,7 +1090,7 @@ fi
 export srcdir="$PWD"
 sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2> /dev/null
 
-export pkgdir="$STOWDIR/$name"
+export pkgdir="$STOWDIR/$pkgname"
 export -f ask fancy_message select_options
 
 # Trap so that we can clean up (hopefully without messing up anything)
@@ -1107,7 +1107,7 @@ function fail_out_functions() {
     error_log 5 "$func $PACKAGE"
     echo -ne "\t"
     fancy_message error "Could not $func $PACKAGE properly"
-    sudo dpkg -r "${gives:-$name}" > /dev/null
+    sudo dpkg -r "${gives:-$pkgname}" > /dev/null
     fancy_message info "Cleaning up"
     cleanup
     exit 1
@@ -1120,7 +1120,7 @@ function run_function() {
         sudo mkdir -p "${LOGDIR}"
     fi
     # NOTE: https://stackoverflow.com/a/29163890 (shorthand for 2>&1 |)
-    $func |& sudo tee "${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log" && return "${PIPESTATUS[0]}"
+    $func |& sudo tee "${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$pkgname-$func.log" && return "${PIPESTATUS[0]}"
 }
 
 function safe_run() {
@@ -1170,7 +1170,7 @@ sudo mkdir -p "/var/cache/pacstall/$PACKAGE/${full_version}"
 if ! cd "$DIR" 2> /dev/null; then
     error_log 1 "install $PACKAGE"
     fancy_message error "Could not enter into ${DIR}"
-    sudo dpkg -r "${gives:-$name}" > /dev/null
+    sudo dpkg -r "${gives:-$pkgname}" > /dev/null
     fancy_message info "Cleaning up"
     cleanup
     exit 1
