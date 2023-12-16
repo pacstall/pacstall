@@ -49,7 +49,7 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset name repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel mask pac_functions repo 2> /dev/null
+    unset name repology pkgver epoch url depends makedepends breaks replaces gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel mask pac_functions repo 2> /dev/null
     unset -f pkgver post_install post_remove pre_install prepare build package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
@@ -503,9 +503,9 @@ function makedeb() {
         deblog "Provides" "$(sed 's/ /, /g' <<< "${provides[@]}")"
     fi
 
-    if [[ -n $replace ]]; then
-        deblog "Conflicts" "$(sed 's/ /, /g' <<< "${replace[@]}")"
-        deblog "Replace" "$(sed 's/ /, /g' <<< "${replace[@]}")"
+    if [[ -n $replaces ]]; then
+        deblog "Conflicts" "$(sed 's/ /, /g' <<< "${replaces[@]}")"
+        deblog "Replace" "$(sed 's/ /, /g' <<< "${replaces[@]}")"
     fi
 
     if [[ -n ${homepage} ]]; then
@@ -879,9 +879,9 @@ if ! is_package_installed "${name}"; then
         done
     fi
 
-    if [[ -n ${replace[*]} ]]; then
+    if [[ -n ${replaces[*]} ]]; then
         # Ask user if they want to replace the program
-        for pkg in "${replace[@]}"; do
+        for pkg in "${replaces[@]}"; do
             if is_apt_package_installed "${pkg}"; then
                 ask "This script replaces ${pkg}. Do you want to proceed?" Y
                 if ((answer == 0)); then
