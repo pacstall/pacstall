@@ -48,6 +48,30 @@ function dep_const.split_name_and_version() {
     esac
 }
 
+# The goal of this is to be able to recieve a list of pipes and to put back
+# a single package that satifies the list.
+function dep_const.get_pipe() {
+	local string="${1}" pkg
+	local the_array=() formatted=()
+	dep_const.pipe_split "${string}" the_array
+	for pkg in "${the_array[@]}"; do
+        dep_const.format_version "${pkg}" formatted
+	done
+	for pkg in "${formatted[@]}"; do
+		if is_apt_package_installed "${pkg}"; then
+			echo "${pkg}"
+			return 0
+		fi
+	done
+	# If we haven't got an installed package, select the first one to be used.
+	echo "${formatted[0]}"
+}
+
+function dep_const.strip_description() {
+	local -n desc_out="${2}"
+	printf -v desc_out "%s" "${1%%: *}"
+}
+
 function dep_const.format_version() {
     local str="${1}" const relation pkg_stuff=() constraints=('<=' '>=' '=' '<' '>')
     local -n out_arr="${2}"
@@ -69,24 +93,24 @@ function dep_const.format_version() {
     done
 }
 
-function dep_const.format() {
-    local i z pipes=() formatted_pipes=() dep_arr=()
+function dep_const.format_control() {
+    local i z strip pipes=() formatted_pipes=() dep_arr=()
     local -n deps="${1}"
     local -n out="${2}"
     for i in "${deps[@]}"; do
         unset formatted_pipes
+		# We can strip out the description because the only people that need it are maintainers.
+		dep_const.strip_description "${i}" strip
         # Regex to check for pipe delimited strings and that the last char is not a pipe.
-        if [[ $i =~ ^[[:alnum:]]+[[:alnum:]\|].*[^|]+$ ]]; then
-            dep_const.pipe_split "${i}" pipes
+        if [[ $strip =~ ^[[:alnum:]]+[[:alnum:]\|].*[^|]+$ ]]; then
+            dep_const.pipe_split "${strip}" pipes
             for z in "${pipes[@]}"; do
                 dep_const.format_version "${z}" formatted_pipes
             done
             dep_arr+=("$(dep_const.join_by ' | ' "${formatted_pipes[@]}")")
         else
-            dep_const.format_version "${i}" dep_arr
+            dep_const.format_version "${strip}" dep_arr
         fi
     done
     out=("${dep_arr[@]}")
 }
-
-# ('bar>=1.2.3|baz|borg>1.0.0' 'bang') -> bar (>= 1.2.3) | baz | borg (>> 1.0.0), bang
