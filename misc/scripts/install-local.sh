@@ -841,7 +841,6 @@ if [[ -n $pacdeps ]]; then
                 fi
             else
                 fancy_message info "The pacstall dependency ${i} is already installed and at latest version"
-
             fi
         elif fancy_message info "Installing $i" && ! pacstall "$cmd" "${i}${repo}"; then
             fancy_message error "Failed to install dependency"
