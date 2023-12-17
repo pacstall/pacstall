@@ -32,8 +32,8 @@ function dep_const.join_by() {
 
 function dep_const.pipe_split() {
     local pipe_str="${1}"
-    local -n out_var="${2}"
-    mapfile -t out_var <<< "${pipe_str//\|/$'\n'}"
+    local -n out_var_pipe="${2}"
+    mapfile -t out_var_pipe <<< "${pipe_str//\|/$'\n'}"
 }
 
 function dep_const.split_name_and_version() {
@@ -51,25 +51,25 @@ function dep_const.split_name_and_version() {
 # The goal of this is to be able to recieve a list of pipes and to put back
 # a single package that satifies the list.
 function dep_const.get_pipe() {
-	local string="${1}" pkg
-	local the_array=() formatted=()
-	dep_const.pipe_split "${string}" the_array
-	for pkg in "${the_array[@]}"; do
+    local string="${1}" pkg
+    local the_array=() formatted=()
+    dep_const.pipe_split "${string}" the_array
+    for pkg in "${the_array[@]}"; do
         dep_const.format_version "${pkg}" formatted
-	done
-	for pkg in "${formatted[@]}"; do
-		if is_apt_package_installed "${pkg}"; then
-			echo "${pkg}"
-			return 0
-		fi
-	done
-	# If we haven't got an installed package, select the first one to be used.
-	echo "${formatted[0]}"
+    done
+    for pkg in "${formatted[@]}"; do
+        if is_apt_package_installed "${pkg}"; then
+            echo "${pkg}"
+            return 0
+        fi
+    done
+    # If we haven't got an installed package, select the first one to be used.
+    echo "${formatted[0]}"
 }
 
 function dep_const.strip_description() {
-	local -n desc_out="${2}"
-	printf -v desc_out "%s" "${1%%: *}"
+    local -n desc_out="${2}"
+    printf -v desc_out "%s" "${1%%: *}"
 }
 
 function dep_const.format_version() {
@@ -99,8 +99,8 @@ function dep_const.format_control() {
     local -n out="${2}"
     for i in "${deps[@]}"; do
         unset formatted_pipes
-		# We can strip out the description because the only people that need it are maintainers.
-		dep_const.strip_description "${i}" strip
+        # We can strip out the description because the only people that need it are maintainers.
+        dep_const.strip_description "${i}" strip
         # Regex to check for pipe delimited strings and that the last char is not a pipe.
         if [[ $strip =~ ^[[:alnum:]]+[[:alnum:]\|].*[^|]+$ ]]; then
             dep_const.pipe_split "${strip}" pipes
