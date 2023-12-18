@@ -110,36 +110,6 @@ function dep_const.strip_description() {
     printf -v desc_out "%s" "${1%%: *}"
 }
 
-# @description Prints out the apt name of an installed Pacstall package
-# @internal
-#
-# @example
-#   dep_const.get_pacstall_pkg_name "neovim-git" # Prints 'neovim'
-#
-# @arg $1 string Pacstall package name.
-#
-# @stdout APT name.
-function dep_const.get_pacstall_pkg_name() (
-	local pacstall_name="${1}"
-	source "$METADIR/$pacstall_name"
-	echo "${_gives:-$_name}"
-)
-
-# @description Formats an array into a control file compatible list
-# @internal
-#
-# @example
-#	pacdeps=('neovim | neovim-git | neovim-app')
-#   dep_const.format_pacstall_control pacdeps out
-#   declare -p out
-#   declare -a out=([0]="neovim")
-#
-# @arg $1 string An array name.
-# @arg $2 string An array name to output to.
-function dep_const.format_pacstall_control() {
-
-}
-
 # @description Formats a string into a control file compatible version string
 # @internal
 #
@@ -175,13 +145,13 @@ function dep_const.format_version() {
 #
 # @example
 #	foo=("opt:amd64>=1.2.3 | bruh:arm64<1.2.0: optdepends string" "blorg>=1.2.3 | larp<=0.0.1")
-#   dep_const.format_apt_control foo out
+#   dep_const.format_control foo out
 #   declare -p out
 #   declare -a out=([0]="opt:amd64 (>= 1.2.3) | bruh:arm64 (<< 1.2.0)" [1]="blorg (>= 1.2.3) | larp (<= 0.0.1)")
 #
 # @arg $1 string An array name.
 # @arg $2 string An array name to output to.
-function dep_const.format_apt_control() {
+function dep_const.format_control() {
     local i z strip pipes=() formatted_pipes=() dep_arr=()
     local -n deps="${1}"
     local -n out="${2}"
@@ -190,7 +160,7 @@ function dep_const.format_apt_control() {
         # We can strip out the description because the only people that need it are maintainers.
         dep_const.strip_description "${i}" strip
 		# Regex to check for spaced pipe delimited strings ('this | that') and that the last char is not a pipe.
-        if [[ ${strip} =~ ^[[:alnum:]]+[[:alnum:]\|].* [^|]+$ ]]; then
+        if [[ ${strip} =~ ^[[:alnum:]]+[[:alnum:]\|].*\ [^|]+$ ]]; then
             dep_const.pipe_split "${strip}" pipes
             for z in "${pipes[@]}"; do
                 dep_const.format_version "${z}" formatted_pipes
