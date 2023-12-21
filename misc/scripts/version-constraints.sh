@@ -22,6 +22,31 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+# @description Checks if a package is compatible with given constraint
+# @internal
+#
+# @example
+#   dep_const.apt_compare_to_constraints "pkg>=1.0.0"
+#
+# @arg $1 string A versioned string.
+function dep_const.apt_compare_to_constraints() {
+	local compare_pkg="${1}" split_up=() pkg_version
+	dep_const.split_name_and_version "${compare_pkg}" split_up
+	if is_apt_package_installed "${split_up[0]}"; then
+		pkg_version="$(dpkg-query --showformat='${Version}' --show "${split_up[0]}")"
+	else
+		pkg_version="$(aptitude search "${split_up[0]}" -F "%V")"
+	fi
+    case "${compare_pkg}" in
+		# Example: foo@1.2.4 where foo<=1.2.5 should return true, because 1.2.4 is less than 1.2.5
+        *"<="*) dpkg --compare-versions "${split_up[0]}" le "${pkg_version}" ;;
+        *">="*) dpkg --compare-versions "${split_up[0]}" ge "${pkg_version}" ;;
+        *"="*) dpkg --compare-versions "${split_up[0]}" eq "${pkg_version}" ;;
+        *"<"*) dpkg --compare-versions "${split_up[0]}" lt "${pkg_version}" ;;
+        *">"*) dpkg --compare-versions "${split_up[0]}" gt "${pkg_version}" ;;
+    esac
+}
+
 # https://stackoverflow.com/a/17841619/13449010
 function dep_const.join_by() {
     local d="${1-}" f="${2-}"
