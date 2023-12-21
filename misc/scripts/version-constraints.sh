@@ -30,15 +30,15 @@
 #
 # @arg $1 string A versioned string.
 function dep_const.apt_compare_to_constraints() {
-	local compare_pkg="${1}" split_up=() pkg_version
-	dep_const.split_name_and_version "${compare_pkg}" split_up
-	if is_apt_package_installed "${split_up[0]}"; then
-		pkg_version="$(dpkg-query --showformat='${Version}' --show "${split_up[0]}")"
-	else
-		pkg_version="$(aptitude search "${split_up[0]}" -F "%V")"
-	fi
+    local compare_pkg="${1}" split_up=() pkg_version
+    dep_const.split_name_and_version "${compare_pkg}" split_up
+    if is_apt_package_installed "${split_up[0]}"; then
+        pkg_version="$(dpkg-query --showformat='${Version}' --show "${split_up[0]}")"
+    else
+        pkg_version="$(aptitude search "${split_up[0]}" -F "%V")"
+    fi
     case "${compare_pkg}" in
-		# Example: foo@1.2.4 where foo<=1.2.5 should return true, because 1.2.4 is less than 1.2.5
+        # Example: foo@1.2.4 where foo<=1.2.5 should return true, because 1.2.4 is less than 1.2.5
         *"<="*) dpkg --compare-versions "${split_up[0]}" le "${pkg_version}" ;;
         *">="*) dpkg --compare-versions "${split_up[0]}" ge "${pkg_version}" ;;
         *"="*) dpkg --compare-versions "${split_up[0]}" eq "${pkg_version}" ;;
@@ -93,38 +93,26 @@ function dep_const.split_name_and_version() {
 # @internal
 #
 # @example
-#   dep_const.get_pipe pacstall "neofetch | neovim"
-#   dep_const.get_pipe apt "mutt | nala"
+#   dep_const.get_pipe "mutt | nala"
 #
-# @arg $1 string Either 'apt' or 'pacstall' for provider.
-# @arg $2 string A pipe delimited string of packages.
+# @arg $1 string A pipe delimited string of packages.
 #
 # @stdout A best chosen package name
 #
 # How this works is that we loop through the list and check if it is installed, and if so,
 # we use that, if not, we go to the next one, and repeat. If no package is installed, we choose list[0].
 function dep_const.get_pipe() {
-    local source="${1}" string="${2}" pkg
+    local string="${1}" pkg
     local the_array=() formatted=()
     dep_const.pipe_split "${string}" the_array
     for pkg in "${the_array[@]}"; do
         dep_const.format_version "${pkg}" formatted
     done
     for pkg in "${formatted[@]}"; do
-        case "${source}" in
-            pacstall)
-                if is_package_installed "${pkg}"; then
-                    echo "${pkg}"
-                    return 0
-                fi
-                ;;
-            apt | *)
-                if is_apt_package_installed "${pkg}"; then
-                    echo "${pkg}"
-                    return 0
-                fi
-                ;;
-        esac
+        if is_package_installed "${pkg}"; then
+            echo "${pkg}"
+            return 0
+        fi
     done
     # If we haven't got an installed package, select the first one to be used.
     echo "${formatted[0]}"
@@ -184,7 +172,7 @@ function dep_const.format_control() {
         unset formatted_pipes
         # We can strip out the description because the only people that need it are maintainers.
         dep_const.strip_description "${i}" strip
-		# Regex to check for spaced pipe delimited strings ('this | that') and that the last char is not a pipe.
+        # Regex to check for spaced pipe delimited strings ('this | that') and that the last char is not a pipe.
         if [[ ${strip} =~ ^[[:alnum:]]+[[:alnum:]\|].*\ [^|]+$ ]]; then
             dep_const.pipe_split "${strip}" pipes
             for z in "${pipes[@]}"; do
