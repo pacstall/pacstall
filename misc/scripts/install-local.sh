@@ -962,7 +962,7 @@ if [[ -n $patch ]]; then
     fancy_message info "Downloading patches"
     mkdir -p PACSTALL_patchesdir
     for i in "${patch[@]}"; do
-        wget -q "$i" -P PACSTALL_patchesdir
+        curl -sO "$i" --output-dir PACSTALL_patchesdir
     done
     export PACPATCH="$PWD/PACSTALL_patchesdir"
 fi
