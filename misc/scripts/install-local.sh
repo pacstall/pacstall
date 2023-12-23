@@ -963,11 +963,11 @@ if [[ -n $patch ]]; then
     mkdir -p PACSTALL_patchesdir
 	# NOTE: not using --output-dir,
 	# since Buster/Focal include a version of curl w/o that option.
-	cd PACSTALL_patchesdir
+	pushd PACSTALL_patchesdir > /dev/null || return 1
     for i in "${patch[@]}"; do
         curl -sO "$i"
     done
-	cd ..
+	popd > /dev/null || return 1
     export PACPATCH="$PWD/PACSTALL_patchesdir"
 fi
 
