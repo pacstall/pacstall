@@ -961,13 +961,13 @@ mkdir -p "${SRCDIR}"
 if [[ -n $patch ]]; then
     fancy_message info "Downloading patches"
     mkdir -p PACSTALL_patchesdir
-	# NOTE: not using --output-dir,
-	# since Buster/Focal include a version of curl w/o that option.
-	pushd PACSTALL_patchesdir > /dev/null || return 1
+    # NOTE: not using --output-dir,
+    # since Buster/Focal include a version of curl w/o that option.
+    pushd PACSTALL_patchesdir > /dev/null || return 1
     for i in "${patch[@]}"; do
         curl -sO "$i"
     done
-	popd > /dev/null || return 1
+    popd > /dev/null || return 1
     export PACPATCH="$PWD/PACSTALL_patchesdir"
 fi
 
