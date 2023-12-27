@@ -66,6 +66,7 @@ function dep_const.join_by() {
 function dep_const.pipe_split() {
     local pipe_str="${1}"
     local -n out_var_pipe="${2}"
+    # shellcheck disable=SC2034
     mapfile -t out_var_pipe <<< "${pipe_str// \| /$'\n'}"
 }
 
@@ -80,7 +81,6 @@ function dep_const.pipe_split() {
 function dep_const.comma_array() {
     local -n input_arr="${1}"
     local -n output_str="${2}"
-    local loopie ctr=1
     printf -v output_str '%s, ' "${input_arr[@]}"
     printf -v output_str '%s\n' "${output_str%, }"
 }
@@ -96,6 +96,7 @@ function dep_const.comma_array() {
 function dep_const.split_name_and_version() {
     local string="${1}"
     local -n out_var="${2}"
+    # shellcheck disable=SC2034
     case "${string}" in
         *"<="*) out_var=("${string%%<=*}" "${string##*<=}") ;;
         *">="*) out_var=("${string%%>=*}" "${string##*>=}") ;;
@@ -144,6 +145,7 @@ function dep_const.get_pipe() {
 # @arg $2 string A variable to output the package to.
 function dep_const.strip_description() {
     local -n desc_out="${2}"
+    # shellcheck disable=SC2034
     printf -v desc_out "%s" "${1%%: *}"
 }
 
@@ -207,5 +209,6 @@ function dep_const.format_control() {
             dep_const.format_version "${strip}" dep_arr
         fi
     done
+    # shellcheck disable=SC2034
     out=("${dep_arr[@]}")
 }
