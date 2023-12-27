@@ -81,14 +81,8 @@ function dep_const.comma_array() {
     local -n input_arr="${1}"
     local -n output_str="${2}"
     local loopie ctr=1
-    for loopie in "${input_arr[@]}"; do
-        if [[ ${ctr} == ${#input_arr[@]} ]]; then
-            output_str+="${loopie}"
-            return 0
-        fi
-        output_str+="${loopie}, "
-        ((ctr++))
-    done
+    printf -v output_str '%s, ' "${input_arr[@]}"
+    printf -v output_str '%s\n' "${output_str%, }"
 }
 
 # @description Splits a versioned package into its name and version
