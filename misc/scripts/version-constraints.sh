@@ -69,6 +69,28 @@ function dep_const.pipe_split() {
     mapfile -t out_var_pipe <<< "${pipe_str// \| /$'\n'}"
 }
 
+# @description Formats a bash array into a control file array style
+# @internal
+#
+# @example
+#   dep_const.comma_array input_arr output_str
+#
+# @arg $1 string A bash array.
+# @arg $2 string An output string.
+function dep_const.comma_array() {
+    local -n input_arr="${1}"
+    local -n output_str="${2}"
+    local loopie ctr=1
+    for loopie in "${input_arr[@]}"; do
+        if [[ ${ctr} == ${#input_arr[@]} ]]; then
+            output_str+="${loopie}"
+            return 0
+        fi
+        output_str+="${loopie}, "
+        ((ctr++))
+    done
+}
+
 # @description Splits a versioned package into its name and version
 # @internal
 #
@@ -118,6 +140,14 @@ function dep_const.get_pipe() {
     echo "${formatted[0]}"
 }
 
+# @description Removes description from string
+# @internal
+#
+# @example
+#   dep_const.strip_description "foo: description for foo" boo
+#
+# @arg $1 string A string description.
+# @arg $2 string A variable to output the package to.
 function dep_const.strip_description() {
     local -n desc_out="${2}"
     printf -v desc_out "%s" "${1%%: *}"
