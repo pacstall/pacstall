@@ -116,7 +116,7 @@ if [[ -z $NO_COLOR ]]; then
     export On_ICyan='\033[0;106m'   # Cyan
     export On_IWhite='\033[0;107m'  # White
 
-    declare -A pac_version=([red]="178" [green]="34" [blue]="34")
+    declare -A pac_version=([red]="238" [green]="44" [blue]="44")
 fi
 
 # Pac-roll
@@ -781,8 +781,8 @@ Helpful links:
             ;;
 
         -V | --version)
-            version_number="4.3.0"
-            version_name="Firebrick"
+            version_number="4.3.1"
+            version_name="Firebrick2"
             echo -e "${version_number} \033[1m\x1b[38;2;${pac_version[red]:-255};${pac_version[green]:-255};${pac_version[blue]:-255}m${version_name}${NC}"
             exit 0
             ;;
