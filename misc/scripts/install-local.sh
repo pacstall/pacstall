@@ -970,7 +970,10 @@ if [[ -n $patch ]]; then
     for i in "${patch[@]}"; do
         curl -sO "$i"
     done
-    popd > /dev/null || return 1
+    popd > /dev/null || {
+        fancy_message error "Could not enter into patches directory"
+        return 1
+    }
     export PACPATCH="$PWD/PACSTALL_patchesdir"
 fi
 
