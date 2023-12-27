@@ -89,8 +89,10 @@ function log() {
         echo "_version=\"${full_version}"\"
         echo "_install_size=\"${install_size}"\"
         printf '_date=\"%(%a %b %_d %r %Z %Y)T\"\n'
-        if [[ -n $maintainer ]]; then
-            echo "_maintainer=\"${maintainer}"\"
+        if [[ -n ${maintainer[*]} ]]; then
+            _maintainer=("${maintainer[@]}")
+            declare -p _maintainer
+            unset _maintainer
         fi
         if [[ -n $ppa ]]; then
             echo "_ppa=(${ppa[*]})"
@@ -399,7 +401,7 @@ function prompt_optdepends() {
 
 function generate_changelog() {
     printf "%s (%s) %s; urgency=medium\n\n  * Version now at %s.\n\n -- %s %(%a, %d %b %Y %T %z)T\n" \
-        "${name}" "${full_version}" "$(lsb_release -sc)" "${full_version}" "${maintainer}"
+        "${name}" "${full_version}" "$(lsb_release -sc)" "${full_version}" "${maintainer[0]}"
 }
 
 function clean_logdir() {
@@ -512,8 +514,15 @@ function makedeb() {
         deblog "Homepage" "${homepage}"
     fi
 
-    if [[ -n ${maintainer} ]]; then
-        deblog "Maintainer" "${maintainer}"
+    if [[ -n ${maintainer[*]} ]]; then
+        deblog "Maintainer" "${maintainer[0]}"
+        if ((${#maintainer[@]} > 0)); then
+            # Since https://www.debian.org/doc/debian-policy/ch-controlfields.html#uploaders says that Maintainer can only have one field, shove the rest in Uploaders
+            printf -v uploader '%s, ' "${maintainer[@]:1}"
+            printf -v uploader '%s\n' "${uploader%, }"
+            deblog "Uploader" "${uploader}"
+            unset uploader
+        fi
     else
         deblog "Maintainer" "Pacstall <pacstall@pm.me>"
     fi
