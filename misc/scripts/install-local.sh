@@ -43,8 +43,9 @@ function cleanup() {
         sudo rm -rf /tmp/pacstall-pacdep
     else
         sudo rm -rf "${SRCDIR:?}"/*
-        # just in case we quit before $pkgname is declared, we should be able to remove a fake directory so it doesn't exit out the script
-        sudo rm -rf "${STOWDIR:-/usr/src/pacstall}/${pkgname:-raaaaaaaandom}"
+        if [[ -n $pkgname ]]; then
+            sudo rm -rf "${STOWDIR:-/usr/src/pacstall}/${pkgname}"
+        fi
         rm -rf /tmp/pacstall-gives
     fi
     sudo rm -rf "${STOWDIR}/${pkgname:-$PACKAGE}.deb"
