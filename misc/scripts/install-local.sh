@@ -50,7 +50,7 @@ function cleanup() {
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
     sudo rm -f "$bwrapenv" "$safeenv"
-    unset name repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel mask pac_functions repo bwrapenv safeenv external_connection 2> /dev/null
+    unset name repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel mask pac_functions repo priority bwrapenv safeenv external_connection 2> /dev/null
     unset -f pkgver post_install post_remove pre_install prepare build package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
@@ -221,7 +221,7 @@ function get_compatible_releases() {
             return 0
         fi
     done
-    if [[ "${is_compat}" == "false" || "${is_compat}" != "true" ]]; then
+    if [[ ${is_compat} == "false" || ${is_compat} != "true" ]]; then
         fancy_message error "This Pacscript does not work on ${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${distro_name}:${distro_version_number}${NC}"
         return 1
     fi
@@ -497,7 +497,13 @@ function makedeb() {
         deblog "Architecture" "all"
     fi
     deblog "Section" "Pacstall"
-    deblog "Priority" "optional"
+
+    if [[ ${priority} == "essential" ]]; then
+        deblog "Priority" "required"
+        deblog "Essential" "yes"
+    else
+        deblog "Priority" "${priority:-optional}"
+    fi
 
     if [[ $name == *-git ]]; then
         deblog "Vcs-Git" "${url}"
@@ -730,6 +736,7 @@ homedir="$(eval echo ~"$PACSTALL_USER")"
 export homedir
 
 sudo cp "${PACKAGE}.pacscript" /tmp
+sudo chmod a+r "/tmp/${PACKAGE}.pacscript"
 pacfile="$(readlink -f "/tmp/${PACKAGE}.pacscript")"
 export pacfile
 mapfile -t FARCH < <(dpkg --print-foreign-architectures)
@@ -833,6 +840,7 @@ fi
 
 clean_builddir
 sudo mkdir -p "$STOWDIR/$name/DEBIAN"
+sudo chmod a+rx "$STOWDIR" "$STOWDIR/$name" "$STOWDIR/$name/DEBIAN"
 
 # Run checks function
 if ! checks; then
@@ -840,6 +848,15 @@ if ! checks; then
     fancy_message info "Cleaning up"
     cleanup
     return 1
+fi
+
+# If priority exists and is required, and also that this package has not been installed before (first time)
+if [[ -n ${priority} && ${priority} == 'essential' ]] && ! is_package_installed "${name}"; then
+    ask "This package has 'priority=essential', meaning once this is installed, it should be assumed to be uninstallable. Do you want to continue?" Y
+    if ((answer == 0)); then
+        cleanup
+        exit 1
+    fi
 fi
 
 if is_function pkgver; then
@@ -866,14 +883,14 @@ if [[ -n $pacdeps ]]; then
         touch "/tmp/pacstall-pacdeps-$i"
 
         [[ $KEEP ]] && cmd="-KPI" || cmd="-PI"
-        if pacstall -S "${i}@${REPO}" &>/dev/null; then
+        if pacstall -S "${i}@${REPO}" &> /dev/null; then
             repo="@${REPO}"
         fi
         if is_package_installed "${i}"; then
             pacstall_pacdep_status="$(compare_remote_version "$i")"
             if [[ $pacstall_pacdep_status == "update" ]]; then
                 fancy_message info "Found newer version for $i pacdep"
-                if ! pacstall "$cmd" "$i"; then
+                if ! pacstall "$cmd" "${i}${repo}"; then
                     fancy_message error "Failed to install dependency"
                     error_log 8 "install $PACKAGE"
                     cleanup
@@ -883,7 +900,6 @@ if [[ -n $pacdeps ]]; then
                 fancy_message info "The pacstall dependency ${i} is already installed and at latest version"
 
             fi
-            # BUG: Pacstall installs pacdeps from main repo. In the RS version we should get the latest version of the pacdep from all repos and use that.
         elif fancy_message info "Installing $i" && ! pacstall "$cmd" "${i}${repo}"; then
             fancy_message error "Failed to install dependency"
             error_log 8 "install $PACKAGE"
@@ -930,7 +946,11 @@ if ! is_package_installed "${name}"; then
                     cleanup
                     return 1
                 fi
-                sudo apt-get remove -y "${pkg}"
+                if [[ ${priority} == "essential" ]]; then
+                    sudo apt-get remove -y "${pkg}" --allow-remove-essential
+                else
+                    sudo apt-get remove -y "${pkg}"
+                fi
             fi
         done
     fi
@@ -1012,7 +1032,7 @@ fi
 
 if [[ $name == *-git ]]; then
     # git clone quietly, with no history, and if submodules are there, download with 10 jobs
-    git clone --quiet --depth=1 --jobs=10 "$url"
+    git clone --quiet --depth=1 --recurse-submodules --jobs=10 "$url"
     # cd into the directory
     cd ./*/ 2> /dev/null || {
         error_log 1 "install $PACKAGE"
@@ -1165,6 +1185,9 @@ function run_function() {
     sudo chmod +x "$tmpfile"
 
     fancy_message sub "Running $func"
+    if [[ ! -d ${LOGDIR} ]]; then
+        sudo mkdir -p "${LOGDIR}"
+    fi
     local share_net
     if [[ ${external_connection} == "true" ]]; then
         share_net="--share-net"

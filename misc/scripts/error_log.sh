@@ -49,6 +49,10 @@ function error_log() {
     local scope="${2}"
     local time
 
+    if [[ ! -d ${LOGDIR} ]]; then
+        sudo mkdir -p "${LOGDIR}"
+    fi
+
     if [[ ! -f $LOGFILE ]]; then
         sudo touch "$LOGFILE"
         sudo find "${LOGDIR:-/var/log/pacstall/error_log/}" -type f -ctime +14 -delete
