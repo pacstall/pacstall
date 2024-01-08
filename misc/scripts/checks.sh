@@ -118,7 +118,7 @@ function lint_version() {
             fancy_message error "Package contains 'pkgver()' but not the variable as well"
             ret=1
         fi
-        lint_pkgver="$(pkgver)"
+        lint_pkgver="$(bwrap_pkgver)"
         if [[ -z ${lint_pkgver} ]]; then
             fancy_message error "'pkgver()' has no output"
             ret=1

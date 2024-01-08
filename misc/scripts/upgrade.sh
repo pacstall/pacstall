@@ -85,7 +85,16 @@ N="$(nproc)"
             IDXMATCH=$(printf "%s\n" "${REPOS[@]}" | awk "\$1 ~ /^${remoterepo//\//\\/}$/ {print NR-1}")
 
             if [[ -n $IDXMATCH ]]; then
-                remotever=$(source <(curl -s -- "$remoterepo/packages/$i/$i.pacscript") && if [[ ${name} == *-deb ]]; then echo "${epoch+$epoch:}${pkgver}"; else type pkgver &> /dev/null && echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(pkgver)" || echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"; fi) > /dev/null
+                remotever="$(
+                    safe_source <(curl -s -- "$remoterepo/packages/$i/$i.pacscript") && if [[ ${name} == *-deb ]]; then
+                        echo "${epoch+$epoch:}${pkgver}"
+                    elif is_function pkgver; then
+                        echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(bwrap_pkgver)"
+                    else
+                        echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}" 
+                    fi
+                )" > /dev/null
+
                 remoteurl="${REPOS[$IDXMATCH]}"
             else
                 fancy_message warn "Package ${GREEN}${i}${CYAN} is not on ${CYAN}$(parseRepo "${remoterepo}")${NC} anymore"
@@ -98,7 +107,16 @@ N="$(nproc)"
                     if ((IDX == IDXMATCH)); then
                         continue
                     else
-                        ver=$(source <(curl -s -- "${REPOS[$IDX]}"/packages/"$i"/"$i".pacscript) && if [[ ${name} == *-deb ]]; then echo "${epoch+$epoch:}${pkgver}"; else type pkgver &> /dev/null && echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(pkgver)" || echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"; fi) > /dev/null
+                        ver="$(
+                            safe_source <(curl -s -- "${REPOS[$IDX]}"/packages/"$i"/"$i".pacscript) && if [[ ${name} == *-deb ]]; then
+                                echo "${epoch+$epoch:}${pkgver}"
+                            elif is_function pkgver; then
+                                echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(bwrap_pkgver)"
+                            else
+                                echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"; 
+                            fi
+                        )" > /dev/null
+
                         if ! ver_compare "$alterver" "$ver"; then
                             alterver="$ver"
                             alterurl="$REPO"

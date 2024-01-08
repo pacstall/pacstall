@@ -49,8 +49,8 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    sudo rm -f "$bwrapenv" "$safeenv"
-    unset name repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel mask pac_functions repo priority bwrapenv safeenv external_connection 2> /dev/null
+    sudo rm -f "${SRCDIR}/bwrapenv.*"
+    unset name repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel mask pac_functions repo priority bwrapenv external_connection 2> /dev/null
     unset -f pkgver post_install post_remove pre_install prepare build package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
@@ -126,19 +126,6 @@ function log() {
     } | sudo tee "$METADIR/$name" > /dev/null
 }
 
-function run_pkgver() {
-    tmpfile="$(sudo mktemp -p "${PWD}")"
-    echo "#!/bin/bash -e" | sudo tee "$tmpfile" > /dev/null
-    echo "source ${bwrapenv}" | sudo tee -a "$tmpfile" > /dev/null
-    echo "pkgver" | sudo tee -a "$tmpfile" > /dev/null
-    sudo chmod +rx "$tmpfile"
-
-    sudo env - bwrap --unshare-all --share-net --die-with-parent --new-session --ro-bind / /   \
-        --proc /proc --dev /dev --tmpfs /tmp --dev-bind /dev/null /dev/null \
-        --ro-bind "$bwrapenv" "$bwrapenv" --ro-bind "$tmpfile" "$tmpfile" \
-        "$tmpfile" && sudo rm "$tmpfile"
-}
-
 function compare_remote_version() (
     local input="${1}"
     unset -f pkgver 2> /dev/null
@@ -153,10 +140,10 @@ function compare_remote_version() (
         local remoterepo="${_remoterepo}"
     fi
     local remotever="$(
-        source <(curl -s -- "$remoterepo/packages/$input/$input.pacscript") && if is_function pkgver; then
-            echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(run_pkgver)"
-        elif [[ ${name} == *-deb ]]; then
+        safe_source <(curl -s -- "$remoterepo/packages/$input/$input.pacscript") && if [[ ${name} == *-deb ]]; then
             echo "${epoch+$epoch:}${pkgver}"
+        elif is_function pkgver; then
+            echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(bwrap_pkgver)"
         else
             echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
         fi
@@ -744,45 +731,8 @@ export FARCH
 export CARCH="$(dpkg --print-architecture)"
 export DISTRO="$(set_distro)"
 
-function safe_source() {
-    mkdir /tmp/pacstall 2>/dev/null
-    bwrapenv="$(sudo mktemp -p "${SRCDIR}")"
-    sudo chmod +r "$bwrapenv"
-    export bwrapenv
-    safeenv="$(sudo mktemp -p "${SRCDIR}")"
-    sudo chmod +r "$safeenv"
-    export safeenv
-
-    tmpfile="$(sudo mktemp -p "${SRCDIR}")"
-    echo "#!/bin/bash -ae" | sudo tee "$tmpfile" > /dev/null
-    echo "mapfile -t __OLD_ENV < <(compgen -A variable  -P \"--unset \")" | sudo tee -a "$tmpfile" > /dev/null
-    echo "readonly __OLD_ENV" | sudo tee -a "$tmpfile" > /dev/null
-    echo "source \"${pacfile}\"" | sudo tee -a "$tmpfile" > /dev/null
-    # /bin/env returns variables and functions, with values, so we sed them out
-    echo "mapfile -t NEW_ENV < <(/bin/env -0 \${__OLD_ENV[@]} | \
-        sed -ze 's/BASH_FUNC_\(.*\)%%=\(.*\)$/\n/g;s/^\(.[[:alnum:]_]*\)=\(.*\)$/\1/g'|tr '\0' '\n')" | sudo tee -a "$tmpfile" > /dev/null
-    # The env sourced inside of bwrap should contain everything from the pacscripts
-    echo "declare -p \${NEW_ENV[@]} >> \"${bwrapenv}\"" | sudo tee -a "$tmpfile" > /dev/null
-    echo "declare -pf >> \"${bwrapenv}\"" | sudo tee -a "$tmpfile" > /dev/null
-    # The Pacstall env should only receive the bare minimum of information needed
-    echo "echo > \"${safeenv}\"" | sudo tee -a "$tmpfile" > /dev/null
-    echo "for i in {name,repology,pkgver,epoch,url,depends,makedepends,breaks,replace,gives,pkgdesc,hash,optdepends,ppa,arch,maintainer,pacdeps,patch,provides,incompatible,optinstall,epoch,homepage,backup,pkgrel,mask,external_connection}; do \
-            [[ -z \"\${!i}\" ]] || declare -p \$i >> \"${safeenv}\"; \
-        done" | sudo tee -a "$tmpfile" > /dev/null
-    echo "[[ \$name == *'-deb' ]] || for i in {pkgver,post_install,post_remove,pre_install,prepare,build,package}; do \
-            [[ \$(type -t \"\$i\") == \"function\" ]] && declare -pf \$i >> \"${safeenv}\"; \
-        done || true" | sudo tee -a "$tmpfile" > /dev/null
-    sudo chmod +x "$tmpfile"
-
-    sudo env - bwrap --unshare-all --die-with-parent --new-session --ro-bind / / \
-        --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run --dev-bind /dev/null /dev/null \
-        --ro-bind "$pacfile" "$pacfile" --bind "$SRCDIR" "$SRCDIR" --ro-bind "$tmpfile" "$tmpfile" \
-        --setenv homedir "$homedir" --setenv CARCH "$CARCH" --setenv DISTRO "$DISTRO" --setenv NCPU "$NCPU" \
-    "$tmpfile" && sudo rm "$tmpfile"
-}
-
 # Running source on an isolated env
-if ! safe_source || ! source "$safeenv"; then
+if ! safe_source "$pacfile"; then
     fancy_message error "Could not source pacscript"
     error_log 12 "install $PACKAGE"
     fancy_message info "Cleaning up"
@@ -859,10 +809,10 @@ if [[ -n ${priority} && ${priority} == 'essential' ]] && ! is_package_installed 
     fi
 fi
 
-if is_function pkgver; then
-    full_version="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(run_pkgver)"
-elif [[ ${name} == *-deb ]]; then
+if [[ ${name} == *-deb ]]; then
     full_version="${epoch+$epoch:}${pkgver}"
+elif is_function pkgver; then
+    full_version="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(bwrap_pkgver)"
 else
     full_version="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
 fi
@@ -1169,38 +1119,6 @@ function fail_out_functions() {
     exit 1
 }
 
-function run_function() {
-    local func="$1"
-    tmpfile="$(sudo mktemp -p "${PWD}")"
-    echo "#!/bin/bash -a" | sudo tee "$tmpfile" > /dev/null
-    echo "mapfile -t OLD_ENV < <(compgen -A variable  -P \"--unset \")" | sudo tee -a "$tmpfile" > /dev/null
-    echo "source ${bwrapenv}" | sudo tee -a "$tmpfile" > /dev/null
-    # Run function, save env changes, exit with status
-    echo "$func 2>&1 \"${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log\" && FUNCSTATUS=\"\${PIPESTATUS[0]}\" && \
-        if [[ \$FUNCSTATUS ]]; then \
-            mapfile -t NEW_ENV < <(/bin/env -0 \${OLD_ENV[@]} | \
-                sed -ze 's/BASH_FUNC_\(.*\)%%=\(.*\)$/\n/g;s/^\(.[[:alnum:]_]*\)=\(.*\)$/\1/g'|tr '\0' '\n'); \
-            declare -p \${NEW_ENV[@]} >> \"${bwrapenv}\"; \
-        fi && exit \$FUNCSTATUS" | sudo tee -a "$tmpfile" > /dev/null
-    sudo chmod +x "$tmpfile"
-
-    fancy_message sub "Running $func"
-    if [[ ! -d ${LOGDIR} ]]; then
-        sudo mkdir -p "${LOGDIR}"
-    fi
-    local share_net
-    if [[ ${external_connection} == "true" ]]; then
-        share_net="--share-net"
-    fi
-    sudo bwrap --unshare-all $share_net --die-with-parent --new-session --ro-bind / / \
-        --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run --dev-bind /dev/null /dev/null \
-        --bind "$STOWDIR" "$STOWDIR" --bind "$SRCDIR" "$SRCDIR" \
-        --setenv LOGDIR "$LOGDIR" --setenv STGDIR "$STGDIR" \
-        --setenv STOWDIR "$STOWDIR" --setenv pkgdir "$pkgdir" \
-        "$tmpfile"
-    sudo rm "$tmpfile"
-}
-
 function safe_run() {
     local func="$1"
     export restoreshopt="$(shopt -p)
@@ -1211,7 +1129,7 @@ $(shopt -p -o)"
     local restoretrap="$(trap -p ERR)"
     trap "fail_out_functions '$func'" ERR
 
-    run_function "$func"
+    bwrap_function "$func"
 
     trap - ERR
     eval "$restoreshopt"

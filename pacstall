@@ -484,6 +484,8 @@ function getMasks_offending_pkg() {
 
 # shellcheck source=./misc/scripts/error_log.sh
 source "$STGDIR/scripts/error_log.sh"
+# shellcheck source=./misc/scripts/bwrap.sh
+source "$STGDIR/scripts/bwrap.sh"
 
 if [[ ! -t 0 ]]; then
     NON_INTERACTIVE=true
