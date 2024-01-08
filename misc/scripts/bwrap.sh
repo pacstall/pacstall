@@ -58,7 +58,7 @@ function safe_source() {
         --setenv homedir "$homedir" --setenv CARCH "$CARCH" --setenv DISTRO "$DISTRO" --setenv NCPU "$NCPU" \
     "$tmpfile" && sudo rm "$tmpfile"
     source "$safeenv"
-    sudo rm "$safeenv" 
+    sudo rm "$safeenv"
 }
 
 function bwrap_pkgver() {
