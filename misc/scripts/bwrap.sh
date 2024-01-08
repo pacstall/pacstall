@@ -44,6 +44,8 @@ function safe_source() {
     echo "declare -pf >> \"${bwrapenv}\"" | sudo tee -a "$tmpfile" > /dev/null
     # The Pacstall env should only receive the bare minimum of information needed
     echo "echo > \"${safeenv}\"" | sudo tee -a "$tmpfile" > /dev/null
+
+    # Any new variables or functions should be added here in the future
     echo "for i in {name,repology,pkgver,epoch,url,depends,makedepends,breaks,replace,gives,pkgdesc,hash,optdepends,ppa,arch,maintainer,pacdeps,patch,provides,incompatible,optinstall,epoch,homepage,backup,pkgrel,mask,external_connection}; do \
             [[ -z \"\${!i}\" ]] || declare -p \$i >> \"${safeenv}\"; \
         done" | sudo tee -a "$tmpfile" > /dev/null
