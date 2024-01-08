@@ -732,7 +732,7 @@ export CARCH="$(dpkg --print-architecture)"
 export DISTRO="$(set_distro)"
 
 # Running source on an isolated env
-if ! safe_source "$pacfile"; then
+if ! safe_source "${pacfile}"; then
     fancy_message error "Could not source pacscript"
     error_log 12 "install $PACKAGE"
     fancy_message info "Cleaning up"

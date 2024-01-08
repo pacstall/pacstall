@@ -113,7 +113,7 @@ N="$(nproc)"
                             elif is_function pkgver; then
                                 echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(bwrap_pkgver)"
                             else
-                                echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}";
+                                echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
                             fi
                         )" > /dev/null
 
