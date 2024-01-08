@@ -1224,7 +1224,7 @@ for i in {prepare,build,package}; do
     fi
 done
 if [[ -n ${pac_functions[*]} ]]; then
-    fancy_message info "Running functions" 
+    fancy_message info "Running functions"
     for function in "${pac_functions[@]}"; do
         safe_run "$function"
     done
