@@ -634,7 +634,8 @@ fi' | sudo tee "$STOWDIR/$pkgname/DEBIAN/$deb_post_file" > /dev/null
     fi
 
     deblog "Installed-Size" "$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$pkgname" | cut -d$'\t' -f1)"
-    export install_size="$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$pkgname" | cut -d$'\t' -f1 | numfmt --to=iec)"
+    export install_size
+    install_size="$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$pkgname" | cut -d$'\t' -f1 | numfmt --to=iec)"
 
     generate_changelog | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/changelog" > /dev/null
 
