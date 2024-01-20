@@ -321,11 +321,11 @@ function download() {
             curl -L -# -o "${1##*/}" "$1" || return 1
             ;;
         quiet-wget)
-            wget -q -- "$1" 2>&1 || return 1
+            wget -q -O "${1##*/}" -- "$1" 2>&1 || return 1
             ;;
         payload) ;;
         wget | *)
-            wget -q --show-progress --progress=bar:force -- "$1" 2>&1 || return 1
+            wget -q --show-progress --progress=bar:force -O "${1##*/}" -- "$1" 2>&1 || return 1
             ;;
     esac
 }
