@@ -49,7 +49,7 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset name repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel mask pac_functions repo priority 2> /dev/null
+    unset name repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel mask pac_functions repo cpuflags priority 2> /dev/null
     unset -f pkgver post_install post_remove pre_install prepare build package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
@@ -269,6 +269,25 @@ function is_compatible_arch() {
             return 1
         fi
     fi
+}
+
+function is_compatible_cpuflags() {
+    local input=("${@}") ret=0
+    for pcpuflag in "${input[@]}"; do
+        local flag_found=0
+        for dcpuflag in "${DCPUFLAGS[@]}"; do
+            if [[ "$pcpuflag" == "$dcpuflag" ]]; then
+                flag_found=1
+                break
+            fi
+        done
+        if ((flag_found==0)); then
+            ret=1
+            fancy_message error "This Pacscript requires the CPU flag: ${BBlue}${pcpuflag}${NC}, but your CPU does not support it."
+            break
+        fi
+    done
+    return "${ret}"
 }
 
 function deblog() {
@@ -728,6 +747,13 @@ export pacfile
 mapfile -t FARCH < <(dpkg --print-foreign-architectures)
 export FARCH
 export CARCH="$(dpkg --print-architecture)"
+while IFS= read -r line; do
+    if [[ $line == Flags:* ]]; then
+        read -ra DCPUFLAGS <<< "${line#Flags: }"
+        break
+    fi
+done < <(lscpu)
+export DCPUFLAGS
 export DISTRO="$(set_distro)"
 if ! source "${pacfile}"; then
     fancy_message error "Could not source pacscript"
@@ -764,6 +790,13 @@ fi
 
 if [[ -n ${arch[*]} ]]; then
     if ! is_compatible_arch "${arch[@]}"; then
+        cleanup
+        exit 1
+    fi
+fi
+
+if [[ -n ${cpuflags[*]} ]]; then
+    if ! is_compatible_cpuflags "${cpuflags[@]}"; then
         cleanup
         exit 1
     fi
