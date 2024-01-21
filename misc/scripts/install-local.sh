@@ -271,7 +271,7 @@ function is_compatible_arch() {
             fi
         done
     fi
-    if ((ret==1)); then
+    if ((ret == 1)); then
         fancy_message error "This Pacscript does not work on ${BBlue}${CARCH}${NC}"
     fi
     return "${ret}"
