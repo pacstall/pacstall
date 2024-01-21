@@ -961,9 +961,19 @@ mkdir -p "${SRCDIR}"
 if [[ -n $patch ]]; then
     fancy_message info "Downloading patches"
     mkdir -p PACSTALL_patchesdir
+    # NOTE: not using --output-dir,
+    # since Buster/Focal include a version of curl w/o that option.
+    pushd PACSTALL_patchesdir > /dev/null || {
+        fancy_message error "Could not enter into patches directory"
+        return 1
+    }
     for i in "${patch[@]}"; do
-        wget -q "$i" -P PACSTALL_patchesdir
+        curl -sO "$i"
     done
+    popd > /dev/null || {
+        fancy_message error "Could not enter into patches directory"
+        return 1
+    }
     export PACPATCH="$PWD/PACSTALL_patchesdir"
 fi
 
