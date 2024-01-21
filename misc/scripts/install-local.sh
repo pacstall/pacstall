@@ -252,23 +252,29 @@ function get_incompatible_releases() {
 }
 
 function is_compatible_arch() {
-    local input=("${@}")
+    local input=("${@}") ret=1 pacarch farch
     if [[ " ${input[*]} " =~ " any " ]]; then
-        return 0
-    elif ! [[ " ${input[*]} " =~ " ${CARCH} " ]]; then
-        if [[ -n ${FARCH[*]} ]]; then
-            if [[ " ${FARCH[*]} " =~ " ${input[*]} " ]]; then
-                fancy_message warn "This package is for ${BBlue}${input[*]}${NC}, which is a foreign architecture"
-                return 0
-            else
-                fancy_message error "This Pacscript does not work on ${BBlue}${CARCH}${NC}"
-                return 1
+        ret=0
+    elif [[ " ${input[*]} " =~ " ${CARCH} " ]]; then
+        ret=0
+    elif [[ -n ${FARCH[*]} ]]; then
+        for pacarch in "${input[@]}"; do
+            for farch in "${FARCH[@]}"; do
+                if [[ "${pacarch}" == "${farch}" ]]; then
+                    fancy_message warn "This package is for ${BBlue}${farch}${NC}, which is a foreign architecture"
+                    ret=0
+                    break
+                fi
+            done
+            if ((ret==0)); then
+                break
             fi
-        else
-            fancy_message error "This Pacscript does not work on ${BBlue}${CARCH}${NC}"
-            return 1
-        fi
+        done
     fi
+    if ((ret == 1)); then
+        fancy_message error "This Pacscript does not work on ${BBlue}${CARCH}${NC}"
+    fi
+    return "${ret}"
 }
 
 function deblog() {
