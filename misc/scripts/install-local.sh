@@ -252,7 +252,7 @@ function get_incompatible_releases() {
 }
 
 function is_compatible_arch() {
-    local input=("${@}") ret=1
+    local input=("${@}") ret=1 pacarch farch
     if [[ " ${input[*]} " =~ " any " ]]; then
         ret=0
     elif [[ " ${input[*]} " =~ " ${CARCH} " ]]; then
