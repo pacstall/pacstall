@@ -281,7 +281,7 @@ function is_compatible_cpuflags() {
                 break
             fi
         done
-        if ((flag_found==0)); then
+        if ((flag_found == 0)); then
             ret=1
             fancy_message error "This Pacscript requires the CPU flag: ${BBlue}${pcpuflag}${NC}, but your CPU does not support it."
             break
