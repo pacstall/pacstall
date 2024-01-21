@@ -272,7 +272,7 @@ function is_compatible_arch() {
 }
 
 function is_compatible_cpuflags() {
-    local input=("${@}") ret=0
+    local input=("${@}") ret=0 pcpuflag dcpuflag
     for pcpuflag in "${input[@]}"; do
         local flag_found=0
         for dcpuflag in "${DCPUFLAGS[@]}"; do
