@@ -49,7 +49,10 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset name repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel mask pac_functions repo priority 2> /dev/null
+    sudo rm -f "${SRCDIR}/bwrapenv.*"
+
+    # Any new variables and functions added should also be added to `safe_source()` in `bwrap.sh`
+    unset name repology pkgver epoch url depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall epoch homepage backup pkgrel mask pac_functions repo priority bwrapenv external_connection 2> /dev/null
     unset -f pkgver post_install post_remove pre_install prepare build package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
@@ -139,10 +142,10 @@ function compare_remote_version() (
         local remoterepo="${_remoterepo}"
     fi
     local remotever="$(
-        source <(curl -s -- "$remoterepo/packages/$input/$input.pacscript") && if is_function pkgver; then
-            echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(pkgver)"
-        elif [[ ${name} == *-deb ]]; then
+        safe_source <(curl -s -- "$remoterepo/packages/$input/$input.pacscript") && if [[ ${name} == *-deb ]]; then
             echo "${epoch+$epoch:}${pkgver}"
+        elif is_function pkgver; then
+            echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(bwrap_pkgver)"
         else
             echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
         fi
@@ -735,12 +738,18 @@ mapfile -t FARCH < <(dpkg --print-foreign-architectures)
 export FARCH
 export CARCH="$(dpkg --print-architecture)"
 export DISTRO="$(set_distro)"
-if ! source "${pacfile}"; then
+
+# Running source on an isolated env
+if ! safe_source "${pacfile}"; then
     fancy_message error "Could not source pacscript"
     error_log 12 "install $PACKAGE"
     fancy_message info "Cleaning up"
     cleanup
     return 1
+fi
+
+if [[ ${external_connection} == "true" ]]; then
+    fancy_message warn "This package will connect to the internet during its build process."
 fi
 
 # Running `-B` on a deb package doesn't make sense, so let's download instead
@@ -808,10 +817,10 @@ if [[ -n ${priority} && ${priority} == 'essential' ]] && ! is_package_installed 
     fi
 fi
 
-if is_function pkgver; then
-    full_version="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(pkgver)"
-elif [[ ${name} == *-deb ]]; then
+if [[ ${name} == *-deb ]]; then
     full_version="${epoch+$epoch:}${pkgver}"
+elif is_function pkgver; then
+    full_version="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(bwrap_pkgver)"
 else
     full_version="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
 fi
@@ -1104,8 +1113,7 @@ else
 fi
 
 export srcdir="$PWD"
-sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2> /dev/null
-
+sudo chown -R "root":"root" . 2> /dev/null
 export pkgdir="$STOWDIR/$name"
 export -f ask fancy_message select_options
 
@@ -1129,16 +1137,6 @@ function fail_out_functions() {
     exit 1
 }
 
-function run_function() {
-    local func="$1"
-    fancy_message sub "Running $func"
-    if [[ ! -d ${LOGDIR} ]]; then
-        sudo mkdir -p "${LOGDIR}"
-    fi
-    # NOTE: https://stackoverflow.com/a/29163890 (shorthand for 2>&1 |)
-    $func |& sudo tee "${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log" && return "${PIPESTATUS[0]}"
-}
-
 function safe_run() {
     local func="$1"
     export restoreshopt="$(shopt -p)
@@ -1149,7 +1147,7 @@ $(shopt -p -o)"
     local restoretrap="$(trap -p ERR)"
     trap "fail_out_functions '$func'" ERR
 
-    run_function "$func"
+    bwrap_function "$func"
 
     trap - ERR
     eval "$restoreshopt"

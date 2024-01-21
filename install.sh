@@ -85,7 +85,7 @@ if ! command -v apt &> /dev/null; then
     fancy_message error "apt could not be found"
     exit 1
 fi
-apt-get install -y -qq sudo wget curl iputils-ping
+apt-get install -y -qq sudo wget curl iputils-ping bubblewrap
 
 echo -e "|------------------------|"
 echo -e "|---${GREEN}Pacstall Installer${NC}---|"
@@ -140,7 +140,7 @@ touch "$STGDIR/repo/pacstallrepo"
 echo "https://raw.githubusercontent.com/pacstall/pacstall-programs/master" > $STGDIR/repo/pacstallrepo
 
 fancy_message info "Pulling scripts from GitHub"
-for i in {error_log.sh,add-repo.sh,search.sh,dep-tree.sh,checks.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
+for i in {error_log.sh,add-repo.sh,search.sh,dep-tree.sh,checks.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh,bwrap.sh}; do
     wget -q --show-progress -N https://raw.githubusercontent.com/pacstall/pacstall/master/misc/scripts/"$i" -P "$STGDIR/scripts" &
 done
 

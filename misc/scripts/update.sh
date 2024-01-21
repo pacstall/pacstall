@@ -57,6 +57,10 @@ if ! dpkg -s lsb-release > /dev/null 2>&1; then
     sudo apt-get install lsb-release -y
 fi
 
+if ! dpkg -s bubblewrap > /dev/null 2>&1; then
+    sudo apt-get install bubblewrap -y
+fi
+
 # Pre 4.0.0 metadata dir changes
 if [[ -d "/var/log/pacstall/metadata/" ]]; then
     sudo mkdir -p "/var/lib/pacstall/metadata/"
@@ -86,7 +90,7 @@ else
         exit 1
     fi
 fi
-for i in {error_log.sh,add-repo.sh,search.sh,dep-tree.sh,checks.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
+for i in {error_log.sh,add-repo.sh,search.sh,dep-tree.sh,checks.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh,bwrap.sh}; do
     sudo curl -s -o "$STGDIR/scripts/$i" "$REPO/misc/scripts/$i" &
 done
 
