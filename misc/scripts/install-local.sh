@@ -263,8 +263,12 @@ function is_compatible_arch() {
                 if [[ "${pacarch}" == "${farch}" ]]; then
                     fancy_message warn "This package is for ${BBlue}${farch}${NC}, which is a foreign architecture"
                     ret=0
+                    break
                 fi
             done
+            if ((ret==0)); then
+                break
+            fi
         done
     fi
     if ((ret==1)); then
