@@ -974,7 +974,7 @@ if [[ -n $patch ]]; then
         return 1
     }
     for i in "${patch[@]}"; do
-        curl -sO "$i"
+        curl -sJLO "$i"
     done
     popd > /dev/null || {
         fancy_message error "Could not enter into patches directory"
