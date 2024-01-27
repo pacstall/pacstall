@@ -101,7 +101,7 @@ fi
 echo
 if [[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ]]; then
     fancy_message info "Updating"
-    apt-get -qq update
+    apt-get update
 fi
 
 fancy_message info "Installing packages"
@@ -110,10 +110,10 @@ echo -ne "Do you want to install axel (faster downloads)? [${BGreen}Y${NC}/${RED
 read -r reply <&0
 case "$reply" in
     N* | n*) ;;
-    *) apt-get install -qq -y axel ;;
+    *) apt-get install -y axel ;;
 esac
 
-apt-get install -qq -y curl wget build-essential unzip git zstd iputils-ping lsb-release
+apt-get install -y curl wget build-essential unzip git zstd iputils-ping lsb-release
 
 LOGDIR="/var/lib/pacstall/metadata"
 STGDIR="/usr/share/pacstall"
