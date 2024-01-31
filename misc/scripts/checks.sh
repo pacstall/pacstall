@@ -285,7 +285,7 @@ function lint_hash() {
     local ret=0
     if [[ -n ${hash} ]]; then
         if ((${#hash} != 64)); then
-            fancy_message error "'hash' is improperly formatted"
+            fancy_message error "'hash' is improperly formatted ('${#hash}' instead of '64' characters)"
             ret=1
         fi
     fi
