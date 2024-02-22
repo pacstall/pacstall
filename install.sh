@@ -140,7 +140,7 @@ touch "$STGDIR/repo/pacstallrepo"
 echo "https://raw.githubusercontent.com/pacstall/pacstall-programs/master" > $STGDIR/repo/pacstallrepo
 
 fancy_message info "Pulling scripts from GitHub"
-for i in {error_log.sh,add-repo.sh,search.sh,dep-tree.sh,checks.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
+for i in {error_log.sh,add-repo.sh,search.sh,dep-tree.sh,checks.sh,download.sh,install-local.sh,download-local.sh,build-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
     wget -q --show-progress -N https://raw.githubusercontent.com/pacstall/pacstall/master/misc/scripts/"$i" -P "$STGDIR/scripts" &
 done
 
