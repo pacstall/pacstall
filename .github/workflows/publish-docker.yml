@@ -36,7 +36,7 @@ jobs:
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-        
+
       - name: Build Dockerfile
         run: |
           vertag=${{ env.INPUT_VERTAG }}
@@ -159,7 +159,7 @@ jobs:
           docker buildx imagetools create \
             --annotation "index:org.opencontainers.image.description=Contains amd64/x86_64 + arm64/aarch64 pacstall:${{ env.DOCK_LABEL }} images for ${{ matrix.OS }}, from $(date +%Y%m%d)." \
             $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)          
+            $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
 
       - name: Inspect image
         run: |
