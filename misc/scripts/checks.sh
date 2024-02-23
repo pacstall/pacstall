@@ -113,17 +113,7 @@ function lint_epoch() {
 
 function lint_version() {
     local ret=0 lint_pkgver
-    if is_function pkgver; then
-        if [[ -z $pkgver ]]; then
-            fancy_message error "Package contains 'pkgver()' but not the variable as well"
-            ret=1
-        fi
-        lint_pkgver="$(pkgver)"
-        if [[ -z ${lint_pkgver} ]]; then
-            fancy_message error "'pkgver()' has no output"
-            ret=1
-        fi
-    elif [[ -n $pkgver ]]; then
+    if [[ -n $pkgver ]]; then
         # https://www.debian.org/doc/debian-policy/ch-controlfields.html#version
         if [[ ! $pkgver =~ ^[0-9][a-zA-Z0-9.+-~]+$ ]]; then
             fancy_message error "'pkgver' must contain only alphanumerics and the characters . + - ~ and should start with a digit"
@@ -136,11 +126,70 @@ function lint_version() {
     return "${ret}"
 }
 
-function lint_url() {
-    local ret=0
-    if [[ -z $url ]]; then
-        fancy_message error "Package does not contain 'url'"
+function lint_source_deb_test() {
+    # shellcheck disable=SC2206
+    local input_source=($@)
+    for i in "${!input_source[@]}"; do
+        local url="${input_source[$i]}"
+        local file_name="${url##*/}"
+        if [[ ${file_name} == *"?"* ]]; then
+            file_name="${file_name%%\?*}"
+        fi
+        if [[ ${file_name} == *.deb ]]; then
+            fancy_message error ".deb files can only be provided as a singular 'source'"
+            ret=1
+            break
+        fi
+    done
+}
+
+function lint_source() {
+    local ret=0 test_source has_source=0 known_archs_source=()
+    mapfile -t known_archs_source < <(dpkg-architecture --list-known)
+    for i in "${!known_archs_source[@]}"; do
+        # shellcheck disable=SC2004
+        known_archs_source[$i]=${known_archs_source[$i]//-/_}
+    done
+    if [[ -n ${source[0]} ]]; then
+        has_source=1
+    else
+        for sarch in "${known_archs_source[@]}"; do
+            local source_arch="source_${sarch}[@]"
+            if [[ -n ${!source_arch} ]]; then
+                has_source=1
+                break
+            fi
+        done
+    fi
+    local source_host="source_${CARCH}[*]"
+    if [[ -z ${source[*]} && -z ${!source_host} ]]; then
+        has_source=0
+    fi
+    if ((has_source == 0)); then
+        fancy_message error "Package does not contain 'source'"
         ret=1
+    else
+        for sarch in "${known_archs_source[@]}"; do
+            local source_arch="source_${sarch}[@]"
+            if [[ -n ${!source_arch} ]]; then
+                test_source=()
+                if [[ -n ${source[0]} ]]; then
+                  # shellcheck disable=SC2206
+                  test_source+=(${source[*]})
+                fi
+                # shellcheck disable=SC2206
+                test_source+=(${!source_arch})
+                if [[ -n ${test_source[1]} ]]; then
+                    lint_source_deb_test "${test_source[@]}"
+                    if ((ret == 1)); then
+                        break
+                    fi
+                fi
+            fi
+        done
+        if [[ -n ${source[1]} ]]; then
+           lint_source_deb_test "${source[@]}"
+        fi
     fi
     return "${ret}"
 }
@@ -282,12 +331,33 @@ function lint_replace() {
 }
 
 function lint_hash() {
-    local ret=0
+    local ret=0 test_hash known_archs_hash=()
+    mapfile -t known_archs_hash < <(dpkg-architecture --list-known)
+    for i in "${!known_archs_hash[@]}"; do
+        # shellcheck disable=SC2004
+        known_archs_hash[$i]=${known_archs_hash[$i]//-/_}
+    done
     if [[ -n ${hash} ]]; then
-        if ((${#hash} != 64)); then
-            fancy_message error "'hash' is improperly formatted"
-            ret=1
+        # shellcheck disable=SC2206
+        test_hash+=(${hash[*]})
+    fi
+    for harch in "${known_archs_hash[@]}"; do
+        local hash_arch="hash_${harch}[*]"
+        if [[ -n ${!hash_arch} ]]; then
+            # shellcheck disable=SC2206
+            test_hash+=(${!hash_arch})
         fi
+    done
+    # shellcheck disable=SC2128
+    if [[ -n ${test_hash} ]]; then
+        for i in ${!test_hash[*]}; do
+            if [[ ${test_hash[i]} == "SKIP" ]]; then
+                ret=0
+            elif ((${#test_hash[i]} != 64)); then
+                fancy_message error "'hash' is improperly formatted"
+                ret=1
+            fi
+        done
     fi
     return "${ret}"
 }
@@ -428,7 +498,7 @@ function lint_priority() {
 }
 
 function checks() {
-    local ret=0 check linting_checks=(lint_name lint_gives lint_pkgrel lint_epoch lint_version lint_url lint_pkgdesc lint_maintainer lint_makedepends lint_depends lint_pacdeps lint_ppa lint_optdepends lint_breaks lint_replace lint_hash lint_patch lint_provides lint_incompatible lint_arch lint_mask lint_priority)
+    local ret=0 check linting_checks=(lint_name lint_gives lint_pkgrel lint_epoch lint_version lint_source lint_pkgdesc lint_maintainer lint_makedepends lint_depends lint_pacdeps lint_ppa lint_optdepends lint_breaks lint_replace lint_hash lint_patch lint_provides lint_incompatible lint_arch lint_mask lint_priority)
     for check in "${linting_checks[@]}"; do
         "${check}" || ret=1
     done
