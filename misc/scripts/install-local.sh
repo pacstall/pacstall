@@ -92,9 +92,7 @@ export DISTRO="$(set_distro)"
 if ! source "${pacfile}"; then
     fancy_message error "Could not source pacscript"
     error_log 12 "install $PACKAGE"
-    fancy_message info "Cleaning up"
-    cleanup
-    return 1
+    clean_fail_down
 fi
 
 # Running `-B` on a deb package doesn't make sense, so let's download instead
@@ -148,9 +146,7 @@ sudo chmod a+rx "$STOWDIR" "$STOWDIR/$name" "$STOWDIR/$name/DEBIAN"
 # Run checks function
 if ! checks; then
     error_log 6 "install $PACKAGE"
-    fancy_message info "Cleaning up"
-    cleanup
-    return 1
+    clean_fail_down
 fi
 
 # If priority exists and is required, and also that this package has not been installed before (first time)
@@ -201,8 +197,7 @@ if [[ -n $pacdeps ]]; then
                 if ! pacstall "$cmd" "${i}${repo}"; then
                     fancy_message error "Failed to install dependency"
                     error_log 8 "install $PACKAGE"
-                    cleanup
-                    return 1
+                    clean_fail_down
                 fi
             else
                 fancy_message info "The pacstall dependency ${i} is already installed and at latest version"
@@ -211,8 +206,7 @@ if [[ -n $pacdeps ]]; then
         elif fancy_message info "Installing $i" && ! pacstall "$cmd" "${i}${repo}"; then
             fancy_message error "Failed to install dependency"
             error_log 8 "install $PACKAGE"
-            cleanup
-            return 1
+            clean_fail_down
         fi
         unset repo
         rm -f "/tmp/pacstall-pacdeps-$i"
@@ -228,18 +222,14 @@ if ! is_package_installed "${name}"; then
                 fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by apt"
                 suggested_solution "Remove the apt package by running '${UCyan}sudo apt purge $pkg${NC}'"
                 error_log 13 "install $PACKAGE"
-                fancy_message info "Cleaning up"
-                cleanup
-                return 1
+                clean_fail_down
             fi
             if [[ ${pkg} != "${name}" ]] && is_package_installed "${pkg}"; then
                 # Same thing, but check if anything is installed with pacstall
                 fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by pacstall"
                 suggested_solution "Remove the pacstall package by running '${UCyan}pacstall -R $pkg${NC}'"
                 error_log 13 "install $PACKAGE"
-                fancy_message info "Cleaning up"
-                cleanup
-                return 1
+                clean_fail_down
             fi
         done
     fi
@@ -250,9 +240,7 @@ if ! is_package_installed "${name}"; then
             if is_apt_package_installed "${pkg}"; then
                 ask "This script replaces ${pkg}. Do you want to proceed?" Y
                 if ((answer == 0)); then
-                    fancy_message info "Cleaning up"
-                    cleanup
-                    return 1
+                    clean_fail_down
                 fi
                 if [[ ${priority} == "essential" ]]; then
                     sudo apt-get remove -y "${pkg}" --allow-remove-essential
@@ -373,9 +361,7 @@ function fail_out_functions() {
     echo -ne "\t"
     fancy_message error "Could not $func $PACKAGE properly"
     sudo dpkg -r "${gives:-$name}" > /dev/null
-    fancy_message info "Cleaning up"
-    cleanup
-    exit 1
+    clean_fail_down
 }
 
 function run_function() {
@@ -436,9 +422,7 @@ if ! cd "$DIR" 2> /dev/null; then
     error_log 1 "install $PACKAGE"
     fancy_message error "Could not enter into ${DIR}"
     sudo dpkg -r "${gives:-$name}" > /dev/null
-    fancy_message info "Cleaning up"
-    cleanup
-    exit 1
+    clean_fail_down
 fi
 
 sudo cp -r "${pacfile}" "/var/cache/pacstall/$PACKAGE/${full_version}"

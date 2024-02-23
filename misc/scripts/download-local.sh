@@ -492,9 +492,7 @@ function install_builddepends() {
             if ! sudo apt-get install -y "${not_installed_yet_builddepends[@]}"; then
                 fancy_message error "Failed to install build dependencies"
                 error_log 8 "install $PACKAGE"
-                fancy_message info "Cleaning up"
-                cleanup
-                return 1
+                clean_fail_down
             fi
         fi
     fi
