@@ -24,12 +24,12 @@
 
 function cleanup() {
     if [[ -n $KEEP ]]; then
-        rm -rf "/tmp/pacstall-keep/$name"
-        mkdir -p "/tmp/pacstall-keep/$name"
+        rm -rf "/tmp/pacstall-keep/$pkgname"
+        mkdir -p "/tmp/pacstall-keep/$pkgname"
         if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
-            sudo mv /tmp/pacstall-pacdep/* "/tmp/pacstall-keep/$name"
+            sudo mv /tmp/pacstall-pacdep/* "/tmp/pacstall-keep/$pkgname"
         else
-            sudo mv "${SRCDIR:?}"/* "/tmp/pacstall-keep/$name"
+            sudo mv "${SRCDIR:?}"/* "/tmp/pacstall-keep/$pkgname"
         fi
     fi
     if [[ -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
@@ -37,8 +37,9 @@ function cleanup() {
         sudo rm -rf /tmp/pacstall-pacdep
     else
         sudo rm -rf "${SRCDIR:?}"/*
-        # just in case we quit before $name is declared, we should be able to remove a fake directory so it doesn't exit out the script
-        sudo rm -rf "${STOWDIR:-/usr/src/pacstall}/${name:-raaaaaaaandom}"
+        if [[ -n $pkgname ]]; then
+            sudo rm -rf "${STOWDIR:-/usr/src/pacstall}/${pkgname}"
+        fi
         rm -rf /tmp/pacstall-gives
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
@@ -52,12 +53,12 @@ function deblog() {
     local key="$1"
     shift
     local content=("$@")
-    echo "$key: ${content[*]}" | sudo tee -a "$STOWDIR/$name/DEBIAN/control" > /dev/null
+    echo "$key: ${content[*]}" | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/control" > /dev/null
 }
 
 function clean_builddir() {
     sudo rm -rf "${STOWDIR}/${name:?}"
-    sudo rm -f "${STOWDIR}/${name}.deb"
+    sudo rm -f "${STOWDIR}/${pkgname}.deb"
 }
 
 function prompt_optdepends() {
@@ -181,7 +182,7 @@ function prompt_optdepends() {
 
 function generate_changelog() {
     printf "%s (%s) %s; urgency=medium\n\n  * Version now at %s.\n\n -- %s %(%a, %d %b %Y %T %z)T\n" \
-        "${name}" "${full_version}" "$(lsb_release -sc)" "${full_version}" "${maintainer}"
+        "${pkgname}" "${full_version}" "$(lsb_release -sc)" "${full_version}" "${maintainer}"
 }
 
 function clean_logdir() {
@@ -204,7 +205,7 @@ function createdeb() {
         local compression="gz"
         local command="gzip"
     fi
-    cd "$STOWDIR/$name" || return 1
+    cd "$STOWDIR/$pkgname" || return 1
     # https://tldp.org/HOWTO/html_single/Debian-Binary-Package-Building-HOWTO/#AEN66
     echo "2.0" | sudo tee debian-binary > /dev/null
     sudo tar -cf "$PWD/control.tar" -T /dev/null
@@ -231,19 +232,19 @@ function createdeb() {
 
     fancy_message sub "Compressing"
     sudo "$command" "${flags[@]}" "$DATA_LOCATION" "$CONTROL_LOCATION"
-    sudo ar -rU "$name.deb" debian-binary control.tar."$compression" data.tar."$compression" > /dev/null 2>&1
-    sudo mv "$name.deb" ..
+    sudo ar -rU "$pkgname.deb" debian-binary control.tar."$compression" data.tar."$compression" > /dev/null 2>&1
+    sudo mv "$pkgname.deb" ..
     sudo rm -f debian-binary control.tar."$compression" data.tar."$compression"
 }
 
 function makedeb() {
     # It looks weird for it to say: `Packaging foo as foo`
-    if [[ -n $gives && $name != "$gives" ]]; then
-        fancy_message info "Packaging ${BGreen}$name${NC} as ${BBlue}$gives${NC}"
+    if [[ -n $gives && $pkgname != "$gives" ]]; then
+        fancy_message info "Packaging ${BGreen}$pkgname${NC} as ${BBlue}$gives${NC}"
     else
-        fancy_message info "Packaging ${BGreen}$name${NC}"
+        fancy_message info "Packaging ${BGreen}$pkgname${NC}"
     fi
-    deblog "Package" "${gives:-$name}"
+    deblog "Package" "${gives:-$pkgname}"
 
     if [[ $pkgver =~ ^[0-9] ]]; then
         deblog "Version" "${full_version}"
@@ -273,7 +274,7 @@ function makedeb() {
         deblog "Priority" "${priority:-optional}"
     fi
 
-    if [[ $name == *-git ]]; then
+    if [[ $pkgname == *-git ]]; then
         parse_source_entry "${source[0]}"
         # shellcheck disable=SC2031
         local vcsurl="${url#file://}"
@@ -356,21 +357,21 @@ function makedeb() {
                 'eval echo ~"$PACSTALL_USER"' '}' 'export homedir="$(get_homedir)"' 'if [[ -n $PACSTALL_BUILD_CORES ]];then'
                 'declare -g NCPU="${PACSTALL_BUILD_CORES:-1}"' 'else' 'declare -g NCPU="$(nproc)"' 'fi'
             )
-            echo '#!/bin/bash' | sudo tee "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
+            echo '#!/bin/bash' | sudo tee "$STOWDIR/$pkgname/DEBIAN/$deb_post_file" > /dev/null
             for pacmf_out in "${pac_min_functions[@]}"; do
-                echo "${pacmf_out}" | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
+                echo "${pacmf_out}" | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/$deb_post_file" > /dev/null
             done
             {
                 cat "${pacfile}"
                 echo -e "\n$i"
-            } | sudo tee -a "$STOWDIR/$name/DEBIAN/$deb_post_file" > /dev/null
+            } | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/$deb_post_file" > /dev/null
         fi
     done
-    echo -e "sudo rm -f $METADIR/$name\nsudo rm -f /etc/apt/preferences.d/$name-pin" | sudo tee -a "$STOWDIR/$name/DEBIAN/postrm" > /dev/null
+    echo -e "sudo rm -f $METADIR/$pkgname\nsudo rm -f /etc/apt/preferences.d/$pkgname-pin" | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/postrm" > /dev/null
     local postfile
     for postfile in {postrm,postinst,preinst}; do
-        sudo chmod -x "$STOWDIR/$name/DEBIAN/${postfile}" &> /dev/null
-        sudo chmod 755 "$STOWDIR/$name/DEBIAN/${postfile}" &> /dev/null
+        sudo chmod -x "$STOWDIR/$pkgname/DEBIAN/${postfile}" &> /dev/null
+        sudo chmod 755 "$STOWDIR/$pkgname/DEBIAN/${postfile}" &> /dev/null
     done
 
     # Handle `backup` key
@@ -390,27 +391,27 @@ function makedeb() {
                 if [[ ${file:2:1} == "/" ]]; then
                     fancy_message warn "'${file}' cannot contain path starting with '/'... Skipping" && continue
                 fi
-                if [[ -f "$STOWDIR/$name/${file:2}" ]]; then
+                if [[ -f "$STOWDIR/$pkgname/${file:2}" ]]; then
                     fancy_message warn "'${file}' is inside the package... Skipping" && continue
                 fi
-                echo "remove-on-upgrade /${file:2}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
+                echo "remove-on-upgrade /${file:2}" | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/conffiles" > /dev/null
             else
                 if [[ ${file:0:1} == "/" ]]; then
                     fancy_message warn "'${file}' cannot contain path starting with '/'... Skipping" && continue
                 fi
-                echo "/${file}" | sudo tee -a "$STOWDIR/$name/DEBIAN/conffiles" > /dev/null
+                echo "/${file}" | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/conffiles" > /dev/null
             fi
         done
     fi
 
-    deblog "Installed-Size" "$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | cut -d$'\t' -f1)"
-    install_size="$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$name" | cut -d$'\t' -f1 | numfmt --to=iec)"
+    deblog "Installed-Size" "$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$pkgname" | cut -d$'\t' -f1)"
+    install_size="$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$pkgname" | cut -d$'\t' -f1 | numfmt --to=iec)"
     export install_size
 
-    generate_changelog | sudo tee -a "$STOWDIR/$name/DEBIAN/changelog" > /dev/null
+    generate_changelog | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/changelog" > /dev/null
 
     cd "$STOWDIR" || return 1
-    if ! createdeb "$name"; then
+    if ! createdeb "$pkgname"; then
         fancy_message error "Could not create package"
         error_log 5 "install $PACKAGE"
         fancy_message info "Cleaning up"
@@ -420,44 +421,44 @@ function makedeb() {
 
     if ((PACSTALL_INSTALL != 0)); then
         # --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
-        if ! sudo -E apt-get install --reinstall "$STOWDIR/$name.deb" -y --allow-downgrades 2> /dev/null; then
+        if ! sudo -E apt-get install --reinstall "$STOWDIR/$pkgname.deb" -y --allow-downgrades 2> /dev/null; then
             echo -ne "\t"
-            fancy_message error "Failed to install $name deb"
+            fancy_message error "Failed to install $pkgname deb"
             error_log 8 "install $PACKAGE"
-            sudo dpkg -r --force-all "$name" > /dev/null
+            sudo dpkg -r --force-all "$pkgname" > /dev/null
             fancy_message info "Cleaning up"
             cleanup
             exit 1
         fi
-        if [[ -f /tmp/pacstall-pacdeps-"$name" ]]; then
-            sudo apt-mark auto "${gives:-$name}" 2> /dev/null
+        if [[ -f /tmp/pacstall-pacdeps-"$pkgname" ]]; then
+            sudo apt-mark auto "${gives:-$pkgname}" 2> /dev/null
         fi
-        sudo rm -rf "$STOWDIR/$name"
-        sudo rm -rf "$SRCDIR/$name.deb"
+        sudo rm -rf "$STOWDIR/$pkgname"
+        sudo rm -rf "$SRCDIR/$pkgname.deb"
 
         if ! [[ -d /etc/apt/preferences.d/ ]]; then
             sudo mkdir -p /etc/apt/preferences.d
         fi
-        local combined_pinning=("${provides[@]}" "${gives:-${name}}")
-        echo "Package: ${combined_pinning[*]}" | sudo tee "/etc/apt/preferences.d/${name}-pin" > /dev/null
-        echo "Pin: version *" | sudo tee -a "/etc/apt/preferences.d/${name}-pin" > /dev/null
-        echo "Pin-Priority: -1" | sudo tee -a "/etc/apt/preferences.d/${name}-pin" > /dev/null
+        local combined_pinning=("${provides[@]}" "${gives:-${pkgname}}")
+        echo "Package: ${combined_pinning[*]}" | sudo tee "/etc/apt/preferences.d/${pkgname}-pin" > /dev/null
+        echo "Pin: version *" | sudo tee -a "/etc/apt/preferences.d/${pkgname}-pin" > /dev/null
+        echo "Pin-Priority: -1" | sudo tee -a "/etc/apt/preferences.d/${pkgname}-pin" > /dev/null
         return 0
     else
-        sudo mv "$STOWDIR/$name.deb" "$PACDEB_DIR"
-        sudo chown "$PACSTALL_USER":"$PACSTALL_USER" "$PACDEB_DIR/$name.deb"
-        fancy_message info "Package built at ${BGreen}$PACDEB_DIR/$name.deb${NC}"
-        fancy_message info "Moving ${BGreen}$STOWDIR/$name${NC} to ${BGreen}/tmp/pacstall-no-build/$name${NC}"
-        sudo rm -rf "/tmp/pacstall-no-build/$name"
-        mkdir -p "/tmp/pacstall-no-build/$name"
-        sudo mv "$STOWDIR/$name" "/tmp/pacstall-no-build/$name"
+        sudo mv "$STOWDIR/$pkgname.deb" "$PACDEB_DIR"
+        sudo chown "$PACSTALL_USER":"$PACSTALL_USER" "$PACDEB_DIR/$pkgname.deb"
+        fancy_message info "Package built at ${BGreen}$PACDEB_DIR/$pkgname.deb${NC}"
+        fancy_message info "Moving ${BGreen}$STOWDIR/$pkgname${NC} to ${BGreen}/tmp/pacstall-no-build/$pkgname${NC}"
+        sudo rm -rf "/tmp/pacstall-no-build/$pkgname"
+        mkdir -p "/tmp/pacstall-no-build/$pkgname"
+        sudo mv "$STOWDIR/$pkgname" "/tmp/pacstall-no-build/$pkgname"
         cleanup
         exit 0
     fi
 }
 
 function write_meta() {
-    echo "_name=\"$name\""
+    echo "_name=\"$pkgname\""
     echo "_version=\"${full_version}\""
     echo "_install_size=\"${install_size}\""
     printf '_date=\"%(%a %b %_d %r %Z %Y)T\"\n'
@@ -473,7 +474,7 @@ function write_meta() {
     if [[ -n $gives ]]; then
         echo "_gives=\"$gives\""
     fi
-    if [[ -f /tmp/pacstall-pacdeps-"$name" ]]; then
+    if [[ -f /tmp/pacstall-pacdeps-"$pkgname" ]]; then
         echo '_pacstall_depends="true"'
     fi
     if [[ $local == 'no' ]]; then
@@ -518,7 +519,7 @@ function meta_log() {
     fi
 
     # Metadata writing
-    write_meta | sudo tee "$METADIR/$name" > /dev/null
+    write_meta | sudo tee "$METADIR/$pkgname" > /dev/null
 }
 
 # vim:set ft=sh ts=4 sw=4 noet:

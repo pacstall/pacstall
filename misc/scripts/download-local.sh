@@ -304,8 +304,8 @@ function deb_down() {
     fi
     if sudo apt install -y -f ./"${dest}" 2> /dev/null; then
         meta_log
-        if [[ -f /tmp/pacstall-pacdeps-"$name" ]]; then
-            sudo apt-mark auto "${gives:-$name}" 2> /dev/null
+        if [[ -f /tmp/pacstall-pacdeps-"$pkgname" ]]; then
+            sudo apt-mark auto "${gives:-$pkgname}" 2> /dev/null
         fi
         if type -t post_install &> /dev/null; then
             if ! post_install; then
@@ -329,7 +329,7 @@ function deb_down() {
     else
         fancy_message error "Failed to install the package"
         error_log 14 "install $PACKAGE"
-        sudo apt purge "${gives:-$name}" -y > /dev/null
+        sudo apt purge "${gives:-$pkgname}" -y > /dev/null
         clean_fail_down
     fi
 }
@@ -488,7 +488,7 @@ function install_builddepends() {
         done
 
         if ((${#not_installed_yet_builddepends[@]} != 0)); then
-            fancy_message info "${BLUE}$name${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to install"
+            fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to install"
             if ! sudo apt-get install -y "${not_installed_yet_builddepends[@]}"; then
                 fancy_message error "Failed to install build dependencies"
                 error_log 8 "install $PACKAGE"
@@ -517,11 +517,11 @@ function compare_remote_version() {
     remotever="$(
         unset pkgrel
         source <(curl -s -- "$remoterepo/packages/$crv_input/$crv_input.pacscript") && \
-        if [[ ${name} == *-git ]]; then
+        if [[ ${pkgname} == *-git ]]; then
             parse_source_entry "${source[0]}"
             calc_git_pkgver
             echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git${comp_git_pkgver}"
-        elif [[ ${name} == *-deb ]]; then
+        elif [[ ${pkgname} == *-deb ]]; then
             echo "${epoch+$epoch:}${pkgver}"
         else
             echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
