@@ -43,7 +43,7 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset name repology pkgver git_pkgver epoch url source depends makedepends breaks replace gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall pkgbase homepage backup pkgrel mask pac_functions repo priority noextract 2> /dev/null
+    unset name repology pkgver git_pkgver epoch url source depends makedepends breaks replaces gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall pkgbase homepage backup pkgrel mask pac_functions repo priority noextract 2> /dev/null
     unset -f post_install post_remove pre_install prepare build package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
@@ -297,11 +297,11 @@ function makedeb() {
         deblog "Provides" "$(sed 's/ /, /g' <<< "${provides[@]}")"
     fi
 
-    if [[ -n $replace ]]; then
+    if [[ -n $replaces ]]; then
         # shellcheck disable=SC2001
-        deblog "Conflicts" "$(sed 's/ /, /g' <<< "${replace[@]}")"
+        deblog "Conflicts" "$(sed 's/ /, /g' <<< "${replaces[@]}")"
         # shellcheck disable=SC2001
-        deblog "Replace" "$(sed 's/ /, /g' <<< "${replace[@]}")"
+        deblog "Replace" "$(sed 's/ /, /g' <<< "${replaces[@]}")"
     fi
 
     if [[ -n ${homepage} ]]; then
