@@ -117,7 +117,7 @@ apt-get install -qq -y curl wget build-essential unzip git zstd iputils-ping lsb
 
 LOGDIR="/var/lib/pacstall/metadata"
 STGDIR="/usr/share/pacstall"
-SRCDIR="/tmp/pacstall"
+PACDIR="/tmp/pacstall"
 PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER}}")
 
 fancy_message info "Making directories"
@@ -125,8 +125,8 @@ mkdir -p "$STGDIR"
 mkdir -p "$STGDIR/scripts"
 mkdir -p "$STGDIR/repo"
 
-mkdir -p "$SRCDIR"
-chown "$PACSTALL_USER" -R "$SRCDIR"
+mkdir -p "$PACDIR"
+chown "$PACSTALL_USER" -R "$PACDIR"
 
 mkdir -p "$LOGDIR"
 mkdir -p "/var/log/pacstall/error_log"

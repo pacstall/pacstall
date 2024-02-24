@@ -29,21 +29,21 @@ function cleanup() {
         if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
             sudo mv /tmp/pacstall-pacdep/* "/tmp/pacstall-keep/$name"
         else
-            sudo mv "${SRCDIR:?}"/* "/tmp/pacstall-keep/$name"
+            sudo mv "${PACDIR:?}"/* "/tmp/pacstall-keep/$name"
         fi
     fi
     if [[ -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
         sudo rm -rf "/tmp/pacstall-pacdeps-$PACKAGE"
         sudo rm -rf /tmp/pacstall-pacdep
     else
-        sudo rm -rf "${SRCDIR:?}"/*
+        sudo rm -rf "${PACDIR:?}"/*
         # just in case we quit before $name is declared, we should be able to remove a fake directory so it doesn't exit out the script
         sudo rm -rf "${STOWDIR:-/usr/src/pacstall}/${name:-raaaaaaaandom}"
         rm -rf /tmp/pacstall-gives
     fi
     sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset name repology pkgver git_pkgver epoch url source depends makedepends breaks replaces gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall pkgbase homepage backup pkgrel mask pac_functions repo priority noextract 2> /dev/null
+    unset name repology pkgver git_pkgver epoch url source depends makedepends breaks replaces gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall srcdir homepage backup pkgrel mask pac_functions repo priority noextract 2> /dev/null
     unset -f post_install post_remove pre_install prepare build package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
@@ -433,7 +433,7 @@ function makedeb() {
             sudo apt-mark auto "${gives:-$name}" 2> /dev/null
         fi
         sudo rm -rf "$STOWDIR/$name"
-        sudo rm -rf "$SRCDIR/$name.deb"
+        sudo rm -rf "$PACDIR/$name.deb"
 
         if ! [[ -d /etc/apt/preferences.d/ ]]; then
             sudo mkdir -p /etc/apt/preferences.d
