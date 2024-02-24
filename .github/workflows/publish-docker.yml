@@ -51,7 +51,7 @@ jobs:
           chmod +x pacstall-docker-builder
           ./pacstall-docker-builder -f -a ${arch} -d ${distro} -v ${vertag}
           echo "BUILT_DOCKFILE=Dockerfile-Pacstall-${vertag}-${arch}-${distro_tag}-$(date +%Y%m%d)"  >> $GITHUB_ENV
-          echo "DOCK_LABEL=${vertag}"  >> $GITHUB_ENV
+          echo "DOCK_LABEL=${vertag}" >> $GITHUB_ENV
           echo "PLATFORM_PAIR=${distro_tag}-${arch}" >> $GITHUB_ENV
           echo "REGISTRY_IMAGE=${{ env.REGISTRY }}/${{ github.repository_owner }}/${distro_tag}" >> $GITHUB_ENV
 
