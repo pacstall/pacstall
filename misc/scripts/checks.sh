@@ -32,7 +32,7 @@ function lint_pkgname() {
     fi
     if [[ $pkgname != "$PACKAGE" ]]; then
         fancy_message error "Package name does not match file"
-        suggested_solution "Change '${UPurple}pkgname${NC}' to '${UCyan}$PACKAGE${NC}'" "Change package name to '${UCyan}$name${NC}'"
+        suggested_solution "Change '${UPurple}pkgname${NC}' to '${UCyan}$PACKAGE${NC}'" "Change package name to '${UCyan}$pkgname${NC}'"
         ret=1
     fi
     # https://www.debian.org/doc/debian-policy/ch-controlfields.html#source
@@ -57,7 +57,7 @@ function lint_pkgname() {
 
 function lint_gives() {
     local ret=0
-    if [[ -z $gives && $name == *-deb ]]; then
+    if [[ -z $gives && $pkgname == *-deb ]]; then
         fancy_message warn "Deb package does not contain gives"
         ret=1
     fi
