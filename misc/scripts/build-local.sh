@@ -42,7 +42,7 @@ function cleanup() {
         fi
         rm -rf /tmp/pacstall-gives
     fi
-    sudo rm -rf "${STOWDIR}/${name:-$PACKAGE}.deb"
+    sudo rm -rf "${STOWDIR}/${pkgname:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
     unset name repology pkgver git_pkgver epoch url source depends makedepends breaks replaces gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall pkgbase homepage backup pkgrel mask pac_functions repo priority noextract 2> /dev/null
     unset -f post_install post_remove pre_install prepare build package 2> /dev/null
@@ -57,7 +57,7 @@ function deblog() {
 }
 
 function clean_builddir() {
-    sudo rm -rf "${STOWDIR}/${name:?}"
+    sudo rm -rf "${STOWDIR}/${pkgname:?}"
     sudo rm -f "${STOWDIR}/${pkgname}.deb"
 }
 
