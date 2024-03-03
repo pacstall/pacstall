@@ -36,10 +36,10 @@ source "${STGDIR}/scripts/download-local.sh" || {
 
 function trap_ctrlc() {
     fancy_message warn "\nInterrupted, cleaning up"
-    if is_apt_package_installed "${name}"; then
-        sudo apt-get purge "${gives:-$name}" -y > /dev/null
+    if is_apt_package_installed "${pkgname}"; then
+        sudo apt-get purge "${gives:-$pkgname}" -y > /dev/null
     fi
-    sudo rm -f "/etc/apt/preferences.d/${name:-$PACKAGE}-pin"
+    sudo rm -f "/etc/apt/preferences.d/${pkgname:-$PACKAGE}-pin"
     cleanup
     exit 1
 }
@@ -96,7 +96,7 @@ if ! source "${pacfile}"; then
 fi
 
 # Running `-B` on a deb package doesn't make sense, so let's download instead
-if ((PACSTALL_INSTALL == 0)) && [[ ${name} == *-deb ]]; then
+if ((PACSTALL_INSTALL == 0)) && [[ ${pkgname} == *-deb ]]; then
     if ! download "${source[0]}"; then
         fancy_message error "Failed to download '${source[0]}'"
         return 1
@@ -107,11 +107,11 @@ fi
 masked_packages=()
 getMasks masked_packages
 if ((${#masked_packages[@]} != 0)); then
-    if array.contains masked_packages "${name:-${PACKAGE}}"; then
-        offending_pkg="$(getMasks_offending_pkg "${name:-${PACKAGE}}")"
+    if array.contains masked_packages "${pkgname:-${PACKAGE}}"; then
+        offending_pkg="$(getMasks_offending_pkg "${pkgname:-${PACKAGE}}")"
         # shellcheck disable=SC2181
         if (($? == 0)); then
-            fancy_message error "The package ${BBlue}${offending_pkg}${NC} is masking ${BBlue}${name:-${PACKAGE}}${NC}. By installing the masked package, you may cause damage to your operating system"
+            fancy_message error "The package ${BBlue}${offending_pkg}${NC} is masking ${BBlue}${pkgname:-${PACKAGE}}${NC}. By installing the masked package, you may cause damage to your operating system"
             exit 1
         else
             fancy_message error "Somehow, 'getMasks' found masked packages that match the package you want to install, but 'getMasks_offending_pkg' could not find it. Report this upstream"
@@ -140,8 +140,8 @@ elif [[ -n ${incompatible[*]} ]]; then
 fi
 
 clean_builddir
-sudo mkdir -p "$STOWDIR/$name/DEBIAN"
-sudo chmod a+rx "$STOWDIR" "$STOWDIR/$name" "$STOWDIR/$name/DEBIAN"
+sudo mkdir -p "$STOWDIR/$pkgname/DEBIAN"
+sudo chmod a+rx "$STOWDIR" "$STOWDIR/$pkgname" "$STOWDIR/$pkgname/DEBIAN"
 
 # Run checks function
 if ! checks; then
@@ -150,7 +150,7 @@ if ! checks; then
 fi
 
 # If priority exists and is required, and also that this package has not been installed before (first time)
-if [[ -n ${priority} && ${priority} == 'essential' ]] && ! is_package_installed "${name}"; then
+if [[ -n ${priority} && ${priority} == 'essential' ]] && ! is_package_installed "${pkgname}"; then
     ask "This package has 'priority=essential', meaning once this is installed, it should be assumed to be uninstallable. Do you want to continue?" Y
     if ((answer == 0)); then
         cleanup
@@ -159,13 +159,13 @@ if [[ -n ${priority} && ${priority} == 'essential' ]] && ! is_package_installed 
 fi
 
 # shellcheck disable=SC2031
-if [[ ${name} == *-git ]]; then
+if [[ ${pkgname} == *-git ]]; then
     parse_source_entry "${source[0]}"
     calc_git_pkgver
     full_version="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git${comp_git_pkgver}"
     git_pkgver="${comp_git_pkgver}"
     export git_pkgver
-elif [[ ${name} == *-deb ]]; then
+elif [[ ${pkgname} == *-deb ]]; then
     full_version="${epoch+$epoch:}${pkgver}"
 else
     full_version="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
@@ -213,20 +213,20 @@ if [[ -n $pacdeps ]]; then
     done
 fi
 
-if ! is_package_installed "${name}"; then
+if ! is_package_installed "${pkgname}"; then
     if [[ -n $breaks ]]; then
         for pkg in "${breaks[@]}"; do
             # Do we have an apt package installed (but not pacstall)?
             if is_apt_package_installed "${pkg}" && ! is_package_installed "${pkg}"; then
                 # Check if anything in breaks variable is installed already
-                fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by apt"
+                fancy_message error "${RED}$pkgname${NC} breaks $pkg, which is currently installed by apt"
                 suggested_solution "Remove the apt package by running '${UCyan}sudo apt purge $pkg${NC}'"
                 error_log 13 "install $PACKAGE"
                 clean_fail_down
             fi
-            if [[ ${pkg} != "${name}" ]] && is_package_installed "${pkg}"; then
+            if [[ ${pkg} != "${pkgname}" ]] && is_package_installed "${pkg}"; then
                 # Same thing, but check if anything is installed with pacstall
-                fancy_message error "${RED}$name${NC} breaks $pkg, which is currently installed by pacstall"
+                fancy_message error "${RED}$pkgname${NC} breaks $pkg, which is currently installed by pacstall"
                 suggested_solution "Remove the pacstall package by running '${UCyan}pacstall -R $pkg${NC}'"
                 error_log 13 "install $PACKAGE"
                 clean_fail_down
@@ -343,7 +343,7 @@ done
 export pacdir="$PWD"
 sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2> /dev/null
 
-export pkgdir="$STOWDIR/$name"
+export pkgdir="$STOWDIR/$pkgname"
 export -f ask fancy_message select_options
 
 # Trap so that we can clean up (hopefully without messing up anything)
@@ -360,7 +360,7 @@ function fail_out_functions() {
     error_log 5 "$func $PACKAGE"
     echo -ne "\t"
     fancy_message error "Could not $func $PACKAGE properly"
-    sudo dpkg -r "${gives:-$name}" > /dev/null
+    sudo dpkg -r "${gives:-$pkgname}" > /dev/null
     clean_fail_down
 }
 
@@ -371,7 +371,7 @@ function run_function() {
         sudo mkdir -p "${LOGDIR}"
     fi
     # NOTE: https://stackoverflow.com/a/29163890 (shorthand for 2>&1 |)
-    $func |& sudo tee "${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log" && return "${PIPESTATUS[0]}"
+    $func |& sudo tee "${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$pkgname-$func.log" && return "${PIPESTATUS[0]}"
 }
 
 function safe_run() {
@@ -421,7 +421,7 @@ sudo mkdir -p "/var/cache/pacstall/$PACKAGE/${full_version}"
 if ! cd "$DIR" 2> /dev/null; then
     error_log 1 "install $PACKAGE"
     fancy_message error "Could not enter into ${DIR}"
-    sudo dpkg -r "${gives:-$name}" > /dev/null
+    sudo dpkg -r "${gives:-$pkgname}" > /dev/null
     clean_fail_down
 fi
 
