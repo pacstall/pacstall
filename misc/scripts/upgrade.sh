@@ -153,10 +153,10 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
     upgrade=("${update_order[@]}")
 
     export local='no'
-    mkdir -p "$SRCDIR"
-    if ! cd "$SRCDIR" 2> /dev/null; then
+    mkdir -p "$PACDIR"
+    if ! cd "$PACDIR" 2> /dev/null; then
         error_log 1 "upgrade"
-        fancy_message error "Could not enter ${SRCDIR}"
+        fancy_message error "Could not enter ${PACDIR}"
         exit 1
     fi
     for to_upgrade in "${upgrade[@]}"; do
