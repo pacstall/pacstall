@@ -178,23 +178,23 @@ function fail_down() {
 }
 
 function gather_down() {
-    if [[ -z ${pkgbase} ]]; then
+    if [[ -z ${srcdir} ]]; then
         if [[ -n $PACSTALL_PAYLOAD ]]; then
-            export pkgbase="/tmp/pacstall-pacdep"
+            export srcdir="/tmp/pacstall-pacdep"
         else
-            export pkgbase="${SRCDIR}/${PACKAGE}~${pkgver}"
+            export srcdir="${PACDIR}/${PACKAGE}~${pkgver}"
         fi
     fi
-    mkdir -p "${pkgbase}"
-    if ! [[ ${PWD} == "${pkgbase}" ]]; then
-        find "${PWD}" -mindepth 1 -maxdepth 1 ! -wholename "${pkgbase}" \
-            ! -wholename "${SRCDIR}" \
+    mkdir -p "${srcdir}"
+    if ! [[ ${PWD} == "${srcdir}" ]]; then
+        find "${PWD}" -mindepth 1 -maxdepth 1 ! -wholename "${srcdir}" \
+            ! -wholename "${PACDIR}" \
             ! -wholename "/tmp/pacstall-pacdep" \
             ! -wholename "/tmp/pacstall-pacdeps-$PACKAGE" \
-            -exec mv {} "${pkgbase}/" \;
-        cd "${pkgbase}" || {
+            -exec mv {} "${srcdir}/" \;
+        cd "${srcdir}" || {
             error_log 1 "gather-main $PACKAGE"
-            fancy_message error "Could not enter into the main directory ${YELLOW}${pkgbase}${NC}"
+            fancy_message error "Could not enter into the main directory ${YELLOW}${srcdir}${NC}"
             clean_fail_down
         }
     fi
@@ -248,7 +248,7 @@ function git_down() {
         cd ..
         gather_down
     else
-        export pkgbase="${PWD}"
+        export srcdir="${PWD}"
     fi
 }
 
@@ -287,7 +287,7 @@ function genextr_down() {
             fancy_message warn "Could not enter into the extracted archive"
             gather_down
         }
-        export pkgbase="${PWD}"
+        export srcdir="${PWD}"
     else
         gather_down
     fi
@@ -347,7 +347,7 @@ function file_down() {
             fancy_message warn "Could not enter into the copied archive"
             gather_down
         }
-        export pkgbase="${PWD}"
+        export srcdir="${PWD}"
     else
         gather_down
     fi

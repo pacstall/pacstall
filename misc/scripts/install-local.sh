@@ -292,15 +292,15 @@ if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
         exit 1
     fi
 else
-    mkdir -p "$SRCDIR"
-    if ! cd "$SRCDIR" 2> /dev/null; then
+    mkdir -p "$PACDIR"
+    if ! cd "$PACDIR" 2> /dev/null; then
         error_log 1 "install $PACKAGE"
-        fancy_message error "Could not enter ${SRCDIR}"
+        fancy_message error "Could not enter ${PACDIR}"
         exit 1
     fi
 fi
 
-mkdir -p "${SRCDIR}"
+mkdir -p "${PACDIR}"
 
 for i in "${!source[@]}"; do
     parse_source_entry "${source[$i]}"
@@ -340,7 +340,7 @@ for i in "${!source[@]}"; do
     unset expectedHash dest url git_branch git_tag git_commit ext_deps ext_method
 done
 
-export srcdir="$PWD"
+export pacdir="$PWD"
 sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2> /dev/null
 
 export pkgdir="$STOWDIR/$name"
