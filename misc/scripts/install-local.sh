@@ -308,6 +308,9 @@ for i in "${!source[@]}"; do
     if [[ -n $PACSTALL_PAYLOAD && ! -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
         dest="${PACSTALL_PAYLOAD##*/}"
     fi
+    if [[ $url != *://* ]]; then
+        url="$(< /usr/share/pacstall/repo/pacstallrepo)/packages/${pkgname}/${url}"
+    fi
     case "${url,,}" in
         *file://*)
             url="${url#file://}"
