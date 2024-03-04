@@ -45,9 +45,9 @@ function ver_compare() {
 function calc_repo_ver() {
     local compare_repo="$1" compare_package="$2"
     unset comp_repo_ver
-    source <(curl -s -- "$compare_repo"/packages/"$compare_package"/"$compare_package".pacscript) && \
-        # shellcheck disable=SC2031
-        if [[ ${pkgname} == *-deb ]]; then
+    # shellcheck disable=SC2031
+    source <(curl -s -- "$compare_repo"/packages/"$compare_package"/"$compare_package".pacscript) \
+        && if [[ ${pkgname} == *-deb ]]; then
             comp_repo_ver="${epoch+$epoch:}${pkgver}"
         elif [[ ${pkgname} == *-git ]]; then
             parse_source_entry "${source[0]}"
