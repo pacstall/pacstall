@@ -309,6 +309,7 @@ for i in "${!source[@]}"; do
         dest="${PACSTALL_PAYLOAD##*/}"
     fi
     if [[ $url != *://* ]]; then
+        # shellcheck disable=SC2031
         url="$(< /usr/share/pacstall/repo/pacstallrepo)/packages/${pkgname}/${url}"
     fi
     case "${url,,}" in
