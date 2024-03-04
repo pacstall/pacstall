@@ -43,9 +43,10 @@ function ver_compare() {
 }
 
 function calc_repo_ver() {
-    local compare_repo="$1"
+    local compare_repo="$1" compare_package="$2"
     unset comp_repo_ver
-    source <(curl -s -- "$compare_repo"/packages/"$i"/"$i".pacscript) \
+    source <(curl -s -- "$compare_repo"/packages/"$compare_package"/"$compare_package".pacscript) \
+        # shellcheck disable=SC2031
         && if [[ ${pkgname} == *-deb ]]; then
             comp_repo_ver="${epoch+$epoch:}${pkgver}"
         elif [[ ${pkgname} == *-git ]]; then
@@ -57,6 +58,7 @@ function calc_repo_ver() {
         fi
 }
 
+# shellcheck disable=SC2155
 export UPGRADE="yes"
 export CARCH="$(dpkg --print-architecture)"
 export DISTRO="$(set_distro)"
@@ -108,7 +110,8 @@ N="$(nproc)"
             IDXMATCH=$(printf "%s\n" "${REPOS[@]}" | awk "\$1 ~ /^${remoterepo//\//\\/}$/ {print NR-1}")
 
             if [[ -n $IDXMATCH ]]; then
-                calc_repo_ver "$remoterepo" && remotever="${comp_repo_ver}"
+                calc_repo_ver "$remoterepo" "$i" \
+                    && remotever="${comp_repo_ver}"
                 unset comp_repo_ver
                 remoteurl="${REPOS[$IDXMATCH]}"
             else
@@ -122,7 +125,8 @@ N="$(nproc)"
                     if ((IDX == IDXMATCH)); then
                         continue
                     else
-                        calc_repo_ver "${REPOS[$IDX]}" && ver="${comp_repo_ver}"
+                        calc_repo_ver "${REPOS[$IDX]}" "$i" \
+                            && ver="${comp_repo_ver}"
                         unset comp_repo_ver
                         if ! ver_compare "$alterver" "$ver"; then
                             alterver="$ver"
