@@ -201,7 +201,7 @@ elif [[ -n $UPGRADE ]]; then
     REPOS=()
     # Return list of repos with the package
     for IDX in $IDXSEARCH; do
-        mapfile -t REPOS <<< "${URLLIST[$IDX]}"
+        REPOS+=(${URLLIST[$IDX]})
     done
     export REPOS
     return 0
