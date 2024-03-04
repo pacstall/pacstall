@@ -58,9 +58,10 @@ function calc_repo_ver() {
         fi
 }
 
-# shellcheck disable=SC2155
 export UPGRADE="yes"
+# shellcheck disable=SC2155
 export CARCH="$(dpkg --print-architecture)"
+# shellcheck disable=SC2155
 export DISTRO="$(set_distro)"
 
 fancy_message info "Checking for updates"
