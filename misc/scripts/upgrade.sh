@@ -58,6 +58,8 @@ function calc_repo_ver() {
 }
 
 export UPGRADE="yes"
+export CARCH="$(dpkg --print-architecture)"
+export DISTRO="$(set_distro)"
 
 fancy_message info "Checking for updates"
 
