@@ -308,6 +308,14 @@ for i in "${!source[@]}"; do
     if [[ -n $PACSTALL_PAYLOAD && ! -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
         dest="${PACSTALL_PAYLOAD##*/}"
     fi
+    if [[ $url != *://* ]]; then
+        if [[ -z ${REPO} ]]; then
+            # shellcheck disable=SC2086
+            REPO="$(< ${STGDIR}/repo/pacstallrepo)"
+        fi
+        # shellcheck disable=SC2031
+        url="${REPO}/packages/${pkgname}/${url}"
+    fi
     case "${url,,}" in
         *file://*)
             url="${url#file://}"
