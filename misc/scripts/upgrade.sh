@@ -28,6 +28,12 @@ source "${STGDIR}/scripts/dep-tree.sh" || {
     return 1
 }
 
+# shellcheck source=./misc/scripts/download-local.sh
+source "${STGDIR}/scripts/download-local.sh" || {
+    fancy_message error "Could not find download-local.sh"
+    return 1
+}
+
 function ver_compare() {
     local first second
     first="${1#"${1/[0-9]*/}"}"
@@ -36,7 +42,27 @@ function ver_compare() {
     return $(dpkg --compare-versions "$first" lt "$second")
 }
 
+function calc_repo_ver() {
+    local compare_repo="$1" compare_package="$2"
+    unset comp_repo_ver
+    # shellcheck disable=SC2031
+    source <(curl -s -- "$compare_repo"/packages/"$compare_package"/"$compare_package".pacscript) \
+        && if [[ ${pkgname} == *-deb ]]; then
+            comp_repo_ver="${epoch+$epoch:}${pkgver}"
+        elif [[ ${pkgname} == *-git ]]; then
+            parse_source_entry "${source[0]}"
+            calc_git_pkgver
+            comp_repo_ver="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git${comp_git_pkgver}"
+        else
+            comp_repo_ver="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
+        fi
+}
+
 export UPGRADE="yes"
+# shellcheck disable=SC2155
+export CARCH="$(dpkg --print-architecture)"
+# shellcheck disable=SC2155
+export DISTRO="$(set_distro)"
 
 fancy_message info "Checking for updates"
 
@@ -85,7 +111,9 @@ N="$(nproc)"
             IDXMATCH=$(printf "%s\n" "${REPOS[@]}" | awk "\$1 ~ /^${remoterepo//\//\\/}$/ {print NR-1}")
 
             if [[ -n $IDXMATCH ]]; then
-                remotever=$(source <(curl -s -- "$remoterepo/packages/$i/$i.pacscript") && if [[ ${pkgname} == *-deb ]]; then echo "${epoch+$epoch:}${pkgver}"; else type pkgver &> /dev/null && echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(pkgver)" || echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"; fi) > /dev/null
+                calc_repo_ver "$remoterepo" "$i" \
+                    && remotever="${comp_repo_ver}"
+                unset comp_repo_ver
                 remoteurl="${REPOS[$IDXMATCH]}"
             else
                 fancy_message warn "Package ${GREEN}${i}${CYAN} is not on ${CYAN}$(parseRepo "${remoterepo}")${NC} anymore"
@@ -98,7 +126,9 @@ N="$(nproc)"
                     if ((IDX == IDXMATCH)); then
                         continue
                     else
-                        ver=$(source <(curl -s -- "${REPOS[$IDX]}"/packages/"$i"/"$i".pacscript) && if [[ ${pkgname} == *-deb ]]; then echo "${epoch+$epoch:}${pkgver}"; else type pkgver &> /dev/null && echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git$(pkgver)" || echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"; fi) > /dev/null
+                        calc_repo_ver "${REPOS[$IDX]}" "$i" \
+                            && ver="${comp_repo_ver}"
+                        unset comp_repo_ver
                         if ! ver_compare "$alterver" "$ver"; then
                             alterver="$ver"
                             alterurl="$REPO"
