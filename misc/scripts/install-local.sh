@@ -311,7 +311,7 @@ for i in "${!source[@]}"; do
     if [[ $url != *://* ]]; then
         if [[ -z ${REPO} ]]; then
             # shellcheck disable=SC2086
-            REPO=$(< ${STGDIR}/repo/pacstallrepo)
+            REPO="$(< ${STGDIR}/repo/pacstallrepo)"
         fi
         # shellcheck disable=SC2031
         url="${REPO}/packages/${pkgname}/${url}"
