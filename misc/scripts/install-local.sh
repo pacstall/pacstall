@@ -345,7 +345,7 @@ for i in "${!source[@]}"; do
             fi
             ;;
     esac
-    unset expectedHash dest url git_branch git_tag git_commit ext_deps ext_method
+    unset expectedHash dest source_url git_branch git_tag git_commit ext_deps ext_method
 done
 
 export pacdir="$PWD"
