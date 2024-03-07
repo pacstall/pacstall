@@ -130,8 +130,8 @@ function lint_source_deb_test() {
     # shellcheck disable=SC2206
     local input_source=($@)
     for i in "${!input_source[@]}"; do
-        local url="${input_source[$i]}"
-        local file_name="${url##*/}"
+        local test_source_url="${input_source[$i]}"
+        local file_name="${test_source_url##*/}"
         if [[ ${file_name} == *"?"* ]]; then
             file_name="${file_name%%\?*}"
         fi
@@ -174,8 +174,8 @@ function lint_source() {
             if [[ -n ${!source_arch} ]]; then
                 test_source=()
                 if [[ -n ${source[0]} ]]; then
-                  # shellcheck disable=SC2206
-                  test_source+=(${source[*]})
+                    # shellcheck disable=SC2206
+                    test_source+=(${source[*]})
                 fi
                 # shellcheck disable=SC2206
                 test_source+=(${!source_arch})
@@ -188,7 +188,7 @@ function lint_source() {
             fi
         done
         if [[ -n ${source[1]} ]]; then
-           lint_source_deb_test "${source[@]}"
+            lint_source_deb_test "${source[@]}"
         fi
     fi
     return "${ret}"
@@ -302,6 +302,20 @@ function lint_optdepends() {
     return "${ret}"
 }
 
+function lint_conflicts() {
+    local ret=0 conflict idx=0
+    if [[ -n ${conflicts[*]} ]]; then
+        for conflict in "${conflicts[@]}"; do
+            if [[ -z ${conflict} ]]; then
+                fancy_message error "'conflicts' index '${idx}' cannot be empty"
+                ret=1
+            fi
+            ((idx++))
+        done
+    fi
+    return "${ret}"
+}
+
 function lint_breaks() {
     local ret=0 break idx=0
     if [[ -n ${breaks[*]} ]]; then
@@ -331,31 +345,73 @@ function lint_replaces() {
 }
 
 function lint_hash() {
-    local ret=0 test_hash known_archs_hash=()
-    mapfile -t known_archs_hash < <(dpkg-architecture --list-known)
-    for i in "${!known_archs_hash[@]}"; do
-        # shellcheck disable=SC2004
-        known_archs_hash[$i]=${known_archs_hash[$i]//-/_}
-    done
-    if [[ -n ${hash} ]]; then
-        # shellcheck disable=SC2206
-        test_hash+=(${hash[*]})
-    fi
-    for harch in "${known_archs_hash[@]}"; do
-        local hash_arch="hash_${harch}[*]"
-        if [[ -n ${!hash_arch} ]]; then
-            # shellcheck disable=SC2206
-            test_hash+=(${!hash_arch})
+    local ret=0 test_hash harch test_hashsum_type test_hashsum_style test_hash_arch test_hashsum_method test_hashsum_value
+    local known_archs_hash=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x")
+    local test_hashsums=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5")
+    for test_hashsum_type in "${test_hashsums[@]}"; do
+        test_hashsum_style="${test_hashsum_type}sums[*]"
+        if [[ -n ${!test_hashsum_style} ]]; then
+            if [[ -z ${test_hash[*]} ]]; then
+                # shellcheck disable=SC2206
+                test_hash=(${!test_hashsum_style})
+                test_hashsum_method="${test_hashsum_type}"
+            else
+                fancy_message error "Only one checksum method can be provided for hashes"
+                unset test_hash
+                ret=1
+                break
+            fi
         fi
+    done
+    for test_hashsum_type in "${test_hashsums[@]}"; do
+        if ((ret == 1)); then
+            break
+        fi
+        test_hashsum_style="${test_hashsum_type}sums[*]"
+        for harch in "${known_archs_hash[@]}"; do
+            test_hash_arch="${test_hashsum_type}sums_${harch}[*]"
+            if [[ -n ${!test_hash_arch} ]]; then
+                if [[ -z ${!test_hashsum_style} && -z ${test_hash[*]} ]]; then
+                    if [[ -z ${test_hashsum_method} ]]; then
+                        # shellcheck disable=SC2206
+                        test_hash=(${!test_hash_arch})
+                        test_hashsum_method="${test_hashsum_type}"
+                    else
+                        fancy_message error "Only one checksum method can be provided for hashes"
+                        unset test_hash
+                        ret=1
+                        break
+                    fi
+                elif [[ -n ${test_hashsum_method} && ${test_hashsum_method} == "${test_hashsum_type}" ]]; then
+                    # shellcheck disable=SC2206
+                    test_hash+=(${!test_hash_arch})
+                else
+                    fancy_message error "Only one checksum method can be provided for hashes"
+                    unset test_hash
+                    ret=1
+                    break
+                fi
+            fi
+        done
     done
     # shellcheck disable=SC2128
     if [[ -n ${test_hash} ]]; then
+        case ${test_hashsum_method} in
+            "${test_hashsums[0]}" | "${test_hashsums[1]}") test_hashsum_value=128 ;;
+            "${test_hashsums[2]}") test_hashsum_value=96 ;;
+            "${test_hashsums[3]}") test_hashsum_value=64 ;;
+            "${test_hashsums[4]}") test_hashsum_value=56 ;;
+            "${test_hashsums[5]}") test_hashsum_value=40 ;;
+            "${test_hashsums[6]}") test_hashsum_value=32 ;;
+        esac
         for i in ${!test_hash[*]}; do
             if [[ ${test_hash[i]} == "SKIP" ]]; then
                 ret=0
-            elif ((${#test_hash[i]} != 64)); then
+
+            elif ((${#test_hash[i]} != test_hashsum_value)) || [[ ! ${test_hash[i]} =~ ^[a-fA-F0-9]+$ ]]; then
                 fancy_message error "'hash' is improperly formatted"
                 ret=1
+                break
             fi
         done
     fi
@@ -498,7 +554,7 @@ function lint_priority() {
 }
 
 function checks() {
-    local ret=0 check linting_checks=(lint_pkgname lint_gives lint_pkgrel lint_epoch lint_version lint_source lint_pkgdesc lint_maintainer lint_makedepends lint_depends lint_pacdeps lint_ppa lint_optdepends lint_breaks lint_replaces lint_hash lint_patch lint_provides lint_incompatible lint_arch lint_mask lint_priority)
+    local ret=0 check linting_checks=(lint_pkgname lint_gives lint_pkgrel lint_epoch lint_version lint_source lint_pkgdesc lint_maintainer lint_makedepends lint_depends lint_pacdeps lint_ppa lint_optdepends lint_conflicts lint_breaks lint_replaces lint_hash lint_patch lint_provides lint_incompatible lint_arch lint_mask lint_priority)
     for check in "${linting_checks[@]}"; do
         "${check}" || ret=1
     done
