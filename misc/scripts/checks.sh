@@ -357,7 +357,7 @@ function lint_hash() {
         for harch in "${known_archs_hash[@]}"; do
             test_hash_arch="${test_hashsum_type}sums_${harch}[*]"
             if [[ -n ${!test_hash_arch} ]]; then
-                if [[ -z ${!test_hashsum_style} && -z ${test_hash} ]]; then
+                if [[ -z ${!test_hashsum_style} && -z ${test_hash[*]} ]]; then
                     if [[ -z ${test_hashsum_method} ]]; then
                         # shellcheck disable=SC2206
                         test_hash=(${!test_hash_arch})
