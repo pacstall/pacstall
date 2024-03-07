@@ -44,7 +44,7 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${pkgname:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset pkgname repology pkgver git_pkgver epoch source_url source depends makedepends breaks replaces gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall srcdir url backup pkgrel mask pac_functions repo priority noextract 2> /dev/null
+    unset pkgname repology pkgver git_pkgver epoch source_url source depends makedepends conflicts breaks replaces gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall srcdir url backup pkgrel mask pac_functions repo priority noextract 2> /dev/null
     unset -f post_install post_remove pre_install prepare build package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
@@ -298,11 +298,21 @@ function makedeb() {
         deblog "Provides" "$(sed 's/ /, /g' <<< "${provides[@]}")"
     fi
 
-    if [[ -n $replaces ]]; then
+    if [[ -n ${conflicts[*]} ]]; then
+        # shellcheck disable=SC2001
+        deblog "Conflicts" "$(sed 's/ /, /g' <<< "${conflicts[@]}")"
+    fi
+
+    if [[ -n ${breaks[*]} ]]; then
+        # shellcheck disable=SC2001
+        deblog "Breaks" "$(sed 's/ /, /g' <<< "${breaks[@]}")"
+    fi
+
+    if [[ -n ${replaces[*]} ]]; then
         # shellcheck disable=SC2001
         deblog "Conflicts" "$(sed 's/ /, /g' <<< "${replaces[@]}")"
         # shellcheck disable=SC2001
-        deblog "Replace" "$(sed 's/ /, /g' <<< "${replaces[@]}")"
+        deblog "Replaces" "$(sed 's/ /, /g' <<< "${replaces[@]}")"
     fi
 
     if [[ -n ${url} ]]; then
