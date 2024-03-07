@@ -349,6 +349,7 @@ function file_down() {
         }
         export srcdir="${PWD}"
     else
+        hashcheck_down
         gather_down
     fi
 }

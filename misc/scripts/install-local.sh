@@ -340,9 +340,7 @@ for i in "${!source[@]}"; do
         *)
             net_down
             hashcheck_down
-            if [[ ${source[i]} != "${source[0]}" ]]; then
-                gather_down
-            fi
+            gather_down
             ;;
     esac
     unset expectedHash dest url git_branch git_tag git_commit ext_deps ext_method
