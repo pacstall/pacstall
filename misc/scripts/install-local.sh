@@ -254,7 +254,7 @@ fi
 
 unset dest_list
 declare -A dest_list
-append_arch_entry
+append_archAndHash_entry
 for i in "${!source[@]}"; do
     parse_source_entry "${source[$i]}"
     dest="${dest%.git}"
@@ -340,13 +340,12 @@ for i in "${!source[@]}"; do
         *)
             net_down
             hashcheck_down
-            if [[ ${source[i]} != "${source[0]}" ]]; then
-                gather_down
-            fi
+            gather_down
             ;;
     esac
     unset expectedHash dest source_url git_branch git_tag git_commit ext_deps ext_method
 done
+unset hashsum_method
 
 export pacdir="$PWD"
 sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2> /dev/null
