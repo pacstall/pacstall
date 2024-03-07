@@ -312,7 +312,7 @@ function makedeb() {
         # shellcheck disable=SC2001
         deblog "Conflicts" "$(sed 's/ /, /g' <<< "${replaces[@]}")"
         # shellcheck disable=SC2001
-        deblog "Replace" "$(sed 's/ /, /g' <<< "${replaces[@]}")"
+        deblog "Replaces" "$(sed 's/ /, /g' <<< "${replaces[@]}")"
     fi
 
     if [[ -n ${homepage} ]]; then
