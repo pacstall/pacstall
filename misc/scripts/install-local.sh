@@ -254,7 +254,7 @@ fi
 
 unset dest_list
 declare -A dest_list
-append_arch_entry
+append_archAndHash_entry
 for i in "${!source[@]}"; do
     parse_source_entry "${source[$i]}"
     dest="${dest%.git}"
@@ -345,7 +345,7 @@ for i in "${!source[@]}"; do
             fi
             ;;
     esac
-    unset expectedHash dest url git_branch git_tag git_commit ext_deps ext_method
+    unset expectedHash dest url git_branch git_tag git_commit ext_deps ext_method hashsum_method
 done
 
 export pacdir="$PWD"

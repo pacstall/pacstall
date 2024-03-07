@@ -155,15 +155,15 @@ function clean_fail_down() {
 }
 
 function hashcheck() {
-    local inputFile="${1}" inputHash="${2}" fileHash
+    local inputFile="${1}" inputHash="${2}" hashMethod="${3}sum" fileHash
     # Get hash of file
-    fileHash="$(sha256sum "${inputFile}")"
+    fileHash="$(${hashMethod} "${inputFile}")"
     fileHash="${fileHash%% *}"
 
     # Check if the input hash is the same as of the downloaded file.
     # Skip this test if the hash variable doesn't exist in the pacscript.
     if [[ -n ${inputHash} && ${inputHash} != "${fileHash}" ]]; then
-        fancy_message error "Hashes do not match"
+        fancy_message error "Hashes do not match (with method ${hashMethod})"
         fancy_message sub "Got:      ${BRed}${fileHash}${NC}"
         fancy_message sub "Expected: ${BGreen}${inputHash}${NC}"
         error_log 16 "install $PACKAGE"
@@ -261,7 +261,7 @@ function net_down() {
 function hashcheck_down() {
     if [[ -n ${expectedHash} && ${expectedHash} != "SKIP" ]]; then
         fancy_message sub "Checking hash ${YELLOW}${expectedHash:0:8}${NC}[${YELLOW}...${NC}]"
-        hashcheck "${dest}" "${expectedHash}" || return 1
+        hashcheck "${dest}" "${expectedHash}" "${hashsum_method}" || return 1
     fi
 }
 
@@ -353,19 +353,45 @@ function file_down() {
     fi
 }
 
-function append_arch_entry() {
-    local source_arch hash_arch
+function append_archAndHash_entry() {
+    local source_arch hash_arch hashsum_type hashsum_style hashsums=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5")
+    unset hashsum_method
     # shellcheck disable=SC2153
     source_arch="source_${CARCH}[*]"
-    hash_arch="hash_${CARCH}[*]"
     if [[ -n ${!source_arch} ]]; then
-        # shellcheck disable=SC2206
-        source+=(${!source_arch})
+        if [[ -z ${source} ]];then
+            # shellcheck disable=SC2206
+            source=(${!source_arch})
+        else
+            # shellcheck disable=SC2206
+            source+=(${!source_arch})
+        fi
     fi
-    if [[ -n ${!hash_arch} ]]; then
-        # shellcheck disable=SC2206
-        hash+=(${!hash_arch})
-    fi
+    for hashsum_type in "${hashsums[@]}"; do
+        hashsum_style="${hashsum_type}sums[*]"
+        if [[ -n ${!hashsum_style} ]]; then
+            # shellcheck disable=SC2206
+            hash=(${!hashsum_style})
+            export hashsum_method="${hashsum_type}"
+            break
+        fi
+    done
+    for hashsum_type in "${hashsums[@]}"; do
+        hashsum_style="${hashsum_type}sums[*]"
+        # shellcheck disable=SC2153
+        hash_arch="${hashsum_type}sums_${CARCH}[*]"
+        if [[ -n ${!hash_arch} ]]; then
+            if [[ -z ${!hashsum_style} && -z ${hash} ]]; then
+                # shellcheck disable=SC2206
+                hash=(${!hash_arch})
+                export hashsum_method="${hashsum_type}"
+            else
+                # shellcheck disable=SC2206
+                hash+=(${!hash_arch})
+            fi
+            break
+        fi
+    done
 }
 
 function calc_distro() {
