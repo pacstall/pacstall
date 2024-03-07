@@ -401,7 +401,6 @@ function lint_hash() {
             fi
         done
     fi
-    echo "${test_hash[*]}"
     return "${ret}"
 }
 
