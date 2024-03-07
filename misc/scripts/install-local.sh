@@ -345,8 +345,9 @@ for i in "${!source[@]}"; do
             fi
             ;;
     esac
-    unset expectedHash dest url git_branch git_tag git_commit ext_deps ext_method hashsum_method
+    unset expectedHash dest url git_branch git_tag git_commit ext_deps ext_method
 done
+unset hashsum_method
 
 export pacdir="$PWD"
 sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2> /dev/null
