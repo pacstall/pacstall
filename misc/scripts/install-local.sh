@@ -219,6 +219,7 @@ if ! is_package_installed "${pkgname}"; then
             # Do we have an apt package installed (but not pacstall)?
             if is_apt_package_installed "${pkg}" && ! is_package_installed "${pkg}"; then
                 # Check if anything in conflicts variable is installed already
+                # shellcheck disable=SC2031
                 fancy_message error "${RED}$pkgname${NC} conflicts with $pkg, which is currently installed by apt"
                 suggested_solution "Remove the apt package by running '${UCyan}sudo apt purge $pkg${NC}'"
                 error_log 13 "install $PACKAGE"
@@ -226,6 +227,7 @@ if ! is_package_installed "${pkgname}"; then
             fi
             if [[ ${pkg} != "${pkgname}" ]] && is_package_installed "${pkg}"; then
                 # Same thing, but check if anything is installed with pacstall
+                # shellcheck disable=SC2031
                 fancy_message error "${RED}$pkgname${NC} conflicts with $pkg, which is currently installed by pacstall"
                 suggested_solution "Remove the pacstall package by running '${UCyan}pacstall -R $pkg${NC}'"
                 error_log 13 "install $PACKAGE"
