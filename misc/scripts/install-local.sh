@@ -214,7 +214,27 @@ if [[ -n $pacdeps ]]; then
 fi
 
 if ! is_package_installed "${pkgname}"; then
-    if [[ -n $breaks ]]; then
+    if [[ -n ${conflicts[*]} ]]; then
+        for pkg in "${conflicts[@]}"; do
+            # Do we have an apt package installed (but not pacstall)?
+            if is_apt_package_installed "${pkg}" && ! is_package_installed "${pkg}"; then
+                # Check if anything in conflicts variable is installed already
+                fancy_message error "${RED}$pkgname${NC} conflicts with $pkg, which is currently installed by apt"
+                suggested_solution "Remove the apt package by running '${UCyan}sudo apt purge $pkg${NC}'"
+                error_log 13 "install $PACKAGE"
+                clean_fail_down
+            fi
+            if [[ ${pkg} != "${pkgname}" ]] && is_package_installed "${pkg}"; then
+                # Same thing, but check if anything is installed with pacstall
+                fancy_message error "${RED}$pkgname${NC} conflicts with $pkg, which is currently installed by pacstall"
+                suggested_solution "Remove the pacstall package by running '${UCyan}pacstall -R $pkg${NC}'"
+                error_log 13 "install $PACKAGE"
+                clean_fail_down
+            fi
+        done
+    fi
+
+    if [[ -n ${breaks[*]} ]]; then
         for pkg in "${breaks[@]}"; do
             # Do we have an apt package installed (but not pacstall)?
             if is_apt_package_installed "${pkg}" && ! is_package_installed "${pkg}"; then

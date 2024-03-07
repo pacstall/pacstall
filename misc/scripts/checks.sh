@@ -302,6 +302,20 @@ function lint_optdepends() {
     return "${ret}"
 }
 
+function lint_conflicts() {
+    local ret=0 conflict idx=0
+    if [[ -n ${conflicts[*]} ]]; then
+        for conflict in "${conflicts[@]}"; do
+            if [[ -z ${conflict} ]]; then
+                fancy_message error "'conflicts' index '${idx}' cannot be empty"
+                ret=1
+            fi
+            ((idx++))
+        done
+    fi
+    return "${ret}"
+}
+
 function lint_breaks() {
     local ret=0 break idx=0
     if [[ -n ${breaks[*]} ]]; then
@@ -498,7 +512,7 @@ function lint_priority() {
 }
 
 function checks() {
-    local ret=0 check linting_checks=(lint_pkgname lint_gives lint_pkgrel lint_epoch lint_version lint_source lint_pkgdesc lint_maintainer lint_makedepends lint_depends lint_pacdeps lint_ppa lint_optdepends lint_breaks lint_replaces lint_hash lint_patch lint_provides lint_incompatible lint_arch lint_mask lint_priority)
+    local ret=0 check linting_checks=(lint_pkgname lint_gives lint_pkgrel lint_epoch lint_version lint_source lint_pkgdesc lint_maintainer lint_makedepends lint_depends lint_pacdeps lint_ppa lint_optdepends lint_conflicts lint_breaks lint_replaces lint_hash lint_patch lint_provides lint_incompatible lint_arch lint_mask lint_priority)
     for check in "${linting_checks[@]}"; do
         "${check}" || ret=1
     done
