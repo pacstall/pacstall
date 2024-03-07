@@ -276,15 +276,15 @@ fi
 
 unset dest_list
 declare -A dest_list
-append_arch_entry
+append_archAndHash_entry
 for i in "${!source[@]}"; do
     parse_source_entry "${source[$i]}"
     dest="${dest%.git}"
-    if [[ -n ${dest_list[$dest]} && ${dest_list[$dest]} != "${url}" ]]; then
+    if [[ -n ${dest_list[$dest]} && ${dest_list[$dest]} != "${source_url}" ]]; then
         fancy_message error "${dest} is associated with multiple source entries"
         clean_fail_down
     else
-        dest_list["${dest}"]="${url}"
+        dest_list["${dest}"]="${source_url}"
     fi
     genextr_declare
     unset ext_dep make_dep in_make_deps
@@ -330,23 +330,23 @@ for i in "${!source[@]}"; do
     if [[ -n $PACSTALL_PAYLOAD && ! -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
         dest="${PACSTALL_PAYLOAD##*/}"
     fi
-    if [[ $url != *://* ]]; then
+    if [[ $source_url != *://* ]]; then
         if [[ -z ${REPO} ]]; then
             # shellcheck disable=SC2086
             REPO="$(< ${STGDIR}/repo/pacstallrepo)"
         fi
         # shellcheck disable=SC2031
-        url="${REPO}/packages/${pkgname}/${url}"
+        source_url="${REPO}/packages/${pkgname}/${source_url}"
     fi
-    case "${url,,}" in
+    case "${source_url,,}" in
         *file://*)
-            url="${url#file://}"
-            url="${url#git+}"
+            source_url="${source_url#file://}"
+            source_url="${source_url#git+}"
             file_down
             ;;
         *.git | git+*)
-            if [[ $url == git+* ]]; then
-                url="${url#git+}"
+            if [[ $source_url == git+* ]]; then
+                source_url="${source_url#git+}"
             fi
             git_down
             ;;
@@ -362,13 +362,12 @@ for i in "${!source[@]}"; do
         *)
             net_down
             hashcheck_down
-            if [[ ${source[i]} != "${source[0]}" ]]; then
-                gather_down
-            fi
+            gather_down
             ;;
     esac
-    unset expectedHash dest url git_branch git_tag git_commit ext_deps ext_method
+    unset expectedHash dest source_url git_branch git_tag git_commit ext_deps ext_method
 done
+unset hashsum_method
 
 export pacdir="$PWD"
 sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2> /dev/null

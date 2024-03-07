@@ -44,7 +44,7 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${pkgname:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset pkgname repology pkgver git_pkgver epoch url source depends makedepends conflicts breaks replaces gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall srcdir homepage backup pkgrel mask pac_functions repo priority noextract 2> /dev/null
+    unset pkgname repology pkgver git_pkgver epoch source_url source depends makedepends conflicts breaks replaces gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall srcdir url backup pkgrel mask pac_functions repo priority noextract 2> /dev/null
     unset -f post_install post_remove pre_install prepare build package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
@@ -277,7 +277,7 @@ function makedeb() {
     if [[ $pkgname == *-git ]]; then
         parse_source_entry "${source[0]}"
         # shellcheck disable=SC2031
-        local vcsurl="${url#file://}"
+        local vcsurl="${source_url#file://}"
         vcsurl="${vcsurl#git+}"
         if [[ -n ${git_branch} ]]; then
             deblog "Vcs-Git" "${vcsurl} -b ${git_branch}"
@@ -315,8 +315,8 @@ function makedeb() {
         deblog "Replaces" "$(sed 's/ /, /g' <<< "${replaces[@]}")"
     fi
 
-    if [[ -n ${homepage} ]]; then
-        deblog "Homepage" "${homepage}"
+    if [[ -n ${url} ]]; then
+        deblog "Homepage" "${url}"
     fi
 
     if [[ -n ${maintainer} ]]; then
@@ -478,8 +478,8 @@ function write_meta() {
     if [[ -n $ppa ]]; then
         echo "_ppa=(${ppa[*]})"
     fi
-    if [[ -n $homepage ]]; then
-        echo "_homepage=\"${homepage}\""
+    if [[ -n $url ]]; then
+        echo "_homepage=\"${url}\""
     fi
     if [[ -n $gives ]]; then
         echo "_gives=\"$gives\""
