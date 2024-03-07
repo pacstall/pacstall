@@ -337,7 +337,7 @@ function lint_hash() {
     for test_hashsum_type in "${test_hashsums[@]}"; do
         test_hashsum_style="${test_hashsum_type}sums[*]"
         if [[ -n ${!test_hashsum_style} ]]; then
-            if [[ -z ${test_hash} ]]; then
+            if [[ -z ${test_hash[*]} ]]; then
                 # shellcheck disable=SC2206
                 test_hash=(${!test_hashsum_style})
                 test_hashsum_method="${test_hashsum_type}"
@@ -383,12 +383,12 @@ function lint_hash() {
     # shellcheck disable=SC2128
     if [[ -n ${test_hash} ]]; then
         case ${test_hashsum_method} in
-            ${test_hashsums[0]} | ${test_hashsums[1]}) test_hashsum_value=128 ;;
-            ${test_hashsums[2]}) test_hashsum_value=96 ;;
-            ${test_hashsums[3]}) test_hashsum_value=64 ;;
-            ${test_hashsums[4]}) test_hashsum_value=56 ;;
-            ${test_hashsums[5]}) test_hashsum_value=40 ;;
-            ${test_hashsums[6]}) test_hashsum_value=32 ;;
+            "${test_hashsums[0]}" | "${test_hashsums[1]}") test_hashsum_value=128 ;;
+            "${test_hashsums[2]}") test_hashsum_value=96 ;;
+            "${test_hashsums[3]}") test_hashsum_value=64 ;;
+            "${test_hashsums[4]}") test_hashsum_value=56 ;;
+            "${test_hashsums[5]}") test_hashsum_value=40 ;;
+            "${test_hashsums[6]}") test_hashsum_value=32 ;;
         esac
         for i in ${!test_hash[*]}; do
             if [[ ${test_hash[i]} == "SKIP" ]]; then

@@ -359,7 +359,7 @@ function append_archAndHash_entry() {
     # shellcheck disable=SC2153
     source_arch="source_${CARCH}[*]"
     if [[ -n ${!source_arch} ]]; then
-        if [[ -z ${source} ]]; then
+        if [[ -z ${source[*]} ]]; then
             # shellcheck disable=SC2206
             source=(${!source_arch})
         else
@@ -381,7 +381,7 @@ function append_archAndHash_entry() {
         # shellcheck disable=SC2153
         hash_arch="${hashsum_type}sums_${CARCH}[*]"
         if [[ -n ${!hash_arch} ]]; then
-            if [[ -z ${!hashsum_style} && -z ${hash} ]]; then
+            if [[ -z ${!hashsum_style} && -z ${hash[*]} ]]; then
                 # shellcheck disable=SC2206
                 hash=(${!hash_arch})
                 export hashsum_method="${hashsum_type}"
