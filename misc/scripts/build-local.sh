@@ -301,7 +301,7 @@ function makedeb() {
     if [[ -n ${conflicts[*]} ]]; then
         # shellcheck disable=SC2001
         deblog "Conflicts" "$(sed 's/ /, /g' <<< "${conflicts[@]}")"
-    fi  
+    fi
 
     if [[ -n ${breaks[*]} ]]; then
         # shellcheck disable=SC2001
