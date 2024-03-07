@@ -359,7 +359,7 @@ function append_archAndHash_entry() {
     # shellcheck disable=SC2153
     source_arch="source_${CARCH}[*]"
     if [[ -n ${!source_arch} ]]; then
-        if [[ -z ${source} ]];then
+        if [[ -z ${source} ]]; then
             # shellcheck disable=SC2206
             source=(${!source_arch})
         else
@@ -540,16 +540,16 @@ function compare_remote_version() {
     local remotever
     remotever="$(
         unset pkgrel
-        source <(curl -s -- "$remoterepo/packages/$crv_input/$crv_input.pacscript") && \
-        if [[ ${pkgname} == *-git ]]; then
-            parse_source_entry "${source[0]}"
-            calc_git_pkgver
-            echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git${comp_git_pkgver}"
-        elif [[ ${pkgname} == *-deb ]]; then
-            echo "${epoch+$epoch:}${pkgver}"
-        else
-            echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
-        fi
+        source <(curl -s -- "$remoterepo/packages/$crv_input/$crv_input.pacscript") \
+            && if [[ ${pkgname} == *-git ]]; then
+                parse_source_entry "${source[0]}"
+                calc_git_pkgver
+                echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git${comp_git_pkgver}"
+            elif [[ ${pkgname} == *-deb ]]; then
+                echo "${epoch+$epoch:}${pkgver}"
+            else
+                echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
+            fi
     )" > /dev/null
     if [[ $crv_input == *"-git" ]]; then
         if [[ $(pacstall -Qi "$crv_input" version) != "$remotever" ]]; then

@@ -174,8 +174,8 @@ function lint_source() {
             if [[ -n ${!source_arch} ]]; then
                 test_source=()
                 if [[ -n ${source[0]} ]]; then
-                  # shellcheck disable=SC2206
-                  test_source+=(${source[*]})
+                    # shellcheck disable=SC2206
+                    test_source+=(${source[*]})
                 fi
                 # shellcheck disable=SC2206
                 test_source+=(${!source_arch})
@@ -188,7 +188,7 @@ function lint_source() {
             fi
         done
         if [[ -n ${source[1]} ]]; then
-           lint_source_deb_test "${source[@]}"
+            lint_source_deb_test "${source[@]}"
         fi
     fi
     return "${ret}"
@@ -337,7 +337,7 @@ function lint_hash() {
     for test_hashsum_type in "${test_hashsums[@]}"; do
         test_hashsum_style="${test_hashsum_type}sums[*]"
         if [[ -n ${!test_hashsum_style} ]]; then
-            if [[ -z ${test_hash} ]]; then 
+            if [[ -z ${test_hash} ]]; then
                 # shellcheck disable=SC2206
                 test_hash=(${!test_hashsum_style})
                 test_hashsum_method="${test_hashsum_type}"
@@ -350,7 +350,7 @@ function lint_hash() {
         fi
     done
     for test_hashsum_type in "${test_hashsums[@]}"; do
-        if ((ret==1)); then
+        if ((ret == 1)); then
             break
         fi
         test_hashsum_style="${test_hashsum_type}sums[*]"
@@ -394,7 +394,7 @@ function lint_hash() {
             if [[ ${test_hash[i]} == "SKIP" ]]; then
                 ret=0
 
-            elif ((${#test_hash[i]} != ${test_hashsum_value})) || [[ ! ${test_hash[i]} =~ ^[a-fA-F0-9]+$ ]]; then
+            elif ((${#test_hash[i]} != test_hashsum_value)) || [[ ! ${test_hash[i]} =~ ^[a-fA-F0-9]+$ ]]; then
                 fancy_message error "'hash' is improperly formatted"
                 ret=1
                 break
