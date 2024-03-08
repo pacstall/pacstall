@@ -323,10 +323,11 @@ function makedeb() {
         deblog "Maintainer" "${maintainer[0]}"
         if ((${#maintainer[@]} > 1)); then
             # Since https://www.debian.org/doc/debian-policy/ch-controlfields.html#uploaders says that Maintainer can only have one field, shove the rest in Uploaders
-            printf -v uploader '%s, ' "${maintainer[@]:1}"
-            printf -v uploader '%s' "${uploader%, }"
-            deblog "Uploader" "${uploader}"
-            unset uploader
+            local uploaders
+            printf -v uploaders '%s, ' "${maintainer[@]:1}"
+            printf -v uploaders '%s' "${uploaders%, }"
+            deblog "Uploaders" "${uploaders}"
+            unset uploaders
         fi
     else
         deblog "Maintainer" "Pacstall <pacstall@pm.me>"
@@ -351,6 +352,7 @@ function makedeb() {
     else
         deblog "Description" "${pkgdesc}"
     fi
+    local pre_inst_upg post_inst_upg
     if is_package_installed "${pkgname}"; then
         if type -t pre_upgrade &> /dev/null; then
             pre_inst_upg="pre_upgrade"
@@ -400,6 +402,7 @@ function makedeb() {
             } | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/$deb_post_file" > /dev/null
         fi
     done
+    unset pre_inst_upg post_inst_upg
     echo -e "sudo rm -f $METADIR/$pkgname\nsudo rm -f /etc/apt/preferences.d/$pkgname-pin" | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/postrm" > /dev/null
     local postfile
     for postfile in {postrm,postinst,preinst}; do
