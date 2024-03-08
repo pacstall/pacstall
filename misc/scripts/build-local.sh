@@ -182,7 +182,7 @@ function prompt_optdepends() {
 
 function generate_changelog() {
     printf "%s (%s) %s; urgency=medium\n\n  * Version now at %s.\n\n -- %s %(%a, %d %b %Y %T %z)T\n" \
-        "${pkgname}" "${full_version}" "$(lsb_release -sc)" "${full_version}" "${maintainer}"
+        "${pkgname}" "${full_version}" "$(lsb_release -sc)" "${full_version}" "${maintainer[0]}"
 }
 
 function clean_logdir() {
@@ -319,8 +319,16 @@ function makedeb() {
         deblog "Homepage" "${url}"
     fi
 
-    if [[ -n ${maintainer} ]]; then
-        deblog "Maintainer" "${maintainer}"
+    if [[ -n ${maintainer[*]} ]]; then
+        deblog "Maintainer" "${maintainer[0]}"
+        if ((${#maintainer[@]} > 1)); then
+            # Since https://www.debian.org/doc/debian-policy/ch-controlfields.html#uploaders says that Maintainer can only have one field, shove the rest in Uploaders
+            local uploaders
+            printf -v uploaders '%s, ' "${maintainer[@]:1}"
+            printf -v uploaders '%s' "${uploaders%, }"
+            deblog "Uploaders" "${uploaders}"
+            unset uploaders
+        fi
     else
         deblog "Maintainer" "Pacstall <pacstall@pm.me>"
     fi
@@ -344,6 +352,7 @@ function makedeb() {
     else
         deblog "Description" "${pkgdesc}"
     fi
+    local pre_inst_upg post_inst_upg
     if is_package_installed "${pkgname}"; then
         if type -t pre_upgrade &> /dev/null; then
             pre_inst_upg="pre_upgrade"
@@ -393,6 +402,7 @@ function makedeb() {
             } | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/$deb_post_file" > /dev/null
         fi
     done
+    unset pre_inst_upg post_inst_upg
     echo -e "sudo rm -f $METADIR/$pkgname\nsudo rm -f /etc/apt/preferences.d/$pkgname-pin" | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/postrm" > /dev/null
     local postfile
     for postfile in {postrm,postinst,preinst}; do
@@ -488,8 +498,10 @@ function write_meta() {
     echo "_version=\"${full_version}\""
     echo "_install_size=\"${install_size}\""
     printf '_date=\"%(%a %b %_d %r %Z %Y)T\"\n'
-    if [[ -n $maintainer ]]; then
-        echo "_maintainer=\"${maintainer}\""
+    if [[ -n ${maintainer[*]} ]]; then
+        _maintainer=("${maintainer[@]}")
+        declare -p _maintainer
+        unset _maintainer
     fi
     if [[ -n $ppa ]]; then
         echo "_ppa=(${ppa[*]})"

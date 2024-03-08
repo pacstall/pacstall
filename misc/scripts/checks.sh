@@ -204,7 +204,7 @@ function lint_pkgdesc() {
 }
 
 function lint_maintainer() {
-    if [[ -z $maintainer ]]; then
+    if [[ -z ${maintainer[*]} ]]; then
         fancy_message warn "Package does not have a maintainer. Please be advised"
     fi
     return 0
