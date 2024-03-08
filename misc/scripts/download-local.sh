@@ -29,34 +29,34 @@ source "${STGDIR}/scripts/build-local.sh" || {
 }
 
 function parse_source_entry() {
-    unset url dest git_branch git_tag git_commit
+    unset source_url dest git_branch git_tag git_commit
     local entry="$1"
-    url="${entry#*::}"
+    source_url="${entry#*::}"
     dest="${entry%%::*}"
     if [[ $entry != *::* && $entry == *#*=* ]]; then
-        dest="${url%%#*}"
+        dest="${source_url%%#*}"
         dest="${dest##*/}"
     fi
-    case $url in
+    case $source_url in
         *#branch=*)
-            git_branch="${url##*#branch=}"
-            url="${url%%#branch=*}"
+            git_branch="${source_url##*#branch=}"
+            source_url="${source_url%%#branch=*}"
             ;;
         *#tag=*)
-            git_tag="${url##*#tag=}"
-            url="${url%%#tag=*}"
+            git_tag="${source_url##*#tag=}"
+            source_url="${source_url%%#tag=*}"
             ;;
         *#commit=*)
-            git_commit="${url##*#commit=}"
-            url="${url%%#commit=*}"
+            git_commit="${source_url##*#commit=}"
+            source_url="${source_url%%#commit=*}"
             ;;
     esac
-    url="${url%%#*}"
+    source_url="${source_url%%#*}"
     if [[ $entry == *::* ]]; then
         dest="${entry%%::*}"
     elif [[ $entry != *#*=* ]]; then
-        url="$entry"
-        dest="${url##*/}"
+        source_url="$entry"
+        dest="${source_url##*/}"
     fi
     if [[ ${dest} == *"?"* ]]; then
         dest="${dest%%\?*}"
@@ -66,17 +66,17 @@ function parse_source_entry() {
 function calc_git_pkgver() {
     unset comp_git_pkgver
     local calc_commit
-    if [[ $url == git+* ]]; then
-        url="${url#git+}"
+    if [[ $source_url == git+* ]]; then
+        source_url="${source_url#git+}"
     fi
     if [[ -n ${git_branch} ]]; then
-        calc_commit="$(git ls-remote "${url}" "${git_branch}")"
+        calc_commit="$(git ls-remote "${source_url}" "${git_branch}")"
     elif [[ -n ${git_tag} ]]; then
-        calc_commit="$(git ls-remote "${url}" "${git_tag}")"
+        calc_commit="$(git ls-remote "${source_url}" "${git_tag}")"
     elif [[ -n ${git_commit} ]]; then
         calc_commit="${git_commit}"
     else
-        calc_commit="$(git ls-remote "${url}" HEAD)"
+        calc_commit="$(git ls-remote "${source_url}" HEAD)"
     fi
     comp_git_pkgver="${calc_commit:0:8}"
 }
@@ -84,7 +84,7 @@ function calc_git_pkgver() {
 function genextr_declare() {
     unset ext_method ext_deps
     # shellcheck disable=SC2031,SC2034
-    case "${url,,}" in
+    case "${source_url,,}" in
         *.zip)
             ext_method="unzip -qo"
             ext_deps=("unzip")
@@ -155,15 +155,15 @@ function clean_fail_down() {
 }
 
 function hashcheck() {
-    local inputFile="${1}" inputHash="${2}" fileHash
+    local inputFile="${1}" inputHash="${2}" hashMethod="${3}sum" fileHash
     # Get hash of file
-    fileHash="$(sha256sum "${inputFile}")"
+    fileHash="$(${hashMethod} "${inputFile}")"
     fileHash="${fileHash%% *}"
 
     # Check if the input hash is the same as of the downloaded file.
     # Skip this test if the hash variable doesn't exist in the pacscript.
     if [[ -n ${inputHash} && ${inputHash} != "${fileHash}" ]]; then
-        fancy_message error "Hashes do not match"
+        fancy_message error "Hashes do not match (with method ${hashMethod})"
         fancy_message sub "Got:      ${BRed}${fileHash}${NC}"
         fancy_message sub "Expected: ${BGreen}${inputHash}${NC}"
         error_log 16 "install $PACKAGE"
@@ -178,23 +178,23 @@ function fail_down() {
 }
 
 function gather_down() {
-    if [[ -z ${pkgbase} ]]; then
+    if [[ -z ${srcdir} ]]; then
         if [[ -n $PACSTALL_PAYLOAD ]]; then
-            export pkgbase="/tmp/pacstall-pacdep"
+            export srcdir="/tmp/pacstall-pacdep"
         else
-            export pkgbase="${SRCDIR}/${PACKAGE}~${pkgver}"
+            export srcdir="${PACDIR}/${PACKAGE}~${pkgver}"
         fi
     fi
-    mkdir -p "${pkgbase}"
-    if ! [[ ${PWD} == "${pkgbase}" ]]; then
-        find "${PWD}" -mindepth 1 -maxdepth 1 ! -wholename "${pkgbase}" \
-            ! -wholename "${SRCDIR}" \
+    mkdir -p "${srcdir}"
+    if ! [[ ${PWD} == "${srcdir}" ]]; then
+        find "${PWD}" -mindepth 1 -maxdepth 1 ! -wholename "${srcdir}" \
+            ! -wholename "${PACDIR}" \
             ! -wholename "/tmp/pacstall-pacdep" \
             ! -wholename "/tmp/pacstall-pacdeps-$PACKAGE" \
-            -exec mv {} "${pkgbase}/" \;
-        cd "${pkgbase}" || {
+            -exec mv {} "${srcdir}/" \;
+        cd "${srcdir}" || {
             error_log 1 "gather-main $PACKAGE"
-            fancy_message error "Could not enter into the main directory ${YELLOW}${pkgbase}${NC}"
+            fancy_message error "Could not enter into the main directory ${YELLOW}${srcdir}${NC}"
             clean_fail_down
         }
     fi
@@ -221,7 +221,7 @@ function git_down() {
     fi
     # git clone quietly, with no history, and if submodules are there, download with 10 jobs
     # shellcheck disable=SC2086,SC2031
-    git clone --quiet --depth=1 --jobs=10 "${url}" "${dest}" ${gitopts} &> /dev/null || fail_down
+    git clone --quiet --depth=1 --jobs=10 "${source_url}" "${dest}" ${gitopts} &> /dev/null || fail_down
     # cd into the directory
     cd "./${dest}" 2> /dev/null || {
         error_log 1 "install $PACKAGE"
@@ -248,20 +248,20 @@ function git_down() {
         cd ..
         gather_down
     else
-        export pkgbase="${PWD}"
+        export srcdir="${PWD}"
     fi
 }
 
 function net_down() {
     fancy_message info "Downloading ${BPurple}${dest}${NC}"
     # shellcheck disable=SC2031
-    download "$url" "$dest" || fail_down
+    download "$source_url" "$dest" || fail_down
 }
 
 function hashcheck_down() {
     if [[ -n ${expectedHash} && ${expectedHash} != "SKIP" ]]; then
         fancy_message sub "Checking hash ${YELLOW}${expectedHash:0:8}${NC}[${YELLOW}...${NC}]"
-        hashcheck "${dest}" "${expectedHash}" || return 1
+        hashcheck "${dest}" "${expectedHash}" "${hashsum_method}" || return 1
     fi
 }
 
@@ -287,7 +287,7 @@ function genextr_down() {
             fancy_message warn "Could not enter into the extracted archive"
             gather_down
         }
-        export pkgbase="${PWD}"
+        export srcdir="${PWD}"
     else
         gather_down
     fi
@@ -295,7 +295,13 @@ function genextr_down() {
 
 function deb_down() {
     hashcheck_down
-    if type -t pre_install &> /dev/null; then
+    if is_package_installed "${pkgname}" && type -t pre_upgrade &> /dev/null; then
+        if ! pre_upgrade; then
+            error_log 5 "pre_upgrade hook"
+            fancy_message error "Could not run preinst hook successfully"
+            exit 1
+        fi
+    elif type -t pre_install &> /dev/null; then
         if ! pre_install; then
             error_log 5 "pre_install hook"
             fancy_message error "Could not run preinst hook successfully"
@@ -304,8 +310,8 @@ function deb_down() {
     fi
     if sudo apt install -y -f ./"${dest}" 2> /dev/null; then
         meta_log
-        if [[ -f /tmp/pacstall-pacdeps-"$name" ]]; then
-            sudo apt-mark auto "${gives:-$name}" 2> /dev/null
+        if [[ -f /tmp/pacstall-pacdeps-"$pkgname" ]]; then
+            sudo apt-mark auto "${gives:-$pkgname}" 2> /dev/null
         fi
         if type -t post_install &> /dev/null; then
             if ! post_install; then
@@ -329,7 +335,7 @@ function deb_down() {
     else
         fancy_message error "Failed to install the package"
         error_log 14 "install $PACKAGE"
-        sudo apt purge "${gives:-$name}" -y > /dev/null
+        sudo apt purge "${gives:-$pkgname}" -y > /dev/null
         clean_fail_down
     fi
 }
@@ -337,7 +343,7 @@ function deb_down() {
 function file_down() {
     fancy_message info "Copying local archive ${BPurple}${dest}${NC}"
     # shellcheck disable=SC2031
-    cp -r "${url}" "${dest}" || fail_down
+    cp -r "${source_url}" "${dest}" || fail_down
     genextr_declare
     if [[ -n ${ext_method} ]]; then
         genextr_down
@@ -347,25 +353,52 @@ function file_down() {
             fancy_message warn "Could not enter into the copied archive"
             gather_down
         }
-        export pkgbase="${PWD}"
+        export srcdir="${PWD}"
     else
+        hashcheck_down
         gather_down
     fi
 }
 
-function append_arch_entry() {
-    local source_arch hash_arch
+function append_archAndHash_entry() {
+    local source_arch hash_arch hashsum_type hashsum_style hashsums=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5")
+    unset hashsum_method
     # shellcheck disable=SC2153
     source_arch="source_${CARCH}[*]"
-    hash_arch="hash_${CARCH}[*]"
     if [[ -n ${!source_arch} ]]; then
-        # shellcheck disable=SC2206
-        source+=(${!source_arch})
+        if [[ -z ${source[*]} ]]; then
+            # shellcheck disable=SC2206
+            source=(${!source_arch})
+        else
+            # shellcheck disable=SC2206
+            source+=(${!source_arch})
+        fi
     fi
-    if [[ -n ${!hash_arch} ]]; then
-        # shellcheck disable=SC2206
-        hash+=(${!hash_arch})
-    fi
+    for hashsum_type in "${hashsums[@]}"; do
+        hashsum_style="${hashsum_type}sums[*]"
+        if [[ -n ${!hashsum_style} ]]; then
+            # shellcheck disable=SC2206
+            hash=(${!hashsum_style})
+            export hashsum_method="${hashsum_type}"
+            break
+        fi
+    done
+    for hashsum_type in "${hashsums[@]}"; do
+        hashsum_style="${hashsum_type}sums[*]"
+        # shellcheck disable=SC2153
+        hash_arch="${hashsum_type}sums_${CARCH}[*]"
+        if [[ -n ${!hash_arch} ]]; then
+            if [[ -z ${!hashsum_style} && -z ${hash[*]} ]]; then
+                # shellcheck disable=SC2206
+                hash=(${!hash_arch})
+                export hashsum_method="${hashsum_type}"
+            else
+                # shellcheck disable=SC2206
+                hash+=(${!hash_arch})
+            fi
+            break
+        fi
+    done
 }
 
 function calc_distro() {
@@ -488,13 +521,11 @@ function install_builddepends() {
         done
 
         if ((${#not_installed_yet_builddepends[@]} != 0)); then
-            fancy_message info "${BLUE}$name${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to install"
+            fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to install"
             if ! sudo apt-get install -y "${not_installed_yet_builddepends[@]}"; then
                 fancy_message error "Failed to install build dependencies"
                 error_log 8 "install $PACKAGE"
-                fancy_message info "Cleaning up"
-                cleanup
-                return 1
+                clean_fail_down
             fi
         fi
     fi
@@ -516,16 +547,16 @@ function compare_remote_version() {
     local remotever
     remotever="$(
         unset pkgrel
-        source <(curl -s -- "$remoterepo/packages/$crv_input/$crv_input.pacscript") && \
-        if [[ ${name} == *-git ]]; then
-            parse_source_entry "${source[0]}"
-            calc_git_pkgver
-            echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git${comp_git_pkgver}"
-        elif [[ ${name} == *-deb ]]; then
-            echo "${epoch+$epoch:}${pkgver}"
-        else
-            echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
-        fi
+        source <(curl -s -- "$remoterepo/packages/$crv_input/$crv_input.pacscript") \
+            && if [[ ${pkgname} == *-git ]]; then
+                parse_source_entry "${source[0]}"
+                calc_git_pkgver
+                echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git${comp_git_pkgver}"
+            elif [[ ${pkgname} == *-deb ]]; then
+                echo "${epoch+$epoch:}${pkgver}"
+            else
+                echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
+            fi
     )" > /dev/null
     if [[ $crv_input == *"-git" ]]; then
         if [[ $(pacstall -Qi "$crv_input" version) != "$remotever" ]]; then

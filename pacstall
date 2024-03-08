@@ -28,7 +28,7 @@ export METADIR="/var/lib/pacstall/metadata"
 export LOGDIR="/var/log/pacstall/error_log"
 printf -v LOGFILE "${LOGDIR}/%(%F_%T)T.log"
 export LOGFILE
-export SRCDIR="/tmp/pacstall"
+export PACDIR="/tmp/pacstall"
 export STGDIR="/usr/share/pacstall"
 export STOWDIR="/usr/src/pacstall"
 
@@ -468,7 +468,7 @@ function getMasks() {
 }
 
 function getMasks_offending_pkg() {
-    local pkgname="${1}"
+    local the_name="${1}"
     mapfile -t pkgs < <(pacstall -L)
     if ((${#pkgs[@]} == 0)); then
         return 0
@@ -476,7 +476,7 @@ function getMasks_offending_pkg() {
     for pkg in "${pkgs[@]}"; do
         source "${METADIR}/${pkg}"
         if [[ -n ${_mask[*]} ]]; then
-            if array.contains _mask "${pkgname}"; then
+            if array.contains _mask "${the_name}"; then
                 echo "${pkg}"
                 return 0
             fi
@@ -568,8 +568,8 @@ if [[ -n $PACSTALL_PAYLOAD && ! -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
         fancy_message error "Payload not found"
         exit 1
     fi
-    mkdir -p "${SRCDIR:?}"
-    cp "$PACSTALL_PAYLOAD" "${SRCDIR:?}"
+    mkdir -p "${PACDIR:?}"
+    cp "$PACSTALL_PAYLOAD" "${PACDIR:?}"
 fi
 
 while [[ $1 != "--" ]]; do
@@ -644,7 +644,7 @@ Helpful links:
 
             function trap_ctrlc() {
                 fancy_message warn "The installation of ${PACKAGE:-package} was interrupted, removing files"
-                rm -rf "${SRCDIR:?}"/* # :? makes bash error out in case SRCDIR is empty, saving us from yoinking /* directory by mistake
+                rm -rf "${PACDIR:?}"/* # :? makes bash error out in case PACDIR is empty, saving us from yoinking /* directory by mistake
                 exit 2
             }
             # Begin trapping
@@ -722,7 +722,7 @@ Helpful links:
                 if ! source "$STGDIR/scripts/install-local.sh"; then
                     fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
                     if ! [[ -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
-                        sudo rm -rf "${SRCDIR:?}"
+                        sudo rm -rf "${PACDIR:?}"
                     fi
                     exit 1
                 fi
