@@ -522,7 +522,7 @@ for i in "${@}"; do
     # We remove the '-' prefix as we'll add it later.
     for j in $(sed 's|[[:upper:]]| &|g' <<< "${i:1}"); do
         # If current string is 'P', add to beginning of argument list.
-        if [[ ${j} == "B" || ${j} == "-build-only" || ${j} == "P" || ${j} == "-disable-prompts" || ${j} == "K" || ${j} == "-keep" ]]; then
+        if [[ ${j} == "B" || ${j} == "-build-only" || ${j} == "P" || ${j} == "-disable-prompts" || ${j} == "K" || ${j} == "-keep" || ${j} == "Nc" || ${j} == "-nocheck" ]]; then
             argument_list=("-${j}" "${argument_list[@]}")
         else
             argument_list+=("-${j}")
@@ -587,7 +587,7 @@ while [[ $1 != "--" ]]; do
             ;;
 
         -h | --help)
-            echo -e "Usage: pacstall [-h] [-V] {-I,-S,-R,-D,-A,-U,-L,-Up,-Qi,-T} [-P] [-K] [-B]
+            echo -e "Usage: pacstall [-h] [-V] {-I,-S,-R,-D,-A,-U,-L,-Up,-Qi,-T} [-P] [-K] [-B] [-Nc]
 
 An AUR inspired package manager for Ubuntu.
 
@@ -620,6 +620,8 @@ Options:
 		Keep the build files.
 	${BOLD}-B${NC}, ${BOLD}--build-only${NC}
 		Build the deb but do not install.
+    ${BOLD}-Nc${NC}, ${BOLD}--nocheck${NC}
+        Skip the check() function if present.
 	${BOLD}-V${NC}, ${BOLD}--version${NC}
 		Display the version number.
 	${BOLD}-h${NC}, ${BOLD}--help${NC}
@@ -982,6 +984,11 @@ Helpful links:
         -K | --keep)
             fancy_message info "Keeping build files"
             KEEP=true
+            ;;
+
+        -Nc | --nocheck)
+            fancy_message info "Skipping check() if present"
+            NOCHECK=true
             ;;
 
         *)
