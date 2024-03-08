@@ -295,7 +295,13 @@ function genextr_down() {
 
 function deb_down() {
     hashcheck_down
-    if type -t pre_install &> /dev/null; then
+    if is_package_installed "${pkgname}" && type -t pre_upgrade &> /dev/null; then
+        if ! pre_upgrade; then
+            error_log 5 "pre_upgrade hook"
+            fancy_message error "Could not run preinst hook successfully"
+            exit 1
+        fi
+    elif type -t pre_install &> /dev/null; then
         if ! pre_install; then
             error_log 5 "pre_install hook"
             fancy_message error "Could not run preinst hook successfully"

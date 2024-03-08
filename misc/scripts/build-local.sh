@@ -45,7 +45,7 @@ function cleanup() {
     sudo rm -rf "${STOWDIR}/${pkgname:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
     unset pkgname repology pkgver git_pkgver epoch source_url source depends makedepends conflicts breaks replaces gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall srcdir url backup pkgrel mask pac_functions repo priority noextract 2> /dev/null
-    unset -f post_install post_remove pre_install prepare build package 2> /dev/null
+    unset -f pre_install pre_upgrade pre_remove post_install post_upgrade post_remove prepare build package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
 
@@ -344,12 +344,28 @@ function makedeb() {
     else
         deblog "Description" "${pkgdesc}"
     fi
+    if is_package_installed "${pkgname}"; then
+        if type -t pre_upgrade &> /dev/null; then
+            pre_inst_upg="pre_upgrade"
+        else
+            pre_inst_upg="pre_install"
+        fi
+        if type -t post_upgrade &> /dev/null; then
+            post_inst_upg="post_upgrade"
+        else
+            post_inst_upg="post_install"
+        fi
+    else
+        pre_inst_upg="pre_install"
+        post_inst_upg="post_install"
+    fi
 
-    for i in {post_remove,post_install,pre_install}; do
+    for i in {"${pre_inst_upg}",pre_remove,"${post_inst_upg}",post_remove}; do
         case "$i" in
+            "${pre_inst_upg}") export deb_post_file="preinst" ;;
+            pre_remove) export deb_post_file="prerm" ;;
+            "${post_inst_upg}") export deb_post_file="postinst" ;;
             post_remove) export deb_post_file="postrm" ;;
-            post_install) export deb_post_file="postinst" ;;
-            pre_install) export deb_post_file="preinst" ;;
         esac
         if is_function "$i"; then
             local pac_min_functions pacmf_out
