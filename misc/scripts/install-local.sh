@@ -419,12 +419,19 @@ $(shopt -p -o)"
     eval "$restoreshopt"
     eval "$restoretrap"
 }
-
-for i in {prepare,build,package}; do
-    if is_function "$i"; then
-        pac_functions+=("$i")
-    fi
-done
+if [[ $NOCHECK == true ]]; then
+    for i in {prepare,build,package}; do
+        if is_function "$i"; then
+            pac_functions+=("$i")
+        fi
+    done
+else
+    for i in {prepare,build,check,package}; do
+        if is_function "$i"; then
+            pac_functions+=("$i")
+        fi
+    done
+fi
 if [[ -n ${pac_functions[*]} ]]; then
     fancy_message info "Running functions"
     for function in "${pac_functions[@]}"; do
