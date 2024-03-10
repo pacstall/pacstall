@@ -89,7 +89,7 @@ if ! command -v apt &> /dev/null; then
 fi
 apt-get install -y -qq sudo wget curl iputils-ping
 
-echo -e "${PACYELLOW}|────────────────────────|\n|   ${PACCYAN}Pacstall Installer${PACYELLOW}   |\n|────────────────────────|${NC}"
+echo -e "${PACYELLOW}┌────────────────────────┐\n│   ${PACCYAN}Pacstall Installer${PACYELLOW}   │\n└────────────────────────┘${NC}"
 
 if [[ ${GITHUB_ACTIONS} != "true" ]]; then
     check_url "https://github.com" || {
