@@ -44,7 +44,7 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${pkgname:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset pkgname repology pkgver git_pkgver epoch source_url source depends makedepends conflicts breaks replaces gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible optinstall srcdir url backup pkgrel mask pac_functions repo priority noextract 2> /dev/null
+    unset pkgname repology pkgver git_pkgver epoch source_url source depends makedepends conflicts breaks replaces gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible compatible optinstall srcdir url backup pkgrel mask pac_functions repo priority noextract 2> /dev/null
     unset -f pre_install pre_upgrade pre_remove post_install post_upgrade post_remove prepare build check package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
