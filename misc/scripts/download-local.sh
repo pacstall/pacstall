@@ -185,19 +185,15 @@ function gather_down() {
             export srcdir="${PACDIR}/${PACKAGE}~${pkgver}"
         fi
     fi
-    mkdir -p "${srcdir}"
-    if ! [[ ${PWD} == "${srcdir}" ]]; then
-        find "${PWD}" -mindepth 1 -maxdepth 1 ! -wholename "${srcdir}" \
-            ! -wholename "${PACDIR}" \
-            ! -wholename "/tmp/pacstall-pacdep" \
-            ! -wholename "/tmp/pacstall-pacdeps-$PACKAGE" \
-            -exec mv {} "${srcdir}/" \;
-        cd "${srcdir}" || {
-            error_log 1 "gather-main $PACKAGE"
-            fancy_message error "Could not enter into the main directory ${YELLOW}${srcdir}${NC}"
-            clean_fail_down
-        }
+    if [[ -z ${_archive} ]]; then
+        export _archive="${srcdir}"
     fi
+    mkdir -p "${srcdir}"
+    cd "${srcdir}" || {
+        error_log 1 "gather-main $PACKAGE"
+        fancy_message error "Could not enter into the main directory ${YELLOW}${srcdir}${NC}"
+        clean_fail_down
+    }
 }
 
 function git_down() {
@@ -244,12 +240,12 @@ function git_down() {
         fancy_message error "Cloned git repository does not match upstream hash"
         clean_fail_down
     fi
-    if [[ ${source[i]} != "${source[0]}" ]]; then
-        cd ..
-        gather_down
-    else
-        export srcdir="${PWD}"
+    # if first source entry & archive is not set, this becomes archive
+    if [[ ${source[i]} == "${source[0]}" && -z ${_archive} ]]; then
+        export _archive="${PWD}"
     fi
+    # cd back to srcdir
+    gather_down
 }
 
 function net_down() {
@@ -281,16 +277,20 @@ function genextr_down() {
             rm -f "${dest}"
         fi
     fi
+    # if first source and extract is true, enter it for archive check
     if [[ ${source[i]} == "${source[0]}" && ${extract} == "true" ]]; then
+        # cd in
         cd ./*/ 2> /dev/null || {
             error_log 1 "install $PACKAGE"
             fancy_message warn "Could not enter into the extracted archive"
-            gather_down
         }
-        export srcdir="${PWD}"
-    else
-        gather_down
+        # if archive is not set and we entered something, this becomes archive
+        if [[ -z ${_archive} && ${PWD} != "${srcdir}" ]]; then
+            export _archive="${PWD}"
+        fi
     fi
+    # cd back to srcdir
+    gather_down
 }
 
 function deb_down() {
@@ -348,16 +348,20 @@ function file_down() {
     if [[ -n ${ext_method} ]]; then
         genextr_down
     elif [[ ${source[i]} == "${source[0]}" && -d ${dest} ]]; then
+        # cd in
         cd "./${dest}" 2> /dev/null || {
             error_log 1 "install $PACKAGE"
             fancy_message warn "Could not enter into the copied archive"
-            gather_down
         }
-        export srcdir="${PWD}"
+        # if archive not exist and we entered, its here
+        if [[ -z ${_archive} && ${PWD} != "${srcdir}" ]]; then
+            export _archive="${PWD}"
+        fi
     else
         hashcheck_down
-        gather_down
     fi
+    # back to srcdir
+    gather_down
 }
 
 function append_archAndHash_entry() {
