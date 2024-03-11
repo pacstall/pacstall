@@ -323,6 +323,7 @@ else
 fi
 
 mkdir -p "${PACDIR}"
+gather_down
 
 for i in "${!source[@]}"; do
     parse_source_entry "${source[$i]}"
@@ -369,6 +370,9 @@ for i in "${!source[@]}"; do
 done
 unset hashsum_method
 
+if [[ -z ${_archive} ]]; then
+    export _archive="${srcdir}"
+fi
 export pacdir="$PWD"
 sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2> /dev/null
 

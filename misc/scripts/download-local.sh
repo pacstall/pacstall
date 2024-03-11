@@ -185,9 +185,6 @@ function gather_down() {
             export srcdir="${PACDIR}/${PACKAGE}~${pkgver}"
         fi
     fi
-    if [[ -z ${_archive} ]]; then
-        export _archive="${srcdir}"
-    fi
     mkdir -p "${srcdir}"
     cd "${srcdir}" || {
         error_log 1 "gather-main $PACKAGE"
