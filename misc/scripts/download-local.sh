@@ -194,7 +194,7 @@ function gather_down() {
 }
 
 function git_down() {
-    local revision gitopts
+    local revision gitopts submodules=true no_submodule
     dest="${dest%.git}"
     if [[ -n ${git_branch} || -n ${git_tag} ]]; then
         if [[ -n ${git_branch} ]]; then
@@ -204,12 +204,12 @@ function git_down() {
             revision="${git_tag}"
             fancy_message info "Cloning ${BPurple}${dest}${NC} from tag ${CYAN}${git_tag}${NC}"
         fi
-        gitopts="--recurse-submodules -b ${revision}"
+        gitopts="-b ${revision}"
     elif [[ -n ${git_commit} ]]; then
         gitopts="--no-checkout --filter=blob:none"
         fancy_message info "Cloning ${BPurple}${dest}${NC} with no blobs"
     else
-        gitopts="--recurse-submodules"
+        unset gitopts
         fancy_message info "Cloning ${BPurple}${dest}${NC} from ${CYAN}HEAD${NC}"
     fi
     # git clone quietly, with no history, and if submodules are there, download with 10 jobs
@@ -225,7 +225,18 @@ function git_down() {
         fancy_message sub "Fetching commit ${CYAN}${git_commit:0:8}${NC}"
         git fetch --quiet origin "${git_commit}" &> /dev/null || fail_down
         git checkout --quiet --force "${git_commit}" &> /dev/null || fail_down
-        git submodule update --init --recursive
+    fi
+    for no_submodule in "${nosubmodules[@]}"; do
+        if [[ ${no_submodule} == "${dest}" ]]; then
+            submodules=false
+            break
+        fi
+    done
+    if ${submodules}; then
+        # don't send this one to /dev/null like the others
+        git submodule update --quiet --init --recursive --depth=1 || fail_down
+    else
+        fancy_message sub "Not cloning submodules for ${CYAN}${dest}${NC}"
     fi
     # Check the integrity
     calc_git_pkgver
