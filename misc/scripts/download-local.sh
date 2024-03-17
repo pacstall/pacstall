@@ -236,7 +236,7 @@ function git_down() {
         # don't send this one to /dev/null like the others
         git submodule update --quiet --init --recursive --depth=1 || fail_down
     else
-        fancy_message sub "Not cloning submodules for ${CYAN}${dest}${NC}"
+        fancy_message sub "Not cloning submodules for ${PURPLE}${dest}${NC}"
     fi
     # Check the integrity
     calc_git_pkgver
