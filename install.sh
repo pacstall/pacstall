@@ -101,7 +101,10 @@ fi
 echo
 if [[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ]]; then
     fancy_message info "Updating"
-    apt-get -qq update
+    case "${GITHUB_ACTIONS}" in
+        true) apt-get update -qq ;;
+        *) apt-get update ;;
+    esac
 fi
 
 fancy_message info "Installing packages"
@@ -110,10 +113,19 @@ echo -ne "Do you want to install axel (faster downloads)? [${BGreen}Y${NC}/${RED
 read -r reply <&0
 case "$reply" in
     N* | n*) ;;
-    *) apt-get install -qq -y axel ;;
+    *)
+        case "${GITHUB_ACTIONS}" in
+            true) apt-get install axel -y -qq ;;
+            *) apt-get install axel -y ;;
+        esac
+        ;;
 esac
 
-apt-get install -qq -y curl wget build-essential unzip git zstd iputils-ping lsb-release
+if [[ ${GITHUB_ACTIONS} == "true" ]]; then
+    apt-get install -qq -y curl wget build-essential unzip git zstd iputils-ping lsb-release
+else
+    apt-get install -y curl wget build-essential unzip git zstd iputils-ping lsb-release
+fi
 
 LOGDIR="/var/lib/pacstall/metadata"
 STGDIR="/usr/share/pacstall"
