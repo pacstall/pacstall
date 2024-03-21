@@ -154,7 +154,9 @@ function prompt_optdepends() {
             fi
         fi
     fi
+}
 
+function mark_depends() {
     if [[ -n ${pacdeps[*]} ]]; then
         for i in "${pacdeps[@]}"; do
             (

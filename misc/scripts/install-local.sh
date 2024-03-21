@@ -383,6 +383,7 @@ trap cleanup ERR
 trap - SIGINT
 
 prompt_optdepends || return 1
+mark_depends || return 1
 clean_logdir
 
 function fail_out_functions() {
