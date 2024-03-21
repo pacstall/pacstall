@@ -32,6 +32,8 @@ GREEN='\033[0;32m'
 BRed='\033[1;31m'
 BGreen='\033[1;32m'
 BYellow='\033[1;33m'
+PACCYAN='\e[38;5;30m'
+PACYELLOW='\e[38;5;214m'
 
 function fancy_message() {
     # $1 = type , $2 = message
@@ -87,9 +89,7 @@ if ! command -v apt &> /dev/null; then
 fi
 apt-get install -y -qq sudo wget curl iputils-ping
 
-echo -e "|------------------------|"
-echo -e "|---${GREEN}Pacstall Installer${NC}---|"
-echo -e "|------------------------|"
+echo -e "${PACYELLOW}┌────────────────────────┐\n│   ${PACCYAN}Pacstall Installer${PACYELLOW}   │\n└────────────────────────┘${NC}"
 
 if [[ ${GITHUB_ACTIONS} != "true" ]]; then
     check_url "https://github.com" || {
@@ -117,7 +117,7 @@ apt-get install -qq -y curl wget build-essential unzip git zstd iputils-ping lsb
 
 LOGDIR="/var/lib/pacstall/metadata"
 STGDIR="/usr/share/pacstall"
-SRCDIR="/tmp/pacstall"
+PACDIR="/tmp/pacstall"
 PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER}}")
 
 fancy_message info "Making directories"
@@ -125,8 +125,8 @@ mkdir -p "$STGDIR"
 mkdir -p "$STGDIR/scripts"
 mkdir -p "$STGDIR/repo"
 
-mkdir -p "$SRCDIR"
-chown "$PACSTALL_USER" -R "$SRCDIR"
+mkdir -p "$PACDIR"
+chown "$PACSTALL_USER" -R "$PACDIR"
 
 mkdir -p "$LOGDIR"
 mkdir -p "/var/log/pacstall/error_log"
