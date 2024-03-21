@@ -62,18 +62,31 @@ function clean_builddir() {
 }
 
 function prompt_optdepends() {
-    local deps optdep
+    local deps optdep opt check_version missing_optdeps=() not_satisfied_optdeps=()
     deps=("${depends[@]}")
     if ((${#optdepends[@]} != 0)); then
         local suggested_optdeps=()
         for optdep in "${optdepends[@]}"; do
+            # Firstly, check if this is an alt dep list
+            if dep_const.is_pipe "${optdep}"; then
+                # Ok, we need to select *one* of those deps to be our sacrificial lamb 😈
+                #BUG: If the first package that `dep_const.get_pipe` selects has a version that we can't use but
+                # the list also has a package later on that would work, it won't be displayed
+                optdep="$(dep_const.get_pipe "${optdep}")"
+            fi
             # Strip the description, `opt` is now the canonical optdep name
-            local opt="${optdep%%: *}"
+            dep_const.strip_description "${optdep}" opt
             # Check if package exists in the repos, and if not, go to the next program
             if [[ -z "$(apt-cache search --no-generate --names-only "^$opt\$" 2> /dev/null || apt-cache search --names-only "^$opt\$")" ]]; then
-                local missing_optdeps+=("${opt}")
+                missing_optdeps+=("${opt}")
                 continue
             fi
+            # Next let's check if the version (if available) is in the repos
+            if ! dep_const.apt_compare_to_constraints "${opt}"; then
+                not_satisfied_optdeps+=("${opt}")
+                continue
+            fi
+
             # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
             # If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of it's status
             if ! is_apt_package_installed "${opt}"; then
@@ -83,12 +96,17 @@ function prompt_optdepends() {
             fi
         done
 
-        if [[ -n ${missing_optdeps[*]} ]] || ((${#suggested_optdeps[@]} != 0)); then
+        if [[ -n ${missing_optdeps[*]} || -n ${not_satisfied_optdeps[*]} ]] || ((${#suggested_optdeps[@]} != 0)); then
             fancy_message sub "Optional dependencies"
         fi
         if [[ -n ${missing_optdeps[*]} ]]; then
             echo -ne "\t"
             fancy_message warn "${BLUE}${missing_optdeps[*]}${NC} does not exist in apt repositories"
+        fi
+        if [[ -n ${not_satisfied_optdeps[*]} ]]; then
+            echo -ne "\t"
+            fancy_message warn "${BLUE}${not_satisfied_optdeps[*]}${NC} versions cannot be satisfied"
+
         fi
         if ((${#suggested_optdeps[@]} != 0)); then
             if ((PACSTALL_INSTALL != 0)); then
@@ -122,41 +140,38 @@ function prompt_optdepends() {
                 if [[ ${choices[0]} != "n" && ${choices[0]} != "0" ]]; then
                     for i in "${choices[@]}"; do
                         # Set our user array that started at 1 down to 0 based
-                        ((i--))
-                        local s="${suggested_optdeps[$i]}"
-                        local not_installed_yet_optdeps+=("${s%%: *}")
-                        unset s
+                        local not_installed_yet_optdeps+=("${suggested_optdeps[$((i - 1))]}")
                     done
                     if [[ -n ${not_installed_yet_optdeps[*]} ]]; then
                         fancy_message info "Selecting packages ${BCyan}${not_installed_yet_optdeps[*]}${NC}"
                         # final_merged_deps is a dep list of *every* type of dep we want to be logged into Suggests. This includes
                         # already installed optdeps, not yet installed ones (selected by user) and the rest
                         local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${suggested_optdeps[@]}")
-                        # shellcheck disable=SC2001
-                        deblog "Suggests" "$(sed 's/ /, /g' <<< "${final_merged_deps[@]//: */}")"
+                        local log_depends log_depends_str
+                        dep_const.format_control optdepends log_depends
+                        dep_const.comma_array log_depends log_depends_str
+                        deblog "Suggests" "${log_depends_str}"
                         fancy_message info "Installing selected optional dependencies"
                         sudo -E apt-get install "${not_installed_yet_optdeps[@]}" -y 2> /dev/null
                     fi
                 else # Did we get 0 or n?
                     # Add everything to Suggests
-                    local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${suggested_optdeps[@]}")
-                    # shellcheck disable=SC2001
-                    deblog "Suggests" "$(sed 's/ /, /g' <<< "${final_merged_deps[@]//: */}")"
+                    local log_depends log_depends_str
+                    dep_const.format_control optdepends log_depends
+                    dep_const.comma_array log_depends log_depends_str
+                    deblog "Suggests" "${log_depends_str}"
                 fi
             else # If `-B` is being used
                 # We can log everything from optdepends to Suggests
-                for pkg in "${optdepends[@]}"; do
-                    local B_suggests+=("${pkg%%: *}")
-                done
-                # shellcheck disable=SC2001
-                deblog "Suggests" "$(sed 's/ /, /g' <<< "${B_suggests[@]//: */}")"
-                unset pkg
+                local log_depends log_depends_str
+                dep_const.format_control optdepends log_depends
+                dep_const.comma_array log_depends log_depends_str
+                deblog "Suggests" "${log_depends_str}"
             fi
         fi
     fi
-}
 
-function mark_depends() {
+    local depends_for_logging out_str
     if [[ -n ${pacdeps[*]} ]]; then
         for i in "${pacdeps[@]}"; do
             (
@@ -177,8 +192,10 @@ function mark_depends() {
     # Do we have any deps or optdeps scheduled for installation?
     if [[ -n ${deps[*]} || -n ${not_installed_yet_optdeps[*]} ]]; then
         local all_deps_to_install=("${not_installed_yet_optdeps[@]}" "${deps[@]}")
-        # shellcheck disable=SC2001
-        deblog "Depends" "$(sed 's/ /, /g' <<< "${all_deps_to_install[@]}")"
+
+        dep_const.format_control all_deps_to_install depends_for_logging
+        dep_const.comma_array depends_for_logging out_str
+        deblog "Depends" "${out_str}"
     fi
 }
 

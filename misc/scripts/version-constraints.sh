@@ -32,6 +32,9 @@
 function dep_const.apt_compare_to_constraints() {
     local compare_pkg="${1}" split_up=() pkg_version
     dep_const.split_name_and_version "${compare_pkg}" split_up
+	if ((${#split_up[@]} == 1)); then
+		return 0
+	fi
     if is_apt_package_installed "${split_up[0]}"; then
         pkg_version="$(dpkg-query --showformat='${Version}' --show "${split_up[0]}")"
     else
@@ -103,6 +106,7 @@ function dep_const.split_name_and_version() {
         *"="*) out_var=("${string%%=*}" "${string##*=}") ;;
         *"<"*) out_var=("${string%%<*}" "${string##*<}") ;;
         *">"*) out_var=("${string%%>*}" "${string##*>}") ;;
+		*) out_var=("${string}") ;;
     esac
 }
 
@@ -179,6 +183,15 @@ function dep_const.format_version() {
     done
 }
 
+function dep_const.is_pipe() {
+	local str="${1}"
+	if [[ ${str} =~ ^[[:alnum:]]+[[:alnum:]\|].*\ [^|]+$ ]]; then
+		return 0
+	else
+		return 1
+	fi
+}
+
 # @description Formats an array into a control file compatible list
 # @internal
 #
@@ -199,7 +212,7 @@ function dep_const.format_control() {
         # We can strip out the description because the only people that need it are maintainers.
         dep_const.strip_description "${i}" strip
         # Regex to check for spaced pipe delimited strings ('this | that') and that the last char is not a pipe.
-        if [[ ${strip} =~ ^[[:alnum:]]+[[:alnum:]\|].*\ [^|]+$ ]]; then
+        if dep_const.is_pipe ${strip}; then
             dep_const.pipe_split "${strip}" pipes
             for z in "${pipes[@]}"; do
                 dep_const.format_version "${z}" formatted_pipes
