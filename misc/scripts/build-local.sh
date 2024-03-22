@@ -22,6 +22,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+# shellcheck source=./misc/scripts/version-constraints.sh
+source "${STGDIR}/scripts/version-constraints.sh" || {
+    fancy_message error "Could not find version-constraints"
+    return 1
+}
+
 function cleanup() {
     if [[ -n $KEEP ]]; then
         rm -rf "/tmp/pacstall-keep/$pkgname"
