@@ -123,20 +123,21 @@ function dep_const.split_name_and_version() {
 # How this works is that we loop through the list and check if it is installed, and if so,
 # we use that, if not, we go to the next one, and repeat. If no package is installed, we choose list[0].
 function dep_const.get_pipe() {
-    local string="${1}" pkg
-    local the_array=() formatted=()
+	local string="${1}" pkg the_array=() viable_packages=()
     dep_const.pipe_split "${string}" the_array
     for pkg in "${the_array[@]}"; do
-        dep_const.format_version "${pkg}" formatted
+		if dep_const.apt_compare_to_constraints "${pkg}"; then
+			if is_package_installed "${pkg}" || is_apt_package_installed "${pkg}"; then
+				echo "${pkg}"
+				return 0
+			else
+				viable_packages+=("${pkg}")
+			fi
+		fi
     done
-    for pkg in "${formatted[@]}"; do
-        if is_package_installed "${pkg}"; then
-            echo "${pkg}"
-            return 0
-        fi
-    done
-    # If we haven't got an installed package, select the first one to be used.
-    echo "${formatted[0]}"
+	if [[ -n "${viable_packages[*]}" ]]; then
+		echo "${viable_packages[0]}"
+	fi
 }
 
 # @description Removes description from string
