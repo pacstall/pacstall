@@ -30,24 +30,33 @@
 #
 # @arg $1 string A versioned string.
 function dep_const.apt_compare_to_constraints() {
-    local compare_pkg="${1}" split_up=() pkg_version
-    dep_const.split_name_and_version "${compare_pkg}" split_up
-	if ((${#split_up[@]} == 1)); then
-		return 0
-	fi
+    local compare_pkg="${1}" split_up=() pkg_version stripped
+    dep_const.strip_description "${compare_pkg}" stripped
+    dep_const.split_name_and_version "${stripped}" split_up
+    if ((${#split_up[@]} == 1)); then
+        return 0
+    fi
     if is_apt_package_installed "${split_up[0]}"; then
         pkg_version="$(dpkg-query --showformat='${Version}' --show "${split_up[0]}")"
     else
-        pkg_version="$(aptitude search "${split_up[0]}" -F "%V")"
+        pkg_version="$(aptitude search --disable-columns "?exact-name(${split_up[0]})?architecture($(dep_const.get_arch "${split_up[0]}"))" -F "%V")"
     fi
     case "${compare_pkg}" in
         # Example: foo@1.2.4 where foo<=1.2.5 should return true, because 1.2.4 is less than 1.2.5
-        *"<="*) dpkg --compare-versions "${split_up[0]}" le "${pkg_version}" ;;
-        *">="*) dpkg --compare-versions "${split_up[0]}" ge "${pkg_version}" ;;
-        *"="*) dpkg --compare-versions "${split_up[0]}" eq "${pkg_version}" ;;
-        *"<"*) dpkg --compare-versions "${split_up[0]}" lt "${pkg_version}" ;;
-        *">"*) dpkg --compare-versions "${split_up[0]}" gt "${pkg_version}" ;;
+        *"<="*) dpkg --compare-versions "${split_up[1]}" le "${pkg_version}" ;;
+        *">="*) dpkg --compare-versions "${split_up[1]}" ge "${pkg_version}" ;;
+        *"="*) dpkg --compare-versions "${split_up[1]}" eq "${pkg_version}" ;;
+        *"<"*) dpkg --compare-versions "${split_up[1]}" lt "${pkg_version}" ;;
+        *">"*) dpkg --compare-versions "${split_up[1]}" gt "${pkg_version}" ;;
     esac
+}
+
+function dep_const.get_arch() {
+    if [[ $1 == *":"* ]]; then
+        echo "${1##*:}"
+    else
+        dpkg --print-architecture
+    fi
 }
 
 # https://stackoverflow.com/a/17841619/13449010
@@ -106,7 +115,7 @@ function dep_const.split_name_and_version() {
         *"="*) out_var=("${string%%=*}" "${string##*=}") ;;
         *"<"*) out_var=("${string%%<*}" "${string##*<}") ;;
         *">"*) out_var=("${string%%>*}" "${string##*>}") ;;
-		*) out_var=("${string}") ;;
+        *) out_var=("${string}") ;;
     esac
 }
 
@@ -123,21 +132,21 @@ function dep_const.split_name_and_version() {
 # How this works is that we loop through the list and check if it is installed, and if so,
 # we use that, if not, we go to the next one, and repeat. If no package is installed, we choose list[0].
 function dep_const.get_pipe() {
-	local string="${1}" pkg the_array=() viable_packages=()
+    local string="${1}" pkg the_array=() viable_packages=()
     dep_const.pipe_split "${string}" the_array
     for pkg in "${the_array[@]}"; do
-		if dep_const.apt_compare_to_constraints "${pkg}"; then
-			if is_package_installed "${pkg}" || is_apt_package_installed "${pkg}"; then
-				echo "${pkg}"
-				return 0
-			else
-				viable_packages+=("${pkg}")
-			fi
-		fi
+        if dep_const.apt_compare_to_constraints "${pkg}"; then
+            if is_package_installed "${pkg}" || is_apt_package_installed "${pkg}"; then
+                echo "${pkg}"
+                return 0
+            else
+                viable_packages+=("${pkg}")
+            fi
+        fi
     done
-	if [[ -n "${viable_packages[*]}" ]]; then
-		echo "${viable_packages[0]}"
-	fi
+    if [[ -n ${viable_packages[*]} ]]; then
+        echo "${viable_packages[0]}"
+    fi
 }
 
 # @description Removes description from string
@@ -185,12 +194,12 @@ function dep_const.format_version() {
 }
 
 function dep_const.is_pipe() {
-	local str="${1}"
-	if [[ ${str} =~ ^[[:alnum:]]+[[:alnum:]\|].*\ [^|]+$ ]]; then
-		return 0
-	else
-		return 1
-	fi
+    local str="${1}"
+    if [[ ${str} =~ ^[[:alnum:]]+[[:alnum:]\|].*\ [^|]+$ ]]; then
+        return 0
+    else
+        return 1
+    fi
 }
 
 # @description Formats an array into a control file compatible list
