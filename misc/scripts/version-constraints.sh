@@ -94,7 +94,7 @@ function dep_const.comma_array() {
     local -n input_arr="${1}"
     local -n output_str="${2}"
     printf -v output_str '%s, ' "${input_arr[@]}"
-    printf -v output_str '%s\n' "${output_str%, }"
+    printf -v output_str '%s' "${output_str%, }"
 }
 
 # @description Splits a versioned package into its name and version
