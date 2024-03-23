@@ -196,7 +196,7 @@ function dep_const.format_version() {
 
 function dep_const.is_pipe() {
     local str="${1}"
-    if [[ ${str} =~ ^[[:alnum:]]+[[:alnum:]\|].*\ [^|]+$ ]]; then
+    if [[ ${str} =~ ^(?!.*\|\s*$)(?!^\|\s*).*\|.*$ ]]; then
         return 0
     else
         return 1
