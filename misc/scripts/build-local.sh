@@ -68,7 +68,7 @@ function clean_builddir() {
 }
 
 function prompt_optdepends() {
-    local deps optdep opt check_version missing_optdeps=() not_satisfied_optdeps=()
+    local deps optdep opt just_name=() check_version missing_optdeps=() not_satisfied_optdeps=()
     deps=("${depends[@]}")
     if ((${#optdepends[@]} != 0)); then
         local suggested_optdeps=()
@@ -82,9 +82,11 @@ function prompt_optdepends() {
             fi
             # Strip the description, `opt` is now the canonical optdep name
             dep_const.strip_description "${optdep}" opt
+            # Let's get just the name
+            dep_const.split_name_and_version "${opt}" just_name
             # Check if package exists in the repos, and if not, go to the next program
-            if [[ -z "$(apt-cache search --no-generate --names-only "^$opt\$" 2> /dev/null || apt-cache search --names-only "^$opt\$")" ]]; then
-                missing_optdeps+=("${opt}")
+            if [[ -z "$(apt-cache search --no-generate --names-only "^${just_name[0]}\$" 2> /dev/null || apt-cache search --names-only "^${just_name[0]}\$")" ]]; then
+                missing_optdeps+=("${just_name[0]}")
                 continue
             fi
             # Next let's check if the version (if available) is in the repos
