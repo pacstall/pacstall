@@ -43,11 +43,11 @@ function dep_const.apt_compare_to_constraints() {
     fi
     case "${compare_pkg}" in
         # Example: foo@1.2.4 where foo<=1.2.5 should return true, because 1.2.4 is less than 1.2.5
-        *"<="*) dpkg --compare-versions "${split_up[1]}" le "${pkg_version}" ;;
-        *">="*) dpkg --compare-versions "${split_up[1]}" ge "${pkg_version}" ;;
-        *"="*) dpkg --compare-versions "${split_up[1]}" eq "${pkg_version}" ;;
-        *"<"*) dpkg --compare-versions "${split_up[1]}" lt "${pkg_version}" ;;
-        *">"*) dpkg --compare-versions "${split_up[1]}" gt "${pkg_version}" ;;
+        *"<="*) dpkg --compare-versions "${pkg_version}" le "${split_up[1]}" ;;
+        *">="*) dpkg --compare-versions "${pkg_version}" ge "${split_up[1]}" ;;
+        *"="*) dpkg --compare-versions "${pkg_version}" eq "${split_up[1]}" ;;
+        *"<"*) dpkg --compare-versions "${pkg_version}" lt "${split_up[1]}" ;;
+        *">"*) dpkg --compare-versions "${pkg_version}" gt "${split_up[1]}" ;;
     esac
 }
 
