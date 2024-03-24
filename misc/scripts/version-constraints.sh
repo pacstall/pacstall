@@ -39,7 +39,7 @@ function dep_const.apt_compare_to_constraints() {
     if is_apt_package_installed "${split_up[0]}"; then
         pkg_version="$(dpkg-query --showformat='${Version}' --show "${split_up[0]}")"
     else
-        pkg_version="$(aptitude search --disable-columns "?exact-name(${split_up[0]})?architecture($(dep_const.get_arch "${split_up[0]}"))" -F "%V")"
+        pkg_version="$(aptitude search --quiet --disable-columns "?exact-name(${split_up[0]})?architecture($(dep_const.get_arch "${split_up[0]}"))" -F "%V")"
     fi
     case "${compare_pkg}" in
         # Example: foo@1.2.4 where foo<=1.2.5 should return true, because 1.2.4 is less than 1.2.5
@@ -223,7 +223,7 @@ function dep_const.format_control() {
         # We can strip out the description because the only people that need it are maintainers.
         dep_const.strip_description "${i}" strip
         # Regex to check for spaced pipe delimited strings ('this | that') and that the last char is not a pipe.
-        if dep_const.is_pipe ${strip}; then
+        if dep_const.is_pipe "${strip}"; then
             dep_const.pipe_split "${strip}" pipes
             for z in "${pipes[@]}"; do
                 dep_const.format_version "${z}" formatted_pipes

@@ -68,7 +68,7 @@ function clean_builddir() {
 }
 
 function prompt_optdepends() {
-    local deps optdep opt just_name=() check_version missing_optdeps=() not_satisfied_optdeps=()
+    local deps optdep opt just_name=() missing_optdeps=() not_satisfied_optdeps=()
     deps=("${depends[@]}")
     if ((${#optdepends[@]} != 0)); then
         local suggested_optdeps=()
@@ -172,6 +172,7 @@ function prompt_optdepends() {
                 fi
             else # If `-B` is being used
                 # We can log everything from optdepends to Suggests
+                # shellcheck disable=SC2034
                 local log_depends log_depends_str
                 dep_const.format_control optdepends log_depends
                 dep_const.comma_array log_depends log_depends_str
@@ -180,6 +181,7 @@ function prompt_optdepends() {
         fi
     fi
 
+    # shellcheck disable=SC2034
     local depends_for_logging out_str
     if [[ -n ${pacdeps[*]} ]]; then
         for i in "${pacdeps[@]}"; do
