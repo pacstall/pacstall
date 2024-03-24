@@ -91,7 +91,8 @@ function prompt_optdepends() {
             fi
             # Next let's check if the version (if available) is in the repos
             if ! dep_const.apt_compare_to_constraints "${opt}"; then
-                not_satisfied_optdeps+=("${opt}")
+                # Just put the name in
+                not_satisfied_optdeps+=("${just_name[0]}")
                 continue
             fi
 
