@@ -68,7 +68,7 @@ function clean_builddir() {
 }
 
 function prompt_optdepends() {
-    local deps optdep opt just_name=() missing_optdeps=() not_satisfied_optdeps=()
+    local deps jarch optdep opt optdesc just_name=() missing_optdeps=() not_satisfied_optdeps=()
     deps=("${depends[@]}")
     if ((${#optdepends[@]} != 0)); then
         local suggested_optdeps=()
@@ -78,12 +78,28 @@ function prompt_optdepends() {
                 # Ok, we need to select *one* of those deps to be our sacrificial lamb 😈
                 #BUG: If the first package that `dep_const.get_pipe` selects has a version that we can't use but
                 # the list also has a package later on that would work, it won't be displayed
+                dep_const.extract_description "${optdep}" optdesc
                 optdep="$(dep_const.get_pipe "${optdep}")"
+            fi
+            if ! [[ ${optdep} =~ ${optdesc} ]]; then
+                optdep="${optdep}: ${optdesc}"
             fi
             # Strip the description, `opt` is now the canonical optdep name
             dep_const.strip_description "${optdep}" opt
             # Let's get just the name
             dep_const.split_name_and_version "${opt}" just_name
+            if [[ ${just_name[0]} == *":${CARCH}" ]]; then
+                just_name[0]="${just_name[0]%%:*}"
+                optdep="${optdep/\:${CARCH}/}"
+            fi
+            if [[ -n "${FARCH[*]}" ]]; then
+                for jarch in "${FARCH[@]}"; do
+                    if [[ ${just_name[0]} == *":${jarch}" ]]; then
+                        just_name[0]="${just_name[0]%%:*}"
+                        optdep="${optdep/\:${jarch}/}"
+                    fi
+               done
+            fi
             # Check if package exists in the repos, and if not, go to the next program
             if [[ -z "$(apt-cache search --no-generate --names-only "^${just_name[0]}\$" 2> /dev/null || apt-cache search --names-only "^${just_name[0]}\$")" ]]; then
                 missing_optdeps+=("${just_name[0]}")
