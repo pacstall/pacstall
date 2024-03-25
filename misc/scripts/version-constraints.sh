@@ -132,11 +132,11 @@ function dep_const.split_name_and_version() {
 # How this works is that we loop through the list and check if it is installed, and if so,
 # we use that, if not, we go to the next one, and repeat. If no package is installed, we choose list[0].
 function dep_const.get_pipe() {
-	local string="${1}" pkg the_array=() viable_packages=() check_name=()
+    local string="${1}" pkg the_array=() viable_packages=() check_name=()
     dep_const.pipe_split "${string}" the_array
     for pkg in "${the_array[@]}"; do
         if dep_const.apt_compare_to_constraints "${pkg}"; then
-			dep_const.split_name_and_version "${pkg}" check_name
+            dep_const.split_name_and_version "${pkg}" check_name
             if is_package_installed "${check_name[0]}" || is_apt_package_installed "${check_name[0]}"; then
                 echo "${pkg}"
                 return 0
@@ -195,12 +195,15 @@ function dep_const.format_version() {
 }
 
 function dep_const.is_pipe() {
-    local str="${1}"
-    if [[ ${str} =~ ^(?!.*\|\s*$)(?!^\|\s*).*\|.*$ ]]; then
-        return 0
-    else
-        return 1
-    fi
+    perl -ne 'exit 1 unless
+  /
+    ^(?![\s|])  # No spaces or pipes at the start
+    (?:[^\s|]+  # Word = NOT space or pipe
+    \s\|\s)+    # word-space-pipe-space
+    [^\s|]+     # Word at the end
+    (?<![\s|])$ # No spaces or pipes at the end
+  /x' <<< "$1"
+    return $?
 }
 
 # @description Formats an array into a control file compatible list
