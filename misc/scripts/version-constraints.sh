@@ -164,6 +164,20 @@ function dep_const.strip_description() {
     printf -v desc_out "%s" "${1%%: *}"
 }
 
+# @description Extracts description from string
+# @internal
+#
+# @example
+#   dep_const.extract_description "foo: description for foo" doo
+#
+# @arg $1 string A string description.
+# @arg $2 string A variable to output the description to.
+function dep_const.extract_description() {
+    local -n desc_ext="${2}"
+    # shellcheck disable=SC2034
+    printf -v desc_ext "%s" "${1##*: }"
+}
+
 # @description Formats a string into a control file compatible version string
 # @internal
 #
@@ -195,7 +209,7 @@ function dep_const.format_version() {
 }
 
 function dep_const.is_pipe() {
-    perl -ne 'exit 1 unless /^(?:[^\s|:]+\s\|\s)+[^\s|:]+(?::\s[^|:]+)?(?<!\s)$/' <<< "$1"
+    perl -ne 'exit 1 unless /^(?:[^\s|:]+(?::[^\s|:]+)?\s\|\s)+[^\s|:]+(?::[^\s|:]+)?(?::\s[^|:]+)?(?<!\s)$/' <<< "$1"
     return $?
 }
 
