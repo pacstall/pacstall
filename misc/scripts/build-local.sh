@@ -88,6 +88,7 @@ function prompt_optdepends() {
             dep_const.strip_description "${optdep}" opt
             # Let's get just the name
             dep_const.split_name_and_version "${opt}" just_name
+            # shellcheck disable=SC2154
             if [[ ${just_name[0]} == *":${CARCH}" ]]; then
                 just_name[0]="${just_name[0]%%:*}"
                 optdep="${optdep/\:${CARCH}/}"
