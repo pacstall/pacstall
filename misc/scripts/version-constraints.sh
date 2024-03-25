@@ -195,14 +195,7 @@ function dep_const.format_version() {
 }
 
 function dep_const.is_pipe() {
-    perl -ne 'exit 1 unless
-  /
-    ^(?![\s|])  # No spaces or pipes at the start
-    (?:[^\s|]+  # Word = NOT space or pipe
-    \s\|\s)+    # word-space-pipe-space
-    [^\s|]+     # Word at the end
-    (?<![\s|])$ # No spaces or pipes at the end
-  /x' <<< "$1"
+    perl -ne 'exit 1 unless /^(?:[^\s|:]+\s\|\s)+[^\s|:]+(?::\s[^|:]+)?(?<!\s)$/' <<< "$1"
     return $?
 }
 
