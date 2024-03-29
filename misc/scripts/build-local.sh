@@ -513,7 +513,7 @@ function repacstall() {
     if [[ -n ${makedepends[*]} ]]; then
         # shellcheck disable=SC2076
         for meper in "${makedepends[@]}"; do
-            if ! [[ " ${depends_array[*]} " =~ " ${meper} " ]]; then
+            if ! array.contains depends_array "${meper}"; then
                 depends_array+=("${meper}")
             fi
         done
@@ -521,7 +521,7 @@ function repacstall() {
     if [[ -n ${depends[*]} ]]; then
         # shellcheck disable=SC2076
         for deper in "${depends[@]}"; do
-            if ! [[ " ${depends_array[*]} " =~ " ${deper} " ]]; then
+            if ! array.contains depends_array "${deper}"; then
                 depends_array+=("${deper}")
             fi
         done
