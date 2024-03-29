@@ -56,9 +56,11 @@ date_installed="${_date}"
 if [[ -n ${_homepage} ]]; then
     homepage="${_homepage}"
 fi
+get_field "$PACKAGE" License license
 if [[ -n ${_remoterepo} ]]; then
     remote_repo="${_remoterepo}"
 fi
+license="${license//,/}"
 get_field "$PACKAGE" Maintainer maintainer
 if [[ -n ${_ppa} ]]; then
     ppa="${_ppa}"
@@ -102,6 +104,9 @@ echo -e "${BGreen}date installed${NC}: ${date_installed}"
 
 if [[ -v homepage ]]; then
     echo -e "${BGreen}homepage${NC}: ${homepage}"
+fi
+if [[ -v license ]]; then
+    echo -e "${BGreen}license${NC}: ${license}"
 fi
 if [[ -v remote_repo ]]; then
     echo -e "${BGreen}remote repo${NC}: ${remote_repo}"

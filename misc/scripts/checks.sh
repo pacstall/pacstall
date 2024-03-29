@@ -553,8 +553,22 @@ function lint_priority() {
     return "${ret}"
 }
 
+function lint_license() {
+    local ret=0 linlicense idx=0
+    if [[ -n ${license[*]} ]]; then
+        for linlicense in "${license[@]}"; do
+            if [[ -z ${linlicense} ]]; then
+                fancy_message error "'license' index '${idx}' cannot be empty"
+                ret=1
+            fi
+            ((idx++))
+        done
+    fi
+    return "${ret}"
+}
+
 function checks() {
-    local ret=0 check linting_checks=(lint_pkgname lint_gives lint_pkgrel lint_epoch lint_version lint_source lint_pkgdesc lint_maintainer lint_makedepends lint_depends lint_pacdeps lint_ppa lint_optdepends lint_conflicts lint_breaks lint_replaces lint_hash lint_patch lint_provides lint_incompatible lint_arch lint_mask lint_priority)
+    local ret=0 check linting_checks=(lint_pkgname lint_gives lint_pkgrel lint_epoch lint_version lint_source lint_pkgdesc lint_maintainer lint_makedepends lint_depends lint_pacdeps lint_ppa lint_optdepends lint_conflicts lint_breaks lint_replaces lint_hash lint_patch lint_provides lint_incompatible lint_arch lint_mask lint_priority lint_license)
     for check in "${linting_checks[@]}"; do
         "${check}" || ret=1
     done
