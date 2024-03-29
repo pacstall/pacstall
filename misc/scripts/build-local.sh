@@ -510,14 +510,12 @@ function repacstall() {
         depends_array=("${depends_array[@]/# /}")
         depends_array=("${depends_array[@]/% /}")
     fi
-    if [[ -n ${pacdeps[*]} ]]; then
-        for pacdep in "${pacdeps[@]}"; do
-            pacgives=$(awk '/_gives/ {print; exit}' "/var/lib/pacstall/metadata/${pacdep}")
-            if [[ -z ${pacgives} ]]; then
-                pacgives=$(awk '/_name/ {print; exit}' "/var/lib/pacstall/metadata/${pacdep}")
+    if [[ -n ${makedepends[*]} ]]; then
+        # shellcheck disable=SC2076
+        for meper in "${makedepends[@]}"; do
+            if ! [[ " ${depends_array[*]} " =~ " ${meper} " ]]; then
+                depends_array+=("${meper}")
             fi
-            eval "pacgives=${pacgives#*=}"
-            depends_array+=("${pacgives}")
         done
     fi
     if [[ -n ${depends[*]} ]]; then
@@ -528,12 +526,14 @@ function repacstall() {
             fi
         done
     fi
-    if [[ -n ${makedepends[*]} ]]; then
-        # shellcheck disable=SC2076
-        for meper in "${makedepends[@]}"; do
-            if ! [[ " ${depends_array[*]} " =~ " ${meper} " ]]; then
-                depends_array+=("${meper}")
+    if [[ -n ${pacdeps[*]} ]]; then
+        for pacdep in "${pacdeps[@]}"; do
+            pacgives=$(awk '/_gives/ {print; exit}' "/var/lib/pacstall/metadata/${pacdep}")
+            if [[ -z ${pacgives} ]]; then
+                pacgives=$(awk '/_name/ {print; exit}' "/var/lib/pacstall/metadata/${pacdep}")
             fi
+            eval "pacgives=${pacgives#*=}"
+            depends_array+=("${pacgives}")
         done
     fi
     sudo sed -i '/^Depends:/d' "${upcontrol}"
