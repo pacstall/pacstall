@@ -78,7 +78,10 @@ if [[ -n ${_pacstall_depends} ]]; then
 else
     install_type="explicitly installed"
 fi
-
+get_field "$PACKAGE" Modified-By-Pacstall mbp
+if [[ ${mbp} != "yes" ]]; then
+    mbp="no"
+fi
 if [[ -n ${_mask[*]} ]]; then
     mask="${_mask[*]}"
 fi
@@ -125,5 +128,8 @@ if [[ -v dependencies ]]; then
     echo -e "${BGreen}dependencies${NC}: ${dependencies}"
 fi
 echo -e "${BGreen}install type${NC}: ${install_type}"
+if [[ ${PACKAGE} == *"-deb" ]]; then
+    echo -e "${BGreen}modified by pacstall${NC}: ${mbp}"
+fi
 exit 0
 # vim:set ft=sh ts=4 sw=4 noet:
