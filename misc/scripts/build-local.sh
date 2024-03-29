@@ -68,14 +68,14 @@ function clean_builddir() {
 }
 
 function prompt_optdepends() {
-    local deps jarch optdep opt optdesc just_name=() missing_optdeps=() not_satisfied_optdeps=()
+    local deps optdep opt optdesc just_name=() missing_optdeps=() not_satisfied_optdeps=()
     deps=("${depends[@]}")
     if ((${#optdepends[@]} != 0)); then
         local suggested_optdeps=()
         for optdep in "${optdepends[@]}"; do
             # Firstly, check if this is an alt dep list
             if dep_const.is_pipe "${optdep}"; then
-                # Ok, we need to select *one* of those deps to be our sacrificial lamb 😈
+                # Ok, we need to select *one* of those deps to be our sacrificial lamb Ψ(•̀ᴗ•́ )⤴
                 #BUG: If the first package that `dep_const.get_pipe` selects has a version that we can't use but
                 # the list also has a package later on that would work, it won't be displayed
                 dep_const.extract_description "${optdep}" optdesc
@@ -88,19 +88,6 @@ function prompt_optdepends() {
             dep_const.strip_description "${optdep}" opt
             # Let's get just the name
             dep_const.split_name_and_version "${opt}" just_name
-            # shellcheck disable=SC2154
-            if [[ ${just_name[0]} == *":${CARCH}" ]]; then
-                just_name[0]="${just_name[0]%%:*}"
-                optdep="${optdep/\:${CARCH}/}"
-            fi
-            if [[ -n "${FARCH[*]}" ]]; then
-                for jarch in "${FARCH[@]}"; do
-                    if [[ ${just_name[0]} == *":${jarch}" ]]; then
-                        just_name[0]="${just_name[0]%%:*}"
-                        optdep="${optdep/\:${jarch}/}"
-                    fi
-               done
-            fi
             # Check if package exists in the repos, and if not, go to the next program
             if [[ -z "$(apt-cache search --no-generate --names-only "^${just_name[0]}\$" 2> /dev/null || apt-cache search --names-only "^${just_name[0]}\$")" ]]; then
                 missing_optdeps+=("${just_name[0]}")
@@ -141,7 +128,7 @@ function prompt_optdepends() {
                 echo -e "\t\t[${BIRed}0${NC}] Select none"
                 for i in "${suggested_optdeps[@]}"; do
                     # print optdepends with bold package name
-                    echo -e "\t\t[${BICyan}$z${NC}] ${BOLD}${i%%:*}${NC}:${i#*:}"
+                    echo -e "\t\t[${BICyan}$z${NC}] ${BOLD}${i%%:\ *}${NC}: ${i#*:\ }"
                     ((z++))
                 done
                 unset z
@@ -169,7 +156,7 @@ function prompt_optdepends() {
                         local not_installed_yet_optdeps+=("${suggested_optdeps[$((i - 1))]}")
                     done
                     if [[ -n ${not_installed_yet_optdeps[*]} ]]; then
-                        fancy_message info "Selecting packages ${BCyan}${not_installed_yet_optdeps[*]}${NC}"
+                        fancy_message info "Selecting packages ${BCyan}${not_installed_yet_optdeps[*]%%:\ *}${NC}"
                         # final_merged_deps is a dep list of *every* type of dep we want to be logged into Suggests. This includes
                         # already installed optdeps, not yet installed ones (selected by user) and the rest
                         local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${suggested_optdeps[@]}")
