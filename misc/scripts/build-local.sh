@@ -321,7 +321,7 @@ function makedeb() {
 
     if [[ -n ${license[*]} ]]; then
         # shellcheck disable=SC2001
-        deblog "License" "$(sed 's/ /, /g' <<< "${license[@]}")"
+        deblog "License" "$(sed 's/ /, /g' <<< "${license[@]/custom\:/}")"
     fi
 
     if [[ -n ${maintainer[*]} ]]; then
