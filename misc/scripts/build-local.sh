@@ -539,6 +539,7 @@ function repacstall() {
     sudo sed -i '/^Depends:/d' "${upcontrol}"
     evaline="Depends: $(perl -pe 's/ /, /g; s/, (?=\()/ /g; s/([=<>|]),/$1 /g' <<< "${depends_array[@]}")"
     sudo sed -i "/Installed-Size:/a ${evaline}" "${upcontrol}"
+    sudo sed -i "/APT-Sources:/a Modified-By-Pacstall: yes" "${upcontrol}"
     if ! createdeb "${pkgname}"; then
         fancy_message error "Could not create package"
         error_log 5 "install $PACKAGE"
