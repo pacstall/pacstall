@@ -497,7 +497,7 @@ function install_deb() {
 }
 
 function repacstall() {
-    local depends_array unpackdir depends_line deper meper pacdep evaline upcontrol input_dest="${1}"
+    local depends_array unpackdir depends_line deper pacgives meper pacdep evaline upcontrol input_dest="${1}"
     unpackdir="${STOWDIR}/${pkgname}"
     upcontrol="${unpackdir}/DEBIAN/control"
     sudo mkdir -p "${unpackdir}"
@@ -506,27 +506,38 @@ function repacstall() {
     sudo dpkg-deb -R "${input_dest}" "${unpackdir}"
     depends_line=$(awk '/^Depends:/ {print; exit}' "${upcontrol}")
     if [[ -n ${depends_line} ]]; then
-      readarray -t depends_array <<< "$(echo "${depends_line#Depends: }" | tr ',' '\n')"
-      depends_array=("${depends_array[@]/# /}")
-      depends_array=("${depends_array[@]/% /}")
+        readarray -t depends_array <<< "$(echo "${depends_line#Depends: }" | tr ',' '\n')"
+        depends_array=("${depends_array[@]/# /}")
+        depends_array=("${depends_array[@]/% /}")
     fi
     if [[ -n ${pacdeps[*]} ]]; then
-      for pacdep in "${pacdeps[@]}"; do
-        depends_array+=($(source /var/lib/pacstall/metadata/${pacdep} && echo ${_gives}))
-      done
-      for deper in "${depends[@]}"; do
-        if ! [[ " ${depends_array[*]} " =~ " ${deper} " ]]; then
-          depends_array+=("${deper}")
-        fi
-      done
-      for meper in "${makedepends[@]}"; do
-        if ! [[ " ${depends_array[*]} " =~ " ${meper} " ]]; then
-          depends_array+=("${meper}")
-        fi
-      done
+        for pacdep in "${pacdeps[@]}"; do
+            pacgives=$(awk '/_gives/ {print; exit}' "/var/lib/pacstall/metadata/${pacdep}")
+            if [[ -z ${pacgives} ]]; then
+                pacgives=$(awk '/_name/ {print; exit}' "/var/lib/pacstall/metadata/${pacdep}")
+            fi
+            eval "pacgives=${pacgives#*=}"
+            depends_array+=("${pacgives}")
+        done
+    fi
+    if [[ -n ${depends[*]} ]]; then
+        # shellcheck disable=SC2076
+        for deper in "${depends[@]}"; do
+            if ! [[ " ${depends_array[*]} " =~ " ${deper} " ]]; then
+                depends_array+=("${deper}")
+            fi
+        done
+    fi
+    if [[ -n ${makedepends[*]} ]]; then
+        # shellcheck disable=SC2076
+        for meper in "${makedepends[@]}"; do
+            if ! [[ " ${depends_array[*]} " =~ " ${meper} " ]]; then
+                depends_array+=("${meper}")
+            fi
+        done
     fi
     sudo sed -i '/^Depends:/d' "${upcontrol}"
-    evaline=$(echo "Depends: $(perl -pe 's/ /, /g; s/, (?=\()/ /g; s/([=<>|]),/$1 /g' <<< "${depends_array[@]}")")
+    evaline="Depends: $(perl -pe 's/ /, /g; s/, (?=\()/ /g; s/([=<>|]),/$1 /g' <<< "${depends_array[@]}")"
     sudo sed -i "/Installed-Size:/a ${evaline}" "${upcontrol}"
     if ! createdeb "${pkgname}"; then
         fancy_message error "Could not create package"
