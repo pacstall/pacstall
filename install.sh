@@ -87,7 +87,7 @@ if ! command -v apt &> /dev/null; then
     fancy_message error "apt could not be found"
     exit 1
 fi
-apt-get install -y -qq sudo wget curl iputils-ping
+apt-get install -y -qq sudo wget curl iputils-ping aptitude
 
 echo -e "${PACYELLOW}┌────────────────────────┐\n│   ${PACCYAN}Pacstall Installer${PACYELLOW}   │\n└────────────────────────┘${NC}"
 
