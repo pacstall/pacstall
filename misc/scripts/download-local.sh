@@ -303,16 +303,20 @@ function genextr_down() {
 
 function deb_down() {
     hashcheck_down
+    local upgrade=false
     if is_package_installed "${pkgname}" && type -t pre_upgrade &> /dev/null; then
+        upgrade=true
+        fancy_message info "Running pre_upgrade hook"
         if ! pre_upgrade; then
             error_log 5 "pre_upgrade hook"
-            fancy_message error "Could not run preinst hook successfully"
+            fancy_message error "Could not run pre_upgrade hook successfully"
             exit 1
         fi
     elif type -t pre_install &> /dev/null; then
+        fancy_message info "Running pre_install hook"
         if ! pre_install; then
             error_log 5 "pre_install hook"
-            fancy_message error "Could not run preinst hook successfully"
+            fancy_message error "Could not run pre_install hook successfully"
             exit 1
         fi
     fi
@@ -321,14 +325,23 @@ function deb_down() {
         if [[ -f /tmp/pacstall-pacdeps-"$pkgname" ]]; then
             sudo apt-mark auto "${gives:-$pkgname}" 2> /dev/null
         fi
-        if type -t post_install &> /dev/null; then
+        if type -t post_upgrade &> /dev/null && ${upgrade}; then
+            fancy_message info "Running post_upgrade hook"
+            if ! post_upgrade; then
+                error_log 5 "post_upgrade hook"
+                fancy_message error "Could not run post_upgrade hook successfully"
+                exit 1
+            fi
+        elif type -t post_install &> /dev/null; then
+            fancy_message info "Running post_install hook"
             if ! post_install; then
                 error_log 5 "post_install hook"
                 fancy_message error "Could not run post_install hook successfully"
                 exit 1
             fi
         fi
-        fancy_message info "Storing pacscript"
+        fancy_message info "Performing post install operations"
+        fancy_message sub "Storing pacscript"
         sudo mkdir -p "/var/cache/pacstall/$PACKAGE/${full_version}"
         if ! cd "$DIR" 2> /dev/null; then
             error_log 1 "install $PACKAGE"
@@ -337,8 +350,9 @@ function deb_down() {
         fi
         sudo cp -r "${pacfile}" "/var/cache/pacstall/$PACKAGE/${full_version}"
         sudo chmod o+r "/var/cache/pacstall/$PACKAGE/${full_version}/$PACKAGE.pacscript"
-        fancy_message info "Cleaning up"
+        fancy_message sub "Cleaning up"
         cleanup
+        fancy_message info "Done installing ${BPurple}$PACKAGE${NC}"
         exit 0
     else
         fancy_message error "Failed to install the package"
