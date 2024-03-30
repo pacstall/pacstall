@@ -536,7 +536,7 @@ function install_deb() {
 }
 
 function repacstall() {
-    local depends_array unpackdir depends_line deper pacgives meper pacdep evaline upcontrol input_dest="${1}"
+    local depends_array unpackdir depends_line deper pacgives meper pacdep repac_depends repac_depends_str upcontrol input_dest="${1}"
     unpackdir="${STOWDIR}/${pkgname}"
     upcontrol="${unpackdir}/DEBIAN/control"
     sudo mkdir -p "${unpackdir}"
@@ -575,9 +575,10 @@ function repacstall() {
             depends_array+=("${pacgives}")
         done
     fi
+    dep_const.format_control depends_array repac_depends
+    dep_const.comma_array repac_depends repac_depends_str
     sudo sed -i '/^Depends:/d' "${upcontrol}"
-    evaline="Depends: $(perl -pe 's/ /, /g; s/, (?=\()/ /g; s/([=<>|]),/$1 /g' <<< "${depends_array[@]}")"
-    sudo sed -i "/Installed-Size:/a ${evaline}" "${upcontrol}"
+    sudo sed -i "/Installed-Size:/a Depends: ${repac_depends_str}" "${upcontrol}"
     sudo sed -i "/Description:/i Modified-By-Pacstall: yes" "${upcontrol}"
     if ! createdeb "${pkgname}"; then
         fancy_message error "Could not create package"
