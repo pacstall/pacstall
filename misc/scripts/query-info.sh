@@ -108,7 +108,7 @@ echo -e "${BGreen}date installed${NC}: ${date_installed}"
 if [[ -v homepage ]]; then
     echo -e "${BGreen}homepage${NC}: ${homepage}"
 fi
-if [[ -v license ]]; then
+if [[ -n ${license} ]]; then
     echo -e "${BGreen}license${NC}: ${license}"
 fi
 if [[ -v remote_repo ]]; then
