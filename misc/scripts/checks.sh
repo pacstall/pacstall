@@ -225,10 +225,12 @@ function lint_deps() {
                 if [[ -z ${dep} ]]; then
                     fancy_message error "'${dep_type}' index '${idx}' cannot be empty"
                     ret=1
-                elif [[ ${dep_type} == "optdepends" && ${dep} != *": "* ]] \
-                || [[ ${dep} == *"|"* ]] \
-				&& [[ ${dep_type} == "pacdeps" ]] \
-                || ! lint_pipe_check "${dep}"; then
+                elif [[ ${dep} == *"|"* ]]; then
+                    if [[ ${dep_type} == "pacdeps" ]] || ! lint_pipe_check "${dep}"; then
+                        fancy_message error "'${dep_type}' index '${idx}' is not formatted correctly"
+                        ret=1
+                    fi
+                elif [[ ${dep_type} == "optdepends" ]] && [[ ${dep} != *": "* ]]; then
                     fancy_message error "'${dep_type}' index '${idx}' is not formatted correctly"
                     ret=1
                 fi
