@@ -309,14 +309,14 @@ function deb_down() {
         fancy_message sub "Running pre_upgrade hook"
         if ! pre_upgrade; then
             error_log 5 "pre_upgrade hook"
-            fancy_message error "Could not run pre_upgrade hook successfully"
+            fancy_message error "Could not run preinst hook successfully"
             exit 1
         fi
     elif type -t pre_install &> /dev/null; then
         fancy_message sub "Running pre_install hook"
         if ! pre_install; then
             error_log 5 "pre_install hook"
-            fancy_message error "Could not run pre_install hook successfully"
+            fancy_message error "Could not run preinst hook successfully"
             exit 1
         fi
     fi
@@ -330,14 +330,14 @@ function deb_down() {
             fancy_message sub "Running post_upgrade hook"
             if ! post_upgrade; then
                 error_log 5 "post_upgrade hook"
-                fancy_message error "Could not run post_upgrade hook successfully"
+                fancy_message error "Could not run postinst hook successfully"
                 exit 1
             fi
         elif type -t post_install &> /dev/null; then
             fancy_message sub "Running post_install hook"
             if ! post_install; then
                 error_log 5 "post_install hook"
-                fancy_message error "Could not run post_install hook successfully"
+                fancy_message error "Could not run postinst hook successfully"
                 exit 1
             fi
         fi
