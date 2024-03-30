@@ -100,6 +100,10 @@ if ((PACSTALL_INSTALL == 0)) && [[ ${pkgname} == *-deb ]]; then
     if ! download "${source[0]}"; then
         fancy_message error "Failed to download '${source[0]}'"
         return 1
+    else
+        parse_source_entry "${source[0]}"
+        fancy_message info "Moving ${BGreen}$PACDIR/${dest}${NC} to ${BGreen}/tmp/pacstall-no-build/${dest}${NC}"
+        sudo mkdir -p "/tmp/pacstall-no-build/" && sudo mv ./"${dest}" "/tmp/pacstall-no-build/"
     fi
     return 0
 fi

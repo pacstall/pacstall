@@ -50,7 +50,7 @@ function cleanup() {
     fi
     sudo rm -rf "${STOWDIR}/${pkgname:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
-    unset pkgname repology pkgver git_pkgver epoch source_url source depends makedepends conflicts breaks replaces gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible compatible optinstall srcdir url backup pkgrel mask pac_functions repo priority noextract nosubmodules _archive 2> /dev/null
+    unset pkgname repology pkgver git_pkgver epoch source_url source depends makedepends conflicts breaks replaces gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible compatible optinstall srcdir url backup pkgrel mask pac_functions repo priority noextract nosubmodules _archive license 2> /dev/null
     unset -f pre_install pre_upgrade pre_remove post_install post_upgrade post_remove prepare build check package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
@@ -353,6 +353,11 @@ function makedeb() {
         deblog "Homepage" "${url}"
     fi
 
+    if [[ -n ${license[*]} ]]; then
+        # shellcheck disable=SC2001
+        deblog "License" "$(sed 's/ /, /g' <<< "${license[@]/custom\:/}")"
+    fi
+
     if [[ -n ${maintainer[*]} ]]; then
         deblog "Maintainer" "${maintainer[0]}"
         if ((${#maintainer[@]} > 1)); then
@@ -488,7 +493,10 @@ function makedeb() {
         cleanup
         return 1
     fi
+    install_deb
+}
 
+function install_deb() {
     if ((PACSTALL_INSTALL != 0)); then
         # --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
         if ! sudo -E apt-get install --reinstall "$STOWDIR/$pkgname.deb" -y --allow-downgrades 2> /dev/null; then
@@ -525,6 +533,60 @@ function makedeb() {
         cleanup
         exit 0
     fi
+}
+
+function repacstall() {
+    local depends_array unpackdir depends_line deper pacgives meper pacdep evaline upcontrol input_dest="${1}"
+    unpackdir="${STOWDIR}/${pkgname}"
+    upcontrol="${unpackdir}/DEBIAN/control"
+    sudo mkdir -p "${unpackdir}"
+    sudo rm -rf "${unpackdir}"/*
+    fancy_message sub "Repacking ${CYAN}${pkgname/\-deb/}.deb${NC}"
+    sudo dpkg-deb -R "${input_dest}" "${unpackdir}"
+    depends_line=$(awk '/^Depends:/ {print; exit}' "${upcontrol}")
+    if [[ -n ${depends_line} ]]; then
+        readarray -t depends_array <<< "$(echo "${depends_line#Depends: }" | tr ',' '\n')"
+        depends_array=("${depends_array[@]/# /}")
+        depends_array=("${depends_array[@]/% /}")
+    fi
+    if [[ -n ${makedepends[*]} ]]; then
+        # shellcheck disable=SC2076
+        for meper in "${makedepends[@]}"; do
+            if ! array.contains depends_array "${meper}"; then
+                depends_array+=("${meper}")
+            fi
+        done
+    fi
+    if [[ -n ${depends[*]} ]]; then
+        # shellcheck disable=SC2076
+        for deper in "${depends[@]}"; do
+            if ! array.contains depends_array "${deper}"; then
+                depends_array+=("${deper}")
+            fi
+        done
+    fi
+    if [[ -n ${pacdeps[*]} ]]; then
+        for pacdep in "${pacdeps[@]}"; do
+            pacgives=$(awk '/_gives/ {print; exit}' "/var/lib/pacstall/metadata/${pacdep}")
+            if [[ -z ${pacgives} ]]; then
+                pacgives=$(awk '/_name/ {print; exit}' "/var/lib/pacstall/metadata/${pacdep}")
+            fi
+            eval "pacgives=${pacgives#*=}"
+            depends_array+=("${pacgives}")
+        done
+    fi
+    sudo sed -i '/^Depends:/d' "${upcontrol}"
+    evaline="Depends: $(perl -pe 's/ /, /g; s/, (?=\()/ /g; s/([=<>|]),/$1 /g' <<< "${depends_array[@]}")"
+    sudo sed -i "/Installed-Size:/a ${evaline}" "${upcontrol}"
+    sudo sed -i "/Description:/i Modified-By-Pacstall: yes" "${upcontrol}"
+    if ! createdeb "${pkgname}"; then
+        fancy_message error "Could not create package"
+        error_log 5 "install $PACKAGE"
+        fancy_message info "Cleaning up"
+        cleanup
+        return 1
+    fi
+    install_deb
 }
 
 function write_meta() {
