@@ -536,6 +536,7 @@ function install_deb() {
 }
 
 function repacstall() {
+    # shellcheck disable=SC2034
     local depends_array unpackdir depends_line deper pacgives meper pacdep repac_depends repac_depends_str upcontrol input_dest="${1}"
     unpackdir="${STOWDIR}/${pkgname}"
     upcontrol="${unpackdir}/DEBIAN/control"
