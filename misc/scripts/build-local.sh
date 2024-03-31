@@ -209,7 +209,7 @@ function prompt_optdepends() {
         # So basically, we're gonna now check if the `depends` elements can be installed on this system based on the
         # version constraints (if available), because I'd be very pissed if I tried building wine only to figure out
         # 8 hours later the versions specified in `depends` aren't available.
-        for ze_dep in "${all_deps_to_install[@]}"; do
+        for ze_dep in "${deps[@]}"; do
             dep_const.pipe_split "${ze_dep}" ze_dep_splits
             local pipe_nomatch=0
             for ze_dep_split in "${ze_dep_splits[@]}"; do
