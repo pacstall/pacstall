@@ -207,7 +207,7 @@ function prompt_optdepends() {
     # Do we have any deps or optdeps scheduled for installation?
     if [[ -n ${deps[*]} || -n ${not_installed_yet_optdeps[*]} ]]; then
         # shellcheck disable=SC2034
-        local all_deps_to_install=("${not_installed_yet_optdeps[@]}" "${deps[@]}") ze_dep
+        local all_deps_to_install=("${not_installed_yet_optdeps[@]}" "${deps[@]}") ze_dep ze_dep_splits ze_dep_split
         # So basically, we're gonna now check if the `depends` elements can be installed on this system based on the
         # version constraints (if available), because I'd be very pissed if I tried building wine only to figure out
         # 8 hours later the versions specified in `depends` aren't available.
