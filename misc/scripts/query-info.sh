@@ -56,9 +56,11 @@ date_installed="${_date}"
 if [[ -n ${_homepage} ]]; then
     homepage="${_homepage}"
 fi
+get_field "$PACKAGE" License license
 if [[ -n ${_remoterepo} ]]; then
     remote_repo="${_remoterepo}"
 fi
+license="${license//,/}"
 get_field "$PACKAGE" Maintainer maintainer
 if [[ -n ${_ppa} ]]; then
     ppa="${_ppa}"
@@ -76,7 +78,10 @@ if [[ -n ${_pacstall_depends} ]]; then
 else
     install_type="explicitly installed"
 fi
-
+get_field "$PACKAGE" Modified-By-Pacstall mbp
+if [[ ${mbp} != "yes" ]]; then
+    mbp="no"
+fi
 if [[ -n ${_mask[*]} ]]; then
     mask="${_mask[*]}"
 fi
@@ -103,6 +108,9 @@ echo -e "${BGreen}date installed${NC}: ${date_installed}"
 if [[ -v homepage ]]; then
     echo -e "${BGreen}homepage${NC}: ${homepage}"
 fi
+if [[ -n ${license} ]]; then
+    echo -e "${BGreen}license${NC}: ${license}"
+fi
 if [[ -v remote_repo ]]; then
     echo -e "${BGreen}remote repo${NC}: ${remote_repo}"
 fi
@@ -120,5 +128,8 @@ if [[ -v dependencies ]]; then
     echo -e "${BGreen}dependencies${NC}: ${dependencies}"
 fi
 echo -e "${BGreen}install type${NC}: ${install_type}"
+if [[ ${PACKAGE} == *"-deb" ]]; then
+    echo -e "${BGreen}modified by pacstall${NC}: ${mbp}"
+fi
 exit 0
 # vim:set ft=sh ts=4 sw=4 noet:

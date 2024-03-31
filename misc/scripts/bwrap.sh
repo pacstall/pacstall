@@ -25,13 +25,13 @@
 function safe_source() {
     local input="${1}"
     mkdir /tmp/pacstall 2>/dev/null
-    safeenv="$(sudo mktemp -p "${SRCDIR}")"
+    safeenv="$(sudo mktemp -p "${PACDIR}")"
     sudo chmod +r "$safeenv"
-    bwrapenv="$(sudo mktemp -t "${SRCDIR}/bwrapenv.XXXXXXXXXX")"
+    bwrapenv="$(sudo mktemp -t "${PACDIR}/bwrapenv.XXXXXXXXXX")"
     sudo chmod +r "$bwrapenv"
     export bwrapenv
 
-    tmpfile="$(sudo mktemp -p "${SRCDIR}")"
+    tmpfile="$(sudo mktemp -p "${PACDIR}")"
     echo "#!/bin/bash -ae" | sudo tee "$tmpfile" > /dev/null
     echo "mapfile -t __OLD_ENV < <(compgen -A variable  -P \"--unset \")" | sudo tee -a "$tmpfile" > /dev/null
     echo "readonly __OLD_ENV" | sudo tee -a "$tmpfile" > /dev/null
@@ -46,7 +46,7 @@ function safe_source() {
     echo "echo > \"${safeenv}\"" | sudo tee -a "$tmpfile" > /dev/null
 
     # Any new variables or functions should be added here in the future
-    echo "for i in {name,repology,pkgver,epoch,url,depends,makedepends,breaks,replace,gives,pkgdesc,hash,optdepends,ppa,arch,maintainer,pacdeps,patch,provides,incompatible,optinstall,epoch,homepage,backup,pkgrel,mask,external_connection}; do \
+    echo "for i in {pkgname,repology,pkgver,git_pkgver,epoch,source_url,source,depends,makedepends,conflicts,breaks,replaces,gives,pkgdesc,hash,optdepends,ppa,arch,maintainer,pacdeps,patch,PACPATCH,NOBUILDDEP,provides,incompatible,compatible,optinstall,srcdir,url,backup,pkgrel,mask,pac_functions,repo,priority,noextract,nosubmodules,_archive,license,external_connection}; do \
             [[ -z \"\${!i}\" ]] || declare -p \$i >> \"${safeenv}\"; \
         done" | sudo tee -a "$tmpfile" > /dev/null
     echo "[[ \$name == *'-deb' ]] || for i in {pkgver,post_install,post_remove,pre_install,prepare,build,package}; do \
@@ -56,7 +56,7 @@ function safe_source() {
 
     sudo env - bwrap --unshare-all --die-with-parent --new-session --ro-bind / / \
         --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run --dev-bind /dev/null /dev/null \
-        --ro-bind "$input" "$input" --bind "$SRCDIR" "$SRCDIR" --ro-bind "$tmpfile" "$tmpfile" \
+        --ro-bind "$input" "$input" --bind "$PACDIR" "$PACDIR" --ro-bind "$tmpfile" "$tmpfile" \
         --setenv homedir "$homedir" --setenv CARCH "$CARCH" --setenv DISTRO "$DISTRO" --setenv NCPU "$NCPU" \
     "$tmpfile" && sudo rm "$tmpfile"
     source "$safeenv"
@@ -101,7 +101,7 @@ function bwrap_function() {
     fi
     sudo bwrap --unshare-all $share_net --die-with-parent --new-session --ro-bind / / \
         --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run --dev-bind /dev/null /dev/null \
-        --bind "$STOWDIR" "$STOWDIR" --bind "$SRCDIR" "$SRCDIR" \
+        --bind "$STOWDIR" "$STOWDIR" --bind "$PACDIR" "$PACDIR" \
         --setenv LOGDIR "$LOGDIR" --setenv STGDIR "$STGDIR" \
         --setenv STOWDIR "$STOWDIR" --setenv pkgdir "$pkgdir" \
         "$tmpfile"

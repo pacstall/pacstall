@@ -26,14 +26,14 @@
 
 if check_url "${URL}"; then
     if [[ $type == "install" ]]; then
-        mkdir -p "$SRCDIR" || {
-            if ! [[ -w $SRCDIR ]]; then
-                suggested_solution "Run '${UCyan}sudo chown -R $PACSTALL_USER:$PACSTALL_USER $SRCDIR'${NC}"
+        mkdir -p "$PACDIR" || {
+            if ! [[ -w $PACDIR ]]; then
+                suggested_solution "Run '${UCyan}sudo chown -R $PACSTALL_USER:$PACSTALL_USER $PACDIR'${NC}"
             fi
         }
-        if ! cd "$SRCDIR"; then
+        if ! cd "$PACDIR"; then
             error_log 1 "install $PACKAGE"
-            fancy_message error "Could not enter ${SRCDIR}"
+            fancy_message error "Could not enter ${PACDIR}"
             exit 1
         fi
     fi

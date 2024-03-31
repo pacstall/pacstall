@@ -28,7 +28,7 @@ export METADIR="/var/lib/pacstall/metadata"
 export LOGDIR="/var/log/pacstall/error_log"
 printf -v LOGFILE "${LOGDIR}/%(%F_%T)T.log"
 export LOGFILE
-export SRCDIR="/tmp/pacstall"
+export PACDIR="/tmp/pacstall"
 export STGDIR="/usr/share/pacstall"
 export STOWDIR="/usr/src/pacstall"
 
@@ -116,7 +116,7 @@ if [[ -z $NO_COLOR ]]; then
     export On_ICyan='\033[0;106m'   # Cyan
     export On_IWhite='\033[0;107m'  # White
 
-    declare -A pac_version=([red]="238" [green]="44" [blue]="44")
+    declare -A pac_version=([red]="139" [green]="26" [blue]="26")
 fi
 
 # Pac-roll
@@ -300,8 +300,9 @@ function check_url() {
 
 # use axel if available
 function download() {
+    local src="$1" out="${2:-${src##*/}}"
     if [[ $PACSTALL_DOWNLOADER != "payload" ]]; then
-        sudo rm -f "${1##*/}"
+        sudo rm -f "$out"
     fi
     if [[ -z $PACSTALL_DOWNLOADER || -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
         if command -v axel &> /dev/null; then
@@ -314,18 +315,24 @@ function download() {
     fi
 
     case "$PACSTALL_DOWNLOADER" in
+        verbose-axel)
+            axel -ao "$out" "$src" || return 1
+            ;;
         axel)
-            axel -ao "${1##*/}" "$1" || return 1
+            axel -a -q -o "$out" "$src" || return 1
+            ;;
+        verbose-curl)
+            curl -L -# -o "$out" "$src" || return 1
             ;;
         curl)
-            curl -L -# -o "${1##*/}" "$1" || return 1
+            curl -sSL -o "$out" "$src" || return 1
             ;;
-        quiet-wget)
-            wget -q -O "${1##*/}" -- "$1" 2>&1 || return 1
+        verbose-wget)
+            wget -q --show-progress --progress=bar:force -O "$out" -- "$src" 2>&1 || return 1
             ;;
         payload) ;;
         wget | *)
-            wget -q --show-progress --progress=bar:force -O "${1##*/}" -- "$1" 2>&1 || return 1
+            wget -q -O "$out" -- "$src" 2>&1 || return 1
             ;;
     esac
 }
@@ -461,7 +468,7 @@ function getMasks() {
 }
 
 function getMasks_offending_pkg() {
-    local pkgname="${1}"
+    local the_name="${1}"
     mapfile -t pkgs < <(pacstall -L)
     if ((${#pkgs[@]} == 0)); then
         return 0
@@ -469,7 +476,7 @@ function getMasks_offending_pkg() {
     for pkg in "${pkgs[@]}"; do
         source "${METADIR}/${pkg}"
         if [[ -n ${_mask[*]} ]]; then
-            if array.contains _mask "${pkgname}"; then
+            if array.contains _mask "${the_name}"; then
                 echo "${pkg}"
                 return 0
             fi
@@ -511,7 +518,7 @@ for i in "${@}"; do
     # We remove the '-' prefix as we'll add it later.
     for j in $(sed 's|[[:upper:]]| &|g' <<< "${i:1}"); do
         # If current string is 'P', add to beginning of argument list.
-        if [[ ${j} == "B" || ${j} == "-build-only" || ${j} == "P" || ${j} == "-disable-prompts" || ${j} == "K" || ${j} == "-keep" ]]; then
+        if [[ ${j} == "B" || ${j} == "-build-only" || ${j} == "P" || ${j} == "-disable-prompts" || ${j} == "K" || ${j} == "-keep" || ${j} == "Nc" || ${j} == "-nocheck" ]]; then
             argument_list=("-${j}" "${argument_list[@]}")
         else
             argument_list+=("-${j}")
@@ -557,8 +564,8 @@ if [[ -n $PACSTALL_PAYLOAD && ! -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
         fancy_message error "Payload not found"
         exit 1
     fi
-    mkdir -p "${SRCDIR:?}"
-    cp "$PACSTALL_PAYLOAD" "${SRCDIR:?}"
+    mkdir -p "${PACDIR:?}"
+    cp "$PACSTALL_PAYLOAD" "${PACDIR:?}"
 fi
 
 while [[ $1 != "--" ]]; do
@@ -576,7 +583,7 @@ while [[ $1 != "--" ]]; do
             ;;
 
         -h | --help)
-            echo -e "Usage: pacstall [-h] [-V] {-I,-S,-R,-D,-A,-U,-L,-Up,-Qi,-T} [-P] [-K] [-B]
+            echo -e "Usage: pacstall [-h] [-V] {-I,-S,-R,-D,-A,-U,-L,-Up,-Qi,-T} [-P] [-K] [-B] [-Nc]
 
 An AUR inspired package manager for Ubuntu.
 
@@ -609,6 +616,8 @@ Options:
 		Keep the build files.
 	${BOLD}-B${NC}, ${BOLD}--build-only${NC}
 		Build the deb but do not install.
+    ${BOLD}-Nc${NC}, ${BOLD}--nocheck${NC}
+        Skip the check() function if present.
 	${BOLD}-V${NC}, ${BOLD}--version${NC}
 		Display the version number.
 	${BOLD}-h${NC}, ${BOLD}--help${NC}
@@ -633,7 +642,7 @@ Helpful links:
 
             function trap_ctrlc() {
                 fancy_message warn "The installation of ${PACKAGE:-package} was interrupted, removing files"
-                rm -rf "${SRCDIR:?}"/* # :? makes bash error out in case SRCDIR is empty, saving us from yoinking /* directory by mistake
+                rm -rf "${PACDIR:?}"/* # :? makes bash error out in case PACDIR is empty, saving us from yoinking /* directory by mistake
                 exit 2
             }
             # Begin trapping
@@ -711,7 +720,7 @@ Helpful links:
                 if ! source "$STGDIR/scripts/install-local.sh"; then
                     fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
                     if ! [[ -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
-                        sudo rm -rf "${SRCDIR:?}"
+                        sudo rm -rf "${PACDIR:?}"
                     fi
                     exit 1
                 fi
@@ -777,8 +786,8 @@ Helpful links:
             ;;
 
         -V | --version)
-            version_number="4.3.1"
-            version_name="Firebrick2"
+            version_number="4.3.2"
+            version_name="Firebrick4"
             echo -e "${version_number} \033[1m\x1b[38;2;${pac_version[red]:-255};${pac_version[green]:-255};${pac_version[blue]:-255}m${version_name}${NC}"
             exit 0
             ;;
@@ -971,6 +980,11 @@ Helpful links:
         -K | --keep)
             fancy_message info "Keeping build files"
             KEEP=true
+            ;;
+
+        -Nc | --nocheck)
+            fancy_message info "Skipping check() if present"
+            NOCHECK=true
             ;;
 
         *)

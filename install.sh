@@ -32,6 +32,8 @@ GREEN='\033[0;32m'
 BRed='\033[1;31m'
 BGreen='\033[1;32m'
 BYellow='\033[1;33m'
+PACCYAN='\e[38;5;30m'
+PACYELLOW='\e[38;5;214m'
 
 function fancy_message() {
     # $1 = type , $2 = message
@@ -85,11 +87,12 @@ if ! command -v apt &> /dev/null; then
     fancy_message error "apt could not be found"
     exit 1
 fi
-apt-get install -y -qq sudo wget curl iputils-ping bubblewrap
 
-echo -e "|------------------------|"
-echo -e "|---${GREEN}Pacstall Installer${NC}---|"
-echo -e "|------------------------|"
+if ! command -v curl &> /dev/null; then
+    apt-get install -y -qq curl iputils-ping
+fi
+
+echo -e "${PACYELLOW}┌────────────────────────┐\n│   ${PACCYAN}Pacstall Installer${PACYELLOW}   │\n└────────────────────────┘${NC}"
 
 if [[ ${GITHUB_ACTIONS} != "true" ]]; then
     check_url "https://github.com" || {
@@ -101,7 +104,10 @@ fi
 echo
 if [[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ]]; then
     fancy_message info "Updating"
-    apt-get -qq update
+    case "${GITHUB_ACTIONS}" in
+        true) apt-get update -qq ;;
+        *) apt-get update ;;
+    esac
 fi
 
 fancy_message info "Installing packages"
@@ -109,15 +115,21 @@ fancy_message info "Installing packages"
 echo -ne "Do you want to install axel (faster downloads)? [${BGreen}Y${NC}/${RED}n${NC}] "
 read -r reply <&0
 case "$reply" in
-    N* | n*) ;;
-    *) apt-get install -qq -y axel ;;
+    N* | n*) unset axel_inst ;;
+    *)
+        axel_inst=axel
+        ;;
 esac
 
-apt-get install -qq -y curl wget build-essential unzip git zstd iputils-ping lsb-release
+if [[ ${GITHUB_ACTIONS} == "true" ]]; then
+    apt-get install -qq -y sudo wget build-essential unzip git zstd iputils-ping lsb-release aptitude bubblewrap ${axel_inst}
+else
+    apt-get install -y sudo wget build-essential unzip git zstd iputils-ping lsb-release aptitude bubblewrap ${axel_inst}
+fi
 
 LOGDIR="/var/lib/pacstall/metadata"
 STGDIR="/usr/share/pacstall"
-SRCDIR="/tmp/pacstall"
+PACDIR="/tmp/pacstall"
 PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER}}")
 
 fancy_message info "Making directories"
@@ -125,8 +137,8 @@ mkdir -p "$STGDIR"
 mkdir -p "$STGDIR/scripts"
 mkdir -p "$STGDIR/repo"
 
-mkdir -p "$SRCDIR"
-chown "$PACSTALL_USER" -R "$SRCDIR"
+mkdir -p "$PACDIR"
+chown "$PACSTALL_USER" -R "$PACDIR"
 
 mkdir -p "$LOGDIR"
 mkdir -p "/var/log/pacstall/error_log"
@@ -140,7 +152,7 @@ touch "$STGDIR/repo/pacstallrepo"
 echo "https://raw.githubusercontent.com/pacstall/pacstall-programs/master" > $STGDIR/repo/pacstallrepo
 
 fancy_message info "Pulling scripts from GitHub"
-for i in {error_log.sh,add-repo.sh,search.sh,dep-tree.sh,checks.sh,download.sh,install-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh,bwrap.sh}; do
+for i in {error_log.sh,add-repo.sh,search.sh,dep-tree.sh,checks.sh,download.sh,install-local.sh,download-local.sh,build-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh,bwrap.sh}; do
     wget -q --show-progress -N https://raw.githubusercontent.com/pacstall/pacstall/master/misc/scripts/"$i" -P "$STGDIR/scripts" &
 done
 
