@@ -27,7 +27,7 @@ function safe_source() {
     mkdir /tmp/pacstall 2>/dev/null
     safeenv="$(sudo mktemp -p "${PACDIR}")"
     sudo chmod +r "$safeenv"
-    bwrapenv="$(sudo mktemp -t "${PACDIR}/bwrapenv.XXXXXXXXXX")"
+    bwrapenv="$(sudo mktemp -p "${PACDIR}" -t "bwrapenv.XXXXXXXXXX")"
     sudo chmod +r "$bwrapenv"
     export bwrapenv
 
