@@ -212,7 +212,6 @@ function lint_maintainer() {
 
 function lint_pipe_check() {
     perl -ne 'exit 1 unless /^(?:[^\s|:]+(?::[^\s|:]+)?\s\|\s)+[^\s|:]+(?::[^\s|:]+)?(?::\s[^|:]+)?(?<!\s)$/' <<< "$1"
-    return $?
 }
 
 function lint_deps() {
