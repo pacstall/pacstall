@@ -76,8 +76,6 @@ function prompt_optdepends() {
             # Firstly, check if this is an alt dep list
             if dep_const.is_pipe "${optdep}"; then
                 # Ok, we need to select *one* of those deps to be our sacrificial lamb Ψ(•̀ᴗ•́ )⤴
-                #BUG: If the first package that `dep_const.get_pipe` selects has a version that we can't use but
-                # the list also has a package later on that would work, it won't be displayed
                 dep_const.extract_description "${optdep}" optdesc
                 optdep="$(dep_const.get_pipe "${optdep}")"
             fi
