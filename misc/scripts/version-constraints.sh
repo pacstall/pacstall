@@ -210,7 +210,6 @@ function dep_const.format_version() {
 
 function dep_const.is_pipe() {
     perl -ne 'exit 1 unless /^(?:[^\s|:]+(?::[^\s|:]+)?\s\|\s)+[^\s|:]+(?::[^\s|:]+)?(?::\s[^|:]+)?(?<!\s)$/' <<< "$1"
-    return $?
 }
 
 # @description Formats an array into a control file compatible list
