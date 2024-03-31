@@ -211,9 +211,16 @@ function prompt_optdepends() {
         # So basically, we're gonna now check if the `depends` elements can be installed on this system based on the
         # version constraints (if available), because I'd be very pissed if I tried building wine only to figure out
         # 8 hours later the versions specified in `depends` aren't available.
-        for ze_dep in "${deps[@]}"; do
-            if ! dep_const.apt_compare_to_constraints "${ze_dep}"; then
-                fancy_message error "'${BBlue}${ze_dep}${NC}' version cannot be satisfied"
+        for ze_dep in "${all_deps_to_install[@]}"; do
+            dep_const.pipe_split "${ze_dep}" ze_dep_splits
+            local pipe_nomatch=0
+            for ze_dep_split in "${ze_dep_splits[@]}"; do
+                if ! dep_const.apt_compare_to_constraints "${ze_dep_split}"; then
+                    ((pipe_nomatch++))
+                fi
+            done
+            if ((pipe_nomatch == ${#ze_dep_splits[@]})); then
+                fancy_message error "'${BBlue}${ze_dep}${NC}' version(s) cannot be satisfied"
                 fancy_message info "Cleaning up"
                 cleanup
                 exit 1
