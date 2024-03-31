@@ -178,6 +178,8 @@ fi
 # Trap Crtl+C just before the point cleanup is first needed
 trap "trap_ctrlc" 2
 
+prompt_optdepends || return 1
+
 if [[ -n $ppa ]]; then
     for i in "${ppa[@]}"; do
         # Add ppa, but ppa bad I guess
@@ -205,7 +207,6 @@ if [[ -n $pacdeps ]]; then
                 fi
             else
                 fancy_message info "The pacstall dependency ${i} is already installed and at latest version"
-
             fi
         elif fancy_message info "Installing $i" && ! pacstall "$cmd" "${i}${repo}"; then
             fancy_message error "Failed to install dependency"
@@ -387,7 +388,6 @@ export -f ask fancy_message select_options
 trap cleanup ERR
 trap - SIGINT
 
-prompt_optdepends || return 1
 clean_logdir
 
 function fail_out_functions() {

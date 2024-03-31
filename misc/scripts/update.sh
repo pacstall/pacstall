@@ -29,6 +29,8 @@ export NC='\033[0m'
 export UCyan='\033[4;36m'
 export BPurple='\033[1;35m'
 
+required_packages=(lsb-release aptitude)
+
 function suggested_solution() {
     if [[ -z $PACSTALL_SUPPRESS_SOLUTIONS ]]; then
         local inputs=("${@}")
@@ -53,8 +55,13 @@ sudo chown "$PACSTALL_USER" -R /tmp/pacstall
 
 sudo mkdir -p /usr/share/bash-completion/completions
 
-if ! dpkg -s lsb-release > /dev/null 2>&1; then
-    sudo apt-get install lsb-release -y
+for pkg in "${required_packages[@]}"; do
+	if ! dpkg -s "${pkg}" > /dev/null 2>&1; then
+		to_install+=("${pkg}")
+	fi
+done
+if ((${#to_install[@]} != 0)); then
+	sudo apt-get install "${to_install[@]}" -y
 fi
 
 # Pre 4.0.0 metadata dir changes
@@ -86,7 +93,7 @@ else
         exit 1
     fi
 fi
-for i in {error_log.sh,add-repo.sh,search.sh,dep-tree.sh,checks.sh,download.sh,install-local.sh,download-local.sh,build-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
+for i in {error_log.sh,add-repo.sh,search.sh,dep-tree.sh,version-constraints.sh,checks.sh,download.sh,install-local.sh,download-local.sh,build-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh}; do
     sudo curl -s -o "$STGDIR/scripts/$i" "$REPO/misc/scripts/$i" &
 done
 

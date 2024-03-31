@@ -87,7 +87,9 @@ if ! command -v apt &> /dev/null; then
     fancy_message error "apt could not be found"
     exit 1
 fi
-apt-get install -y -qq sudo wget curl iputils-ping
+if ! command -v curl &> /dev/null; then
+    apt-get install -y -qq curl iputils-ping
+fi
 
 echo -e "${PACYELLOW}┌────────────────────────┐\n│   ${PACCYAN}Pacstall Installer${PACYELLOW}   │\n└────────────────────────┘${NC}"
 
@@ -112,19 +114,16 @@ fancy_message info "Installing packages"
 echo -ne "Do you want to install axel (faster downloads)? [${BGreen}Y${NC}/${RED}n${NC}] "
 read -r reply <&0
 case "$reply" in
-    N* | n*) ;;
+    N* | n*) unset axel_inst ;;
     *)
-        case "${GITHUB_ACTIONS}" in
-            true) apt-get install axel -y -qq ;;
-            *) apt-get install axel -y ;;
-        esac
+        axel_inst=axel
         ;;
 esac
 
 if [[ ${GITHUB_ACTIONS} == "true" ]]; then
-    apt-get install -qq -y curl wget build-essential unzip git zstd iputils-ping lsb-release
+    apt-get install -qq -y sudo wget build-essential unzip git zstd iputils-ping lsb-release aptitude ${axel_inst}
 else
-    apt-get install -y curl wget build-essential unzip git zstd iputils-ping lsb-release
+    apt-get install -y sudo wget build-essential unzip git zstd iputils-ping lsb-release aptitude ${axel_inst}
 fi
 
 LOGDIR="/var/lib/pacstall/metadata"
