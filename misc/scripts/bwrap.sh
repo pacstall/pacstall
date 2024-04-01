@@ -33,26 +33,28 @@ function safe_source() {
     export safeenv
 
     tmpfile="$(sudo mktemp -p "${PACDIR}")"
-    echo "#!/bin/bash -ae" | sudo tee "$tmpfile" > /dev/null
-    echo "mapfile -t __OLD_ENV < <(compgen -A variable  -P \"--unset \")" | sudo tee -a "$tmpfile" > /dev/null
-    echo "readonly __OLD_ENV" | sudo tee -a "$tmpfile" > /dev/null
-    echo "source \"${input}\"" | sudo tee -a "$tmpfile" > /dev/null
-    # /bin/env returns variables and functions, with values, so we sed them out
-    echo "mapfile -t NEW_ENV < <(/bin/env -0 \${__OLD_ENV[@]} | \
-        sed -ze 's/BASH_FUNC_\(.*\)%%=\(.*\)$/\n/g;s/^\(.[[:alnum:]_]*\)=\(.*\)$/\1/g'|tr '\0' '\n')" | sudo tee -a "$tmpfile" > /dev/null
-    # The env sourced inside of bwrap should contain everything from the pacscripts
-    echo "declare -p \${NEW_ENV[@]} >> \"${bwrapenv}\"" | sudo tee -a "$tmpfile" > /dev/null
-    echo "declare -pf >> \"${bwrapenv}\"" | sudo tee -a "$tmpfile" > /dev/null
-    # The Pacstall env should only receive the bare minimum of information needed
-    echo "echo > \"${safeenv}\"" | sudo tee -a "$tmpfile" > /dev/null
+    echo "#!/bin/bash -a" | sudo tee "$tmpfile" > /dev/null
+    { 
+        echo "mapfile -t __OLD_ENV < <(compgen -A variable  -P \"--unset \")"
+        echo "readonly __OLD_ENV"
+        echo "source \"${input}\""
+        # /bin/env returns variables and functions, with values, so we sed them out
+        echo "mapfile -t NEW_ENV < <(/bin/env -0 \${__OLD_ENV[@]} | \
+            sed -ze 's/BASH_FUNC_\(.*\)%%=\(.*\)$/\n/g;s/^\(.[[:alnum:]_]*\)=\(.*\)$/\1/g'|tr '\0' '\n')"
+        # The env sourced inside of bwrap should contain everything from the pacscripts
+        echo "declare -p \${NEW_ENV[@]} >> \"${bwrapenv}\""
+        echo "declare -pf >> \"${bwrapenv}\""
+        # The Pacstall env should only receive the bare minimum of information needed
+        echo "echo > \"${safeenv}\""
 
-    # Any new variables or functions should be added here in the future
-    echo "for i in {pkgname,repology,pkgver,git_pkgver,epoch,source_url,source,depends,makedepends,conflicts,breaks,replaces,gives,pkgdesc,hash,optdepends,ppa,arch,maintainer,pacdeps,patch,PACPATCH,NOBUILDDEP,provides,incompatible,compatible,optinstall,srcdir,url,backup,pkgrel,mask,pac_functions,repo,priority,noextract,nosubmodules,_archive,license,external_connection}; do \
-            [[ -z \"\${!i}\" ]] || declare -p \$i >> \"${safeenv}\"; \
-        done" | sudo tee -a "$tmpfile" > /dev/null
-    echo "[[ \$name == *'-deb' ]] || for i in {parse_source_entry,calc_git_pkgver,post_install,post_remove,post_upgrade,pre_install,pre_remove,pre_upgrade,prepare,build,check,package}; do \
-            [[ \$(type -t \"\$i\") == \"function\" ]] && declare -pf \$i >> \"${safeenv}\"; \
-        done || true" | sudo tee -a "$tmpfile" > /dev/null
+        # Any new variables or functions should be added here in the future
+        echo "for i in {pkgname,repology,pkgver,git_pkgver,epoch,source_url,source,depends,makedepends,conflicts,breaks,replaces,gives,pkgdesc,hash,optdepends,ppa,arch,maintainer,pacdeps,patch,PACPATCH,NOBUILDDEP,provides,incompatible,compatible,optinstall,srcdir,url,backup,pkgrel,mask,pac_functions,repo,priority,noextract,nosubmodules,_archive,license,external_connection}; do \
+                [[ -z \"\${!i}\" ]] || declare -p \$i >> \"${safeenv}\"; \
+            done"
+        echo "[[ \$name == *'-deb' ]] || for i in {parse_source_entry,calc_git_pkgver,post_install,post_remove,post_upgrade,pre_install,pre_remove,pre_upgrade,prepare,build,check,package}; do \
+                [[ \$(type -t \"\$i\") == \"function\" ]] && declare -pf \$i >> \"${safeenv}\"; \
+            done || true"
+    } | sudo tee -a "$tmpfile" > /dev/null
     sudo chmod +x "$tmpfile"
 
     sudo env - bwrap --unshare-ipc --unshare-pid --unshare-uts \
@@ -68,15 +70,17 @@ function bwrap_function() {
     local func="$1"
     tmpfile="$(sudo mktemp -p "${PWD}")"
     echo "#!/bin/bash -a" | sudo tee "$tmpfile" > /dev/null
-    echo "mapfile -t OLD_ENV < <(compgen -A variable  -P \"--unset \")" | sudo tee -a "$tmpfile" > /dev/null
-    echo "source ${bwrapenv}" | sudo tee -a "$tmpfile" > /dev/null
-    # Run function, save env changes, exit with status
-    echo "$func 2>&1 \"${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log\" && FUNCSTATUS=\"\${PIPESTATUS[0]}\" && \
-        if [[ \$FUNCSTATUS ]]; then \
-            mapfile -t NEW_ENV < <(/bin/env -0 \${OLD_ENV[@]} | \
-                sed -ze 's/BASH_FUNC_\(.*\)%%=\(.*\)$/\n/g;s/^\(.[[:alnum:]_]*\)=\(.*\)$/\1/g'|tr '\0' '\n'); \
-            declare -p \${NEW_ENV[@]} >> \"${bwrapenv}\"; \
-        fi && exit \$FUNCSTATUS" | sudo tee -a "$tmpfile" > /dev/null
+    {
+        echo "mapfile -t OLD_ENV < <(compgen -A variable  -P \"--unset \")"
+        echo "source ${bwrapenv}"
+        # Run function, save env changes, exit with status
+        echo "$func 2>&1 \"${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log\" && FUNCSTATUS=\"\${PIPESTATUS[0]}\" && \
+            if [[ \$FUNCSTATUS ]]; then \
+                mapfile -t NEW_ENV < <(/bin/env -0 \${OLD_ENV[@]} | \
+                    sed -ze 's/BASH_FUNC_\(.*\)%%=\(.*\)$/\n/g;s/^\(.[[:alnum:]_]*\)=\(.*\)$/\1/g'|tr '\0' '\n'); \
+                declare -p \${NEW_ENV[@]} >> \"${bwrapenv}\"; \
+            fi && exit \$FUNCSTATUS"
+    } | sudo tee -a "$tmpfile" > /dev/null
     sudo chmod +x "$tmpfile"
 
     fancy_message sub "Running $func"
