@@ -55,24 +55,13 @@ function safe_source() {
         done || true" | sudo tee -a "$tmpfile" > /dev/null
     sudo chmod +x "$tmpfile"
 
-    sudo env - bwrap --unshare-all --die-with-parent --new-session --ro-bind / / \
+    sudo env - bwrap --unshare-ipc --unshare-pid --unshare-uts \
+        --unshare-cgroup --die-with-parent --new-session --ro-bind / / \
         --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run --dev-bind /dev/null /dev/null \
         --ro-bind "$input" "$input" --bind "$PACDIR" "$PACDIR" --ro-bind "$tmpfile" "$tmpfile" \
         --setenv homedir "$homedir" --setenv CARCH "$CARCH" --setenv DISTRO "$DISTRO" --setenv NCPU "$NCPU" \
+        --setenv PACSTALL_USER "$PACSTALL_USER" \
     "$tmpfile" && sudo rm "$tmpfile"
-}
-
-function bwrap_pkgver() {
-    tmpfile="$(sudo mktemp -p "${PWD}")"
-    echo "#!/bin/bash -e" | sudo tee "$tmpfile" > /dev/null
-    echo "source ${bwrapenv}" | sudo tee -a "$tmpfile" > /dev/null
-    echo "pkgver" | sudo tee -a "$tmpfile" > /dev/null
-    sudo chmod +rx "$tmpfile"
-
-    sudo env - bwrap --unshare-all --share-net --die-with-parent --new-session --ro-bind / /   \
-        --proc /proc --dev /dev --tmpfs /tmp --dev-bind /dev/null /dev/null \
-        --ro-bind "$bwrapenv" "$bwrapenv" --ro-bind "$tmpfile" "$tmpfile" \
-        "$tmpfile" && sudo rm "$tmpfile"
 }
 
 function bwrap_function() {
@@ -94,18 +83,14 @@ function bwrap_function() {
     if [[ ! -d ${LOGDIR} ]]; then
         sudo mkdir -p "${LOGDIR}"
     fi
-    local share_net
-    if [[ ${external_connection} == "true" ]]; then
-        share_net="--share-net"
-    fi
-    sudo bwrap --unshare-all $share_net --die-with-parent --new-session --ro-bind / / \
+    sudo bwrap --unshare-ipc --unshare-pid --unshare-uts \
+        --unshare-cgroup --die-with-parent --new-session --ro-bind / / \
         --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run --dev-bind /dev/null /dev/null \
         --bind "$STOWDIR" "$STOWDIR" --bind "$PACDIR" "$PACDIR" \
         --setenv LOGDIR "$LOGDIR" --setenv STGDIR "$STGDIR" \
         --setenv STOWDIR "$STOWDIR" --setenv pkgdir "$pkgdir" \
         --setenv _archive "$_archive" --setenv srcdir "$srcdir" \
-        "$tmpfile"
-    sudo rm "$tmpfile"
+    "$tmpfile" && sudo rm "$tmpfile"
 }
 
 # vim:set ft=sh ts=4 sw=4 noet:
