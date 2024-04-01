@@ -555,7 +555,7 @@ function install_deb() {
 }
 
 function repacstall() {
-    local depends_array unpackdir depends_line deper pacgives meper pacdep pacdeps_array repac_depends repac_depends_str upcontrol input_dest="${1}"
+    local depends_array unpackdir depends_line deper pacgives meper pacdep repac_depends_str upcontrol input_dest="${1}"
     unpackdir="${STOWDIR}/${pkgname}"
     upcontrol="${unpackdir}/DEBIAN/control"
     sudo mkdir -p "${unpackdir}"
@@ -592,11 +592,12 @@ function repacstall() {
             fi
             eval "pacgives=${pacgives#*=}"
             if ! array.contains depends_array "${pacgives}"; then
-                pacdeps_array+=("${pacgives}")
+                local pacdeps_array repac_depends
+                pacdeps_array=("${pacgives}")
+                dep_const.format_control pacdeps_array repac_depends
+                depends_array+=("${repac_depends[@]}")
             fi
         done
-        dep_const.format_control pacdeps_array repac_depends
-        depends_array+=("${repac_depends[@]}")
     fi
     dep_const.comma_array depends_array repac_depends_str
     sudo sed -i '/^Depends:/d' "${upcontrol}"
