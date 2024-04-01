@@ -197,7 +197,7 @@ function prompt_optdepends() {
                 fi
             )
         done
-        # Merge Depends and Pacdeps
+        # shellcheck disable=SC2031
         while IFS= read -r line; do
             if ! array.contains deps "${line}"; then
                 deps+=("${line}")
