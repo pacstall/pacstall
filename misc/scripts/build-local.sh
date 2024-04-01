@@ -197,9 +197,11 @@ function prompt_optdepends() {
                 fi
             )
         done
-        # Merge Depends and Pacdeps
+        # shellcheck disable=SC2031
         while IFS= read -r line; do
-            deps+=("$line")
+            if ! array.contains deps "${line}"; then
+                deps+=("${line}")
+            fi
         done < /tmp/pacstall-gives
     fi
     # Do we have any deps or optdeps scheduled for installation?
@@ -553,8 +555,7 @@ function install_deb() {
 }
 
 function repacstall() {
-    # shellcheck disable=SC2034
-    local depends_array unpackdir depends_line deper pacgives meper pacdep repac_depends repac_depends_str upcontrol input_dest="${1}"
+    local depends_array unpackdir depends_line deper pacgives meper pacdep repac_depends_str upcontrol input_dest="${1}"
     unpackdir="${STOWDIR}/${pkgname}"
     upcontrol="${unpackdir}/DEBIAN/control"
     sudo mkdir -p "${unpackdir}"
@@ -585,16 +586,21 @@ function repacstall() {
     fi
     if [[ -n ${pacdeps[*]} ]]; then
         for pacdep in "${pacdeps[@]}"; do
-            pacgives=$(awk '/_gives/ {print; exit}' "/var/lib/pacstall/metadata/${pacdep}")
+            pacgives=$(awk '/_gives/ {print; exit}' "${METADIR}/${pacdep}")
             if [[ -z ${pacgives} ]]; then
-                pacgives=$(awk '/_name/ {print; exit}' "/var/lib/pacstall/metadata/${pacdep}")
+                pacgives=$(awk '/_name/ {print; exit}' "${METADIR}/${pacdep}")
             fi
             eval "pacgives=${pacgives#*=}"
-            depends_array+=("${pacgives}")
+            if ! array.contains depends_array "${pacgives}"; then
+                local pacdeps_array repac_depends
+                # shellcheck disable=SC2034
+                pacdeps_array=("${pacgives}")
+                dep_const.format_control pacdeps_array repac_depends
+                depends_array+=("${repac_depends[@]}")
+            fi
         done
     fi
-    dep_const.format_control depends_array repac_depends
-    dep_const.comma_array repac_depends repac_depends_str
+    dep_const.comma_array depends_array repac_depends_str
     sudo sed -i '/^Depends:/d' "${upcontrol}"
     sudo sed -i "/Installed-Size:/a Depends: ${repac_depends_str}" "${upcontrol}"
     sudo sed -i "/Description:/i Modified-By-Pacstall: yes" "${upcontrol}"
