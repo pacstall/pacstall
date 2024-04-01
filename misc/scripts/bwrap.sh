@@ -30,6 +30,7 @@ function safe_source() {
     bwrapenv="$(sudo mktemp -p "${PACDIR}" -t "bwrapenv.XXXXXXXXXX")"
     sudo chmod +r "$bwrapenv"
     export bwrapenv
+    export safeenv
 
     tmpfile="$(sudo mktemp -p "${PACDIR}")"
     echo "#!/bin/bash -ae" | sudo tee "$tmpfile" > /dev/null
@@ -49,7 +50,7 @@ function safe_source() {
     echo "for i in {pkgname,repology,pkgver,git_pkgver,epoch,source_url,source,depends,makedepends,conflicts,breaks,replaces,gives,pkgdesc,hash,optdepends,ppa,arch,maintainer,pacdeps,patch,PACPATCH,NOBUILDDEP,provides,incompatible,compatible,optinstall,srcdir,url,backup,pkgrel,mask,pac_functions,repo,priority,noextract,nosubmodules,_archive,license,external_connection}; do \
             [[ -z \"\${!i}\" ]] || declare -p \$i >> \"${safeenv}\"; \
         done" | sudo tee -a "$tmpfile" > /dev/null
-    echo "[[ \$name == *'-deb' ]] || for i in {pkgver,post_install,post_remove,pre_install,prepare,build,package}; do \
+    echo "[[ \$name == *'-deb' ]] || for i in {pkgver,post_install,post_remove,pre_install,prepare,build,check,package}; do \
             [[ \$(type -t \"\$i\") == \"function\" ]] && declare -pf \$i >> \"${safeenv}\"; \
         done || true" | sudo tee -a "$tmpfile" > /dev/null
     sudo chmod +x "$tmpfile"
@@ -59,8 +60,6 @@ function safe_source() {
         --ro-bind "$input" "$input" --bind "$PACDIR" "$PACDIR" --ro-bind "$tmpfile" "$tmpfile" \
         --setenv homedir "$homedir" --setenv CARCH "$CARCH" --setenv DISTRO "$DISTRO" --setenv NCPU "$NCPU" \
     "$tmpfile" && sudo rm "$tmpfile"
-    source "$safeenv"
-    sudo rm "$safeenv"
 }
 
 function bwrap_pkgver() {

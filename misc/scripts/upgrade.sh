@@ -46,7 +46,8 @@ function calc_repo_ver() {
     local compare_repo="$1" compare_package="$2"
     unset comp_repo_ver
     # shellcheck disable=SC2031
-    safe_source <(curl -s -- "$compare_repo"/packages/"$compare_package"/"$compare_package".pacscript) \
+    safe_source <(curl -s -- "$compare_repo"/packages/"$compare_package"/"$compare_package".pacscript)
+    source "${safeenv}" \
         && if [[ ${pkgname} == *-deb ]]; then
             comp_repo_ver="${epoch+$epoch:}${pkgver}"
         elif [[ ${pkgname} == *-git ]]; then

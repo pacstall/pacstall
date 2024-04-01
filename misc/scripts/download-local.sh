@@ -573,7 +573,8 @@ function compare_remote_version() {
     local remotever
     remotever="$(
         unset pkgrel
-        safe_source <(curl -s -- "$remoterepo/packages/$crv_input/$crv_input.pacscript") \
+        safe_source <(curl -s -- "$remoterepo/packages/$crv_input/$crv_input.pacscript")
+        source "${safeenv}" \
             && if [[ ${pkgname} == *-git ]]; then
                 parse_source_entry "${source[0]}"
                 calc_git_pkgver
