@@ -51,7 +51,7 @@ function safe_source() {
 mapfile -t __OLD_ENV < <(compgen -A variable  -P "--unset ")
 readonly __OLD_ENV
 $(declare -pf def_colors) && def_colors
-$(for i in {ask,fancy_message,parse_source_entry,calc_git_pkgver}; do declare -pf ${i}; done)
+$(for i in {ask,fancy_message,parse_source_entry,calc_git_pkgver}; do declare -pf "${i}"; done)
 source "${input}"
 mapfile -t NEW_ENV < <(/bin/env -0 \${__OLD_ENV[@]} | \
     sed -ze 's/BASH_FUNC_\(.*\)%%=\(.*\)\$/\n/g;s/^\(.[[:alnum:]_]*\)=\(.*\)\$/\1/g'|tr '\0' '\n')
