@@ -50,7 +50,7 @@ function safe_source() {
     echo "for i in {pkgname,repology,pkgver,git_pkgver,epoch,source_url,source,depends,makedepends,conflicts,breaks,replaces,gives,pkgdesc,hash,optdepends,ppa,arch,maintainer,pacdeps,patch,PACPATCH,NOBUILDDEP,provides,incompatible,compatible,optinstall,srcdir,url,backup,pkgrel,mask,pac_functions,repo,priority,noextract,nosubmodules,_archive,license,external_connection}; do \
             [[ -z \"\${!i}\" ]] || declare -p \$i >> \"${safeenv}\"; \
         done" | sudo tee -a "$tmpfile" > /dev/null
-    echo "[[ \$name == *'-deb' ]] || for i in {pkgver,post_install,post_remove,pre_install,prepare,build,check,package}; do \
+    echo "[[ \$name == *'-deb' ]] || for i in {parse_source_entry,calc_git_pkgver,post_install,post_remove,post_upgrade,pre_install,pre_remove,pre_upgrade,prepare,build,check,package}; do \
             [[ \$(type -t \"\$i\") == \"function\" ]] && declare -pf \$i >> \"${safeenv}\"; \
         done || true" | sudo tee -a "$tmpfile" > /dev/null
     sudo chmod +x "$tmpfile"
@@ -103,6 +103,7 @@ function bwrap_function() {
         --bind "$STOWDIR" "$STOWDIR" --bind "$PACDIR" "$PACDIR" \
         --setenv LOGDIR "$LOGDIR" --setenv STGDIR "$STGDIR" \
         --setenv STOWDIR "$STOWDIR" --setenv pkgdir "$pkgdir" \
+        --setenv _archive "$_archive" --setenv srcdir "$srcdir" \
         "$tmpfile"
     sudo rm "$tmpfile"
 }
