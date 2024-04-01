@@ -592,6 +592,7 @@ function repacstall() {
             fi
             eval "pacgives=${pacgives#*=}"
             if ! array.contains depends_array "${pacgives}"; then
+                # shellcheck disable=SC2034
                 local pacdeps_array repac_depends
                 pacdeps_array=("${pacgives}")
                 dep_const.format_control pacdeps_array repac_depends
