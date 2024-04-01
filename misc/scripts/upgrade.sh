@@ -43,11 +43,13 @@ function ver_compare() {
 }
 
 function calc_repo_ver() {
-    local compare_repo="$1" compare_package="$2"
+    local compare_repo="$1" compare_package="$2" compare_tmp compare_safe
     unset comp_repo_ver
-    # shellcheck disable=SC2031
-    safe_source <(curl -s -- "$compare_repo"/packages/"$compare_package"/"$compare_package".pacscript)
-    source "${safeenv}" \
+    compare_tmp="$(sudo mktemp -p "${PACDIR}" -t "calc-repo-ver-$compare_package.XXXXXX")"
+    compare_safe="${compare_tmp}"
+    sudo curl -fsSL "$compare_repo/packages/$compare_package/$compare_package.pacscript" -o "${compare_safe}" \
+        && safe_source "${compare_safe}" \
+        && source "${safeenv}" \
         && if [[ ${pkgname} == *-deb ]]; then
             comp_repo_ver="${epoch+$epoch:}${pkgver}"
         elif [[ ${pkgname} == *-git ]]; then
@@ -57,6 +59,7 @@ function calc_repo_ver() {
         else
             comp_repo_ver="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
         fi
+    sudo rm -rf "${compare_safe}"
 }
 
 export UPGRADE="yes"

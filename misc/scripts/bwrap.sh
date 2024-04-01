@@ -50,9 +50,18 @@ function safe_source() {
         echo "declare -pf >> \"${bwrapenv}\""
         # The Pacstall env should only receive the bare minimum of information needed
         echo "echo > \"${safeenv}\""
-
+        local allsource allsums src sum a_sum known_hashsums_src=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5") known_archs_src=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x")
+        for src in "${known_archs_src[@]}"; do
+            allsource+="source_${src},"
+        done
+        for sum in "${known_hashsums_src[@]}"; do
+            allsums+="${sum}sums,"
+            for a_sum in "${known_archs_src[@]}"; do
+                allsums+="${sum}sums_${a_sum},"
+            done
+        done
         # Any new variables or functions should be added here in the future
-        echo "for i in {pkgname,repology,pkgver,git_pkgver,epoch,source_url,source,depends,makedepends,conflicts,breaks,replaces,gives,pkgdesc,hash,optdepends,ppa,arch,maintainer,pacdeps,patch,PACPATCH,NOBUILDDEP,provides,incompatible,compatible,optinstall,srcdir,url,backup,pkgrel,mask,pac_functions,repo,priority,noextract,nosubmodules,_archive,license,external_connection}; do \
+        echo "for i in {pkgname,repology,pkgver,git_pkgver,epoch,source_url,source,depends,makedepends,conflicts,breaks,replaces,gives,pkgdesc,hash,optdepends,ppa,arch,maintainer,pacdeps,patch,PACPATCH,NOBUILDDEP,provides,incompatible,compatible,optinstall,srcdir,url,backup,pkgrel,mask,pac_functions,repo,priority,noextract,nosubmodules,_archive,license,${allsource/\,/},${allsums/\,/}}; do \
                 [[ -z \"\${!i}\" ]] || declare -p \$i >> \"${safeenv}\"; \
             done"
         echo "[[ \$name == *'-deb' ]] && for i in {post_install,post_remove,post_upgrade,pre_install,pre_remove,pre_upgrade}; do \

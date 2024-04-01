@@ -558,8 +558,7 @@ function install_builddepends() {
 }
 
 function compare_remote_version() {
-    local crv_input="${1}"
-    unset -f pkgver 2> /dev/null
+    local crv_input="${1}" remote_tmp remote_safe
     source "$METADIR/$crv_input" || return 1
     if [[ -z ${_remoterepo} ]]; then
         return 0
@@ -573,8 +572,11 @@ function compare_remote_version() {
     local remotever
     remotever="$(
         unset pkgrel
-        safe_source <(curl -s -- "$remoterepo/packages/$crv_input/$crv_input.pacscript")
-        source "${safeenv}" \
+        remote_tmp="$(sudo mktemp -p "${PACDIR}" -t "compare-repo-ver-$crv_input.XXXXXX")"
+        remote_safe="${remote_tmp}"
+        sudo curl -fsSL "$remoterepo/packages/$crv_input/$crv_input.pacscript" -o "${remote_safe}" \
+            && safe_source "${remote_safe}" \
+            && source "${safeenv}" \
             && if [[ ${pkgname} == *-git ]]; then
                 parse_source_entry "${source[0]}"
                 calc_git_pkgver
@@ -584,6 +586,7 @@ function compare_remote_version() {
             else
                 echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
             fi
+        sudo rm -rf "${remote_safe}"
     )" > /dev/null
     if [[ $crv_input == *"-git" ]]; then
         if [[ $(pacstall -Qi "$crv_input" version) != "$remotever" ]]; then
