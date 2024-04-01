@@ -181,8 +181,6 @@ fi
 # Trap Crtl+C just before the point cleanup is first needed
 trap "trap_ctrlc" 2
 
-prompt_optdepends || return 1
-
 if [[ -n $ppa ]]; then
     for i in "${ppa[@]}"; do
         # Add ppa, but ppa bad I guess
@@ -312,6 +310,8 @@ for i in "${!source[@]}"; do
 done
 unset dest_list
 install_builddepends
+
+prompt_optdepends || return 1
 
 fancy_message info "Retrieving packages"
 if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
