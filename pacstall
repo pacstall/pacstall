@@ -32,7 +32,7 @@ export PACDIR="/tmp/pacstall"
 export STGDIR="/usr/share/pacstall"
 export STOWDIR="/usr/src/pacstall"
 
-export PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER}}")
+export PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER:-$(whoami)}}")
 
 # (( )) doesn't like uninitialized vars
 export PACSTALL_INSTALL=1
