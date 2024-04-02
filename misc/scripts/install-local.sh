@@ -202,7 +202,7 @@ if [[ -n $pacdeps ]]; then
             if [[ $pacstall_pacdep_status == "update" ]]; then
                 fancy_message info "Found newer version for $i pacdep"
                 if ! pacstall "$cmd" "${i}${repo}"; then
-                    fancy_message error "Failed to install dependency"
+                    fancy_message error "Failed to install dependency (${i} from ${PACKAGE})"
                     error_log 8 "install $PACKAGE"
                     clean_fail_down
                 fi
