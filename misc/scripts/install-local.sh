@@ -89,7 +89,10 @@ mapfile -t FARCH < <(dpkg --print-foreign-architectures)
 export FARCH
 export CARCH="$(dpkg --print-architecture)"
 export DISTRO="$(set_distro)"
-if ! source "${pacfile}"; then
+
+# Running source on an isolated env
+safe_source "${pacfile}"
+if ! source "${safeenv}"; then
     fancy_message error "Could not source pacscript"
     error_log 12 "install $PACKAGE"
     clean_fail_down
@@ -199,7 +202,7 @@ if [[ -n $pacdeps ]]; then
             if [[ $pacstall_pacdep_status == "update" ]]; then
                 fancy_message info "Found newer version for $i pacdep"
                 if ! pacstall "$cmd" "${i}${repo}"; then
-                    fancy_message error "Failed to install dependency"
+                    fancy_message error "Failed to install dependency (${i} from ${PACKAGE})"
                     error_log 8 "install $PACKAGE"
                     clean_fail_down
                 fi
@@ -207,7 +210,7 @@ if [[ -n $pacdeps ]]; then
                 fancy_message info "The pacstall dependency ${i} is already installed and at latest version"
             fi
         elif fancy_message info "Installing $i" && ! pacstall "$cmd" "${i}${repo}"; then
-            fancy_message error "Failed to install dependency"
+            fancy_message error "Failed to install dependency (${i} from ${PACKAGE})"
             error_log 8 "install $PACKAGE"
             clean_fail_down
         fi
@@ -379,7 +382,7 @@ if [[ -z ${_archive} ]]; then
     export _archive="${srcdir}"
 fi
 export pacdir="$PWD"
-sudo chown -R "$PACSTALL_USER":"$PACSTALL_USER" . 2> /dev/null
+sudo chown -R root:root . 2> /dev/null
 
 export pkgdir="$STOWDIR/$pkgname"
 export -f ask fancy_message select_options
@@ -401,16 +404,6 @@ function fail_out_functions() {
     clean_fail_down
 }
 
-function run_function() {
-    local func="$1"
-    fancy_message sub "Running $func"
-    if [[ ! -d ${LOGDIR} ]]; then
-        sudo mkdir -p "${LOGDIR}"
-    fi
-    # NOTE: https://stackoverflow.com/a/29163890 (shorthand for 2>&1 |)
-    $func |& sudo tee "${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$pkgname-$func.log" && return "${PIPESTATUS[0]}"
-}
-
 function safe_run() {
     local func="$1"
     export restoreshopt="$(shopt -p)
@@ -421,12 +414,14 @@ $(shopt -p -o)"
     local restoretrap="$(trap -p ERR)"
     trap "fail_out_functions '$func'" ERR
 
-    run_function "$func"
+    bwrap_function "$func"
 
     trap - ERR
     eval "$restoreshopt"
     eval "$restoretrap"
 }
+
+unset pac_functions
 if [[ $NOCHECK == true ]]; then
     for i in {prepare,build,package}; do
         if is_function "$i"; then
