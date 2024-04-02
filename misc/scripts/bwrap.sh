@@ -88,8 +88,6 @@ function bwrap_function() {
     tmpfile="$(sudo mktemp -p "${PWD}")"
     sudo tee -a "$tmpfile" > /dev/null <<EOF
 #!/bin/bash -a
-shopt -s expand_aliases
-alias sudo=':'
 mapfile -t OLD_ENV < <(compgen -A variable -P "--unset ")
 source ${bwrapenv}
 ${func} 2>&1 "${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log" && FUNCSTATUS="\${PIPESTATUS[0]}" && \
