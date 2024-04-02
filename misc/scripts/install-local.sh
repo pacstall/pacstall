@@ -98,6 +98,10 @@ if ! source "${safeenv}"; then
     clean_fail_down
 fi
 
+if [[ ${external_connection} == "true" ]]; then
+    fancy_message warn "This package will connect to the internet during its build process."
+fi
+
 # Running `-B` on a deb package doesn't make sense, so let's download instead
 if ((PACSTALL_INSTALL == 0)) && [[ ${pkgname} == *-deb ]]; then
     if ! download "${source[0]}"; then
