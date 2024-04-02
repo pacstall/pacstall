@@ -72,8 +72,7 @@ done
 EOF
     sudo chmod +x "$tmpfile"
 
-    sudo env - bwrap --unshare-ipc --unshare-pid --unshare-uts \
-        --unshare-cgroup --die-with-parent --new-session --ro-bind / / \
+    sudo env - bwrap --unshare-all --die-with-parent --new-session --ro-bind / / \
         --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run --dev-bind /dev/null /dev/null \
         --ro-bind "$input" "$input" --bind "$PACDIR" "$PACDIR" --ro-bind "$tmpfile" "$tmpfile" \
         --setenv homedir "$homedir" --setenv CARCH "$CARCH" --setenv DISTRO "$DISTRO" --setenv NCPU "$NCPU" \
@@ -86,6 +85,8 @@ function bwrap_function() {
     tmpfile="$(sudo mktemp -p "${PWD}")"
     sudo tee -a "$tmpfile" > /dev/null <<EOF
 #!/bin/bash -a
+shopt -s expand_aliases
+alias sudo=':'
 mapfile -t OLD_ENV < <(compgen -A variable -P "--unset ")
 source ${bwrapenv}
 ${func} 2>&1 "${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log" && FUNCSTATUS="\${PIPESTATUS[0]}" && \
@@ -101,8 +102,7 @@ EOF
     if [[ ! -d ${LOGDIR} ]]; then
         sudo mkdir -p "${LOGDIR}"
     fi
-    sudo bwrap --unshare-ipc --unshare-pid --unshare-uts \
-        --unshare-cgroup --die-with-parent --new-session --ro-bind / / \
+    sudo bwrap --unshare-all --die-with-parent --new-session --ro-bind / / \
         --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run --dev-bind /dev/null /dev/null \
         --bind "$STOWDIR" "$STOWDIR" --bind "$PACDIR" "$PACDIR" \
         --setenv LOGDIR "$LOGDIR" --setenv STGDIR "$STGDIR" \
