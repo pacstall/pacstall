@@ -45,7 +45,7 @@ function safe_source() {
         done
     done
     allsums="${allsums/%,/}"
-    for allvar in {pkgname,repology,pkgver,git_pkgver,epoch,source_url,source,depends,makedepends,conflicts,breaks,replaces,gives,pkgdesc,hash,optdepends,ppa,arch,maintainer,pacdeps,patch,PACPATCH,NOBUILDDEP,provides,incompatible,compatible,optinstall,srcdir,url,backup,pkgrel,mask,pac_functions,repo,priority,noextract,nosubmodules,_archive,license,${allsource},${allsums},post_install,post_remove,post_upgrade,pre_install,pre_remove,pre_upgrade,prepare,build,check,package}; do
+    for allvar in {pkgname,repology,pkgver,git_pkgver,epoch,source_url,source,depends,makedepends,conflicts,breaks,replaces,gives,pkgdesc,hash,optdepends,ppa,arch,maintainer,pacdeps,patch,PACPATCH,NOBUILDDEP,provides,incompatible,compatible,optinstall,srcdir,url,backup,pkgrel,mask,pac_functions,repo,priority,noextract,nosubmodules,_archive,license,${allsource},${allsums},post_install,post_remove,post_upgrade,pre_install,pre_remove,pre_upgrade,prepare,build,check,package,external_connection}; do
         unset "${allvar}"
     done
 
@@ -61,7 +61,7 @@ mapfile -t NEW_ENV < <(/bin/env -0 \${__OLD_ENV[@]} | \
 declare -p \${NEW_ENV[@]} >> "${bwrapenv}"
 declare -pf >> "${bwrapenv}"
 echo > "${safeenv}"
-for i in {pkgname,repology,pkgver,git_pkgver,epoch,source_url,source,depends,makedepends,conflicts,breaks,replaces,gives,pkgdesc,hash,optdepends,ppa,arch,maintainer,pacdeps,patch,PACPATCH,NOBUILDDEP,provides,incompatible,compatible,optinstall,srcdir,url,backup,pkgrel,mask,pac_functions,repo,priority,noextract,nosubmodules,_archive,license,${allsource},${allsums}}; do
+for i in {pkgname,repology,pkgver,git_pkgver,epoch,source_url,source,depends,makedepends,conflicts,breaks,replaces,gives,pkgdesc,hash,optdepends,ppa,arch,maintainer,pacdeps,patch,PACPATCH,NOBUILDDEP,provides,incompatible,compatible,optinstall,srcdir,url,backup,pkgrel,mask,pac_functions,repo,priority,noextract,nosubmodules,_archive,license,${allsource},${allsums},external_connection}; do
     [[ -z "\${!i}" ]] || declare -p \$i >> "${safeenv}";
 done
 [[ \$name == *'-deb' ]] && for i in {post_install,post_remove,post_upgrade,pre_install,pre_remove,pre_upgrade}; do
@@ -102,7 +102,11 @@ EOF
     if [[ ! -d ${LOGDIR} ]]; then
         sudo mkdir -p "${LOGDIR}"
     fi
-    sudo bwrap --unshare-all --die-with-parent --new-session --ro-bind / / \
+    local share_net
+    if [[ ${external_connection} == "true" ]]; then
+        share_net="--share-net"
+    fi
+    sudo bwrap --unshare-all ${share_net} --die-with-parent --new-session --ro-bind / / \
         --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run --dev-bind /dev/null /dev/null \
         --bind "$STOWDIR" "$STOWDIR" --bind "$PACDIR" "$PACDIR" \
         --setenv LOGDIR "$LOGDIR" --setenv STGDIR "$STGDIR" \
