@@ -88,7 +88,7 @@ function bwrap_function() {
 #!/bin/bash -a
 mapfile -t OLD_ENV < <(compgen -A variable -P "--unset ")
 source ${bwrapenv}
-${func} 2>&1 "${LOGDIR}/$(printf '%(%Y-%m-%d_%%T)T')-$name-$func.log" && FUNCSTATUS="\${PIPESTATUS[0]}" && \
+${func} 2>&1 "${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log" && FUNCSTATUS="\${PIPESTATUS[0]}" && \
 if [[ \$FUNCSTATUS ]]; then \
     mapfile -t NEW_ENV < <(/bin/env -0 \${OLD_ENV[@]} | \
         sed -ze 's/BASH_FUNC_\(.*\)%%=\(.*\)\$/\\n/g;s/^\\(.[[:alnum:]_]*\\)=\\(.*\\)\$/\\1/g'|tr '\0' '\n'); \
