@@ -33,7 +33,7 @@ function safe_source() {
     export safeenv
 
     tmpfile="$(sudo mktemp -p "${PACDIR}")"
-    local allsource allsums src sum a_sum known_hashsums_src=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5") known_archs_src=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x")
+    local allsource allsums allvar src sum a_sum known_hashsums_src=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5") known_archs_src=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x")
     for src in "${known_archs_src[@]}"; do
         allsource+="source_${src},"
     done
@@ -45,6 +45,9 @@ function safe_source() {
         done
     done
     allsums="${allsums/%,/}"
+    for allvar in {pkgname,repology,pkgver,git_pkgver,epoch,source_url,source,depends,makedepends,conflicts,breaks,replaces,gives,pkgdesc,hash,optdepends,ppa,arch,maintainer,pacdeps,patch,PACPATCH,NOBUILDDEP,provides,incompatible,compatible,optinstall,srcdir,url,backup,pkgrel,mask,pac_functions,repo,priority,noextract,nosubmodules,_archive,license,${allsource},${allsums},post_install,post_remove,post_upgrade,pre_install,pre_remove,pre_upgrade,prepare,build,check,package}; do
+        unset "${allvar}"
+    done
 
     sudo tee "$tmpfile" > /dev/null <<EOF
 #!/bin/bash -a
