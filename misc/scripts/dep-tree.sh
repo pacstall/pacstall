@@ -83,41 +83,51 @@ function dep_tree.load_traits() {
 
 function dep_tree.sort_traits_into_array() {
     local pkg="${1:?No pkg given to dep_tree.sort_traits_into_array}"
-    local -n trait c_one c_two c_three c_four
+    local -n trait c_one c_two c_three c_four c_five c_six
     local trait="${2:?No trait array given to dep_tree.sort_traits_into_array}"
     c_one="${3:?No c_one array given to dep_tree.sort_traits_into_array}"
     c_two="${4:?No c_two array given to dep_tree.sort_traits_into_array}"
     c_three="${5:?No c_three array given to dep_tree.sort_traits_into_array}"
     c_four="${6:?No c_four array given to dep_tree.sort_traits_into_array}"
+    c_five="${7:?No c_five array given to dep_tree.sort_traits_into_array}"
+    c_six="${8:?No c_six array given to dep_tree.sort_traits_into_array}"
 
     if [[ ${trait['upgrade']} == 'false' ]]; then
         return 0
     fi
 
     if [[ ${trait['pacdeps']} == 'true' ]]; then
-        c_one+=("${pkg}")
+        if [[ ${trait['is_pacdep']} == 'true' ]]; then
+            c_four+=("${pkg}")
+        else
+            c_one+=("${pkg}")
+        fi
     elif [[ ${trait['is_pacdep']} == 'true' ]]; then
-        c_four+=("${pkg}")
-    elif [[ ${trait['depends']} == 'false' ]]; then
-        c_two+=("${pkg}")
-    else
+        if [[ ${trait['depends']} == 'true' ]]; then
+            c_six+=("${pkg}")
+        else
+            c_five+=("${pkg}")
+        fi
+    elif [[ ${trait['depends']} == 'true' ]]; then
         c_three+=("${pkg}")
+    else
+        c_two+=("${pkg}")
     fi
 }
 
 function dep_tree.loop_traits() {
     local -n merged_array="${1:?No array given to dep_tree.loop_traits}"
     shift
-    local class_one=() class_two=() class_three=() class_four=() i
+    local class_one=() class_two=() class_three=() class_four=() class_five=() class_six=() i
     for i in "${@}"; do
         # shellcheck disable=SC2034
         local -A arr=()
         dep_tree.load_traits "$i" arr
         unset _pacstall_depends _pacdeps 2> /dev/null
-        dep_tree.sort_traits_into_array "$i" arr class_one class_two class_three class_four
+        dep_tree.sort_traits_into_array "$i" arr class_one class_two class_three class_four class_five class_six
     done
     # shellcheck disable=SC2034
-    merged_array=("${class_one[@]}" "${class_two[@]}" "${class_three[@]}" "${class_four[@]}")
+    merged_array=("${class_one[@]}" "${class_two[@]}" "${class_three[@]}" "${class_four[@]}" "${class_five[@]}" "${class_six[@]}")
 }
 
 function dep_tree.trim_pacdeps() {
