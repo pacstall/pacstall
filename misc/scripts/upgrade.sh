@@ -122,7 +122,7 @@ N="$(nproc)"
             else
                 parsedrepo="$(parseRepo "${remoterepo}")"
                 if [[ -n ${remotebranch} ]]; then
-                    parsedrepo+="/${remotebranch}"
+                    parsedrepo+="${YELLOW}#${remotebranch}${NC}"
                 fi
                 [[ ${remoterepo} != "orphan" ]] && fancy_message warn "Package ${GREEN}${i}${NC} is not on ${CYAN}${parsedrepo}${NC} anymore" \
                     && sudo sed -i 's/_remoterepo=".*"/_remoterepo="orphan"/g' "$METADIR/$i" && sudo sed -i '/_remotebranch=/d' "$METADIR/$i"
@@ -172,7 +172,7 @@ N="$(nproc)"
                     echo "$i" | tee -a "${up_list}" > /dev/null
                     updaterepo="$(parseRepo "${remoteurl}")"
                     if [[ -n ${upBRANCH} && ${upBRANCH} != "master" && ${upBRANCH} != "main" ]]; then
-                        updaterepo+="/${upBRANCH}"
+                        updaterepo+="${YELLOW}#${upBRANCH}${NC}"
                     fi
                     printf "\t%s%s%s @ %s%s ( %s%s%s -> %s%s%s )\n" \
                     "${GREEN}" "${i}" "${CYAN}" "${updaterepo}" "${NC}" "${BLUE}" "${localver:-unknown}" "${NC}" "${BLUE}" "${remotever:-unknown}" "${NC}" | tee -a "${up_print}" > /dev/null

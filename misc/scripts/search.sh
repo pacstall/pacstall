@@ -209,14 +209,24 @@ elif [[ -n $UPGRADE ]]; then
     REPOS=()
     # Return list of repos with the package
     for IDX in $IDXSEARCH; do
-        ! [[ " ${REPOS[@]} " =~ " ${URLLIST[$IDX]} " ]] && mapfile -t -O"${#REPOS[@]}" REPOS <<< "${URLLIST[$IDX]}"
+        ! array.contains REPOS "${URLLIST[$IDX]}" && mapfile -t -O"${#REPOS[@]}" REPOS <<< "${URLLIST[$IDX]}"
     done
     export REPOS
     return 0
 # Check if its being used for search
 elif [[ -n $SEARCH ]]; then
     for IDX in $IDXSEARCH; do
-        echo -e "$GREEN${PACKAGELIST[$IDX]} $PURPLE@ $CYAN$(parseRepo "${URLLIST[$IDX]}") $NC"
+        searchedrepo="$(parseRepo "${URLLIST[$IDX]}")"
+        if [[ ${URLLIST[$IDX]} == *"github"* ]]; then
+            srBRANCH="${URLLIST[$IDX]##*/}"
+        elif [[ ${URLLIST[$IDX]} == *"gitlab"* ]]; then
+            srBRANCH="${URLLIST[$IDX]##*/-/raw/}"
+        else
+            unset srBRANCH
+        fi
+        [[ -n ${srBRANCH} && ${srBRANCH} != "master" && ${srBRANCH} != "main" ]] && searchedrepo+="${YELLOW}#${srBRANCH}${NC}"
+        echo -e "$GREEN${PACKAGELIST[$IDX]} $PURPLE@ $CYAN${searchedrepo} $NC"
+        unset searchedrepo srBRANCH
     done
     return 0
 # Options left: install or download
