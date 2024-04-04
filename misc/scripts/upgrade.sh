@@ -106,7 +106,7 @@ N="$(nproc)"
             else
                 remoterepo="${_remoterepo}"
             fi
-
+            remotebranch="${_remotebranch}"
             unset _remoterepo
 
             # shellcheck source=./misc/scripts/search.sh
@@ -120,47 +120,63 @@ N="$(nproc)"
                 unset comp_repo_ver
                 remoteurl="${REPOS[$IDXMATCH]}"
             else
-                fancy_message warn "Package ${GREEN}${i}${CYAN} is not on ${CYAN}$(parseRepo "${remoterepo}")${NC} anymore"
-                sudo sed -i "/_remote/d" "$METADIR/$i"
+                parsedrepo="$(parseRepo ${remoterepo})"
+                if [[ -n ${remotebranch} ]]; then
+                    parsedrepo+="/${remotebranch}"
+                fi
+                [[ ${remoterepo} != "orphan" ]] && fancy_message warn "Package ${GREEN}${i}${NC} is not on ${CYAN}${parsedrepo}${NC} anymore" \
+                    && sudo sed -i 's/_remoterepo=".*"/_remoterepo="orphan"/g' "$METADIR/$i" && sudo sed -i '/_remotebranch=/d' "$METADIR/$i"
             fi
+            unset remotebranch parsedrepo
 
-            if [[ $i != *"-git" ]]; then
+            if [[ $remotever != "${localver}" ]]; then
                 alterver="0.0.0"
                 for IDX in "${!REPOS[@]}"; do
-                    if ((IDX == IDXMATCH)); then
+                    if [[ -n $IDXMATCH ]] && ((IDX == IDXMATCH)); then
                         continue
                     else
                         calc_repo_ver "${REPOS[$IDX]}" "$i" \
                             && ver="${comp_repo_ver}"
                         unset comp_repo_ver
-                        if ! ver_compare "$alterver" "$ver"; then
+                        if ver_compare "$alterver" "$ver"; then
                             alterver="$ver"
+                            alterurl="${REPOS[$IDX]}"
+                        else
                             alterurl="$REPO"
                         fi
                     fi
                 done
                 if [[ -n $remotever ]]; then
                     if ver_compare "$remotever" "$alterver"; then
-                        echo -e "${GREEN}${i}${CYAN} has a newer version at ${CYAN}$(parseRepo "${alterurl}")${NC}."
-                        ask "Keep the package from the current repo?" Y
-                        if ((answer == 0)); then
-                            remoterepo="$alterver"
-                            remoteurl="$alterurl"
-                        fi
+                        remotever="$alterver"
+                        remoteurl="$alterurl"
                     fi
                 elif [[ $alterver != "0.0.0" ]]; then
-                    remoterepo="$alterver"
+                    remotever="$alterver"
                     remoteurl="$alterurl"
                 fi
-            elif [[ $remotever == "${localver}" ]]; then
+            else
                 return
             fi
 
+            if [[ ${remoteurl} == *"github"* ]]; then
+                upBRANCH="${remoteurl##*/}"
+            elif [[ ${remoteurl} == *"gitlab"* ]]; then
+                upBRANCH="${remoteurl##*/-/raw/}"
+            else
+                unset upBRANCH
+            fi
+
             if [[ -n $remotever ]]; then
-                if [[ $i == *"-git" ]] || ver_compare "$localver" "$remotever"; then
+                if ver_compare "$localver" "$remotever"; then
                     echo "$i" | tee -a "${up_list}" > /dev/null
-                    echo "\t${GREEN}${i}${CYAN} @ $(parseRepo "${remoteurl}")${NC} ( ${BLUE}${localver:-unknown}${NC} -> ${BLUE}${remotever:-unknown}${NC} )" | tee -a "${up_print}" > /dev/null
+                    updaterepo="$(parseRepo ${remoteurl})"
+                    if [[ -n ${upBRANCH} && ${upBRANCH} != "master" && ${upBRANCH} != "main" ]]; then
+                        updaterepo+="/${upBRANCH}"
+                    fi
+                    echo "\t${GREEN}${i}${CYAN} @ ${updaterepo}${NC} ( ${BLUE}${localver:-unknown}${NC} -> ${BLUE}${remotever:-unknown}${NC} )" | tee -a "${up_print}" > /dev/null
                     echo "$remoteurl" | tee -a "${up_urls}" > /dev/null
+                    unset upBRANCH updaterepo
                 fi
             fi
         ) &

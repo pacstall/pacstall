@@ -560,6 +560,7 @@ function install_builddepends() {
 function compare_remote_version() {
     local crv_input="${1}" remote_tmp remote_safe
     source "$METADIR/$crv_input" || return 1
+    [[ ${_remoterepo} == "orphan" ]] && _remoterepo="${REPO}"
     if [[ -z ${_remoterepo} ]]; then
         return 0
     elif [[ ${_remoterepo} == *"github.com"* ]]; then

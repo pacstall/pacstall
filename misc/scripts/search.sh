@@ -143,7 +143,7 @@ while IFS= read -r URL; do
             || fancy_message warn "Replace '~' with the full home path on \e]8;;file://$STGDIR/repo/pacstallrepo\a$CYAN$STGDIR/repo/pacstallrepo$NC\e]8;;\a"
         URL="${URL/'~'/$HOME}"
     fi
-    if ! check_url "${URL}/packagelist"; then
+    if [[ ${URL} != "#"* ]] && ! check_url "${URL}/packagelist"; then
         if [[ -z $REPOMSG ]]; then
             fancy_message warn "Skipping repo $CYAN$(parseRepo "${URL}")$NC"
             fancy_message warn "You can remove or fix the URL by editing $CYAN$STGDIR/repo/pacstallrepo$NC"
