@@ -174,7 +174,8 @@ N="$(nproc)"
                     if [[ -n ${upBRANCH} && ${upBRANCH} != "master" && ${upBRANCH} != "main" ]]; then
                         updaterepo+="/${upBRANCH}"
                     fi
-                    printf "\t${GREEN}${i}${CYAN} @ ${updaterepo}${NC} ( ${BLUE}${localver:-unknown}${NC} -> ${BLUE}${remotever:-unknown}${NC} )\n" | tee -a "${up_print}" > /dev/null
+                    printf "\t%s%s%s @ %s%s ( %s%s%s -> %s%s%s )\n" \
+                    "${GREEN}" "${i}" "${CYAN}" "${updaterepo}" "${NC}" "${BLUE}" "${localver:-unknown}" "${NC}" "${BLUE}" "${remotever:-unknown}" "${NC}" | tee -a "${up_print}" > /dev/null
                     echo "$remoteurl" | tee -a "${up_urls}" > /dev/null
                     unset upBRANCH updaterepo
                 fi
