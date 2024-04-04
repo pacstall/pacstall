@@ -85,6 +85,21 @@ function dep_tree.sort_traits_into_array() {
     local pkg="${1:?No pkg given to dep_tree.sort_traits_into_array}"
     local -n trait c_one c_two c_three c_four c_five c_six
     local trait="${2:?No trait array given to dep_tree.sort_traits_into_array}"
+    # ------------------------------------------------- #
+    #    c_one:   pacdeps  +  !is_pacdep  +  !depends   #
+    #             pacdeps  +  !is_pacdep  +   depends   #
+    # ------------------------------------------------- #
+    #    c_two:  !pacdeps  +  !is_pacdep  +  !depends   #
+    # ------------------------------------------------- #
+    #  c_three:  !pacdeps  +  !is_pacdep  +   depends   #
+    # ------------------------------------------------- #
+    #   c_four:   pacdeps  +   is_pacdep  +  !depends   #
+    #             pacdeps  +   is_pacdep  +   depends   #
+    # ------------------------------------------------- #
+    #   c_five:  !pacdeps  +   is_pacdep  +  !depends   #
+    # ------------------------------------------------- #
+    #    c_six:  !pacdeps  +   is_pacdep  +   depends   #
+    # ------------------------------------------------- #
     c_one="${3:?No c_one array given to dep_tree.sort_traits_into_array}"
     c_two="${4:?No c_two array given to dep_tree.sort_traits_into_array}"
     c_three="${5:?No c_three array given to dep_tree.sort_traits_into_array}"
