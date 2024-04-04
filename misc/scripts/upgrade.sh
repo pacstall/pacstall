@@ -120,7 +120,7 @@ N="$(nproc)"
                 unset comp_repo_ver
                 remoteurl="${REPOS[$IDXMATCH]}"
             else
-                parsedrepo="$(parseRepo ${remoterepo})"
+                parsedrepo="$(parseRepo "${remoterepo}")"
                 if [[ -n ${remotebranch} ]]; then
                     parsedrepo+="/${remotebranch}"
                 fi
@@ -170,11 +170,11 @@ N="$(nproc)"
             if [[ -n $remotever ]]; then
                 if ver_compare "$localver" "$remotever"; then
                     echo "$i" | tee -a "${up_list}" > /dev/null
-                    updaterepo="$(parseRepo ${remoteurl})"
+                    updaterepo="$(parseRepo "${remoteurl}")"
                     if [[ -n ${upBRANCH} && ${upBRANCH} != "master" && ${upBRANCH} != "main" ]]; then
                         updaterepo+="/${upBRANCH}"
                     fi
-                    echo "\t${GREEN}${i}${CYAN} @ ${updaterepo}${NC} ( ${BLUE}${localver:-unknown}${NC} -> ${BLUE}${remotever:-unknown}${NC} )" | tee -a "${up_print}" > /dev/null
+                    printf "\t${GREEN}${i}${CYAN} @ ${updaterepo}${NC} ( ${BLUE}${localver:-unknown}${NC} -> ${BLUE}${remotever:-unknown}${NC} )\n" | tee -a "${up_print}" > /dev/null
                     echo "$remoteurl" | tee -a "${up_urls}" > /dev/null
                     unset upBRANCH updaterepo
                 fi
