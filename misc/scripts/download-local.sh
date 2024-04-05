@@ -538,6 +538,7 @@ function is_compatible_arch() {
 }
 
 function install_builddepends() {
+    # shellcheck disable=SC2034
     local build_dep not_installed_yet_builddepends bdeps_array bdeps_form
     if [[ -n ${makedepends[*]} ]]; then
         for build_dep in "${makedepends[@]}"; do
@@ -561,6 +562,7 @@ function install_builddepends() {
 }
 
 function install_checkdepends() {
+    # shellcheck disable=SC2034
     local check_dep not_installed_yet_checkdepends cdeps_array cdeps_form
     if [[ -n ${checkdepends[*]} ]]; then
         for check_dep in "${checkdepends[@]}"; do

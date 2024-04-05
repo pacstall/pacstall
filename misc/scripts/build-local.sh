@@ -343,6 +343,7 @@ function makedeb() {
     fi
 
     if [[ -n ${makedepends[*]} ]]; then
+        # shellcheck disable=SC2034
         local builddepends builddepends_str
         [[ -n ${checkdepends[*]} ]] && makedepends+=("${checkdepends[@]}")
         dep_const.format_control makedepends builddepends
@@ -560,6 +561,7 @@ function install_deb() {
 }
 
 function repacstall() {
+    # shellcheck disable=SC2034
     local depends_array unpackdir depends_line deper pacgives meper pacdep depends_array_form repac_depends_str upcontrol input_dest="${1}"
     unpackdir="${STOWDIR}/${pkgname}"
     upcontrol="${unpackdir}/DEBIAN/control"
