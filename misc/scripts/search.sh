@@ -78,6 +78,12 @@ function parseRepo() {
     fi
 }
 
+function formatRepo() {
+    ! [[ $1 =~ ^\ *# ]] \
+    && [[ $1 =~ ^([^[:space:]]+)([[:space:]]+#.*)?$ ]] \
+    && echo "${BASH_REMATCH[1]}"
+}
+
 # Repo specific search
 if [[ $SEARCH == *@* ]] || [[ $PACKAGE == *@* ]]; then
     if [[ -n $SEARCH ]]; then
@@ -143,10 +149,12 @@ while IFS= read -r URL; do
             || fancy_message warn "Replace '~' with the full home path on \e]8;;file://$STGDIR/repo/pacstallrepo\a$CYAN$STGDIR/repo/pacstallrepo$NC\e]8;;\a"
         URL="${URL/'~'/$HOME}"
     fi
-    if ! check_url "${URL}/packagelist"; then
+    URL="$(formatRepo "${URL}")"
+    if [[ -n ${URL} ]] && ! check_url "${URL}/packagelist"; then
         if [[ -z $REPOMSG ]]; then
-            fancy_message warn "Skipping repo $CYAN$(parseRepo "${URL}")$NC"
+            fancy_message error "Pacstall repo line improperly formatted: ${CYAN}${URL}${NC}"
             fancy_message warn "You can remove or fix the URL by editing $CYAN$STGDIR/repo/pacstallrepo$NC"
+            exit 1
         fi
         continue
     fi
@@ -201,14 +209,24 @@ elif [[ -n $UPGRADE ]]; then
     REPOS=()
     # Return list of repos with the package
     for IDX in $IDXSEARCH; do
-        mapfile -t -O"${#REPOS[@]}" REPOS <<< "${URLLIST[$IDX]}"
+        ! array.contains REPOS "${URLLIST[$IDX]}" && mapfile -t -O"${#REPOS[@]}" REPOS <<< "${URLLIST[$IDX]}"
     done
     export REPOS
     return 0
 # Check if its being used for search
 elif [[ -n $SEARCH ]]; then
     for IDX in $IDXSEARCH; do
-        echo -e "$GREEN${PACKAGELIST[$IDX]} $PURPLE@ $CYAN$(parseRepo "${URLLIST[$IDX]}") $NC"
+        searchedrepo="$(parseRepo "${URLLIST[$IDX]}")"
+        if [[ ${URLLIST[$IDX]} == *"github"* ]]; then
+            srBRANCH="${URLLIST[$IDX]##*/}"
+        elif [[ ${URLLIST[$IDX]} == *"gitlab"* ]]; then
+            srBRANCH="${URLLIST[$IDX]##*/-/raw/}"
+        else
+            unset srBRANCH
+        fi
+        [[ -n ${srBRANCH} && ${srBRANCH} != "master" && ${srBRANCH} != "main" ]] && searchedrepo+="${YELLOW}#${srBRANCH}${NC}"
+        echo -e "$GREEN${PACKAGELIST[$IDX]} $PURPLE@ $CYAN${searchedrepo} $NC"
+        unset searchedrepo srBRANCH
     done
     return 0
 # Options left: install or download
