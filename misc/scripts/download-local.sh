@@ -538,6 +538,7 @@ function is_compatible_arch() {
 }
 
 function install_builddepends() {
+    local build_dep not_installed_yet_builddepends bdeps_array bdeps_form
     if [[ -n ${makedepends[*]} ]]; then
         for build_dep in "${makedepends[@]}"; do
             if ! is_apt_package_installed "${build_dep}"; then
@@ -547,9 +548,33 @@ function install_builddepends() {
         done
 
         if ((${#not_installed_yet_builddepends[@]} != 0)); then
+            dep_const.format_control not_installed_yet_builddepends bdeps_array
+            dep_const.comma_array bdeps_array bdeps_form
             fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to install"
-            if ! sudo apt-get install -y "${not_installed_yet_builddepends[@]}"; then
+            if ! sudo apt-get satisfy -y "${bdeps_form}"; then
                 fancy_message error "Failed to install build dependencies"
+                error_log 8 "install $PACKAGE"
+                clean_fail_down
+            fi
+        fi
+    fi
+}
+
+function install_checkdepends() {
+    local check_dep not_installed_yet_checkdepends cdeps_array cdeps_form
+    if [[ -n ${checkdepends[*]} ]]; then
+        for check_dep in "${checkdepends[@]}"; do
+            if ! is_apt_package_installed "${check_dep}"; then
+                not_installed_yet_checkdepends+=("${check_dep}")
+            fi
+        done
+
+        if ((${#not_installed_yet_checkdepends[@]} != 0)); then
+            dep_const.format_control not_installed_yet_checkdepends cdeps_array
+            dep_const.comma_array cdeps_array cdeps_form
+            fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}${not_installed_yet_checkdepends[*]}${NC} to perform checks"
+            if ! sudo apt-get satisfy -y "${cdeps_form}"; then
+                fancy_message error "Failed to install check dependencies"
                 error_log 8 "install $PACKAGE"
                 clean_fail_down
             fi

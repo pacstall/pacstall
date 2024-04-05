@@ -317,6 +317,8 @@ install_builddepends
 
 prompt_optdepends || return 1
 
+is_function "check" && install_checkdepends
+
 fancy_message info "Retrieving packages"
 if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
     mkdir -p "/tmp/pacstall-pacdep"

@@ -343,8 +343,12 @@ function makedeb() {
     fi
 
     if [[ -n ${makedepends[*]} ]]; then
+        local builddepends builddepends_str
+        [[ -n ${checkdepends[*]} ]] && makedepends+="${checkdepends[@]}"
+        dep_const.format_control makedepends builddepends
+        dep_const.comma_array builddepends builddepends_str
         # shellcheck disable=SC2001
-        deblog "Build-Depends" "$(sed 's/ /, /g' <<< "${makedepends[@]}")"
+        deblog "Build-Depends" "${builddepends_str}"
     fi
 
     if [[ -n ${provides[*]} ]]; then
@@ -556,7 +560,7 @@ function install_deb() {
 }
 
 function repacstall() {
-    local depends_array unpackdir depends_line deper pacgives meper pacdep repac_depends_str upcontrol input_dest="${1}"
+    local depends_array unpackdir depends_line deper pacgives meper pacdep depends_array_form repac_depends_str upcontrol input_dest="${1}"
     unpackdir="${STOWDIR}/${pkgname}"
     upcontrol="${unpackdir}/DEBIAN/control"
     sudo mkdir -p "${unpackdir}"
@@ -601,7 +605,8 @@ function repacstall() {
             fi
         done
     fi
-    dep_const.comma_array depends_array repac_depends_str
+    dep_const.format_control depends_array depends_array_form
+    dep_const.comma_array depends_array_form repac_depends_str
     sudo sed -i '/^Depends:/d' "${upcontrol}"
     sudo sed -i "/Installed-Size:/a Depends: ${repac_depends_str}" "${upcontrol}"
     sudo sed -i "/Description:/i Modified-By-Pacstall: yes" "${upcontrol}"
