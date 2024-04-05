@@ -344,7 +344,7 @@ function makedeb() {
 
     if [[ -n ${makedepends[*]} ]]; then
         local builddepends builddepends_str
-        [[ -n ${checkdepends[*]} ]] && makedepends+="${checkdepends[@]}"
+        [[ -n ${checkdepends[*]} ]] && makedepends+=("${checkdepends[@]}")
         dep_const.format_control makedepends builddepends
         dep_const.comma_array builddepends builddepends_str
         # shellcheck disable=SC2001
