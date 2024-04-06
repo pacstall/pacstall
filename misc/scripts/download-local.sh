@@ -320,7 +320,7 @@ function deb_down() {
             exit 1
         fi
     fi
-    if [[ -n ${pacdeps[*]} || ${depends[*]} || ${makedepends[*]} ]] && repacstall "${dest}" || sudo apt install -y -f ./"${dest}" 2> /dev/null; then
+    if [[ -n ${pacdeps[*]} || ${depends[*]} || ${makedepends[*]} || ${checkdepends[*]} ]] && repacstall "${dest}" || sudo apt install -y -f ./"${dest}" 2> /dev/null; then
         meta_log
         if [[ -f /tmp/pacstall-pacdeps-"$pkgname" ]]; then
             sudo apt-mark auto "${gives:-$pkgname}" 2> /dev/null

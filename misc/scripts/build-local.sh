@@ -562,7 +562,7 @@ function install_deb() {
 
 function repacstall() {
     # shellcheck disable=SC2034
-    local depends_array unpackdir depends_line deper pacgives meper pacdep depends_array_form repac_depends_str upcontrol input_dest="${1}"
+    local depends_array unpackdir depends_line deper pacgives meper ceper pacdep depends_array_form repac_depends_str upcontrol input_dest="${1}"
     unpackdir="${STOWDIR}/${pkgname}"
     upcontrol="${unpackdir}/DEBIAN/control"
     sudo mkdir -p "${unpackdir}"
@@ -588,6 +588,14 @@ function repacstall() {
         for deper in "${depends[@]}"; do
             if ! array.contains depends_array "${deper}"; then
                 depends_array+=("${deper}")
+            fi
+        done
+    fi
+    if [[ -n ${checkdepends[*]} ]]; then
+        # shellcheck disable=SC2076
+        for ceper in "${checkdepends[@]}"; do
+            if ! array.contains depends_array "${ceper}"; then
+                depends_array+=("${ceper}")
             fi
         done
     fi
