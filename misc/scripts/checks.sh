@@ -145,10 +145,6 @@ function lint_source_deb_test() {
 
 function lint_source() {
     local ret=0 test_source has_source=0 known_archs_source=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x")
-    for i in "${!known_archs_source[@]}"; do
-        # shellcheck disable=SC2004
-        known_archs_source[$i]=${known_archs_source[$i]//-/_}
-    done
     if [[ -n ${source[0]} ]]; then
         has_source=1
     else
