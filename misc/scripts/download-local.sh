@@ -574,6 +574,7 @@ function install_builddepends() {
     fi
     if ((${#not_installed_yet_builddepends[@]} != 0)) || ((${#not_installed_yet_checkdepends[@]} != 0)); then
         fancy_message sub "Fetching apt repositories"
+        # shellcheck disable=SC2015
         sudo apt-get update -qq --allow-releaseinfo-change \
         && sudo apt-get satisfy -yq "${bdeps_str}" \
         || {
