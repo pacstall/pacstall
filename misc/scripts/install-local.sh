@@ -106,6 +106,8 @@ append_archAndHash_entry
 for i in {depends,makedepends,optdepends,pacdeps,checkdepends,provides,conflicts,breaks,replaces}; do
   append_var_arch "${i}" "${CARCH}"
 done
+gives_arch="gives_${CARCH}"
+[[ -n ${!gives_arch} && -z ${gives} ]] && gives="${!gives_arch}"
 
 # Running `-B` on a deb package doesn't make sense, so let's download instead
 if ((PACSTALL_INSTALL == 0)) && [[ ${pkgname} == *-deb ]]; then

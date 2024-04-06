@@ -35,7 +35,7 @@ function safe_source() {
     tmpfile="$(sudo mktemp -p "${PACDIR}")"
     local allsource allsums allvar src sum a_sum known_hashsums_src=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5") known_archs_src=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x")
     for src in "${known_archs_src[@]}"; do
-        for vars in {source,depends,makedepends,optdepends,pacdeps,checkdepends,provides,conflicts,breaks,replaces}; do
+        for vars in {source,depends,makedepends,optdepends,pacdeps,checkdepends,provides,conflicts,breaks,replaces,gives}; do
             allsource+="${vars}_${src},"
         done
     done

@@ -144,8 +144,7 @@ function lint_source_deb_test() {
 }
 
 function lint_source() {
-    local ret=0 test_source has_source=0 known_archs_source=()
-    mapfile -t known_archs_source < <(dpkg-architecture --list-known)
+    local ret=0 test_source has_source=0 known_archs_source=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x")
     for i in "${!known_archs_source[@]}"; do
         # shellcheck disable=SC2004
         known_archs_source[$i]=${known_archs_source[$i]//-/_}
@@ -171,7 +170,7 @@ function lint_source() {
     else
         for sarch in "${known_archs_source[@]}"; do
             local source_arch="source_${sarch}[@]"
-            if [[ -n ${!source_arch} ]]; then
+            [[ ${sarch} != "${CARCH}" ]] && if [[ -n ${!source_arch} ]]; then
                 test_source=()
                 if [[ -n ${source[0]} ]]; then
                     # shellcheck disable=SC2206
@@ -235,7 +234,7 @@ function lint_deps() {
         local -n type_array="${dep_type}"
         dep_array=("${type_array[@]}")
         for kdarch in "${known_archs_deps[@]}"; do
-            lint_var_arch "${dep_type}" "${kdarch}"
+            [[ ${kdarch} != "${CARCH}" ]] && lint_var_arch "${dep_type}" "${kdarch}"
         done
         idx=0
         if [[ -n ${dep_array[*]} ]]; then
@@ -302,7 +301,7 @@ function lint_relations() {
         local -n rtype_array="${rel_type}"
         rel_array=("${rtype_array[@]}")
         for rdarch in "${known_archs_rel[@]}"; do
-            lint_var_arch "${rel_type}" "${rdarch}"
+            [[ ${rdarch} != "${CARCH}" ]] && lint_var_arch "${rel_type}" "${rdarch}"
         done
         idx=0
         if [[ -n ${rel_array[*]} ]]; then
@@ -347,7 +346,7 @@ function lint_hash() {
         test_hashsum_style="${test_hashsum_type}sums[*]"
         for harch in "${known_archs_hash[@]}"; do
             test_hash_arch="${test_hashsum_type}sums_${harch}[*]"
-            if [[ -n ${!test_hash_arch} ]]; then
+            [[ ${harch} != "${CARCH}" ]] && if [[ -n ${!test_hash_arch} ]]; then
                 if [[ -z ${!test_hashsum_style} && -z ${test_hash[*]} ]]; then
                     if [[ -z ${test_hashsum_method} ]]; then
                         # shellcheck disable=SC2206
