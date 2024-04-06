@@ -216,7 +216,7 @@ function lint_pipe_check() {
 
 function lint_deps() {
     local dep_type dep_array ret=0 dep idx
-    for dep_type in "depends" "makedepends" "optdepends" "pacdeps"; do
+    for dep_type in "depends" "makedepends" "optdepends" "checkdepends" "pacdeps"; do
         idx=0
         local -n dep_array="${dep_type}"
         if [[ -n ${dep_array[*]} ]]; then

@@ -51,7 +51,7 @@ function cleanup() {
     sudo rm -rf "${STOWDIR}/${pkgname:-$PACKAGE}.deb"
     rm -f /tmp/pacstall-select-options
     sudo rm -f "${PACDIR}/bwrapenv.*"
-    unset pkgname repology pkgver git_pkgver epoch source_url source depends makedepends conflicts breaks replaces gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible compatible optinstall srcdir url backup pkgrel mask pac_functions repo priority noextract nosubmodules _archive license bwrapenv safeenv external_connection 2> /dev/null
+    unset pkgname repology pkgver git_pkgver epoch source_url source depends makedepends checkdepends conflicts breaks replaces gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible compatible optinstall srcdir url backup pkgrel mask pac_functions repo priority noextract nosubmodules _archive license bwrapenv safeenv external_connection 2> /dev/null
     unset -f pre_install pre_upgrade pre_remove post_install post_upgrade post_remove prepare build check package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
@@ -343,8 +343,13 @@ function makedeb() {
     fi
 
     if [[ -n ${makedepends[*]} ]]; then
+        # shellcheck disable=SC2034
+        local builddepends builddepends_str
+        is_function "check" && [[ -n ${checkdepends[*]} ]] && makedepends+=("${checkdepends[@]}")
+        dep_const.format_control makedepends builddepends
+        dep_const.comma_array builddepends builddepends_str
         # shellcheck disable=SC2001
-        deblog "Build-Depends" "$(sed 's/ /, /g' <<< "${makedepends[@]}")"
+        deblog "Build-Depends" "${builddepends_str}"
     fi
 
     if [[ -n ${provides[*]} ]]; then
@@ -556,7 +561,8 @@ function install_deb() {
 }
 
 function repacstall() {
-    local depends_array unpackdir depends_line deper pacgives meper pacdep repac_depends_str upcontrol input_dest="${1}"
+    # shellcheck disable=SC2034
+    local depends_array unpackdir depends_line deper pacgives meper ceper pacdep depends_array_form repac_depends_str upcontrol input_dest="${1}"
     unpackdir="${STOWDIR}/${pkgname}"
     upcontrol="${unpackdir}/DEBIAN/control"
     sudo mkdir -p "${unpackdir}"
@@ -574,6 +580,14 @@ function repacstall() {
         for meper in "${makedepends[@]}"; do
             if ! array.contains depends_array "${meper}"; then
                 depends_array+=("${meper}")
+            fi
+        done
+    fi
+    if [[ -n ${checkdepends[*]} ]] && is_function "check"; then
+        # shellcheck disable=SC2076
+        for ceper in "${checkdepends[@]}"; do
+            if ! array.contains depends_array "${ceper}"; then
+                depends_array+=("${ceper}")
             fi
         done
     fi
@@ -601,7 +615,8 @@ function repacstall() {
             fi
         done
     fi
-    dep_const.comma_array depends_array repac_depends_str
+    dep_const.format_control depends_array depends_array_form
+    dep_const.comma_array depends_array_form repac_depends_str
     sudo sed -i '/^Depends:/d' "${upcontrol}"
     sudo sed -i "/Installed-Size:/a Depends: ${repac_depends_str}" "${upcontrol}"
     sudo sed -i "/Description:/i Modified-By-Pacstall: yes" "${upcontrol}"
