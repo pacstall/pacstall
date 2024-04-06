@@ -583,19 +583,19 @@ function repacstall() {
             fi
         done
     fi
-    if [[ -n ${depends[*]} ]]; then
-        # shellcheck disable=SC2076
-        for deper in "${depends[@]}"; do
-            if ! array.contains depends_array "${deper}"; then
-                depends_array+=("${deper}")
-            fi
-        done
-    fi
     if [[ -n ${checkdepends[*]} ]] && is_function "check"; then
         # shellcheck disable=SC2076
         for ceper in "${checkdepends[@]}"; do
             if ! array.contains depends_array "${ceper}"; then
                 depends_array+=("${ceper}")
+            fi
+        done
+    fi
+    if [[ -n ${depends[*]} ]]; then
+        # shellcheck disable=SC2076
+        for deper in "${depends[@]}"; do
+            if ! array.contains depends_array "${deper}"; then
+                depends_array+=("${deper}")
             fi
         done
     fi
