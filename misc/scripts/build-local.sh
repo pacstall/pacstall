@@ -591,7 +591,7 @@ function repacstall() {
             fi
         done
     fi
-    if [[ -n ${checkdepends[*]} ]]; then
+    if [[ -n ${checkdepends[*]} ]] && is_function "check"; then
         # shellcheck disable=SC2076
         for ceper in "${checkdepends[@]}"; do
             if ! array.contains depends_array "${ceper}"; then
