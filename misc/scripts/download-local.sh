@@ -554,7 +554,7 @@ function install_builddepends() {
             fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to install"
             fancy_message sub "Fetching apt repositories"
             sudo apt-get update -qq --allow-releaseinfo-change \
-            && if ! sudo apt-get satisfy -y "${bdeps_form}"; then
+            && if ! sudo apt-get satisfy -yqq "${bdeps_form}"; then
                 fancy_message error "Failed to install build dependencies"
                 error_log 8 "install $PACKAGE"
                 clean_fail_down
@@ -579,7 +579,7 @@ function install_checkdepends() {
             fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}${not_installed_yet_checkdepends[*]}${NC} to perform checks"
             fancy_message sub "Fetching apt repositories"
             sudo apt-get update -qq --allow-releaseinfo-change \
-            && if ! sudo apt-get satisfy -y "${cdeps_form}"; then
+            && if ! sudo apt-get satisfy -yqq "${cdeps_form}"; then
                 fancy_message error "Failed to install check dependencies"
                 error_log 8 "install $PACKAGE"
                 clean_fail_down
