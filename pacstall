@@ -490,7 +490,7 @@ function getMasks_offending_pkg() {
 }
 
 # run sudo apt update if it's been more than a week
-[[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ]] && sudo apt-get update -qq
+[[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ]] && sudo apt-get update -qq --allow-releaseinfo-change
 
 # shellcheck source=./misc/scripts/error_log.sh
 source "$STGDIR/scripts/error_log.sh"
