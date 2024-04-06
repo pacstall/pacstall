@@ -575,7 +575,7 @@ function install_builddepends() {
     if ((${#not_installed_yet_builddepends[@]} != 0)) || ((${#not_installed_yet_checkdepends[@]} != 0)); then
         fancy_message sub "Fetching apt repositories"
         sudo apt-get update -qq --allow-releaseinfo-change \
-        && if ! sudo apt-get satisfy -yqq "${bdeps_str}"; then
+        && if ! sudo apt-get satisfy -yq "${bdeps_str}"; then
             fancy_message error "Failed to install build or check dependencies"
             error_log 8 "install $PACKAGE"
             clean_fail_down
