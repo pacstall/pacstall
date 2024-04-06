@@ -539,7 +539,7 @@ function is_compatible_arch() {
 
 function install_builddepends() {
     # shellcheck disable=SC2034
-    local build_dep not_installed_yet_builddepends bdeps_array bdeps_form
+    local build_dep not_installed_yet_builddepends bdeps_array bdeps_str check_dep not_installed_yet_checkdepends cdeps_array
     if [[ -n ${makedepends[*]} ]]; then
         for build_dep in "${makedepends[@]}"; do
             if ! is_apt_package_installed "${build_dep}"; then
@@ -547,43 +547,38 @@ function install_builddepends() {
                 not_installed_yet_builddepends+=("${build_dep}")
             fi
         done
-
-        if ((${#not_installed_yet_builddepends[@]} != 0)); then
-            dep_const.format_control not_installed_yet_builddepends bdeps_array
-            dep_const.comma_array bdeps_array bdeps_form
-            fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to install"
-            fancy_message sub "Fetching apt repositories"
-            sudo apt-get update -qq --allow-releaseinfo-change \
-            && if ! sudo apt-get satisfy -yqq "${bdeps_form}"; then
-                fancy_message error "Failed to install build dependencies"
-                error_log 8 "install $PACKAGE"
-                clean_fail_down
-            fi
-        fi
+        # format for apt satisfy/deb control file
+        dep_const.format_control not_installed_yet_builddepends bdeps_array
     fi
-}
-
-function install_checkdepends() {
-    # shellcheck disable=SC2034
-    local check_dep not_installed_yet_checkdepends cdeps_array cdeps_form
-    if [[ -n ${checkdepends[*]} ]]; then
+    if [[ -n ${checkdepends[*]} ]] && is_function "check"; then
         for check_dep in "${checkdepends[@]}"; do
             if ! is_apt_package_installed "${check_dep}"; then
                 not_installed_yet_checkdepends+=("${check_dep}")
             fi
         done
-
-        if ((${#not_installed_yet_checkdepends[@]} != 0)); then
-            dep_const.format_control not_installed_yet_checkdepends cdeps_array
-            dep_const.comma_array cdeps_array cdeps_form
-            fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}${not_installed_yet_checkdepends[*]}${NC} to perform checks"
-            fancy_message sub "Fetching apt repositories"
-            sudo apt-get update -qq --allow-releaseinfo-change \
-            && if ! sudo apt-get satisfy -yqq "${cdeps_form}"; then
-                fancy_message error "Failed to install check dependencies"
-                error_log 8 "install $PACKAGE"
-                clean_fail_down
-            fi
+        dep_const.format_control not_installed_yet_checkdepends cdeps_array
+    fi
+    if ((${#not_installed_yet_builddepends[@]} != 0)) && ((${#not_installed_yet_checkdepends[@]} == 0)); then
+        # if any makedeps are not installed, and there are no checkdeps to install
+        dep_const.comma_array bdeps_array bdeps_str
+        fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to build"
+    elif ((${#not_installed_yet_builddepends[@]} == 0)) && ((${#not_installed_yet_checkdepends[@]} != 0)); then
+        # if any checkdeps are not installed, and there are no makedeps to install
+        dep_const.comma_array cdeps_array bdeps_str
+        fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}${not_installed_yet_checkdepends[*]}${NC} to perform checks"
+    elif ((${#not_installed_yet_builddepends[@]} != 0)) && ((${#not_installed_yet_checkdepends[@]} != 0)); then
+        # if both need installs, append needed checkdeps to makedeps
+        bdeps_array+=("${cdeps_array[@]}")
+        dep_const.comma_array bdeps_array bdeps_str
+        fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to build, and ${CYAN}${not_installed_yet_checkdepends[*]}${NC} to perform checks"
+    fi
+    if ((${#not_installed_yet_builddepends[@]} != 0)) || ((${#not_installed_yet_checkdepends[@]} != 0)); then
+        fancy_message sub "Fetching apt repositories"
+        sudo apt-get update -qq --allow-releaseinfo-change \
+        && if ! sudo apt-get satisfy -yqq "${bdeps_str}"; then
+            fancy_message error "Failed to install build or check dependencies"
+            error_log 8 "install $PACKAGE"
+            clean_fail_down
         fi
     fi
 }
