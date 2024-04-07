@@ -427,6 +427,20 @@ function append_archAndHash_entry() {
     done
 }
 
+function append_var_arch() {
+    local inp inputvar="${1}" inputvar_array="${1}[*]" inputvar_arch="${1}_${2}[*]"
+    declare -n ref_inputvar="${inputvar}"
+    if [[ -n ${!inputvar_arch} ]]; then
+        for inp in ${!inputvar_arch}; do
+            if [[ -z ${!inputvar_array} ]]; then
+                ref_inputvar=("${inp}")
+            elif ! array.contains ref_inputvar "${inp}"; then
+                ref_inputvar+=("${inp}")
+            fi
+        done
+    fi
+}
+
 function calc_distro() {
     distro_name="$(lsb_release -si 2> /dev/null)"
     distro_name="${distro_name,,}"

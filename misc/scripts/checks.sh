@@ -144,12 +144,7 @@ function lint_source_deb_test() {
 }
 
 function lint_source() {
-    local ret=0 test_source has_source=0 known_archs_source=()
-    mapfile -t known_archs_source < <(dpkg-architecture --list-known)
-    for i in "${!known_archs_source[@]}"; do
-        # shellcheck disable=SC2004
-        known_archs_source[$i]=${known_archs_source[$i]//-/_}
-    done
+    local ret=0 test_source has_source=0 known_archs_source=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x")
     if [[ -n ${source[0]} ]]; then
         has_source=1
     else
@@ -171,7 +166,7 @@ function lint_source() {
     else
         for sarch in "${known_archs_source[@]}"; do
             local source_arch="source_${sarch}[@]"
-            if [[ -n ${!source_arch} ]]; then
+            [[ ${sarch} != "${CARCH}" ]] && if [[ -n ${!source_arch} ]]; then
                 test_source=()
                 if [[ -n ${source[0]} ]]; then
                     # shellcheck disable=SC2206
@@ -210,15 +205,34 @@ function lint_maintainer() {
     return 0
 }
 
+function lint_var_arch() {
+    local tinp tinputvar="${1}" tinputvar_array="${1}[*]" tinputvar_arch="${1}_${2}[*]"
+    declare -n test_ref_inputvar="test_${tinputvar}"
+    if [[ -n ${!tinputvar_arch} ]]; then
+        for tinp in ${!tinputvar_arch}; do
+            if [[ -z ${!tinputvar_array} ]]; then
+                test_ref_inputvar=("${tinp}")
+            elif ! array.contains ref_inputvar "${tinp}"; then
+                test_ref_inputvar+=("${tinp}")
+            fi
+        done
+    fi
+}
+
 function lint_pipe_check() {
     perl -ne 'exit 1 unless /^(?:[^\s|:]+(?::[^\s|:]+)?\s\|\s)+[^\s|:]+(?::[^\s|:]+)?(?::\s[^|:]+)?(?<!\s)$/' <<< "$1"
 }
 
 function lint_deps() {
-    local dep_type dep_array ret=0 dep idx
+    local dep_type dep_array ret=0 dep idx kdarch known_archs_deps=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x")
     for dep_type in "depends" "makedepends" "optdepends" "checkdepends" "pacdeps"; do
+        local -n dep_array="test_${dep_type}"
+        local -n type_array="${dep_type}"
+        dep_array=("${type_array[@]}")
+        for kdarch in "${known_archs_deps[@]}"; do
+            [[ ${kdarch} != "${CARCH}" ]] && lint_var_arch "${dep_type}" "${kdarch}"
+        done
         idx=0
-        local -n dep_array="${dep_type}"
         if [[ -n ${dep_array[*]} ]]; then
             for dep in "${dep_array[@]}"; do
                 if [[ -z ${dep} ]]; then
@@ -276,45 +290,29 @@ function lint_ppa() {
     return "${ret}"
 }
 
-function lint_conflicts() {
-    local ret=0 conflict idx=0
-    if [[ -n ${conflicts[*]} ]]; then
-        for conflict in "${conflicts[@]}"; do
-            if [[ -z ${conflict} ]]; then
-                fancy_message error "'conflicts' index '${idx}' cannot be empty"
-                ret=1
-            fi
-            ((idx++))
+function lint_relations() {
+    local rel_type rel_array ret=0 rela idx rdarch known_archs_rel=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x")
+    for rel_type in "conflicts" "breaks" "replaces" "provides"; do
+        local -n rel_array="test_${rel_type}"
+        local -n rtype_array="${rel_type}"
+        rel_array=("${rtype_array[@]}")
+        for rdarch in "${known_archs_rel[@]}"; do
+            [[ ${rdarch} != "${CARCH}" ]] && lint_var_arch "${rel_type}" "${rdarch}"
         done
-    fi
-    return "${ret}"
-}
-
-function lint_breaks() {
-    local ret=0 break idx=0
-    if [[ -n ${breaks[*]} ]]; then
-        for break in "${breaks[@]}"; do
-            if [[ -z ${break} ]]; then
-                fancy_message error "'breaks' index '${idx}' cannot be empty"
-                ret=1
-            fi
-            ((idx++))
-        done
-    fi
-    return "${ret}"
-}
-
-function lint_replaces() {
-    local ret=0 repl idx=0
-    if [[ -n ${replaces[*]} ]]; then
-        for repl in "${replaces[@]}"; do
-            if [[ -z ${repl} ]]; then
-                fancy_message error "'replaces' index '${idx}' cannot be empty"
-                ret=1
-            fi
-            ((idx++))
-        done
-    fi
+        idx=0
+        if [[ -n ${rel_array[*]} ]]; then
+            for rela in "${rel_array[@]}"; do
+                if [[ -z ${rela} ]]; then
+                    fancy_message error "'${rel_type}' index '${idx}' cannot be empty"
+                    ret=1
+                fi
+                ((idx++))
+            done
+        fi
+        if ((ret == 1)); then
+            break
+        fi
+    done
     return "${ret}"
 }
 
@@ -344,7 +342,7 @@ function lint_hash() {
         test_hashsum_style="${test_hashsum_type}sums[*]"
         for harch in "${known_archs_hash[@]}"; do
             test_hash_arch="${test_hashsum_type}sums_${harch}[*]"
-            if [[ -n ${!test_hash_arch} ]]; then
+            [[ ${harch} != "${CARCH}" ]] && if [[ -n ${!test_hash_arch} ]]; then
                 if [[ -z ${!test_hashsum_style} && -z ${test_hash[*]} ]]; then
                     if [[ -z ${test_hashsum_method} ]]; then
                         # shellcheck disable=SC2206
@@ -387,34 +385,6 @@ function lint_hash() {
                 ret=1
                 break
             fi
-        done
-    fi
-    return "${ret}"
-}
-
-function lint_patch() {
-    local ret=0 el_patch idx=0
-    if [[ -n ${patch[*]} ]]; then
-        for el_patch in "${patch[@]}"; do
-            if [[ -z ${el_patch} ]]; then
-                fancy_message error "'patch' index '${idx}' cannot be empty"
-                ret=1
-            fi
-            ((idx++))
-        done
-    fi
-    return "${ret}"
-}
-
-function lint_provides() {
-    local ret=0 provide idx=0
-    if [[ -n ${provides[*]} ]]; then
-        for provide in "${provides[@]}"; do
-            if [[ -z ${provide} ]]; then
-                fancy_message error "'provides' index '${idx}' cannot be empty"
-                ret=1
-            fi
-            ((idx++))
         done
     fi
     return "${ret}"
@@ -549,7 +519,7 @@ function lint_license() {
 }
 
 function checks() {
-    local ret=0 check linting_checks=(lint_pkgname lint_gives lint_pkgrel lint_epoch lint_version lint_source lint_pkgdesc lint_maintainer lint_deps lint_ppa lint_conflicts lint_breaks lint_replaces lint_hash lint_patch lint_provides lint_incompatible lint_arch lint_mask lint_priority lint_license)
+    local ret=0 check linting_checks=(lint_pkgname lint_gives lint_pkgrel lint_epoch lint_version lint_source lint_pkgdesc lint_maintainer lint_deps lint_ppa lint_relations lint_hash lint_incompatible lint_arch lint_mask lint_priority lint_license)
     for check in "${linting_checks[@]}"; do
         "${check}" || ret=1
     done
