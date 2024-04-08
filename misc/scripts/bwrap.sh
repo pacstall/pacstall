@@ -33,7 +33,7 @@ function safe_source() {
     export safeenv
 
     tmpfile="$(sudo mktemp -p "${PACDIR}")"
-    local allsource allsums allvar src sum a_sum allvar_str pacfunc_str debfunc_str \
+    local allvar src sum a_sum allvar_str pacfunc_str debfunc_str \
     known_hashsums_src=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5") \
     known_archs_src=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x") \
     allvars=("pkgname" "repology" "pkgver" "git_pkgver" "epoch" "source_url" "source" "depends" "makedepends" "checkdepends" \
