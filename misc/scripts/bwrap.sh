@@ -33,23 +33,32 @@ function safe_source() {
     export safeenv
 
     tmpfile="$(sudo mktemp -p "${PACDIR}")"
-    local allsource allsums allvar src sum a_sum known_hashsums_src=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5") known_archs_src=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x")
+    local allsource allsums allvar src sum a_sum allvar_str pacfunc_str debfunc_str \
+    known_hashsums_src=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5") \
+    known_archs_src=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x") \
+    allvars=("pkgname" "repology" "pkgver" "git_pkgver" "epoch" "source_url" "source" "depends" "makedepends" "checkdepends" \
+        "conflicts" "breaks" "replaces" "gives" "pkgdesc" "hash" "optdepends" "ppa" "arch" "maintainer" "pacdeps" "patch" \
+        "PACPATCH" "NOBUILDDEP" "provides" "incompatible" "compatible" "optinstall" "srcdir" "url" "backup" "pkgrel" "mask" \
+        "pac_functions" "repo" "priority" "noextract" "nosubmodules" "_archive" "license" "external_connection") \
+    pacstall_funcs=("prepare" "build" "check" "package") \
+    debian_funcs=("post_install" "post_remove" "post_upgrade" "pre_install" "pre_remove" "pre_upgrade")
     for src in "${known_archs_src[@]}"; do
         for vars in {source,depends,makedepends,optdepends,pacdeps,checkdepends,provides,conflicts,breaks,replaces,gives}; do
-            allsource+="${vars}_${src},"
+            allvars+=("${vars}_${src}")
         done
     done
-    allsource="${allsource/%,/}"
     for sum in "${known_hashsums_src[@]}"; do
-        allsums+="${sum}sums,"
+        allvars+=("${sum}sums")
         for a_sum in "${known_archs_src[@]}"; do
-            allsums+="${sum}sums_${a_sum},"
+            allvars+=("${sum}sums_${a_sum}")
         done
     done
-    allsums="${allsums/%,/}"
-    for allvar in {pkgname,repology,pkgver,git_pkgver,epoch,source_url,source,depends,makedepends,checkdepends,conflicts,breaks,replaces,gives,pkgdesc,hash,optdepends,ppa,arch,maintainer,pacdeps,patch,PACPATCH,NOBUILDDEP,provides,incompatible,compatible,optinstall,srcdir,url,backup,pkgrel,mask,pac_functions,repo,priority,noextract,nosubmodules,_archive,license,${allsource},${allsums},post_install,post_remove,post_upgrade,pre_install,pre_remove,pre_upgrade,prepare,build,check,package,external_connection}; do
+    for allvar in "${allvars[@]}" "${pacstall_funcs[@]}" "${debian_funcs[@]}"; do
         unset "${allvar}"
     done
+    IFS=,; allvar_str="${allvars[*]}"; unset IFS
+    IFS=,; pacfunc_str="${pacstall_funcs[*]}"; unset IFS
+    IFS=,; debfunc_str="${debian_funcs[*]}"; unset IFS
 
     sudo tee "$tmpfile" > /dev/null <<EOF
 #!/bin/bash -a
@@ -63,15 +72,15 @@ mapfile -t NEW_ENV < <(/bin/env -0 \${__OLD_ENV[@]} | \
 declare -p \${NEW_ENV[@]} >> "${bwrapenv}"
 declare -pf >> "${bwrapenv}"
 echo > "${safeenv}"
-for i in {pkgname,repology,pkgver,git_pkgver,epoch,source_url,source,depends,makedepends,checkdepends,conflicts,breaks,replaces,gives,pkgdesc,hash,optdepends,ppa,arch,maintainer,pacdeps,patch,PACPATCH,NOBUILDDEP,provides,incompatible,compatible,optinstall,srcdir,url,backup,pkgrel,mask,pac_functions,repo,priority,noextract,nosubmodules,_archive,license,${allsource},${allsums},external_connection}; do
+for i in {${allvar_str}}; do
     if [[ -n "\${!i}" ]]; then
         declare -p \$i >> "${safeenv}";
         declare -p \$i >> "${bwrapenv}";
     fi
 done
-[[ \$name == *'-deb' ]] && for i in {post_install,post_remove,post_upgrade,pre_install,pre_remove,pre_upgrade}; do
+[[ \$name == *'-deb' ]] && for i in {${debfunc_str}}; do
     [[ \$(type -t "\$i") == "function" ]] && declare -pf \$i >> "${safeenv}";
-done || for i in {post_install,post_remove,post_upgrade,pre_install,pre_remove,pre_upgrade,prepare,build,check,package}; do
+done || for i in {${debfunc_str},${pacfunc_str}}; do
     [[ \$(type -t "\$i") == "function" ]] && declare -pf \$i >> "${safeenv}";
 done
 EOF
