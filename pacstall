@@ -560,17 +560,6 @@ while lock $1 $2 $3 $4; do
 done
 unset first
 
-if [[ -n $PACSTALL_PAYLOAD && ! -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
-    export PACSTALL_DOWNLOADER="payload"
-
-    if [[ ! -f $PACSTALL_PAYLOAD ]]; then
-        fancy_message error "Payload not found"
-        exit 1
-    fi
-    mkdir -p "${PACDIR:?}"
-    cp "$PACSTALL_PAYLOAD" "${PACDIR:?}"
-fi
-
 while [[ $1 != "--" ]]; do
     case "$1" in
         -P | --disable-prompts)
@@ -687,6 +676,14 @@ Helpful links:
                     if [[ -z $PACKAGE ]]; then
                         fancy_message error "You failed to specify a package"
                         exit 1
+                    fi
+
+                    if [[ -n $PACSTALL_PAYLOAD && ! -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
+                        export PACSTALL_DOWNLOADER="payload"
+                        if [[ ! -f $PACSTALL_PAYLOAD ]]; then
+                            fancy_message error "Payload not found"
+                            exit 1
+                        fi
                     fi
 
                     # Make the directory if not exist

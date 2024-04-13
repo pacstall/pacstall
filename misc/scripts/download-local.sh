@@ -179,11 +179,7 @@ function fail_down() {
 
 function gather_down() {
     if [[ -z ${srcdir} ]]; then
-        if [[ -n $PACSTALL_PAYLOAD ]]; then
-            export srcdir="/tmp/pacstall-pacdep"
-        else
-            export srcdir="${PACDIR}/${PACKAGE}~${pkgver}"
-        fi
+        export srcdir="${PACDIR}/${PACKAGE}~${pkgver}"
     fi
     mkdir -p "${srcdir}"
     cd "${srcdir}" || {

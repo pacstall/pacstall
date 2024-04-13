@@ -343,11 +343,20 @@ fi
 mkdir -p "${PACDIR}"
 gather_down
 
+unset payload_arr
+if [[ -n $PACSTALL_PAYLOAD && ! -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
+    read -ra payload_arr <<< $(awk -v RS=';:' -v ORS=' ' '{print $0}' <<< "$PACSTALL_PAYLOAD")
+fi
+
 for i in "${!source[@]}"; do
     parse_source_entry "${source[$i]}"
     expectedHash="${hash[$i]}"
-    if [[ -n $PACSTALL_PAYLOAD && ! -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
-        dest="${PACSTALL_PAYLOAD##*/}"
+    if [[ -n ${payload_arr[*]} ]]; then
+        for p in "${!payload_arr[@]}"; do
+            if [[ "${payload_arr[$p]##*/}" == "${dest}" ]]; then
+                source_url="file://${payload_arr[$p]}"
+            fi
+        done
     fi
     if [[ $source_url != *://* ]]; then
         if [[ -z ${REPO} ]]; then
@@ -386,7 +395,7 @@ for i in "${!source[@]}"; do
     esac
     unset expectedHash dest source_url git_branch git_tag git_commit ext_deps ext_method
 done
-unset hashsum_method
+unset hashsum_method payload_arr
 
 if [[ -z ${_archive} ]]; then
     export _archive="${srcdir}"
