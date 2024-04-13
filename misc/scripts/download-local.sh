@@ -363,7 +363,7 @@ function file_down() {
     # shellcheck disable=SC2031
     cp -r "${source_url}" "${dest}" || fail_down
     genextr_declare
-    if [[ ${pkgname} == *"-deb" ]]; then
+    if [[ ${dest} == *".deb" ]]; then
         deb_down
     elif [[ -n ${ext_method} ]]; then
         genextr_down
