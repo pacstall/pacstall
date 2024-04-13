@@ -179,11 +179,7 @@ function fail_down() {
 
 function gather_down() {
     if [[ -z ${srcdir} ]]; then
-        if [[ -n $PACSTALL_PAYLOAD ]]; then
-            export srcdir="/tmp/pacstall-pacdep"
-        else
-            export srcdir="${PACDIR}/${PACKAGE}~${pkgver}"
-        fi
+        export srcdir="${PACDIR}/${PACKAGE}~${pkgver}"
     fi
     mkdir -p "${srcdir}"
     cd "${srcdir}" || {
@@ -367,7 +363,9 @@ function file_down() {
     # shellcheck disable=SC2031
     cp -r "${source_url}" "${dest}" || fail_down
     genextr_declare
-    if [[ -n ${ext_method} ]]; then
+    if [[ ${dest} == *".deb" ]]; then
+        deb_down
+    elif [[ -n ${ext_method} ]]; then
         genextr_down
     elif [[ ${source[i]} == "${source[0]}" && -d ${dest} ]]; then
         # cd in
