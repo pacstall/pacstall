@@ -345,7 +345,7 @@ gather_down
 
 unset payload_arr
 if [[ -n $PACSTALL_PAYLOAD && ! -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
-    read -ra payload_arr <<< $(awk -v RS=';:' -v ORS=' ' '{print $0}' <<< "$PACSTALL_PAYLOAD")
+    IFS=$'\n' read -rd '' -a payload_arr <<< "$(awk -v RS=';:' '{if (NF) print $0}' <<< $PACSTALL_PAYLOAD)"
 fi
 
 for i in "${!source[@]}"; do
