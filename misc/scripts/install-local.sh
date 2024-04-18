@@ -205,9 +205,9 @@ if [[ -n $pacdeps ]]; then
         touch "/tmp/pacstall-pacdeps-$i"
 
         cmd="-I"
-        [[ $KEEP ]] && cmd+="K"        
+        [[ $KEEP ]] && cmd+="K"
         [[ $DISABLE_PROMPTS == "yes" ]] && cmd+="P"
-        
+
         if pacstall -S "${i}@${REPO}" &> /dev/null; then
             repo="@${REPO}"
         fi
