@@ -543,6 +543,8 @@ function lock() {
         return 1
     elif [[ $ignore =~ (^|[[:space:]])"$3"($|[[:space:]]) ]]; then
         return 1
+    elif [[ -f "/tmp/pacstall-pacdeps-${2%%@*}" ]]; then
+        return 1
     elif [[ -f "/tmp/pacstall-pacdeps-${3%%@*}" ]]; then
         return 1
     elif [[ -f "/tmp/pacstall-pacdeps-${4%%@*}" ]]; then
