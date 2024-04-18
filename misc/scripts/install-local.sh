@@ -204,7 +204,11 @@ if [[ -n $pacdeps ]]; then
         # If /tmp/pacstall-pacdeps-"$i" is available, it will trigger the logger to log it as a dependency
         touch "/tmp/pacstall-pacdeps-$i"
 
-        [[ $KEEP ]] && cmd="-KPI" || cmd="-PI"
+        cmd="-I"
+        [[ $KEEP ]] && cmd+="K"
+        [[ $DISABLE_PROMPTS == "yes" ]] && cmd+="P"
+        [[ $NOCHECK ]] && cmd+="Nc"
+
         if pacstall -S "${i}@${REPO}" &> /dev/null; then
             repo="@${REPO}"
         fi
@@ -220,7 +224,7 @@ if [[ -n $pacdeps ]]; then
             else
                 fancy_message info "The pacstall dependency ${i} is already installed and at latest version"
             fi
-        elif fancy_message info "Installing $i" && ! pacstall "$cmd" "${i}${repo}"; then
+        elif fancy_message info "Installing dependency ${PURPLE}${i}${NC}" && ! pacstall "$cmd" "${i}${repo}"; then
             fancy_message error "Failed to install dependency (${i} from ${PACKAGE})"
             error_log 8 "install $PACKAGE"
             clean_fail_down
