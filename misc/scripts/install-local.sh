@@ -204,7 +204,10 @@ if [[ -n $pacdeps ]]; then
         # If /tmp/pacstall-pacdeps-"$i" is available, it will trigger the logger to log it as a dependency
         touch "/tmp/pacstall-pacdeps-$i"
 
-        [[ $KEEP ]] && cmd="-KPI" || cmd="-PI"
+        cmd="-I"
+        [[ $KEEP ]] && cmd+="K"        
+        [[ $DISABLE_PROMPTS == "yes" ]] && cmd+="P"
+        
         if pacstall -S "${i}@${REPO}" &> /dev/null; then
             repo="@${REPO}"
         fi
