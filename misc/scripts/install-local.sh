@@ -207,6 +207,8 @@ if [[ -n $pacdeps ]]; then
         cmd="-I"
         [[ $KEEP ]] && cmd+="K"
         [[ $DISABLE_PROMPTS == "yes" ]] && cmd+="P"
+        [[ $NOCHECK ]] && cmd+="Nc" 
+        ((PACSTALL_INSTALL == 0)) && cmd+="B"
 
         if pacstall -S "${i}@${REPO}" &> /dev/null; then
             repo="@${REPO}"

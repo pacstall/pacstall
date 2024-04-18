@@ -543,17 +543,26 @@ function lock() {
         return 1
     elif [[ $ignore =~ (^|[[:space:]])"$3"($|[[:space:]]) ]]; then
         return 1
+    elif [[ $ignore =~ (^|[[:space:]])"$4"($|[[:space:]]) ]]; then
+        return 1
+    elif [[ $ignore =~ (^|[[:space:]])"$5"($|[[:space:]]) ]]; then
+        return 1
     elif [[ -f "/tmp/pacstall-pacdeps-${2%%@*}" ]]; then
         return 1
     elif [[ -f "/tmp/pacstall-pacdeps-${3%%@*}" ]]; then
         return 1
     elif [[ -f "/tmp/pacstall-pacdeps-${4%%@*}" ]]; then
         return 1
+    elif [[ -f "/tmp/pacstall-pacdeps-${5%%@*}" ]]; then
+        return 1
+    elif [[ -f "/tmp/pacstall-pacdeps-${6%%@*}" ]]; then
+        return 1
+
     fi
     pidof -o %PPID -x "$0" > /dev/null && return 0 || return 1
 }
 
-while lock $1 $2 $3 $4; do
+while lock $1 $2 $3 $4 $5 $6; do
     if [[ -z $first ]]; then
         first=1
         fancy_message warn "Pacstall is already running another instance"
