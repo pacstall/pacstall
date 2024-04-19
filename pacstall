@@ -801,7 +801,9 @@ Helpful links:
                 remote="$(< "$STGDIR/repo/update")"
                 USERNAME="${remote%% *}"
                 BRANCH="${remote##* }"
-                version_develop="$USERNAME:$BRANCH"
+                if [[ $USERNAME != "pacstall" || $BRANCH != "master" ]]; then
+                    version_develop="$USERNAME:$BRANCH"
+                fi
             fi
             echo -e "${version_number} \033[1m\x1b[38;2;${version_color[r]:-255};${version_color[g]:-255};${version_color[b]:-255}m${version_name}${NC} ${version_develop}"
             exit 0
