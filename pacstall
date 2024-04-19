@@ -547,7 +547,6 @@ for arg in "${argument_list[@]}"; do
         hashed_arguments[$mapped]=0
     fi
 done
-unset hashed_arguments
 
 # Check if only one command flag is being used
 short_commands=("-I" "-S" "-R" "-D" "-A" "-U" "-L" "-Up" "-Qi" "-T" "-V" "-h")
@@ -561,7 +560,8 @@ else
     fancy_message warn "Only one command flag can be used at a time"
     set -- "-h"
 fi
-unset short_commands long_commands commands matches
+
+unset short_commands long_commands commands matches arguments_list unique_arguments_list hashed_arguments
 
 function lock() {
     local ignore_short="-S -D -A -V -L -Qi -T -h"
