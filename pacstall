@@ -22,6 +22,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+# Pacstall version
+version_number="4.3.2"
+version_name="Firebrick4"
+declare -A version_color=([r]="139" [g]="26" [b]="26")
+
 # Configuration
 export LC_ALL=C
 export METADIR="/var/lib/pacstall/metadata"
@@ -116,8 +121,6 @@ function def_colors() {
         export On_IPurple='\033[0;105m' # Purple
         export On_ICyan='\033[0;106m'   # Cyan
         export On_IWhite='\033[0;107m'  # White
-
-        declare -A pac_version=([red]="139" [green]="26" [blue]="26")
     fi
 }
 def_colors
@@ -794,9 +797,13 @@ Helpful links:
             ;;
 
         -V | --version)
-            version_number="4.3.2"
-            version_name="Firebrick4"
-            echo -e "${version_number} \033[1m\x1b[38;2;${pac_version[red]:-255};${pac_version[green]:-255};${pac_version[blue]:-255}m${version_name}${NC}"
+            if [[ -f "$STGDIR/repo/update" ]]; then
+                remote="$(< "$STGDIR/repo/update")"
+                USERNAME="${remote%% *}"
+                BRANCH="${remote##* }"
+                version_develop="$USERNAME:$BRANCH"
+            fi
+            echo -e "${version_number} \033[1m\x1b[38;2;${version_color[r]:-255};${version_color[g]:-255};${version_color[b]:-255}m${version_name}${NC} ${version_develop}"
             exit 0
             ;;
 
