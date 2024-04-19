@@ -349,7 +349,8 @@ function deb_down() {
         fancy_message sub "Cleaning up"
         cleanup
         fancy_message info "Done installing ${BPurple}$PACKAGE${NC}"
-        exit 0
+        unset expectedHash dest source_url git_branch git_tag git_commit ext_deps ext_method hashsum_method payload_arr
+        return 0
     else
         fancy_message error "Failed to install the package"
         error_log 14 "install $PACKAGE"
@@ -610,7 +611,7 @@ function compare_remote_version() {
     else
         local remoterepo="${_remoterepo}"
     fi
-    local remotever
+    local remotever localver
     remotever="$(
         unset pkgrel
         remote_tmp="$(sudo mktemp -p "${PACDIR}" -t "compare-repo-ver-$crv_input.XXXXXX")"
@@ -622,20 +623,19 @@ function compare_remote_version() {
                 parse_source_entry "${source[0]}"
                 calc_git_pkgver
                 echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git${comp_git_pkgver}"
-            elif [[ ${pkgname} == *-deb ]]; then
-                echo "${epoch+$epoch:}${pkgver}"
             else
                 echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
             fi
         sudo rm -rf "${remote_safe}"
     )" > /dev/null
+    localver=$(source "/var/lib/pacstall/metadata/${crv_input}" && echo "${_version}")
     if [[ $crv_input == *"-git" ]]; then
-        if [[ $(pacstall -Qi "$crv_input" version) != "$remotever" ]]; then
+        if [[ ${localver} != "$remotever" ]]; then
             echo "update"
         else
             echo "no"
         fi
-    elif dpkg --compare-versions "$(pacstall -Qi "$crv_input" version)" lt "$remotever" > /dev/null 2>&1; then
+    elif dpkg --compare-versions "${localver}" lt "$remotever" > /dev/null 2>&1; then
         echo "update"
     else
         echo "no"

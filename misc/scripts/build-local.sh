@@ -649,6 +649,7 @@ function repacstall() {
 function write_meta() {
     echo "_name=\"$pkgname\""
     echo "_version=\"${full_version}\""
+    [[ -z ${install_size} ]] && install_size="$(apt info -a ${gives:-${pkgname}} 2> /dev/null | awk '/Installed-Size:/ {print; exit}' | sed -e 's/Installed-Size: //g')"
     echo "_install_size=\"${install_size}\""
     printf '_date=\"%(%a %b %_d %r %Z %Y)T\"\n'
     if [[ -n ${maintainer[*]} ]]; then

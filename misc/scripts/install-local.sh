@@ -183,8 +183,6 @@ if [[ ${pkgname} == *-git ]]; then
     full_version="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git${comp_git_pkgver}"
     git_pkgver="${comp_git_pkgver}"
     export git_pkgver
-elif [[ ${pkgname} == *-deb ]]; then
-    full_version="${epoch+$epoch:}${pkgver}"
 else
     full_version="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
 fi
@@ -384,7 +382,7 @@ for i in "${!source[@]}"; do
             ;;
         *.deb)
             net_down
-            deb_down
+            deb_down && return 0
             ;;
         *.zip | *.tar.gz | *.tgz | *.tar.bz2 | *.tbz2 | *.tar.xz | *.txz | *.tar.zst | *.tzst | *.gz | *.bz2 | *.xz | *.lz | *.lzma | *.zst | *.7z | *.rar | *.lz4 | *.tar)
             net_down
