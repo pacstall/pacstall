@@ -529,6 +529,7 @@ function makedeb() {
         local duargs="b" numargs rawsize
 		((estsize<1024)) && { duargs+="h"; numargs="--from=iec --to=si"; } || numargs="--to=si"
 		rawsize="$(sudo du -s${duargs} --exclude=DEBIAN -- "$STOWDIR/$pkgname" | cut -d$'\t' -f1)"
+	    # shellcheck disable=SC2086
 		install_size="$(numfmt ${numargs} --format="%3.2f" "${rawsize}" \
 			| awk '{
 			    if (match($0, /[A-Za-z]+$/)) {
