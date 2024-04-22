@@ -649,6 +649,7 @@ function repacstall() {
 function write_meta() {
     echo "_name=\"$pkgname\""
     echo "_version=\"${full_version}\""
+    [[ -z ${install_size} ]] && install_size="$(aptitude search ~i --display-format '%p %I' --sort installsize | awk -v pkg="${gives:-${pkgname}}" '$0 ~ "^" pkg " " {print $2 " " $3}')"
     echo "_install_size=\"${install_size}\""
     printf '_date=\"%(%a %b %_d %r %Z %Y)T\"\n'
     if [[ -n ${maintainer[*]} ]]; then

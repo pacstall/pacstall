@@ -78,11 +78,12 @@ for i in {${allvar_str}}; do
         declare -p \$i >> "${bwrapenv}";
     fi
 done
-[[ \$name == *'-deb' ]] && for i in {${debfunc_str}}; do
+[[ \$pkgname == *'-deb' ]] && for i in {${debfunc_str}}; do
     [[ \$(type -t "\$i") == "function" ]] && declare -pf \$i >> "${safeenv}";
 done || for i in {${debfunc_str},${pacfunc_str}}; do
     [[ \$(type -t "\$i") == "function" ]] && declare -pf \$i >> "${safeenv}";
 done
+export safeenv
 EOF
     sudo chmod +x "$tmpfile"
 

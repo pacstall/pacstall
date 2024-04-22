@@ -921,16 +921,7 @@ Helpful links:
                         echo -e "   ${BBlue}gives${NC}        : ${BOLD}${_gives}${NC}"
                     fi
                     echo -e "   ${BBlue}maintainer${NC}   : ${BOLD}${_maintainer:-$(dpkg-query '--showformat=${Maintainer}\n' --show "${_gives:-$_name}")}${NC}"
-                    if [[ ${_name} == *-deb ]]; then
-                        size="$(dpkg-query '--showformat=${Installed-Size}\n' --show "${_gives:-$_name}" | numfmt --to=iec 2> /dev/null)"
-                        if [[ -n ${_size} ]]; then
-                            echo -e "   ${BBlue}size${NC}         : ${BOLD}${size}${NC}"
-                        else
-                            echo -e "   ${BBlue}size${NC}         : ${BOLD}unknown${NC}"
-                        fi
-                    else
-                        echo -e "   ${BBlue}size${NC}         : ${BOLD}${_install_size:-unknown}${NC}"
-                    fi
+                    echo -e "   ${BBlue}size${NC}         : ${BOLD}${_install_size:-unknown}${NC}"
                     echo -e "   ${BBlue}repository${NC}   : ${BOLD}${_remoterepo:-local}${NC}"
                     echo -e "   ${BBlue}install date${NC} : ${BOLD}${_date:-unknown}${NC}"
                     if [[ ${pkg} != "${packages_installed[-1]}" ]]; then
