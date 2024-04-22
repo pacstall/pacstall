@@ -521,7 +521,17 @@ function makedeb() {
     fi
 
     deblog "Installed-Size" "$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$pkgname" | cut -d$'\t' -f1)"
-    install_size="$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$pkgname" | cut -d$'\t' -f1 | numfmt --to=iec)"
+    install_size="$(sudo du -sbh --exclude=DEBIAN -- "$STOWDIR/$pkgname" | cut -d$'\t' -f1 | numfmt --from=iec --to=si --format="%3.2f" | awk '{
+        if (match($0, /[A-Za-z]+$/)) {
+            num = sprintf("%.3g", $1);
+            unit = substr($0, RSTART, RLENGTH);
+            if (unit == "K") unit = "k";
+            printf "%s %sB\n", num, unit;
+        } else {
+            num = sprintf("%3.2f", $1);
+            printf "%s B\n", num;
+        }
+    }')"
     export install_size
 
     generate_changelog | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/changelog" > /dev/null
