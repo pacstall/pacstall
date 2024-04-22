@@ -509,10 +509,10 @@ fi
 argument_list=()
 
 for i in "${@}"; do
-    # Just add argument if doesn't start with a single hyphen.
+    # Just add argument if doesn't start with exactly one hyphen.
     if ! [[ ${i} =~ ^-[^-] ]]; then
-        # if argument is '-P' or '-K', add to beginning of argument list.
-        if [[ ${i} == "-B" || ${i} == "-P" || ${i} == "-K" ]]; then
+        # if argument is '-B', '-P', '-K' or '-Nc', add to beginning of argument list.
+        if [[ ${i} == "--build" || ${i} == "--disable-prompts" || ${i} == "--keep" || ${i} == "--nocheck" ]]; then
             argument_list=("${i}" "${argument_list[@]}")
         else
             argument_list+=("${i}")
@@ -522,9 +522,10 @@ for i in "${@}"; do
 
     # Add all arguments to the list of arguments.
     # We remove the '-' prefix as we'll add it later.
-    for j in $(sed 's|[[:upper:]]| &|g' <<< "${i:1}"); do
-        # If current string is 'P', add to beginning of argument list.
-        if [[ ${j} == "B" || ${j} == "-build-only" || ${j} == "P" || ${j} == "-disable-prompts" || ${j} == "K" || ${j} == "-keep" || ${j} == "Nc" || ${j} == "-nocheck" ]]; then
+    # Arguments start with uppercase except 'h'.
+    for j in $(sed 's/[[:upper:]]|h/ &/g' <<< "${i:1}"); do
+        # If current string is 'B', 'P', 'K' or 'Nc', add to beginning of argument list.
+        if [[ ${j} == "B" || ${j} == "P" || ${j} == "K" || ${j} == "Nc" ]]; then
             argument_list=("-${j}" "${argument_list[@]}")
         else
             argument_list+=("-${j}")
@@ -533,8 +534,37 @@ for i in "${@}"; do
     unset j
 done
 
-# Set the new list of arguments
-set -- "${argument_list[@]}"
+# Remove duplicates
+declare -A arg_map=(
+    ["--install"]="-I"     ["--search"]="-S"   ["--remove"]="-R"          ["--download"]="-D"
+    ["--add-repo"]="-A"    ["--update"]="-U"   ["--list"]="-L"            ["--upgrade"]="-Up"
+    ["--query-info"]="-Qi" ["--tree"]="-T"     ["--version"]="-V"         ["--help"]="-h"
+    ["--build"]="-B"       ["--keep"]="-K"     ["--disable-prompts"]="-P" ["--nocheck"]="-Nc"
+)
+declare -A hashed_arguments
+unique_argument_list=()
+for arg in "${argument_list[@]}"; do
+    mapped="${arg_map[$arg]:=$arg}"
+    if ! [[ -v "hashed_arguments[$mapped]" ]]; then
+        unique_argument_list+=($arg)
+        hashed_arguments[$mapped]=0
+    fi
+done
+
+# Check if only one command flag is being used
+short_commands=("-I" "-S" "-R" "-D" "-A" "-U" "-L" "-Up" "-Qi" "-T" "-V" "-h")
+long_commands=("--install" "--search" "--remove" "--download" "--add-repo" "--update" "--list" "--upgrade" "--query-info" "--tree" "--version" "--help")
+commands=("${short_commands[@]}" "${long_commands[@]}")
+matches=($(comm -12 <(sort <(printf "%s\n" "${unique_argument_list[@]}")) <(sort <(printf "%s\n"  "${commands[@]}"))))
+if (( ${#matches[@]} <= 1 )); then
+    # Set the new list of arguments
+    set -- "${unique_argument_list[@]}"
+else
+    fancy_message warn "Only one command flag can be used at a time"
+    set -- "-h"
+fi
+
+unset short_commands long_commands commands matches arguments_list unique_arguments_list hashed_arguments
 
 function lock() {
     local ignore_short="-S -D -A -V -L -Qi -T -h"
@@ -586,7 +616,7 @@ while [[ $1 != "--" ]]; do
             ;;
 
         -h | --help)
-            echo -e "Usage: pacstall [-h] [-V] {-I,-S,-R,-D,-A,-U,-L,-Up,-Qi,-T} [-P] [-K] [-B] [-Nc]
+            echo -e "Usage: pacstall [-h] {-I,-S,-R,-D,-A,-U,-L,-Up,-Qi,-T,-V} [-P] [-K] [-B] [-Nc]
 
 An AUR inspired package manager for Ubuntu.
 
@@ -611,6 +641,10 @@ Commands:
 		Query information about a package.
 	${BOLD}-T${NC}, ${BOLD}--tree${NC} <package>
 		Display a tree graph of a package.
+    ${BOLD}-V${NC}, ${BOLD}--version${NC}
+		Display the version number.
+	${BOLD}-h${NC}, ${BOLD}--help${NC}
+		Display this help message.
 
 Options:
 	${BOLD}-P${NC}, ${BOLD}--disable-prompts${NC}
@@ -621,10 +655,6 @@ Options:
 		Build the deb but do not install.
     ${BOLD}-Nc${NC}, ${BOLD}--nocheck${NC}
         Skip the check() function if present.
-	${BOLD}-V${NC}, ${BOLD}--version${NC}
-		Display the version number.
-	${BOLD}-h${NC}, ${BOLD}--help${NC}
-		Display this help message.
 
 Helpful links:
 	${BOLD}https://github.com/pacstall/pacstall${NC}
