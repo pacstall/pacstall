@@ -526,20 +526,30 @@ function makedeb() {
     if ((estsize<10)); then
         install_size="$((estsize * 1024)) B"
     else
-        install_size="$(sudo du -sbh --exclude=DEBIAN -- "$STOWDIR/$pkgname" \
-            | cut -d$'\t' -f1 \
-            | numfmt --from=iec --to=si --format="%3.2f" \
-            | awk '{
-                if (match($0, /[A-Za-z]+$/)) {
-                    num = sprintf("%.3g", $1);
-                    unit = substr($0, RSTART, RLENGTH);
-                    if (unit == "K") unit = "k";
-                    printf "%s %sB\n", num, unit;
-                } else {
-                    num = sprintf("%3.2f", $1);
-                    printf "%s B\n", num;
-                }
-            }'
+        local duargs="b" numargs rawsize
+		((estsize<1024)) && { duargs+="h"; numargs="--from=iec --to=si"; } || numargs="--to=si"
+		rawsize="$(sudo du -s${duargs} --exclude=DEBIAN -- "$STOWDIR/$pkgname" | cut -d$'\t' -f1)"
+		install_size="$(numfmt ${numargs} --format="%3.2f" "${rawsize}" \
+			| awk '{
+			    if (match($0, /[A-Za-z]+$/)) {
+			        num = sprintf("%.3g", $1);
+					if (num == int(num)) {
+						if (int(num) < 10) {
+							num = sprintf("%.2f", num);
+						} else if (int(num) < 100) {
+							num = sprintf("%.1f", num);
+						} else {
+							num = sprintf("%.0f", num);
+						}
+					}
+			        unit = substr($0, RSTART, RLENGTH);
+			        if (unit == "K") unit = "k";
+			        printf "%s %sB\n", num, unit;
+			    } else {
+			        num = sprintf("%3.2f", $1);
+			        printf "%s B\n", num;
+			    }
+			}'
         )"
     fi
     export install_size
