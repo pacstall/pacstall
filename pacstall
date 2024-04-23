@@ -523,7 +523,7 @@ for i in "${@}"; do
     # Add all arguments to the list of arguments.
     # We remove the '-' prefix as we'll add it later.
     # Arguments start with uppercase except 'h'.
-    for j in $(sed 's/[[:upper:]]|h/ &/g' <<< "${i:1}"); do
+    for j in $(sed -E 's/[[:upper:]]|h/ &/g' <<< "${i:1}"); do
         # If current string is 'B', 'P', 'K' or 'Nc', add to beginning of argument list.
         if [[ ${j} == "B" || ${j} == "P" || ${j} == "K" || ${j} == "Nc" ]]; then
             argument_list=("-${j}" "${argument_list[@]}")
