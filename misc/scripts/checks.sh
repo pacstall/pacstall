@@ -165,15 +165,16 @@ function lint_source() {
         ret=1
     else
         for sarch in "${known_archs_source[@]}"; do
-            local source_arch="source_${sarch}[@]"
+            local source_arch="source_${sarch}[@]" raw_carch_source="source_${CARCH}[@]" carch_source
+            carch_source=("${!raw_carch_source}")
             [[ ${sarch} != "${CARCH}" ]] && if [[ -n ${!source_arch} ]]; then
                 test_source=()
                 if [[ -n ${source[0]} ]]; then
-                    # shellcheck disable=SC2206
-                    test_source+=(${source[*]})
+                    { (("${#carch_source[@]}"<=1 && "${#source[@]}"<=1)) \
+                        && [[ "${carch_source[0]}" == "${source[0]}" ]]; } \
+                    && test_source+=("${source[@]}")
                 fi
-                # shellcheck disable=SC2206
-                test_source+=(${!source_arch})
+                test_source+=("${!source_arch}")
                 if [[ -n ${test_source[1]} ]]; then
                     lint_source_deb_test "${test_source[@]}"
                     if ((ret == 1)); then
