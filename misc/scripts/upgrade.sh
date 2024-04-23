@@ -86,6 +86,7 @@ up_urls="$(mktemp /tmp/XXXXXX-pacstall-up-urls)"
 
 fancy_message sub "Checking versions"
 
+tty_settings=$(stty -g)
 N="$(nproc)"
 (
     for i in "${list[@]}"; do
@@ -180,7 +181,7 @@ N="$(nproc)"
             fi
         ) &
     done
-    wait
+    wait && stty "$tty_settings"
 )
 
 if [[ ! -s ${up_list} ]]; then
