@@ -520,8 +520,39 @@ function makedeb() {
         done
     fi
 
-    deblog "Installed-Size" "$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$pkgname" | cut -d$'\t' -f1)"
-    install_size="$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$pkgname" | cut -d$'\t' -f1 | numfmt --to=iec)"
+	local estsize
+	estsize="$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$pkgname" | cut -d$'\t' -f1)"
+	deblog "Installed-Size" "${estsize}"
+    if ((estsize<10)); then
+        install_size="$((estsize * 1024)) B"
+    else
+        local duargs="b" numargs rawsize
+		((estsize<1024)) && { duargs+="h"; numargs="--from=iec --to=si"; } || numargs="--to=si"
+		rawsize="$(sudo du -s${duargs} --exclude=DEBIAN -- "$STOWDIR/$pkgname" | cut -d$'\t' -f1)"
+	    # shellcheck disable=SC2086
+		install_size="$(numfmt ${numargs} --format="%3.2f" "${rawsize}" \
+			| awk '{
+			    if (match($0, /[A-Za-z]+$/)) {
+			        num = sprintf("%.3g", $1);
+					if (num == int(num)) {
+						if (int(num) < 10) {
+							num = sprintf("%.2f", num);
+						} else if (int(num) < 100) {
+							num = sprintf("%.1f", num);
+						} else {
+							num = sprintf("%.0f", num);
+						}
+					}
+			        unit = substr($0, RSTART, RLENGTH);
+			        if (unit == "K") unit = "k";
+			        printf "%s %sB\n", num, unit;
+			    } else {
+			        num = sprintf("%3.2f", $1);
+			        printf "%s B\n", num;
+			    }
+			}'
+        )"
+    fi
     export install_size
 
     generate_changelog | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/changelog" > /dev/null
