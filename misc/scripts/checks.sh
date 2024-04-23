@@ -172,7 +172,7 @@ function lint_source() {
                 if [[ -n ${source[0]} ]]; then
                     { (("${#carch_source[@]}"<=1 && "${#source[@]}"<=1)) \
                         && [[ "${carch_source[0]}" == "${source[0]}" ]]; } \
-                    && test_source+=("${source[@]}")
+                    || test_source+=("${source[@]}")
                 fi
                 test_source+=("${!source_arch}")
                 if [[ -n ${test_source[1]} ]]; then
