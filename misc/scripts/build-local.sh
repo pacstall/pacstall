@@ -49,6 +49,7 @@ function cleanup() {
         rm -rf /tmp/pacstall-gives
     fi
     sudo rm -rf "${STOWDIR}/${pkgname:-$PACKAGE}.deb"
+    rm -f "/tmp/pacstall-pacparent-$PACKAGE"
     rm -f /tmp/pacstall-select-options
     sudo rm -f "${PACDIR}/bwrapenv.*"
     local clsrc clsum cla_sum arch_vars \
