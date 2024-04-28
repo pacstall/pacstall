@@ -123,8 +123,9 @@ EOF
         --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run --dev-bind /dev/null /dev/null \
         --bind "$STOWDIR" "$STOWDIR" --bind "$PACDIR" "$PACDIR" --setenv LOGDIR "$LOGDIR" \
         --setenv STGDIR "$STGDIR" --setenv STOWDIR "$STOWDIR" --setenv pkgdir "$pkgdir" \
-        --setenv homedir "$homedir" --setenv CARCH "$CARCH" --setenv DISTRO "$DISTRO" --setenv NCPU "$NCPU" \
         --setenv _archive "$_archive" --setenv srcdir "$srcdir" --setenv git_pkgver "$git_pkgver" \
+        --setenv homedir "$homedir" --setenv CARCH "$CARCH" --setenv DISTRO "$DISTRO" --setenv NCPU "$NCPU" \
+        --setenv PACSTALL_USER "$PACSTALL_USER" \
     "$tmpfile" && sudo rm "$tmpfile"
 }
 
