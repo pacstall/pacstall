@@ -34,7 +34,7 @@ parse_pr() {
 
 parse_link() {
     unset login
-    local provider="$1" user="$2" repo="$3" pr="$4" pkg="$5"
+    local provider="$1" user="$2" repo="$3" pr="$4"
     if [[ "$provider" == "github" ]]; then
         gh_provides=$(curl -s "https://api.github.com/repos/$user/$repo/pulls/$pr")
         head_repo_full_name=$(echo "$gh_provides" | jq -r '.head.repo.full_name')
@@ -62,8 +62,8 @@ if [[ -z "$number" || -z "$inst" ]]; then
     fancy_message sub "use the syntax: -Qa ${GREEN}package${BYellow}#${YELLOW}NUM${NC}(${BPurple}@${PURPLE}metalink${NC})"
     exit 1
 fi
-read provider user repo pr <<< $(parse_pr "$metalink" "$number")
-read provider_url login <<< $(parse_link "$provider" "$user" "$repo" "$pr" "$inst")
+read -r provider user repo pr <<< "$(parse_pr "$metalink" "$number")"
+read -r provider_url login <<< "$(parse_link "$provider" "$user" "$repo" "$pr")"
 fancy_message info "Backing up ${CYAN}/usr/share/pacstall/repo/pacstallrepo${NC}"
 sudo mv /usr/share/pacstall/repo/pacstallrepo /usr/share/pacstall/repo/pacstallrepo.pacstall-qa.bak
 echo "$provider_url" | sudo tee /usr/share/pacstall/repo/pacstallrepo > /dev/null
