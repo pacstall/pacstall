@@ -98,7 +98,7 @@ N="$(nproc)"
             # localver is the current version of the package
             localver="${_version}"
             # if localver does not end with the correct pacstall version format, append it
-            [[ ! $localver =~ -pacstall[0-9]+$ && ! $localver =~ -pacstall[0-9]+git[a-zA-Z0-9_-]{8}$ ]] && localver="${localver}-pacstall1"
+            [[ ! $localver =~ -pacstall[0-9]+$ && ! $localver =~ -pacstall[0-9]+~git[a-zA-Z0-9_-]{8}$ ]] && localver="${localver}-pacstall1"
 
             if [[ ${_remoterepo} == *"github.com"* ]]; then
                 remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}"
