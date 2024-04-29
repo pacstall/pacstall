@@ -190,6 +190,8 @@ function dep_const.extract_description() {
 function dep_const.format_version() {
     local str="${1}" const relation pkg_stuff=() constraints=('<=' '>=' '=' '<' '>')
     local -n out_arr="${2}"
+    str="${str/)/}"
+    str="${str/(/}"
     for const in "${constraints[@]}"; do
         if [[ $str == *"${const}"* ]]; then
             if [[ ${const} =~ ^(<|>)$ ]]; then
