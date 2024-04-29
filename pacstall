@@ -540,6 +540,7 @@ declare -A arg_map=(
     ["--add-repo"]="-A"    ["--update"]="-U"   ["--list"]="-L"            ["--upgrade"]="-Up"
     ["--query-info"]="-Qi" ["--tree"]="-T"     ["--version"]="-V"         ["--help"]="-h"
     ["--build"]="-B"       ["--keep"]="-K"     ["--disable-prompts"]="-P" ["--nocheck"]="-Nc"
+    ["--quality-assurance"]="-Qa"
 )
 declare -A hashed_arguments
 unique_argument_list=()
@@ -552,8 +553,8 @@ for arg in "${argument_list[@]}"; do
 done
 
 # Check if only one command flag is being used
-short_commands=("-I" "-S" "-R" "-D" "-A" "-U" "-L" "-Up" "-Qi" "-T" "-V" "-h")
-long_commands=("--install" "--search" "--remove" "--download" "--add-repo" "--update" "--list" "--upgrade" "--query-info" "--tree" "--version" "--help")
+short_commands=("-I" "-S" "-R" "-D" "-A" "-U" "-L" "-Up" "-Qi" "-Qa" "-T" "-V" "-h")
+long_commands=("--install" "--search" "--remove" "--download" "--add-repo" "--update" "--list" "--upgrade" "--query-info" "--quality-assurance" "--tree" "--version" "--help")
 commands=("${short_commands[@]}" "${long_commands[@]}")
 matches=($(comm -12 <(sort <(printf "%s\n" "${unique_argument_list[@]}")) <(sort <(printf "%s\n"  "${commands[@]}"))))
 if (( ${#matches[@]} <= 1 )); then
@@ -588,6 +589,8 @@ function lock() {
         return 1
     elif [[ -f "/tmp/pacstall-pacdeps-${5%%@*}" ]]; then
         return 1
+    elif [[ -f "/usr/share/pacstall/repo/pacstallrepo.pacstall-qa.bak" ]]; then
+        return 1
     fi
     pidof -o %PPID -x "$0" > /dev/null && return 0 || return 1
 }
@@ -616,7 +619,7 @@ while [[ $1 != "--" ]]; do
             ;;
 
         -h | --help)
-            echo -e "Usage: pacstall [-h] {-I,-S,-R,-D,-A,-U,-L,-Up,-Qi,-T,-V} [-P] [-K] [-B] [-Nc]
+            echo -e "Usage: pacstall [-h] {-I,-S,-R,-D,-A,-U,-L,-Up,-Qa,-Qi,-T,-V} [-P] [-K] [-B] [-Nc]
 
 An AUR inspired package manager for Ubuntu.
 
@@ -637,6 +640,8 @@ Commands:
 		List all installed packages.
 	${BOLD}-Up${NC}, ${BOLD}--upgrade${NC}
 		Upgrade all installed packages.
+    ${BOLD}-Qa${NC}, ${BOLD}--quality-assurance${NC} <package>#<number>(@[provider]:[user]/[repo])
+        Test a package PR from downstream.
 	${BOLD}-Qi${NC}, ${BOLD}--query-info${NC} <package>
 		Query information about a package.
 	${BOLD}-T${NC}, ${BOLD}--tree${NC} <package>
@@ -1012,6 +1017,21 @@ Helpful links:
             QUERY=$3
             # shellcheck source=./misc/scripts/query-info.sh
             source "$STGDIR/scripts/query-info.sh"
+            exit 0
+            ;;
+
+        -Qa | --quality-assurance)
+            if [[ $2 =~ ^([a-zA-Z0-9_-]+)?(@(.+))?(#([0-9]+))$ ]]; then
+                PACKAGE="${BASH_REMATCH[1]}"
+                METAURL="${BASH_REMATCH[3]}"
+                PRNUM="${BASH_REMATCH[5]}"
+            elif [[ $2 =~ ^([a-zA-Z0-9_-]+)(#([0-9]+))?(@(.+))?$ ]]; then
+                PACKAGE="${BASH_REMATCH[1]}"
+                PRNUM="${BASH_REMATCH[3]}"
+                METAURL="${BASH_REMATCH[5]}"
+            fi
+            # shellcheck source=./misc/scripts/quality-assurance.sh
+            source "$STGDIR/scripts/quality-assurance.sh"
             exit 0
             ;;
 

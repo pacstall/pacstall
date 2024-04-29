@@ -122,9 +122,9 @@ case "$reply" in
 esac
 
 if [[ ${GITHUB_ACTIONS} == "true" ]]; then
-    apt-get install -qq -y sudo wget build-essential unzip git zstd iputils-ping lsb-release aptitude bubblewrap ${axel_inst}
+    apt-get install -qq -y sudo wget build-essential unzip git zstd iputils-ping lsb-release aptitude bubblewrap jq ${axel_inst}
 else
-    apt-get install -y sudo wget build-essential unzip git zstd iputils-ping lsb-release aptitude bubblewrap ${axel_inst}
+    apt-get install -y sudo wget build-essential unzip git zstd iputils-ping lsb-release aptitude bubblewrap jq ${axel_inst}
 fi
 
 LOGDIR="/var/lib/pacstall/metadata"
@@ -152,7 +152,7 @@ touch "$STGDIR/repo/pacstallrepo"
 echo "https://raw.githubusercontent.com/pacstall/pacstall-programs/master" > $STGDIR/repo/pacstallrepo
 
 fancy_message info "Pulling scripts from GitHub"
-for i in {error_log.sh,add-repo.sh,search.sh,dep-tree.sh,checks.sh,download.sh,install-local.sh,download-local.sh,build-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh,bwrap.sh}; do
+for i in {error_log.sh,add-repo.sh,search.sh,dep-tree.sh,checks.sh,download.sh,install-local.sh,download-local.sh,build-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh,quality-assurance.sh,bwrap.sh}; do
     wget -q --show-progress -N https://raw.githubusercontent.com/pacstall/pacstall/master/misc/scripts/"$i" -P "$STGDIR/scripts" &
 done
 

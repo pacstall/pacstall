@@ -1,0 +1,71 @@
+#!/bin/bash
+
+#     ____                  __        ____
+#    / __ \____ ___________/ /_____ _/ / /
+#   / /_/ / __ `/ ___/ ___/ __/ __ `/ / /
+#  / ____/ /_/ / /__(__  ) /_/ /_/ / / /
+# /_/    \__,_/\___/____/\__/\__,_/_/_/
+#
+# Copyright (C) 2020-present
+#
+# This file is part of Pacstall
+#
+# Pacstall is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, version 3 of the License
+#
+# Pacstall is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
+
+parse_pr() {
+    IFS=':' read -ra ADDR <<< "$1"
+    local provider user repo pr
+    provider="${ADDR[0]}"
+    user=$(echo "${ADDR[1]}" | cut -d'/' -f1)
+    repo=$(echo "${ADDR[1]}" | cut -d'/' -f2)
+    pr="$2"
+    echo "$provider" "$user" "$repo" "$pr"
+}
+
+parse_link() {
+    unset login
+    local provider="$1" user="$2" repo="$3" pr="$4" pkg="$5"
+    if [[ "$provider" == "github" ]]; then
+        gh_provides=$(curl -s "https://api.github.com/repos/$user/$repo/pulls/$pr")
+        head_repo_full_name=$(echo "$gh_provides" | jq -r '.head.repo.full_name')
+        head_sha=$(echo "$gh_provides" | jq -r '.head.sha')
+        login=$(echo "$gh_provides" | jq -r '.head.user.login')
+        echo "https://raw.githubusercontent.com/$head_repo_full_name/$head_sha" "$login"
+    else
+        fancy_message error "${CYAN}$provider${NC} is not a valid provider!"
+        exit 1
+    fi
+}
+
+cleanup_qa() {
+  if [[ -f /usr/share/pacstall/repo/pacstallrepo.pacstall-qa.bak ]]; then
+    echo "Returning ${CYAN}/usr/share/pacstall/repo/pacstallrepo${NC} backup"
+    sudo rm -f /usr/share/pacstall/repo/pacstallrepo
+    sudo mv /usr/share/pacstall/repo/pacstallrepo.pacstall-qa.bak /usr/share/pacstall/repo/pacstallrepo
+  fi
+}
+
+trap cleanup_qa EXIT INT
+metalink="${METAURL:-github:pacstall/pacstall-programs}" number="$PRNUM" inst="$PACKAGE"
+if [[ -z "$number" || -z "$inst" ]]; then
+    fancy_message error "'number' and 'package' cannot be empty!"
+    fancy_message sub "use the syntax: -Qa ${GREEN}package${BYellow}#${YELLOW}NUM${NC}(${BPurple}@${PURPLE}metalink${NC})"
+    exit 1
+fi
+read provider user repo pr <<< $(parse_pr "$metalink" "$number")
+read provider_url login <<< $(parse_link "$provider" "$user" "$repo" "$pr" "$inst")
+echo "Backing up ${CYAN}/usr/share/pacstall/repo/pacstallrepo${NC}"
+sudo mv /usr/share/pacstall/repo/pacstallrepo /usr/share/pacstall/repo/pacstallrepo.pacstall-qa.bak
+echo "$provider_url" | sudo tee /usr/share/pacstall/repo/pacstallrepo > /dev/null
+fancy_message info "Installing ${GREEN}$inst${NC}(${PURPLE}$login${NC}:${RED}$pr${NC})"
+pacstall -I "$inst" || exit 1
