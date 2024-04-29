@@ -49,7 +49,7 @@ parse_link() {
 
 cleanup_qa() {
   if [[ -f /usr/share/pacstall/repo/pacstallrepo.pacstall-qa.bak ]]; then
-    echo "Returning ${CYAN}/usr/share/pacstall/repo/pacstallrepo${NC} backup"
+    fancy_message info "Returning ${CYAN}/usr/share/pacstall/repo/pacstallrepo${NC} backup"
     sudo rm -f /usr/share/pacstall/repo/pacstallrepo
     sudo mv /usr/share/pacstall/repo/pacstallrepo.pacstall-qa.bak /usr/share/pacstall/repo/pacstallrepo
   fi
@@ -64,7 +64,7 @@ if [[ -z "$number" || -z "$inst" ]]; then
 fi
 read provider user repo pr <<< $(parse_pr "$metalink" "$number")
 read provider_url login <<< $(parse_link "$provider" "$user" "$repo" "$pr" "$inst")
-echo "Backing up ${CYAN}/usr/share/pacstall/repo/pacstallrepo${NC}"
+fancy_message info "Backing up ${CYAN}/usr/share/pacstall/repo/pacstallrepo${NC}"
 sudo mv /usr/share/pacstall/repo/pacstallrepo /usr/share/pacstall/repo/pacstallrepo.pacstall-qa.bak
 echo "$provider_url" | sudo tee /usr/share/pacstall/repo/pacstallrepo > /dev/null
 fancy_message info "Installing ${GREEN}$inst${NC}(${PURPLE}$login${NC}:${RED}$pr${NC})"
