@@ -526,7 +526,7 @@ for i in "${@}"; do
     # Arguments start with uppercase except 'h'.
     for j in $(sed -E 's/[[:upper:]]|h/ &/g' <<< "${i:1}"); do
         # If current string is 'B', 'P', 'K' or 'Nc', add to beginning of argument list.
-        if [[ ${j} == "B" || ${j} == "P" || ${j} == "K" || ${j} == "Nc" || ${j} == "q" ]]; then
+        if [[ ${j} == "B" || ${j} == "P" || ${j} == "K" || ${j} == "Nc" || ${j} == "Q" ]]; then
             argument_list=("-${j}" "${argument_list[@]}")
         else
             argument_list+=("-${j}")
