@@ -116,8 +116,8 @@ if ((PACSTALL_INSTALL == 0)) && [[ ${pkgname} == *-deb ]]; then
         return 1
     else
         parse_source_entry "${source[0]}"
-        fancy_message info "Moving ${BGreen}$PACDIR/${dest}${NC} to ${BGreen}/tmp/pacstall-no-build/${dest}${NC}"
-        sudo mkdir -p "/tmp/pacstall-no-build/" && sudo mv ./"${dest}" "/tmp/pacstall-no-build/"
+        fancy_message info "Moving ${BGreen}${PACDIR}/${dest}${NC} to ${BGreen}${PACDEB_DIR}/${dest}${NC}"
+        sudo mv ./"${dest}" "${PACDEB_DIR}"
     fi
     return 0
 fi
