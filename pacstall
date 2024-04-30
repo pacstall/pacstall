@@ -661,8 +661,8 @@ Options:
 		Build the deb but do not install.
 	${BOLD}-Nc${NC}, ${BOLD}--nocheck${NC}
 		Skip the check() function if present.
-        ${BOLD}-Q${NC}, ${BOLD}--quiet${NC}
-                Download package entries quietly.
+	${BOLD}-Q${NC}, ${BOLD}--quiet${NC}
+		Download package entries quietly.
 
 Helpful links:
 	${BOLD}https://github.com/pacstall/pacstall${NC}
