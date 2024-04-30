@@ -513,7 +513,7 @@ for i in "${@}"; do
     # Just add argument if doesn't start with exactly one hyphen.
     if ! [[ ${i} =~ ^-[^-] ]]; then
         # if argument is '-B', '-P', '-K' or '-Nc', add to beginning of argument list.
-        if [[ ${i} == "--build" || ${i} == "--disable-prompts" || ${i} == "--keep" || ${i} == "--nocheck" || ${i} == "--quiet-download" ]]; then
+        if [[ ${i} == "--build" || ${i} == "--disable-prompts" || ${i} == "--keep" || ${i} == "--nocheck" || ${i} == "--quiet" ]]; then
             argument_list=("${i}" "${argument_list[@]}")
         else
             argument_list+=("${i}")
@@ -526,7 +526,7 @@ for i in "${@}"; do
     # Arguments start with uppercase except 'h'.
     for j in $(sed -E 's/[[:upper:]]|h/ &/g' <<< "${i:1}"); do
         # If current string is 'B', 'P', 'K' or 'Nc', add to beginning of argument list.
-        if [[ ${j} == "B" || ${j} == "P" || ${j} == "K" || ${j} == "Nc" || ${j} == "Qd" ]]; then
+        if [[ ${j} == "B" || ${j} == "P" || ${j} == "K" || ${j} == "Nc" || ${j} == "q" ]]; then
             argument_list=("-${j}" "${argument_list[@]}")
         else
             argument_list+=("-${j}")
@@ -541,7 +541,7 @@ declare -A arg_map=(
     ["--add-repo"]="-A"    ["--update"]="-U"   ["--list"]="-L"            ["--upgrade"]="-Up"
     ["--query-info"]="-Qi" ["--tree"]="-T"     ["--version"]="-V"         ["--help"]="-h"
     ["--build"]="-B"       ["--keep"]="-K"     ["--disable-prompts"]="-P" ["--nocheck"]="-Nc"
-    ["--quality-assurance"]="-Qa"              ["--quiet-download"]="-Qd"
+    ["--quality-assurance"]="-Qa"              ["--quiet"]="-q"
 )
 declare -A hashed_arguments
 unique_argument_list=()
@@ -620,7 +620,7 @@ while [[ $1 != "--" ]]; do
             ;;
 
         -h | --help)
-            echo -e "Usage: pacstall [-h] {-I,-S,-R,-D,-A,-U,-L,-Up,-Qa,-Qi,-T,-V} [-P] [-K] [-B] [-Nc] [-Qd]
+            echo -e "Usage: pacstall [-h] {-I,-S,-R,-D,-A,-U,-L,-Up,-Qa,-Qi,-T,-V} [-P] [-K] [-B] [-Nc] [-q]
 
 An AUR inspired package manager for Ubuntu.
 
@@ -641,13 +641,13 @@ Commands:
 		List all installed packages.
 	${BOLD}-Up${NC}, ${BOLD}--upgrade${NC}
 		Upgrade all installed packages.
-    ${BOLD}-Qa${NC}, ${BOLD}--quality-assurance${NC} <package>#<number>(@[provider]:[user]/[repo])
-        Test a package PR from downstream.
+	${BOLD}-Qa${NC}, ${BOLD}--quality-assurance${NC} <package>#<number>(@[provider]:[user]/[repo])
+		Test a package PR from downstream.
 	${BOLD}-Qi${NC}, ${BOLD}--query-info${NC} <package>
 		Query information about a package.
 	${BOLD}-T${NC}, ${BOLD}--tree${NC} <package>
 		Display a tree graph of a package.
-    ${BOLD}-V${NC}, ${BOLD}--version${NC}
+	${BOLD}-V${NC}, ${BOLD}--version${NC}
 		Display the version number.
 	${BOLD}-h${NC}, ${BOLD}--help${NC}
 		Display this help message.
@@ -659,10 +659,10 @@ Options:
 		Keep the build files.
 	${BOLD}-B${NC}, ${BOLD}--build-only${NC}
 		Build the deb but do not install.
-    ${BOLD}-Nc${NC}, ${BOLD}--nocheck${NC}
-        Skip the check() function if present.
-    ${BOLD}-Qd${NC}, ${BOLD}--quiet-download${NC}
-        Download package entries quietly.
+	${BOLD}-Nc${NC}, ${BOLD}--nocheck${NC}
+		Skip the check() function if present.
+        ${BOLD}-q${NC}, ${BOLD}--quiet${NC}
+                Download package entries quietly.
 
 Helpful links:
 	${BOLD}https://github.com/pacstall/pacstall${NC}
@@ -1048,7 +1048,7 @@ Helpful links:
             NOCHECK=true
             ;;
 
-        -Qd | --quiet-download)
+        -q | --quiet)
             fancy_message info "Downloading package entries quietly"
             PACSTALL_VERBOSE=false
             ;;
