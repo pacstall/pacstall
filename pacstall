@@ -541,7 +541,7 @@ declare -A arg_map=(
     ["--add-repo"]="-A"    ["--update"]="-U"   ["--list"]="-L"            ["--upgrade"]="-Up"
     ["--query-info"]="-Qi" ["--tree"]="-T"     ["--version"]="-V"         ["--help"]="-h"
     ["--build"]="-B"       ["--keep"]="-K"     ["--disable-prompts"]="-P" ["--nocheck"]="-Nc"
-    ["--quality-assurance"]="-Qa"              ["--quiet"]="-q"
+    ["--quality-assurance"]="-Qa"              ["--quiet"]="-Q"
 )
 declare -A hashed_arguments
 unique_argument_list=()
@@ -554,8 +554,8 @@ for arg in "${argument_list[@]}"; do
 done
 
 # Check if only one command flag is being used
-short_commands=("-I" "-S" "-R" "-D" "-A" "-U" "-L" "-Up" "-Qi" "-Qa" "-T" "-V" "-h")
-long_commands=("--install" "--search" "--remove" "--download" "--add-repo" "--update" "--list" "--upgrade" "--query-info" "--quality-assurance" "--tree" "--version" "--help")
+short_commands=("-I" "-S" "-R" "-D" "-A" "-U" "-L" "-Up" "-Qi" "-Qa" "-T" "-V" "-h" "-Q")
+long_commands=("--install" "--search" "--remove" "--download" "--add-repo" "--update" "--list" "--upgrade" "--query-info" "--quality-assurance" "--tree" "--version" "--help" "--quiet")
 commands=("${short_commands[@]}" "${long_commands[@]}")
 matches=($(comm -12 <(sort <(printf "%s\n" "${unique_argument_list[@]}")) <(sort <(printf "%s\n"  "${commands[@]}"))))
 if (( ${#matches[@]} <= 1 )); then
@@ -620,7 +620,7 @@ while [[ $1 != "--" ]]; do
             ;;
 
         -h | --help)
-            echo -e "Usage: pacstall [-h] {-I,-S,-R,-D,-A,-U,-L,-Up,-Qa,-Qi,-T,-V} [-P] [-K] [-B] [-Nc] [-q]
+            echo -e "Usage: pacstall [-h] {-I,-S,-R,-D,-A,-U,-L,-Up,-Qa,-Qi,-T,-V} [-P] [-K] [-B] [-Nc] [-Q]
 
 An AUR inspired package manager for Ubuntu.
 
@@ -661,7 +661,7 @@ Options:
 		Build the deb but do not install.
 	${BOLD}-Nc${NC}, ${BOLD}--nocheck${NC}
 		Skip the check() function if present.
-        ${BOLD}-q${NC}, ${BOLD}--quiet${NC}
+        ${BOLD}-Q${NC}, ${BOLD}--quiet${NC}
                 Download package entries quietly.
 
 Helpful links:
@@ -1048,7 +1048,7 @@ Helpful links:
             NOCHECK=true
             ;;
 
-        -q | --quiet)
+        -Q | --quiet)
             fancy_message info "Downloading package entries quietly"
             PACSTALL_VERBOSE=false
             ;;
