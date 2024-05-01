@@ -206,7 +206,7 @@ if [[ -n $pacdeps ]]; then
         [[ $KEEP ]] && cmd+="K"
         [[ $DISABLE_PROMPTS == "yes" ]] && cmd+="P"
         [[ $NOCHECK ]] && cmd+="Nc"
-        [[ $PACSTALL_VERBOSE ]] || cmd+="Q"
+        ${PACSTALL_VERBOSE} || cmd+="Q"
 
         if pacstall -S "${i}@${REPO}" &> /dev/null; then
             repo="@${REPO}"
