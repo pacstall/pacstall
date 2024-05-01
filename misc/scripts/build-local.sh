@@ -23,7 +23,7 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 # shellcheck source=./misc/scripts/version-constraints.sh
-source "${STGDIR}/scripts/version-constraints.sh" || {
+source "${SCRIPTDIR}/scripts/version-constraints.sh" || {
     fancy_message error "Could not find version-constraints"
     return 1
 }

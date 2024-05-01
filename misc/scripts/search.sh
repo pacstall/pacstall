@@ -128,7 +128,7 @@ if [[ $SEARCH == *@* ]] || [[ $PACKAGE == *@* ]]; then
             fi
             return 0
         fi
-    done < "$STGDIR/repo/pacstallrepo"
+    done < "$SCRIPTDIR/repo/pacstallrepo"
 
     fancy_message warn "$IRed$REPONAME$NC is not on your repo list or does not exist"
     error_log 3 "search $PACKAGE@$REPONAME"
@@ -141,19 +141,19 @@ PACKAGELIST=()
 URLLIST=()
 while IFS= read -r URL; do
     if [[ ${URL} == "/"* ]] || [[ ${URL} == "~"* ]] || [[ ${URL} == "."* ]]; then
-        sed -i "s#${URL}#file://$(readlink -f ${URL})#g" "$STGDIR/repo/pacstallrepo" 2> /dev/null \
-            || fancy_message warn "Add \"file://\" to the local repo absolute path on \e]8;;file://$STGDIR/repo/pacstallrepo\a$CYAN$STGDIR/repo/pacstallrepo$NC\e]8;;\a"
+        sed -i "s#${URL}#file://$(readlink -f ${URL})#g" "$SCRIPTDIR/repo/pacstallrepo" 2> /dev/null \
+            || fancy_message warn "Add \"file://\" to the local repo absolute path on \e]8;;file://$SCRIPTDIR/repo/pacstallrepo\a$CYAN$SCRIPTDIR/repo/pacstallrepo$NC\e]8;;\a"
         URL="file://$(readlink -f ${URL})"
     elif [[ ${URL} == "file://"* && ${URL} == *"/~/"* ]]; then
-        sed -i "s#${URL}#${URL/'~'/$HOME}#g" "$STGDIR/repo/pacstallrepo" 2> /dev/null \
-            || fancy_message warn "Replace '~' with the full home path on \e]8;;file://$STGDIR/repo/pacstallrepo\a$CYAN$STGDIR/repo/pacstallrepo$NC\e]8;;\a"
+        sed -i "s#${URL}#${URL/'~'/$HOME}#g" "$SCRIPTDIR/repo/pacstallrepo" 2> /dev/null \
+            || fancy_message warn "Replace '~' with the full home path on \e]8;;file://$SCRIPTDIR/repo/pacstallrepo\a$CYAN$SCRIPTDIR/repo/pacstallrepo$NC\e]8;;\a"
         URL="${URL/'~'/$HOME}"
     fi
     URL="$(formatRepo "${URL}")"
     if [[ -n ${URL} ]] && ! check_url "${URL}/packagelist"; then
         if [[ -z $REPOMSG ]]; then
             fancy_message error "Pacstall repo line improperly formatted: ${CYAN}${URL}${NC}"
-            fancy_message warn "You can remove or fix the URL by editing $CYAN$STGDIR/repo/pacstallrepo$NC"
+            fancy_message warn "You can remove or fix the URL by editing $CYAN$SCRIPTDIR/repo/pacstallrepo$NC"
             exit 1
         fi
         continue
@@ -162,7 +162,7 @@ while IFS= read -r URL; do
     URLLIST+=("${PARTIALLIST[@]/*/$URL}")
     PACKAGELIST+=("${PARTIALLIST[@]}")
     unset PARTIALLIST
-done < "$STGDIR/repo/pacstallrepo"
+done < "$SCRIPTDIR/repo/pacstallrepo"
 
 REPOMSG=1
 

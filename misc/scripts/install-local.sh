@@ -23,13 +23,13 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 # shellcheck source=./misc/scripts/checks.sh
-source "${STGDIR}/scripts/checks.sh" || {
+source "${SCRIPTDIR}/scripts/checks.sh" || {
     fancy_message error "Could not find checks.sh"
     return 1
 }
 
 # shellcheck source=./misc/scripts/download-local.sh
-source "${STGDIR}/scripts/download-local.sh" || {
+source "${SCRIPTDIR}/scripts/download-local.sh" || {
     fancy_message error "Could not find download-local.sh"
     return 1
 }
@@ -364,7 +364,7 @@ for i in "${!source[@]}"; do
     if [[ $source_url != *://* ]]; then
         if [[ -z ${REPO} ]]; then
             # shellcheck disable=SC2086
-            REPO="$(< ${STGDIR}/repo/pacstallrepo)"
+            REPO="$(< ${SCRIPTDIR}/repo/pacstallrepo)"
         fi
         # shellcheck disable=SC2031
         source_url="${REPO}/packages/${pkgname}/${source_url}"

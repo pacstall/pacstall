@@ -128,14 +128,14 @@ else
 fi
 
 LOGDIR="/var/lib/pacstall/metadata"
-STGDIR="/usr/share/pacstall"
+SCRIPTDIR="/usr/share/pacstall"
 PACDIR="/tmp/pacstall"
 PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER}}")
 
 fancy_message info "Making directories"
-mkdir -p "$STGDIR"
-mkdir -p "$STGDIR/scripts"
-mkdir -p "$STGDIR/repo"
+mkdir -p "$SCRIPTDIR"
+mkdir -p "$SCRIPTDIR/scripts"
+mkdir -p "$SCRIPTDIR/repo"
 
 mkdir -p "$PACDIR"
 chown "$PACSTALL_USER" -R "$PACDIR"
@@ -147,13 +147,13 @@ chown "$PACSTALL_USER" -R "/var/log/pacstall/error_log"
 mkdir -p "/usr/share/man/man8"
 mkdir -p "/usr/share/bash-completion/completions"
 
-rm -f "$STGDIR/repo/pacstallrepo" > /dev/null
-touch "$STGDIR/repo/pacstallrepo"
-echo "https://raw.githubusercontent.com/pacstall/pacstall-programs/master" > $STGDIR/repo/pacstallrepo
+rm -f "$SCRIPTDIR/repo/pacstallrepo" > /dev/null
+touch "$SCRIPTDIR/repo/pacstallrepo"
+echo "https://raw.githubusercontent.com/pacstall/pacstall-programs/master" > $SCRIPTDIR/repo/pacstallrepo
 
 fancy_message info "Pulling scripts from GitHub"
 for i in {error_log.sh,add-repo.sh,search.sh,dep-tree.sh,checks.sh,download.sh,install-local.sh,download-local.sh,build-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh,quality-assurance.sh,bwrap.sh}; do
-    wget -q --show-progress -N https://raw.githubusercontent.com/pacstall/pacstall/master/misc/scripts/"$i" -P "$STGDIR/scripts" &
+    wget -q --show-progress -N https://raw.githubusercontent.com/pacstall/pacstall/master/misc/scripts/"$i" -P "$SCRIPTDIR/scripts" &
 done
 
 wget -q --show-progress --progress=bar:force -O "/bin/pacstall" "https://raw.githubusercontent.com/pacstall/pacstall/master/pacstall" &
@@ -167,5 +167,5 @@ wget -q --show-progress --progress=bar:force -O "/usr/share/fish/vendor_completi
 wait
 
 chmod +x "/bin/pacstall"
-chmod +x $STGDIR/scripts/*
+chmod +x $SCRIPTDIR/scripts/*
 # vim:set ft=sh ts=4 sw=4 noet:

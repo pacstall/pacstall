@@ -34,7 +34,7 @@ export LOGDIR="/var/log/pacstall/error_log"
 printf -v LOGFILE "${LOGDIR}/%(%F_%T)T.log"
 export LOGFILE
 export PACDIR="/tmp/pacstall"
-export STGDIR="/usr/share/pacstall"
+export SCRIPTDIR="/usr/share/pacstall"
 export STAGEDIR="/usr/src/pacstall"
 
 export PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER:-$(whoami)}}")
@@ -497,9 +497,9 @@ function getMasks_offending_pkg() {
 [[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ]] && sudo apt-get update -qq --allow-releaseinfo-change
 
 # shellcheck source=./misc/scripts/error_log.sh
-source "$STGDIR/scripts/error_log.sh"
+source "$SCRIPTDIR/scripts/error_log.sh"
 # shellcheck source=./misc/scripts/bwrap.sh
-source "$STGDIR/scripts/bwrap.sh"
+source "$SCRIPTDIR/scripts/bwrap.sh"
 
 if [[ ! -t 0 ]]; then
     NON_INTERACTIVE=true
@@ -739,9 +739,9 @@ Helpful links:
                     fi
 
                     # Make the directory if not exist
-                    if [[ ! -e "$STGDIR/repo/" ]]; then
-                        sudo mkdir -p "$STGDIR/repo"
-                        sudo touch "$STGDIR/repo/pacstallrepo"
+                    if [[ ! -e "$SCRIPTDIR/repo/" ]]; then
+                        sudo mkdir -p "$SCRIPTDIR/repo"
+                        sudo touch "$SCRIPTDIR/repo/pacstallrepo"
                         pacstall -A
                     fi
 
@@ -752,7 +752,7 @@ Helpful links:
                     }
 
                     # shellcheck source=./misc/scripts/search.sh
-                    if ! source "$STGDIR/scripts/search.sh"; then
+                    if ! source "$SCRIPTDIR/scripts/search.sh"; then
                         continue
                     fi
 
@@ -761,7 +761,7 @@ Helpful links:
                     URL="${REPO:-https://raw.githubusercontent.com/pacstall/pacstall-programs/master}/packages/$PACKAGE/$PACKAGE.pacscript"
 
                     # shellcheck source=./misc/scripts/download.sh
-                    if ! source "$STGDIR/scripts/download.sh"; then
+                    if ! source "$SCRIPTDIR/scripts/download.sh"; then
                         fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
                         suggested_solution "Confirm that the package exists by running '${UCyan}pacstall -S $PACKAGE${NC}'" "Check your internet connection"
                         continue
@@ -769,7 +769,7 @@ Helpful links:
                     export REPO
                 fi
                 # shellcheck source=./misc/scripts/install-local.sh
-                if ! source "$STGDIR/scripts/install-local.sh"; then
+                if ! source "$SCRIPTDIR/scripts/install-local.sh"; then
                     fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
                     if ! [[ -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
                         sudo rm -rf "${PACDIR:?}"
@@ -796,7 +796,7 @@ Helpful links:
             }
 
             # shellcheck source=./misc/scripts/search.sh
-            source "$STGDIR/scripts/search.sh"
+            source "$SCRIPTDIR/scripts/search.sh"
             exit 0
             ;;
 
@@ -811,7 +811,7 @@ Helpful links:
                 PACKAGE=$2
                 shift
                 # shellcheck source=./misc/scripts/remove.sh
-                if ! source "$STGDIR/scripts/remove.sh"; then
+                if ! source "$SCRIPTDIR/scripts/remove.sh"; then
                     fancy_message error "Failed to remove ${GREEN}${PACKAGE}${NC}"
                 fi
             done
@@ -821,14 +821,14 @@ Helpful links:
         -A | --add-repo)
             REPO="$2"
 
-            if [[ ! -f "$STGDIR/repo/pacstallrepo" ]]; then
-                echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' | sudo tee "$STGDIR/repo/pacstallrepo" > /dev/null
+            if [[ ! -f "$SCRIPTDIR/repo/pacstallrepo" ]]; then
+                echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' | sudo tee "$SCRIPTDIR/repo/pacstallrepo" > /dev/null
                 return 0
             fi
 
             if [[ -n $REPO ]]; then
                 # shellcheck source=./misc/scripts/add-repo.sh
-                source "$STGDIR/scripts/add-repo.sh"
+                source "$SCRIPTDIR/scripts/add-repo.sh"
                 exit 0
             else
                 fancy_message error "You failed to specify a repo to add"
@@ -838,8 +838,8 @@ Helpful links:
             ;;
 
         -V | --version)
-            if [[ -f "$STGDIR/repo/update" ]]; then
-                remote="$(< "$STGDIR/repo/update")"
+            if [[ -f "$SCRIPTDIR/repo/update" ]]; then
+                remote="$(< "$SCRIPTDIR/repo/update")"
                 USERNAME="${remote%% *}"
                 BRANCH="${remote##* }"
                 if [[ $USERNAME != "pacstall" || $BRANCH != "master" ]]; then
@@ -867,8 +867,8 @@ Helpful links:
             fi
             # This stuff gives the ability for persistent updates
             if [[ -z $BRANCH && -z $USERNAME ]]; then
-                if [[ -f "$STGDIR/repo/update" ]]; then
-                    remote="$(< "$STGDIR/repo/update")"
+                if [[ -f "$SCRIPTDIR/repo/update" ]]; then
+                    remote="$(< "$SCRIPTDIR/repo/update")"
                     USERNAME="${remote%% *}"
                     BRANCH="${remote##* }"
                 else
@@ -896,9 +896,9 @@ Helpful links:
                 fancy_message error "Visit https://github.com/$USERNAME/pacstall/tree/$BRANCH for more information on how to reinstall. Most packages will also need to be reinstalled"
                 exit 1
             fi
-            sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/update.sh -P "$STGDIR/scripts" 2> /dev/null
+            sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/update.sh -P "$SCRIPTDIR/scripts" 2> /dev/null
             # shellcheck source=./misc/scripts/update.sh
-            source "$STGDIR/scripts/update.sh"
+            source "$SCRIPTDIR/scripts/update.sh"
             exit 0
             ;;
 
@@ -964,7 +964,7 @@ Helpful links:
                 }
 
                 # shellcheck source=./misc/scripts/search.sh
-                if ! source "$STGDIR/scripts/search.sh"; then
+                if ! source "$SCRIPTDIR/scripts/search.sh"; then
                     continue
                 fi
 
@@ -972,7 +972,7 @@ Helpful links:
                 export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 
                 # shellcheck source=./misc/scripts/download.sh
-                if ! source "$STGDIR/scripts/download.sh"; then
+                if ! source "$SCRIPTDIR/scripts/download.sh"; then
                     fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
                     suggested_solution "Confirm that the package exists by running '${UCyan}pacstall -S $PACKAGE${NC}'" "Check your internet connection"
                     continue
@@ -996,7 +996,7 @@ Helpful links:
                 exit 1
             }
             # shellcheck source=./misc/scripts/upgrade.sh
-            source "$STGDIR/scripts/upgrade.sh"
+            source "$SCRIPTDIR/scripts/upgrade.sh"
             exit 0
             ;;
 
@@ -1022,7 +1022,7 @@ Helpful links:
             PACKAGE=$2
             QUERY=$3
             # shellcheck source=./misc/scripts/query-info.sh
-            source "$STGDIR/scripts/query-info.sh"
+            source "$SCRIPTDIR/scripts/query-info.sh"
             exit 0
             ;;
 
@@ -1037,7 +1037,7 @@ Helpful links:
                 METAURL="${BASH_REMATCH[5]}"
             fi
             # shellcheck source=./misc/scripts/quality-assurance.sh
-            source "$STGDIR/scripts/quality-assurance.sh"
+            source "$SCRIPTDIR/scripts/quality-assurance.sh"
             exit 0
             ;;
 

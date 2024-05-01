@@ -23,13 +23,13 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 # shellcheck source=./misc/scripts/dep-tree.sh
-source "${STGDIR}/scripts/dep-tree.sh" || {
+source "${SCRIPTDIR}/scripts/dep-tree.sh" || {
     fancy_message error "Could not load dep-tree.sh"
     return 1
 }
 
 # shellcheck source=./misc/scripts/download-local.sh
-source "${STGDIR}/scripts/download-local.sh" || {
+source "${SCRIPTDIR}/scripts/download-local.sh" || {
     fancy_message error "Could not find download-local.sh"
     return 1
 }
@@ -111,7 +111,7 @@ N="$(nproc)"
             unset _remoterepo
 
             # shellcheck source=./misc/scripts/search.sh
-            source "$STGDIR/scripts/search.sh"
+            source "$SCRIPTDIR/scripts/search.sh"
 
             IDXMATCH=$(printf "%s\n" "${REPOS[@]}" | awk "\$1 ~ /^${remoterepo//\//\\/}$/ {print NR-1}")
 
@@ -220,12 +220,12 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
         export REPO="${remotes[${PACKAGE}]}"
         export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
         # shellcheck source=./misc/scripts/download.sh
-        if ! source "$STGDIR/scripts/download.sh"; then
+        if ! source "$SCRIPTDIR/scripts/download.sh"; then
             fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
             continue
         fi
         # shellcheck source=./misc/scripts/install-local.sh
-        source "$STGDIR/scripts/install-local.sh"
+        source "$SCRIPTDIR/scripts/install-local.sh"
     done
 fi
 
