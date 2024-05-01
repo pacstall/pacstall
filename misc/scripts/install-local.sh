@@ -158,8 +158,8 @@ elif [[ -n ${incompatible[*]} ]]; then
 fi
 
 clean_builddir
-sudo mkdir -p "$STOWDIR/$pkgname/DEBIAN"
-sudo chmod a+rx "$STOWDIR" "$STOWDIR/$pkgname" "$STOWDIR/$pkgname/DEBIAN"
+sudo mkdir -p "$STAGEDIR/$pkgname/DEBIAN"
+sudo chmod a+rx "$STAGEDIR" "$STAGEDIR/$pkgname" "$STAGEDIR/$pkgname/DEBIAN"
 
 # Run checks function
 if ! checks; then
@@ -406,7 +406,7 @@ fi
 export pacdir="$PWD"
 sudo chown -R root:root . 2> /dev/null
 
-export pkgdir="$STOWDIR/$pkgname"
+export pkgdir="$STAGEDIR/$pkgname"
 export -f ask fancy_message select_options
 
 # Trap so that we can clean up (hopefully without messing up anything)

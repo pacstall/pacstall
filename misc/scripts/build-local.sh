@@ -41,11 +41,11 @@ function cleanup() {
     else
         sudo rm -rf "${PACDIR:?}"/*
         if [[ -n $pkgname ]]; then
-            sudo rm -rf "${STOWDIR:-/usr/src/pacstall}/${pkgname}"
+            sudo rm -rf "${STAGEDIR:-/usr/src/pacstall}/${pkgname}"
         fi
         sudo rm -rf /tmp/pacstall-gives
     fi
-    sudo rm -rf "${STOWDIR}/${pkgname:-$PACKAGE}.deb"
+    sudo rm -rf "${STAGEDIR}/${pkgname:-$PACKAGE}.deb"
     sudo rm -f /tmp/pacstall-select-options
     sudo rm -f "${PACDIR}/bwrapenv.*"
     local clsrc clsum cla_sum arch_vars \
@@ -73,12 +73,12 @@ function deblog() {
     local key="$1"
     shift
     local content=("$@")
-    echo "$key: ${content[*]}" | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/control" > /dev/null
+    echo "$key: ${content[*]}" | sudo tee -a "$STAGEDIR/$pkgname/DEBIAN/control" > /dev/null
 }
 
 function clean_builddir() {
-    sudo rm -rf "${STOWDIR}/${pkgname:?}"
-    sudo rm -f "${STOWDIR}/${pkgname}.deb"
+    sudo rm -rf "${STAGEDIR}/${pkgname:?}"
+    sudo rm -f "${STAGEDIR}/${pkgname}.deb"
 }
 
 function prompt_optdepends() {
@@ -272,7 +272,7 @@ function createdeb() {
         local compression="gz"
         local command="gzip"
     fi
-    cd "$STOWDIR/$pkgname" || return 1
+    cd "$STAGEDIR/$pkgname" || return 1
     # https://tldp.org/HOWTO/html_single/Debian-Binary-Package-Building-HOWTO/#AEN66
     echo "2.0" | sudo tee debian-binary > /dev/null
     sudo tar -cf "$PWD/control.tar" -T /dev/null
@@ -469,22 +469,22 @@ function makedeb() {
                 'eval echo ~"$PACSTALL_USER"' '}' 'export homedir="$(get_homedir)"' 'if [[ -n $PACSTALL_BUILD_CORES ]];then'
                 'declare -g NCPU="${PACSTALL_BUILD_CORES:-1}"' 'else' 'declare -g NCPU="$(nproc)"' 'fi'
             )
-            echo '#!/bin/bash' | sudo tee "$STOWDIR/$pkgname/DEBIAN/$deb_post_file" > /dev/null
+            echo '#!/bin/bash' | sudo tee "$STAGEDIR/$pkgname/DEBIAN/$deb_post_file" > /dev/null
             for pacmf_out in "${pac_min_functions[@]}"; do
-                echo "${pacmf_out}" | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/$deb_post_file" > /dev/null
+                echo "${pacmf_out}" | sudo tee -a "$STAGEDIR/$pkgname/DEBIAN/$deb_post_file" > /dev/null
             done
             {
                 cat "${pacfile}"
                 echo -e "\n$i"
-            } | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/$deb_post_file" > /dev/null
+            } | sudo tee -a "$STAGEDIR/$pkgname/DEBIAN/$deb_post_file" > /dev/null
         fi
     done
     unset pre_inst_upg post_inst_upg
-    echo -e "sudo rm -f $METADIR/$pkgname\nsudo rm -f /etc/apt/preferences.d/$pkgname-pin" | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/postrm" > /dev/null
+    echo -e "sudo rm -f $METADIR/$pkgname\nsudo rm -f /etc/apt/preferences.d/$pkgname-pin" | sudo tee -a "$STAGEDIR/$pkgname/DEBIAN/postrm" > /dev/null
     local postfile
     for postfile in {postrm,postinst,preinst}; do
-        sudo chmod -x "$STOWDIR/$pkgname/DEBIAN/${postfile}" &> /dev/null
-        sudo chmod 755 "$STOWDIR/$pkgname/DEBIAN/${postfile}" &> /dev/null
+        sudo chmod -x "$STAGEDIR/$pkgname/DEBIAN/${postfile}" &> /dev/null
+        sudo chmod 755 "$STAGEDIR/$pkgname/DEBIAN/${postfile}" &> /dev/null
     done
 
     # Handle `backup` key
@@ -504,28 +504,28 @@ function makedeb() {
                 if [[ ${file:2:1} == "/" ]]; then
                     fancy_message warn "'${file}' cannot contain path starting with '/'... Skipping" && continue
                 fi
-                if [[ -f "$STOWDIR/$pkgname/${file:2}" ]]; then
+                if [[ -f "$STAGEDIR/$pkgname/${file:2}" ]]; then
                     fancy_message warn "'${file}' is inside the package... Skipping" && continue
                 fi
-                echo "remove-on-upgrade /${file:2}" | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/conffiles" > /dev/null
+                echo "remove-on-upgrade /${file:2}" | sudo tee -a "$STAGEDIR/$pkgname/DEBIAN/conffiles" > /dev/null
             else
                 if [[ ${file:0:1} == "/" ]]; then
                     fancy_message warn "'${file}' cannot contain path starting with '/'... Skipping" && continue
                 fi
-                echo "/${file}" | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/conffiles" > /dev/null
+                echo "/${file}" | sudo tee -a "$STAGEDIR/$pkgname/DEBIAN/conffiles" > /dev/null
             fi
         done
     fi
 
 	local estsize
-	estsize="$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STOWDIR/$pkgname" | cut -d$'\t' -f1)"
+	estsize="$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STAGEDIR/$pkgname" | cut -d$'\t' -f1)"
 	deblog "Installed-Size" "${estsize}"
     if ((estsize<10)); then
         install_size="$((estsize * 1024)) B"
     else
         local duargs="b" numargs rawsize
 		((estsize<1024)) && { duargs+="h"; numargs="--from=iec --to=si"; } || numargs="--to=si"
-		rawsize="$(sudo du -s${duargs} --exclude=DEBIAN -- "$STOWDIR/$pkgname" | cut -d$'\t' -f1)"
+		rawsize="$(sudo du -s${duargs} --exclude=DEBIAN -- "$STAGEDIR/$pkgname" | cut -d$'\t' -f1)"
 	    # shellcheck disable=SC2086
 		install_size="$(numfmt ${numargs} --format="%3.2f" "${rawsize}" \
 			| awk '{
@@ -552,9 +552,9 @@ function makedeb() {
     fi
     export install_size
 
-    generate_changelog | sudo tee -a "$STOWDIR/$pkgname/DEBIAN/changelog" > /dev/null
+    generate_changelog | sudo tee -a "$STAGEDIR/$pkgname/DEBIAN/changelog" > /dev/null
 
-    cd "$STOWDIR" || return 1
+    cd "$STAGEDIR" || return 1
     if ! createdeb "$pkgname"; then
         fancy_message error "Could not create package"
         error_log 5 "install $PACKAGE"
@@ -568,7 +568,7 @@ function makedeb() {
 function install_deb() {
     if ((PACSTALL_INSTALL != 0)); then
         # --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
-        if ! sudo -E apt-get install --reinstall "$STOWDIR/$pkgname.deb" -y --allow-downgrades 2> /dev/null; then
+        if ! sudo -E apt-get install --reinstall "$STAGEDIR/$pkgname.deb" -y --allow-downgrades 2> /dev/null; then
             echo -ne "\t"
             fancy_message error "Failed to install $pkgname deb"
             error_log 8 "install $PACKAGE"
@@ -580,7 +580,7 @@ function install_deb() {
         if [[ -f /tmp/pacstall-pacdeps-"$pkgname" ]]; then
             sudo apt-mark auto "${gives:-$pkgname}" 2> /dev/null
         fi
-        sudo rm -rf "$STOWDIR/$pkgname"
+        sudo rm -rf "$STAGEDIR/$pkgname"
         sudo rm -rf "$PACDIR/$pkgname.deb"
 
         if ! [[ -d /etc/apt/preferences.d/ ]]; then
@@ -592,13 +592,13 @@ function install_deb() {
         echo "Pin-Priority: -1" | sudo tee -a "/etc/apt/preferences.d/${pkgname}-pin" > /dev/null
         return 0
     else
-        sudo mv "$STOWDIR/$pkgname.deb" "$PACDEB_DIR"
+        sudo mv "$STAGEDIR/$pkgname.deb" "$PACDEB_DIR"
         sudo chown "$PACSTALL_USER":"$PACSTALL_USER" "$PACDEB_DIR/$pkgname.deb"
         fancy_message info "Package built at ${BGreen}$PACDEB_DIR/$pkgname.deb${NC}"
-        fancy_message info "Moving ${BGreen}$STOWDIR/$pkgname${NC} to ${BGreen}/tmp/pacstall-no-build/$pkgname${NC}"
+        fancy_message info "Moving ${BGreen}$STAGEDIR/$pkgname${NC} to ${BGreen}/tmp/pacstall-no-build/$pkgname${NC}"
         sudo rm -rf "/tmp/pacstall-no-build/$pkgname"
         mkdir -p "/tmp/pacstall-no-build/$pkgname"
-        sudo mv "$STOWDIR/$pkgname" "/tmp/pacstall-no-build/$pkgname"
+        sudo mv "$STAGEDIR/$pkgname" "/tmp/pacstall-no-build/$pkgname"
         cleanup
         exit 0
     fi
@@ -607,7 +607,7 @@ function install_deb() {
 function repacstall() {
     # shellcheck disable=SC2034
     local depends_array unpackdir depends_line deper pacgives meper ceper pacdep depends_array_form repac_depends_str upcontrol input_dest="${1}"
-    unpackdir="${STOWDIR}/${pkgname}"
+    unpackdir="${STAGEDIR}/${pkgname}"
     upcontrol="${unpackdir}/DEBIAN/control"
     sudo mkdir -p "${unpackdir}"
     sudo rm -rf "${unpackdir}"/*
