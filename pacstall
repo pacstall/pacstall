@@ -644,8 +644,8 @@ Commands:
 		List all installed packages.
 	${BOLD}-Up${NC}, ${BOLD}--upgrade${NC}
 		Upgrade all installed packages.
-	${BOLD}-Qa${NC}, ${BOLD}--quality-assurance${NC} <package>#<number>(@[provider]:[user]/[repo])
-		Test a package PR from downstream.
+	${BOLD}-Qa${NC}, ${BOLD}--quality-assurance${NC} <package>#<number>
+		Test a package PR from downstream. Optional: @[provider]:[owner]/[repo]
 	${BOLD}-Qi${NC}, ${BOLD}--query-info${NC} <package>
 		Query information about a package.
 	${BOLD}-T${NC}, ${BOLD}--tree${NC} <package>
