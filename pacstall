@@ -586,7 +586,11 @@ function lock() {
     done
 
     if [[ -f "/usr/share/pacstall/repo/pacstallrepo.pacstall-qa.bak" ]]; then
-        return 1
+        instances=($(pidof -o %PPID -x "$0"))
+        if [[ ${#instances[@]} -lt 2 ]]; then
+            return 1
+        fi
+        return 0
     fi
 
     pidof -o %PPID -x "$0" > /dev/null && return 0 || return 1
