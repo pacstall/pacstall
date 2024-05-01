@@ -319,7 +319,7 @@ function download() {
             PACSTALL_DOWNLOADER=curl
         fi
     fi
-    [[ ${PACSTALL_VERBOSE} && ${PACSTALL_DOWNLOADER} != "verbose-"* ]] && PACSTALL_DOWNLOADER="verbose-${PACSTALL_DOWNLOADER}"
+    ${PACSTALL_VERBOSE} && [[ ${PACSTALL_DOWNLOADER} != "verbose-"* ]] && PACSTALL_DOWNLOADER="verbose-${PACSTALL_DOWNLOADER}"
 
     case "$PACSTALL_DOWNLOADER" in
         verbose-axel)
