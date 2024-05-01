@@ -71,14 +71,14 @@ if [[ -d "/var/log/pacstall/metadata/" ]]; then
     sudo rm -rf "/var/log/pacstall/metadata/"
 fi
 
-STGDIR="/usr/share/pacstall"
+SCRIPTDIR="/usr/share/pacstall"
 tabs -4
 
 tty_settings=$(stty -g)
 # shellcheck disable=SC2207
 old_version=($(pacstall -V))
 # shellcheck disable=SC2207
-old_info=($(cat $STGDIR/repo/update 2> /dev/null || echo pacstall master))
+old_info=($(cat $SCRIPTDIR/repo/update 2> /dev/null || echo pacstall master))
 
 old_username="${old_info[0]}"
 old_branch="${old_info[1]}"
@@ -94,7 +94,7 @@ else
     fi
 fi
 for i in {error_log.sh,add-repo.sh,search.sh,dep-tree.sh,version-constraints.sh,checks.sh,download.sh,install-local.sh,download-local.sh,build-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh,quality-assurance.sh,bwrap.sh}; do
-    sudo curl -s -o "$STGDIR/scripts/$i" "$REPO/misc/scripts/$i" &
+    sudo curl -s -o "$SCRIPTDIR/scripts/$i" "$REPO/misc/scripts/$i" &
 done
 
 sudo curl -s -o /bin/pacstall "$REPO/pacstall" &
@@ -111,17 +111,17 @@ sudo chmod +x /bin/pacstall
 sudo chmod +x /usr/share/pacstall/scripts/*
 
 if [[ -n $GIT_USER ]]; then
-    echo "pacstall master" | sudo tee "$STGDIR/repo/update" > /dev/null
+    echo "pacstall master" | sudo tee "$SCRIPTDIR/repo/update" > /dev/null
 else
-    echo "$USERNAME $BRANCH" | sudo tee "$STGDIR/repo/update" > /dev/null
+    echo "$USERNAME $BRANCH" | sudo tee "$SCRIPTDIR/repo/update" > /dev/null
 fi
 
-if [[ -f ${STGDIR}/repo/pacstallrepo.txt ]]; then
-    sudo mv "${STGDIR}/repo/pacstallrepo.txt" "${STGDIR}/repo/pacstallrepo"
+if [[ -f ${SCRIPTDIR}/repo/pacstallrepo.txt ]]; then
+    sudo mv "${SCRIPTDIR}/repo/pacstallrepo.txt" "${SCRIPTDIR}/repo/pacstallrepo"
 fi
 
 # shellcheck disable=SC2207
-new_info=($(cat $STGDIR/repo/update))
+new_info=($(cat $SCRIPTDIR/repo/update))
 # shellcheck disable=SC2207
 new_version=($(pacstall -V))
 

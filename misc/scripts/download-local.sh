@@ -23,7 +23,7 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 # shellcheck source=./misc/scripts/build-local.sh
-source "${STGDIR}/scripts/build-local.sh" || {
+source "${SCRIPTDIR}/scripts/build-local.sh" || {
     fancy_message error "Could not find build-local.sh"
     return 1
 }

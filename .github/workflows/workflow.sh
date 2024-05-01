@@ -8,7 +8,7 @@ usermod -a -G sudo pacstall
 
 # chowning
 LOGDIR="/var/log/pacstall/metadata"
-STGDIR="/usr/share/pacstall"
+SCRIPTDIR="/usr/share/pacstall"
 SRCDIR="/tmp/pacstall"
 chown pacstall -R "$SRCDIR"
 chown pacstall -R "$LOGDIR"

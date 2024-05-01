@@ -23,13 +23,13 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 # shellcheck source=./misc/scripts/checks.sh
-source "${STGDIR}/scripts/checks.sh" || {
+source "${SCRIPTDIR}/scripts/checks.sh" || {
     fancy_message error "Could not find checks.sh"
     return 1
 }
 
 # shellcheck source=./misc/scripts/download-local.sh
-source "${STGDIR}/scripts/download-local.sh" || {
+source "${SCRIPTDIR}/scripts/download-local.sh" || {
     fancy_message error "Could not find download-local.sh"
     return 1
 }
@@ -158,8 +158,8 @@ elif [[ -n ${incompatible[*]} ]]; then
 fi
 
 clean_builddir
-sudo mkdir -p "$STOWDIR/$pkgname/DEBIAN"
-sudo chmod a+rx "$STOWDIR" "$STOWDIR/$pkgname" "$STOWDIR/$pkgname/DEBIAN"
+sudo mkdir -p "$STAGEDIR/$pkgname/DEBIAN"
+sudo chmod a+rx "$STAGEDIR" "$STAGEDIR/$pkgname" "$STAGEDIR/$pkgname/DEBIAN"
 
 # Run checks function
 if ! checks; then
@@ -364,7 +364,7 @@ for i in "${!source[@]}"; do
     if [[ $source_url != *://* ]]; then
         if [[ -z ${REPO} ]]; then
             # shellcheck disable=SC2086
-            REPO="$(< ${STGDIR}/repo/pacstallrepo)"
+            REPO="$(< ${SCRIPTDIR}/repo/pacstallrepo)"
         fi
         # shellcheck disable=SC2031
         source_url="${REPO}/packages/${pkgname}/${source_url}"
@@ -406,7 +406,7 @@ fi
 export pacdir="$PWD"
 sudo chown -R root:root . 2> /dev/null
 
-export pkgdir="$STOWDIR/$pkgname"
+export pkgdir="$STAGEDIR/$pkgname"
 export -f ask fancy_message select_options
 
 # Trap so that we can clean up (hopefully without messing up anything)
