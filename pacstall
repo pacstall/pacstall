@@ -604,8 +604,8 @@ while lock $@; do
     sleep 1
 done
 if [[ -n $first ]]; then
-        unset first
-        fancy_message info "The other instance has finished running, unlocking"
+    unset first
+    fancy_message info "The other instance has finished running, unlocking"
 fi
 
 while [[ $1 != "--" ]]; do
