@@ -30,13 +30,10 @@ source "${STGDIR}/scripts/version-constraints.sh" || {
 
 function cleanup() {
     if [[ -n $KEEP ]]; then
-        rm -rf "/tmp/pacstall-keep/$pkgname"
+        sudo rm -rf "/tmp/pacstall-keep/$pkgname"
         mkdir -p "/tmp/pacstall-keep/$pkgname"
-        if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
-            sudo mv /tmp/pacstall-pacdep/* "/tmp/pacstall-keep/$pkgname"
-        else
-            sudo mv "${PACDIR:?}"/* "/tmp/pacstall-keep/$pkgname"
-        fi
+        sudo mv "${PACDIR:?}/${pkgname}.pacscript" "/tmp/pacstall-keep/$pkgname"
+        sudo mv "${PACDIR:?}/${pkgname}~${pkgver}" "/tmp/pacstall-keep/$pkgname"
     fi
     if [[ -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
         sudo rm -rf "/tmp/pacstall-pacdeps-$PACKAGE"
@@ -46,10 +43,10 @@ function cleanup() {
         if [[ -n $pkgname ]]; then
             sudo rm -rf "${STOWDIR:-/usr/src/pacstall}/${pkgname}"
         fi
-        rm -rf /tmp/pacstall-gives
+        sudo rm -rf /tmp/pacstall-gives
     fi
     sudo rm -rf "${STOWDIR}/${pkgname:-$PACKAGE}.deb"
-    rm -f /tmp/pacstall-select-options
+    sudo rm -f /tmp/pacstall-select-options
     sudo rm -f "${PACDIR}/bwrapenv.*"
     local clsrc clsum cla_sum arch_vars \
     known_hashsums_clean=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5") \
