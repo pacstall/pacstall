@@ -224,8 +224,8 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
             fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
             continue
         fi
-        # shellcheck source=./misc/scripts/install.sh
-        source "$SCRIPTDIR/scripts/install.sh"
+        # shellcheck source=./misc/scripts/package.sh
+        source "$SCRIPTDIR/scripts/package.sh"
     done
 fi
 

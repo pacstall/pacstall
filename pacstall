@@ -768,8 +768,8 @@ Helpful links:
                     fi
                     export REPO
                 fi
-                # shellcheck source=./misc/scripts/install.sh
-                if ! source "$SCRIPTDIR/scripts/install.sh"; then
+                # shellcheck source=./misc/scripts/package.sh
+                if ! source "$SCRIPTDIR/scripts/package.sh"; then
                     fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
                     if ! [[ -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
                         sudo rm -rf "${PACDIR:?}"
