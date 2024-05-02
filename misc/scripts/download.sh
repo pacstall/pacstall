@@ -22,9 +22,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-# shellcheck source=./misc/scripts/build-local.sh
-source "${SCRIPTDIR}/scripts/build-local.sh" || {
-    fancy_message error "Could not find build-local.sh"
+# shellcheck source=./misc/scripts/build.sh
+source "${SCRIPTDIR}/scripts/build.sh" || {
+    fancy_message error "Could not find build.sh"
     return 1
 }
 

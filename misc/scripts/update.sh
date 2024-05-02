@@ -93,7 +93,7 @@ else
         exit 1
     fi
 fi
-for i in {error_log.sh,add-repo.sh,search.sh,dep-tree.sh,version-constraints.sh,checks.sh,download.sh,install-local.sh,download-local.sh,build-local.sh,upgrade.sh,remove.sh,update.sh,query-info.sh,quality-assurance.sh,bwrap.sh}; do
+for i in {error-log.sh,add-repo.sh,search.sh,dep-tree.sh,version-constraints.sh,checks.sh,fetch-pacscript.sh,install.sh,download.sh,build.sh,upgrade.sh,remove.sh,update.sh,query-info.sh,quality-assurance.sh,bwrap.sh}; do
     sudo curl -s -o "$SCRIPTDIR/scripts/$i" "$REPO/misc/scripts/$i" &
 done
 
