@@ -93,11 +93,11 @@ else
         exit 1
     fi
 fi
-for i in {error-log.sh,add-repo.sh,search.sh,dep-tree.sh,version-constraints.sh,checks.sh,fetch-pacscript.sh,install.sh,download.sh,build.sh,upgrade.sh,remove.sh,update.sh,query-info.sh,quality-assurance.sh,bwrap.sh}; do
+for i in {error-log.sh,add-repo.sh,search.sh,dep-tree.sh,version-constraints.sh,checks.sh,fetch-pacscript.sh,install.sh,fetch-source.sh,build.sh,upgrade.sh,remove.sh,update.sh,query-info.sh,quality-assurance.sh,bwrap.sh}; do
     sudo curl -s -o "$SCRIPTDIR/scripts/$i" "$REPO/misc/scripts/$i" &
 done
 # Remove renamed files
-for i in {error_log.sh,download-local.sh,install-local.sh,build-local.sh}; do
+for i in {error_log.sh,download.sh,download-local.sh,install-local.sh,build-local.sh}; do
     sudo rm "$SCRIPTDIR/scripts/$i"
 done
 

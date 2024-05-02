@@ -28,9 +28,9 @@ source "${SCRIPTDIR}/scripts/dep-tree.sh" || {
     return 1
 }
 
-# shellcheck source=./misc/scripts/download.sh
-source "${SCRIPTDIR}/scripts/download.sh" || {
-    fancy_message error "Could not find download.sh"
+# shellcheck source=./misc/scripts/fetch-source.sh
+source "${SCRIPTDIR}/scripts/fetch-source.sh" || {
+    fancy_message error "Could not find fetch-source.sh"
     return 1
 }
 
