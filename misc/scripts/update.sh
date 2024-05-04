@@ -98,7 +98,9 @@ for i in {error-log.sh,add-repo.sh,search.sh,dep-tree.sh,version-constraints.sh,
 done
 # Remove renamed files
 for i in {error_log.sh,download.sh,download-local.sh,install-local.sh,build-local.sh}; do
-    sudo rm "$SCRIPTDIR/scripts/$i"
+    if [[ -f "$SCRIPTDIR/scripts/$i" ]]; then
+        sudo rm "$SCRIPTDIR/scripts/$i"
+    fi
 done
 
 sudo curl -s -o /bin/pacstall "$REPO/pacstall" &
