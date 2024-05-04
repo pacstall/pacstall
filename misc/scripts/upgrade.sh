@@ -28,9 +28,9 @@ source "${SCRIPTDIR}/scripts/dep-tree.sh" || {
     return 1
 }
 
-# shellcheck source=./misc/scripts/fetch-source.sh
-source "${SCRIPTDIR}/scripts/fetch-source.sh" || {
-    fancy_message error "Could not find fetch-source.sh"
+# shellcheck source=./misc/scripts/fetch-sources.sh
+source "${SCRIPTDIR}/scripts/fetch-sources.sh" || {
+    fancy_message error "Could not find fetch-sources.sh"
     return 1
 }
 
@@ -219,8 +219,8 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
         fi
         export REPO="${remotes[${PACKAGE}]}"
         export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
-        # shellcheck source=./misc/scripts/fetch-pacscript.sh
-        if ! source "$SCRIPTDIR/scripts/fetch-pacscript.sh"; then
+        # shellcheck source=./misc/scripts/get-pacscript.sh
+        if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then
             fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
             continue
         fi

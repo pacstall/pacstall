@@ -760,8 +760,8 @@ Helpful links:
                     specifyRepo "$REPO"
                     URL="${REPO:-https://raw.githubusercontent.com/pacstall/pacstall-programs/master}/packages/$PACKAGE/$PACKAGE.pacscript"
 
-                    # shellcheck source=./misc/scripts/fetch-pacscript.sh
-                    if ! source "$SCRIPTDIR/scripts/fetch-pacscript.sh"; then
+                    # shellcheck source=./misc/scripts/get-pacscript.sh
+                    if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then
                         fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
                         suggested_solution "Confirm that the package exists by running '${UCyan}pacstall -S $PACKAGE${NC}'" "Check your internet connection"
                         continue
@@ -971,8 +971,8 @@ Helpful links:
                 specifyRepo "$REPO"
                 export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 
-                # shellcheck source=./misc/scripts/fetch-pacscript.sh
-                if ! source "$SCRIPTDIR/scripts/fetch-pacscript.sh"; then
+                # shellcheck source=./misc/scripts/get-pacscript.sh
+                if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then
                     fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
                     suggested_solution "Confirm that the package exists by running '${UCyan}pacstall -S $PACKAGE${NC}'" "Check your internet connection"
                     continue
