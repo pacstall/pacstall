@@ -25,9 +25,7 @@
 # This script searches for packages in all repos saved on pacstallrepo
 
 if [[ -n $UPGRADE ]]; then
-    [[ -f /tmp/pacstall-pacdeps-${PACKAGE%@*} ]] \
-    && PACKAGE="${PACKAGE}" \
-    || PACKAGE="$i"
+    [[ ! -f /tmp/pacstall-pacdeps-${PACKAGE%@*} ]] && PACKAGE="${i}"
 fi
 
 function getPath() {
