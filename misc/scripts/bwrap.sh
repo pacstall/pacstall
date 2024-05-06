@@ -24,7 +24,7 @@
 
 function safe_source() {
     local input="${1}"
-    mkdir /tmp/pacstall 2>/dev/null
+    mkdir /tmp/pacstall 2> /dev/null
     safeenv="$(sudo mktemp -p "${PACDIR}")"
     sudo chmod +r "$safeenv"
     bwrapenv="$(sudo mktemp -p "${PACDIR}" -t "bwrapenv.XXXXXXXXXX")"
@@ -34,14 +34,14 @@ function safe_source() {
 
     tmpfile="$(sudo mktemp -p "${PACDIR}")"
     local allvar src sum a_sum allvar_str pacfunc_str debfunc_str \
-    known_hashsums_src=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5") \
-    known_archs_src=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x") \
-    allvars=("pkgname" "repology" "pkgver" "git_pkgver" "epoch" "source_url" "source" "depends" "makedepends" "checkdepends" \
-        "conflicts" "breaks" "replaces" "gives" "pkgdesc" "hash" "optdepends" "ppa" "arch" "maintainer" "pacdeps" "patch" \
-        "PACPATCH" "NOBUILDDEP" "provides" "incompatible" "compatible" "optinstall" "srcdir" "url" "backup" "pkgrel" "mask" \
-        "pac_functions" "repo" "priority" "noextract" "nosubmodules" "_archive" "license" "external_connection") \
-    pacstall_funcs=("prepare" "build" "check" "package") \
-    debian_funcs=("post_install" "post_remove" "post_upgrade" "pre_install" "pre_remove" "pre_upgrade")
+        known_hashsums_src=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5") \
+        known_archs_src=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x") \
+        allvars=("pkgname" "repology" "pkgver" "git_pkgver" "epoch" "source_url" "source" "depends" "makedepends" "checkdepends"
+            "conflicts" "breaks" "replaces" "gives" "pkgdesc" "hash" "optdepends" "ppa" "arch" "maintainer" "pacdeps" "patch"
+            "PACPATCH" "NOBUILDDEP" "provides" "incompatible" "compatible" "optinstall" "srcdir" "url" "backup" "pkgrel" "mask"
+            "pac_functions" "repo" "priority" "noextract" "nosubmodules" "_archive" "license" "external_connection") \
+        pacstall_funcs=("prepare" "build" "check" "package") \
+        debian_funcs=("post_install" "post_remove" "post_upgrade" "pre_install" "pre_remove" "pre_upgrade")
     for src in "${known_archs_src[@]}"; do
         for vars in {source,depends,makedepends,optdepends,pacdeps,checkdepends,provides,conflicts,breaks,replaces,gives}; do
             allvars+=("${vars}_${src}")
@@ -56,11 +56,17 @@ function safe_source() {
     for allvar in "${allvars[@]}" "${pacstall_funcs[@]}" "${debian_funcs[@]}"; do
         unset "${allvar}"
     done
-    IFS=,; allvar_str="${allvars[*]}"; unset IFS
-    IFS=,; pacfunc_str="${pacstall_funcs[*]}"; unset IFS
-    IFS=,; debfunc_str="${debian_funcs[*]}"; unset IFS
+    IFS=,
+    allvar_str="${allvars[*]}"
+    unset IFS
+    IFS=,
+    pacfunc_str="${pacstall_funcs[*]}"
+    unset IFS
+    IFS=,
+    debfunc_str="${debian_funcs[*]}"
+    unset IFS
 
-    sudo tee "$tmpfile" > /dev/null <<EOF
+    sudo tee "$tmpfile" > /dev/null << EOF
 #!/bin/bash -a
 mapfile -t __OLD_ENV < <(compgen -A variable  -P "--unset ")
 readonly __OLD_ENV
@@ -92,13 +98,13 @@ EOF
         --ro-bind "$input" "$input" --bind "$PACDIR" "$PACDIR" --ro-bind "$tmpfile" "$tmpfile" \
         --setenv homedir "$homedir" --setenv CARCH "$CARCH" --setenv DISTRO "$DISTRO" --setenv NCPU "$NCPU" \
         --setenv PACSTALL_USER "$PACSTALL_USER" \
-    "$tmpfile" && sudo rm "$tmpfile"
+        "$tmpfile" && sudo rm "$tmpfile"
 }
 
 function bwrap_function() {
     local func="$1"
     tmpfile="$(sudo mktemp -p "${PWD}")"
-    sudo tee -a "$tmpfile" > /dev/null <<EOF
+    sudo tee -a "$tmpfile" > /dev/null << EOF
 #!/bin/bash -a
 mapfile -t OLD_ENV < <(compgen -A variable -P "--unset ")
 source ${bwrapenv}
@@ -126,7 +132,7 @@ EOF
         --setenv _archive "$_archive" --setenv srcdir "$srcdir" --setenv git_pkgver "$git_pkgver" \
         --setenv homedir "$homedir" --setenv CARCH "$CARCH" --setenv DISTRO "$DISTRO" --setenv NCPU "$NCPU" \
         --setenv PACSTALL_USER "$PACSTALL_USER" \
-    "$tmpfile" && sudo rm "$tmpfile"
+        "$tmpfile" && sudo rm "$tmpfile"
 }
 
 # vim:set ft=sh ts=4 sw=4 noet:

@@ -461,7 +461,7 @@ function array.contains() {
 function getMasks() {
     local pkgs pkg
     local -n masks="${1}"
-    mapfile -t pkgs < <(pacstall -L 2>/dev/null)
+    mapfile -t pkgs < <(pacstall -L 2> /dev/null)
     if ((${#pkgs[@]} == 0)); then
         return 0
     fi
@@ -537,11 +537,11 @@ done
 
 # Remove duplicates
 declare -A arg_map=(
-    ["--install"]="-I"     ["--search"]="-S"   ["--remove"]="-R"          ["--download"]="-D"
-    ["--add-repo"]="-A"    ["--update"]="-U"   ["--list"]="-L"            ["--upgrade"]="-Up"
-    ["--query-info"]="-Qi" ["--tree"]="-T"     ["--version"]="-V"         ["--help"]="-h"
-    ["--build"]="-B"       ["--keep"]="-K"     ["--disable-prompts"]="-P" ["--nocheck"]="-Nc"
-    ["--quality-assurance"]="-Qa"              ["--quiet"]="-Q"
+    ["--install"]="-I" ["--search"]="-S" ["--remove"]="-R" ["--download"]="-D"
+    ["--add-repo"]="-A" ["--update"]="-U" ["--list"]="-L" ["--upgrade"]="-Up"
+    ["--query-info"]="-Qi" ["--tree"]="-T" ["--version"]="-V" ["--help"]="-h"
+    ["--build"]="-B" ["--keep"]="-K" ["--disable-prompts"]="-P" ["--nocheck"]="-Nc"
+    ["--quality-assurance"]="-Qa" ["--quiet"]="-Q"
 )
 declare -A hashed_arguments
 unique_argument_list=()
@@ -557,8 +557,8 @@ done
 short_commands=("-I" "-S" "-R" "-D" "-A" "-U" "-L" "-Up" "-Qi" "-Qa" "-T" "-V" "-h")
 long_commands=("--install" "--search" "--remove" "--download" "--add-repo" "--update" "--list" "--upgrade" "--query-info" "--quality-assurance" "--tree" "--version" "--help")
 commands=("${short_commands[@]}" "${long_commands[@]}")
-matches=($(comm -12 <(sort <(printf "%s\n" "${unique_argument_list[@]}")) <(sort <(printf "%s\n"  "${commands[@]}"))))
-if (( ${#matches[@]} <= 1 )); then
+matches=($(comm -12 <(sort <(printf "%s\n" "${unique_argument_list[@]}")) <(sort <(printf "%s\n" "${commands[@]}"))))
+if ((${#matches[@]} <= 1)); then
     # Set the new list of arguments
     set -- "${unique_argument_list[@]}"
 else
@@ -575,11 +575,11 @@ function lock() {
     local ignore_long="--search --download --add-repo --version --query-info --tree --help"
     local ignore="$ignore_short $ignore_long"
 
-    for ((i=1;i<=option_flags+1;i++)); do
+    for ((i = 1; i <= option_flags + 1; i++)); do
         if [[ $ignore =~ (^|[[:space:]])"${!i}"($|[[:space:]]) ]]; then
             return 1
         fi
-        j=$(( i+1 ))
+        j=$((i + 1))
         if [[ -f "/tmp/pacstall-pacdeps-${!j%%@*}" ]]; then
             return 1
         fi

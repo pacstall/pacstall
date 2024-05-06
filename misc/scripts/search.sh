@@ -80,8 +80,8 @@ function parseRepo() {
 
 function formatRepo() {
     ! [[ $1 =~ ^\ *# ]] \
-    && [[ $1 =~ ^([^[:space:]]+)([[:space:]]+#.*)?$ ]] \
-    && echo "${BASH_REMATCH[1]}"
+        && [[ $1 =~ ^([^[:space:]]+)([[:space:]]+#.*)?$ ]] \
+        && echo "${BASH_REMATCH[1]}"
 }
 
 # Repo specific search
@@ -102,7 +102,7 @@ if [[ $SEARCH == *@* ]] || [[ $PACKAGE == *@* ]]; then
 
     while IFS= read -r URL; do
         specifyRepo "$URL"
-        if [[ "$URLNAME" == "$REPONAME" ]]; then
+        if [[ $URLNAME == "$REPONAME" ]]; then
             mapfile -t PACKAGELIST < <(curl -s -- "$URL"/packagelist)
             if [[ -n $SEARCH ]]; then
                 IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | awk "\$1 ~ /${SEARCH}/ {print NR-1}")

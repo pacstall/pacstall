@@ -104,7 +104,7 @@ fi
 
 append_archAndHash_entry
 for i in {depends,makedepends,optdepends,pacdeps,checkdepends,provides,conflicts,breaks,replaces}; do
-  append_var_arch "${i}" "${CARCH}"
+    append_var_arch "${i}" "${CARCH}"
 done
 gives_arch="gives_${CARCH}"
 [[ -n ${!gives_arch} && -z ${gives} ]] && gives="${!gives_arch}"
@@ -356,7 +356,7 @@ for i in "${!source[@]}"; do
     expectedHash="${hash[$i]}"
     if [[ -n ${payload_arr[*]} ]]; then
         for p in "${!payload_arr[@]}"; do
-            if [[ "${payload_arr[$p]##*/}" == "${dest}" ]]; then
+            if [[ ${payload_arr[$p]##*/} == "${dest}" ]]; then
                 source_url="file://${payload_arr[$p]}"
             fi
         done
