@@ -37,7 +37,6 @@ function cleanup() {
     fi
     if [[ -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
         sudo rm -rf "/tmp/pacstall-pacdeps-$PACKAGE"
-        sudo rm -rf /tmp/pacstall-pacdep
     else
         sudo rm -rf "${PACDIR:?}"/*
         if [[ -n $pkgname ]]; then
