@@ -176,7 +176,7 @@ N="$(nproc)"
                         updaterepo+="${YELLOW}#${upBRANCH}${NC}"
                     fi
                     printf "\t%s%s%s @ %s%s ( %s%s%s -> %s%s%s )\n" \
-                    "${GREEN}" "${i}" "${CYAN}" "${updaterepo}" "${NC}" "${BLUE}" "${localver:-unknown}" "${NC}" "${BLUE}" "${remotever:-unknown}" "${NC}" | tee -a "${up_print}" > /dev/null
+                        "${GREEN}" "${i}" "${CYAN}" "${updaterepo}" "${NC}" "${BLUE}" "${localver:-unknown}" "${NC}" "${BLUE}" "${remotever:-unknown}" "${NC}" | tee -a "${up_print}" > /dev/null
                     echo "$remoteurl" | tee -a "${up_urls}" > /dev/null
                     unset upBRANCH updaterepo
                 fi

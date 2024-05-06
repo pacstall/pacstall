@@ -49,8 +49,8 @@ function cleanup() {
     sudo rm -f /tmp/pacstall-select-options
     sudo rm -f "${PACDIR}/bwrapenv.*"
     local clsrc clsum cla_sum arch_vars \
-    known_hashsums_clean=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5") \
-    known_archs_clean=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x")
+        known_hashsums_clean=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5") \
+        known_archs_clean=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x")
     for clsrc in "${known_archs_clean[@]}"; do
         for clvars in {source,depends,makedepends,optdepends,pacdeps,checkdepends,provides,conflicts,breaks,replaces,gives}; do
             arch_vars+=("${clvars}_${clsrc}")
@@ -63,8 +63,8 @@ function cleanup() {
         done
     done
     unset pkgname repology pkgver git_pkgver epoch source_url source depends makedepends checkdepends conflicts breaks replaces \
-    gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible compatible optinstall \
-    srcdir url backup pkgrel mask pac_functions repo priority noextract nosubmodules _archive license bwrapenv safeenv external_connection "${arch_vars[@]}" 2> /dev/null
+        gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible compatible optinstall \
+        srcdir url backup pkgrel mask pac_functions repo priority noextract nosubmodules _archive license bwrapenv safeenv external_connection "${arch_vars[@]}" 2> /dev/null
     unset -f pre_install pre_upgrade pre_remove post_install post_upgrade post_remove prepare build check package 2> /dev/null
     sudo rm -f "${pacfile}"
 }
@@ -517,18 +517,22 @@ function makedeb() {
         done
     fi
 
-	local estsize
-	estsize="$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STAGEDIR/$pkgname" | cut -d$'\t' -f1)"
-	deblog "Installed-Size" "${estsize}"
-    if ((estsize<10)); then
+    local estsize
+    estsize="$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STAGEDIR/$pkgname" | cut -d$'\t' -f1)"
+    deblog "Installed-Size" "${estsize}"
+    if ((estsize < 10)); then
         install_size="$((estsize * 1024)) B"
     else
         local duargs="b" numargs rawsize
-		((estsize<1024)) && { duargs+="h"; numargs="--from=iec --to=si"; } || numargs="--to=si"
-		rawsize="$(sudo du -s${duargs} --exclude=DEBIAN -- "$STAGEDIR/$pkgname" | cut -d$'\t' -f1)"
-	    # shellcheck disable=SC2086
-		install_size="$(numfmt ${numargs} --format="%3.2f" "${rawsize}" \
-			| awk '{
+        ((estsize < 1024)) && {
+            duargs+="h"
+            numargs="--from=iec --to=si"
+        } || numargs="--to=si"
+        rawsize="$(sudo du -s${duargs} --exclude=DEBIAN -- "$STAGEDIR/$pkgname" | cut -d$'\t' -f1)"
+        # shellcheck disable=SC2086
+        install_size="$(
+            numfmt ${numargs} --format="%3.2f" "${rawsize}" \
+                | awk '{
 			    if (match($0, /[A-Za-z]+$/)) {
 			        num = sprintf("%.3g", $1);
 					if (num == int(num)) {

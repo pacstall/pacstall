@@ -56,12 +56,12 @@ sudo chown "$PACSTALL_USER" -R /tmp/pacstall
 sudo mkdir -p /usr/share/bash-completion/completions
 
 for pkg in "${required_packages[@]}"; do
-	if ! dpkg -s "${pkg}" > /dev/null 2>&1; then
-		to_install+=("${pkg}")
-	fi
+    if ! dpkg -s "${pkg}" > /dev/null 2>&1; then
+        to_install+=("${pkg}")
+    fi
 done
 if ((${#to_install[@]} != 0)); then
-	sudo apt-get install "${to_install[@]}" -y
+    sudo apt-get install "${to_install[@]}" -y
 fi
 
 # Pre 4.0.0 metadata dir changes

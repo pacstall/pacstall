@@ -35,7 +35,7 @@ parse_pr() {
 parse_link() {
     unset login
     local provider="$1" user="$2" repo="$3" pr="$4"
-    if [[ "$provider" == "github" ]]; then
+    if [[ $provider == "github" ]]; then
         gh_provides=$(curl -s "https://api.github.com/repos/$user/$repo/pulls/$pr")
         head_repo_full_name=$(echo "$gh_provides" | jq -r '.head.repo.full_name')
         head_sha=$(echo "$gh_provides" | jq -r '.head.sha')
@@ -48,16 +48,16 @@ parse_link() {
 }
 
 cleanup_qa() {
-  if [[ -f /usr/share/pacstall/repo/pacstallrepo.pacstall-qa.bak ]]; then
-    fancy_message info "Returning ${CYAN}/usr/share/pacstall/repo/pacstallrepo${NC} backup"
-    sudo rm -f /usr/share/pacstall/repo/pacstallrepo
-    sudo mv /usr/share/pacstall/repo/pacstallrepo.pacstall-qa.bak /usr/share/pacstall/repo/pacstallrepo
-  fi
+    if [[ -f /usr/share/pacstall/repo/pacstallrepo.pacstall-qa.bak ]]; then
+        fancy_message info "Returning ${CYAN}/usr/share/pacstall/repo/pacstallrepo${NC} backup"
+        sudo rm -f /usr/share/pacstall/repo/pacstallrepo
+        sudo mv /usr/share/pacstall/repo/pacstallrepo.pacstall-qa.bak /usr/share/pacstall/repo/pacstallrepo
+    fi
 }
 
 trap cleanup_qa EXIT INT
 metalink="${METAURL:-github:pacstall/pacstall-programs}" number="$PRNUM" inst="$PACKAGE"
-if [[ -z "$number" || -z "$inst" ]]; then
+if [[ -z $number || -z $inst ]]; then
     fancy_message error "'number' and 'package' cannot be empty!"
     fancy_message sub "use the syntax: -Qa ${GREEN}package${BYellow}#${YELLOW}NUM${NC}(${BPurple}@${PURPLE}metalink${NC})"
     exit 1

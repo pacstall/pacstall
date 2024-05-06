@@ -589,12 +589,12 @@ function install_builddepends() {
         fancy_message sub "Fetching apt repositories"
         # shellcheck disable=SC2015
         sudo apt-get update -qq --allow-releaseinfo-change \
-        && sudo apt-get satisfy -yq "${bdeps_str}" \
-        || {
-            fancy_message error "Failed to install build or check dependencies";
-            error_log 8 "install $PACKAGE";
-            clean_fail_down
-        }
+            && sudo apt-get satisfy -yq "${bdeps_str}" \
+            || {
+                fancy_message error "Failed to install build or check dependencies"
+                error_log 8 "install $PACKAGE"
+                clean_fail_down
+            }
     fi
 }
 
