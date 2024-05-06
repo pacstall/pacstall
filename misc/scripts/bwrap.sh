@@ -58,11 +58,7 @@ function safe_source() {
     done
     IFS=,
     allvar_str="${allvars[*]}"
-    unset IFS
-    IFS=,
     pacfunc_str="${pacstall_funcs[*]}"
-    unset IFS
-    IFS=,
     debfunc_str="${debian_funcs[*]}"
     unset IFS
 
