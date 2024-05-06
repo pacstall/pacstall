@@ -102,11 +102,40 @@ if [[ ${external_connection} == "true" ]]; then
     fancy_message warn "This package will connect to the internet during its build process."
 fi
 
-append_archAndHash_entry
-for i in {depends,makedepends,optdepends,pacdeps,checkdepends,provides,conflicts,breaks,replaces}; do
+# append arrays from least to most specific
+unset hashsum_method
+hashsum_types=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5")
+append_hash_entry hash hashsum_types hashsum_method "${CARCH}"
+# distro base
+append_hash_entry hash hashsum_types hashsum_method "${DISTRO%:*}"
+# distro version
+append_hash_entry hash hashsum_types hashsum_method "${DISTRO#*:}"
+append_hash_entry hash hashsum_types hashsum_method "${DISTRO%:*}" "${CARCH}"
+append_hash_entry hash hashsum_types hashsum_method "${DISTRO#*:}" "${CARCH}"
+for i in {source,depends,makedepends,optdepends,pacdeps,checkdepends,provides,conflicts,breaks,replaces}; do
     append_var_arch "${i}" "${CARCH}"
+    append_var_arch "${i}" "${DISTRO%:*}"
+    append_var_arch "${i}" "${DISTRO#*:}"
+    append_var_arch "${i}" "${DISTRO%:*}" "${CARCH}"
+    append_var_arch "${i}" "${DISTRO#*:}" "${CARCH}"
 done
+
+# overwrite gives from least to most specific
 gives_arch="gives_${CARCH}"
+gives_distrobase="gives_${DISTRO%:*}"
+gives_distrover="gives_${DISTRO#*:}"
+gives_distrobase_arch="gives_${DISTRO%:*}_${CARCH}"
+gives_distrover_arch="gives_${DISTRO#*:}_${CARCH}"
+
+gives_array=("gives_reg" "gives_arch" "gives_distrobase" "gives_distrover" "gives_distrobase_arch" "gives_distrover_arch")
+
+for gives_choice in "${gives_array[@]}"; do
+    if [[ -n "${!gives_choice}" ]]; then
+        gives="${!gives_choice}"
+        break
+    fi
+done
+
 [[ -n ${!gives_arch} && -z ${gives} ]] && gives="${!gives_arch}"
 
 # Running `-B` on a deb package doesn't make sense, so let's download instead
