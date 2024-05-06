@@ -327,22 +327,6 @@ install_builddepends
 prompt_optdepends || return 1
 
 fancy_message info "Retrieving packages"
-if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
-    mkdir -p "/tmp/pacstall-pacdep"
-    if ! cd "/tmp/pacstall-pacdep" 2> /dev/null; then
-        error_log 1 "install $PACKAGE"
-        fancy_message error "Could not enter /tmp/pacstall-pacdep"
-        exit 1
-    fi
-else
-    mkdir -p "$PACDIR"
-    if ! cd "$PACDIR" 2> /dev/null; then
-        error_log 1 "install $PACKAGE"
-        fancy_message error "Could not enter ${PACDIR}"
-        exit 1
-    fi
-fi
-
 mkdir -p "${PACDIR}"
 gather_down
 
