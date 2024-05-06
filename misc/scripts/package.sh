@@ -28,9 +28,9 @@ source "${SCRIPTDIR}/scripts/checks.sh" || {
     return 1
 }
 
-# shellcheck source=./misc/scripts/download-local.sh
-source "${SCRIPTDIR}/scripts/download-local.sh" || {
-    fancy_message error "Could not find download-local.sh"
+# shellcheck source=./misc/scripts/fetch-sources.sh
+source "${SCRIPTDIR}/scripts/fetch-sources.sh" || {
+    fancy_message error "Could not find fetch-sources.sh"
     return 1
 }
 

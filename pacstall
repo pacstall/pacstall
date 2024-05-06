@@ -496,8 +496,8 @@ function getMasks_offending_pkg() {
 # run sudo apt update if it's been more than a week
 [[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ]] && sudo apt-get update -qq --allow-releaseinfo-change
 
-# shellcheck source=./misc/scripts/error_log.sh
-source "$SCRIPTDIR/scripts/error_log.sh"
+# shellcheck source=./misc/scripts/error-log.sh
+source "$SCRIPTDIR/scripts/error-log.sh"
 # shellcheck source=./misc/scripts/bwrap.sh
 source "$SCRIPTDIR/scripts/bwrap.sh"
 
@@ -760,16 +760,16 @@ Helpful links:
                     specifyRepo "$REPO"
                     URL="${REPO:-https://raw.githubusercontent.com/pacstall/pacstall-programs/master}/packages/$PACKAGE/$PACKAGE.pacscript"
 
-                    # shellcheck source=./misc/scripts/download.sh
-                    if ! source "$SCRIPTDIR/scripts/download.sh"; then
+                    # shellcheck source=./misc/scripts/get-pacscript.sh
+                    if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then
                         fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
                         suggested_solution "Confirm that the package exists by running '${UCyan}pacstall -S $PACKAGE${NC}'" "Check your internet connection"
                         continue
                     fi
                     export REPO
                 fi
-                # shellcheck source=./misc/scripts/install-local.sh
-                if ! source "$SCRIPTDIR/scripts/install-local.sh"; then
+                # shellcheck source=./misc/scripts/package.sh
+                if ! source "$SCRIPTDIR/scripts/package.sh"; then
                     fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
                     if ! [[ -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
                         sudo rm -rf "${PACDIR:?}"
@@ -971,8 +971,8 @@ Helpful links:
                 specifyRepo "$REPO"
                 export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 
-                # shellcheck source=./misc/scripts/download.sh
-                if ! source "$SCRIPTDIR/scripts/download.sh"; then
+                # shellcheck source=./misc/scripts/get-pacscript.sh
+                if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then
                     fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
                     suggested_solution "Confirm that the package exists by running '${UCyan}pacstall -S $PACKAGE${NC}'" "Check your internet connection"
                     continue
