@@ -91,7 +91,7 @@ N="$(nproc)"
 (
     for i in "${list[@]}"; do
         ((n = n % N))
-        ((n++ == 0)) && wait
+        ((n++ == 0)) && wait && stty "$tty_settings"
         (
             source "$METADIR/$i"
 
