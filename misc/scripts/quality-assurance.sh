@@ -68,4 +68,7 @@ fancy_message info "Backing up ${CYAN}/usr/share/pacstall/repo/pacstallrepo${NC}
 sudo mv /usr/share/pacstall/repo/pacstallrepo /usr/share/pacstall/repo/pacstallrepo.pacstall-qa.bak
 echo "$provider_url" | sudo tee /usr/share/pacstall/repo/pacstallrepo > /dev/null
 fancy_message info "Installing ${GREEN}$inst${NC}(${PURPLE}$login${NC}:${RED}$pr${NC})"
-pacstall -I "$inst" || exit 1
+cmd="-I"
+[[ $KEEP ]] && cmd+="K"
+((PACSTALL_INSTALL == 0)) && cmd+="B"
+pacstall $cmd "$inst" || exit 1
