@@ -111,11 +111,11 @@ gives_arch="gives_${CARCH}"
 
 # Running `-B` on a deb package doesn't make sense, so let's download instead
 if ((PACSTALL_INSTALL == 0)) && [[ ${pkgname} == *-deb ]]; then
-    if ! download "${source[0]}"; then
+    parse_source_entry "${source[0]}"
+    if ! download "${source[0]}" "${dest}"; then
         fancy_message error "Failed to download '${source[0]}'"
         return 1
     else
-        parse_source_entry "${source[0]}"
         fancy_message info "Moving ${BGreen}${PACDIR}/${dest}${NC} to ${BGreen}${PACDEB_DIR}/${dest}${NC}"
         sudo mv ./"${dest}" "${PACDEB_DIR}"
     fi
