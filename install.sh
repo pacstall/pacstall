@@ -131,7 +131,7 @@ METADIR="/var/lib/pacstall/metadata"
 LOGDIR="/var/log/pacstall/error_log"
 SCRIPTDIR="/usr/share/pacstall"
 PACDIR="/tmp/pacstall"
-PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER}}")
+PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER:-$(whoami)}}")
 
 fancy_message info "Making directories"
 mkdir -p "$SCRIPTDIR"
