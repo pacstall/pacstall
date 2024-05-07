@@ -117,12 +117,13 @@ EOF
     if [[ ! -d ${LOGDIR} ]]; then
         sudo mkdir -p "${LOGDIR}"
     fi
-    local share_net
+    local share_net dns_resolve
     if [[ ${external_connection} == "true" ]]; then
         share_net="--share-net"
+        dns_resolve="--ro-bind /run/systemd/resolve /run/systemd/resolve"
     fi
     sudo bwrap --unshare-all ${share_net} --die-with-parent --new-session --ro-bind / / \
-        --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run --dev-bind /dev/null /dev/null \
+        --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run ${dns_resolve} --dev-bind /dev/null /dev/null \
         --bind "$STAGEDIR" "$STAGEDIR" --bind "$PACDIR" "$PACDIR" --setenv LOGDIR "$LOGDIR" \
         --setenv SCRIPTDIR "$SCRIPTDIR" --setenv STAGEDIR "$STAGEDIR" --setenv pkgdir "$pkgdir" \
         --setenv _archive "$_archive" --setenv srcdir "$srcdir" --setenv git_pkgver "$git_pkgver" \
