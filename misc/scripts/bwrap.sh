@@ -120,7 +120,9 @@ EOF
     local share_net dns_resolve
     if [[ ${external_connection} == "true" ]]; then
         share_net="--share-net"
-        dns_resolve="--ro-bind /run/systemd/resolve /run/systemd/resolve"
+        if [[ -d "/run/systemd/resolve" ]]; then
+            dns_resolve="--ro-bind /run/systemd/resolve /run/systemd/resolve"
+        fi
     fi
     # shellcheck disable=SC2086
     sudo bwrap --unshare-all ${share_net} --die-with-parent --new-session --ro-bind / / \
