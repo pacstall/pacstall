@@ -222,6 +222,9 @@ if [[ -n $pacdeps ]]; then
                 fi
             else
                 fancy_message info "The pacstall dependency ${i} is already installed and at latest version"
+                if ! awk '/_pacstall_depends="true"/ {found=1; exit} END {if (found != 1) exit 1}' "${METADIR}/${i}"; then
+                    echo '_pacstall_depends="true"' | sudo tee -a "${METADIR}/${i}"
+                fi
             fi
         elif fancy_message info "Installing dependency ${PURPLE}${i}${NC}" && ! pacstall "$cmd" "${i}${repo}"; then
             fancy_message error "Failed to install dependency (${i} from ${PACKAGE})"

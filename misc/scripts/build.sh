@@ -677,6 +677,18 @@ function repacstall() {
     install_deb
 }
 
+check_if_pacdep() {
+    package="${1}"
+    finddir="${2}"
+    found="$(find "${finddir}" -type f -exec awk -v pkg="${package}" '
+        $0 ~ "_pacdeps=\\(\\[" "[0-9]+" "\\]=\"" pkg "\"" {
+                found = 1
+        } END {
+                if (!found) {exit 1}
+        }' {} \; -print)"
+    [[ ${found} ]] && return 0 || return 1
+}
+
 function write_meta() {
     echo "_name=\"$pkgname\""
     echo "_version=\"${full_version}\""
@@ -697,7 +709,7 @@ function write_meta() {
     if [[ -n $gives ]]; then
         echo "_gives=\"$gives\""
     fi
-    if [[ -f /tmp/pacstall-pacdeps-"$pkgname" ]]; then
+    if [[ -f /tmp/pacstall-pacdeps-"$pkgname" || check_if_pacdep "${pkgname}" "${METADIR}" ]]; then
         echo '_pacstall_depends="true"'
     fi
     if [[ $local == 'no' ]]; then
