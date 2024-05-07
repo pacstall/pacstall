@@ -125,8 +125,9 @@ EOF
         fi
     fi
     # shellcheck disable=SC2086
-    sudo bwrap --unshare-all ${share_net} --die-with-parent --new-session --ro-bind / / \
-        --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run ${dns_resolve} --dev-bind /dev/null /dev/null \
+    sudo bwrap --unshare-all ${share_net} --die-with-parent --new-session \
+        --ro-bind / / --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run ${dns_resolve} \
+        --dev-bind /dev/null /dev/null --tmpfs /root --tmpfs /home \
         --bind "$STAGEDIR" "$STAGEDIR" --bind "$PACDIR" "$PACDIR" --setenv LOGDIR "$LOGDIR" \
         --setenv SCRIPTDIR "$SCRIPTDIR" --setenv STAGEDIR "$STAGEDIR" --setenv pkgdir "$pkgdir" \
         --setenv _archive "$_archive" --setenv srcdir "$srcdir" --setenv git_pkgver "$git_pkgver" \
