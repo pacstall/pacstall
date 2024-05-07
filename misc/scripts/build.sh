@@ -677,7 +677,7 @@ function repacstall() {
     install_deb
 }
 
-check_if_pacdep() {
+function check_if_pacdep() {
     package="${1}"
     finddir="${2}"
     found="$(find "${finddir}" -type f -exec awk -v pkg="${package}" '
