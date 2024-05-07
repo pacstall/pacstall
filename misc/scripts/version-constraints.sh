@@ -190,8 +190,6 @@ function dep_const.extract_description() {
 function dep_const.format_version() {
     local str="${1}" const relation pkg_stuff=() constraints=('<=' '>=' '=' '<' '>')
     local -n out_arr="${2}"
-    str="${str/)/}"
-    str="${str/(/}"
     for const in "${constraints[@]}"; do
         if [[ $str == *"${const}"* ]]; then
             if [[ ${const} =~ ^(<|>)$ ]]; then
@@ -201,7 +199,11 @@ function dep_const.format_version() {
                 relation="${const}"
             fi
             dep_const.split_name_and_version "${str}" pkg_stuff
-            out_arr+=("${pkg_stuff[0]} (${relation} ${pkg_stuff[1]})")
+            if [[ ${str} =~ \(*\)* ]]; then
+                out_arr+=("${pkg_stuff[0]} ${relation} ${pkg_stuff[1]}")
+            else
+                out_arr+=("${pkg_stuff[0]} (${relation} ${pkg_stuff[1]})")
+            fi
             break
         # Are we at the last element in constraints[@]? If so, that means we have a normal string
         elif [[ ${const} == "${constraints[-1]}" ]]; then
