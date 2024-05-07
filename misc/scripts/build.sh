@@ -678,9 +678,9 @@ function repacstall() {
 }
 
 function check_if_pacdep() {
-    package="${1}"
-    finddir="${2}"
-    found="$(find "${finddir}" -type f -exec awk -v pkg="${package}" '
+    local package="${1}"
+    local finddir="${2}"
+    local found="$(find "${finddir}" -type f -exec awk -v pkg="${package}" '
         $0 ~ "_pacdeps=\\(\\[" "[0-9]+" "\\]=\"" pkg "\"" {
                 found = 1
         } END {
