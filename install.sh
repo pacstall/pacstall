@@ -127,10 +127,11 @@ else
     apt-get install -y sudo wget build-essential unzip git zstd iputils-ping lsb-release aptitude bubblewrap jq ${axel_inst}
 fi
 
-LOGDIR="/var/lib/pacstall/metadata"
+METADIR="/var/lib/pacstall/metadata"
+LOGDIR="/var/log/pacstall/error_log"
 SCRIPTDIR="/usr/share/pacstall"
 PACDIR="/tmp/pacstall"
-PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER}}")
+PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER:-$(whoami)}}")
 
 fancy_message info "Making directories"
 mkdir -p "$SCRIPTDIR"
@@ -140,9 +141,9 @@ mkdir -p "$SCRIPTDIR/repo"
 mkdir -p "$PACDIR"
 chown "$PACSTALL_USER" -R "$PACDIR"
 
+mkdir -p "$METADIR"
 mkdir -p "$LOGDIR"
-mkdir -p "/var/log/pacstall/error_log"
-chown "$PACSTALL_USER" -R "/var/log/pacstall/error_log"
+chown "$PACSTALL_USER" -R "$LOGDIR"
 
 mkdir -p "/usr/share/man/man8"
 mkdir -p "/usr/share/bash-completion/completions"

@@ -24,7 +24,7 @@
 
 function safe_source() {
     local input="${1}"
-    mkdir /tmp/pacstall 2> /dev/null
+    mkdir "${PACDIR}" 2> /dev/null
     safeenv="$(sudo mktemp -p "${PACDIR}")"
     sudo chmod +r "$safeenv"
     bwrapenv="$(sudo mktemp -p "${PACDIR}" -t "bwrapenv.XXXXXXXXXX")"
