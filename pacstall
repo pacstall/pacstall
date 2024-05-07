@@ -585,7 +585,7 @@ function lock() {
         fi
     done
 
-    if [[ -f "/usr/share/pacstall/repo/pacstallrepo.pacstall-qa.bak" ]]; then
+    if [[ -f "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak" ]]; then
         instances=($(pidof -o %PPID -x "$0"))
         if [[ ${#instances[@]} -lt 2 ]]; then
             return 1

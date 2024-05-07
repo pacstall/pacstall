@@ -29,6 +29,12 @@ export NC='\033[0m'
 export UCyan='\033[4;36m'
 export BPurple='\033[1;35m'
 
+METADIR="/var/lib/pacstall/metadata"
+LOGDIR="/var/log/pacstall/error_log"
+PACDIR="/tmp/pacstall"
+PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER:-$(whoami)}}")
+SCRIPTDIR="/usr/share/pacstall"
+
 required_packages=(lsb-release aptitude bubblewrap jq)
 
 function suggested_solution() {
@@ -46,12 +52,12 @@ function suggested_solution() {
     fi
 }
 
-sudo mkdir -p "/var/lib/pacstall/metadata"
-sudo mkdir -p "/var/log/pacstall/error_log"
-sudo chown "$PACSTALL_USER" -R /var/log/pacstall/error_log
+sudo mkdir -p "$METADIR"
+sudo mkdir -p "$LOGDIR"
+sudo chown "$PACSTALL_USER" -R "$LOGDIR"
 
-sudo mkdir -p "/tmp/pacstall"
-sudo chown "$PACSTALL_USER" -R /tmp/pacstall
+sudo mkdir -p "$PACDIR"
+sudo chown "$PACSTALL_USER" -R "$PACDIR"
 
 sudo mkdir -p /usr/share/bash-completion/completions
 
@@ -64,21 +70,13 @@ if ((${#to_install[@]} != 0)); then
     sudo apt-get install "${to_install[@]}" -y
 fi
 
-# Pre 4.0.0 metadata dir changes
-if [[ -d "/var/log/pacstall/metadata/" ]]; then
-    sudo mkdir -p "/var/lib/pacstall/metadata/"
-    sudo cp -r "/var/log/pacstall/metadata/" "/var/lib/pacstall/"
-    sudo rm -rf "/var/log/pacstall/metadata/"
-fi
-
-SCRIPTDIR="/usr/share/pacstall"
 tabs -4
 
 tty_settings=$(stty -g)
 # shellcheck disable=SC2207
 old_version=($(pacstall -V))
 # shellcheck disable=SC2207
-old_info=($(cat $SCRIPTDIR/repo/update 2> /dev/null || echo pacstall master))
+old_info=($(cat "$SCRIPTDIR/repo/update" 2> /dev/null || echo pacstall master))
 
 old_username="${old_info[0]}"
 old_branch="${old_info[1]}"
