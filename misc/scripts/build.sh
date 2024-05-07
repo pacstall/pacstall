@@ -709,7 +709,7 @@ function write_meta() {
     if [[ -n $gives ]]; then
         echo "_gives=\"$gives\""
     fi
-    if [[ -f /tmp/pacstall-pacdeps-"$pkgname" || check_if_pacdep "${pkgname}" "${METADIR}" ]]; then
+    if [[ -f /tmp/pacstall-pacdeps-"$pkgname" ]] || check_if_pacdep "${pkgname}" "${METADIR}"; then
         echo '_pacstall_depends="true"'
     fi
     if [[ $local == 'no' ]]; then
