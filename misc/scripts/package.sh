@@ -102,7 +102,8 @@ if [[ ${external_connection} == "true" ]]; then
     fancy_message warn "This package will connect to the internet during its build process."
 fi
 
-append_modifier_entries
+# FARCH will be useful here when pkgbase is implemented
+append_modifier_entries "${CARCH}" "${DISTRO}"
 
 # Running `-B` on a deb package doesn't make sense, so let's download instead
 if ((PACSTALL_INSTALL == 0)) && [[ ${pkgname} == *-deb ]]; then

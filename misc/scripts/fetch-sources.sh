@@ -388,22 +388,24 @@ function file_down() {
 # currently expecting: 1=hash 2=hashsum_types 3=hashum_method 4=${CARCH}/${DISTRO} 5=${CARCH}
 function append_hash_entry() {
     local -n append="${1}" sums="${2}" exp_method="${3}"
-    local hash_arch extend="${4}${5:+_$5}"
+    local hash_arch hash_arr extend="${4}${5:+_$5}"
     for type in "${sums[@]}"; do
         hash_arr="${type}sums[*]"
         [[ ${extend} ]] && hash_arch="${type}sums_${extend}[*]"
-        if [[ -n ${!hash_arr} && -z ${extend} ]]; then
-            export exp_method="${type}"
-            for a in ${!hash_arr}; do
-                append+=("${a}")
-            done
-            break
-        elif [[ -n ${!hash_arch} ]]; then
-            [[ -z ${!hash_arr} && -z ${append[*]} ]] && export exp_method="${type}"
-            for a in ${!hash_arch}; do
-                append+=("${a}")
-            done
-            break
+        if [[ ${exp_method} == "${type}" || -z ${exp_method} ]]; then
+            if [[ -n ${!hash_arr} && -z ${extend} ]]; then
+                export exp_method="${type}"
+                for a in ${!hash_arr}; do
+                    append+=("${a}")
+                done
+                break
+            elif [[ -n ${!hash_arch} ]]; then
+                [[ -z ${!hash_arr} && -z ${append[*]} ]] && export exp_method="${type}"
+                for a in ${!hash_arch}; do
+                    append+=("${a}")
+                done
+                break
+            fi
         fi
     done
 }
@@ -422,26 +424,26 @@ function append_var_arch() {
 
 function append_modifier_entries() {
     unset hashsum_method
-    hashsum_types=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5")
+    local APPARCH="${1}" APPDISTRO="${2}" hashsum_types=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5")
     # append arrays from least to most specific
-    append_hash_entry hash hashsum_types hashsum_method "${CARCH}"
+    append_hash_entry hash hashsum_types hashsum_method
+    append_hash_entry hash hashsum_types hashsum_method "${APPARCH}"
     # distro base
-    append_hash_entry hash hashsum_types hashsum_method "${DISTRO%:*}"
+    append_hash_entry hash hashsum_types hashsum_method "${APPDISTRO%:*}"
     # distro version
-    append_hash_entry hash hashsum_types hashsum_method "${DISTRO#*:}"
-    append_hash_entry hash hashsum_types hashsum_method "${DISTRO%:*}" "${CARCH}"
-    append_hash_entry hash hashsum_types hashsum_method "${DISTRO#*:}" "${CARCH}"
+    append_hash_entry hash hashsum_types hashsum_method "${APPDISTRO#*:}"
+    append_hash_entry hash hashsum_types hashsum_method "${APPDISTRO%:*}" "${APPARCH}"
+    append_hash_entry hash hashsum_types hashsum_method "${APPDISTRO#*:}" "${APPARCH}"
     for i in {source,depends,makedepends,optdepends,pacdeps,checkdepends,provides,conflicts,breaks,replaces}; do
-        append_var_arch "${i}" "${CARCH}"
-        append_var_arch "${i}" "${DISTRO%:*}"
-        append_var_arch "${i}" "${DISTRO#*:}"
-        append_var_arch "${i}" "${DISTRO%:*}" "${CARCH}"
-        append_var_arch "${i}" "${DISTRO#*:}" "${CARCH}"
+        append_var_arch "${i}" "${APPARCH}"
+        append_var_arch "${i}" "${APPDISTRO%:*}"
+        append_var_arch "${i}" "${APPDISTRO#*:}"
+        append_var_arch "${i}" "${APPDISTRO%:*}" "${APPARCH}"
+        append_var_arch "${i}" "${APPDISTRO#*:}" "${APPARCH}"
     done
-
     # overwrite gives from least to most specific
     # gives_arch | gives_distrobase | gives_distrover | gives_distrobase_arch | gives_distrover_arch
-    gives_array=("gives_${CARCH}" "gives_${DISTRO%:*}" "gives_${DISTRO#*:}" "gives_${DISTRO%:*}_${CARCH}" "gives_${DISTRO#*:}_${CARCH}")
+    gives_array=("gives_${APPARCH}" "gives_${APPDISTRO%:*}" "gives_${APPDISTRO#*:}" "gives_${APPDISTRO%:*}_${APPARCH}" "gives_${APPDISTRO#*:}_${APPARCH}")
     for gives_choice in "${gives_array[@]}"; do
         if [[ -n "${!gives_choice}" ]]; then
             gives="${!gives_choice}"
