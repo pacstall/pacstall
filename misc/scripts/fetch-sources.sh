@@ -365,7 +365,11 @@ function file_down() {
     cp -r "${source_url}" "${dest}" || fail_down
     genextr_declare
     if [[ ${dest} == *".deb" ]]; then
-        deb_down && exit 0 || clean_fail_down
+        if deb_down; then
+            exit 0
+        else
+            clean_fail_down
+        fi
     elif [[ -n ${ext_method} ]]; then
         genextr_down
     elif [[ ${source[i]} == "${source[0]}" && -d ${dest} ]]; then
