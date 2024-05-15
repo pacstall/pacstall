@@ -424,6 +424,7 @@ function append_var_arch() {
 
 function append_modifier_entries() {
     unset hashsum_method
+	# shellcheck disable=SC2034
     local APPARCH="${1}" APPDISTRO="${2}" hashsum_types=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5")
     # append arrays from least to most specific
     append_hash_entry hash hashsum_types hashsum_method
