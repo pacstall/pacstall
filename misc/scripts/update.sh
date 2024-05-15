@@ -29,7 +29,7 @@ export NC='\033[0m'
 export UCyan='\033[4;36m'
 export BPurple='\033[1;35m'
 
-required_packages=(lsb-release aptitude bubblewrap jq)
+required_packages=(lsb-release aptitude bubblewrap jq distro-info-data)
 
 function suggested_solution() {
     if [[ -z $PACSTALL_SUPPRESS_SOLUTIONS ]]; then
