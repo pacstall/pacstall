@@ -409,7 +409,7 @@ function append_hash_entry() {
 }
 
 function append_var_arch() {
-    local inp inputvar="${1}" inputvar_array="${1}[*]" inputvar_arch="${1}_${2}${3:+_$3}[*]"
+    local inp inputvar="${1}" inputvar_arch="${1}_${2}${3:+_$3}[*]"
     declare -n ref_inputvar="${inputvar}"
     if [[ -n ${!inputvar_arch} ]]; then
         for inp in ${!inputvar_arch}; do
@@ -418,6 +418,36 @@ function append_var_arch() {
             fi
         done
     fi
+}
+
+function append_modifier_entries() {
+    unset hashsum_method
+    hashsum_types=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5")
+    # append arrays from least to most specific
+    append_hash_entry hash hashsum_types hashsum_method "${CARCH}"
+    # distro base
+    append_hash_entry hash hashsum_types hashsum_method "${DISTRO%:*}"
+    # distro version
+    append_hash_entry hash hashsum_types hashsum_method "${DISTRO#*:}"
+    append_hash_entry hash hashsum_types hashsum_method "${DISTRO%:*}" "${CARCH}"
+    append_hash_entry hash hashsum_types hashsum_method "${DISTRO#*:}" "${CARCH}"
+    for i in {source,depends,makedepends,optdepends,pacdeps,checkdepends,provides,conflicts,breaks,replaces}; do
+        append_var_arch "${i}" "${CARCH}"
+        append_var_arch "${i}" "${DISTRO%:*}"
+        append_var_arch "${i}" "${DISTRO#*:}"
+        append_var_arch "${i}" "${DISTRO%:*}" "${CARCH}"
+        append_var_arch "${i}" "${DISTRO#*:}" "${CARCH}"
+    done
+
+    # overwrite gives from least to most specific
+    # gives_arch | gives_distrobase | gives_distrover | gives_distrobase_arch | gives_distrover_arch
+    gives_array=("gives_${CARCH}" "gives_${DISTRO%:*}" "gives_${DISTRO#*:}" "gives_${DISTRO%:*}_${CARCH}" "gives_${DISTRO#*:}_${CARCH}")
+    for gives_choice in "${gives_array[@]}"; do
+        if [[ -n "${!gives_choice}" ]]; then
+            gives="${!gives_choice}"
+            break
+        fi
+    done
 }
 
 function calc_distro() {
