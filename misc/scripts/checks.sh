@@ -207,13 +207,11 @@ function lint_maintainer() {
 }
 
 function lint_var_arch() {
-    local tinp tinputvar="${1}" tinputvar_array="${1}[*]" tinputvar_arch="${1}_${2}[*]"
+    local tinp tinputvar="${1}" tinputvar_array="${1}[*]" tinputvar_arch="${1}_${2}${3:+_$3}[*]"
     declare -n test_ref_inputvar="test_${tinputvar}"
     if [[ -n ${!tinputvar_arch} ]]; then
         for tinp in ${!tinputvar_arch}; do
-            if [[ -z ${!tinputvar_array} ]]; then
-                test_ref_inputvar=("${tinp}")
-            elif ! array.contains ref_inputvar "${tinp}"; then
+            if ! array.contains ref_inputvar "${tinp}"; then
                 test_ref_inputvar+=("${tinp}")
             fi
         done
@@ -225,13 +223,22 @@ function lint_pipe_check() {
 }
 
 function lint_deps() {
-    local dep_type dep_array ret=0 dep idx kdarch known_archs_deps=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x")
+    local dep_type dep_array ret=0 dep idx kdarch kdistro kddarch \
+        known_archs_deps=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x")
     for dep_type in "depends" "makedepends" "optdepends" "checkdepends" "pacdeps"; do
         local -n dep_array="test_${dep_type}"
         local -n type_array="${dep_type}"
         dep_array=("${type_array[@]}")
         for kdarch in "${known_archs_deps[@]}"; do
             [[ ${kdarch} != "${CARCH}" ]] && lint_var_arch "${dep_type}" "${kdarch}"
+        done
+        for kdistro in "${PACSTALL_KNOWN_DISTROS[@]}"; do
+            if [[ ${kdistro} != "${DISTRO%:*}" && ${kdistro} != ${DISTRO#*:} ]]; then
+                lint_var_arch "${dep_type}" "${kdistro}"
+                for kddarch in "${known_archs_deps[@]}"; do
+                    [[ ${kddarch} != "${CARCH}" ]] && lint_var_arch "${dep_type}" "${kdistro}" "${kddarch}"
+                done
+            fi
         done
         idx=0
         if [[ -n ${dep_array[*]} ]]; then
@@ -292,13 +299,22 @@ function lint_ppa() {
 }
 
 function lint_relations() {
-    local rel_type rel_array ret=0 rela idx rdarch known_archs_rel=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x")
+    local rel_type rel_array ret=0 rela idx rdarch rdistro rddarch \
+        known_archs_rel=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x")
     for rel_type in "conflicts" "breaks" "replaces" "provides"; do
         local -n rel_array="test_${rel_type}"
         local -n rtype_array="${rel_type}"
         rel_array=("${rtype_array[@]}")
         for rdarch in "${known_archs_rel[@]}"; do
             [[ ${rdarch} != "${CARCH}" ]] && lint_var_arch "${rel_type}" "${rdarch}"
+        done
+        for rdistro in "${PACSTALL_KNOWN_DISTROS[@]}"; do
+            if [[ ${rdistro} != "${DISTRO%:*}" && ${rdistro} != ${DISTRO#*:} ]]; then
+                lint_var_arch "${rel_type}" "${rdistro}"
+                for rddarch in "${known_archs_rel[@]}"; do
+                    [[ ${rddarch} != "${CARCH}" ]] && lint_var_arch "${rel_type}" "${rdistro}" "${rddarch}"
+                done
+            fi
         done
         idx=0
         if [[ -n ${rel_array[*]} ]]; then
