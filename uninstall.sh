@@ -78,7 +78,7 @@ while true; do
     echo -ne "Type selection number [${BIRed}1${NC}/${BIGreen}2${NC}] "
     read -r reply <&0
 
-	if ((reply == 1)); then
+    if ((reply == 1)); then
         fancy_message info "Removing Pacstall and installed packages..."
 
         # Remove packages
@@ -113,7 +113,7 @@ while true; do
 
         break
 
-	elif ((reply == 2)); then
+    elif ((reply == 2)); then
         fancy_message info "Only uninstalling Pacstall..."
         sudo rm "$(command -v pacstall)"
 

@@ -107,11 +107,11 @@ append_modifier_entries "${CARCH}" "${DISTRO}"
 
 # Running `-B` on a deb package doesn't make sense, so let's download instead
 if ((PACSTALL_INSTALL == 0)) && [[ ${pkgname} == *-deb ]]; then
-    if ! download "${source[0]}"; then
+    parse_source_entry "${source[0]}"
+    if ! download "${source[0]}" "${dest}"; then
         fancy_message error "Failed to download '${source[0]}'"
         return 1
     else
-        parse_source_entry "${source[0]}"
         fancy_message info "Moving ${BGreen}${PACDIR}/${dest}${NC} to ${BGreen}${PACDEB_DIR}/${dest}${NC}"
         sudo mv ./"${dest}" "${PACDEB_DIR}"
     fi
@@ -218,6 +218,9 @@ if [[ -n $pacdeps ]]; then
                 fi
             else
                 fancy_message info "The pacstall dependency ${i} is already installed and at latest version"
+                if ! awk '/_pacstall_depends="true"/ {found=1; exit} END {if (found != 1) exit 1}' "${METADIR}/${i}"; then
+                    echo '_pacstall_depends="true"' | sudo tee -a "${METADIR}/${i}" > /dev/null
+                fi
             fi
         elif fancy_message info "Installing dependency ${PURPLE}${i}${NC}" && ! pacstall "$cmd" "${i}${repo}"; then
             fancy_message error "Failed to install dependency (${i} from ${PACKAGE})"
@@ -323,22 +326,6 @@ install_builddepends
 prompt_optdepends || return 1
 
 fancy_message info "Retrieving packages"
-if [[ -f /tmp/pacstall-pacdeps-"$PACKAGE" ]]; then
-    mkdir -p "/tmp/pacstall-pacdep"
-    if ! cd "/tmp/pacstall-pacdep" 2> /dev/null; then
-        error_log 1 "install $PACKAGE"
-        fancy_message error "Could not enter /tmp/pacstall-pacdep"
-        exit 1
-    fi
-else
-    mkdir -p "$PACDIR"
-    if ! cd "$PACDIR" 2> /dev/null; then
-        error_log 1 "install $PACKAGE"
-        fancy_message error "Could not enter ${PACDIR}"
-        exit 1
-    fi
-fi
-
 mkdir -p "${PACDIR}"
 gather_down
 

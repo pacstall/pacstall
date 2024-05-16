@@ -641,7 +641,7 @@ function compare_remote_version() {
             fi
         sudo rm -rf "${remote_safe}"
     )" > /dev/null
-    localver=$(source "/var/lib/pacstall/metadata/${crv_input}" && echo "${_version}")
+    localver=$(source "${METADIR}/${crv_input}" && echo "${_version}")
     if [[ $crv_input == *"-git" ]]; then
         if [[ ${localver} != "$remotever" ]]; then
             echo "update"

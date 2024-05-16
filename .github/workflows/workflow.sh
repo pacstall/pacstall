@@ -7,12 +7,13 @@ useradd -m -d /home/pacstall pacstall
 usermod -a -G sudo pacstall
 
 # chowning
-LOGDIR="/var/log/pacstall/metadata"
+METADIR="/var/log/pacstall/metadata"
+LOGDIR="/var/log/pacstall/error_log"
 SCRIPTDIR="/usr/share/pacstall"
-SRCDIR="/tmp/pacstall"
-chown pacstall -R "$SRCDIR"
+PACDIR="/tmp/pacstall"
+chown pacstall -R "$PACDIR"
+chown pacstall -R "$METADIR"
 chown pacstall -R "$LOGDIR"
-chown pacstall -R "/var/log/pacstall/error_log"
 export LOGNAME="pacstall"
 
 echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers

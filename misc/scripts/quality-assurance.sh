@@ -48,10 +48,10 @@ parse_link() {
 }
 
 cleanup_qa() {
-    if [[ -f /usr/share/pacstall/repo/pacstallrepo.pacstall-qa.bak ]]; then
-        fancy_message info "Returning ${CYAN}/usr/share/pacstall/repo/pacstallrepo${NC} backup"
-        sudo rm -f /usr/share/pacstall/repo/pacstallrepo
-        sudo mv /usr/share/pacstall/repo/pacstallrepo.pacstall-qa.bak /usr/share/pacstall/repo/pacstallrepo
+    if [[ -f "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak" ]]; then
+        fancy_message info "Returning ${CYAN}$SCRIPTDIR/repo/pacstallrepo${NC} backup"
+        sudo rm -f "${SCRIPTDIR:-/usr/share/pacstall}/repo/pacstallrepo"
+        sudo mv "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak" "$SCRIPTDIR/repo/pacstallrepo"
     fi
 }
 
@@ -64,8 +64,11 @@ if [[ -z $number || -z $inst ]]; then
 fi
 read -r provider user repo pr <<< "$(parse_pr "$metalink" "$number")"
 read -r provider_url login <<< "$(parse_link "$provider" "$user" "$repo" "$pr")"
-fancy_message info "Backing up ${CYAN}/usr/share/pacstall/repo/pacstallrepo${NC}"
-sudo mv /usr/share/pacstall/repo/pacstallrepo /usr/share/pacstall/repo/pacstallrepo.pacstall-qa.bak
-echo "$provider_url" | sudo tee /usr/share/pacstall/repo/pacstallrepo > /dev/null
+fancy_message info "Backing up ${CYAN}$SCRIPTDIR/repo/pacstallrepo${NC}"
+sudo mv "$SCRIPTDIR/repo/pacstallrepo" "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak"
+echo "$provider_url" | sudo tee "$SCRIPTDIR/repo/pacstallrepo" > /dev/null
 fancy_message info "Installing ${GREEN}$inst${NC}(${PURPLE}$login${NC}:${RED}$pr${NC})"
-pacstall -I "$inst" || exit 1
+cmd="-I"
+[[ $KEEP ]] && cmd+="K"
+((PACSTALL_INSTALL == 0)) && cmd+="B"
+pacstall $cmd "$inst" || exit 1
