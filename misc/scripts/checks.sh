@@ -207,7 +207,7 @@ function lint_maintainer() {
 }
 
 function lint_var_arch() {
-    local tinp tinputvar="${1}" tinputvar_array="${1}[*]" tinputvar_arch="${1}_${2}${3:+_$3}[*]"
+    local tinp tinputvar="${1}" tinputvar_arch="${1}_${2}${3:+_$3}[*]"
     declare -n test_ref_inputvar="test_${tinputvar}"
     if [[ -n ${!tinputvar_arch} ]]; then
         for tinp in ${!tinputvar_arch}; do
