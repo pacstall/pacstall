@@ -493,6 +493,39 @@ function getMasks_offending_pkg() {
     return 1
 }
 
+function decl_scriptvars() {
+    local _distros _vars _archs _sums distros \
+        vars="source depends makedepends optdepends pacdeps checkdepends provides conflicts breaks replaces" \
+        archs="amd64 arm64 armel armhf i386 mips64el ppc64el riscv64 s390x" \
+        sums="b2 sha512 sha384 sha256 sha224 sha1 md5"
+    pacstallvars=(pkgname repology pkgver git_pkgver epoch source_url source depends makedepends checkdepends conflicts 
+        breaks replaces gives pkgdesc hash optdepends ppa arch maintainer pacdeps NOBUILDDEP provides incompatible 
+        compatible srcdir url backup pkgrel mask pac_functions repo priority noextract nosubmodules _archive license 
+        bwrapenv safeenv external_connection)
+    mapfile -t distros < <(awk -F ',' -v current_date="$(date +'%Y-%m-%d')" '
+      BEGIN {
+        is_first = 1
+      }
+      $3 == "series" {
+        if (is_first) {
+          print "ubuntu"
+          is_first = 0
+        } else {
+          print "devel\ndebian"
+        }
+        next
+      }
+      NR > 1 && (($6 > current_date) || ($7 > current_date) || ($6 == "")) &&
+      ($4 <= current_date) && $3 != "experimental" {
+        print $3
+      }' /usr/share/distro-info/{ubuntu,debian}.csv)
+    distros="${distros[*]}"
+    _distros="{${distros// /,}}" _vars="{${vars// /,}}" _archs="{${archs// /,}}" _sums="{${sums// /,}}"
+    eval "pacstallvars+=(${_vars}_${_distros} ${_vars}_${_archs} ${_vars}_${_distros}_${_archs} ${_sums}sums ${_sums}sums_${_distros} ${_sums}sums_${_archs} ${_sums}sums_${_distros}_${_archs} gives_${_distros} gives_${_archs} gives_${_distros}_${_archs})"
+}
+
+decl_scriptvars
+
 # run sudo apt update if it's been more than a week
 [[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ]] && sudo apt-get update -qq --allow-releaseinfo-change
 
