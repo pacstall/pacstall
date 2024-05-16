@@ -233,7 +233,7 @@ function lint_deps() {
             [[ ${kdarch} != "${CARCH}" ]] && lint_var_arch "${dep_type}" "${kdarch}"
         done
         for kdistro in "${PACSTALL_KNOWN_DISTROS[@]}"; do
-            if [[ ${kdistro} != "${DISTRO%:*}" && ${kdistro} != ${DISTRO#*:} ]]; then
+            if [[ ${kdistro} != "${DISTRO%:*}" && ${kdistro} != "${DISTRO#*:}" ]]; then
                 lint_var_arch "${dep_type}" "${kdistro}"
                 for kddarch in "${known_archs_deps[@]}"; do
                     [[ ${kddarch} != "${CARCH}" ]] && lint_var_arch "${dep_type}" "${kdistro}" "${kddarch}"
@@ -309,7 +309,7 @@ function lint_relations() {
             [[ ${rdarch} != "${CARCH}" ]] && lint_var_arch "${rel_type}" "${rdarch}"
         done
         for rdistro in "${PACSTALL_KNOWN_DISTROS[@]}"; do
-            if [[ ${rdistro} != "${DISTRO%:*}" && ${rdistro} != ${DISTRO#*:} ]]; then
+            if [[ ${rdistro} != "${DISTRO%:*}" && ${rdistro} != "${DISTRO#*:}" ]]; then
                 lint_var_arch "${rel_type}" "${rdistro}"
                 for rddarch in "${known_archs_rel[@]}"; do
                     [[ ${rddarch} != "${CARCH}" ]] && lint_var_arch "${rel_type}" "${rdistro}" "${rddarch}"
