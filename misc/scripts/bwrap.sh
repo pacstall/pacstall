@@ -43,7 +43,7 @@ function safe_source() {
     sudo chmod +r "$bwrapenv"
     export bwrapenv
     export safeenv
-	
+
     sudo tee "$tmpfile" > /dev/null << EOF
 #!/bin/bash -a
 mapfile -t __OLD_ENV < <(compgen -A variable  -P "--unset ")
