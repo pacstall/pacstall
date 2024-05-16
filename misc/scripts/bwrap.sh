@@ -25,13 +25,6 @@
 function safe_source() {
     local input="${1}"
     mkdir "${PACDIR}" 2> /dev/null
-    safeenv="$(sudo mktemp -p "${PACDIR}")"
-    sudo chmod +r "$safeenv"
-    bwrapenv="$(sudo mktemp -p "${PACDIR}" -t "bwrapenv.XXXXXXXXXX")"
-    sudo chmod +r "$bwrapenv"
-    export bwrapenv
-    export safeenv
-
     tmpfile="$(sudo mktemp -p "${PACDIR}")"
     local allvar_str pacfunc_str debfunc_str pacstall_funcs=("prepare" "build" "check" "package") \
         debian_funcs=("post_install" "post_remove" "post_upgrade" "pre_install" "pre_remove" "pre_upgrade")
@@ -44,6 +37,13 @@ function safe_source() {
     debfunc_str="${debian_funcs[*]}"
     unset IFS
 
+    safeenv="$(sudo mktemp -p "${PACDIR}")"
+    sudo chmod +r "$safeenv"
+    bwrapenv="$(sudo mktemp -p "${PACDIR}" -t "bwrapenv.XXXXXXXXXX")"
+    sudo chmod +r "$bwrapenv"
+    export bwrapenv
+    export safeenv
+	
     sudo tee "$tmpfile" > /dev/null << EOF
 #!/bin/bash -a
 mapfile -t __OLD_ENV < <(compgen -A variable  -P "--unset ")
