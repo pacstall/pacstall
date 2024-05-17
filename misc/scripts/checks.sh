@@ -477,6 +477,7 @@ function lint_incompatible() {
 }
 
 function lint_arch() {
+    # shellcheck disable=SC2034
     local ret=0 el_arch idx=0 known_archs=("any" "${PACSTALL_KNOWN_ARCH[@]}")
     if [[ -n ${arch[*]} ]]; then
         for el_arch in "${arch[@]}"; do
