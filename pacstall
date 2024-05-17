@@ -519,7 +519,7 @@ function decl_scriptvars() {
       ($4 <= current_date) && $3 != "experimental" {
         print $3
       }' /usr/share/distro-info/{ubuntu,debian}.csv)
-    export PACSTALL_KNOWN_DISTROS=("${distros[@]}")
+    export PACSTALL_KNOWN_DISTROS=("${distros[@]}") PACSTALL_KNOWN_ARCH=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x")
     distros="${distros[*]}"
     _distros="{${distros// /,}}" _vars="{${vars// /,}}" _archs="{${archs// /,}}" _sums="{${sums// /,}}"
     eval "pacstallvars+=(${_vars}_${_distros} ${_vars}_${_archs} ${_vars}_${_distros}_${_archs} ${_sums}sums ${_sums}sums_${_distros} ${_sums}sums_${_archs} ${_sums}sums_${_distros}_${_archs} gives_${_distros} gives_${_archs} gives_${_distros}_${_archs})"
