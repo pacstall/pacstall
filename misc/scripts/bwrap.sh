@@ -25,42 +25,24 @@
 function safe_source() {
     local input="${1}"
     mkdir "${PACDIR}" 2> /dev/null
+    tmpfile="$(sudo mktemp -p "${PACDIR}")"
+    local allvar_str pacfunc_str debfunc_str pacstall_funcs=("prepare" "build" "check" "package") \
+        debian_funcs=("post_install" "post_remove" "post_upgrade" "pre_install" "pre_remove" "pre_upgrade")
+    for allvar in "${pacstallvars[@]}" "${pacstall_funcs[@]}" "${debian_funcs[@]}"; do
+        unset "${allvar}"
+    done
+    IFS=,
+    allvar_str="${pacstallvars[*]}"
+    pacfunc_str="${pacstall_funcs[*]}"
+    debfunc_str="${debian_funcs[*]}"
+    unset IFS
+
     safeenv="$(sudo mktemp -p "${PACDIR}")"
     sudo chmod +r "$safeenv"
     bwrapenv="$(sudo mktemp -p "${PACDIR}" -t "bwrapenv.XXXXXXXXXX")"
     sudo chmod +r "$bwrapenv"
     export bwrapenv
     export safeenv
-
-    tmpfile="$(sudo mktemp -p "${PACDIR}")"
-    local allvar src sum a_sum allvar_str pacfunc_str debfunc_str \
-        known_hashsums_src=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5") \
-        known_archs_src=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x") \
-        allvars=("pkgname" "repology" "pkgver" "git_pkgver" "epoch" "source_url" "source" "depends" "makedepends" "checkdepends"
-            "conflicts" "breaks" "replaces" "gives" "pkgdesc" "hash" "optdepends" "ppa" "arch" "maintainer" "pacdeps" "patch"
-            "PACPATCH" "NOBUILDDEP" "provides" "incompatible" "compatible" "optinstall" "srcdir" "url" "backup" "pkgrel" "mask"
-            "pac_functions" "repo" "priority" "noextract" "nosubmodules" "_archive" "license" "external_connection") \
-        pacstall_funcs=("prepare" "build" "check" "package") \
-        debian_funcs=("post_install" "post_remove" "post_upgrade" "pre_install" "pre_remove" "pre_upgrade")
-    for src in "${known_archs_src[@]}"; do
-        for vars in {source,depends,makedepends,optdepends,pacdeps,checkdepends,provides,conflicts,breaks,replaces,gives}; do
-            allvars+=("${vars}_${src}")
-        done
-    done
-    for sum in "${known_hashsums_src[@]}"; do
-        allvars+=("${sum}sums")
-        for a_sum in "${known_archs_src[@]}"; do
-            allvars+=("${sum}sums_${a_sum}")
-        done
-    done
-    for allvar in "${allvars[@]}" "${pacstall_funcs[@]}" "${debian_funcs[@]}"; do
-        unset "${allvar}"
-    done
-    IFS=,
-    allvar_str="${allvars[*]}"
-    pacfunc_str="${pacstall_funcs[*]}"
-    debfunc_str="${debian_funcs[*]}"
-    unset IFS
 
     sudo tee "$tmpfile" > /dev/null << EOF
 #!/bin/bash -a
