@@ -47,23 +47,7 @@ function cleanup() {
     sudo rm -rf "${STAGEDIR}/${pkgname:-$PACKAGE}.deb"
     sudo rm -f /tmp/pacstall-select-options
     sudo rm -f "${PACDIR}/bwrapenv.*"
-    local clsrc clsum cla_sum arch_vars \
-        known_hashsums_clean=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5") \
-        known_archs_clean=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x")
-    for clsrc in "${known_archs_clean[@]}"; do
-        for clvars in {source,depends,makedepends,optdepends,pacdeps,checkdepends,provides,conflicts,breaks,replaces,gives}; do
-            arch_vars+=("${clvars}_${clsrc}")
-        done
-    done
-    for clsum in "${known_hashsums_clean[@]}"; do
-        arch_vars+=("${clsum}sums")
-        for cla_sum in "${known_archs_clean[@]}"; do
-            arch_vars+=("${clsum}sums_${cla_sum}")
-        done
-    done
-    unset pkgname repology pkgver git_pkgver epoch source_url source depends makedepends checkdepends conflicts breaks replaces \
-        gives pkgdesc hash optdepends ppa arch maintainer pacdeps patch PACPATCH NOBUILDDEP provides incompatible compatible optinstall \
-        srcdir url backup pkgrel mask pac_functions repo priority noextract nosubmodules _archive license bwrapenv safeenv external_connection "${arch_vars[@]}" 2> /dev/null
+    unset "${pacstallvars[@]}" 2> /dev/null
     unset -f pre_install pre_upgrade pre_remove post_install post_upgrade post_remove prepare build check package 2> /dev/null
     sudo rm -f "${pacfile}"
 }

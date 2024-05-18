@@ -144,11 +144,16 @@ function lint_source_deb_test() {
 }
 
 function lint_source() {
-    local ret=0 test_source has_source=0 known_archs_source=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x")
+    local ret=0 test_source has_source=0 source_distro_archs
+    for source_distro in "${PACSTALL_KNOWN_DISTROS[@]}"; do
+        for known_arch in "${PACSTALL_KNOWN_ARCH[@]}"; do
+            source_distro_archs+=("${source_distro}_${known_arch}")
+        done
+    done
     if [[ -n ${source[0]} ]]; then
         has_source=1
     else
-        for sarch in "${known_archs_source[@]}"; do
+        for sarch in "${PACSTALL_KNOWN_ARCH[@]}" "${PACSTALL_KNOWN_DISTROS[@]}" "${source_distro_archs[@]}"; do
             local source_arch="source_${sarch}[@]"
             if [[ -n ${!source_arch} ]]; then
                 has_source=1
@@ -164,10 +169,15 @@ function lint_source() {
         fancy_message error "Package does not contain 'source'"
         ret=1
     else
-        for sarch in "${known_archs_source[@]}"; do
+        for sarch in "${PACSTALL_KNOWN_ARCH[@]}" "${PACSTALL_KNOWN_DISTROS[@]}" "${source_distro_archs[@]}"; do
             local source_arch="source_${sarch}[@]" raw_carch_source="source_${CARCH}[@]" carch_source
             carch_source=("${!raw_carch_source}")
-            [[ ${sarch} != "${CARCH}" ]] && if [[ -n ${!source_arch} ]]; then
+            [[ ${sarch} != "${CARCH}"
+                && ${sarch} != "${DISTRO%:*}"
+                && ${sarch} != "${DISTRO#*:}"
+                && ${sarch} != "${DISTRO%:*}_${CARCH}"
+                && ${sarch} != "${DISTRO#*:}_${CARCH}"
+            ]] && if [[ -n ${!source_arch} ]]; then
                 test_source=()
                 if [[ -n ${source[0]} ]]; then
                     { (("${#carch_source[@]}" <= 1 && "${#source[@]}" <= 1)) \
@@ -207,13 +217,11 @@ function lint_maintainer() {
 }
 
 function lint_var_arch() {
-    local tinp tinputvar="${1}" tinputvar_array="${1}[*]" tinputvar_arch="${1}_${2}[*]"
+    local tinp tinputvar="${1}" tinputvar_arch="${1}_${2}${3:+_$3}[*]"
     declare -n test_ref_inputvar="test_${tinputvar}"
     if [[ -n ${!tinputvar_arch} ]]; then
         for tinp in ${!tinputvar_arch}; do
-            if [[ -z ${!tinputvar_array} ]]; then
-                test_ref_inputvar=("${tinp}")
-            elif ! array.contains ref_inputvar "${tinp}"; then
+            if ! array.contains ref_inputvar "${tinp}"; then
                 test_ref_inputvar+=("${tinp}")
             fi
         done
@@ -225,13 +233,21 @@ function lint_pipe_check() {
 }
 
 function lint_deps() {
-    local dep_type dep_array ret=0 dep idx kdarch known_archs_deps=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x")
+    local dep_type dep_array ret=0 dep idx kdarch kdistro kddarch
     for dep_type in "depends" "makedepends" "optdepends" "checkdepends" "pacdeps"; do
         local -n dep_array="test_${dep_type}"
         local -n type_array="${dep_type}"
         dep_array=("${type_array[@]}")
-        for kdarch in "${known_archs_deps[@]}"; do
+        for kdarch in "${PACSTALL_KNOWN_ARCH[@]}"; do
             [[ ${kdarch} != "${CARCH}" ]] && lint_var_arch "${dep_type}" "${kdarch}"
+        done
+        for kdistro in "${PACSTALL_KNOWN_DISTROS[@]}"; do
+            if [[ ${kdistro} != "${DISTRO%:*}" && ${kdistro} != "${DISTRO#*:}" ]]; then
+                lint_var_arch "${dep_type}" "${kdistro}"
+                for kddarch in "${PACSTALL_KNOWN_ARCH[@]}"; do
+                    [[ ${kddarch} != "${CARCH}" ]] && lint_var_arch "${dep_type}" "${kdistro}" "${kddarch}"
+                done
+            fi
         done
         idx=0
         if [[ -n ${dep_array[*]} ]]; then
@@ -292,13 +308,21 @@ function lint_ppa() {
 }
 
 function lint_relations() {
-    local rel_type rel_array ret=0 rela idx rdarch known_archs_rel=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x")
+    local rel_type rel_array ret=0 rela idx rdarch rdistro rddarch
     for rel_type in "conflicts" "breaks" "replaces" "provides"; do
         local -n rel_array="test_${rel_type}"
         local -n rtype_array="${rel_type}"
         rel_array=("${rtype_array[@]}")
-        for rdarch in "${known_archs_rel[@]}"; do
+        for rdarch in "${PACSTALL_KNOWN_ARCH[@]}"; do
             [[ ${rdarch} != "${CARCH}" ]] && lint_var_arch "${rel_type}" "${rdarch}"
+        done
+        for rdistro in "${PACSTALL_KNOWN_DISTROS[@]}"; do
+            if [[ ${rdistro} != "${DISTRO%:*}" && ${rdistro} != "${DISTRO#*:}" ]]; then
+                lint_var_arch "${rel_type}" "${rdistro}"
+                for rddarch in "${PACSTALL_KNOWN_ARCH[@]}"; do
+                    [[ ${rddarch} != "${CARCH}" ]] && lint_var_arch "${rel_type}" "${rdistro}" "${rddarch}"
+                done
+            fi
         done
         idx=0
         if [[ -n ${rel_array[*]} ]]; then
@@ -318,9 +342,13 @@ function lint_relations() {
 }
 
 function lint_hash() {
-    local ret=0 test_hash harch test_hashsum_type test_hashsum_style test_hash_arch test_hashsum_method test_hashsum_value
-    local known_archs_hash=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x")
-    local test_hashsums=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5")
+    local ret=0 test_hash harch test_hashsum_type test_hashsum_style test_hash_arch test_hashsum_method test_hashsum_value \
+        hash_distro_archs test_hashsums=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5")
+    for hash_distro in "${PACSTALL_KNOWN_DISTROS[@]}"; do
+        for known_arch in "${PACSTALL_KNOWN_ARCH[@]}"; do
+            hash_distro_archs+=("${hash_distro}_${known_arch}")
+        done
+    done
     for test_hashsum_type in "${test_hashsums[@]}"; do
         test_hashsum_style="${test_hashsum_type}sums[*]"
         if [[ -n ${!test_hashsum_style} ]]; then
@@ -341,9 +369,14 @@ function lint_hash() {
             break
         fi
         test_hashsum_style="${test_hashsum_type}sums[*]"
-        for harch in "${known_archs_hash[@]}"; do
+        for harch in "${PACSTALL_KNOWN_ARCH[@]}" "${PACSTALL_KNOWN_DISTROS[@]}" "${hash_distro_archs[@]}"; do
             test_hash_arch="${test_hashsum_type}sums_${harch}[*]"
-            [[ ${harch} != "${CARCH}" ]] && if [[ -n ${!test_hash_arch} ]]; then
+            [[ ${harch} != "${CARCH}"
+                && ${harch} != "${DISTRO%:*}"
+                && ${harch} != "${DISTRO#*:}"
+                && ${harch} != "${DISTRO%:*}_${CARCH}"
+                && ${harch} != "${DISTRO#*:}_${CARCH}"
+            ]] && if [[ -n ${!test_hash_arch} ]]; then
                 if [[ -z ${!test_hashsum_style} && -z ${test_hash[*]} ]]; then
                     if [[ -z ${test_hashsum_method} ]]; then
                         # shellcheck disable=SC2206
@@ -444,7 +477,8 @@ function lint_incompatible() {
 }
 
 function lint_arch() {
-    local ret=0 el_arch idx=0 known_archs=("any")
+    # shellcheck disable=SC2034
+    local ret=0 el_arch idx=0 known_archs=("any" "${PACSTALL_KNOWN_ARCH[@]}")
     if [[ -n ${arch[*]} ]]; then
         for el_arch in "${arch[@]}"; do
             if [[ -z ${el_arch} ]]; then
@@ -457,7 +491,6 @@ function lint_arch() {
         if ((ret != 0)); then
             return 1
         fi
-        mapfile -t -O"${#known_archs[@]}" known_archs < <(dpkg-architecture --list-known)
         for el_arch in "${arch[@]}"; do
             if ! array.contains known_archs "${el_arch}"; then
                 fancy_message error "'${el_arch}' is not a valid architecture"
