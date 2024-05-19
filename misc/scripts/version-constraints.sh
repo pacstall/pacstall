@@ -199,7 +199,7 @@ function dep_const.format_version() {
                 relation="${const}"
             fi
             dep_const.split_name_and_version "${str}" pkg_stuff
-            if [[ ${str} =~ \(*\)* ]]; then
+            if [[ ${str} =~ \(.+\) ]]; then
                 out_arr+=("${pkg_stuff[0]} ${relation} ${pkg_stuff[1]}")
             else
                 out_arr+=("${pkg_stuff[0]} (${relation} ${pkg_stuff[1]})")
