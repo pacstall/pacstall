@@ -27,7 +27,7 @@ function safe_source() {
     mkdir "${PACDIR}" 2> /dev/null
     tmpfile="$(sudo mktemp -p "${PACDIR}")"
     local allvar_str pacfunc_str debfunc_str pacstall_funcs=("prepare" "build" "check" "package") \
-        debian_funcs=("post_install" "post_remove" "post_upgrade" "pre_install" "pre_remove" "pre_upgrade")
+    debian_funcs=("post_install" "post_remove" "post_upgrade" "pre_install" "pre_remove" "pre_upgrade")
     for allvar in "${pacstallvars[@]}" "${pacstall_funcs[@]}" "${debian_funcs[@]}"; do
         unset "${allvar}"
     done
@@ -114,7 +114,7 @@ EOF
         --setenv SCRIPTDIR "$SCRIPTDIR" --setenv STAGEDIR "$STAGEDIR" --setenv pkgdir "$pkgdir" \
         --setenv _archive "$_archive" --setenv srcdir "$srcdir" --setenv git_pkgver "$git_pkgver" \
         --setenv homedir "$homedir" --setenv CARCH "$CARCH" --setenv DISTRO "$DISTRO" --setenv NCPU "$NCPU" \
-        --setenv PACSTALL_USER "$PACSTALL_USER" \
+        --setenv PACSTALL_USER "$PACSTALL_USER" --setenv TAR_OPTIONS '--no-same-owner' \
         "$tmpfile" && sudo rm "$tmpfile"
 }
 
