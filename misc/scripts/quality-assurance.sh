@@ -71,4 +71,5 @@ fancy_message info "Installing ${GREEN}$inst${NC}(${PURPLE}$login${NC}:${RED}$pr
 cmd="-I"
 [[ $KEEP ]] && cmd+="K"
 ((PACSTALL_INSTALL == 0)) && cmd+="B"
+[[ $NOSANDBOX ]] && cmd+="Ns"
 pacstall $cmd "$inst" || exit 1
