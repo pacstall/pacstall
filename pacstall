@@ -642,6 +642,9 @@ if [[ -n $first ]]; then
     fancy_message info "The other instance has finished running, unlocking"
 fi
 
+# don't allow nosandbox to be run with envars
+unset NOSANDBOX
+
 while [[ $1 != "--" ]]; do
     case "$1" in
         -P | --disable-prompts)
