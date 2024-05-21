@@ -80,6 +80,7 @@ dep_tree.loop_traits update_order "${list[@]}"
 tput cnorm # Show cursor again
 list=("${update_order[@]}")
 
+mkdir -p "${PACDIR}"
 up_list="$(mktemp /tmp/XXXXXX-pacstall-up-list)"
 up_print="$(mktemp /tmp/XXXXXX-pacstall-up-print)"
 up_urls="$(mktemp /tmp/XXXXXX-pacstall-up-urls)"
@@ -205,7 +206,6 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
     upgrade=("${update_order[@]}")
 
     export local='no'
-    mkdir -p "$PACDIR"
     if ! cd "$PACDIR" 2> /dev/null; then
         error_log 1 "upgrade"
         fancy_message error "Could not enter ${PACDIR}"
