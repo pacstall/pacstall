@@ -1097,7 +1097,7 @@ Helpful links:
 
         -Ns | --nosandbox)
             fancy_message warn "Building package without bwrap sandbox"
-            fancy_message sub "Be cautious, this exposes your system to potentional harm"
+            fancy_message sub "Be cautious, this exposes your system to potential harm"
             NOSANDBOX=true
             ;;
 
