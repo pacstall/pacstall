@@ -27,7 +27,7 @@ function safe_source() {
     mkdir "${PACDIR}" 2> /dev/null
     tmpfile="$(sudo mktemp -p "${PACDIR}")"
     local allvar_str pacfunc_str debfunc_str pacstall_funcs=("prepare" "build" "check" "package") \
-        debian_funcs=("post_install" "post_remove" "post_upgrade" "pre_install" "pre_remove" "pre_upgrade")
+    debian_funcs=("post_install" "post_remove" "post_upgrade" "pre_install" "pre_remove" "pre_upgrade")
     for allvar in "${pacstallvars[@]}" "${pacstall_funcs[@]}" "${debian_funcs[@]}"; do
         unset "${allvar}"
     done
@@ -111,9 +111,9 @@ EOF
         fi
     fi
     if [[ ${NOSANDBOX} == "true" ]]; then
-        sudo LOGDIR="${LOGDIR}" SCRIPTDIR="${SCRIPTDIR}" STAGEDIR="${STAGEDIR}" \
-            pkgdir="${pkgdir}" _archive="${_archive}" srcdir="${srcdir}" git_pkgver="${git_pkgver}" \
-            homedir="${homedir}" CARCH="${CARCH}" DISTRO="${DISTRO}" NCPU="${NCPU}" PACSTALL_USER="${PACSTALL_USER}" \
+        sudo LOGDIR="${LOGDIR}" SCRIPTDIR="${SCRIPTDIR}" STAGEDIR="${STAGEDIR}" pkgdir="${pkgdir}" _archive="${_archive}" \
+            srcdir="${srcdir}" git_pkgver="${git_pkgver}" homedir="${homedir}" CARCH="${CARCH}" DISTRO="${DISTRO}" \
+            NCPU="${NCPU}" PACSTALL_USER="${PACSTALL_USER}" TAR_OPTIONS='--no-same-owner' \
             "$tmpfile" && sudo rm "$tmpfile"
     else
         # shellcheck disable=SC2086
@@ -124,7 +124,7 @@ EOF
             --setenv SCRIPTDIR "$SCRIPTDIR" --setenv STAGEDIR "$STAGEDIR" --setenv pkgdir "$pkgdir" \
             --setenv _archive "$_archive" --setenv srcdir "$srcdir" --setenv git_pkgver "$git_pkgver" \
             --setenv homedir "$homedir" --setenv CARCH "$CARCH" --setenv DISTRO "$DISTRO" --setenv NCPU "$NCPU" \
-            --setenv PACSTALL_USER "$PACSTALL_USER" \
+            --setenv PACSTALL_USER "$PACSTALL_USER" --setenv TAR_OPTIONS '--no-same-owner' \
             "$tmpfile" && sudo rm "$tmpfile"
     fi
 }
