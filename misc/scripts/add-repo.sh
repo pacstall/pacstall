@@ -75,7 +75,7 @@ esac
 
 case ${REPOCMD} in
     add)
-        ask "Do you want to add \"$REPO\" to the repo list?" N
+        ask "Do you want to add ${CYAN}${REPO}${NC} to the repo list?" Y
         if ((answer == 0)); then
             exit 3
         fi
@@ -91,7 +91,7 @@ case ${REPOCMD} in
         REPOLIST+=("$REPO")
         ;;
     remove)
-        ask "Do you want to remove \"$REPO\" from the repo list?" N
+        ask "Do you want to remove ${CYAN}${REPO}${NC} from the repo list?" Y
         if ((answer == 0)); then
             exit 3
         fi
