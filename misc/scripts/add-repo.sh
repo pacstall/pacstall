@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-parse_repo() {                                  
+parse_repo() {
     IFS=':' read -ra ADDR <<< "$1"
     PROV="${ADDR[0]}"
     USER=$(echo "${ADDR[1]}" | cut -d'/' -f1)
@@ -46,7 +46,7 @@ case ${REPO} in
         else
             REPO="${REPO/'/tree/'/'/'}"
         fi
-    ;;
+        ;;
     *"gitlab.com"*)
         if [[ $REPO != *"/tree/"* ]]; then
             REPO="$REPO/-/raw/master"
@@ -54,15 +54,15 @@ case ${REPO} in
         else
             REPO="${REPO/"/tree/"/"/raw/"}"
         fi
-    ;;
+        ;;
     *"github:"*)
         parse_repo "${REPO}"
         REPO="https://raw.${PROV}usercontent.com/${USER}/${HEAD}/${BRANCH}"
-    ;;
+        ;;
     *"gitlab:"*)
         parse_repo "${REPO}"
         REPO="https://${PROV}.com/${USER}/${HEAD}/-/raw/${BRANCH}"
-    ;;
+        ;;
     *)
         [[ ${REPO} == "local:"* ]] && REPO="file://${REPO/local:/}"
         if [[ -d $REPO ]] > /dev/null; then
@@ -70,11 +70,15 @@ case ${REPO} in
                 REPO="file://$(readlink -f "$REPO")"
             fi
         fi
-    ;;
+        ;;
 esac
 
 case ${REPOCMD} in
     add)
+        ask "Do you want to add \"$REPO\" to the repo list?" N
+        if ((answer == 0)); then
+            exit 3
+        fi
         if ! curl --head --location -s --fail -- "$REPO/packagelist" > /dev/null; then
             fancy_message warn "If the URL is a private repo, edit ${CYAN}\e]8;;file://$SCRIPTDIR/repo/pacstallrepo\a$SCRIPTDIR/repo/pacstallrepo\e]8;;\a${NC}"
             fancy_message error "packagelist file not found"
@@ -85,13 +89,17 @@ case ${REPOCMD} in
             REPOLIST+=("${REPOURL}")
         done < "$SCRIPTDIR/repo/pacstallrepo"
         REPOLIST+=("$REPO")
-    ;;
+        ;;
     remove)
+        ask "Do you want to remove \"$REPO\" from the repo list?" N
+        if ((answer == 0)); then
+            exit 3
+        fi
         REPOLIST=()
         while IFS= read -r REPOURL; do
             [[ ${REPOURL} != "$REPO" ]] && REPOLIST+=("${REPOURL}")
         done < "$SCRIPTDIR/repo/pacstallrepo"
-    ;;
+        ;;
 esac
 
 printf "%s\n" "${REPOLIST[@]}" | sort -u | sudo tee "$SCRIPTDIR/repo/pacstallrepo" > /dev/null
