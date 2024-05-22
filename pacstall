@@ -572,7 +572,7 @@ done
 # Remove duplicates
 declare -A arg_map=(
     ["--install"]="-I" ["--search"]="-S" ["--remove"]="-R" ["--download"]="-D"
-    ["--add-repo"]="-A" ["--update"]="-U" ["--list"]="-L" ["--upgrade"]="-Up"
+    ["--add-repo"]="-A" ["--remove-repo"]="-Rr" ["--update"]="-U" ["--list"]="-L" ["--upgrade"]="-Up"
     ["--query-info"]="-Qi" ["--tree"]="-T" ["--version"]="-V" ["--help"]="-h"
     ["--build"]="-B" ["--keep"]="-K" ["--disable-prompts"]="-P" ["--nocheck"]="-Nc"
     ["--quality-assurance"]="-Qa" ["--quiet"]="-Q" ["--nosandbox"]="-Ns"
@@ -588,8 +588,8 @@ for arg in "${argument_list[@]}"; do
 done
 
 # Check if only one command flag is being used
-short_commands=("-I" "-S" "-R" "-D" "-A" "-U" "-L" "-Up" "-Qi" "-Qa" "-T" "-V" "-h")
-long_commands=("--install" "--search" "--remove" "--download" "--add-repo" "--update" "--list" "--upgrade" "--query-info" "--quality-assurance" "--tree" "--version" "--help")
+short_commands=("-I" "-S" "-R" "-D" "-A" "-Rr" "-U" "-L" "-Up" "-Qi" "-Qa" "-T" "-V" "-h")
+long_commands=("--install" "--search" "--remove" "--download" "--add-repo" "--remove-repo" "--update" "--list" "--upgrade" "--query-info" "--quality-assurance" "--tree" "--version" "--help")
 commands=("${short_commands[@]}" "${long_commands[@]}")
 matches=($(comm -12 <(sort <(printf "%s\n" "${unique_argument_list[@]}")) <(sort <(printf "%s\n" "${commands[@]}"))))
 if ((${#matches[@]} <= 1)); then
@@ -605,8 +605,8 @@ unset short_commands long_commands commands matches arguments_list unique_argume
 function lock() {
     # Total number of options flags, increase when needed
     local option_flags=5
-    local ignore_short="-S -D -A -V -L -Qi -T -h"
-    local ignore_long="--search --download --add-repo --version --query-info --tree --help"
+    local ignore_short="-S -D -A -Rr -V -L -Qi -T -h"
+    local ignore_long="--search --download --add-repo --remove-repo --version --query-info --tree --help"
     local ignore="$ignore_short $ignore_long"
 
     for ((i = 1; i <= option_flags + 1; i++)); do
@@ -660,7 +660,7 @@ while [[ $1 != "--" ]]; do
             ;;
 
         -h | --help)
-            echo -e "Usage: pacstall [-h] {-I,-S,-R,-D,-A,-U,-L,-Up,-Qa,-Qi,-T,-V} [-P] [-K] [-B] [-Nc] [-Q] [-Ns]
+            echo -e "Usage: pacstall [-h] {-I,-S,-R,-D,-A,-Rr,-U,-L,-Up,-Qa,-Qi,-T,-V} [-P] [-K] [-B] [-Nc] [-Q] [-Ns]
 
 An AUR inspired package manager for Ubuntu.
 
@@ -675,6 +675,8 @@ Commands:
 		Download a pacscript.
 	${BOLD}-A${NC}, ${BOLD}--add-repo${NC} <repo>
 		Add a repository.
+    ${BOLD}-Rr${NC}, ${BOLD}--remove-repo${NC} <repo>
+        Remove a repository.
 	${BOLD}-U${NC}, ${BOLD}--update${NC} [user] [branch]
 		Update Pacstall.
 	${BOLD}-L${NC}, ${BOLD}--list${NC}
@@ -859,6 +861,7 @@ Helpful links:
 
         -A | --add-repo)
             REPO="$2"
+            REPOCMD="add"
 
             if [[ ! -f "$SCRIPTDIR/repo/pacstallrepo" ]]; then
                 echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' | sudo tee "$SCRIPTDIR/repo/pacstallrepo" > /dev/null
@@ -871,7 +874,27 @@ Helpful links:
                 exit 0
             else
                 fancy_message error "You failed to specify a repo to add"
-                suggested_solution "Add a repository to your command in the following format:" "'${UCyan}pacstall -A https://github.com/username/repository-name${NC}'" "Consult the pacstall man page by running '${UCyan}man pacstall${NC}', and searching for the term '${UPurple}-A${NC}'"
+                suggested_solution "Add a repository in the following format:" "'${UCyan}pacstall -A https://github.com/username/repository-name${NC}'" "Consult the pacstall man page by running '${UCyan}man pacstall${NC}', and searching for the term '${UPurple}-A${NC}'"
+                exit 1
+            fi
+            ;;
+
+        -Rr | --remove-repo)
+            REPO="$2"
+            REPOCMD="remove"
+
+            if [[ ! -f "$SCRIPTDIR/repo/pacstallrepo" ]]; then
+                echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' | sudo tee "$SCRIPTDIR/repo/pacstallrepo" > /dev/null
+                return 0
+            fi
+
+            if [[ -n $REPO ]]; then
+                # shellcheck source=./misc/scripts/add-repo.sh
+                source "$SCRIPTDIR/scripts/add-repo.sh"
+                exit 0
+            else
+                fancy_message error "You failed to specify a repo to remove"
+                suggested_solution "Remove a repository in the following format:" "'${UCyan}pacstall -Rr https://github.com/username/repository-name${NC}'" "Consult the pacstall man page by running '${UCyan}man pacstall${NC}', and searching for the term '${UPurple}-Rr${NC}'"
                 exit 1
             fi
             ;;
