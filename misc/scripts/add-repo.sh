@@ -23,6 +23,7 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 parse_repo() {
+    local ADDR
     IFS=':' read -ra ADDR <<< "$1"
     PROV="${ADDR[0]}"
     USER=$(echo "${ADDR[1]}" | cut -d'/' -f1)
