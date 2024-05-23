@@ -170,8 +170,14 @@ function lint_source() {
         ret=1
     else
         for sarch in "${PACSTALL_KNOWN_ARCH[@]}" "${PACSTALL_KNOWN_DISTROS[@]}" "${source_distro_archs[@]}"; do
-            local source_arch="source_${sarch}[@]" raw_carch_source="source_${CARCH}[@]" carch_source
+            local source_arch="source_${sarch}[@]" raw_carch_source="source_${CARCH}[@]" raw_distbase_source="source_${DISTRO%:*}[@]" \
+            raw_distver_source="source_${DISTRO#*:}[@]" raw_distbase_carch_source="source_${DISTRO%:*}_${CARCH}[@]" \
+            raw_distver_carch_source="source_${DISTRO#*:}_${CARCH}[@]" carch_source distbase_source distver_source distbase_carch_source distver_carch_source
             carch_source=("${!raw_carch_source}")
+            distbase_source=("${!raw_distbase_source}")
+            distver_source=("${!raw_distver_source}")
+            distbase_carch_source=("${!raw_distbase_carch_source}")
+            distver_carch_source=("${!raw_distver_carch_source}")
             [[ ${sarch} != "${CARCH}"
                 && ${sarch} != "${DISTRO%:*}"
                 && ${sarch} != "${DISTRO#*:}"
@@ -180,9 +186,18 @@ function lint_source() {
             ]] && if [[ -n ${!source_arch} ]]; then
                 test_source=()
                 if [[ -n ${source[0]} ]]; then
-                    { (("${#carch_source[@]}" <= 1 && "${#source[@]}" <= 1)) \
-                        && [[ ${carch_source[0]} == "${source[0]}" ]]; } \
-                        || test_source+=("${source[@]}")
+                    { (( "${#source[@]}" <= 1
+                        && "${#carch_source[@]}" <= 1
+                        && "${#distbase_source[@]}" <= 1
+                        && "${#distver_source[@]}" <= 1
+                        && "${#distbase_carch_source[@]}" <= 1
+                        && "${#distver_carch_source[@]}" <= 1 )) \
+                        && [[ ${carch_source[0]} == "${source[0]}"
+                            || ${distbase_source[0]} == "${source[0]}"
+                            || ${distver_source[0]} == "${source[0]}"
+                            || ${distbase_carch_source[0]} == "${source[0]}"
+                            || ${distver_carch_source[0]} == "${source[0]}" ]]; } \
+                    || test_source+=("${source[@]}")
                 fi
                 test_source+=("${!source_arch}")
                 if [[ -n ${test_source[1]} ]]; then
