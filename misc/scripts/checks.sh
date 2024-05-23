@@ -186,10 +186,12 @@ function lint_source() {
             ]] && if [[ -n ${!source_arch} ]]; then
                 test_source=()
                 if [[ -n ${source[0]} ]]; then
-                    { (( "${#source[@]}" <= 1 \
-                        && "${#carch_source[@]}" <= 1 \
-                        && "${#distbase_source[@]}" <= 1 && "${#distver_source[@]}" <= 1 \
-                        && "${#distbase_carch_source[@]}" <= 1 && "${#distver_carch_source[@]}" <= 1 )) \
+                    { (( "${#source[@]}" <= 1
+                        && "${#carch_source[@]}" <= 1
+                        && "${#distbase_source[@]}" <= 1
+                        && "${#distver_source[@]}" <= 1
+                        && "${#distbase_carch_source[@]}" <= 1
+                        && "${#distver_carch_source[@]}" <= 1 )) \
                         && [[ ${carch_source[0]} == "${source[0]}"
                             || ${distbase_source[0]} == "${source[0]}"
                             || ${distver_source[0]} == "${source[0]}"
