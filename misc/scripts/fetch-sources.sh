@@ -553,7 +553,7 @@ function is_compatible_arch() {
             for farch in "${FARCH[@]}"; do
                 if [[ ${pacarch} == "${farch}" ]]; then
                     fancy_message warn "This package is for ${BBlue}${farch}${NC}, which is a foreign architecture"
-                    export CARCH="${farch}"
+                    # ideally we want to `export CARCH="${farch}"`, but this won't fundamentally work until we utilize .SRCINFO properly
                     ret=0
                     break
                 fi
