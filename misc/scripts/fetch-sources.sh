@@ -542,7 +542,7 @@ function get_incompatible_releases() {
 
 function is_compatible_arch() {
     local input=("${@}") ret=1 pacarch farch
-    # shellcheck disable=SC2076
+    # shellcheck disable=SC2076,SC2153
     if array.contains input "any" \
         || array.contains input "all" \
         || array.contains input "${CARCH}" \
