@@ -496,7 +496,7 @@ function getMasks_offending_pkg() {
 function decl_scriptvars() {
     local _distros _vars _archs _sums distros \
         vars="source depends makedepends optdepends pacdeps checkdepends provides conflicts breaks replaces" \
-        archs="amd64 arm64 armel armhf i386 mips64el ppc64el riscv64 s390x" \
+        archs="amd64 x86_64 arm64 aarch64 armel arm armhf armv7h i386 i686 mips64el ppc64el riscv64 s390x" \
         sums="b2 sha512 sha384 sha256 sha224 sha1 md5"
     pacstallvars=(pkgname repology pkgver git_pkgver epoch source_url source depends makedepends checkdepends conflicts
         breaks replaces gives pkgdesc hash optdepends ppa arch maintainer pacdeps NOBUILDDEP provides incompatible
@@ -519,7 +519,8 @@ function decl_scriptvars() {
       ($4 <= current_date) && $3 != "experimental" {
         print $3
       }' /usr/share/distro-info/{ubuntu,debian}.csv)
-    export PACSTALL_KNOWN_DISTROS=("${distros[@]}") PACSTALL_KNOWN_ARCH=("amd64" "arm64" "armel" "armhf" "i386" "mips64el" "ppc64el" "riscv64" "s390x")
+    export PACSTALL_KNOWN_DISTROS=("${distros[@]}")
+    eval "PACSTALL_KNOWN_ARCH=(${archs}) PACSTALL_KNOWN_SUMS=(${sums})"
     distros="${distros[*]}"
     _distros="{${distros// /,}}" _vars="{${vars// /,}}" _archs="{${archs// /,}}" _sums="{${sums// /,}}"
     eval "pacstallvars+=(${_vars}_${_distros} ${_vars}_${_archs} ${_vars}_${_distros}_${_archs} ${_sums}sums ${_sums}sums_${_distros} ${_sums}sums_${_archs} ${_sums}sums_${_distros}_${_archs} gives_${_distros} gives_${_archs} gives_${_distros}_${_archs})"

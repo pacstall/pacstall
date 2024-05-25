@@ -161,7 +161,7 @@ function lint_source() {
             fi
         done
     fi
-    local source_host="source_${CARCH}[*]"
+    local source_host="source_${TARCH}[*]"
     if [[ -z ${source[*]} && -z ${!source_host} ]]; then
         has_source=0
     fi
@@ -170,19 +170,19 @@ function lint_source() {
         ret=1
     else
         for sarch in "${PACSTALL_KNOWN_ARCH[@]}" "${PACSTALL_KNOWN_DISTROS[@]}" "${source_distro_archs[@]}"; do
-            local source_arch="source_${sarch}[@]" raw_carch_source="source_${CARCH}[@]" raw_distbase_source="source_${DISTRO%:*}[@]" \
-            raw_distver_source="source_${DISTRO#*:}[@]" raw_distbase_carch_source="source_${DISTRO%:*}_${CARCH}[@]" \
-            raw_distver_carch_source="source_${DISTRO#*:}_${CARCH}[@]" carch_source distbase_source distver_source distbase_carch_source distver_carch_source
+            local source_arch="source_${sarch}[@]" raw_carch_source="source_${TARCH}[@]" raw_distbase_source="source_${DISTRO%:*}[@]" \
+            raw_distver_source="source_${DISTRO#*:}[@]" raw_distbase_carch_source="source_${DISTRO%:*}_${TARCH}[@]" \
+            raw_distver_carch_source="source_${DISTRO#*:}_${TARCH}[@]" carch_source distbase_source distver_source distbase_carch_source distver_carch_source
             carch_source=("${!raw_carch_source}")
             distbase_source=("${!raw_distbase_source}")
             distver_source=("${!raw_distver_source}")
             distbase_carch_source=("${!raw_distbase_carch_source}")
             distver_carch_source=("${!raw_distver_carch_source}")
-            [[ ${sarch} != "${CARCH}"
+            [[ ${sarch} != "${TARCH}"
                 && ${sarch} != "${DISTRO%:*}"
                 && ${sarch} != "${DISTRO#*:}"
-                && ${sarch} != "${DISTRO%:*}_${CARCH}"
-                && ${sarch} != "${DISTRO#*:}_${CARCH}"
+                && ${sarch} != "${DISTRO%:*}_${TARCH}"
+                && ${sarch} != "${DISTRO#*:}_${TARCH}"
             ]] && if [[ -n ${!source_arch} ]]; then
                 test_source=()
                 if [[ -n ${source[0]} ]]; then
@@ -254,13 +254,13 @@ function lint_deps() {
         local -n type_array="${dep_type}"
         dep_array=("${type_array[@]}")
         for kdarch in "${PACSTALL_KNOWN_ARCH[@]}"; do
-            [[ ${kdarch} != "${CARCH}" ]] && lint_var_arch "${dep_type}" "${kdarch}"
+            [[ ${kdarch} != "${TARCH}" ]] && lint_var_arch "${dep_type}" "${kdarch}"
         done
         for kdistro in "${PACSTALL_KNOWN_DISTROS[@]}"; do
             if [[ ${kdistro} != "${DISTRO%:*}" && ${kdistro} != "${DISTRO#*:}" ]]; then
                 lint_var_arch "${dep_type}" "${kdistro}"
                 for kddarch in "${PACSTALL_KNOWN_ARCH[@]}"; do
-                    [[ ${kddarch} != "${CARCH}" ]] && lint_var_arch "${dep_type}" "${kdistro}" "${kddarch}"
+                    [[ ${kddarch} != "${TARCH}" ]] && lint_var_arch "${dep_type}" "${kdistro}" "${kddarch}"
                 done
             fi
         done
@@ -329,13 +329,13 @@ function lint_relations() {
         local -n rtype_array="${rel_type}"
         rel_array=("${rtype_array[@]}")
         for rdarch in "${PACSTALL_KNOWN_ARCH[@]}"; do
-            [[ ${rdarch} != "${CARCH}" ]] && lint_var_arch "${rel_type}" "${rdarch}"
+            [[ ${rdarch} != "${TARCH}" ]] && lint_var_arch "${rel_type}" "${rdarch}"
         done
         for rdistro in "${PACSTALL_KNOWN_DISTROS[@]}"; do
             if [[ ${rdistro} != "${DISTRO%:*}" && ${rdistro} != "${DISTRO#*:}" ]]; then
                 lint_var_arch "${rel_type}" "${rdistro}"
                 for rddarch in "${PACSTALL_KNOWN_ARCH[@]}"; do
-                    [[ ${rddarch} != "${CARCH}" ]] && lint_var_arch "${rel_type}" "${rdistro}" "${rddarch}"
+                    [[ ${rddarch} != "${TARCH}" ]] && lint_var_arch "${rel_type}" "${rdistro}" "${rddarch}"
                 done
             fi
         done
@@ -358,13 +358,13 @@ function lint_relations() {
 
 function lint_hash() {
     local ret=0 test_hash harch test_hashsum_type test_hashsum_style test_hash_arch test_hashsum_method test_hashsum_value \
-        hash_distro_archs test_hashsums=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5")
+        hash_distro_archs
     for hash_distro in "${PACSTALL_KNOWN_DISTROS[@]}"; do
         for known_arch in "${PACSTALL_KNOWN_ARCH[@]}"; do
             hash_distro_archs+=("${hash_distro}_${known_arch}")
         done
     done
-    for test_hashsum_type in "${test_hashsums[@]}"; do
+    for test_hashsum_type in "${PACSTALL_KNOWN_SUMS[@]}"; do
         test_hashsum_style="${test_hashsum_type}sums[*]"
         if [[ -n ${!test_hashsum_style} ]]; then
             if [[ -z ${test_hash[*]} ]]; then
@@ -379,18 +379,18 @@ function lint_hash() {
             fi
         fi
     done
-    for test_hashsum_type in "${test_hashsums[@]}"; do
+    for test_hashsum_type in "${PACSTALL_KNOWN_SUMS[@]}"; do
         if ((ret == 1)); then
             break
         fi
         test_hashsum_style="${test_hashsum_type}sums[*]"
         for harch in "${PACSTALL_KNOWN_ARCH[@]}" "${PACSTALL_KNOWN_DISTROS[@]}" "${hash_distro_archs[@]}"; do
             test_hash_arch="${test_hashsum_type}sums_${harch}[*]"
-            [[ ${harch} != "${CARCH}"
+            [[ ${harch} != "${TARCH}"
                 && ${harch} != "${DISTRO%:*}"
                 && ${harch} != "${DISTRO#*:}"
-                && ${harch} != "${DISTRO%:*}_${CARCH}"
-                && ${harch} != "${DISTRO#*:}_${CARCH}"
+                && ${harch} != "${DISTRO%:*}_${TARCH}"
+                && ${harch} != "${DISTRO#*:}_${TARCH}"
             ]] && if [[ -n ${!test_hash_arch} ]]; then
                 if [[ -z ${!test_hashsum_style} && -z ${test_hash[*]} ]]; then
                     if [[ -z ${test_hashsum_method} ]]; then
@@ -418,12 +418,12 @@ function lint_hash() {
     # shellcheck disable=SC2128
     if [[ -n ${test_hash} ]]; then
         case ${test_hashsum_method} in
-            "${test_hashsums[0]}" | "${test_hashsums[1]}") test_hashsum_value=128 ;;
-            "${test_hashsums[2]}") test_hashsum_value=96 ;;
-            "${test_hashsums[3]}") test_hashsum_value=64 ;;
-            "${test_hashsums[4]}") test_hashsum_value=56 ;;
-            "${test_hashsums[5]}") test_hashsum_value=40 ;;
-            "${test_hashsums[6]}") test_hashsum_value=32 ;;
+            "${PACSTALL_KNOWN_SUMS[0]}" | "${PACSTALL_KNOWN_SUMS[1]}") test_hashsum_value=128 ;;
+            "${PACSTALL_KNOWN_SUMS[2]}") test_hashsum_value=96 ;;
+            "${PACSTALL_KNOWN_SUMS[3]}") test_hashsum_value=64 ;;
+            "${PACSTALL_KNOWN_SUMS[4]}") test_hashsum_value=56 ;;
+            "${PACSTALL_KNOWN_SUMS[5]}") test_hashsum_value=40 ;;
+            "${PACSTALL_KNOWN_SUMS[6]}") test_hashsum_value=32 ;;
         esac
         for i in ${!test_hash[*]}; do
             if [[ ${test_hash[i]} == "SKIP" ]]; then
@@ -493,7 +493,7 @@ function lint_incompatible() {
 
 function lint_arch() {
     # shellcheck disable=SC2034
-    local ret=0 el_arch idx=0 known_archs=("any" "${PACSTALL_KNOWN_ARCH[@]}")
+    local ret=0 el_arch idx=0 known_archs=("any" "all" "${PACSTALL_KNOWN_ARCH[@]}")
     if [[ -n ${arch[*]} ]]; then
         for el_arch in "${arch[@]}"; do
             if [[ -z ${el_arch} ]]; then

@@ -88,6 +88,15 @@ export pacfile
 mapfile -t FARCH < <(dpkg --print-foreign-architectures)
 export FARCH
 export CARCH="$(dpkg --print-architecture)"
+case ${CARCH} in
+    amd64) AARCH='x86_64' ;;
+    i386) AARCH='i686' ;;
+    armel) AARCH='arm' ;;
+    armhf) AARCH='armv7h' ;;
+    arm64) AARCH='aarch64' ;;
+    *) AARCH="${CARCH}" ;;
+esac
+export AARCH
 export DISTRO="$(set_distro)"
 
 # Running source on an isolated env
@@ -102,8 +111,17 @@ if [[ ${external_connection} == "true" ]]; then
     fancy_message warn "This package will connect to the internet during its build process."
 fi
 
+# if using arch-style architectures
+if array.contains arch "${AARCH}"; then
+    # only append arch-style
+    TARCH="${AARCH}"
+else
+    # only append debian-style
+    TARCH="${CARCH}"
+fi
+export TARCH
 # FARCH will be useful here when pkgbase is implemented
-append_modifier_entries "${CARCH}" "${DISTRO}"
+append_modifier_entries "${TARCH}" "${DISTRO}"
 
 # Running `-B` on a deb package doesn't make sense, so let's download instead
 if ((PACSTALL_INSTALL == 0)) && [[ ${pkgname} == *-deb ]]; then

@@ -63,6 +63,15 @@ function calc_repo_ver() {
 export UPGRADE="yes"
 # shellcheck disable=SC2155
 export CARCH="$(dpkg --print-architecture)"
+case ${CARCH} in
+    amd64) AARCH='x86_64' ;;
+    i386) AARCH='i686' ;;
+    armel) AARCH='arm' ;;
+    armhf) AARCH='armv7h' ;;
+    arm64) AARCH='aarch64' ;;
+    *) AARCH="${CARCH}" ;;
+esac
+export AARCH
 # shellcheck disable=SC2155
 export DISTRO="$(set_distro)"
 
