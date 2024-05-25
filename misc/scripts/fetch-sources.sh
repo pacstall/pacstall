@@ -541,15 +541,15 @@ function get_incompatible_releases() {
 }
 
 function is_compatible_arch() {
-    local input=("${@}") ret=1 pacarch farch
+    local inarch=("${@}") ret=1 pacarch farch
     # shellcheck disable=SC2076,SC2153
-    if array.contains input "any" \
-        || array.contains input "all" \
-        || array.contains input "${CARCH}" \
-        || array.contains input "${AARCH}"; then
+    if array.contains inarch "any" \
+        || array.contains inarch "all" \
+        || array.contains inarch "${CARCH}" \
+        || array.contains inarch "${AARCH}"; then
         ret=0
     elif [[ -n ${FARCH[*]} ]]; then
-        for pacarch in "${input[@]}"; do
+        for pacarch in "${inarch[@]}"; do
             for farch in "${FARCH[@]}"; do
                 if [[ ${pacarch} == "${farch}" ]]; then
                     fancy_message warn "This package is for ${BBlue}${farch}${NC}, which is a foreign architecture"
