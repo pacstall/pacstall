@@ -89,12 +89,9 @@ mapfile -t FARCH < <(dpkg --print-foreign-architectures)
 export FARCH
 export CARCH="$(dpkg --print-architecture)"
 case ${CARCH} in
-    amd64) AARCH='x86_64' ;;
     i386) AARCH='i686' ;;
-    armel) AARCH='arm' ;;
     armhf) AARCH='armv7h' ;;
-    arm64) AARCH='aarch64' ;;
-    *) AARCH="${CARCH}" ;;
+    *) AARCH="${HOSTTYPE}" ;;
 esac
 export AARCH
 export DISTRO="$(set_distro)"
