@@ -493,7 +493,15 @@ function lint_incompatible() {
 
 function lint_arch() {
     # shellcheck disable=SC2034
-    local ret=0 el_arch idx=0 known_archs=("any" "all" "${PACSTALL_KNOWN_ARCH[@]}")
+    local ret=0 el_arch key idx=0 has_carch=false has_aarch=false known_archs=("any" "all" "${PACSTALL_KNOWN_ARCH[@]}")
+    local -A AARCHS_MAP
+    AARCHS_MAP=(
+        ["amd64"]="x86_64"
+        ["arm64"]="aarch64"
+        ["armel"]="arm"
+        ["armhf"]="armv7h"
+        ["i386"]="i686"
+    )
     if [[ -n ${arch[*]} ]]; then
         for el_arch in "${arch[@]}"; do
             if [[ -z ${el_arch} ]]; then
@@ -510,8 +518,20 @@ function lint_arch() {
             if ! array.contains known_archs "${el_arch}"; then
                 fancy_message error "'${el_arch}' is not a valid architecture"
                 ret=1
+            else
+                for key in "${!AARCHS_MAP[@]}"; do
+                    if [[ "${el_arch}" == "${AARCHS_MAP[$key]}" ]]; then
+                        has_aarch=true
+                    elif [[ "${el_arch}" == "${key}" ]]; then
+                        has_carch=true
+                    fi
+                done
             fi
         done
+        if ${has_carch} && ${has_aarch}; then
+            fancy_message error "cannot use both Debian and Arch style naming in 'arch' array"
+            ret=1
+        fi
     fi
     return "${ret}"
 }
