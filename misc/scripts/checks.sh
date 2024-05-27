@@ -494,8 +494,7 @@ function lint_incompatible() {
 function lint_arch() {
     # shellcheck disable=SC2034
     local ret=0 el_arch key idx=0 has_carch=false has_aarch=false known_archs=("any" "all" "${PACSTALL_KNOWN_ARCH[@]}")
-    local -A AARCHS_MAP
-    AARCHS_MAP=(
+    local -A AARCHS_MAP=(
         ["amd64"]="x86_64"
         ["arm64"]="aarch64"
         ["armel"]="arm"
