@@ -608,11 +608,14 @@ function install_builddepends() {
         fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to build, and ${CYAN}${not_installed_yet_checkdepends[*]}${NC} to perform checks"
     fi
     if ((${#not_installed_yet_builddepends[@]} != 0)) || ((${#not_installed_yet_checkdepends[@]} != 0)); then
-        fancy_message sub "Fetching apt repositories"
-        # shellcheck disable=SC2015
-        sudo apt-get update -qq --allow-releaseinfo-change \
-            && sudo apt-get satisfy -yq "${bdeps_str}" \
-            || {
+        fancy_message sub "Creating dependency dummy package"
+        (
+            unset pre_{upgrade,install,remove} post_{upgrade,install,remove} priority provides conflicts replaces breaks gives
+            pkgname="${pkgname}-dummy-builddeps"
+            sudo mkdir -p "${STAGEDIR}/${pkgname}/DEBIAN"
+            deblog "Depends" "${bdeps_str}"
+            makedeb
+        ) || {
                 fancy_message error "Failed to install build or check dependencies"
                 error_log 8 "install $PACKAGE"
                 clean_fail_down
