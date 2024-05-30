@@ -472,10 +472,10 @@ cd "$HOME" 2> /dev/null || (
     fancy_message warn "Could not enter into ${HOME}"
 )
 
-makedeb
 if is_apt_package_installed "${pkgname}-dummy-builddeps"; then
     sudo apt-get purge "${pkgname}-dummy-builddeps" -y > /dev/null
 fi
+makedeb
 
 # Metadata writing
 meta_log
