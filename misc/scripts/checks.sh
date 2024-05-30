@@ -199,7 +199,7 @@ function lint_source() {
                             || ${distver_carch_source[0]} == "${source[0]}" ]]; } \
                     || test_source+=("${source[@]}")
                 fi
-                [[ ${pkgname} == *"-deb" ]] || test_source+=("${!source_arch}")
+                [[ ${pkgname} == *"-deb" ]] && test_source=("${!source_arch}") || test_source+=("${!source_arch}")
                 if [[ -n ${test_source[1]} ]]; then
                     lint_source_deb_test "${test_source[@]}"
                     if ((ret == 1)); then
