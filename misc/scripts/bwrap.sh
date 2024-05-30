@@ -71,14 +71,14 @@ export safeenv
 EOF
     sudo chmod +x "$tmpfile"
     if [[ ${NOSANDBOX} == "true" ]]; then
-        sudo homedir="${homedir}" CARCH="${CARCH}" DISTRO="${DISTRO}" NCPU="${NCPU}" PACSTALL_USER="${PACSTALL_USER}" \
+        sudo homedir="${homedir}" CARCH="${CARCH}" AARCH="${AARCH}" DISTRO="${DISTRO}" NCPU="${NCPU}" PACSTALL_USER="${PACSTALL_USER}" \
             "$tmpfile" && sudo rm "$tmpfile"
     else
         sudo env - bwrap --unshare-all --die-with-parent --new-session --ro-bind / / \
             --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run --dev-bind /dev/null /dev/null \
             --ro-bind "$input" "$input" --bind "$PACDIR" "$PACDIR" --ro-bind "$tmpfile" "$tmpfile" \
-            --setenv homedir "$homedir" --setenv CARCH "$CARCH" --setenv DISTRO "$DISTRO" --setenv NCPU "$NCPU" \
-            --setenv PACSTALL_USER "$PACSTALL_USER" \
+            --setenv homedir "$homedir" --setenv CARCH "$CARCH" --setenv AARCH "$AARCH" --setenv DISTRO "$DISTRO" \
+            --setenv NCPU "$NCPU" --setenv PACSTALL_USER "$PACSTALL_USER" \
             "$tmpfile" && sudo rm "$tmpfile"
     fi
 }
@@ -112,8 +112,8 @@ EOF
     fi
     if [[ ${NOSANDBOX} == "true" ]]; then
         sudo LOGDIR="${LOGDIR}" SCRIPTDIR="${SCRIPTDIR}" STAGEDIR="${STAGEDIR}" pkgdir="${pkgdir}" _archive="${_archive}" \
-            srcdir="${srcdir}" git_pkgver="${git_pkgver}" homedir="${homedir}" CARCH="${CARCH}" DISTRO="${DISTRO}" \
-            NCPU="${NCPU}" PACSTALL_USER="${PACSTALL_USER}" TAR_OPTIONS='--no-same-owner' \
+            srcdir="${srcdir}" git_pkgver="${git_pkgver}" homedir="${homedir}" CARCH="${CARCH}" AARCH="${AARCH}" \
+            DISTRO="${DISTRO}" NCPU="${NCPU}" PACSTALL_USER="${PACSTALL_USER}" TAR_OPTIONS='--no-same-owner' \
             "$tmpfile" && sudo rm "$tmpfile"
     else
         # shellcheck disable=SC2086
@@ -123,8 +123,8 @@ EOF
             --bind "$STAGEDIR" "$STAGEDIR" --bind "$PACDIR" "$PACDIR" --setenv LOGDIR "$LOGDIR" \
             --setenv SCRIPTDIR "$SCRIPTDIR" --setenv STAGEDIR "$STAGEDIR" --setenv pkgdir "$pkgdir" \
             --setenv _archive "$_archive" --setenv srcdir "$srcdir" --setenv git_pkgver "$git_pkgver" \
-            --setenv homedir "$homedir" --setenv CARCH "$CARCH" --setenv DISTRO "$DISTRO" --setenv NCPU "$NCPU" \
-            --setenv PACSTALL_USER "$PACSTALL_USER" --setenv TAR_OPTIONS '--no-same-owner' \
+            --setenv homedir "$homedir" --setenv CARCH "$CARCH" --setenv AARCH "$AARCH" --setenv DISTRO "$DISTRO" \
+            --setenv NCPU "$NCPU" --setenv PACSTALL_USER "$PACSTALL_USER" --setenv TAR_OPTIONS '--no-same-owner' \
             "$tmpfile" && sudo rm "$tmpfile"
     fi
 }

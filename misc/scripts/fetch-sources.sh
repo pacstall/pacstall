@@ -389,7 +389,7 @@ function file_down() {
     gather_down
 }
 
-# currently expecting: 1=hash 2=hashsum_types 3=hashum_method 4=${CARCH}/${DISTRO} 5=${CARCH}
+# currently expecting: 1=hash 2=PACSTALL_KNOWN_SUMS 3=hashum_method 4=${CARCH}/${DISTRO} 5=${CARCH}
 function append_hash_entry() {
     local -n append="${1}" sums="${2}" exp_method="${3}"
     local hash_arch hash_arr extend="${4}${5:+_$5}"
@@ -429,16 +429,16 @@ function append_var_arch() {
 function append_modifier_entries() {
     unset hashsum_method
 	# shellcheck disable=SC2034
-    local APPARCH="${1}" APPDISTRO="${2}" hashsum_types=("b2" "sha512" "sha384" "sha256" "sha224" "sha1" "md5")
+    local APPARCH="${1}" APPDISTRO="${2}"
     # append arrays from least to most specific
-    append_hash_entry hash hashsum_types hashsum_method
-    append_hash_entry hash hashsum_types hashsum_method "${APPARCH}"
+    append_hash_entry hash PACSTALL_KNOWN_SUMS hashsum_method
+    append_hash_entry hash PACSTALL_KNOWN_SUMS hashsum_method "${APPARCH}"
     # distro base
-    append_hash_entry hash hashsum_types hashsum_method "${APPDISTRO%:*}"
+    append_hash_entry hash PACSTALL_KNOWN_SUMS hashsum_method "${APPDISTRO%:*}"
     # distro version
-    append_hash_entry hash hashsum_types hashsum_method "${APPDISTRO#*:}"
-    append_hash_entry hash hashsum_types hashsum_method "${APPDISTRO%:*}" "${APPARCH}"
-    append_hash_entry hash hashsum_types hashsum_method "${APPDISTRO#*:}" "${APPARCH}"
+    append_hash_entry hash PACSTALL_KNOWN_SUMS hashsum_method "${APPDISTRO#*:}"
+    append_hash_entry hash PACSTALL_KNOWN_SUMS hashsum_method "${APPDISTRO%:*}" "${APPARCH}"
+    append_hash_entry hash PACSTALL_KNOWN_SUMS hashsum_method "${APPDISTRO#*:}" "${APPARCH}"
     for i in {source,depends,makedepends,optdepends,pacdeps,checkdepends,provides,conflicts,breaks,replaces}; do
         append_var_arch "${i}" "${APPARCH}"
         append_var_arch "${i}" "${APPDISTRO%:*}"
@@ -541,17 +541,19 @@ function get_incompatible_releases() {
 }
 
 function is_compatible_arch() {
-    local input=("${@}") ret=1 pacarch farch
-    # shellcheck disable=SC2076
-    if [[ " ${input[*]} " =~ " any " ]]; then
-        ret=0
-    elif [[ " ${input[*]} " =~ " ${CARCH} " ]]; then
+    local inarch=("${@}") ret=1 pacarch farch
+    # shellcheck disable=SC2076,SC2153
+    if array.contains inarch "any" \
+        || array.contains inarch "all" \
+        || array.contains inarch "${CARCH}" \
+        || array.contains inarch "${AARCH}"; then
         ret=0
     elif [[ -n ${FARCH[*]} ]]; then
-        for pacarch in "${input[@]}"; do
+        for pacarch in "${inarch[@]}"; do
             for farch in "${FARCH[@]}"; do
                 if [[ ${pacarch} == "${farch}" ]]; then
                     fancy_message warn "This package is for ${BBlue}${farch}${NC}, which is a foreign architecture"
+                    # ideally we want to `export CARCH="${farch}"`, but this won't fundamentally work until we utilize .SRCINFO properly
                     ret=0
                     break
                 fi
@@ -562,7 +564,7 @@ function is_compatible_arch() {
         done
     fi
     if ((ret == 1)); then
-        fancy_message error "This Pacscript does not work on ${BBlue}${CARCH}${NC}"
+        fancy_message error "This Pacscript does not work on ${BBlue}${CARCH}/${AARCH}${NC}"
     fi
     return "${ret}"
 }
