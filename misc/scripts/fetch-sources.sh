@@ -611,6 +611,7 @@ function install_builddepends() {
         fancy_message sub "Creating dependency dummy package"
         (
             unset pre_{upgrade,install,remove} post_{upgrade,install,remove} priority provides conflicts replaces breaks gives
+            # shellcheck disable=SC2030
             pkgname="${pkgname}-dummy-builddeps"
             sudo mkdir -p "${STAGEDIR}/${pkgname}/DEBIAN"
             deblog "Depends" "${bdeps_str}"

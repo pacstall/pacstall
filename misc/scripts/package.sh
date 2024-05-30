@@ -472,7 +472,9 @@ cd "$HOME" 2> /dev/null || (
     fancy_message warn "Could not enter into ${HOME}"
 )
 
+# shellcheck disable=SC2031
 if is_apt_package_installed "${pkgname}-dummy-builddeps"; then
+    # shellcheck disable=SC2031
     sudo apt-get purge "${pkgname}-dummy-builddeps" -y > /dev/null
 fi
 makedeb
