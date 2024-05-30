@@ -400,13 +400,13 @@ function append_hash_entry() {
             if [[ -n ${!hash_arr} && -z ${extend} ]]; then
                 export exp_method="${type}"
                 for a in ${!hash_arr}; do
-                    append+=("${a}")
+                    [[ ${pkgname} == *"-deb" ]] && append=("${a}") || append+=("${a}")
                 done
                 break
             elif [[ -n ${!hash_arch} ]]; then
                 [[ -z ${!hash_arr} && -z ${append[*]} ]] && export exp_method="${type}"
                 for a in ${!hash_arch}; do
-                    append+=("${a}")
+                    [[ ${pkgname} == *"-deb" ]] && append=("${a}") || append+=("${a}")
                 done
                 break
             fi
@@ -419,7 +419,9 @@ function append_var_arch() {
     declare -n ref_inputvar="${inputvar}"
     if [[ -n ${!inputvar_arch} ]]; then
         for inp in ${!inputvar_arch}; do
-            if ! array.contains ref_inputvar "${inp}" || [[ ${inputvar} == "source" ]]; then
+            if [[ ${pkgname} == *"-deb" && ${inputvar} == "source" ]]; then
+                ref_inputvar=("${inp}")
+            elif ! array.contains ref_inputvar "${inp}" || [[ ${inputvar} == "source" ]]; then
                 ref_inputvar+=("${inp}")
             fi
         done
