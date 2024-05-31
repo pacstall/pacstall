@@ -380,10 +380,10 @@ function lint_fields() {
             fi
             tlogvar="${tfield%:*}"
             if array.contains deblog_used "${tlogvar}"; then
-                fancy_message error "'${tlogvar}' is already used for logging in pacstall"
+                fancy_message error "'${tlogvar}' is already used as a field in pacstall"
                 ret=1
             elif ! lint_field_fmt "${tlogvar}"; then
-                fancy_message error "'${tlogvar}' is improperly formatted"
+                fancy_message error "'${tlogvar}' is improperly formatted for control fields"
                 ret=1
             fi
             ((idx++))
