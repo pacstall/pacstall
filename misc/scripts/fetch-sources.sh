@@ -211,7 +211,7 @@ function git_down() {
     fi
     # git clone quietly, with no history, and if submodules are there, download with 10 jobs
     # shellcheck disable=SC2086,SC2031
-    eval "git clone --depth=1 --jobs=10 ${quiet} \"${source_url}\" \"${dest}\" ${gitopts[@]} ${silence[@]}" || fail_down
+    eval "git clone --depth=1 --jobs=10 ${quiet} \"${source_url}\" \"${dest}\" ${gitopts[*]} ${silence[*]}" || fail_down
     # cd into the directory
     cd "./${dest}" 2> /dev/null || {
         error_log 1 "install $PACKAGE"
@@ -220,8 +220,8 @@ function git_down() {
     }
     if [[ -n ${git_commit} ]]; then
         fancy_message sub "Fetching commit ${CYAN}${git_commit:0:8}${NC}"
-        eval "git fetch ${quiet} origin \"${git_commit}\" ${silence[@]}" || fail_down
-        eval "git checkout ${quiet} --force \"${git_commit}\" ${silence[@]}" || fail_down
+        eval "git fetch ${quiet} origin \"${git_commit}\" ${silence[*]}" || fail_down
+        eval "git checkout ${quiet} --force \"${git_commit}\" ${silence[*]}" || fail_down
     fi
     for no_submodule in "${nosubmodules[@]}"; do
         if [[ ${no_submodule} == "${dest}" ]]; then
