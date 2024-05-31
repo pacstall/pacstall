@@ -439,7 +439,7 @@ function append_modifier_entries() {
     append_hash_entry hash PACSTALL_KNOWN_SUMS hashsum_method "${APPDISTRO#*:}"
     append_hash_entry hash PACSTALL_KNOWN_SUMS hashsum_method "${APPDISTRO%:*}" "${APPARCH}"
     append_hash_entry hash PACSTALL_KNOWN_SUMS hashsum_method "${APPDISTRO#*:}" "${APPARCH}"
-    for i in {source,depends,makedepends,optdepends,pacdeps,checkdepends,provides,conflicts,breaks,replaces}; do
+    for i in {source,depends,makedepends,optdepends,pacdeps,checkdepends,provides,conflicts,breaks,replaces,enhances,recommends,makeconflicts,checkconflicts}; do
         append_var_arch "${i}" "${APPARCH}"
         append_var_arch "${i}" "${APPDISTRO%:*}"
         append_var_arch "${i}" "${APPDISTRO#*:}"

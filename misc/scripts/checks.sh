@@ -324,7 +324,7 @@ function lint_ppa() {
 
 function lint_relations() {
     local rel_type rel_array ret=0 rela idx rdarch rdistro rddarch
-    for rel_type in "conflicts" "breaks" "replaces" "provides"; do
+    for rel_type in "conflicts" "breaks" "replaces" "provides" "enhances" "recommends" "makeconflicts" "checkconflicts"; do
         local -n rel_array="test_${rel_type}"
         local -n rtype_array="${rel_type}"
         rel_array=("${rtype_array[@]}")
@@ -355,6 +355,43 @@ function lint_relations() {
     done
     return "${ret}"
 }
+
+function lint_field_fmt() {
+    local infield="${1}"
+    # ensure no spaces or numbers, first letter is capital, + hyphen is not last char and also follows cap rule
+    if [[ "${infield}" =~ [[:space:]] || "${infield}" =~ [0-9] || ! "${infield}" =~ ^[A-Z][a-z]*(-[A-Z][a-z]*)*$ ]]; then
+        return 1
+    else
+        return 0
+    fi
+}
+
+function lint_fields() {
+    # shellcheck disable=SC2034
+    local ret=0 idx=0 tfield tlogvar deblog_used=("Suggests" "Depends" "Package" "Version" "Architecture" "Section" "Priority"
+        "Essential" "Vcs-Git" "Build-Depends" "Build-Depends-Arch" "Build-Conflicts" "Build-Conflicts-Arch"
+        "Provides" "Conflicts" "Breaks" "Enhances" "Recommends" "Replaces" "Homepage" "License" "Maintainer"
+        "Uploaders" "Description" "Installed-Size")
+    if [[ -n ${custom_fields[*]} ]]; then
+        for tfield in "${custom_fields[@]}"; do
+            if [[ -z ${tfield} ]]; then
+                fancy_message error "'custom_fields' index '${idx}' cannot be empty"
+                ret=1
+            fi
+            tlogvar="${tfield%:*}"
+            if array.contains deblog_used "${tlogvar}"; then
+                fancy_message error "'${tlogvar}' is already used for logging in pacstall"
+                ret=1
+            elif ! lint_field_fmt "${tlogvar}"; then
+                fancy_message error "'${tlogvar}' is improperly formatted"
+                ret=1
+            fi
+            ((idx++))
+        done
+        return "${ret}"
+    fi
+}
+
 
 function lint_hash() {
     local ret=0 test_hash harch test_hashsum_type test_hashsum_style test_hash_arch test_hashsum_method test_hashsum_value \
@@ -587,7 +624,7 @@ function lint_license() {
 }
 
 function checks() {
-    local ret=0 check linting_checks=(lint_pkgname lint_gives lint_pkgrel lint_epoch lint_version lint_source lint_pkgdesc lint_maintainer lint_deps lint_ppa lint_relations lint_hash lint_incompatible lint_arch lint_mask lint_priority lint_license)
+    local ret=0 check linting_checks=(lint_pkgname lint_gives lint_pkgrel lint_epoch lint_version lint_source lint_pkgdesc lint_maintainer lint_deps lint_ppa lint_relations lint_fields lint_hash lint_incompatible lint_arch lint_mask lint_priority lint_license)
     for check in "${linting_checks[@]}"; do
         "${check}" || ret=1
     done

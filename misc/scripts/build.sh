@@ -287,6 +287,15 @@ function createdeb() {
     sudo rm -f debian-binary control.tar."$compression" data.tar."$compression"
 }
 
+function is_builddep_arch() {
+    local buildar="${1}_${TARCH}[*]" buildar_distb="${1}_${DISTRO%:*}_${TARCH}[*]" buildar_distv="${1}_${DISTRO#*:}_${TARCH}[*]"
+    local -n appendar="${2}"
+    [[ -n ${!buildar} ]] && appendar+=("${!buildar}")
+    [[ -n ${!buildar_distb} ]] && appendar+=("${!buildar_distb}")
+    [[ -n ${!buildar_distv} ]] && appendar+=("${!buildar_distv}")
+    [[ -z ${appendar[*]} ]] && return 1 || return 0
+}
+
 function makedeb() {
     # It looks weird for it to say: `Packaging foo as foo`
     if [[ -n $gives && $pkgname != "$gives" ]]; then
@@ -340,12 +349,42 @@ function makedeb() {
 
     if [[ -n ${makedepends[*]} ]]; then
         # shellcheck disable=SC2034
-        local builddepends builddepends_str
+        local builddepends builddepends_str builddependsarch bdaform bdaform_str
         is_function "check" && [[ -n ${checkdepends[*]} ]] && makedepends+=("${checkdepends[@]}")
         dep_const.format_control makedepends builddepends
         dep_const.comma_array builddepends builddepends_str
         # shellcheck disable=SC2001
         deblog "Build-Depends" "${builddepends_str}"
+        if is_builddep_arch makedepends builddependsarch; then
+            if is_function "check"; then
+                is_builddep_arch checkdepends builddependsarch \
+                    || builddependsarch=("${builddependsarch[@]}")
+            fi
+            dep_const.format_control builddependsarch bdaform
+            dep_const.comma_array bdaform bdaform_str
+            # shellcheck disable=SC2001
+            deblog "Build-Depends-Arch" "${bdaform_str}"
+        fi
+    fi
+
+    if [[ -n ${makeconflicts[*]} ]]; then
+        # shellcheck disable=SC2034
+        local buildconflicts buildconflicts_str buildconflictsarch bcaform bcaform_str
+        is_function "check" && [[ -n ${checkconflicts[*]} ]] && makeconflicts+=("${checkconflicts[@]}")
+        dep_const.format_control makeconflicts buildconflicts
+        dep_const.comma_array buildconflicts buildconflicts_str
+        # shellcheck disable=SC2001
+        deblog "Build-Conflicts" "${buildconflicts_str}"
+        if is_builddep_arch makeconflicts buildconflictsarch; then
+            if is_function "check"; then
+                is_builddep_arch checkconflicts buildconflictsarch \
+                    || buildconflictsarch=("${buildconflictsarch[@]}")
+            fi
+            dep_const.format_control buildconflictsarch bcaform
+            dep_const.comma_array bcaform bcaform_str
+            # shellcheck disable=SC2001
+            deblog "Build-Conflicts-Arch" "${bcaform_str}"
+        fi
     fi
 
     if [[ -n ${provides[*]} ]]; then
@@ -363,9 +402,17 @@ function makedeb() {
         deblog "Breaks" "$(sed 's/ /, /g' <<< "${breaks[@]}")"
     fi
 
-    if [[ -n ${replaces[*]} ]]; then
+    if [[ -n ${enhances[*]} ]]; then
         # shellcheck disable=SC2001
-        deblog "Conflicts" "$(sed 's/ /, /g' <<< "${replaces[@]}")"
+        deblog "Enhances" "$(sed 's/ /, /g' <<< "${enhances[@]}")"
+    fi
+
+    if [[ -n ${recommends[*]} ]]; then
+        # shellcheck disable=SC2001
+        deblog "Recommends" "$(sed 's/ /, /g' <<< "${recommends[@]}")"
+    fi
+
+    if [[ -n ${replaces[*]} ]]; then
         # shellcheck disable=SC2001
         deblog "Replaces" "$(sed 's/ /, /g' <<< "${replaces[@]}")"
     fi
@@ -377,6 +424,15 @@ function makedeb() {
     if [[ -n ${license[*]} ]]; then
         # shellcheck disable=SC2001
         deblog "License" "$(sed 's/ /, /g' <<< "${license[@]/custom\:/}")"
+    fi
+
+    if [[ -n ${custom_fields[*]} ]]; then
+        local field logvar logstr
+        for field in "${custom_fields[@]}"; do
+            logvar="${field%:*}"
+            logstr="${field#*: }"
+            deblog "${logvar}" "${logstr}"
+        done
     fi
 
     if [[ -n ${maintainer[*]} ]]; then
