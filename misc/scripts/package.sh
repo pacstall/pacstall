@@ -249,6 +249,7 @@ if [[ -n $pacdeps ]]; then
 fi
 
 if ! is_package_installed "${pkgname}"; then
+    # shellcheck disable=SC2031
     if [[ -n ${conflicts[*]} || -n ${makeconflicts[*]} || -n ${checkconflicts[*]} ]]; then
         # shellcheck disable=SC2031
         for pkg in "${conflicts[@]}" "${makeconflicts[@]}" "${checkconflicts[@]}"; do
