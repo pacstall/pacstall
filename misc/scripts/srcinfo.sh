@@ -183,17 +183,17 @@ function srcinfo.parse() {
             srcinfo._promote_to_variable "${part_two}"
         fi
         mapfile -t split_up <<< "${part_two/_array_/$'\n'}"
-        declare -n boob="${split_up[0]}"
+        declare -n addarr="${split_up[0]}"
 
         # So now we need to check if the thing we're trying to insert is a variable,
         # or an array.
         if [[ "$(declare -p -- "${part_two}")" == "declare -a "* ]]; then
             declare -ga "${part_two}"
             # shellcheck disable=SC2004
-            boob[${split_up[1]}]="${part_two}"
+            addarr[${split_up[1]}]="${part_two}"
         else
             # shellcheck disable=SC2034,SC2004
-            boob[${split_up[1]}]="${!part_two}"
+            addarr[${split_up[1]}]="${!part_two}"
         fi
     done
 }
@@ -203,11 +203,11 @@ function srcinfo.cleanup() {
     local main_loop_template="${var_prefix}_access"
     declare -n main_loop="${main_loop_template}"
     for i in "${main_loop[@]}"; do
-        declare -n big_balls="${i}"
-        for z in "${big_balls[@]}"; do
+        declare -n cleaner="${i}"
+        for z in "${cleaner[@]}"; do
             unset "${var_prefix}_array_${z}"
         done
-        unset big_balls
+        unset cleaner
     done
     unset "${var_prefix}_access" globase global
     # So now lets clean the stragglers that we can't reasonably infer
