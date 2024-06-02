@@ -1,5 +1,4 @@
 #!/bin/bash
-
 #     ____                  __        ____
 #    / __ \____ ___________/ /_____ _/ / /
 #   / /_/ / __ `/ ___/ ___/ __/ __ `/ / /
@@ -302,3 +301,5 @@ function srcinfo.print_var() {
         fi
     done
 }
+
+# vim:set ft=sh ts=4 sw=4 noet:
