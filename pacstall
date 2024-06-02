@@ -798,9 +798,8 @@ Helpful links:
                         continue
                     fi
 
-                    # FIXME: URL is being eaten up and not supplying link on -Up function, so we are forcing it here
                     specifyRepo "$REPO"
-                    URL="${REPO:-https://raw.githubusercontent.com/pacstall/pacstall-programs/master}/packages/$PACKAGE/$PACKAGE.pacscript"
+                    export URL="${REPO:-https://raw.githubusercontent.com/pacstall/pacstall-programs/master}/packages/$PACKAGE/$PACKAGE.pacscript"
 
                     # shellcheck source=./misc/scripts/get-pacscript.sh
                     if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then
@@ -808,7 +807,14 @@ Helpful links:
                         suggested_solution "Confirm that the package exists by running '${UCyan}pacstall -S $PACKAGE${NC}'" "Check your internet connection"
                         continue
                     fi
+                    export URL="$REPO/packages/$PACKAGE/.SRCINFO"
+                    # shellcheck source=./misc/scripts/get-pacscript.sh
+                    if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then
+                        fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} .SRCINFO"
+                        continue
+                    fi
                     export REPO
+                    export URL="${REPO:-https://raw.githubusercontent.com/pacstall/pacstall-programs/master}/packages/$PACKAGE/$PACKAGE.pacscript"
                 fi
                 # shellcheck source=./misc/scripts/package.sh
                 if ! source "$SCRIPTDIR/scripts/package.sh"; then
@@ -1040,6 +1046,13 @@ Helpful links:
                     suggested_solution "Confirm that the package exists by running '${UCyan}pacstall -S $PACKAGE${NC}'" "Check your internet connection"
                     continue
                 fi
+                export URL="$REPO/packages/$PACKAGE/.SRCINFO"
+                # shellcheck source=./misc/scripts/get-pacscript.sh
+                if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then
+                    fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} .SRCINFO"
+                    continue
+                fi
+                export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 
                 fancy_message info "${GREEN}${PACKAGE}${NC}'s pacscript is downloaded to ${GREEN}${PWD}/$PACKAGE.pacscript${NC}"
             done

@@ -39,8 +39,9 @@ if check_url "${URL}"; then
     fi
 
     case "$URL" in
-        *.pacscript | *packagelist)
+        *.pacscript | *packagelist | *.SRCINFO)
             FILE="${URL##*/}"
+            [[ ${FILE} == ".SRCINFO" ]] && FILE="${PACKAGE}.SRCINFO"
             if ! curl --location -s -- "$URL" > "$FILE"; then
                 error_log 1 "download $PACKAGE"
                 fancy_message error "Could not download ${URL}"
