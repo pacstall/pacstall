@@ -213,7 +213,9 @@ function srcinfo.cleanup() {
     # So now lets clean the stragglers that we can't reasonably infer
     for i in $(compgen -v); do
         if [[ ${i} == "${var_prefix}_"* ]] && [[ ${i} == *"_array_"* ]]; then
-            unset "${i}"
+            unset -v "${i}"
+            # sanity check
+            unset -f "${i}"
         fi
     done
 }
@@ -299,6 +301,7 @@ function srcinfo.print_var() {
             printed+=("${e%\[*}")
             declare -p "${e%\[*}"
         fi
+        unset "${e%\[*}"
     done
 }
 
