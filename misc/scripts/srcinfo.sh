@@ -279,8 +279,10 @@ function srcinfo.print_var() {
         fi
     done
     if [[ -n ${globase} && ${globase} != "temporary_pacstall_pkgbase" ]]; then
+        unset "${var_prefix}_${found}_${globase//-/_}"
         declare -Ag "${var_prefix}_${found}_${globase//-/_}"
     else
+        unset "${var_prefix}_${found}_${name//-/_}"
         declare -Ag "${var_prefix}_${found}_${name//-/_}"
     fi
     # shellcheck disable=SC2294
