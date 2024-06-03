@@ -49,19 +49,23 @@ function ver_compare() {
 }
 
 function calc_repo_ver() {
-    local compare_repo="$1" compare_package="$2" compare_tmp compare_safe
+    local compare_repo="$1" compare_package="$2" compare_tmp compare_safe compare_pkgver compare_pkgrel compare_epoch compare_source comp
     unset comp_repo_ver
     compare_tmp="$(sudo mktemp -p "${PACDIR}" -t "calc-repo-ver-$compare_package.XXXXXX")"
     compare_safe="${compare_tmp}"
-    sudo curl -fsSL "$compare_repo/packages/$compare_package/.SRCINFO" -o "${compare_safe}" \
-        && pkgver="$(srcinfo.match_pkg "${compare_safe}" pkgver "${compare_package}")" \
-        && if [[ ${pkgname} == *-git ]]; then
-            parse_source_entry "${source[0]}"
-            calc_git_pkgver
-            comp_repo_ver="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git${comp_git_pkgver}"
-        else
-            comp_repo_ver="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
-        fi
+    sudo curl -fsSL "$compare_repo/packages/$compare_package/.SRCINFO" -o "${compare_safe}" || return 1
+    for comp in "pkgver" "pkgrel" "epoch"; do
+        local -n decomp="compare_${comp}"
+        decomp="$(srcinfo.match_pkg "${compare_safe}" "${comp}" "${compare_package}")"
+    done
+    mapfile -t compare_source < <(srcinfo.match_pkg "${compare_safe}" source "${compare_package}")
+    if [[ ${compare_package} == *-git ]]; then
+        parse_source_entry "${compare_source[0]}"
+        calc_git_pkgver
+        comp_repo_ver="${compare_epoch+$compare_epoch:}${compare_pkgver}-pacstall${compare_pkgrel:-1}~git${comp_git_pkgver}"
+    else
+        comp_repo_ver="${compare_epoch+$compare_epoch:}${compare_pkgver}-pacstall${compare_pkgrel:-1}"
+    fi
     sudo rm -rf "${compare_safe}"
 }
 
