@@ -640,6 +640,7 @@ function compare_remote_version() {
         sudo curl -fsSL "$remoterepo/packages/$crv_input/.SRCINFO" -o "${remote_safe}" || return 1
         for remv in "pkgver" "pkgrel" "epoch"; do
             local -n deremv="crv_${remv}"
+            # shellcheck disable=SC2034
             deremv="$(srcinfo.match_pkg "${remote_safe}" "${remv}" "${crv_input}")"
         done
         mapfile -t crv_source < <(srcinfo.match_pkg "${remote_safe}" source "${crv_input}")
