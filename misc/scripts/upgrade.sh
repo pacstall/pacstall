@@ -241,13 +241,6 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
             fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
             continue
         fi
-        export URL="$REPO/packages/$PACKAGE/.SRCINFO"
-        # shellcheck source=./misc/scripts/get-pacscript.sh
-        if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then
-            fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} .SRCINFO"
-            continue
-        fi
-        export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
         # shellcheck source=./misc/scripts/package.sh
         source "$SCRIPTDIR/scripts/package.sh"
     done
