@@ -159,7 +159,7 @@ function srcinfo.parse() {
     for loop in "${total_list[@]}"; do
         declare -n part="${loop}"
         # Are we at a new pkgname (pkgbase)?
-        if [[ ${loop} == *"pkgname" || ${loop} == *"pkgbase" ]]; then
+        if [[ ${loop} == *@(pkgname|pkgbase) ]]; then
             declare -n var_name="${var_prefix}_access"
             [[ ${loop} == "${var_prefix}_pkgbase"* ]] && global="pkgbase_"
             for i in "${!part[@]}"; do
