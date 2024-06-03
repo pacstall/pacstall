@@ -54,6 +54,7 @@ function calc_repo_ver() {
     compare_tmp="$(sudo mktemp -p "${PACDIR}" -t "calc-repo-ver-$compare_package.XXXXXX")"
     compare_safe="${compare_tmp}"
     sudo curl -fsSL "$compare_repo/packages/$compare_package/.SRCINFO" -o "${compare_safe}" || return 1
+    sudo chown "${PACSTALL_USER}:${PACSTALL_USER}" "${compare_safe}"
     for comp in "pkgver" "pkgrel" "epoch"; do
         local -n decomp="compare_${comp}"
         decomp="$(srcinfo.match_pkg "${compare_safe}" "${comp}" "${compare_package}")"
