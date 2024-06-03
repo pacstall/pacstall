@@ -391,9 +391,9 @@ function lint_fields() {
                 case "$?" in
                     1) fancy_message error "'${tlogvar}' field name cannot contain a space in 'custom_fields'"; ret=1 ;;
                     2) fancy_message error "'${tlogvar}' field name cannot contain a number in 'custom_fields'"; ret=1 ;;
-                    3) fancy_message error "'${tlogvar}' field name must capitalize the first letter in 'custom_fields'"
+                    3) fancy_message error "'${tlogvar}' field name must capitalize only the first letter in 'custom_fields'"
                        fancy_message sub "Field names with multiple words should be hyphen separated, and cannot end with a hyphen"
-                       fancy_message sub "Hyphenated field names must capitalize the first letter of each word"; ret=1 ;;
+                       fancy_message sub "Hyphenated field names must capitalize only the first letter of each word"; ret=1 ;;
                 esac
             fi
             ((idx++))
