@@ -387,11 +387,10 @@ function lint_fields() {
                 fancy_message error "'${tlogvar}' is already used as a field in pacstall"
                 ret=1
             elif ! lint_field_fmt "${tlogvar}"; then
-                fancy_message error "'${tlogvar}' is improperly formatted for 'custom_fields'"
                 case "$?" in
-                    1) fancy_message sub "Field names cannot contain a space" ;;
-                    2) fancy_message sub "Field names cannot contain a number" ;;
-                    3) fancy_message sub "Field names must capitalize the first letter"
+                    1) fancy_message error "Field names cannot contain a space in 'custom_fields' (${tlogvar})" ;;
+                    2) fancy_message error "Field names cannot contain a number in 'custom_fields' (${tlogvar})" ;;
+                    3) fancy_message error "Field names must capitalize the first letter in 'custom_fields' (${tlogvar})"
                        fancy_message sub "Field names with multiple words must be hyphen (-) seperated"
                        fancy_message sub "Hyphenated field names must capitalize the first letter of each word, and cannot end with a hyphen" ;;
                 esac
