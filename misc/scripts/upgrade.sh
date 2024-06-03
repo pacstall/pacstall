@@ -54,7 +54,7 @@ function calc_repo_ver() {
     compare_tmp="$(sudo mktemp -p "${PACDIR}" -t "calc-repo-ver-$compare_package.XXXXXX")"
     compare_safe="${compare_tmp}"
     sudo curl -fsSL "$compare_repo/packages/$compare_package/.SRCINFO" -o "${compare_safe}" \
-        && pkgver="$(srcinfo.match_pkg "${compare_safe}" pkgver)" \
+        && pkgver="$(srcinfo.match_pkg "${compare_safe}" pkgver "${compare_package}")" \
         && if [[ ${pkgname} == *-git ]]; then
             parse_source_entry "${source[0]}"
             calc_git_pkgver
