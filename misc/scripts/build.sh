@@ -293,7 +293,7 @@ function is_builddep_arch() {
     [[ -n ${!buildar} ]] && appendar+=("${!buildar}")
     [[ -n ${!buildar_distb} ]] && appendar+=("${!buildar_distb}")
     [[ -n ${!buildar_distv} ]] && appendar+=("${!buildar_distv}")
-    [[ -z ${appendar[*]} ]] && return 1 || return 0
+    [[ -n ${appendar[*]} ]]
 }
 
 function makedeb() {
