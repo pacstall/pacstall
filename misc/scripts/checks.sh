@@ -359,8 +359,12 @@ function lint_relations() {
 function lint_field_fmt() {
     local infield="${1}"
     # ensure no spaces or numbers, first letter is capital, + hyphen is not last char and also follows cap rule
-    if [[ "${infield}" =~ [[:space:]] || "${infield}" =~ [0-9] || ! "${infield}" =~ ^[A-Z][a-z]*(-[A-Z][a-z]*)*$ ]]; then
+    if [[ "${infield}" =~ [[:space:]] ]]; then
         return 1
+    elif [[ "${infield}" =~ [0-9] ]]; then
+        return 2
+    elif [[ ! "${infield}" =~ ^[A-Z][a-z]*(-[A-Z][a-z]*)*$ ]]; then
+        return 3
     else
         return 0
     fi
@@ -383,7 +387,14 @@ function lint_fields() {
                 fancy_message error "'${tlogvar}' is already used as a field in pacstall"
                 ret=1
             elif ! lint_field_fmt "${tlogvar}"; then
-                fancy_message error "'${tlogvar}' is improperly formatted for control fields"
+                fancy_message error "'${tlogvar}' is improperly formatted for 'custom_fields'"
+                case "$?" in
+                    1) fancy_message sub "Field names cannot contain a space" ;;
+                    2) fancy_message sub "Field names cannot contain a number" ;;
+                    3) fancy_message sub "Field names must capitalize the first letter"
+                       fancy_message sub "Field names with multiple words must be hyphen (-) seperated"
+                       fancy_message sub "Hyphenated field names must capitalize the first letter of each word, and cannot end with a hyphen" ;;
+                esac
                 ret=1
             fi
             ((idx++))
