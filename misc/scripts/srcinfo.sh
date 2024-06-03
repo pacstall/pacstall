@@ -196,7 +196,7 @@ function srcinfo.parse() {
 
 function srcinfo.cleanup() {
     local var_prefix="${1:?No var_prefix passed to srcinfo.cleanup}" i z
-    local main_loop_template="${var_prefix}_access" comp
+    local main_loop_template="${var_prefix}_access" compg
     declare -n main_loop="${main_loop_template}"
     for i in "${main_loop[@]}"; do
         declare -n cleaner="${i}"
@@ -207,8 +207,8 @@ function srcinfo.cleanup() {
     done
     unset "${var_prefix}_access" globase global
     # So now lets clean the stragglers that we can't reasonably infer
-    mapfile -t comp < <(compgen -v)
-    for i in "${comp[@]}"; do
+    mapfile -t compg < <(compgen -v)
+    for i in "${compg[@]}"; do
         if [[ ${i} == "${var_prefix}_"* ]]; then
             unset -v "${i}"
         fi
