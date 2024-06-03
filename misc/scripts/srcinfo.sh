@@ -151,10 +151,6 @@ function srcinfo.parse() {
         temp_array="$(srcinfo._create_array "${locbase}" "${temp_line[key]}" "${var_prefix}")"
         declare -n ref="${temp_array}"
         ref+=("${temp_line[value]}")
-        #TODO: In the linux SRCINFO, the pkgbase pkgdesc and pkgname=linux pkgdesc
-        # get merged into an array, so I suppose we need to check if both pkgbase and
-        # pkgname have the same keys, and if so, use pkgname, and if not, inherit from
-        # pkgbase.
         if [[ ${locbase} == "pkgbase_"* ]] || ! srcinfo._contains total_list "${temp_array}"; then
             total_list+=("${temp_array}")
         fi
