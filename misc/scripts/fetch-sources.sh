@@ -644,7 +644,7 @@ function compare_remote_version() {
             # shellcheck disable=SC2034
             deremv="$(srcinfo.match_pkg "${remote_safe}" "${remv}" "${crv_input}")"
         done
-        mapfile -t crv_source < <(srcinfo.match_pkg "${remote_safe}" source "${crv_input}")
+        mapfile -t crv_source < <(srcinfo.match_pkg "${remote_safe}" "source" "${crv_input}")
         if [[ ${crv_input} == *-git ]]; then
             parse_source_entry "${crv_source[0]}"
             calc_git_pkgver

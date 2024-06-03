@@ -60,7 +60,7 @@ function calc_repo_ver() {
         # shellcheck disable=SC2034
         decomp="$(srcinfo.match_pkg "${compare_safe}" "${comp}" "${compare_package}")"
     done
-    mapfile -t compare_source < <(srcinfo.match_pkg "${compare_safe}" source "${compare_package}")
+    mapfile -t compare_source < <(srcinfo.match_pkg "${compare_safe}" "source" "${compare_package}")
     if [[ ${compare_package} == *-git ]]; then
         parse_source_entry "${compare_source[0]}"
         calc_git_pkgver
