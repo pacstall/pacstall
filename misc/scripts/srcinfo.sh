@@ -224,7 +224,7 @@ function srcinfo.cleanup() {
 #   converts to `srcinfo_depends_vala_panel_appmenu_valapanel_git=([0]="gtk3")`
 #
 # @arg $1 string Associative array to reformat
-# @arg $2 string Name of indexed array to append to append conversion to (can be anything)
+# @arg $2 string Ref string of indexed array to append conversion to (can be anything)
 function srcinfo.reformat_assarr() {
     local pfx base ida new pfs in_name="${1}"
     local -n in_arr="${in_name}" app="${2}"
