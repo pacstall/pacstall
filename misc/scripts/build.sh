@@ -28,6 +28,12 @@ source "${SCRIPTDIR}/scripts/version-constraints.sh" || {
     return 1
 }
 
+# shellcheck source=./misc/scripts/srcinfo.sh
+source "${SCRIPTDIR}/scripts/srcinfo.sh" || {
+    fancy_message error "Could not find srcinfo.sh"
+    return 1
+}
+
 function cleanup() {
     if [[ -n $KEEP ]]; then
         sudo rm -rf "/tmp/pacstall-keep/$pkgname"

@@ -34,6 +34,12 @@ source "${SCRIPTDIR}/scripts/fetch-sources.sh" || {
     return 1
 }
 
+# shellcheck source=./misc/scripts/srcinfo.sh
+source "${SCRIPTDIR}/scripts/srcinfo.sh" || {
+    fancy_message error "Could not find srcinfo.sh"
+    return 1
+}
+
 function ver_compare() {
     local first second
     first="${1#"${1/[0-9]*/}"}"
@@ -47,9 +53,8 @@ function calc_repo_ver() {
     unset comp_repo_ver
     compare_tmp="$(sudo mktemp -p "${PACDIR}" -t "calc-repo-ver-$compare_package.XXXXXX")"
     compare_safe="${compare_tmp}"
-    sudo curl -fsSL "$compare_repo/packages/$compare_package/$compare_package.pacscript" -o "${compare_safe}" \
-        && safe_source "${compare_safe}" \
-        && source "${safeenv}" \
+    sudo curl -fsSL "$compare_repo/packages/$compare_package/.SRCINFO" -o "${compare_safe}" \
+        && pkgver="$(srcinfo.match_pkg "${compare_safe}" pkgver)" \
         && if [[ ${pkgname} == *-git ]]; then
             parse_source_entry "${source[0]}"
             calc_git_pkgver

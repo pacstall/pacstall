@@ -638,9 +638,8 @@ function compare_remote_version() {
         unset pkgrel
         remote_tmp="$(sudo mktemp -p "${PACDIR}" -t "compare-repo-ver-$crv_input.XXXXXX")"
         remote_safe="${remote_tmp}"
-        sudo curl -fsSL "$remoterepo/packages/$crv_input/$crv_input.pacscript" -o "${remote_safe}" \
-            && safe_source "${remote_safe}" \
-            && source "${safeenv}" \
+        sudo curl -fsSL "$remoterepo/packages/$crv_input/$crv_input.SRCINFO" -o "${remote_safe}" \
+            && pkgver="$(srcinfo.match_pkg "${remote_safe}" pkgver)" \
             && if [[ ${pkgname} == *-git ]]; then
                 parse_source_entry "${source[0]}"
                 calc_git_pkgver
