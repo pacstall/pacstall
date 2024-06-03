@@ -108,6 +108,7 @@ function srcinfo._promote_to_variable() {
 
 function srcinfo.parse() {
     # We need this for trimming whitespace without external tools.
+    # shellcheck disable=SC2064
     trap "$(shopt -p extglob)" RETURN
     shopt -s extglob
     local srcinfo_file var_prefix locbase temp_array ref total_list loop part i part_two split_up
