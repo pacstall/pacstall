@@ -200,7 +200,7 @@ function srcinfo.parse() {
 
 function srcinfo.cleanup() {
     local var_prefix="${1:?No var_prefix passed to srcinfo.cleanup}" i z
-    local main_loop_template="${var_prefix}_access"
+    local main_loop_template="${var_prefix}_access" comp
     declare -n main_loop="${main_loop_template}"
     for i in "${main_loop[@]}"; do
         declare -n cleaner="${i}"
@@ -211,11 +211,10 @@ function srcinfo.cleanup() {
     done
     unset "${var_prefix}_access" globase global
     # So now lets clean the stragglers that we can't reasonably infer
-    for i in $(compgen -v); do
-        if [[ ${i} == "${var_prefix}_"* ]] && [[ ${i} == *"_array_"* ]]; then
+    mapfile -t comp < <(compgen -v)
+    for i in "${comp[@]}"; do
+        if [[ ${i} == "${var_prefix}_"* ]]; then
             unset -v "${i}"
-            # sanity check
-            unset -f "${i}"
         fi
     done
 }
@@ -307,4 +306,53 @@ function srcinfo.print_var() {
     done
 }
 
+# @description Output a specific variable from .SRCINFO
+#
+# @example
+#
+#   srcinfo.match_pkg .SRCINFO pkgbase
+#   srcinfo.match_pkg .SRCINFO pkgdesc $(srcinfo.match_pkg .SRCINFO pkgbase)
+# @arg $1 string .SRCINFO file path
+# @arg $2 string Variable or Array to search
+# @arg $3 string Package name or base to get output for
+srcinfo.match_pkg() {
+    local declares d bases b guy match out srcfile="${1}" search="${2}" pkg="${3}"
+    if [[ ${pkg} == "pkgbase:"* || ${search} == "pkgbase" ]]; then
+        pkg="${pkg/pkgbase:/}"
+        match="srcinfo_${search}_${pkg//-/_}_pkgbase"
+    else
+        match="srcinfo_${search}_${pkg//-/_}"
+    fi
+    mapfile -t declares < <(srcinfo.print_var "${srcfile}" "${search}" | awk '{sub(/^declare -a |^declare -- /, ""); print}')
+    [[ ${search} == "pkgbase" && -z ${declares[*]} ]] \
+        && mapfile -t declares < <(srcinfo.print_var "${srcfile}" "pkgname" | awk '{sub(/^declare -a |^declare -- /, ""); print}')
+    for d in "${declares[@]}"; do
+        if [[ "${d%=\(*}" =~ = ]]; then
+            declare -- "${d}"
+            bases+=("${d%=*}")
+        else
+            declare -a "${d}"
+            bases+=("${d%=\(*}")
+        fi
+    done
+    for b in "${bases[@]}"; do
+        guy="${b}[@]"
+        if [[ -z "${pkg}" ]]; then
+            if [[ ${search} == "pkgname" ]] || ((${#bases[@]}==1)); then
+                if [[ ${search} == "pkgbase" && -n ${pkgbase} ]]; then
+                    out="${pkgbase/\"/}"
+                    out="${out/\"/}"
+                    echo "pkgbase:${out}"
+                    continue
+                fi
+                echo "${!guy}"
+                continue
+            else
+                echo "${guy}"
+                continue
+            fi
+        fi
+        [[ ${b} == "${match}" ]] && echo "${!guy}"
+    done
+}
 # vim:set ft=sh ts=4 sw=4 noet:
