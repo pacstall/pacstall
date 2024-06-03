@@ -639,8 +639,8 @@ function compare_remote_version() {
         remote_safe="${remote_tmp}"
         sudo curl -fsSL "$remoterepo/packages/$crv_input/.SRCINFO" -o "${remote_safe}" || return 1
         for remv in "pkgver" "pkgrel" "epoch"; do
-            local -n decomp="crv_${remv}"
-            decomp="$(srcinfo.match_pkg "${remote_safe}" "${comp}" "${crv_input}")"
+            local -n deremv="crv_${remv}"
+            deremv="$(srcinfo.match_pkg "${remote_safe}" "${remv}" "${crv_input}")"
         done
         mapfile -t crv_source < <(srcinfo.match_pkg "${remote_safe}" source "${crv_input}")
         if [[ ${crv_input} == *-git ]]; then
