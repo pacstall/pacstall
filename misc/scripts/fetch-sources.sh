@@ -648,9 +648,9 @@ function compare_remote_version() {
         if [[ ${crv_input} == *-git ]]; then
             parse_source_entry "${crv_source[0]}"
             calc_git_pkgver
-            echo "${crv_epoch+$crv_epoch:}${crv_pkgver}-pacstall${crv_pkgrel:-1}~git${comp_git_pkgver}"
+            echo "${crv_epoch:+$crv_epoch:}${crv_pkgver}-pacstall${crv_pkgrel:-1}~git${comp_git_pkgver}"
         else
-            echo "${crv_epoch+$crv_epoch:}${crv_pkgver}-pacstall${crv_pkgrel:-1}"
+            echo "${crv_epoch:+$crv_epoch:}${crv_pkgver}-pacstall${crv_pkgrel:-1}"
         fi
         sudo rm -rf "${remote_safe}"
     )" > /dev/null

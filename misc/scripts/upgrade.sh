@@ -57,15 +57,16 @@ function calc_repo_ver() {
     sudo chown "${PACSTALL_USER}:${PACSTALL_USER}" "${compare_safe}"
     for comp in "pkgver" "pkgrel" "epoch"; do
         local -n decomp="compare_${comp}"
+        # shellcheck disable=SC2034
         decomp="$(srcinfo.match_pkg "${compare_safe}" "${comp}" "${compare_package}")"
     done
     mapfile -t compare_source < <(srcinfo.match_pkg "${compare_safe}" source "${compare_package}")
     if [[ ${compare_package} == *-git ]]; then
         parse_source_entry "${compare_source[0]}"
         calc_git_pkgver
-        comp_repo_ver="${compare_epoch+$compare_epoch:}${compare_pkgver}-pacstall${compare_pkgrel:-1}~git${comp_git_pkgver}"
+        comp_repo_ver="${compare_epoch:+$compare_epoch:}${compare_pkgver}-pacstall${compare_pkgrel:-1}~git${comp_git_pkgver}"
     else
-        comp_repo_ver="${compare_epoch+$compare_epoch:}${compare_pkgver}-pacstall${compare_pkgrel:-1}"
+        comp_repo_ver="${compare_epoch:+$compare_epoch:}${compare_pkgver}-pacstall${compare_pkgrel:-1}"
     fi
     sudo rm -rf "${compare_safe}"
 }
