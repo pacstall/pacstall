@@ -574,7 +574,7 @@ function is_compatible_arch() {
 
 function install_builddepends() {
     # shellcheck disable=SC2034
-    local build_dep not_installed_yet_builddepends bdeps_array bdeps_str check_dep not_installed_yet_checkdepends cdeps_array
+    local build_dep not_installed_yet_builddepends bdeps_array bdeps_str check_dep not_installed_yet_checkdepends cdeps_array bcons_array bcons_str
     if [[ -n ${makedepends[*]} ]]; then
         for build_dep in "${makedepends[@]}"; do
             if ! is_apt_package_installed "${build_dep}"; then
@@ -607,12 +607,20 @@ function install_builddepends() {
         dep_const.comma_array bdeps_array bdeps_str
         fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to build, and ${CYAN}${not_installed_yet_checkdepends[*]}${NC} to perform checks"
     fi
-    if ((${#not_installed_yet_builddepends[@]} != 0)) || ((${#not_installed_yet_checkdepends[@]} != 0)); then
-        fancy_message sub "Fetching apt repositories"
-        # shellcheck disable=SC2015
-        sudo apt-get update -qq --allow-releaseinfo-change \
-            && sudo apt-get satisfy -yq "${bdeps_str}" \
-            || {
+    if ((${#not_installed_yet_builddepends[@]} != 0 || ${#not_installed_yet_checkdepends[@]} != 0 || ${#makeconflicts[@]} != 0 || ${#checkconflicts[@]} != 0 )); then
+        fancy_message sub "Creating build dependency/conflicts dummy package"
+        (
+            unset pre_{upgrade,install,remove} post_{upgrade,install,remove} priority provides conflicts replaces breaks gives enhances recommends custom_fields
+            # shellcheck disable=SC2030
+            pkgname="${PACKAGE}-dummy-builddeps"
+            sudo mkdir -p "${STAGEDIR}/${pkgname}/DEBIAN"
+            deblog "Depends" "${bdeps_str}"
+            # shellcheck disable=SC2034
+            bcons_array=("${makeconflicts[@]}" "${checkconflicts[@]}")
+            dep_const.comma_array bcons_array bcons_str
+            deblog "Conflicts" "${bcons_str}"
+            makedeb
+        ) || {
                 fancy_message error "Failed to install build or check dependencies"
                 error_log 8 "install $PACKAGE"
                 clean_fail_down
