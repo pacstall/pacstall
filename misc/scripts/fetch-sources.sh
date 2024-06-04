@@ -615,6 +615,7 @@ function install_builddepends() {
             pkgname="${pkgname}-dummy-builddeps"
             sudo mkdir -p "${STAGEDIR}/${pkgname}/DEBIAN"
             deblog "Depends" "${bdeps_str}"
+            # shellcheck disable=SC2034
             bcons_array=("${makeconflicts[@]}" "${checkconflicts[@]}")
             dep_const.comma_array bcons_array bcons_str
             deblog "Conflicts" "${bcons_str}"
