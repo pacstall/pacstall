@@ -243,7 +243,7 @@ function clean_logdir() {
 }
 
 function createdeb() {
-    local pkgname="$1"
+    local debname="${1}_${2}_${3}"
     if ((PACSTALL_INSTALL == 0)); then
         # We are not going to immediately install, meaning the user might want to share their deb with someone else, so create the highest compression.
         local flags=("-19" "-T0" "-q")
@@ -282,8 +282,8 @@ function createdeb() {
 
     fancy_message sub "Compressing"
     sudo "$command" "${flags[@]}" "$DATA_LOCATION" "$CONTROL_LOCATION"
-    sudo ar -rU "$pkgname.deb" debian-binary control.tar."$compression" data.tar."$compression" > /dev/null 2>&1
-    sudo mv "$pkgname.deb" ..
+    sudo ar -rU "$debname.deb" debian-binary control.tar."$compression" data.tar."$compression" > /dev/null 2>&1
+    sudo mv "$debname.deb" ..
     sudo rm -f debian-binary control.tar."$compression" data.tar."$compression"
 }
 
@@ -598,20 +598,26 @@ function makedeb() {
     generate_changelog | sudo tee -a "$STAGEDIR/$pkgname/DEBIAN/changelog" > /dev/null
 
     cd "$STAGEDIR" || return 1
-    if ! createdeb "$pkgname"; then
+    if array.contains arch "${CARCH}" || array.contains arch "${AARCH}"; then
+        local deb_arch="${CARCH}"
+    else
+        local deb_arch="all"
+    fi
+    if ! createdeb "${pkgname}" "${full_version}" "${deb_arch}"; then
         fancy_message error "Could not create package"
         error_log 5 "install $PACKAGE"
         fancy_message info "Cleaning up"
         cleanup
         return 1
     fi
-    install_deb
+    install_deb "${pkgname}" "${full_version}" "${deb_arch}"
 }
 
 function install_deb() {
+    local debname="${1}_${2}_${3}"
     if ((PACSTALL_INSTALL != 0)); then
         # --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
-        if ! sudo -E apt-get install --reinstall "$STAGEDIR/$pkgname.deb" -y --allow-downgrades 2> /dev/null; then
+        if ! sudo -E apt-get install --reinstall "$STAGEDIR/$debname.deb" -y --allow-downgrades 2> /dev/null; then
             echo -ne "\t"
             fancy_message error "Failed to install $pkgname deb"
             error_log 8 "install $PACKAGE"
@@ -624,7 +630,7 @@ function install_deb() {
             sudo apt-mark auto "${gives:-$pkgname}" 2> /dev/null
         fi
         sudo rm -rf "$STAGEDIR/$pkgname"
-        sudo rm -rf "$PACDIR/$pkgname.deb"
+        sudo rm -rf "$PACDIR/$debname.deb"
 
         if ! [[ -d /etc/apt/preferences.d/ ]]; then
             sudo mkdir -p /etc/apt/preferences.d
@@ -635,9 +641,9 @@ function install_deb() {
         echo "Pin-Priority: -1" | sudo tee -a "/etc/apt/preferences.d/${pkgname}-pin" > /dev/null
         return 0
     else
-        sudo mv "$STAGEDIR/$pkgname.deb" "$PACDEB_DIR"
-        sudo chown "$PACSTALL_USER":"$PACSTALL_USER" "$PACDEB_DIR/$pkgname.deb"
-        fancy_message info "Package built at ${BGreen}$PACDEB_DIR/$pkgname.deb${NC}"
+        sudo mv "$STAGEDIR/$debname.deb" "$PACDEB_DIR"
+        sudo chown "$PACSTALL_USER":"$PACSTALL_USER" "$PACDEB_DIR/$debname.deb"
+        fancy_message info "Package built at ${BGreen}$PACDEB_DIR/$debname.deb${NC}"
         fancy_message info "Moving ${BGreen}$STAGEDIR/$pkgname${NC} to ${BGreen}/tmp/pacstall-no-build/$pkgname${NC}"
         sudo rm -rf "/tmp/pacstall-no-build/$pkgname"
         mkdir -p "/tmp/pacstall-no-build/$pkgname"
@@ -707,14 +713,19 @@ function repacstall() {
     sudo sed -i '/^Depends:/d' "${upcontrol}"
     sudo sed -i "/Installed-Size:/a Depends: ${repac_depends_str}" "${upcontrol}"
     sudo sed -i "/Description:/i Modified-By-Pacstall: yes" "${upcontrol}"
-    if ! createdeb "${pkgname}"; then
+    if array.contains arch "${CARCH}" || array.contains arch "${AARCH}"; then
+        local deb_arch="${CARCH}"
+    else
+        local deb_arch="all"
+    fi
+    if ! createdeb "${pkgname}" "${full_version}" "${deb_arch}"; then
         fancy_message error "Could not create package"
         error_log 5 "install $PACKAGE"
         fancy_message info "Cleaning up"
         cleanup
         return 1
     fi
-    install_deb
+    install_deb "${pkgname}" "${full_version}" "${deb_arch}"
 }
 
 function check_if_pacdep() {

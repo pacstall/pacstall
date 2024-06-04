@@ -190,7 +190,8 @@ function gather_down() {
 }
 
 function git_down() {
-    local revision gitopts submodules=true no_submodule
+    local revision gitopts submodules=true no_submodule silence quiet
+    ${PACSTALL_VERBOSE} || silence=("&>" "/dev/null") quiet="--quiet"
     dest="${dest%.git}"
     if [[ -n ${git_branch} || -n ${git_tag} ]]; then
         if [[ -n ${git_branch} ]]; then
@@ -202,7 +203,7 @@ function git_down() {
         fi
         gitopts="-b ${revision}"
     elif [[ -n ${git_commit} ]]; then
-        gitopts="--no-checkout --filter=blob:none"
+        gitopts=("--no-checkout" "--filter=blob:none")
         fancy_message info "Cloning ${BPurple}${dest}${NC} with no blobs"
     else
         unset gitopts
@@ -210,7 +211,7 @@ function git_down() {
     fi
     # git clone quietly, with no history, and if submodules are there, download with 10 jobs
     # shellcheck disable=SC2086,SC2031
-    git clone --quiet --depth=1 --jobs=10 "${source_url}" "${dest}" ${gitopts} &> /dev/null || fail_down
+    eval "git clone --depth=1 --jobs=10 ${quiet} \"${source_url}\" \"${dest}\" ${gitopts[*]} ${silence[*]}" || fail_down
     # cd into the directory
     cd "./${dest}" 2> /dev/null || {
         error_log 1 "install $PACKAGE"
@@ -219,8 +220,8 @@ function git_down() {
     }
     if [[ -n ${git_commit} ]]; then
         fancy_message sub "Fetching commit ${CYAN}${git_commit:0:8}${NC}"
-        git fetch --quiet origin "${git_commit}" &> /dev/null || fail_down
-        git checkout --quiet --force "${git_commit}" &> /dev/null || fail_down
+        eval "git fetch ${quiet} origin \"${git_commit}\" ${silence[*]}" || fail_down
+        eval "git checkout ${quiet} --force \"${git_commit}\" ${silence[*]}" || fail_down
     fi
     for no_submodule in "${nosubmodules[@]}"; do
         if [[ ${no_submodule} == "${dest}" ]]; then
@@ -230,7 +231,7 @@ function git_down() {
     done
     if ${submodules}; then
         # don't send this one to /dev/null like the others
-        git submodule update --quiet --init --recursive --depth=1 || fail_down
+        git submodule update "${quiet[@]}" --init --recursive --depth=1 || fail_down
     else
         fancy_message sub "Not cloning submodules for ${PURPLE}${dest}${NC}"
     fi
@@ -400,13 +401,13 @@ function append_hash_entry() {
             if [[ -n ${!hash_arr} && -z ${extend} ]]; then
                 export exp_method="${type}"
                 for a in ${!hash_arr}; do
-                    append+=("${a}")
+                    [[ ${pkgname} == *"-deb" ]] && append=("${a}") || append+=("${a}")
                 done
                 break
             elif [[ -n ${!hash_arch} ]]; then
                 [[ -z ${!hash_arr} && -z ${append[*]} ]] && export exp_method="${type}"
                 for a in ${!hash_arch}; do
-                    append+=("${a}")
+                    [[ ${pkgname} == *"-deb" ]] && append=("${a}") || append+=("${a}")
                 done
                 break
             fi
@@ -419,7 +420,9 @@ function append_var_arch() {
     declare -n ref_inputvar="${inputvar}"
     if [[ -n ${!inputvar_arch} ]]; then
         for inp in ${!inputvar_arch}; do
-            if ! array.contains ref_inputvar "${inp}" || [[ ${inputvar} == "source" ]]; then
+            if [[ ${pkgname} == *"-deb" && ${inputvar} == "source" ]]; then
+                ref_inputvar=("${inp}")
+            elif ! array.contains ref_inputvar "${inp}" || [[ ${inputvar} == "source" ]]; then
                 ref_inputvar+=("${inp}")
             fi
         done
