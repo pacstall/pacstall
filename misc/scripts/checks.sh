@@ -382,15 +382,12 @@ function lint_field_fmt() {
     # Ensure first letter is Capital
     elif [[ ${infield} != "${infield^}" ]]; then
         return 3
-        # Ensure names with multiple words are hyphen separated, and don't end with a hyphen
-    elif [[ ${infield} != "${infield^}" ]]; then
-        return 4
-        # Ensure hyphenated field names are capitalized only on the first letter of each word
+    # Ensure hyphenated field names are capitalized only on the first letter of each word
     elif ! lint_capital_check "${infield}"; then
-        return 5
-        # Ensure last or first letter isn't a hyphen
+        return 4
+    # Ensure last or first letter isn't a hyphen
     elif [[ ${infield: -1} != '-' || ${infield:1} != '-' ]]; then
-        return 6
+        return 5
     else
         return 0
     fi
@@ -423,15 +420,11 @@ function lint_fields() {
                         fancy_message error "'${tlogvar}' field name cannot contain a number in 'custom_fields'"
                         ret=1
                         ;;
-                    3 | 5)
+                    3 | 4)
                         fancy_message error "'${tlogvar}' field name must capitalize only the letter of each word in 'custom_fields'"
                         ret=1
                         ;;
-                    4)
-                        fancy_message error "'${tlogvar}' field name with multiple words should be hyphen separated in 'custom_fields'"
-                        ret=1
-                        ;;
-                    6)
+                    5)
                         fancy_message error "'${tlogvar}' cannot start or end with a hyphen in 'custom_fields'"
                         ret=1
                         ;;
