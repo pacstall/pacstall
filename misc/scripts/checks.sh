@@ -359,7 +359,11 @@ function lint_relations() {
 function lint_capital_check() {
     local str="${1}" i=0 c x z split_chars=()
     while printf -v c "%s%n" "${str:i++:1}" x; do
-        ((x)) && split_chars+=("${c}") || break
+        if ((x)); then
+            split_chars+=("${c}")
+        else
+            break
+        fi
     done
     for z in "${!split_chars[@]}"; do
         if [[ ${split_chars[$z]} == '-' ]]; then
