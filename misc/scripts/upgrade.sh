@@ -34,6 +34,12 @@ source "${SCRIPTDIR}/scripts/fetch-sources.sh" || {
     return 1
 }
 
+# shellcheck source=./misc/scripts/srcinfo.sh
+source "${SCRIPTDIR}/scripts/srcinfo.sh" || {
+    fancy_message error "Could not find srcinfo.sh"
+    return 1
+}
+
 function ver_compare() {
     local first second
     first="${1#"${1/[0-9]*/}"}"
@@ -43,20 +49,25 @@ function ver_compare() {
 }
 
 function calc_repo_ver() {
-    local compare_repo="$1" compare_package="$2" compare_tmp compare_safe
+    local compare_repo="$1" compare_package="$2" compare_tmp compare_safe compare_pkgver compare_pkgrel compare_epoch compare_source comp
     unset comp_repo_ver
     compare_tmp="$(sudo mktemp -p "${PACDIR}" -t "calc-repo-ver-$compare_package.XXXXXX")"
     compare_safe="${compare_tmp}"
-    sudo curl -fsSL "$compare_repo/packages/$compare_package/$compare_package.pacscript" -o "${compare_safe}" \
-        && safe_source "${compare_safe}" \
-        && source "${safeenv}" \
-        && if [[ ${pkgname} == *-git ]]; then
-            parse_source_entry "${source[0]}"
-            calc_git_pkgver
-            comp_repo_ver="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git${comp_git_pkgver}"
-        else
-            comp_repo_ver="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
-        fi
+    curl -fsSL "$compare_repo/packages/$compare_package/.SRCINFO" | sudo tee "${compare_safe}" > /dev/null || return 1
+    sudo chown "${PACSTALL_USER}:${PACSTALL_USER}" "${compare_safe}"
+    for comp in "pkgver" "pkgrel" "epoch"; do
+        local -n decomp="compare_${comp}"
+        # shellcheck disable=SC2034
+        decomp="$(srcinfo.match_pkg "${compare_safe}" "${comp}" "${compare_package}")"
+    done
+    mapfile -t compare_source < <(srcinfo.match_pkg "${compare_safe}" "source" "${compare_package}")
+    if [[ ${compare_package} == *-git ]]; then
+        parse_source_entry "${compare_source[0]}"
+        calc_git_pkgver
+        comp_repo_ver="${compare_epoch:+$compare_epoch:}${compare_pkgver}-pacstall${compare_pkgrel:-1}~git${comp_git_pkgver}"
+    else
+        comp_repo_ver="${compare_epoch:+$compare_epoch:}${compare_pkgver}-pacstall${compare_pkgrel:-1}"
+    fi
     sudo rm -rf "${compare_safe}"
 }
 

@@ -621,7 +621,7 @@ function install_builddepends() {
 }
 
 function compare_remote_version() {
-    local crv_input="${1}" remote_tmp remote_safe
+    local crv_input="${1}" remote_tmp remote_safe remotever localver crv_pkgver crv_pkgrel crv_epoch crv_source remv
     source "$METADIR/$crv_input" || return 1
     [[ ${_remoterepo} == "orphan" ]] && _remoterepo="${REPO}"
     if [[ -z ${_remoterepo} ]]; then
@@ -633,21 +633,25 @@ function compare_remote_version() {
     else
         local remoterepo="${_remoterepo}"
     fi
-    local remotever localver
     remotever="$(
         unset pkgrel
         remote_tmp="$(sudo mktemp -p "${PACDIR}" -t "compare-repo-ver-$crv_input.XXXXXX")"
         remote_safe="${remote_tmp}"
-        sudo curl -fsSL "$remoterepo/packages/$crv_input/$crv_input.pacscript" -o "${remote_safe}" \
-            && safe_source "${remote_safe}" \
-            && source "${safeenv}" \
-            && if [[ ${pkgname} == *-git ]]; then
-                parse_source_entry "${source[0]}"
-                calc_git_pkgver
-                echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git${comp_git_pkgver}"
-            else
-                echo "${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
-            fi
+        curl -fsSL "$remoterepo/packages/$crv_input/.SRCINFO" | sudo tee "${remote_safe}" > /dev/null || return 1
+        sudo chown "${PACSTALL_USER}:${PACSTALL_USER}" "${remote_safe}"
+        for remv in "pkgver" "pkgrel" "epoch"; do
+            local -n deremv="crv_${remv}"
+            # shellcheck disable=SC2034
+            deremv="$(srcinfo.match_pkg "${remote_safe}" "${remv}" "${crv_input}")"
+        done
+        mapfile -t crv_source < <(srcinfo.match_pkg "${remote_safe}" "source" "${crv_input}")
+        if [[ ${crv_input} == *-git ]]; then
+            parse_source_entry "${crv_source[0]}"
+            calc_git_pkgver
+            echo "${crv_epoch:+$crv_epoch:}${crv_pkgver}-pacstall${crv_pkgrel:-1}~git${comp_git_pkgver}"
+        else
+            echo "${crv_epoch:+$crv_epoch:}${crv_pkgver}-pacstall${crv_pkgrel:-1}"
+        fi
         sudo rm -rf "${remote_safe}"
     )" > /dev/null
     localver=$(source "${METADIR}/${crv_input}" && echo "${_version}")

@@ -798,9 +798,9 @@ Helpful links:
                         continue
                     fi
 
-                    # FIXME: URL is being eaten up and not supplying link on -Up function, so we are forcing it here
                     specifyRepo "$REPO"
-                    URL="${REPO:-https://raw.githubusercontent.com/pacstall/pacstall-programs/master}/packages/$PACKAGE/$PACKAGE.pacscript"
+                    export REPO
+                    export URL="${REPO:-https://raw.githubusercontent.com/pacstall/pacstall-programs/master}/packages/$PACKAGE/$PACKAGE.pacscript"
 
                     # shellcheck source=./misc/scripts/get-pacscript.sh
                     if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then
@@ -808,7 +808,6 @@ Helpful links:
                         suggested_solution "Confirm that the package exists by running '${UCyan}pacstall -S $PACKAGE${NC}'" "Check your internet connection"
                         continue
                     fi
-                    export REPO
                 fi
                 # shellcheck source=./misc/scripts/package.sh
                 if ! source "$SCRIPTDIR/scripts/package.sh"; then
