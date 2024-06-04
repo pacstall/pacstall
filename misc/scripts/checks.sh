@@ -171,42 +171,42 @@ function lint_source() {
     else
         for sarch in "${PACSTALL_KNOWN_ARCH[@]}" "${PACSTALL_KNOWN_DISTROS[@]}" "${source_distro_archs[@]}"; do
             local source_arch="source_${sarch}[@]" raw_carch_source="source_${TARCH}[@]" raw_distbase_source="source_${DISTRO%:*}[@]" \
-            raw_distver_source="source_${DISTRO#*:}[@]" raw_distbase_carch_source="source_${DISTRO%:*}_${TARCH}[@]" \
-            raw_distver_carch_source="source_${DISTRO#*:}_${TARCH}[@]" carch_source distbase_source distver_source distbase_carch_source distver_carch_source
+                raw_distver_source="source_${DISTRO#*:}[@]" raw_distbase_carch_source="source_${DISTRO%:*}_${TARCH}[@]" \
+                raw_distver_carch_source="source_${DISTRO#*:}_${TARCH}[@]" carch_source distbase_source distver_source distbase_carch_source distver_carch_source
             carch_source=("${!raw_carch_source}")
             distbase_source=("${!raw_distbase_source}")
             distver_source=("${!raw_distver_source}")
             distbase_carch_source=("${!raw_distbase_carch_source}")
             distver_carch_source=("${!raw_distver_carch_source}")
-            [[ ${sarch} != "${TARCH}"
-                && ${sarch} != "${DISTRO%:*}"
-                && ${sarch} != "${DISTRO#*:}"
-                && ${sarch} != "${DISTRO%:*}_${TARCH}"
-                && ${sarch} != "${DISTRO#*:}_${TARCH}"
-            ]] && if [[ -n ${!source_arch} ]]; then
-                test_source=()
-                if [[ -n ${source[0]} ]]; then
-                    { (( "${#source[@]}" <= 1
-                        && "${#carch_source[@]}" <= 1
-                        && "${#distbase_source[@]}" <= 1
-                        && "${#distver_source[@]}" <= 1
-                        && "${#distbase_carch_source[@]}" <= 1
-                        && "${#distver_carch_source[@]}" <= 1 )) \
-                        && [[ ${carch_source[0]} == "${source[0]}"
-                            || ${distbase_source[0]} == "${source[0]}"
-                            || ${distver_source[0]} == "${source[0]}"
-                            || ${distbase_carch_source[0]} == "${source[0]}"
-                            || ${distver_carch_source[0]} == "${source[0]}" ]]; } \
-                    || test_source+=("${source[@]}")
-                fi
-                [[ ${pkgname} == *"-deb" ]] && test_source=("${!source_arch}") || test_source+=("${!source_arch}")
-                if [[ -n ${test_source[1]} ]]; then
-                    lint_source_deb_test "${test_source[@]}"
-                    if ((ret == 1)); then
-                        break
+            [[ ${sarch} != "${TARCH}" &&
+                ${sarch} != "${DISTRO%:*}" &&
+                ${sarch} != "${DISTRO#*:}" &&
+                ${sarch} != "${DISTRO%:*}_${TARCH}" &&
+                ${sarch} != "${DISTRO#*:}_${TARCH}" ]] \
+                && if [[ -n ${!source_arch} ]]; then
+                    test_source=()
+                    if [[ -n ${source[0]} ]]; then
+                        { (("${#source[@]}" <= 1 && \
+                            "${#carch_source[@]}" <= 1 && \
+                            "${#distbase_source[@]}" <= 1 && \
+                            "${#distver_source[@]}" <= 1 && \
+                            "${#distbase_carch_source[@]}" <= 1 && \
+                            "${#distver_carch_source[@]}" <= 1)) \
+                                && [[ ${carch_source[0]} == "${source[0]}" ||
+                                    ${distbase_source[0]} == "${source[0]}" ||
+                                    ${distver_source[0]} == "${source[0]}" ||
+                                    ${distbase_carch_source[0]} == "${source[0]}" ||
+                                    ${distver_carch_source[0]} == "${source[0]}" ]]; } \
+                            || test_source+=("${source[@]}")
+                    fi
+                    test_source+=("${!source_arch}")
+                    if [[ -n ${test_source[1]} ]]; then
+                        lint_source_deb_test "${test_source[@]}"
+                        if ((ret == 1)); then
+                            break
+                        fi
                     fi
                 fi
-            fi
         done
         if [[ -n ${source[1]} ]]; then
             lint_source_deb_test "${source[@]}"
@@ -324,7 +324,7 @@ function lint_ppa() {
 
 function lint_relations() {
     local rel_type rel_array ret=0 rela idx rdarch rdistro rddarch
-    for rel_type in "conflicts" "breaks" "replaces" "provides"; do
+    for rel_type in "conflicts" "breaks" "replaces" "provides" "enhances" "recommends" "makeconflicts" "checkconflicts"; do
         local -n rel_array="test_${rel_type}"
         local -n rtype_array="${rel_type}"
         rel_array=("${rtype_array[@]}")
@@ -354,6 +354,90 @@ function lint_relations() {
         fi
     done
     return "${ret}"
+}
+
+function lint_capital_check() {
+    local str="${1}" i=0 c x z split_chars=()
+    while printf -v c "%s%n" "${str:i++:1}" x; do
+        if ((x)); then
+            split_chars+=("${c}")
+        else
+            break
+        fi
+    done
+    for z in "${!split_chars[@]}"; do
+        if [[ ${split_chars[$z]} == '-' ]]; then
+            # Is the next letter a capital?
+            if [[ ${split_chars[z + 1]} != "${split_chars[z + 1]^}" ]]; then
+                return 1
+            fi
+        fi
+    done
+}
+
+function lint_field_fmt() {
+    local infield="${1}"
+    # Ensure no spaces
+    if [[ ${infield} =~ [[:space:]] ]]; then
+        return 1
+    # Ensure no numbers
+    elif [[ ${infield} =~ [0-9] ]]; then
+        return 2
+    # Ensure first letter is Capital
+    elif [[ ${infield} != "${infield^}" ]]; then
+        return 3
+    # Ensure hyphenated field names are capitalized only on the first letter of each word
+    elif ! lint_capital_check "${infield}"; then
+        return 4
+    # Ensure last or first letter isn't a hyphen
+    elif [[ ${infield: -1} != '-' || ${infield:1} != '-' ]]; then
+        return 5
+    else
+        return 0
+    fi
+}
+
+function lint_fields() {
+    # shellcheck disable=SC2034
+    local ret=0 idx=0 tfield tlogvar deblog_used=("Suggests" "Depends" "Package" "Version" "Architecture" "Section" "Priority"
+        "Essential" "Vcs-Git" "Build-Depends" "Build-Depends-Arch" "Build-Conflicts" "Build-Conflicts-Arch"
+        "Provides" "Conflicts" "Breaks" "Enhances" "Recommends" "Replaces" "Homepage" "License" "Maintainer"
+        "Uploaders" "Description" "Installed-Size")
+    if [[ -n ${custom_fields[*]} ]]; then
+        for tfield in "${custom_fields[@]}"; do
+            if [[ -z ${tfield} ]]; then
+                fancy_message error "'custom_fields' index '${idx}' cannot be empty"
+                ret=1
+            fi
+            tlogvar="${tfield%:*}"
+            if array.contains deblog_used "${tlogvar}"; then
+                fancy_message error "'${tlogvar}' is already used as a field in pacstall"
+                ret=1
+            else
+                lint_field_fmt "${tlogvar}"
+                case "$?" in
+                    1)
+                        fancy_message error "'${tlogvar}' custom field cannot contain a space in field name"
+                        ret=1
+                        ;;
+                    2)
+                        fancy_message error "'${tlogvar}' custom field cannot contain a number in field name"
+                        ret=1
+                        ;;
+                    3 | 4)
+                        fancy_message error "'${tlogvar}' custom field must capitalize only the first letter of each word in field name"
+                        ret=1
+                        ;;
+                    5)
+                        fancy_message error "'${tlogvar}' custom field cannot start or end with a hyphen"
+                        ret=1
+                        ;;
+                esac
+            fi
+            ((idx++))
+        done
+        return "${ret}"
+    fi
 }
 
 function lint_hash() {
@@ -386,33 +470,33 @@ function lint_hash() {
         test_hashsum_style="${test_hashsum_type}sums[*]"
         for harch in "${PACSTALL_KNOWN_ARCH[@]}" "${PACSTALL_KNOWN_DISTROS[@]}" "${hash_distro_archs[@]}"; do
             test_hash_arch="${test_hashsum_type}sums_${harch}[*]"
-            [[ ${harch} != "${TARCH}"
-                && ${harch} != "${DISTRO%:*}"
-                && ${harch} != "${DISTRO#*:}"
-                && ${harch} != "${DISTRO%:*}_${TARCH}"
-                && ${harch} != "${DISTRO#*:}_${TARCH}"
-            ]] && if [[ -n ${!test_hash_arch} ]]; then
-                if [[ -z ${!test_hashsum_style} && -z ${test_hash[*]} ]]; then
-                    if [[ -z ${test_hashsum_method} ]]; then
+            [[ ${harch} != "${TARCH}" &&
+                ${harch} != "${DISTRO%:*}" &&
+                ${harch} != "${DISTRO#*:}" &&
+                ${harch} != "${DISTRO%:*}_${TARCH}" &&
+                ${harch} != "${DISTRO#*:}_${TARCH}" ]] \
+                && if [[ -n ${!test_hash_arch} ]]; then
+                    if [[ -z ${!test_hashsum_style} && -z ${test_hash[*]} ]]; then
+                        if [[ -z ${test_hashsum_method} ]]; then
+                            # shellcheck disable=SC2206
+                            test_hash=(${!test_hash_arch})
+                            test_hashsum_method="${test_hashsum_type}"
+                        else
+                            fancy_message error "Only one checksum method can be provided for hashes"
+                            unset test_hash
+                            ret=1
+                            break
+                        fi
+                    elif [[ -n ${test_hashsum_method} && ${test_hashsum_method} == "${test_hashsum_type}" ]]; then
                         # shellcheck disable=SC2206
-                        test_hash=(${!test_hash_arch})
-                        test_hashsum_method="${test_hashsum_type}"
+                        test_hash+=(${!test_hash_arch})
                     else
                         fancy_message error "Only one checksum method can be provided for hashes"
                         unset test_hash
                         ret=1
                         break
                     fi
-                elif [[ -n ${test_hashsum_method} && ${test_hashsum_method} == "${test_hashsum_type}" ]]; then
-                    # shellcheck disable=SC2206
-                    test_hash+=(${!test_hash_arch})
-                else
-                    fancy_message error "Only one checksum method can be provided for hashes"
-                    unset test_hash
-                    ret=1
-                    break
                 fi
-            fi
         done
     done
     # shellcheck disable=SC2128
@@ -519,9 +603,9 @@ function lint_arch() {
                 ret=1
             else
                 for key in "${!AARCHS_MAP[@]}"; do
-                    if [[ "${el_arch}" == "${AARCHS_MAP[$key]}" ]]; then
+                    if [[ ${el_arch} == "${AARCHS_MAP[$key]}" ]]; then
                         has_aarch=true
-                    elif [[ "${el_arch}" == "${key}" ]]; then
+                    elif [[ ${el_arch} == "${key}" ]]; then
                         has_carch=true
                     fi
                 done
@@ -587,7 +671,7 @@ function lint_license() {
 }
 
 function checks() {
-    local ret=0 check linting_checks=(lint_pkgname lint_gives lint_pkgrel lint_epoch lint_version lint_source lint_pkgdesc lint_maintainer lint_deps lint_ppa lint_relations lint_hash lint_incompatible lint_arch lint_mask lint_priority lint_license)
+    local ret=0 check linting_checks=(lint_pkgname lint_gives lint_pkgrel lint_epoch lint_version lint_source lint_pkgdesc lint_maintainer lint_deps lint_ppa lint_relations lint_fields lint_hash lint_incompatible lint_arch lint_mask lint_priority lint_license)
     for check in "${linting_checks[@]}"; do
         "${check}" || ret=1
     done

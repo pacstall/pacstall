@@ -249,8 +249,10 @@ if [[ -n $pacdeps ]]; then
 fi
 
 if ! is_package_installed "${pkgname}"; then
-    if [[ -n ${conflicts[*]} ]]; then
-        for pkg in "${conflicts[@]}"; do
+    # shellcheck disable=SC2031
+    if [[ -n ${conflicts[*]} || -n ${makeconflicts[*]} || -n ${checkconflicts[*]} ]]; then
+        # shellcheck disable=SC2031
+        for pkg in "${conflicts[@]}" "${makeconflicts[@]}" "${checkconflicts[@]}"; do
             # Do we have an apt package installed (but not pacstall)?
             if is_apt_package_installed "${pkg}" && ! is_package_installed "${pkg}"; then
                 # Check if anything in conflicts variable is installed already
