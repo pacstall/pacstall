@@ -607,8 +607,8 @@ function install_builddepends() {
         dep_const.comma_array bdeps_array bdeps_str
         fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to build, and ${CYAN}${not_installed_yet_checkdepends[*]}${NC} to perform checks"
     fi
-    if ((${#not_installed_yet_builddepends[@]} != 0)) || ((${#not_installed_yet_checkdepends[@]} != 0)); then
-        fancy_message sub "Creating dependency dummy package"
+    if ((${#not_installed_yet_builddepends[@]} != 0 || ${#not_installed_yet_checkdepends[@]} != 0 || ${#makeconflicts[@]} != 0 || ${#checkconflicts[@]} != 0 )); then
+        fancy_message sub "Creating build dependency/conflicts dummy package"
         (
             unset pre_{upgrade,install,remove} post_{upgrade,install,remove} priority provides conflicts replaces breaks gives enhances recommends custom_fields
             # shellcheck disable=SC2030
