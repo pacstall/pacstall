@@ -182,7 +182,7 @@ function srcinfo.parse() {
         fi
         mapfile -t split_up <<< "${part_two/_array_/$'\n'}"
         declare -n addarr="${split_up[0]}"
-
+        unset "${split_up[1]}"
         # So now we need to check if the thing we're trying to insert is a variable,
         # or an array.
         if [[ "$(declare -p -- "${part_two}")" == "declare -a "* ]]; then

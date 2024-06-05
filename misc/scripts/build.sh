@@ -321,7 +321,7 @@ function makedeb() {
 
     if [[ -n ${arch[*]} ]]; then
         # If we have any or all in the arch, then the package works everywhere
-        if array.contains arch "any"; then
+        if array.contains arch "any" || array.contains arch "all"; then
             deblog "Architecture" "all"
         else # If it doesn't but arch[@] exists we should log the current arch as the build arch
             deblog "Architecture" "$(dpkg --print-architecture)"
