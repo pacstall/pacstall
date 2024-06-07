@@ -158,7 +158,7 @@ for i in {error-log.sh,add-repo.sh,search.sh,dep-tree.sh,version-constraints.sh,
 done
 
 wget -q --show-progress --progress=bar:force -O "/bin/pacstall" "https://raw.githubusercontent.com/pacstall/pacstall/master/pacstall" &
-wget -q --show-progress --progress=bar:force -O "/usr/share/man/man8/pacstall.8.gz" "https://raw.githubusercontent.com/pacstall/pacstall/master/misc/pacstall.8.gz" &
+wget -q --show-progress --progress=bar:force -O "/usr/share/man/man8/pacstall.8" "https://raw.githubusercontent.com/pacstall/pacstall/master/misc/pacstall.8" &
 
 mkdir -p "/usr/share/bash-completion/completions"
 mkdir -p "/usr/share/fish/vendor_completions.d"
@@ -166,6 +166,8 @@ wget -q --show-progress --progress=bar:force -O "/usr/share/bash-completion/comp
 wget -q --show-progress --progress=bar:force -O "/usr/share/fish/vendor_completions.d/pacstall.fish" "https://raw.githubusercontent.com/pacstall/pacstall/master/misc/completion/fish" &
 
 wait
+
+gzip --force -9n "/usr/share/man/man8/pacstall.8"
 
 chmod +x "/bin/pacstall"
 chmod +x $SCRIPTDIR/scripts/*
