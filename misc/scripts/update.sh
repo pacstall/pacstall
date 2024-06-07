@@ -100,7 +100,7 @@ for i in {error_log.sh,download.sh,download-local.sh,install-local.sh,build-loca
 done
 
 sudo curl -s -o /bin/pacstall "$REPO/pacstall" &
-sudo curl -s -o /usr/share/man/man8/pacstall.8.gz "$REPO/misc/pacstall.8.gz" &
+sudo curl -s -o /usr/share/man/man8/pacstall.8 "$REPO/misc/pacstall.8" &
 sudo curl -s -o /usr/share/bash-completion/completions/pacstall "$REPO/misc/completion/bash" &
 
 if command -v fish &> /dev/null; then
@@ -111,6 +111,8 @@ wait && stty "$tty_settings"
 
 sudo chmod +x /bin/pacstall
 sudo chmod +x /usr/share/pacstall/scripts/*
+
+sudo gzip --force -9n /usr/share/man/man8/pacstall.8
 
 if [[ -n $GIT_USER ]]; then
     echo "pacstall master" | sudo tee "$SCRIPTDIR/repo/update" > /dev/null
