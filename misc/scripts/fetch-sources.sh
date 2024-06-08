@@ -29,34 +29,34 @@ source "${SCRIPTDIR}/scripts/build.sh" || {
 }
 
 function parse_source_entry() {
-    unset source_url dest git_branch git_tag git_commit
+    unset source_URL dest git_branch git_tag git_commit
     local entry="$1"
-    source_url="${entry#*::}"
+    source_URL="${entry#*::}"
     dest="${entry%%::*}"
     if [[ $entry != *::* && $entry == *#*=* ]]; then
-        dest="${source_url%%#*}"
+        dest="${source_URL%%#*}"
         dest="${dest##*/}"
     fi
-    case $source_url in
+    case $source_URL in
         *#branch=*)
-            git_branch="${source_url##*#branch=}"
-            source_url="${source_url%%#branch=*}"
+            git_branch="${source_URL##*#branch=}"
+            source_URL="${source_URL%%#branch=*}"
             ;;
         *#tag=*)
-            git_tag="${source_url##*#tag=}"
-            source_url="${source_url%%#tag=*}"
+            git_tag="${source_URL##*#tag=}"
+            source_URL="${source_URL%%#tag=*}"
             ;;
         *#commit=*)
-            git_commit="${source_url##*#commit=}"
-            source_url="${source_url%%#commit=*}"
+            git_commit="${source_URL##*#commit=}"
+            source_URL="${source_URL%%#commit=*}"
             ;;
     esac
-    source_url="${source_url%%#*}"
+    source_URL="${source_URL%%#*}"
     if [[ $entry == *::* ]]; then
         dest="${entry%%::*}"
     elif [[ $entry != *#*=* ]]; then
-        source_url="$entry"
-        dest="${source_url##*/}"
+        source_URL="$entry"
+        dest="${source_URL##*/}"
     fi
     if [[ ${dest} == *"?"* ]]; then
         dest="${dest%%\?*}"
@@ -66,17 +66,17 @@ function parse_source_entry() {
 function calc_git_pkgver() {
     unset comp_git_pkgver
     local calc_commit
-    if [[ $source_url == git+* ]]; then
-        source_url="${source_url#git+}"
+    if [[ $source_URL == git+* ]]; then
+        source_URL="${source_URL#git+}"
     fi
     if [[ -n ${git_branch} ]]; then
-        calc_commit="$(git ls-remote "${source_url}" "${git_branch}")"
+        calc_commit="$(git ls-remote "${source_URL}" "${git_branch}")"
     elif [[ -n ${git_tag} ]]; then
-        calc_commit="$(git ls-remote "${source_url}" "${git_tag}")"
+        calc_commit="$(git ls-remote "${source_URL}" "${git_tag}")"
     elif [[ -n ${git_commit} ]]; then
         calc_commit="${git_commit}"
     else
-        calc_commit="$(git ls-remote "${source_url}" HEAD)"
+        calc_commit="$(git ls-remote "${source_URL}" HEAD)"
     fi
     comp_git_pkgver="${calc_commit:0:8}"
 }
@@ -84,7 +84,7 @@ function calc_git_pkgver() {
 function genextr_declare() {
     unset ext_method ext_deps
     # shellcheck disable=SC2031,SC2034
-    case "${source_url,,}" in
+    case "${source_URL,,}" in
         *.zip)
             ext_method="unzip -qo"
             ext_deps=("unzip")
@@ -178,9 +178,7 @@ function fail_down() {
 }
 
 function gather_down() {
-    if [[ -z ${srcdir} ]]; then
-        export srcdir="${PACDIR}/${PACKAGE}~${pkgver}"
-    fi
+    export srcdir="${PACDIR}/${PACKAGE}~${pkgver}"
     mkdir -p "${srcdir}"
     cd "${srcdir}" || {
         error_log 1 "gather-main $PACKAGE"
@@ -211,7 +209,7 @@ function git_down() {
     fi
     # git clone quietly, with no history, and if submodules are there, download with 10 jobs
     # shellcheck disable=SC2086,SC2031
-    eval "git clone --depth=1 --jobs=10 ${quiet} \"${source_url}\" \"${dest}\" ${gitopts[*]} ${silence[*]}" || fail_down
+    eval "git clone --depth=1 --jobs=10 ${quiet} \"${source_URL}\" \"${dest}\" ${gitopts[*]} ${silence[*]}" || fail_down
     # cd into the directory
     cd "./${dest}" 2> /dev/null || {
         error_log 1 "install $PACKAGE"
@@ -256,7 +254,7 @@ function git_down() {
 function net_down() {
     fancy_message info "Downloading ${BPurple}${dest}${NC}"
     # shellcheck disable=SC2031
-    download "$source_url" "$dest" || fail_down
+    download "$source_URL" "$dest" || fail_down
 }
 
 function hashcheck_down() {
@@ -350,7 +348,7 @@ function deb_down() {
         fancy_message sub "Cleaning up"
         cleanup
         fancy_message info "Done installing ${BPurple}$PACKAGE${NC}"
-        unset expectedHash dest source_url git_branch git_tag git_commit ext_deps ext_method hashsum_method payload_arr
+        unset expectedHash dest source_URL git_branch git_tag git_commit ext_deps ext_method hashsum_method payload_arr
         return 0
     else
         fancy_message error "Failed to install the package"
@@ -363,7 +361,7 @@ function deb_down() {
 function file_down() {
     fancy_message info "Copying local archive ${BPurple}${dest}${NC}"
     # shellcheck disable=SC2031
-    cp -r "${source_url}" "${dest}" || fail_down
+    cp -r "${source_URL}" "${dest}" || fail_down
     genextr_declare
     if [[ ${dest} == *".deb" ]]; then
         if deb_down; then

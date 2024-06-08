@@ -316,11 +316,11 @@ declare -A dest_list
 for i in "${!source[@]}"; do
     parse_source_entry "${source[$i]}"
     dest="${dest%.git}"
-    if [[ -n ${dest_list[$dest]} && ${dest_list[$dest]} != "${source_url}" ]]; then
+    if [[ -n ${dest_list[$dest]} && ${dest_list[$dest]} != "${source_URL}" ]]; then
         fancy_message error "${dest} is associated with multiple source entries"
         clean_fail_down
     else
-        dest_list["${dest}"]="${source_url}"
+        dest_list["${dest}"]="${source_URL}"
     fi
     genextr_declare
     unset ext_dep make_dep in_make_deps
@@ -358,27 +358,27 @@ for i in "${!source[@]}"; do
     if [[ -n ${payload_arr[*]} ]]; then
         for p in "${!payload_arr[@]}"; do
             if [[ ${payload_arr[$p]##*/} == "${dest}" ]]; then
-                source_url="file://${payload_arr[$p]}"
+                source_URL="file://${payload_arr[$p]}"
             fi
         done
     fi
-    if [[ $source_url != *://* ]]; then
+    if [[ $source_URL != *://* ]]; then
         if [[ -z ${REPO} ]]; then
             # shellcheck disable=SC2086
             REPO="$(< ${SCRIPTDIR}/repo/pacstallrepo)"
         fi
         # shellcheck disable=SC2031
-        source_url="${REPO}/packages/${pkgname}/${source_url}"
+        source_URL="${REPO}/packages/${pkgname}/${source_URL}"
     fi
-    case "${source_url,,}" in
+    case "${source_URL,,}" in
         *file://*)
-            source_url="${source_url#file://}"
-            source_url="${source_url#git+}"
+            source_URL="${source_URL#file://}"
+            source_URL="${source_URL#git+}"
             file_down
             ;;
         *.git | git+*)
-            if [[ $source_url == git+* ]]; then
-                source_url="${source_url#git+}"
+            if [[ $source_URL == git+* ]]; then
+                source_URL="${source_URL#git+}"
             fi
             git_down
             ;;
@@ -397,7 +397,7 @@ for i in "${!source[@]}"; do
             gather_down
             ;;
     esac
-    unset expectedHash dest source_url git_branch git_tag git_commit ext_deps ext_method
+    unset expectedHash dest source_URL git_branch git_tag git_commit ext_deps ext_method
 done
 unset hashsum_method payload_arr
 

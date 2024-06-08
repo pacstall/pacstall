@@ -498,7 +498,7 @@ function decl_scriptvars() {
         vars="source depends makedepends optdepends pacdeps checkdepends provides conflicts breaks replaces enhances recommends makeconflicts checkconflicts" \
         archs="amd64 x86_64 arm64 aarch64 armel arm armhf armv7h i386 i686 mips64el ppc64el riscv64 s390x" \
         sums="b2 sha512 sha384 sha256 sha224 sha1 md5"
-    pacstallvars=(pkgname repology pkgver git_pkgver epoch source_url source depends makedepends checkdepends conflicts
+    pacstallvars=(pkgname repology pkgver git_pkgver epoch source_URL source depends makedepends checkdepends conflicts
         breaks replaces gives pkgdesc hash optdepends ppa arch maintainer pacdeps NOBUILDDEP provides incompatible
         compatible srcdir url backup pkgrel mask pac_functions repo priority noextract nosubmodules _archive license
         bwrapenv safeenv external_connection enhances recommends custom_fields makeconflicts checkconflicts)
