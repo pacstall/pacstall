@@ -23,9 +23,9 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 # Pacstall version
-version_number="5.2.0"
-version_name="Slime"
-declare -A version_color=([r]="160" [g]="220" [b]="0")
+version_number="5.2.1"
+version_name="Lemon-Lime-Flavored Non-Caffeinated Soft Drink"
+declare -A version_color=([r]="0" [g]="186" [b]="71")
 
 # Configuration
 export LC_ALL=C
