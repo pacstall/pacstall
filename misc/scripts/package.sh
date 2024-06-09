@@ -265,7 +265,7 @@ if ! is_package_installed "${pkgname}"; then
             fi
         done
     fi
-    
+
     # shellcheck disable=SC2031
     if [[ -n ${conflicts[*]} || -n ${makeconflicts[*]} || -n ${checkconflicts[*]} ]]; then
         # shellcheck disable=SC2031
