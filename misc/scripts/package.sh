@@ -249,6 +249,23 @@ if [[ -n $pacdeps ]]; then
 fi
 
 if ! is_package_installed "${pkgname}"; then
+    if [[ -n ${replaces[*]} ]]; then
+        # Ask user if they want to replace the program
+        for pkg in "${replaces[@]}"; do
+            if is_apt_package_installed "${pkg}"; then
+                ask "This script replaces ${pkg}. Do you want to proceed?" Y
+                if ((answer == 0)); then
+                    clean_fail_down
+                fi
+                if [[ ${priority} == "essential" ]]; then
+                    sudo apt-get remove -y "${pkg}" --allow-remove-essential
+                else
+                    sudo apt-get remove -y "${pkg}"
+                fi
+            fi
+        done
+    fi
+    
     # shellcheck disable=SC2031
     if [[ -n ${conflicts[*]} || -n ${makeconflicts[*]} || -n ${checkconflicts[*]} ]]; then
         # shellcheck disable=SC2031
@@ -289,23 +306,6 @@ if ! is_package_installed "${pkgname}"; then
                 suggested_solution "Remove the pacstall package by running '${UCyan}pacstall -R $pkg${NC}'"
                 error_log 13 "install $PACKAGE"
                 clean_fail_down
-            fi
-        done
-    fi
-
-    if [[ -n ${replaces[*]} ]]; then
-        # Ask user if they want to replace the program
-        for pkg in "${replaces[@]}"; do
-            if is_apt_package_installed "${pkg}"; then
-                ask "This script replaces ${pkg}. Do you want to proceed?" Y
-                if ((answer == 0)); then
-                    clean_fail_down
-                fi
-                if [[ ${priority} == "essential" ]]; then
-                    sudo apt-get remove -y "${pkg}" --allow-remove-essential
-                else
-                    sudo apt-get remove -y "${pkg}"
-                fi
             fi
         done
     fi
