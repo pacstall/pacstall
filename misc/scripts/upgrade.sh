@@ -247,4 +247,4 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
 fi
 
 rm -f "${up_list}" "${up_print}" "${up_urls}"
-# vim:set ft=sh ts=4 sw=4 noet:
+# vim:set ft=sh ts=4 sw=4 et:

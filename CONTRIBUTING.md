@@ -82,9 +82,9 @@ esac
 ---
 
 #### Tabs vs Spaces
-We use tabs. Period. Only exception is in ASCII art.
+We generally don't use tabs.
 
-Use `tabstop` = 4, `shiftwidth` = 4, and `noexpandtab`
+Use `tabstop` = 4, `shiftwidth` = 4, and `expandtab`
 
 *Also read [Vim Modeline](#vim-modeline)*
 
@@ -189,11 +189,11 @@ along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 Paste this modeline at the end of each file.
 ```monospace
-vim:set ft=sh ts=4 sw=4 noet:
+vim:set ft=sh ts=4 sw=4 et:
 ```
 
-This automatically sets the `filetype`(`= sh`), `tabstop`(`= 4`), and `shiftwidth`(`= 4`), and most importantly disables `expandtab`.
+This automatically sets the `filetype`(`= sh`), `tabstop`(`= 4`), and `shiftwidth`(`= 4`), and most importantly enables `expandtab`.
 
 If your editor is not vim, then make sure your tab settings are as above.
 
-[modeline]: # ( vim:set ft=markdown ts=4 sw=4 noet: )
+[modeline]: # ( vim:set ft=markdown ts=4 sw=4 et: )

@@ -44,4 +44,4 @@ if [[ -n ${_ppa[*]} ]]; then
 fi
 
 sudo rm -f "${METADIR:?}/${_name}"
-# vim:set ft=sh ts=4 sw=4 noet:
+# vim:set ft=sh ts=4 sw=4 et:

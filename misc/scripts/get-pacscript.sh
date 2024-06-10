@@ -62,4 +62,4 @@ else
     error_log 1 "get $PACKAGE pacscript"
     return 1
 fi
-# vim:set ft=sh ts=4 sw=4 noet:
+# vim:set ft=sh ts=4 sw=4 et:

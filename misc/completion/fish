@@ -132,4 +132,4 @@ complete -f -c pacstall -n "_seen $log_cmds" -a "(command ls -1aA /var/lib/pacst
 # Completion for the local pacscript flags
 complete -f -c pacstall -n "_seen $pacscript_cmds" -a "(find -maxdepth 1 -type f -name '*.pacscript' | sed 's/.pacscript//g' | sed 's/.\///g')"
 
-# vim:set ft=sh ts=4 sw=4 noet:
+# vim:set ft=sh ts=4 sw=4 et:

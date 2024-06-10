@@ -813,4 +813,4 @@ function meta_log() {
     write_meta | sudo tee "$METADIR/$pkgname" > /dev/null
 }
 
-# vim:set ft=sh ts=4 sw=4 noet:
+# vim:set ft=sh ts=4 sw=4 et:

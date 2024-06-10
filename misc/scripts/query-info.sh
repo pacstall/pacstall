@@ -132,4 +132,4 @@ if [[ ${PACKAGE} == *"-deb" ]]; then
     echo -e "${BGreen}modified by pacstall${NC}: ${mbp}"
 fi
 exit 0
-# vim:set ft=sh ts=4 sw=4 noet:
+# vim:set ft=sh ts=4 sw=4 et:
