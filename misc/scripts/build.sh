@@ -342,7 +342,7 @@ function makedeb() {
     if [[ $pkgname == *-git ]]; then
         parse_source_entry "${source[0]}"
         # shellcheck disable=SC2031
-        local vcsurl="${source_URL#file://}"
+        local vcsurl="${source_url#file://}"
         vcsurl="${vcsurl#git+}"
         if [[ -n ${git_branch} ]]; then
             deblog "Vcs-Git" "${vcsurl} -b ${git_branch}"

@@ -130,8 +130,8 @@ function lint_source_deb_test() {
     # shellcheck disable=SC2206
     local input_source=($@)
     for i in "${!input_source[@]}"; do
-        local test_source_URL="${input_source[$i]}"
-        local file_name="${test_source_URL##*/}"
+        local test_source_url="${input_source[$i]}"
+        local file_name="${test_source_url##*/}"
         if [[ ${file_name} == *"?"* ]]; then
             file_name="${file_name%%\?*}"
         fi
