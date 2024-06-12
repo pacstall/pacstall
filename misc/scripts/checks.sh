@@ -502,11 +502,17 @@ function lint_hash() {
     # shellcheck disable=SC2128
     if [[ -n ${test_hash} ]]; then
         case ${test_hashsum_method} in
+            # b2 or sha512
             "${PACSTALL_KNOWN_SUMS[0]}" | "${PACSTALL_KNOWN_SUMS[1]}") test_hashsum_value=128 ;;
+            # sha384
             "${PACSTALL_KNOWN_SUMS[2]}") test_hashsum_value=96 ;;
+            # sha256
             "${PACSTALL_KNOWN_SUMS[3]}") test_hashsum_value=64 ;;
+            # sha224
             "${PACSTALL_KNOWN_SUMS[4]}") test_hashsum_value=56 ;;
+            # sha1
             "${PACSTALL_KNOWN_SUMS[5]}") test_hashsum_value=40 ;;
+            # md5
             "${PACSTALL_KNOWN_SUMS[6]}") test_hashsum_value=32 ;;
         esac
         for i in ${!test_hash[*]}; do

@@ -370,7 +370,7 @@ for i in "${!source[@]}"; do
         # shellcheck disable=SC2031
         source_url="${REPO}/packages/${pkgname}/${source_url}"
     fi
-    case "${source_url,,}" in
+    case "${source_url}" in
         *file://*)
             source_url="${source_url#file://}"
             source_url="${source_url#git+}"
