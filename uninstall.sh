@@ -138,4 +138,4 @@ while true; do
     fi
 done
 fancy_message info "Uninstallation complete. Thanks for using Pacstall!"
-# vim:set ft=sh ts=4 sw=4 noet:
+# vim:set ft=sh ts=4 sw=4 et:

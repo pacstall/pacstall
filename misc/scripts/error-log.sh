@@ -65,4 +65,4 @@ function error_log() {
 
 export -f error_log
 
-# vim:set ft=sh ts=4 sw=4 noet:
+# vim:set ft=sh ts=4 sw=4 et:

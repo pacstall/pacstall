@@ -105,4 +105,4 @@ esac
 
 printf "%s\n" "${REPOLIST[@]}" | sort -u | sudo tee "$SCRIPTDIR/repo/pacstallrepo" > /dev/null
 fancy_message info "The repo list has been updated"
-# vim:set ft=sh ts=4 sw=4 noet:
+# vim:set ft=sh ts=4 sw=4 et:

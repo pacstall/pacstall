@@ -179,4 +179,4 @@ if [[ ${new_username} == "pacstall" ]]; then
 fi
 exit 0
 
-# vim:set ft=sh ts=4 sw=4 noet:
+# vim:set ft=sh ts=4 sw=4 et:

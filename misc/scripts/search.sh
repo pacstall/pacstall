@@ -277,4 +277,4 @@ fi
 error_log 1 "search $PACKAGE"
 return 1
 
-# vim:set ft=sh ts=4 sw=4 noet:
+# vim:set ft=sh ts=4 sw=4 et:

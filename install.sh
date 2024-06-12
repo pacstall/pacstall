@@ -171,4 +171,4 @@ gzip --force -9n "/usr/share/man/man8/pacstall.8"
 
 chmod +x "/bin/pacstall"
 chmod +x $SCRIPTDIR/scripts/*
-# vim:set ft=sh ts=4 sw=4 noet:
+# vim:set ft=sh ts=4 sw=4 et:
