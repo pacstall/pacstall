@@ -185,7 +185,7 @@ function srcinfo.parse() {
         unset "${split_up[1]}"
         # So now we need to check if the thing we're trying to insert is a variable,
         # or an array.
-        if [[ "$(declare -p -- "${part_two}")" == "declare -a "* ]]; then
+        if is_array "${part_two}"; then
             declare -ga "${part_two}"
             # shellcheck disable=SC2004
             addarr[${split_up[1]}]="${part_two}"
@@ -221,13 +221,13 @@ function srcinfo.cleanup() {
 #
 # @example
 #   srcinfo_depends_vala_panel_appmenu_xfce_git=(["vala-panel-appmenu-valapanel-git-0"]="gtk3")
-#   srcinfo.reformat_assarr "srcinfo_depends_vala_panel_appmenu_xfce_git" "eviler"
+#   srcinfo.reformat_assoc_arr "srcinfo_depends_vala_panel_appmenu_xfce_git" "eviler"
 #
 #   converts to `srcinfo_depends_vala_panel_appmenu_valapanel_git=([0]="gtk3")`
 #
 # @arg $1 string Associative array to reformat
 # @arg $2 string Ref string of indexed array to append conversion to (can be anything)
-function srcinfo.reformat_assarr() {
+function srcinfo.reformat_assoc_arr() {
     local pfx base ida new pfs in_name="${1}"
     local -n in_arr="${in_name}" app="${2}"
     IFS='_' read -r -a pfs <<< "${in_name}"
@@ -285,12 +285,12 @@ function srcinfo.print_var() {
     # shellcheck disable=SC2294
     eval "${evil[@]}"
     if [[ -n ${globase} && ${globase} != "temporary_pacstall_pkgbase" ]]; then
-        srcinfo.reformat_assarr "${var_prefix}_${found}_${globase//-/_}" "eviler"
+        srcinfo.reformat_assoc_arr "${var_prefix}_${found}_${globase//-/_}" "eviler"
         unset "${var_prefix}_${found}_${globase//-/_}"
         # shellcheck disable=SC2294
         eval "${eviler[@]}"
     else
-        srcinfo.reformat_assarr "${var_prefix}_${found}_${name//-/_}" "eviler"
+        srcinfo.reformat_assoc_arr "${var_prefix}_${found}_${name//-/_}" "eviler"
         unset "${var_prefix}_${found}_${name//-/_}"
         # shellcheck disable=SC2294
         eval "${eviler[@]}"
@@ -325,7 +325,7 @@ function srcinfo.match_pkg() {
     [[ ${search} == "pkgbase" && -z ${declares[*]} ]] \
         && mapfile -t declares < <(srcinfo.print_var "${srcfile}" "pkgname" | awk '{sub(/^declare -a |^declare -- /, ""); print}')
     for d in "${declares[@]}"; do
-        if [[ "${d%=\(*}" =~ = ]]; then
+        if [[ ${d%=\(*} =~ = ]]; then
             declare -- "${d}"
             bases+=("${d%=*}")
         else
@@ -335,7 +335,7 @@ function srcinfo.match_pkg() {
     done
     for b in "${bases[@]}"; do
         guy="${b}[@]"
-        if [[ -z "${pkg}" ]]; then
+        if [[ -z ${pkg} ]]; then
             if [[ ${search} == "pkgname" || ${search} == "pkgbase" ]]; then
                 if [[ -n ${pkgbase} ]]; then
                     out="${pkgbase/\"/}"
