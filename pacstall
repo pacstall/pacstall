@@ -1089,11 +1089,11 @@ Helpful links:
             ;;
 
         -Qa | --quality-assurance)
-            if [[ $2 =~ ^([a-zA-Z0-9_-]+)?(@(.+))?(#([0-9]+))$ ]]; then
+            if [[ $2 =~ ^([a-zA-Z0-9_.-]+)?(@(.+))?(#([0-9]+))$ ]]; then
                 PACKAGE="${BASH_REMATCH[1]}"
                 METAURL="${BASH_REMATCH[3]}"
                 PRNUM="${BASH_REMATCH[5]}"
-            elif [[ $2 =~ ^([a-zA-Z0-9_-]+)(#([0-9]+))?(@(.+))?$ ]]; then
+            elif [[ $2 =~ ^([a-zA-Z0-9_.-]+)(#([0-9]+))?(@(.+))?$ ]]; then
                 PACKAGE="${BASH_REMATCH[1]}"
                 PRNUM="${BASH_REMATCH[3]}"
                 METAURL="${BASH_REMATCH[5]}"
