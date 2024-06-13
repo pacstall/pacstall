@@ -646,7 +646,7 @@ function compare_remote_version() {
         remote_tmp="$(sudo mktemp -p "${PACDIR}" -t "compare-repo-ver-$crv_input.XXXXXX")"
         remote_safe="${remote_tmp}"
         curl -fsSL "$remoterepo/packages/$crv_input/.SRCINFO" | sudo tee "${remote_safe}" > /dev/null || return 1
-        sudo chown "${PACSTALL_USER}:${PACSTALL_USER}" "${remote_safe}"
+        sudo chown "${PACSTALL_USER}" "${remote_safe}"
         for remv in "pkgver" "pkgrel" "epoch"; do
             local -n deremv="crv_${remv}"
             # shellcheck disable=SC2034
