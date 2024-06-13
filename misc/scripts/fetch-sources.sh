@@ -610,6 +610,8 @@ function install_builddepends() {
         (
             unset pre_{upgrade,install,remove} post_{upgrade,install,remove} priority provides conflicts replaces breaks gives enhances recommends custom_fields
             # shellcheck disable=SC2030
+            PACSTALL_INSTALL=1
+            # shellcheck disable=SC2030
             pkgname="${PACKAGE}-dummy-builddeps"
             sudo mkdir -p "${STAGEDIR}/${pkgname}/DEBIAN"
             deblog "Depends" "${bdeps_str}"
