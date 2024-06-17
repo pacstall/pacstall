@@ -304,6 +304,12 @@ function check_url() {
     fi
 }
 
+# Checks if a command is available.
+# Plain "command -v" succeeds if the argument is in PATH, even if not executable.
+function has_command() {
+    [[ -x $(command -v "$1" 2> /dev/null) ]]
+}
+
 # use axel if available
 function download() {
     local src="$1" out="${2:-${src##*/}}"
@@ -311,9 +317,9 @@ function download() {
         sudo rm -f "$out"
     fi
     if [[ -z $PACSTALL_DOWNLOADER || -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
-        if command -v axel &> /dev/null; then
+        if has_command axel; then
             PACSTALL_DOWNLOADER=axel
-        elif command -v wget &> /dev/null; then
+        elif has_command wget; then
             PACSTALL_DOWNLOADER=wget
         else
             PACSTALL_DOWNLOADER=curl
@@ -428,14 +434,7 @@ function is_apt_package_installed() {
 }
 
 function is_array() {
-    local input raw
-    input="${1}"
-    raw="$(declare -p "${input}" 2> /dev/null)"
-    if [[ ${raw} == "declare -a ${input}"* ]]; then
-        return 0
-    else
-        return 1
-    fi
+    [[ ${!1@a} == *a* ]]
 }
 
 function is_function() {
