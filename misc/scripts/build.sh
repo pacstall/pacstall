@@ -50,6 +50,7 @@ function cleanup() {
         fi
         sudo rm -rf /tmp/pacstall-gives
     fi
+    #shellcheck disable=SC2153
     sudo rm -rf "${STAGEDIR}/${pacname:-$PACKAGE}.deb"
     sudo rm -f /tmp/pacstall-select-options
     sudo rm -f "${PACDIR}/bwrapenv.*"

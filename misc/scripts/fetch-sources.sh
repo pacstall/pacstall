@@ -622,6 +622,7 @@ function install_builddepends() {
             makedeb
         ) || {
                 fancy_message error "Failed to install build or check dependencies"
+                # shellcheck disable=SC2031
                 error_log 8 "install ${pacname}"
                 clean_fail_down
             }

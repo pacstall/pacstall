@@ -45,7 +45,9 @@ function trap_ctrlc() {
 }
 
 function package_pkg() {
+    # shellcheck disable=SC2031
     if [[ -n ${pkgbase} ]]; then
+        # shellcheck disable=SC2031
         fancy_message info "Found pkgbase: ${PURPLE}${pkgbase}${NC}"
         if ((${#pkgname[@]} > 1)); then
             # We do this so that arrays 'start at' 1 to the user
@@ -65,13 +67,13 @@ function package_pkg() {
             for i in "${choices[@]}"; do
                 # have we gone over the maximum number in choices[@]?
                 if [[ $i != "n" && $i != "y" ]] && ((i > ${#pkgname[@]})); then
-                    local skip_opt+=("$i")
+                    local skip_pkg+=("$i")
                     unset 'choices[$choice_inc]'
                 fi
                 ((choice_inc++))
             done
-            if [[ -n ${skip_opt[*]} ]]; then
-                fancy_message warn "${BGreen}${skip_opt[*]}${NC} has exceeded the maximum number of packages to build. Skipping"
+            if [[ -n ${skip_pkg[*]} ]]; then
+                fancy_message warn "${BGreen}${skip_pkg[*]}${NC} has exceeded the maximum number of packages to build. Skipping"
             fi
 
             # Did we get actual answers?
@@ -83,10 +85,13 @@ function package_pkg() {
                 if [[ -n ${pacnames[*]} ]]; then
                     fancy_message info "Selecting packages ${BCyan}${pacnames[*]%%:\ *}${NC}"
                     for pacname in "${pacnames[@]}"; do
+                        # shellcheck disable=SC2031
                         fancy_message info "Packaging ${GREEN}${pacname}${NC}"
                         # shellcheck source=./misc/scripts/package.sh
                         if ! source "$SCRIPTDIR/scripts/package.sh"; then
+                            # shellcheck disable=SC2031
                             fancy_message error "Failed to install ${GREEN}${pacname}${NC}"
+                            # shellcheck disable=SC2031
                             if ! [[ -f "/tmp/pacstall-pacdeps-${pacname}" ]]; then
                                 sudo rm -rf "${PACDIR:?}"
                             fi
@@ -103,7 +108,9 @@ function package_pkg() {
         pacname="${pkgname}"
         # shellcheck source=./misc/scripts/package.sh
         if ! source "$SCRIPTDIR/scripts/package.sh"; then
+            # shellcheck disable=SC2031
             fancy_message error "Failed to install ${GREEN}${pacname}${NC}"
+            # shellcheck disable=SC2031
             if ! [[ -f "/tmp/pacstall-pacdeps-${pacname}" ]]; then
                 sudo rm -rf "${PACDIR:?}"
             fi
@@ -120,15 +127,16 @@ function package_pkg() {
 if [[ -n $PACSTALL_BUILD_CORES ]]; then
     if [[ $PACSTALL_BUILD_CORES =~ ^[0-9]+$ ]]; then
         function nproc() { echo "${PACSTALL_BUILD_CORES:-1}"; }
-        declare -g NCPU="${PACSTALL_BUILD_CORES:-1}"
+        NCPU="${PACSTALL_BUILD_CORES:-1}"
     else
         fancy_message error "${UCyan}PACSTALL_BUILD_CORES${NC} is not an integer. Falling back to 1"
         function nproc() { echo "1"; }
-        declare -g NCPU="1"
+        NCPU="1"
     fi
 else
-    declare -g NCPU="$(nproc)"
+    NCPU="$(nproc)"
 fi
+declare -g NCPU
 
 ask "(${BPurple}$PACKAGE${NC}) Do you want to view/edit the pacscript?" N
 if ((answer == 1)); then
@@ -158,15 +166,14 @@ sudo chmod a+r "/tmp/${PACKAGE}.pacscript"
 pacfile="$(readlink -f "/tmp/${PACKAGE}.pacscript")"
 export pacfile
 mapfile -t FARCH < <(dpkg --print-foreign-architectures)
-export FARCH
-export CARCH="$(dpkg --print-architecture)"
+CARCH="$(dpkg --print-architecture)"
 case ${CARCH} in
     i386) AARCH='i686' ;;
     armhf) AARCH='armv7h' ;;
     *) AARCH="${HOSTTYPE}" ;;
 esac
-export AARCH
-export DISTRO="$(set_distro)"
+DISTRO="$(set_distro)"
+export FARCH CARCH AARCH DISTRO
 
 # Running source on an isolated env
 safe_source "${pacfile}"
