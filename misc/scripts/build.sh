@@ -656,7 +656,6 @@ function install_deb() {
         sudo rm -rf "/tmp/pacstall-no-build/$pacname"
         mkdir -p "/tmp/pacstall-no-build/$pacname"
         sudo mv "$STAGEDIR/$pacname" "/tmp/pacstall-no-build/$pacname"
-        cleanup
         return 0
     fi
 }
