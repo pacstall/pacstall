@@ -748,6 +748,9 @@ function check_if_pacdep() {
 
 function write_meta() {
     echo "_name=\"$pacname\""
+    if [[ -n $pkgbase ]]; then
+        echo "_pkgbase=\"$pkgbase\""
+    fi
     echo "_version=\"${full_version}\""
     [[ -z ${install_size} ]] && install_size="$(aptitude search ~i --display-format '%p %I' --sort installsize | awk -v pkg="${gives:-${pacname}}" '$0 ~ "^" pkg " " {print $2 " " $3}')"
     echo "_install_size=\"${install_size}\""

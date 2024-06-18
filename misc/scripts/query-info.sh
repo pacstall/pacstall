@@ -47,6 +47,9 @@ function get_field() {
 }
 
 get_field "$PACKAGE" Package name
+if [[ -n ${_pkgbase} ]]; then
+    base="${_pkgbase}"
+fi
 get_field "$PACKAGE" Version version
 if [[ -n ${_install_size} ]]; then
     size="${_install_size}"
@@ -98,6 +101,9 @@ if [[ -n ${QUERY} ]]; then
 fi
 
 echo -e "${BGreen}name${NC}: ${name}"
+if [[ -v base ]]; then
+    echo -e "${BGreen}base${NC}: ${base}"
+fi
 echo -e "${BGreen}version${NC}: ${version}"
 if [[ -v size ]]; then
     echo -e "${BGreen}size${NC}: ${size}"

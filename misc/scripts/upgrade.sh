@@ -111,7 +111,13 @@ N="$(nproc)"
         ((n = n % N))
         ((n++ == 0)) && wait && stty "$tty_settings"
         (
+            unset _pkgbase
             source "$METADIR/$i"
+            if [[ -n ${_pkgbase} ]]; then
+                localbase="${_pkgbase}"
+            else
+                localbase="${i}"
+            fi
 
             # localver is the current version of the package
             localver="${_version}"
@@ -134,7 +140,7 @@ N="$(nproc)"
             IDXMATCH=$(printf "%s\n" "${REPOS[@]}" | awk "\$1 ~ /^${remoterepo//\//\\/}$/ {print NR-1}")
 
             if [[ -n $IDXMATCH ]]; then
-                calc_repo_ver "$remoterepo" "$i" \
+                calc_repo_ver "$remoterepo" "$localbase" \
                     && remotever="${comp_repo_ver}"
                 unset comp_repo_ver
                 remoteurl="${REPOS[$IDXMATCH]}"
@@ -154,7 +160,7 @@ N="$(nproc)"
                     if [[ -n $IDXMATCH ]] && ((IDX == IDXMATCH)); then
                         continue
                     else
-                        calc_repo_ver "${REPOS[$IDX]}" "$i" \
+                        calc_repo_ver "${REPOS[$IDX]}" "$localbase" \
                             && ver="${comp_repo_ver}"
                         unset comp_repo_ver
                         if ver_compare "$alterver" "$ver"; then
@@ -241,8 +247,8 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
             fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
             continue
         fi
-        # shellcheck source=./misc/scripts/package.sh
-        source "$SCRIPTDIR/scripts/package.sh"
+        # shellcheck source=./misc/scripts/package-base.sh
+        source "$SCRIPTDIR/scripts/package-base.sh"
     done
 fi
 
