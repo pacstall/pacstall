@@ -35,11 +35,17 @@ source "${SCRIPTDIR}/scripts/fetch-sources.sh" || {
 }
 
 function trap_ctrlc() {
+    local true_pkg
+    if [[ -n "${pkgname}" ]]; then
+        true_pkg="${pkgname//./-}"
+    else
+        true_pkg="${PACKAGE//./-}"
+    fi
     fancy_message warn "\nInterrupted, cleaning up"
     if is_apt_package_installed "${pkgname}"; then
         sudo apt-get purge "${gives:-$pkgname}" -y > /dev/null
     fi
-    sudo rm -f "/etc/apt/preferences.d/${pkgname:-$PACKAGE}-pin"
+    sudo rm -f "/etc/apt/preferences.d/${true_pkg}-pin"
     cleanup
     exit 1
 }
