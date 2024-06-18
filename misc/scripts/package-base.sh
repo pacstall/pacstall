@@ -119,6 +119,9 @@ function package_pkg() {
             fi
             exit 1
         fi
+        fancy_message info "Cleaning up"
+        cleanup
+        exit 0
     fi
 
     if is_apt_package_installed "${PACKAGE}-dummy-builddeps"; then
