@@ -62,10 +62,15 @@ for i in {${allvar_str}}; do
         declare -p \$i >> "${bwrapenv}";
     fi
 done
-[[ \$pkgname == *'-deb' ]] && for i in {${debfunc_str}}; do
+[[ \$pacname == *'-deb' ]] && for i in {${debfunc_str}}; do
     [[ \$(type -t "\$i") == "function" ]] && declare -pf \$i >> "${safeenv}";
 done || for i in {${debfunc_str},${pacfunc_str}}; do
     [[ \$(type -t "\$i") == "function" ]] && declare -pf \$i >> "${safeenv}";
+    if [[ -n "\${pkgbase}" ]]; then
+        for i in "\${pkgname[@]}"; do
+            [[ \$(type -t "package_\${i}") == "function" ]] && declare -pf "package_\${i}" >> "${safeenv}";
+        done
+    fi
 done
 export safeenv
 EOF
@@ -95,6 +100,9 @@ if [[ \$FUNCSTATUS ]]; then \
     mapfile -t NEW_ENV < <(/bin/env -0 \${OLD_ENV[@]} | \
         sed -ze 's/BASH_FUNC_\(.*\)%%=\(.*\)\$/\\n/g;s/^\\(.[[:alnum:]_]*\\)=\\(.*\\)\$/\\1/g'|tr '\0' '\n'); \
     declare -p \${NEW_ENV[@]} >> "${bwrapenv}"; \
+    for i in "gives" "pkgdesc" "arch" "url" "license" "depends" "optdepends" "provides" "conflicts" "replaces" "backup"; do
+        if [[ -n "\${!i}" ]]; then declare -p "\${i}" >> "${safeenv}"; fi
+    done
 fi && exit \$FUNCSTATUS
 EOF
     sudo chmod +x "$tmpfile"
@@ -119,7 +127,7 @@ EOF
         # shellcheck disable=SC2086
         sudo bwrap --unshare-all ${share_net} --die-with-parent --new-session \
             --ro-bind / / --proc /proc --dev /dev --tmpfs /tmp --tmpfs /run ${dns_resolve} \
-            --dev-bind /dev/null /dev/null --tmpfs /root --tmpfs /home \
+            --dev-bind /dev/null /dev/null --tmpfs /root --tmpfs /home --setenv safeenv "$safeenv" \
             --bind "$STAGEDIR" "$STAGEDIR" --bind "$PACDIR" "$PACDIR" --setenv LOGDIR "$LOGDIR" \
             --setenv SCRIPTDIR "$SCRIPTDIR" --setenv STAGEDIR "$STAGEDIR" --setenv pkgdir "$pkgdir" \
             --setenv _archive "$_archive" --setenv srcdir "$srcdir" --setenv git_pkgver "$git_pkgver" \
