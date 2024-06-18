@@ -390,6 +390,7 @@ cd "$HOME" 2> /dev/null || (
     fancy_message warn "Could not enter into ${HOME}"
 )
 
+# shellcheck source=/dev/null
 source "${safeenv}"
 makedeb
 

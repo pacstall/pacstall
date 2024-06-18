@@ -36,9 +36,12 @@ source "${SCRIPTDIR}/scripts/fetch-sources.sh" || {
 
 function trap_ctrlc() {
     fancy_message warn "\nInterrupted, cleaning up"
+    # shellcheck disable=SC2031
     if is_apt_package_installed "${pacname}"; then
+        # shellcheck disable=SC2031
         sudo apt-get purge "${gives:-$pacname}" -y > /dev/null
     fi
+    # shellcheck disable=SC2031
     sudo rm -f "/etc/apt/preferences.d/${pacname:-$PACKAGE}-pin"
     cleanup
     exit 1

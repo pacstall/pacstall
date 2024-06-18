@@ -38,6 +38,7 @@ function cleanup() {
     if [[ -n $KEEP ]]; then
         sudo rm -rf "/tmp/pacstall-keep/$pacname"
         mkdir -p "/tmp/pacstall-keep/$pacname"
+        #shellcheck disable=SC2153
         sudo mv "${PACDIR:?}/${PACKAGE}.pacscript" "/tmp/pacstall-keep/$pacname"
         sudo mv "${PACDIR:?}/${pacname}~${pkgver}" "/tmp/pacstall-keep/$pacname"
     fi
