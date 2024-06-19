@@ -49,18 +49,19 @@ function ver_compare() {
 }
 
 function calc_repo_ver() {
-    local compare_repo="$1" compare_package="$2" compare_tmp compare_safe compare_pkgver compare_pkgrel compare_epoch compare_source comp
+    local compare_repo="$1" compare_package="$2" compare_tmp compare_safe compare_pkgver compare_pkgrel compare_epoch compare_source comp compare_base
     unset comp_repo_ver
     compare_tmp="$(sudo mktemp -p "${PACDIR}" -t "calc-repo-ver-$compare_package.XXXXXX")"
     compare_safe="${compare_tmp}"
     curl -fsSL "$compare_repo/packages/$compare_package/.SRCINFO" | sudo tee "${compare_safe}" > /dev/null || return 1
     sudo chown "${PACSTALL_USER}" "${compare_safe}"
+    compare_base="$(srcinfo.match_pkg "${compare_safe}" pkgbase)"
     for comp in "pkgver" "pkgrel" "epoch"; do
         local -n decomp="compare_${comp}"
         # shellcheck disable=SC2034
-        decomp="$(srcinfo.match_pkg "${compare_safe}" "${comp}" "${compare_package}")"
+        decomp="$(srcinfo.match_pkg "${compare_safe}" "${comp}" "${compare_base}")"
     done
-    mapfile -t compare_source < <(srcinfo.match_pkg "${compare_safe}" "source" "${compare_package}")
+    mapfile -t compare_source < <(srcinfo.match_pkg "${compare_safe}" "source" "${compare_base}")
     if [[ ${compare_package} == *-git ]]; then
         parse_source_entry "${compare_source[0]}"
         calc_git_pkgver

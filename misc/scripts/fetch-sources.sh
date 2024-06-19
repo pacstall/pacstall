@@ -630,7 +630,7 @@ function install_builddepends() {
 }
 
 function compare_remote_version() {
-    local crv_input="${1}" remote_tmp remote_safe remotever localver crv_pkgver crv_pkgrel crv_epoch crv_source remv crv_fetch
+    local crv_input="${1}" remote_tmp remote_safe remotever localver crv_pkgver crv_pkgrel crv_epoch crv_source remv crv_fetch crv_base
     unset _pkgbase
     source "$METADIR/$crv_input" || return 1
     [[ ${_remoterepo} == "orphan" ]] && _remoterepo="${REPO}"
@@ -654,12 +654,13 @@ function compare_remote_version() {
         remote_safe="${remote_tmp}"
         curl -fsSL "$remoterepo/packages/$crv_fetch/.SRCINFO" | sudo tee "${remote_safe}" > /dev/null || return 1
         sudo chown "${PACSTALL_USER}" "${remote_safe}"
+        crv_base="$(srcinfo.match_pkg "${remote_safe}" pkgbase)"
         for remv in "pkgver" "pkgrel" "epoch"; do
             local -n deremv="crv_${remv}"
             # shellcheck disable=SC2034
-            deremv="$(srcinfo.match_pkg "${remote_safe}" "${remv}" "${crv_fetch}")"
+            deremv="$(srcinfo.match_pkg "${remote_safe}" "${remv}" "${crv_base}")"
         done
-        mapfile -t crv_source < <(srcinfo.match_pkg "${remote_safe}" "source" "${crv_fetch}")
+        mapfile -t crv_source < <(srcinfo.match_pkg "${remote_safe}" "source" "${crv_base}")
         if [[ ${crv_input} == *-git ]]; then
             parse_source_entry "${crv_source[0]}"
             calc_git_pkgver
