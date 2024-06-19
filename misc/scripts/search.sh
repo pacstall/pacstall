@@ -26,6 +26,7 @@
 
 if [[ -n $UPGRADE ]]; then
     [[ ! -f /tmp/pacstall-pacdeps-${PACKAGE%@*} ]] && PACKAGE="${i}"
+    [[ -n ${_pkgbase} ]] && PACKAGE="${_pkgbase}:${PACKAGE}"
 fi
 
 function getPath() {
