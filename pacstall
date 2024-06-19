@@ -250,9 +250,9 @@ function ask() {
 
 # Used for providing possible solutions to errors
 # The following color codes are used for specific scenarios
-# 	UGreen: files/URLS
-# 	UCyan: commands to run
-# 	UPurple: text
+#   UGreen: files/URLS
+#   UCyan: commands to run
+#   UPurple: text
 # Make sure to quote ('') commands and files/URLS
 function suggested_solution() {
     if [[ -z $PACSTALL_SUPPRESS_SOLUTIONS ]]; then
@@ -351,7 +351,7 @@ function download() {
 }
 
 # source this code block and run like so:
-# 	$ select_options "My message I want to send" "${#array[@]}"
+#   $ select_options "My message I want to send" "${#array[@]}"
 # This will then output the options given by the user to /tmp/pacstall-select-options, which you can then turn into another array
 function select_options() {
     rm -f /tmp/pacstall-select-options
@@ -665,61 +665,61 @@ while [[ $1 != "--" ]]; do
 An AUR inspired package manager for Ubuntu.
 
 Commands:
-	${BOLD}-I${NC}, ${BOLD}--install${NC} <package>
-		Install a package.
-	${BOLD}-S${NC}, ${BOLD}--search${NC} <package>
-		Search for a package.
-	${BOLD}-R${NC}, ${BOLD}--remove${NC} <package>
-		Remove a package.
-	${BOLD}-D${NC}, ${BOLD}--download${NC} <package>
-		Download a pacscript.
-	${BOLD}-A${NC}, ${BOLD}--add-repo${NC} <repo>
-		Add a repository.
+    ${BOLD}-I${NC}, ${BOLD}--install${NC} <package>
+        Install a package.
+    ${BOLD}-S${NC}, ${BOLD}--search${NC} <package>
+        Search for a package.
+    ${BOLD}-R${NC}, ${BOLD}--remove${NC} <package>
+        Remove a package.
+    ${BOLD}-D${NC}, ${BOLD}--download${NC} <package>
+        Download a pacscript.
+    ${BOLD}-A${NC}, ${BOLD}--add-repo${NC} <repo>
+        Add a repository.
     ${BOLD}-Rr${NC}, ${BOLD}--remove-repo${NC} <repo>
         Remove a repository.
-	${BOLD}-U${NC}, ${BOLD}--update${NC} [user] [branch]
-		Update Pacstall.
-	${BOLD}-L${NC}, ${BOLD}--list${NC}
-		List all installed packages.
-	${BOLD}-Up${NC}, ${BOLD}--upgrade${NC}
-		Upgrade all installed packages.
-	${BOLD}-Qa${NC}, ${BOLD}--quality-assurance${NC} <package>#<number>
-		Test a package PR from downstream. Optional: @[provider]:[owner]/[repo]
-	${BOLD}-Qi${NC}, ${BOLD}--query-info${NC} <package>
-		Query information about a package.
-	${BOLD}-T${NC}, ${BOLD}--tree${NC} <package>
-		Display a tree graph of a package.
-	${BOLD}-V${NC}, ${BOLD}--version${NC}
-		Display the version number.
-	${BOLD}-h${NC}, ${BOLD}--help${NC}
-		Display this help message.
+    ${BOLD}-U${NC}, ${BOLD}--update${NC} [user] [branch]
+        Update Pacstall.
+    ${BOLD}-L${NC}, ${BOLD}--list${NC}
+        List all installed packages.
+    ${BOLD}-Up${NC}, ${BOLD}--upgrade${NC}
+        Upgrade all installed packages.
+    ${BOLD}-Qa${NC}, ${BOLD}--quality-assurance${NC} <package>#<number>
+        Test a package PR from downstream. Optional: @[provider]:[owner]/[repo]
+    ${BOLD}-Qi${NC}, ${BOLD}--query-info${NC} <package>
+        Query information about a package.
+    ${BOLD}-T${NC}, ${BOLD}--tree${NC} <package>
+        Display a tree graph of a package.
+    ${BOLD}-V${NC}, ${BOLD}--version${NC}
+        Display the version number.
+    ${BOLD}-h${NC}, ${BOLD}--help${NC}
+        Display this help message.
 
 Options:
-	${BOLD}-P${NC}, ${BOLD}--disable-prompts${NC}
-		Disable prompts.
-	${BOLD}-K${NC}, ${BOLD}--keep${NC}
-		Keep the build files.
-	${BOLD}-B${NC}, ${BOLD}--build-only${NC}
-		Build the deb but do not install.
-	${BOLD}-Nc${NC}, ${BOLD}--nocheck${NC}
-		Skip the check() function if present.
-	${BOLD}-Q${NC}, ${BOLD}--quiet${NC}
-		Download package entries quietly.
+    ${BOLD}-P${NC}, ${BOLD}--disable-prompts${NC}
+        Disable prompts.
+    ${BOLD}-K${NC}, ${BOLD}--keep${NC}
+        Keep the build files.
+    ${BOLD}-B${NC}, ${BOLD}--build-only${NC}
+        Build the deb but do not install.
+    ${BOLD}-Nc${NC}, ${BOLD}--nocheck${NC}
+        Skip the check() function if present.
+    ${BOLD}-Q${NC}, ${BOLD}--quiet${NC}
+        Download package entries quietly.
     ${BOLD}-Ns${NC}, ${BOLD}--nosandbox${NC}
         Build the package without bwrap.
 
 Helpful links:
-	${BOLD}https://github.com/pacstall/pacstall${NC}
-		Official Pacstall GitHub page.
-	${BOLD}https://github.com/pacstall/pacstall-programs/issues${NC}
-		If you find a broken package, create an issue here.
-	${BOLD}https://github.com/pacstall/pacstall/releases/latest${NC}
-		Link to the latest release of Pacstall."
+    ${BOLD}https://github.com/pacstall/pacstall${NC}
+        Official Pacstall GitHub page.
+    ${BOLD}https://github.com/pacstall/pacstall-programs/issues${NC}
+        If you find a broken package, create an issue here.
+    ${BOLD}https://github.com/pacstall/pacstall/releases/latest${NC}
+        Link to the latest release of Pacstall."
             exit 0
             ;;
 
         -I | --install)
-
+            unset CHILD PACKAGE
             if [[ -z $2 ]]; then
                 fancy_message error "You failed to specify a package"
                 exit 1
@@ -765,13 +765,33 @@ Helpful links:
                 else
                     export type="install"
                     export local="no"
-                    export PACKAGE=$2
+                    if [[ $2 =~ ^([a-zA-Z0-9_.-]+)(:([a-zA-Z0-9_.-]+))(@(.+))$ ]]; then
+                        PACKAGE="${BASH_REMATCH[1]}:pkgbase"
+                        if [[ "${BASH_REMATCH[2]}" == ":"* ]]; then
+                            CHILD="${BASH_REMATCH[2]/\:/}"
+                        else
+                            CHILD="${BASH_REMATCH[3]}"
+                        fi
+                        if [[ "${BASH_REMATCH[3]}" =~ '@' ]]; then
+                            PACKAGE+="${BASH_REMATCH[3]}"
+                        elif [[ -n "${BASH_REMATCH[5]}" ]]; then
+                            PACKAGE+="@${BASH_REMATCH[5]}"
+                        fi
+                    elif [[ ${2} =~ ':' ]]; then
+                        PACKAGE="${2%:*}:pkgbase"
+                        CHILD="${2#*:}"
+                    else
+                        PACKAGE="${2}"
+                    fi
+
+                    [[ ${CHILD} == "pkgbase" ]] && unset CHILD
+                    export PACKAGE CHILD
                     if [[ -z $PACKAGE ]]; then
                         fancy_message error "You failed to specify a package"
                         exit 1
                     fi
 
-                    if [[ -n $PACSTALL_PAYLOAD && ! -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
+                    if [[ -n $PACSTALL_PAYLOAD && ! -f "/tmp/pacstall-pacdeps-${PACKAGE/:pkgbase/}" ]]; then
                         export PACSTALL_DOWNLOADER="payload"
                         if [[ ! -f $PACSTALL_PAYLOAD ]]; then
                             fancy_message error "Payload not found"
@@ -796,7 +816,7 @@ Helpful links:
                     if ! source "$SCRIPTDIR/scripts/search.sh"; then
                         continue
                     fi
-
+                    export PACKAGE="${PACKAGE/:pkgbase/}"
                     specifyRepo "$REPO"
                     export REPO
                     export URL="${REPO:-https://raw.githubusercontent.com/pacstall/pacstall-programs/master}/packages/$PACKAGE/$PACKAGE.pacscript"

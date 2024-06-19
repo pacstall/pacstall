@@ -53,38 +53,44 @@ function package_pkg() {
         # shellcheck disable=SC2031
         fancy_message info "Found pkgbase: ${PURPLE}${pkgbase}${NC}"
         if ((${#pkgname[@]} > 1)); then
-            # We do this so that arrays 'start at' 1 to the user
-            z=1
-            echo -e "\t\t[${BIRed}0${NC}] Exit"
-            for i in "${pkgname[@]}"; do
-                # print optdepends with bold package name
-                echo -e "\t\t[${BICyan}$z${NC}] ${BOLD}${i%%:\ *}${NC}"
-                ((z++))
-            done
-            unset z
-            # tab over the next line
-            echo -ne "\t"
-            select_options "Select packages to be built" "${#pkgname[@]}"
-            read -ra choices < /tmp/pacstall-select-options
-            local choice_inc=0
-            for i in "${choices[@]}"; do
-                # have we gone over the maximum number in choices[@]?
-                if [[ $i != "n" && $i != "y" ]] && ((i > ${#pkgname[@]})); then
-                    local skip_pkg+=("$i")
-                    unset 'choices[$choice_inc]'
-                fi
-                ((choice_inc++))
-            done
-            if [[ -n ${skip_pkg[*]} ]]; then
-                fancy_message warn "${BGreen}${skip_pkg[*]}${NC} has exceeded the maximum number of packages to build. Skipping"
-            fi
-
-            # Did we get actual answers?
-            if [[ ${choices[0]} != "n" && ${choices[0]} != "0" ]]; then
-                for i in "${choices[@]}"; do
-                    # Set our user array that started at 1 down to 0 based
-                    local pacnames+=("${pkgname[$((i - 1))]}")
+            if [[ -z ${CHILD} ]]; then
+                # We do this so that arrays 'start at' 1 to the user
+                z=1
+                echo -e "\t\t[${BIRed}0${NC}] Exit"
+                for i in "${pkgname[@]}"; do
+                    # print optdepends with bold package name
+                    echo -e "\t\t[${BICyan}$z${NC}] ${BOLD}${i%%:\ *}${NC}"
+                    ((z++))
                 done
+                unset z
+                # tab over the next line
+                echo -ne "\t"
+                select_options "Select packages to be built" "${#pkgname[@]}"
+                read -ra choices < /tmp/pacstall-select-options
+                local choice_inc=0
+                for i in "${choices[@]}"; do
+                    # have we gone over the maximum number in choices[@]?
+                    if [[ $i != "n" && $i != "y" ]] && ((i > ${#pkgname[@]})); then
+                        local skip_pkg+=("$i")
+                        unset 'choices[$choice_inc]'
+                    fi
+                    ((choice_inc++))
+                done
+                if [[ -n ${skip_pkg[*]} ]]; then
+                    fancy_message warn "${BGreen}${skip_pkg[*]}${NC} has exceeded the maximum number of packages to build. Skipping"
+                fi
+            fi
+            # Did we get actual answers?
+            if [[ ${choices[0]} != "n" && ${choices[0]} != "0" ]] || [[ -n ${CHILD} ]]; then
+                local pacnames
+                if [[ -n ${CHILD} ]]; then
+                    pacnames=("${CHILD}")
+                else
+                    for i in "${choices[@]}"; do
+                        # Set our user array that started at 1 down to 0 based
+                        pacnames+=("${pkgname[$((i - 1))]}")
+                    done
+                fi
                 if [[ -n ${pacnames[*]} ]]; then
                     fancy_message info "Selecting packages ${BCyan}${pacnames[*]%%:\ *}${NC}"
                     for pacname in "${pacnames[@]}"; do
