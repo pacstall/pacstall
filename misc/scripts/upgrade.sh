@@ -195,7 +195,11 @@ N="$(nproc)"
 
             if [[ -n $remotever ]]; then
                 if ver_compare "$localver" "$remotever"; then
-                    echo "$i" | tee -a "${up_list}" > /dev/null
+                    if [[ -n ${_pkgbase} ]]; then
+                        echo "${_pkgbase}:${i}" | tee -a "${up_list}" > /dev/null
+                    else
+                        echo "$i" | tee -a "${up_list}" > /dev/null
+                    fi
                     updaterepo="$(parseRepo "${remoteurl}")"
                     if [[ -n ${upBRANCH} && ${upBRANCH} != "master" && ${upBRANCH} != "main" ]]; then
                         updaterepo+="${YELLOW}#${upBRANCH}${NC}"
@@ -220,9 +224,11 @@ else
 ${BOLD}$(cat "${up_print}")${NC}\n"
 
     declare -A remotes=()
+    declare -A bases=()
     while read -r pkg && read -r remote <&3; do
-        upgrade+=("${pkg}")
-        remotes[${pkg}]="${remote}"
+        upgrade+=("${pkg#*:}")
+        remotes[${pkg#*:}]="${remote}"
+        [[ ${pkg} =~ ':' ]] && bases[${pkg#*:}]="${pkg%:*}"
     done < "${up_list}" 3< "${up_urls}"
 
     dep_tree.loop_traits update_order "${upgrade[@]}"
@@ -241,7 +247,13 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
         if ((answer == 0)); then
             continue
         fi
+
         export REPO="${remotes[${PACKAGE}]}"
+        if [[ -n ${bases[$PACKAGE]} ]]; then
+            CHILD="${PACKAGE}"
+            PACKAGE="${bases[$PACKAGE]}"
+            export CHILD PACKAGE
+        fi
         export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
         # shellcheck source=./misc/scripts/get-pacscript.sh
         if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then
