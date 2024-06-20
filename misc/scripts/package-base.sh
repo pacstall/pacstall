@@ -48,47 +48,28 @@ function trap_ctrlc() {
 }
 
 function package_override() {
-    local o
-    # variables
-    for o in "gives" "pkgdesc" "url" "priority"; do
+    local o all_vars opac="${pacname}" obase="${pkgbase}" ovars=("gives" "pkgdesc" "url" "priority")
+    all_ovars=("${ovars[@]}" "arch" "license" "checkdepends" "optdepends" "pacdeps" "provides" "conflicts" "breaks" "replaces" "enhances" "recommends" "backup")
+    for o in "${all_ovars[@]}"; do
         local look lbase
-        # shellcheck disable=SC2034
         local -n over="${o}"
-        # check for override
-        # shellcheck disable=SC2031
-        look="$(srcinfo.match_pkg "${srcinfile}" "${o}" "${pacname}")"
-        if [[ -n ${look} ]]; then
-            # shellcheck disable=SC2034
-            over="${look}"
-        else
-            # fall back to pkgbase def
-            # shellcheck disable=SC2031
-            lbase="$(srcinfo.match_pkg "${srcinfile}" "${o}" "pkgbase:${pkgbase}")"
-            # shellcheck disable=SC2034
-            [[ -n ${lbase} ]] && over="${lbase}"
-        fi
-        # shellcheck disable=SC2163
-        export "${o}"
-    done
-    # arrays
-    for o in "arch" "license" "checkdepends" "optdepends" "pacdeps" "provides" "conflicts" "breaks" "replaces" "enhances" "recommends" "backup"; do
-        local look lbase
-        # shellcheck disable=SC2034
-        local -n over="${o}"
-        # shellcheck disable=SC2031
-        mapfile -t look < <(srcinfo.match_pkg "${srcinfile}" "${o}" "${pacname}")
-        # check for override
+        mapfile -t look < <(unset "${pacstallvars[@]}" && srcinfo.match_pkg "${srcinfile}" "${o}" "${opac}")
         if [[ -n ${look[*]} ]]; then
-            # shellcheck disable=SC2034
-            over=("${look[@]}")
+            if array.contains ovars "${o}"; then
+                over="${look}"
+            else
+                over=("${look[@]}")
+            fi
         else
-            # fall back to pkgbase def
-            # shellcheck disable=SC2031
-            mapfile -t lbase < <(srcinfo.match_pkg "${srcinfile}" "${o}" "pkgbase:${pkgbase}")
-            # shellcheck disable=SC2034
-            [[ -n ${lbase[*]} ]] && over=("${lbase[@]}")
+            mapfile -t lbase < <(unset "${pacstallvars[@]}" && srcinfo.match_pkg "${srcinfile}" "${o}" "pkgbase:${obase}")
+            if [[ -n ${lbase[*]} ]]; then
+                if array.contains ovars "${o}"; then
+                    over="${lbase}"
+                else
+                    over=("${lbase[@]}")
+                fi
+            fi
         fi
-        # shellcheck disable=SC2163
         export "${o}"
     done
 }
