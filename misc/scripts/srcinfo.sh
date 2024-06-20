@@ -67,9 +67,9 @@ function srcinfo.extr_fnvar() {
     local funcname="${1}" attr="${2}" isarray="${3}" outputvar="${4}"
     local attr_regex decl r=1
     if ((isarray)); then
-        printf -v attr_regex '^[[:space:]]*%s[[:space:]]*\\(' "${attr}"
+        printf -v attr_regex '^[[:space:]]* %s\+?=\(' "${attr}"
     else
-        printf -v attr_regex '^[[:space:]]*%s[[:space:]]*=' "${attr}"
+        printf -v attr_regex '^[[:space:]]* %s\+?=[^(]' "${attr}"
     fi
     local func_body
     func_body=$(declare -f "${funcname}" 2> /dev/null)
