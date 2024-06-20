@@ -55,12 +55,14 @@ function package_override() {
         # shellcheck disable=SC2034
         local -n over="${o}"
         # check for override
+        # shellcheck disable=SC2031
         look="$(srcinfo.match_pkg "${srcinfile}" "${o}" "${pacname}")"
         if [[ -n ${look} ]]; then
             # shellcheck disable=SC2034
             over="${look}"
         else
             # fall back to pkgbase def
+            # shellcheck disable=SC2031
             lbase="$(srcinfo.match_pkg "${srcinfile}" "${o}" "pkgbase:${pkgbase}")"
             # shellcheck disable=SC2034
             [[ -n ${lbase} ]] && over="${lbase}"
@@ -73,6 +75,7 @@ function package_override() {
         local look lbase
         # shellcheck disable=SC2034
         local -n over="${o}"
+        # shellcheck disable=SC2031
         mapfile -t look < <(srcinfo.match_pkg "${srcinfile}" "${o}" "${pacname}")
         # check for override
         if [[ -n ${look[*]} ]]; then
@@ -80,6 +83,7 @@ function package_override() {
             over=("${look[@]}")
         else
             # fall back to pkgbase def
+            # shellcheck disable=SC2031
             mapfile -t lbase < <(srcinfo.match_pkg "${srcinfile}" "${o}" "pkgbase:${pkgbase}")
             # shellcheck disable=SC2034
             [[ -n ${lbase[*]} ]] && over=("${lbase[@]}")
