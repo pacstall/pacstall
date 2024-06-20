@@ -542,9 +542,9 @@ function srcinfo.match_pkg() {
     else
         match="srcinfo_${search}_${pkg//-/_}"
     fi
-    mapfile -t declares < <(srcinfo.print_var "${srcfile}" "${search}" | awk '{sub(/^declare -a |^declare -- /, ""); print}')
+    mapfile -t declares < <(srcinfo.print_var "${srcfile}" "${search}" | awk '{sub(/^declare -a |^declare -- |^declare -x /, ""); print}')
     [[ ${search} == "pkgbase" && -z ${declares[*]} ]] \
-        && mapfile -t declares < <(srcinfo.print_var "${srcfile}" "pkgname" | awk '{sub(/^declare -a |^declare -- /, ""); print}')
+        && mapfile -t declares < <(srcinfo.print_var "${srcfile}" "pkgname" | awk '{sub(/^declare -a |^declare -- |^declare -x /, ""); print}')
     for d in "${declares[@]}"; do
         if [[ ${d%=\(*} =~ = ]]; then
             declare -- "${d}"
