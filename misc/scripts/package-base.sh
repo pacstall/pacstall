@@ -53,7 +53,7 @@ function package_override() {
     for o in "${all_ovars[@]}"; do
         local look lbase
         local -n over="${o}"
-        mapfile -t look < <(srcinfo.match_pkg "${srcinfile}" "${o}" "${opac}")
+        mapfile -t look < <(unset "${pacstallvars[@]}" && srcinfo.match_pkg "${srcinfile}" "${o}" "${opac}")
         if [[ -n ${look[*]} ]]; then
             if array.contains ovars "${o}"; then
                 over="${look}"
@@ -61,7 +61,7 @@ function package_override() {
                 over=("${look[@]}")
             fi
         else
-            mapfile -t lbase < <(srcinfo.match_pkg "${srcinfile}" "${o}" "pkgbase:${obase}")
+            mapfile -t lbase < <(unset "${pacstallvars[@]}" && srcinfo.match_pkg "${srcinfile}" "${o}" "pkgbase:${obase}")
             if [[ -n ${lbase[*]} ]]; then
                 if array.contains ovars "${o}"; then
                     over="${lbase}"
