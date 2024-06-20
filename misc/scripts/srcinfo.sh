@@ -140,7 +140,7 @@ function srcinfo.vars() {
         sums="b2 sha512 sha384 sha256 sha224 sha1 md5"
     allvars=(pkgname gives pkgver pkgrel epoch pkgdesc url priority)
     allars=(arch depends makedepends checkdepends optdepends pacdeps conflicts makeconflicts checkconflicts breaks replaces provides enhances recommends incompatible compatible backup mask noextract nosubmodules license maintainer repology custom_fields source)
-    distros=$(awk '{sub(/\/.*/, "", $1); gsub(/:$/, "", $1); distros=distros $1 " "} END {sub(/ $/, "", distros); print distros}' distrolist)
+    distros="${PACSTALL_KNOWN_DISTROS[@]}"
     _distros="{${distros// /,}}" _vars="{${vars// /,}}" _sums="{${sums// /,}}"
     eval "allars+=(${_sums}sums ${_vars}_${_distros} ${_sums}sums_${_distros})"
     eval "allvars+=(gives_${_distros})"
