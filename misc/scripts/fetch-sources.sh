@@ -345,7 +345,7 @@ function deb_down() {
         fi
         sudo cp -r "${pacfile}" "/var/cache/pacstall/${pacname}/${full_version}"
         sudo chmod o+r "/var/cache/pacstall/${pacname}/${full_version}/${PACKAGE}.pacscript"
-        sudo cp -r "${srcfile}" "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
+        sudo cp -r "${srcinfile}" "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
         sudo chmod o+r "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
         fancy_message sub "Cleaning up"
         cleanup

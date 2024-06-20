@@ -667,7 +667,7 @@ function repacstall() {
     unpackdir="${STAGEDIR}/${pacname}"
     upcontrol="${unpackdir}/DEBIAN/control"
     sudo mkdir -p "${unpackdir}"
-    sudo rm -rf "${unpackdir}"/*
+    sudo rm -rf "${unpackdir:?}"/*
     fancy_message sub "Repacking ${CYAN}${pacname/\-deb/}.deb${NC}"
     sudo dpkg-deb -R "${input_dest}" "${unpackdir}"
     depends_line=$(awk '/^Depends:/ {print; exit}' "${upcontrol}")

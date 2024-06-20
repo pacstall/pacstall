@@ -52,31 +52,39 @@ function package_override() {
     # variables
     for o in "gives" "pkgdesc" "url" "priority"; do
         local look lbase
+        # shellcheck disable=SC2034
         local -n over="${o}"
         # check for override
-        look="$(srcinfo.match_pkg "${srcfile}" "${o}" "${pacname}")"
+        look="$(srcinfo.match_pkg "${srcinfile}" "${o}" "${pacname}")"
         if [[ -n ${look} ]]; then
+            # shellcheck disable=SC2034
             over="${look}"
         else
             # fall back to pkgbase def
-            lbase="$(srcinfo.match_pkg "${srcfile}" "${o}" "pkgbase:${pkgbase}")"
+            lbase="$(srcinfo.match_pkg "${srcinfile}" "${o}" "pkgbase:${pkgbase}")"
+            # shellcheck disable=SC2034
             [[ -n ${lbase} ]] && over="${lbase}"
         fi
+        # shellcheck disable=SC2163
         export "${o}"
     done
     # arrays
     for o in "arch" "license" "checkdepends" "optdepends" "pacdeps" "provides" "conflicts" "breaks" "replaces" "enhances" "recommends" "backup"; do
         local look lbase
+        # shellcheck disable=SC2034
         local -n over="${o}"
-        mapfile -t look < <(srcinfo.match_pkg "${srcfile}" "${o}" "${pacname}")
+        mapfile -t look < <(srcinfo.match_pkg "${srcinfile}" "${o}" "${pacname}")
         # check for override
         if [[ -n ${look[*]} ]]; then
+            # shellcheck disable=SC2034
             over=("${look[@]}")
         else
             # fall back to pkgbase def
-            mapfile -t lbase < <(srcinfo.match_pkg "${srcfile}" "${o}" "pkgbase:${pkgbase}")
+            mapfile -t lbase < <(srcinfo.match_pkg "${srcinfile}" "${o}" "pkgbase:${pkgbase}")
+            # shellcheck disable=SC2034
             [[ -n ${lbase[*]} ]] && over=("${lbase[@]}")
         fi
+        # shellcheck disable=SC2163
         export "${o}"
     done
 }
@@ -212,8 +220,8 @@ sudo chmod a+r "/tmp/${PACKAGE}.pacscript"
 pacfile="$(readlink -f "/tmp/${PACKAGE}.pacscript")"
 export pacfile
 (srcinfo.print_out "${pacfile}" > "/tmp/${PACKAGE}.SRCINFO")
-srcfile="$(readlink -f "/tmp/${PACKAGE}.SRCINFO")"
-export srcfile
+srcinfile="$(readlink -f "/tmp/${PACKAGE}.SRCINFO")"
+export srcinfile
 mapfile -t FARCH < <(dpkg --print-foreign-architectures)
 CARCH="$(dpkg --print-architecture)"
 case ${CARCH} in
