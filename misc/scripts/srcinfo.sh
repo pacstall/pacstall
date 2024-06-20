@@ -428,7 +428,7 @@ function srcinfo.cleanup() {
         done
         unset cleaner
     done
-    unset "${var_prefix}_access" globase global
+    unset "${var_prefix}_access" globase global "${pacstallvars[@]}"
     # So now lets clean the stragglers that we can't reasonably infer
     mapfile -t compg < <(compgen -v)
     for i in "${compg[@]}"; do

@@ -22,8 +22,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-[[ -n ${pkgbase} ]] && package_override
-
 if [[ ${external_connection} == "true" ]]; then
     fancy_message warn "This package will connect to the internet during its build process."
 fi
