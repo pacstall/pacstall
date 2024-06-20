@@ -777,6 +777,8 @@ Helpful links:
                         elif [[ -n ${BASH_REMATCH[5]} ]]; then
                             PACKAGE+="@${BASH_REMATCH[5]}"
                         fi
+                    elif [[ $2 =~ ^([a-zA-Z0-9_.-]+)(@(.+))$ ]]; then
+                        PACKAGE="${2}"
                     elif [[ ${2} =~ ':' ]]; then
                         PACKAGE="${2%:*}:pkgbase"
                         CHILD="${2#*:}"
