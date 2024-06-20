@@ -58,18 +58,20 @@ function package_override() {
         mapfile -t look < <(unset "${pacstallvars[@]}" && srcinfo.match_pkg "${srcinfile}" "${o}" "${opac}")
         if [[ -n ${look[*]} ]]; then
             if array.contains ovars "${o}"; then
-                # shellcheck disable=SC2178
+                # shellcheck disable=SC2178,SC2034
                 over="${look}"
             else
+                # shellcheck disable=SC2034
                 over=("${look[@]}")
             fi
         else
             mapfile -t lbase < <(unset "${pacstallvars[@]}" && srcinfo.match_pkg "${srcinfile}" "${o}" "pkgbase:${obase}")
             if [[ -n ${lbase[*]} ]]; then
                 if array.contains ovars "${o}"; then
-                    # shellcheck disable=SC2178
+                    # shellcheck disable=SC2178,SC2034
                     over="${lbase}"
                 else
+                    # shellcheck disable=SC2034
                     over=("${lbase[@]}")
                 fi
             fi
