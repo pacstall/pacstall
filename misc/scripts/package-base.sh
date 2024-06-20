@@ -48,7 +48,7 @@ function trap_ctrlc() {
 }
 
 function package_override() {
-    # shellcheck dsiable=SC2031
+    # shellcheck disable=SC2031
     local o all_ovars opac="${pacname}" obase="${pkgbase}" ovars=("gives" "pkgdesc" "url" "priority")
     all_ovars=("${ovars[@]}" "arch" "license" "checkdepends" "optdepends" "pacdeps" "provides" "conflicts" "breaks" "replaces" "enhances" "recommends" "backup")
     for o in "${all_ovars[@]}"; do
