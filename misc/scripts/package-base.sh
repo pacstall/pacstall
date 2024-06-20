@@ -47,6 +47,40 @@ function trap_ctrlc() {
     exit 1
 }
 
+function package_override() {
+    local o
+    # variables
+    for o in "gives" "pkgdesc" "url" "priority"; do
+        local look lbase
+        local -n over="${o}"
+        # check for override
+        look="$(srcinfo.match_pkg "${srcfile}" "${o}" "${pacname}")"
+        if [[ -n ${look} ]]; then
+            over="${look}"
+        else
+            # fall back to pkgbase def
+            lbase="$(srcinfo.match_pkg "${srcfile}" "${o}" "pkgbase:${pkgbase}")"
+            [[ -n ${lbase} ]] && over="${lbase}"
+        fi
+        export "${o}"
+    done
+    # arrays
+    for o in "arch" "license" "checkdepends" "optdepends" "pacdeps" "provides" "conflicts" "breaks" "replaces" "enhances" "recommends" "backup"; do
+        local look lbase
+        local -n over="${o}"
+        mapfile -t look < <(srcinfo.match_pkg "${srcfile}" "${o}" "${pacname}")
+        # check for override
+        if [[ -n ${look[*]} ]]; then
+            over=("${look[@]}")
+        else
+            # fall back to pkgbase def
+            mapfile -t lbase < <(srcinfo.match_pkg "${srcfile}" "${o}" "pkgbase:${pkgbase}")
+            [[ -n ${lbase[*]} ]] && over=("${lbase[@]}")
+        fi
+        export "${o}"
+    done
+}
+
 function package_pkg() {
     # shellcheck disable=SC2031
     if [[ -n ${pkgbase} ]]; then
@@ -177,6 +211,9 @@ sudo cp "${PACKAGE}.pacscript" /tmp
 sudo chmod a+r "/tmp/${PACKAGE}.pacscript"
 pacfile="$(readlink -f "/tmp/${PACKAGE}.pacscript")"
 export pacfile
+(srcinfo.print_out "${pacfile}" > "/tmp/${PACKAGE}.SRCINFO")
+srcfile="$(readlink -f "/tmp/${PACKAGE}.SRCINFO")"
+export srcfile
 mapfile -t FARCH < <(dpkg --print-foreign-architectures)
 CARCH="$(dpkg --print-architecture)"
 case ${CARCH} in

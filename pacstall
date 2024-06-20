@@ -767,14 +767,14 @@ Helpful links:
                     export local="no"
                     if [[ $2 =~ ^([a-zA-Z0-9_.-]+)(:([a-zA-Z0-9_.-]+))(@(.+))$ ]]; then
                         PACKAGE="${BASH_REMATCH[1]}:pkgbase"
-                        if [[ "${BASH_REMATCH[2]}" == ":"* ]]; then
+                        if [[ ${BASH_REMATCH[2]} == ":"* ]]; then
                             CHILD="${BASH_REMATCH[2]/\:/}"
                         else
                             CHILD="${BASH_REMATCH[3]}"
                         fi
-                        if [[ "${BASH_REMATCH[3]}" =~ '@' ]]; then
+                        if [[ ${BASH_REMATCH[3]} =~ '@' ]]; then
                             PACKAGE+="${BASH_REMATCH[3]}"
-                        elif [[ -n "${BASH_REMATCH[5]}" ]]; then
+                        elif [[ -n ${BASH_REMATCH[5]} ]]; then
                             PACKAGE+="@${BASH_REMATCH[5]}"
                         fi
                     elif [[ ${2} =~ ':' ]]; then

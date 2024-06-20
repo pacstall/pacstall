@@ -100,11 +100,6 @@ if [[ \$FUNCSTATUS ]]; then \
     mapfile -t NEW_ENV < <(/bin/env -0 \${OLD_ENV[@]} | \
         sed -ze 's/BASH_FUNC_\(.*\)%%=\(.*\)\$/\\n/g;s/^\\(.[[:alnum:]_]*\\)=\\(.*\\)\$/\\1/g'|tr '\0' '\n'); \
     declare -p \${NEW_ENV[@]} >> "${bwrapenv}"; \
-    if [[ ${func} == "package_${pacname}" ]]; then
-        for i in "gives" "pkgdesc" "arch" "url" "license" "depends" "optdepends" "pacdeps" "provides" "conflicts" "breaks" "replaces" "enhances" "recommends" "priority" "backup"; do
-            if [[ -n "\${!i}" ]]; then declare -p "\${i}" >> "${safeenv}"; fi
-        done
-    fi
 fi && exit \$FUNCSTATUS
 EOF
     sudo chmod +x "$tmpfile"

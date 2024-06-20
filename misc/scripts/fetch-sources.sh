@@ -345,6 +345,8 @@ function deb_down() {
         fi
         sudo cp -r "${pacfile}" "/var/cache/pacstall/${pacname}/${full_version}"
         sudo chmod o+r "/var/cache/pacstall/${pacname}/${full_version}/${PACKAGE}.pacscript"
+        sudo cp -r "${srcfile}" "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
+        sudo chmod o+r "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
         fancy_message sub "Cleaning up"
         cleanup
         fancy_message info "Done installing ${BPurple}${pacname}${NC}"
@@ -429,7 +431,7 @@ function append_var_arch() {
 
 function append_modifier_entries() {
     unset hashsum_method
-	# shellcheck disable=SC2034
+    # shellcheck disable=SC2034
     local APPARCH="${1}" APPDISTRO="${2}"
     # append arrays from least to most specific
     append_hash_entry hash PACSTALL_KNOWN_SUMS hashsum_method
@@ -451,7 +453,7 @@ function append_modifier_entries() {
     # gives_arch | gives_distrobase | gives_distrover | gives_distrobase_arch | gives_distrover_arch
     gives_array=("gives_${APPARCH}" "gives_${APPDISTRO%:*}" "gives_${APPDISTRO#*:}" "gives_${APPDISTRO%:*}_${APPARCH}" "gives_${APPDISTRO#*:}_${APPARCH}")
     for gives_choice in "${gives_array[@]}"; do
-        if [[ -n "${!gives_choice}" ]]; then
+        if [[ -n ${!gives_choice} ]]; then
             gives="${!gives_choice}"
             break
         fi
@@ -605,7 +607,7 @@ function install_builddepends() {
         dep_const.comma_array bdeps_array bdeps_str
         fancy_message info "${BLUE}$pacname${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to build, and ${CYAN}${not_installed_yet_checkdepends[*]}${NC} to perform checks"
     fi
-    if ((${#not_installed_yet_builddepends[@]} != 0 || ${#not_installed_yet_checkdepends[@]} != 0 || ${#makeconflicts[@]} != 0 || ${#checkconflicts[@]} != 0 )); then
+    if ((${#not_installed_yet_builddepends[@]} != 0 || ${#not_installed_yet_checkdepends[@]} != 0 || ${#makeconflicts[@]} != 0 || ${#checkconflicts[@]} != 0)); then
         fancy_message sub "Creating build dependency/conflicts dummy package"
         (
             unset pre_{upgrade,install,remove} post_{upgrade,install,remove} priority provides conflicts replaces breaks gives enhances recommends custom_fields
@@ -621,11 +623,11 @@ function install_builddepends() {
             deblog "Conflicts" "${bcons_str}"
             makedeb
         ) || {
-                fancy_message error "Failed to install build or check dependencies"
-                # shellcheck disable=SC2031
-                error_log 8 "install ${pacname}"
-                clean_fail_down
-            }
+            fancy_message error "Failed to install build or check dependencies"
+            # shellcheck disable=SC2031
+            error_log 8 "install ${pacname}"
+            clean_fail_down
+        }
     fi
 }
 

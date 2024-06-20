@@ -40,6 +40,7 @@ function cleanup() {
         mkdir -p "/tmp/pacstall-keep/$pacname"
         #shellcheck disable=SC2153
         sudo mv "${PACDIR:?}/${PACKAGE}.pacscript" "/tmp/pacstall-keep/$pacname"
+        sudo mv "${PACDIR:?}/${PACKAGE}.SRCINFO" "/tmp/pacstall-keep/$pacname/.SRCINFO"
         sudo mv "${PACDIR:?}/${pacname}~${pkgver}" "/tmp/pacstall-keep/$pacname"
     fi
     if [[ -f "/tmp/pacstall-pacdeps-$pacname" ]]; then
