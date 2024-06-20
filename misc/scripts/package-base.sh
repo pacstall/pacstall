@@ -48,14 +48,17 @@ function trap_ctrlc() {
 }
 
 function package_override() {
-    local o all_vars opac="${pacname}" obase="${pkgbase}" ovars=("gives" "pkgdesc" "url" "priority")
+    # shellcheck dsiable=SC2031
+    local o all_ovars opac="${pacname}" obase="${pkgbase}" ovars=("gives" "pkgdesc" "url" "priority")
     all_ovars=("${ovars[@]}" "arch" "license" "checkdepends" "optdepends" "pacdeps" "provides" "conflicts" "breaks" "replaces" "enhances" "recommends" "backup")
     for o in "${all_ovars[@]}"; do
         local look lbase
+        # shellcheck disable=SC2034
         local -n over="${o}"
         mapfile -t look < <(unset "${pacstallvars[@]}" && srcinfo.match_pkg "${srcinfile}" "${o}" "${opac}")
         if [[ -n ${look[*]} ]]; then
             if array.contains ovars "${o}"; then
+                # shellcheck disable=SC2178
                 over="${look}"
             else
                 over=("${look[@]}")
@@ -64,6 +67,7 @@ function package_override() {
             mapfile -t lbase < <(unset "${pacstallvars[@]}" && srcinfo.match_pkg "${srcinfile}" "${o}" "pkgbase:${obase}")
             if [[ -n ${lbase[*]} ]]; then
                 if array.contains ovars "${o}"; then
+                    # shellcheck disable=SC2178
                     over="${lbase}"
                 else
                     over=("${lbase[@]}")
