@@ -471,7 +471,7 @@ function calc_distro() {
         esac
     done < /etc/os-release
     if [[ "${distro_name}" == "debian" ]]; then
-        distro_version_number="$(awk -F',' -v ver="${distro_version_name}" '$3 == ver {print $1}' /usr/share/distro-info/debian.csv)"
+        distro_version_number="$(awk -F',' -v ver="${distro_version_name}" '$3 == ver {print $1}' "/usr/share/distro-info/debian.csv")"
     fi
     if [[ ${distro_pretty_name##*/} == "sid" ]]; then
         distro_parent="debian"
@@ -482,7 +482,7 @@ function calc_distro() {
             # have to set this empty instead of unsetting as the local is higher up
             distro_parent_vname=""
         else
-            distro_parent_number="$(awk -F',' -v ver="${distro_parent_vname}" '$3 == ver {print $1}' /usr/share/distro-info/${distro_parent}.csv)"
+            distro_parent_number="$(awk -F',' -v ver="${distro_parent_vname}" '$3 == ver {print $1}' "/usr/share/distro-info/${distro_parent}.csv")"
             [[ ${distro_pretty_name##*/} == "sid" ]] && distro_parent_number="sid"
         fi
     fi

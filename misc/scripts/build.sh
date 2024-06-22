@@ -237,7 +237,8 @@ function prompt_optdepends() {
 }
 
 function generate_changelog() {
-    local real_dist="$(awk -F'=' '$1 == "VERSION_CODENAME" { gsub(/"/, "", $2); print $2 }' "/etc/os-release")"
+    local real_dist
+    real_dist="$(awk -F'=' '$1 == "VERSION_CODENAME" { gsub(/"/, "", $2); print $2 }' "/etc/os-release")"
     printf "%s (%s) %s; urgency=medium\n\n  * Version now at %s.\n\n -- %s %(%a, %d %b %Y %T %z)T\n" \
         "${pkgname}" "${full_version}" "${real_dist}" "${full_version}" "${maintainer[0]}"
 }
