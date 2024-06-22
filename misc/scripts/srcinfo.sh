@@ -229,7 +229,7 @@ function srcinfo.write_package() {
 
 function srcinfo.gen() {
     local pkg
-    srcinfo.write_global "${1}"
+    srcinfo.write_global
     for pkg in "${pkgname[@]}"; do
         echo
         srcinfo.write_package "${pkg}"
@@ -560,11 +560,10 @@ function srcinfo.match_pkg() {
 }
 
 function srcinfo.print_out() {
-    local script="${1}"
     # shellcheck disable=SC2064
     trap "$(shopt -p extglob)" RETURN
     shopt -s extglob
     srcinfo.vars
-    srcinfo.gen "${script}"
+    srcinfo.gen
 }
 # vim:set ft=sh ts=4 sw=4 et:
