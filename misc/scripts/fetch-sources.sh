@@ -540,11 +540,19 @@ function get_incompatible_releases() {
     # example for this function is "ubuntu:jammy"
     local distro_name distro_version_name distro_version_number distro_parent distro_parent_vname distro_parent_number incomp_list=("${@,,}")
     calc_distro
-    if ! array.contains incomp_list "${distro_name}:${distro_version_name}"; then
-        if [[ -n ${distro_parent_vname} ]] && array.contains incomp_list "${distro_parent}:${distro_parent_vname}"; then
+
+
+    if ! array.contains incomp_list "${distro_name}:${distro_version_name}" && \
+        ! array.contains incomp_list "${distro_name}:${distro_version_number}" && \
+        ! array.contains incomp_list "${distro_name}:*" && \
+        ! array.contains incomp_list "*:${distro_version_name}" && \
+        ! array.contains incomp_list "*:${distro_version_number}"; then
+        if [[ -n ${distro_parent_vname} ]]; then
             distro_name="${distro_parent}"
-            distro_version_number="${distro_parent_number}"
             distro_version_name="${distro_parent_vname}"
+            if [[ -n ${distro_parent_number} ]]; then
+                distro_version_number="${distro_parent_number}"
+            fi
         fi
     fi
     for key in "${incomp_list[@]}"; do
