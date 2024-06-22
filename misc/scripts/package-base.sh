@@ -210,9 +210,6 @@ sudo cp "${PACKAGE}.pacscript" /tmp
 sudo chmod a+r "/tmp/${PACKAGE}.pacscript"
 pacfile="$(readlink -f "/tmp/${PACKAGE}.pacscript")"
 export pacfile
-(srcinfo.print_out "${pacfile}" > "/tmp/${PACKAGE}.SRCINFO")
-srcinfile="$(readlink -f "/tmp/${PACKAGE}.SRCINFO")"
-export srcinfile
 mapfile -t FARCH < <(dpkg --print-foreign-architectures)
 CARCH="$(dpkg --print-architecture)"
 case ${CARCH} in
@@ -230,6 +227,9 @@ if ! source "${safeenv}"; then
     error_log 12 "install $PACKAGE"
     clean_fail_down
 fi
+(srcinfo.print_out > "/tmp/${PACKAGE}.SRCINFO")
+srcinfile="$(readlink -f "/tmp/${PACKAGE}.SRCINFO")"
+export srcinfile
 
 package_pkg
 

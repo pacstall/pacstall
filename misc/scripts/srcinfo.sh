@@ -149,9 +149,8 @@ function srcinfo.vars() {
 }
 
 function srcinfo.write_global() {
-    unset "${allvars[@]}" "${allars[@]}"
     # shellcheck disable=SC2034
-    local CARCH='CARCH_REPLACE' DISTRO='DISTROBASE:DISTROVER' AARCH='AARCH_REPLACE' var ar aars bar ars rar rep seek
+    local CARCH='CARCH_REPLACE' DISTRO="${DISTRO}" AARCH='AARCH_REPLACE' var ar aars bar ars rar rep seek
     local -A AARCHS_MAP=(
         ["amd64"]="x86_64"
         ["arm64"]="aarch64"
@@ -174,8 +173,6 @@ function srcinfo.write_global() {
         ["riscv64"]="riscv64"
         ["s390x"]="s390x"
     )
-    # shellcheck disable=SC1090
-    source "${1}"
     for ar in "${allars[@]}"; do
         [[ ${ar} != "arch" ]] \
             && local -n bar="${ar}"
