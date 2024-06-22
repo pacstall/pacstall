@@ -227,7 +227,7 @@ if ! source "${safeenv}"; then
     error_log 12 "install $PACKAGE"
     clean_fail_down
 fi
-(srcinfo.print_out > "/tmp/${PACKAGE}.SRCINFO")
+srcinfo.print_out > "/tmp/${PACKAGE}.SRCINFO"
 srcinfile="$(readlink -f "/tmp/${PACKAGE}.SRCINFO")"
 export srcinfile
 

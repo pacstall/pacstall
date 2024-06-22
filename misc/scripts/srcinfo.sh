@@ -560,10 +560,12 @@ function srcinfo.match_pkg() {
 }
 
 function srcinfo.print_out() {
-    # shellcheck disable=SC2064
-    trap "$(shopt -p extglob)" RETURN
-    shopt -s extglob
-    srcinfo.vars
-    srcinfo.gen
+    (
+        # shellcheck disable=SC2064
+        trap "$(shopt -p extglob)" RETURN
+        shopt -s extglob
+        srcinfo.vars
+        srcinfo.gen
+    )
 }
 # vim:set ft=sh ts=4 sw=4 et:
