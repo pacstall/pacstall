@@ -491,7 +491,11 @@ function calc_distro() {
 function set_distro() {
     local distro_name distro_version_name distro_version_number distro_parent distro_parent_vname distro_parent_number
     calc_distro
-    echo "${distro_parent:-${distro_name}}:${distro_parent_vname:-${distro_version_name}}"
+    if [[ ${1} == "parent" ]]; then
+        echo "${distro_parent:-${distro_name}}:${distro_parent_vname:-${distro_version_name}}"
+    else
+        echo "${distro_name}:${distro_version_name}"
+    fi
 }
 
 function get_compatible_releases() {
