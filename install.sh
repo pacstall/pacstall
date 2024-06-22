@@ -122,9 +122,9 @@ case "$reply" in
 esac
 
 if [[ ${GITHUB_ACTIONS} == "true" ]]; then
-    apt-get install -qq -y sudo wget build-essential unzip git zstd iputils-ping lsb-release aptitude bubblewrap jq distro-info-data ${axel_inst}
+    apt-get install -qq -y sudo wget build-essential unzip git zstd iputils-ping aptitude bubblewrap jq distro-info-data ${axel_inst}
 else
-    apt-get install -y sudo wget build-essential unzip git zstd iputils-ping lsb-release aptitude bubblewrap jq distro-info-data ${axel_inst}
+    apt-get install -y sudo wget build-essential unzip git zstd iputils-ping aptitude bubblewrap jq distro-info-data ${axel_inst}
 fi
 
 METADIR="/var/lib/pacstall/metadata"

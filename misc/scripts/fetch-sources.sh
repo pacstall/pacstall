@@ -459,64 +459,91 @@ function append_modifier_entries() {
 }
 
 function calc_distro() {
-    distro_name="$(lsb_release -si 2> /dev/null)"
-    distro_name="${distro_name,,}"
-    if [[ "$(lsb_release -ds 2> /dev/null | tail -c 4)" == "sid" ]]; then
-        distro_version_name="sid"
-        distro_version_number="sid"
-    else
-        distro_version_name="$(lsb_release -sc 2> /dev/null)"
-        distro_version_number="$(lsb_release -sr 2> /dev/null)"
+    local distro_pretty_name
+    while IFS='=' read -r key value; do
+        case "${key}" in
+            "ID") distro_name="${value//\"/}" ;;
+            "VERSION_CODENAME") distro_version_name="${value//\"/}" ;;
+            "VERSION_ID") distro_version_number="${value//\"/}" ;;
+            "DEBIAN_CODENAME") distro_parent="debian" distro_parent_vname="${value//\"/}" ;;
+            "UBUNTU_CODENAME") distro_parent="ubuntu" distro_parent_vname="${value//\"/}" ;;
+            "PRETTY_NAME") distro_pretty_name="${value//\"/}" ;;
+        esac
+    done < /etc/os-release
+    if [[ "${distro_name}" == "debian" ]]; then
+        distro_version_number="$(awk -F',' -v ver="${distro_version_name}" '$3 == ver {print $1}' /usr/share/distro-info/debian.csv)"
+    fi
+    if [[ ${distro_pretty_name##*/} == "sid" ]]; then
+        distro_parent="debian"
+        distro_parent_vname="sid"
+    fi
+    if [[ -n "${distro_parent}" ]]; then
+        if [[ ${distro_name} == "ubuntu" && ${distro_version_name} == "${distro_parent_vname}" ]]; then
+            # have to set this empty instead of unsetting as the local is higher up
+            distro_parent_vname=""
+        else
+            distro_parent_number="$(awk -F',' -v ver="${distro_parent_vname}" '$3 == ver {print $1}' /usr/share/distro-info/${distro_parent}.csv)"
+            [[ ${distro_pretty_name##*/} == "sid" ]] && distro_parent_number="sid"
+        fi
     fi
 }
 
 function set_distro() {
-    local distro_name distro_version_name distro_version_number
+    local distro_name distro_version_name distro_version_number distro_parent distro_parent_vname distro_parent_number
     calc_distro
-    echo "${distro_name}:${distro_version_name}"
+    echo "${distro_parent:-${distro_name}}:${distro_parent_vname:-${distro_version_name}}"
 }
 
 function get_compatible_releases() {
     # example for this function is "ubuntu:jammy"
-    local distro_name distro_version_name distro_version_number
+    local distro_name distro_version_name distro_version_number distro_parent distro_parent_vname distro_parent_number is_compat=false comp_list=("${@,,}")
     calc_distro
-    # lowercase
-    local input=("${@,,}")
-    local is_compat=false
-    for key in "${input[@]}"; do
+    for key in "${comp_list[@]}"; do
         # check for `*:jammy`
         if [[ $key == "*:"* ]]; then
             # check for `22.04` or `jammy`
-            if [[ ${key#*:} == "${distro_version_number}" || ${key#*:} == "${distro_version_name}" ]]; then
+            if [[ ${key#*:} == "${distro_version_number}" ||
+                ${key#*:} == "${distro_version_name}" ||
+                ${key#*:} == "${distro_parent_number}" ||
+                ${key#*:} == "${distro_parent_vname}" ]]; then
                 is_compat=true
-                return 0
+                break
             fi
         # check for `ubuntu:*`
         elif [[ $key == *":*" ]]; then
             # check for `ubuntu`
-            if [[ ${key%%:*} == "${distro_name}" ]]; then
+            if [[ ${key%%:*} == "${distro_name}" || ${key%%:*} == "${distro_parent}" ]]; then
                 is_compat=true
-                return 0
+                break
             fi
-        elif [[ $key == "${distro_name}:${distro_version_name}" || $key == "${distro_name}:${distro_version_number}" ]]; then
+        elif [[ ${key} == "${distro_name}:${distro_version_name}" ||
+            ${key} == "${distro_name}:${distro_version_number}" ||
+            ${key} == "${distro_parent}:${distro_parent_vname}" ||
+            ${key} == "${distro_parent}:${distro_parent_number}" ]]; then
             # check for `ubuntu:jammy` or `ubuntu:22.04`
             is_compat=true
-            return 0
+            break
         fi
     done
     if [[ ${is_compat} == "false" || ${is_compat} != "true" ]]; then
         fancy_message error "This Pacscript does not work on ${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${distro_name}:${distro_version_number}${NC}"
         return 1
     fi
+    return 0
 }
 
 function get_incompatible_releases() {
     # example for this function is "ubuntu:jammy"
-    local distro_name distro_version_name distro_version_number
+    local distro_name distro_version_name distro_version_number distro_parent distro_parent_vname distro_parent_number incomp_list=("${@,,}")
     calc_distro
-    # lowercase
-    local input=("${@,,}")
-    for key in "${input[@]}"; do
+    if ! array.contains incomp_list "${distro_name}:${distro_version_name}"; then
+        if [[ -n ${distro_parent_vname} ]] && array.contains incomp_list "${distro_parent}:${distro_parent_vname}"; then
+            distro_name="${distro_parent}"
+            distro_version_number="${distro_parent_number}"
+            distro_version_name="${distro_parent_vname}"
+        fi
+    fi
+    for key in "${incomp_list[@]}"; do
         # check for `*:jammy`
         if [[ $key == "*:"* ]]; then
             # check for `22.04` or `jammy`
