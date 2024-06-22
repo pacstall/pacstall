@@ -35,7 +35,7 @@ function lint_pacname() {
         fancy_message error "'pacname' must be at least two characters long"
         ret=1
     fi
-    #shellcheck disable=SC1001
+    # shellcheck disable=SC1001
     if [[ ${pacname:0:1} == [.\-+] ]]; then
         fancy_message error "'pacname' must start with an alphanumeric character"
         ret=1
@@ -63,7 +63,7 @@ function lint_gives() {
             fancy_message error "'gives' must be at least two characters long"
             ret=1
         fi
-        #shellcheck disable=SC1001
+        # shellcheck disable=SC1001
         if [[ ${gives:0:1} == [.\-+] ]]; then
             fancy_message error "'gives' must start with an alphanumeric character"
             ret=1
