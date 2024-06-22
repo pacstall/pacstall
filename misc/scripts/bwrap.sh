@@ -66,9 +66,9 @@ done
     [[ \$(type -t "\$i") == "function" ]] && declare -pf \$i >> "${safeenv}";
 done || for i in {${debfunc_str},${pacfunc_str}}; do
     [[ \$(type -t "\$i") == "function" ]] && declare -pf \$i >> "${safeenv}";
-    if [[ -n "\${pkgbase}" ]]; then
-        for i in "\${pkgname[@]}"; do
-            [[ \$(type -t "package_\${i}") == "function" ]] && declare -pf "package_\${i}" >> "${safeenv}";
+    if [[ -n \$pkgbase && \$i == "package" ]]; then
+        for p in "\${pkgname[@]}"; do
+            [[ \$(type -t "\${i}_\${p}") == "function" ]] && declare -pf "\${i}_\${p}" >> "${safeenv}";
         done
     fi
 done

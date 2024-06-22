@@ -239,19 +239,6 @@ function srcinfo.gen() {
     done
 }
 
-function srcinfo.write_out() {
-    # shellcheck disable=SC2064
-    trap "$(shopt -p extglob)" RETURN
-    shopt -s extglob
-    (($# <= 0)) && srcinfo.die "You failed to specify a pacscript"
-    srcinfo.vars
-    for i in "${@}"; do
-        [[ -f ${i} && -w ${i} ]] || srcinfo.die "Not a file: ${i}"
-        srcinfo.gen "${i}" > "${i%/*.pacscript}"/.SRCINFO &
-    done
-    wait
-}
-
 # @description Split a key value pair into an associated array.
 #
 # @example
