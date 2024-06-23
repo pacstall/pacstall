@@ -143,6 +143,9 @@ function package_pkg() {
                 fi
             fi
             fancy_message info "Cleaning up"
+            if is_apt_package_installed "${PACKAGE}-dummy-builddeps"; then
+                sudo apt-get purge "${PACKAGE}-dummy-builddeps" -y > /dev/null
+            fi
             cleanup
             return 0
         fi
@@ -159,12 +162,11 @@ function package_pkg() {
             exit 1
         fi
         fancy_message info "Cleaning up"
+        if is_apt_package_installed "${PACKAGE}-dummy-builddeps"; then
+            sudo apt-get purge "${PACKAGE}-dummy-builddeps" -y > /dev/null
+        fi
         cleanup
         return 0
-    fi
-
-    if is_apt_package_installed "${PACKAGE}-dummy-builddeps"; then
-        sudo apt-get purge "${PACKAGE}-dummy-builddeps" -y > /dev/null
     fi
 }
 
