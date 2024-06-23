@@ -525,7 +525,7 @@ function makedeb() {
         fi
     done
     unset pre_inst_upg post_inst_upg
-    echo -e "sudo rm -f $METADIR/$pkgname\nsudo rm -f /etc/apt/preferences.d/$pkgname-pin" | sudo tee -a "$STAGEDIR/$pkgname/DEBIAN/postrm" > /dev/null
+    echo -e "sudo rm -f $METADIR/$pkgname\nsudo rm -f /etc/apt/preferences.d/${pkgname//./-}-pin" | sudo tee -a "$STAGEDIR/$pkgname/DEBIAN/postrm" > /dev/null
     local postfile
     for postfile in {postrm,postinst,preinst}; do
         sudo chmod -x "$STAGEDIR/$pkgname/DEBIAN/${postfile}" &> /dev/null
@@ -642,9 +642,9 @@ function install_deb() {
             sudo mkdir -p /etc/apt/preferences.d
         fi
         local combined_pinning=("${provides[@]}" "${gives:-${pkgname}}")
-        echo "Package: ${combined_pinning[*]}" | sudo tee "/etc/apt/preferences.d/${pkgname}-pin" > /dev/null
-        echo "Pin: version *" | sudo tee -a "/etc/apt/preferences.d/${pkgname}-pin" > /dev/null
-        echo "Pin-Priority: -1" | sudo tee -a "/etc/apt/preferences.d/${pkgname}-pin" > /dev/null
+        echo "Package: ${combined_pinning[*]}" | sudo tee "/etc/apt/preferences.d/${pkgname//./-}-pin" > /dev/null
+        echo "Pin: version *" | sudo tee -a "/etc/apt/preferences.d/${pkgname//./-}-pin" > /dev/null
+        echo "Pin-Priority: -1" | sudo tee -a "/etc/apt/preferences.d/${pkgname//./-}-pin" > /dev/null
         return 0
     else
         sudo mv "$STAGEDIR/$debname.deb" "$PACDEB_DIR"
