@@ -547,7 +547,12 @@ function get_incompatible_releases() {
         ! array.contains incomp_list "${distro_name}:*" && \
         ! array.contains incomp_list "*:${distro_version_name}" && \
         ! array.contains incomp_list "*:${distro_version_number}"; then
-        if [[ -n ${distro_parent_vname} ]]; then
+        if [[ -n ${distro_parent_vname} ]] && \
+            { array.contains incomp_list "*:${distro_parent_vname}" || \
+            array.contains incomp_list "*:${distro_parent_number}" || \
+            array.contains incomp_list "${distro_parent}:${distro_parent_vname}" || \
+            array.contains incomp_list "${distro_parent}:${distro_parent_number}";
+        }; then
             distro_name="${distro_parent}"
             distro_version_name="${distro_parent_vname}"
             if [[ -n ${distro_parent_number} ]]; then
