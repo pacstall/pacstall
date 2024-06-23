@@ -86,15 +86,16 @@ sudo chmod a+r "/tmp/${PACKAGE}.pacscript"
 pacfile="$(readlink -f "/tmp/${PACKAGE}.pacscript")"
 export pacfile
 mapfile -t FARCH < <(dpkg --print-foreign-architectures)
-export FARCH
-export CARCH="$(dpkg --print-architecture)"
+CARCH="$(dpkg --print-architecture)"
 case ${CARCH} in
     i386) AARCH='i686' ;;
     armhf) AARCH='armv7h' ;;
     *) AARCH="${HOSTTYPE}" ;;
 esac
-export AARCH
-export DISTRO="$(set_distro)"
+DISTRO="$(set_distro parent)"
+CDISTRO="$(set_distro)"
+export FARCH CARCH AARCH DISTRO CDISTRO
+
 
 # Running source on an isolated env
 safe_source "${pacfile}"

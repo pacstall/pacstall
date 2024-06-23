@@ -35,7 +35,7 @@ PACDIR="/tmp/pacstall"
 PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER:-$(whoami)}}")
 SCRIPTDIR="/usr/share/pacstall"
 
-required_packages=(lsb-release aptitude bubblewrap jq distro-info-data)
+required_packages=(aptitude bubblewrap jq distro-info-data)
 
 function suggested_solution() {
     if [[ -z $PACSTALL_SUPPRESS_SOLUTIONS ]]; then
