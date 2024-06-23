@@ -217,8 +217,9 @@ case ${CARCH} in
     armhf) AARCH='armv7h' ;;
     *) AARCH="${HOSTTYPE}" ;;
 esac
-DISTRO="$(set_distro)"
-export FARCH CARCH AARCH DISTRO
+DISTRO="$(set_distro parent)"
+CDISTRO="$(set_distro)"
+export FARCH CARCH AARCH DISTRO CDISTRO
 
 # Running source on an isolated env
 safe_source "${pacfile}"

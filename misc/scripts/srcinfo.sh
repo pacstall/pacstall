@@ -150,7 +150,7 @@ function srcinfo.vars() {
 
 function srcinfo.write_global() {
     # shellcheck disable=SC2034
-    local CARCH='CARCH_REPLACE' DISTRO="${DISTRO}" AARCH='AARCH_REPLACE' var ar aars bar ars rar rep seek
+    local CARCH='CARCH_REPLACE' DISTRO="${DISTRO}" CDISTRO="${CDISTRO}" AARCH='AARCH_REPLACE' var ar aars bar ars rar rep seek
     local -A AARCHS_MAP=(
         ["amd64"]="x86_64"
         ["arm64"]="aarch64"

@@ -241,7 +241,7 @@ function prompt_optdepends() {
 
 function generate_changelog() {
     printf "%s (%s) %s; urgency=medium\n\n  * Version now at %s.\n\n -- %s %(%a, %d %b %Y %T %z)T\n" \
-        "${pacname}" "${full_version}" "$(lsb_release -sc)" "${full_version}" "${maintainer[0]}"
+        "${pacname}" "${full_version}" "${CDISTRO#*:}" "${full_version}" "${maintainer[0]}"
 }
 
 function clean_logdir() {
