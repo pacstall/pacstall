@@ -459,7 +459,7 @@ function append_modifier_entries() {
 }
 
 function calc_distro() {
-    local distro_pretty_name
+    local distro_pretty_name key value
     while IFS='=' read -r key value; do
         case "${key}" in
             "ID") distro_name="${value//\"/}" ;;
