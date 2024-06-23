@@ -482,7 +482,7 @@ function calc_distro() {
             # have to set this empty instead of unsetting as the local is higher up
             distro_parent_vname=""
         else
-            distro_parent_number="$(awk -F',' -v ver="${distro_parent_vname}" '$3 == ver {print $1}' "/usr/share/distro-info/${distro_parent}.csv")"
+            distro_parent_number="$(awk -F',' -v ver="${distro_parent_vname}" '$3 == ver { gsub(" LTS", "", $1); print $1 }' "/usr/share/distro-info/${distro_parent}.csv")"
             [[ ${distro_pretty_name##*/} == "sid" ]] && distro_parent_number="sid"
         fi
     fi
