@@ -24,32 +24,28 @@
 
 # A collection of checks to verify a pacscript is correct
 
-function lint_pkgname() {
+function lint_pacname() {
     local ret=0
-    if [[ -z $pkgname ]]; then
-        fancy_message error "Package does not contain 'pkgname'"
+    if [[ -z $pacname ]]; then
+        fancy_message error "Package does not contain 'pacname'"
         return 1
     fi
-    if [[ $pkgname != "$PACKAGE" ]]; then
-        fancy_message error "Package name does not match file"
-        suggested_solution "Change '${UPurple}pkgname${NC}' to '${UCyan}$PACKAGE${NC}'" "Change package name to '${UCyan}$pkgname${NC}'"
-        ret=1
-    fi
     # https://www.debian.org/doc/debian-policy/ch-controlfields.html#source
-    if ((${#pkgname} < 2)); then
-        fancy_message error "'pkgname' must be at least two characters long"
+    if ((${#pacname} < 2)); then
+        fancy_message error "pacname: '${pacname}' must be at least two characters long"
         ret=1
     fi
-    if [[ ${pkgname:0:1} == [.\-+] ]]; then
-        fancy_message error "'pkgname' must start with an alphanumeric character"
+    # shellcheck disable=SC1001
+    if [[ ${pacname:0:1} == [.\-+] ]]; then
+        fancy_message error "pacname: '${pacname}' must start with an alphanumeric character"
         ret=1
     fi
-    if [[ $pkgname =~ [[:upper:]] ]]; then
-        fancy_message error "'pkgname' contains uppercase characters"
+    if [[ $pacname =~ [[:upper:]] ]]; then
+        fancy_message error "pacname: '${pacname}' contains uppercase characters"
         ret=1
     fi
-    if [[ $pkgname == *[^[:alnum:]+.-]* ]]; then
-        fancy_message error "'pkgname' contains characters that are not lowercase, digits, minus, or periods"
+    if [[ $pacname == *[^[:alnum:]+.-]* ]]; then
+        fancy_message error "pacname: '${pacname}' contains characters that are not lowercase, digits, minus, or periods"
         ret=1
     fi
     return "${ret}"
@@ -57,7 +53,7 @@ function lint_pkgname() {
 
 function lint_gives() {
     local ret=0
-    if [[ -z $gives && $pkgname == *-deb ]]; then
+    if [[ -z $gives && $pacname == *-deb ]]; then
         fancy_message warn "Deb package does not contain gives"
         ret=1
     fi
@@ -67,6 +63,7 @@ function lint_gives() {
             fancy_message error "'gives' must be at least two characters long"
             ret=1
         fi
+        # shellcheck disable=SC1001
         if [[ ${gives:0:1} == [.\-+] ]]; then
             fancy_message error "'gives' must start with an alphanumeric character"
             ret=1
@@ -199,7 +196,7 @@ function lint_source() {
                                     ${distver_carch_source[0]} == "${source[0]}" ]]; } \
                             || test_source+=("${source[@]}")
                     fi
-                    [[ ${pkgname} == *"-deb" ]] && test_source=("${!source_arch}") || test_source+=("${!source_arch}")
+                    [[ ${pacname} == *"-deb" ]] && test_source=("${!source_arch}") || test_source+=("${!source_arch}")
                     if [[ -n ${test_source[1]} ]]; then
                         lint_source_deb_test "${test_source[@]}"
                         if ((ret == 1)); then
@@ -677,7 +674,7 @@ function lint_license() {
 }
 
 function checks() {
-    local ret=0 check linting_checks=(lint_pkgname lint_gives lint_pkgrel lint_epoch lint_version lint_source lint_pkgdesc lint_maintainer lint_deps lint_ppa lint_relations lint_fields lint_hash lint_incompatible lint_arch lint_mask lint_priority lint_license)
+    local ret=0 check linting_checks=(lint_pacname lint_gives lint_pkgrel lint_epoch lint_version lint_source lint_pkgdesc lint_maintainer lint_deps lint_ppa lint_relations lint_fields lint_hash lint_incompatible lint_arch lint_mask lint_priority lint_license)
     for check in "${linting_checks[@]}"; do
         "${check}" || ret=1
     done

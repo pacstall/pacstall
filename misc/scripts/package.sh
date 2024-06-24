@@ -22,89 +22,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-# shellcheck source=./misc/scripts/checks.sh
-source "${SCRIPTDIR}/scripts/checks.sh" || {
-    fancy_message error "Could not find checks.sh"
-    return 1
-}
-
-# shellcheck source=./misc/scripts/fetch-sources.sh
-source "${SCRIPTDIR}/scripts/fetch-sources.sh" || {
-    fancy_message error "Could not find fetch-sources.sh"
-    return 1
-}
-
-function trap_ctrlc() {
-    fancy_message warn "\nInterrupted, cleaning up"
-    if is_apt_package_installed "${pkgname}"; then
-        sudo apt-get purge "${gives:-$pkgname}" -y > /dev/null
-    fi
-    sudo rm -f "/etc/apt/preferences.d/${pkgname:-$PACKAGE}-pin"
-    cleanup
-    exit 1
-}
-
-# NCPU is the core count
-if [[ -n $PACSTALL_BUILD_CORES ]]; then
-    if [[ $PACSTALL_BUILD_CORES =~ ^[0-9]+$ ]]; then
-        function nproc() { echo "${PACSTALL_BUILD_CORES:-1}"; }
-        declare -g NCPU="${PACSTALL_BUILD_CORES:-1}"
-    else
-        fancy_message error "${UCyan}PACSTALL_BUILD_CORES${NC} is not an integer. Falling back to 1"
-        function nproc() { echo "1"; }
-        declare -g NCPU="1"
-    fi
-else
-    declare -g NCPU="$(nproc)"
-fi
-
-ask "(${BPurple}$PACKAGE${NC}) Do you want to view/edit the pacscript?" N
-if ((answer == 1)); then
-    (
-        if [[ -n $PACSTALL_EDITOR ]]; then
-            $PACSTALL_EDITOR "$PACKAGE".pacscript
-        elif [[ -n $EDITOR ]]; then
-            $EDITOR "$PACKAGE".pacscript
-        elif [[ -n $VISUAL ]]; then
-            $VISUAL "$PACKAGE".pacscript
-        else
-            sensible-editor "$PACKAGE".pacscript
-        fi
-    ) || {
-        fancy_message warn "Editor not found, falling back to 'sensible-editor'"
-        sensible-editor "$PACKAGE".pacscript
-    }
-fi
-
-fancy_message info "Sourcing pacscript"
-DIR="$PWD"
-homedir="$(eval echo ~"$PACSTALL_USER")"
-export homedir
-
-sudo cp "${PACKAGE}.pacscript" /tmp
-sudo chmod a+r "/tmp/${PACKAGE}.pacscript"
-pacfile="$(readlink -f "/tmp/${PACKAGE}.pacscript")"
-export pacfile
-mapfile -t FARCH < <(dpkg --print-foreign-architectures)
-CARCH="$(dpkg --print-architecture)"
-case ${CARCH} in
-    i386) AARCH='i686' ;;
-    armhf) AARCH='armv7h' ;;
-    *) AARCH="${HOSTTYPE}" ;;
-esac
-DISTRO="$(set_distro parent)"
-CDISTRO="$(set_distro)"
-export FARCH CARCH AARCH DISTRO CDISTRO
-
-
-# Running source on an isolated env
-safe_source "${pacfile}"
-if ! source "${safeenv}"; then
-    fancy_message error "Could not source pacscript"
-    error_log 12 "install $PACKAGE"
-    clean_fail_down
-fi
-
 if [[ ${external_connection} == "true" ]]; then
     fancy_message warn "This package will connect to the internet during its build process."
 fi
@@ -122,7 +39,7 @@ export TARCH
 append_modifier_entries "${TARCH}" "${DISTRO}"
 
 # Running `-B` on a deb package doesn't make sense, so let's download instead
-if ((PACSTALL_INSTALL == 0)) && [[ ${pkgname} == *-deb ]]; then
+if ((PACSTALL_INSTALL == 0)) && [[ ${pacname} == *-deb ]]; then
     parse_source_entry "${source[0]}"
     if ! download "${source[0]}" "${dest}"; then
         fancy_message error "Failed to download '${source[0]}'"
@@ -137,11 +54,11 @@ fi
 masked_packages=()
 getMasks masked_packages
 if ((${#masked_packages[@]} != 0)); then
-    if array.contains masked_packages "${pkgname:-${PACKAGE}}"; then
-        offending_pkg="$(getMasks_offending_pkg "${pkgname:-${PACKAGE}}")"
+    if array.contains masked_packages "${pacname:-${PACKAGE}}"; then
+        offending_pkg="$(getMasks_offending_pkg "${pacname:-${PACKAGE}}")"
         # shellcheck disable=SC2181
         if (($? == 0)); then
-            fancy_message error "The package ${BBlue}${offending_pkg}${NC} is masking ${BBlue}${pkgname:-${PACKAGE}}${NC}. By installing the masked package, you may cause damage to your operating system"
+            fancy_message error "The package ${BBlue}${offending_pkg}${NC} is masking ${BBlue}${pacname:-${PACKAGE}}${NC}. By installing the masked package, you may cause damage to your operating system"
             exit 1
         else
             fancy_message error "Somehow, 'getMasks' found masked packages that match the package you want to install, but 'getMasks_offending_pkg' could not find it. Report this upstream"
@@ -170,17 +87,17 @@ elif [[ -n ${incompatible[*]} ]]; then
 fi
 
 clean_builddir
-sudo mkdir -p "$STAGEDIR/$pkgname/DEBIAN"
-sudo chmod a+rx "$STAGEDIR" "$STAGEDIR/$pkgname" "$STAGEDIR/$pkgname/DEBIAN"
+sudo mkdir -p "$STAGEDIR/$pacname/DEBIAN"
+sudo chmod a+rx "$STAGEDIR" "$STAGEDIR/$pacname" "$STAGEDIR/$pacname/DEBIAN"
 
 # Run checks function
 if ! checks; then
-    error_log 6 "install $PACKAGE"
+    error_log 6 "install ${pacname}"
     clean_fail_down
 fi
 
 # If priority exists and is required, and also that this package has not been installed before (first time)
-if [[ -n ${priority} && ${priority} == 'essential' ]] && ! is_package_installed "${pkgname}"; then
+if [[ -n ${priority} && ${priority} == 'essential' ]] && ! is_package_installed "${pacname}"; then
     ask "This package has 'priority=essential', meaning once this is installed, it should be assumed to be uninstallable. Do you want to continue?" Y
     if ((answer == 0)); then
         cleanup
@@ -189,7 +106,7 @@ if [[ -n ${priority} && ${priority} == 'essential' ]] && ! is_package_installed 
 fi
 
 # shellcheck disable=SC2031
-if [[ ${pkgname} == *-git ]]; then
+if [[ ${pacname} == *-git ]]; then
     parse_source_entry "${source[0]}"
     calc_git_pkgver
     full_version="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}~git${comp_git_pkgver}"
@@ -230,7 +147,7 @@ if [[ -n $pacdeps ]]; then
                 fancy_message info "Found newer version for $i pacdep"
                 if ! pacstall "$cmd" "${i}${repo}"; then
                     fancy_message error "Failed to install dependency (${i} from ${PACKAGE})"
-                    error_log 8 "install $PACKAGE"
+                    error_log 8 "install ${pacname}"
                     clean_fail_down
                 fi
             else
@@ -241,7 +158,7 @@ if [[ -n $pacdeps ]]; then
             fi
         elif fancy_message info "Installing dependency ${PURPLE}${i}${NC}" && ! pacstall "$cmd" "${i}${repo}"; then
             fancy_message error "Failed to install dependency (${i} from ${PACKAGE})"
-            error_log 8 "install $PACKAGE"
+            error_log 8 "install ${pacname}"
             clean_fail_down
         fi
         unset repo
@@ -249,7 +166,7 @@ if [[ -n $pacdeps ]]; then
     done
 fi
 
-if ! is_package_installed "${pkgname}"; then
+if ! is_package_installed "${pacname}"; then
     if [[ -n ${replaces[*]} ]]; then
         # Ask user if they want to replace the program
         for pkg in "${replaces[@]}"; do
@@ -275,17 +192,17 @@ if ! is_package_installed "${pkgname}"; then
             if is_apt_package_installed "${pkg}" && ! is_package_installed "${pkg}"; then
                 # Check if anything in conflicts variable is installed already
                 # shellcheck disable=SC2031
-                fancy_message error "${RED}$pkgname${NC} conflicts with $pkg, which is currently installed by apt"
+                fancy_message error "${RED}$pacname${NC} conflicts with $pkg, which is currently installed by apt"
                 suggested_solution "Remove the apt package by running '${UCyan}sudo apt purge $pkg${NC}'"
-                error_log 13 "install $PACKAGE"
+                error_log 13 "install ${pacname}"
                 clean_fail_down
             fi
-            if [[ ${pkg} != "${pkgname}" ]] && is_package_installed "${pkg}"; then
+            if [[ ${pkg} != "${pacname}" ]] && is_package_installed "${pkg}"; then
                 # Same thing, but check if anything is installed with pacstall
                 # shellcheck disable=SC2031
-                fancy_message error "${RED}$pkgname${NC} conflicts with $pkg, which is currently installed by pacstall"
+                fancy_message error "${RED}$pacname${NC} conflicts with $pkg, which is currently installed by pacstall"
                 suggested_solution "Remove the pacstall package by running '${UCyan}pacstall -R $pkg${NC}'"
-                error_log 13 "install $PACKAGE"
+                error_log 13 "install ${pacname}"
                 clean_fail_down
             fi
         done
@@ -296,16 +213,16 @@ if ! is_package_installed "${pkgname}"; then
             # Do we have an apt package installed (but not pacstall)?
             if is_apt_package_installed "${pkg}" && ! is_package_installed "${pkg}"; then
                 # Check if anything in breaks variable is installed already
-                fancy_message error "${RED}$pkgname${NC} breaks $pkg, which is currently installed by apt"
+                fancy_message error "${RED}$pacname${NC} breaks $pkg, which is currently installed by apt"
                 suggested_solution "Remove the apt package by running '${UCyan}sudo apt purge $pkg${NC}'"
-                error_log 13 "install $PACKAGE"
+                error_log 13 "install ${pacname}"
                 clean_fail_down
             fi
-            if [[ ${pkg} != "${pkgname}" ]] && is_package_installed "${pkg}"; then
+            if [[ ${pkg} != "${pacname}" ]] && is_package_installed "${pkg}"; then
                 # Same thing, but check if anything is installed with pacstall
-                fancy_message error "${RED}$pkgname${NC} breaks $pkg, which is currently installed by pacstall"
+                fancy_message error "${RED}$pacname${NC} breaks $pkg, which is currently installed by pacstall"
                 suggested_solution "Remove the pacstall package by running '${UCyan}pacstall -R $pkg${NC}'"
-                error_log 13 "install $PACKAGE"
+                error_log 13 "install ${pacname}"
                 clean_fail_down
             fi
         done
@@ -349,7 +266,7 @@ mkdir -p "${PACDIR}"
 gather_down
 
 unset payload_arr
-if [[ -n $PACSTALL_PAYLOAD && ! -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
+if [[ -n $PACSTALL_PAYLOAD && ! -f "/tmp/pacstall-pacdeps-${pacname}" ]]; then
     IFS=$'\n' read -rd '' -a payload_arr <<< "$(awk -v RS=';:' '{if (NF) print $0}' <<< "${PACSTALL_PAYLOAD}")"
 fi
 
@@ -369,7 +286,7 @@ for i in "${!source[@]}"; do
             REPO="$(< ${SCRIPTDIR}/repo/pacstallrepo)"
         fi
         # shellcheck disable=SC2031
-        source_url="${REPO}/packages/${pkgname}/${source_url}"
+        source_url="${REPO}/packages/${pacname}/${source_url}"
     fi
     case "${source_url}" in
         *file://*)
@@ -408,7 +325,7 @@ fi
 export pacdir="$PWD"
 sudo chown -R root:root . 2> /dev/null
 
-export pkgdir="$STAGEDIR/$pkgname"
+export pkgdir="$STAGEDIR/$pacname"
 export -f ask fancy_message select_options
 
 # Trap so that we can clean up (hopefully without messing up anything)
@@ -421,10 +338,10 @@ function fail_out_functions() {
     local func="$1"
     trap - ERR
     eval "$restoreshopt"
-    error_log 5 "$func $PACKAGE"
+    error_log 5 "$func ${pacname}"
     echo -ne "\t"
-    fancy_message error "Could not $func $PACKAGE properly"
-    sudo dpkg -r "${gives:-$pkgname}" > /dev/null
+    fancy_message error "Could not $func ${pacname} properly"
+    sudo dpkg -r "${gives:-$pacname}" > /dev/null
     clean_fail_down
 }
 
@@ -447,13 +364,13 @@ $(shopt -p -o)"
 
 unset pac_functions
 if [[ $NOCHECK == true ]]; then
-    for i in {prepare,build,package}; do
+    for i in "prepare" "build" "package${pkgbase:+_$pacname}"; do
         if is_function "$i"; then
             pac_functions+=("$i")
         fi
     done
 else
-    for i in {prepare,build,check,package}; do
+    for i in "prepare" "build" "check" "package${pkgbase:+_$pacname}"; do
         if is_function "$i"; then
             pac_functions+=("$i")
         fi
@@ -469,13 +386,12 @@ fi
 trap - ERR
 
 cd "$HOME" 2> /dev/null || (
-    error_log 1 "install $PACKAGE"
+    error_log 1 "install ${pacname}"
     fancy_message warn "Could not enter into ${HOME}"
 )
 
-if is_apt_package_installed "${PACKAGE}-dummy-builddeps"; then
-    sudo apt-get purge "${PACKAGE}-dummy-builddeps" -y > /dev/null
-fi
+# shellcheck source=/dev/null
+source "${safeenv}"
 makedeb
 
 # Metadata writing
@@ -483,21 +399,20 @@ meta_log
 
 fancy_message info "Performing post install operations"
 fancy_message sub "Storing pacscript"
-sudo mkdir -p "/var/cache/pacstall/$PACKAGE/${full_version}"
+sudo mkdir -p "/var/cache/pacstall/${pacname}/${full_version}"
 if ! cd "$DIR" 2> /dev/null; then
-    error_log 1 "install $PACKAGE"
+    error_log 1 "install ${pacname}"
     fancy_message error "Could not enter into ${DIR}"
-    sudo dpkg -r "${gives:-$pkgname}" > /dev/null
+    sudo dpkg -r "${gives:-$pacname}" > /dev/null
     clean_fail_down
 fi
 
-sudo cp -r "${pacfile}" "/var/cache/pacstall/$PACKAGE/${full_version}"
-sudo chmod o+r "/var/cache/pacstall/$PACKAGE/${full_version}/$PACKAGE.pacscript"
+sudo cp -r "${pacfile}" "/var/cache/pacstall/${pacname}/${full_version}"
+sudo chmod o+r "/var/cache/pacstall/${pacname}/${full_version}/${PACKAGE}.pacscript"
+sudo cp -r "${srcinfile}" "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
+sudo chmod o+r "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
 
-fancy_message sub "Cleaning up"
-cleanup
-
-fancy_message info "Done installing ${BPurple}$PACKAGE${NC}"
+fancy_message info "Done installing ${BPurple}${pacname}${NC}"
 return 0
 
 # vim:set ft=sh ts=4 sw=4 et:

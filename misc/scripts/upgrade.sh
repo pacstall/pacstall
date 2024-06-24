@@ -49,18 +49,19 @@ function ver_compare() {
 }
 
 function calc_repo_ver() {
-    local compare_repo="$1" compare_package="$2" compare_tmp compare_safe compare_pkgver compare_pkgrel compare_epoch compare_source comp
+    local compare_repo="$1" compare_package="$2" compare_tmp compare_safe compare_pkgver compare_pkgrel compare_epoch compare_source comp compare_base
     unset comp_repo_ver
     compare_tmp="$(sudo mktemp -p "${PACDIR}" -t "calc-repo-ver-$compare_package.XXXXXX")"
     compare_safe="${compare_tmp}"
     curl -fsSL "$compare_repo/packages/$compare_package/.SRCINFO" | sudo tee "${compare_safe}" > /dev/null || return 1
     sudo chown "${PACSTALL_USER}" "${compare_safe}"
+    compare_base="$(srcinfo.match_pkg "${compare_safe}" pkgbase)"
     for comp in "pkgver" "pkgrel" "epoch"; do
         local -n decomp="compare_${comp}"
         # shellcheck disable=SC2034
-        decomp="$(srcinfo.match_pkg "${compare_safe}" "${comp}" "${compare_package}")"
+        decomp="$(srcinfo.match_pkg "${compare_safe}" "${comp}" "${compare_base}")"
     done
-    mapfile -t compare_source < <(srcinfo.match_pkg "${compare_safe}" "source" "${compare_package}")
+    mapfile -t compare_source < <(srcinfo.match_pkg "${compare_safe}" "source" "${compare_base}")
     if [[ ${compare_package} == *-git ]]; then
         parse_source_entry "${compare_source[0]}"
         calc_git_pkgver
@@ -110,7 +111,13 @@ N="$(nproc)"
         ((n = n % N))
         ((n++ == 0)) && wait && stty "$tty_settings"
         (
+            unset _pkgbase
             source "$METADIR/$i"
+            if [[ -n ${_pkgbase} ]]; then
+                localbase="${_pkgbase}"
+            else
+                localbase="${i}"
+            fi
 
             # localver is the current version of the package
             localver="${_version}"
@@ -133,7 +140,7 @@ N="$(nproc)"
             IDXMATCH=$(printf "%s\n" "${REPOS[@]}" | awk "\$1 ~ /^${remoterepo//\//\\/}$/ {print NR-1}")
 
             if [[ -n $IDXMATCH ]]; then
-                calc_repo_ver "$remoterepo" "$i" \
+                calc_repo_ver "$remoterepo" "$localbase" \
                     && remotever="${comp_repo_ver}"
                 unset comp_repo_ver
                 remoteurl="${REPOS[$IDXMATCH]}"
@@ -153,7 +160,7 @@ N="$(nproc)"
                     if [[ -n $IDXMATCH ]] && ((IDX == IDXMATCH)); then
                         continue
                     else
-                        calc_repo_ver "${REPOS[$IDX]}" "$i" \
+                        calc_repo_ver "${REPOS[$IDX]}" "$localbase" \
                             && ver="${comp_repo_ver}"
                         unset comp_repo_ver
                         if ver_compare "$alterver" "$ver"; then
@@ -187,7 +194,11 @@ N="$(nproc)"
 
             if [[ -n $remotever ]]; then
                 if ver_compare "$localver" "$remotever"; then
-                    echo "$i" | tee -a "${up_list}" > /dev/null
+                    if [[ -n ${_pkgbase} ]]; then
+                        echo "${_pkgbase}:${i}" | tee -a "${up_list}" > /dev/null
+                    else
+                        echo "$i" | tee -a "${up_list}" > /dev/null
+                    fi
                     updaterepo="$(parseRepo "${remoteurl}")"
                     if [[ -n ${upBRANCH} && ${upBRANCH} != "master" && ${upBRANCH} != "main" ]]; then
                         updaterepo+="${YELLOW}#${upBRANCH}${NC}"
@@ -212,9 +223,11 @@ else
 ${BOLD}$(cat "${up_print}")${NC}\n"
 
     declare -A remotes=()
+    declare -A bases=()
     while read -r pkg && read -r remote <&3; do
-        upgrade+=("${pkg}")
-        remotes[${pkg}]="${remote}"
+        upgrade+=("${pkg#*:}")
+        remotes[${pkg#*:}]="${remote}"
+        [[ ${pkg} =~ ':' ]] && bases[${pkg#*:}]="${pkg%:*}"
     done < "${up_list}" 3< "${up_urls}"
 
     dep_tree.loop_traits update_order "${upgrade[@]}"
@@ -233,15 +246,21 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
         if ((answer == 0)); then
             continue
         fi
+
         export REPO="${remotes[${PACKAGE}]}"
+        if [[ -n ${bases[$PACKAGE]} ]]; then
+            CHILD="${PACKAGE}"
+            PACKAGE="${bases[$PACKAGE]}"
+            export CHILD PACKAGE
+        fi
         export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
         # shellcheck source=./misc/scripts/get-pacscript.sh
         if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then
             fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
             continue
         fi
-        # shellcheck source=./misc/scripts/package.sh
-        source "$SCRIPTDIR/scripts/package.sh"
+        # shellcheck source=./misc/scripts/package-base.sh
+        source "$SCRIPTDIR/scripts/package-base.sh"
     done
 fi
 

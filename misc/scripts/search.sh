@@ -26,6 +26,7 @@
 
 if [[ -n $UPGRADE ]]; then
     [[ ! -f /tmp/pacstall-pacdeps-${PACKAGE%@*} ]] && PACKAGE="${i}"
+    [[ -n ${_pkgbase} ]] && PACKAGE="${_pkgbase}:${PACKAGE}"
 fi
 
 function getPath() {
@@ -107,7 +108,12 @@ if [[ $SEARCH == *@* ]] || [[ $PACKAGE == *@* ]]; then
             if [[ -n $SEARCH ]]; then
                 IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | awk "\$1 ~ /${SEARCH}/ {print NR-1}")
             else
-                IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | awk "\$1 ~ /^${PACKAGE}$/ {print NR-1}")
+                if [[ -n ${CHILD} ]]; then
+                    IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | awk "\$1 ~ /^${PACKAGE:CHILD}$/ {print NR-1}")
+                else
+                    IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | awk "\$1 ~ /^${PACKAGE}$/ {print NR-1}")
+                    [[ -z $IDXSEARCH ]] && IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | awk "\$1 ~ /^${PACKAGE}:pkgbase$/ {print NR-1}")
+                fi
             fi
             _LEN=($IDXSEARCH)
             LEN=${#_LEN[@]}
@@ -187,7 +193,12 @@ fi
 if [[ -n $SEARCH ]]; then
     IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | awk "\$1 ~ /${SEARCH}/ {print NR-1}")
 else
-    IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | awk "\$1 ~ /^${PACKAGE}$/ {print NR-1}")
+    if [[ -n ${CHILD} ]]; then
+        IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | awk "\$1 ~ /^${PACKAGE:CHILD}$/ {print NR-1}")
+    else
+        IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | awk "\$1 ~ /^${PACKAGE}$/ {print NR-1}")
+        [[ -z $IDXSEARCH ]] && IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | awk "\$1 ~ /^${PACKAGE}:pkgbase$/ {print NR-1}")
+    fi
 fi
 _LEN=($IDXSEARCH)
 LEN=${#_LEN[@]}

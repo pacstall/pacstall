@@ -20,7 +20,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
-
+#
 # @file srcinfo.sh
 # @brief A library for parsing SRCINFO into native bash dictionaries.
 # @description
@@ -29,7 +29,207 @@
 #   takes a lot of liberties with creating arrays, and tries its hardest to make
 #   them easy to access.
 #
-# @credits Yoinked from https://github.com/Elsie19/srcinfo_bash
+# @credits
+#   Based on Elsie19's srcinfo_bash
+#     https://github.com/Elsie19/srcinfo_bash
+#
+#   Based on makepkg's pkgbuild.sh
+#     Copyright (C) 2009-2024 Pacman Development Team
+#     <pacman-dev@lists.archlinux.org>
+
+function srcinfo.array_build() {
+    local dest="${1}" src="${2}" i keys values
+    declare -p "$2" &> /dev/null || return 1
+    eval "keys=(\"\${!$2[@]}\")"
+    eval "${dest}=()"
+    for i in "${keys[@]}"; do
+        values+=("printf -v '${dest}[${i}]' %s \"\${${src}[${i}]}\";")
+    done
+    eval "${values[*]}"
+}
+
+function srcinfo.extr_globvar() {
+    local attr="${1}" isarray="${2}" outputvar="${3}" ref
+    if ((isarray)); then
+        srcinfo.array_build ref "${attr}"
+        ((${#ref[@]})) && srcinfo.array_build "${outputvar}" "${attr}"
+    else
+        [[ -n ${!attr} ]] && printf -v "${outputvar}" %s "${!attr}"
+    fi
+}
+
+function srcinfo.extr_fnvar() {
+    local funcname="${1}" attr="${2}" isarray="${3}" outputvar="${4}"
+    local attr_regex decl r=1
+    if ((isarray)); then
+        printf -v attr_regex '^[[:space:]]* %s\+?=\(' "${attr}"
+    else
+        printf -v attr_regex '^[[:space:]]* %s\+?=[^(]' "${attr}"
+    fi
+    local func_body
+    func_body=$(declare -f "${funcname}" 2> /dev/null)
+    [[ -z ${func_body} ]] && return 1
+    IFS=$'\n' read -r -d '' -a lines <<< "${func_body}"
+    for line in "${lines[@]}"; do
+        [[ ${line} =~ ${attr_regex} ]] || continue
+        decl=${line##*([[:space:]])}
+        eval "${decl/#${attr}/${outputvar}}"
+        r=0
+    done
+    return "${r}"
+}
+
+function srcinfo.get_attr() {
+    local pkgname="${1}" attrname="${2}" isarray="${3}" outputvar="${4}"
+    if ((isarray)); then
+        eval "${outputvar}=()"
+    else
+        printf -v "${outputvar}" %s ''
+    fi
+    if [[ -n ${pkgname} ]]; then
+        srcinfo.extr_globvar "${attrname}" "${isarray}" "${outputvar}"
+        srcinfo.extr_fnvar "package_${pkgname}" "${attrname}" "${isarray}" "${outputvar}"
+    else
+        srcinfo.extr_globvar "${attrname}" "${isarray}" "${outputvar}"
+    fi
+}
+
+function srcinfo.write_attr() {
+    local attrname="${1}" attrvalues=("${@:2}")
+    attrvalues=("${attrvalues[@]//+([[:space:]])/ }")
+    attrvalues=("${attrvalues[@]#[[:space:]]}")
+    attrvalues=("${attrvalues[@]%[[:space:]]}")
+    printf "\t${attrname} = %s\n" "${attrvalues[@]}"
+}
+
+function srcinfo.extract() {
+    local pkgname="${1}" attrname="${2}" isarray="${3}" outvalue
+    if srcinfo.get_attr "${pkgname}" "${attrname}" "${isarray}" 'outvalue'; then
+        srcinfo.write_attr "${attrname}" "${outvalue[@]}"
+    fi
+}
+
+function srcinfo.write_details() {
+    local attr package_arch a
+    for attr in "${singlevalued[@]}"; do
+        srcinfo.extract "$1" "${attr}" 0
+    done
+
+    for attr in "${multivalued[@]}"; do
+        srcinfo.extract "$1" "${attr}" 1
+    done
+
+    srcinfo.get_attr "$1" 'arch' 1 'package_arch'
+    for a in "${package_arch[@]}"; do
+        [[ ${a} == any || ${a} == all ]] && continue
+
+        for attr in "${multivalued_arch_attrs[@]}"; do
+            srcinfo.extract "$1" "${attr}_${a}" 1
+        done
+    done
+}
+
+function srcinfo.vars() {
+    local _distros _vars _archs _sums distros \
+        vars="depends makedepends optdepends pacdeps checkdepends provides conflicts breaks replaces enhances recommends makeconflicts checkconflicts source" \
+        sums="b2 sha512 sha384 sha256 sha224 sha1 md5"
+    allvars=(pkgname gives pkgver pkgrel epoch pkgdesc url priority)
+    allars=(arch depends makedepends checkdepends optdepends pacdeps conflicts makeconflicts checkconflicts breaks replaces provides enhances recommends incompatible compatible backup mask noextract nosubmodules license maintainer repology custom_fields source)
+    # shellcheck disable=SC2124
+    distros="${PACSTALL_KNOWN_DISTROS[@]}"
+    _distros="{${distros// /,}}" _vars="{${vars// /,}}" _sums="{${sums// /,}}"
+    eval "allars+=(${_sums}sums ${_vars}_${_distros} ${_sums}sums_${_distros})"
+    eval "allvars+=(gives_${_distros})"
+    eval "multivalued_arch_attrs=(${vars} ${_sums}sums ${_vars}_${_distros} ${_sums}sums_${_distros})"
+}
+
+function srcinfo.write_global() {
+    # shellcheck disable=SC2034
+    local CARCH='CARCH_REPLACE' DISTRO="${DISTRO}" CDISTRO="${CDISTRO}" AARCH='AARCH_REPLACE' var ar aars bar ars rar rep seek
+    local -A AARCHS_MAP=(
+        ["amd64"]="x86_64"
+        ["arm64"]="aarch64"
+        ["armel"]="arm"
+        ["armhf"]="armv7h"
+        ["i386"]="i686"
+        ["mips64el"]="mips64el"
+        ["ppc64el"]="ppc64el"
+        ["riscv64"]="riscv64"
+        ["s390x"]="s390x"
+    )
+    local -A CARCHS_MAP=(
+        ["x86_64"]="amd64"
+        ["aarch64"]="arm64"
+        ["arm"]="armel"
+        ["armv7h"]="armhf"
+        ["i686"]="i386"
+        ["mips64el"]="mips64el"
+        ["ppc64el"]="ppc64el"
+        ["riscv64"]="riscv64"
+        ["s390x"]="s390x"
+    )
+    for ar in "${allars[@]}"; do
+        [[ ${ar} != "arch" ]] \
+            && local -n bar="${ar}"
+        if [[ -n ${bar[*]} ]]; then
+            for ars in "${bar[@]}"; do
+                ars="${ars//+([[:space:]])/ }"
+                ars="${ars#[[:space:]]}"
+                ars="${ars%[[:space:]]}"
+                if [[ ${ars} =~ CARCH_REPLACE || ${ars} =~ AARCH_REPLACE ]]; then
+                    [[ -z ${arch[*]} ]] && arch=('amd64')
+                    for aars in "${arch[@]}"; do
+                        if [[ ${ars} =~ AARCH_REPLACE ]]; then
+                            seek="AARCH_REPLACE"
+                            if [[ " ${AARCHS_MAP[*]} " =~ ${aars} ]]; then
+                                rep="${aars}"
+                            else
+                                rep="${AARCHS_MAP[${aars}]}"
+                            fi
+                        else
+                            seek="CARCH_REPLACE"
+                            if [[ " ${AARCHS_MAP[*]} " =~ ${aars} ]]; then
+                                rep="${CARCHS_MAP[${aars}]}"
+                            else
+                                rep="${aars}"
+                            fi
+                        fi
+                        # shellcheck disable=SC2076
+                        if [[ " ${AARCHS_MAP[*]} " =~ " ${ar##*_} " || " ${!AARCHS_MAP[*]} " =~ " ${ar##*_} " || ${ar} == *"x86_64" ]]; then
+                            : "${ar}=${ars}"
+                            [[ ${ar} != *"${aars}" ]] && continue
+                        else
+                            : "${ar}_${aars}=${ars}"
+                        fi
+                        eval "${_//${seek}/${rep}}"
+                    done
+                    unset "${ar}"
+                fi
+            done
+        fi
+    done
+    local singlevalued=("${allvars[@]}")
+    local multivalued=("${allars[@]}")
+    printf '%s = %s\n' 'pkgbase' "${pkgbase:-${pkgname}}"
+    srcinfo.write_details ''
+}
+
+function srcinfo.write_package() {
+    local singlevalued=(gives pkgdesc url priority)
+    local multivalued=(arch license checkdepends optdepends pacdeps
+        provides conflicts breaks replaces enhances recommends backup repology)
+    printf '%s = %s\n' 'pkgname' "$1"
+    srcinfo.write_details "$1"
+}
+
+function srcinfo.gen() {
+    local pkg
+    srcinfo.write_global
+    for pkg in "${pkgname[@]}"; do
+        echo
+        srcinfo.write_package "${pkg}"
+    done
+}
 
 # @description Split a key value pair into an associated array.
 #
@@ -207,7 +407,7 @@ function srcinfo.cleanup() {
         done
         unset cleaner
     done
-    unset "${var_prefix}_access" globase global
+    unset "${var_prefix}_access" globase global "${pacstallvars[@]}"
     # So now lets clean the stragglers that we can't reasonably infer
     mapfile -t compg < <(compgen -v)
     for i in "${compg[@]}"; do
@@ -321,9 +521,9 @@ function srcinfo.match_pkg() {
     else
         match="srcinfo_${search}_${pkg//-/_}"
     fi
-    mapfile -t declares < <(srcinfo.print_var "${srcfile}" "${search}" | awk '{sub(/^declare -a |^declare -- /, ""); print}')
+    mapfile -t declares < <(srcinfo.print_var "${srcfile}" "${search}" | awk '{sub(/^declare -a |^declare -- |^declare -x /, ""); print}')
     [[ ${search} == "pkgbase" && -z ${declares[*]} ]] \
-        && mapfile -t declares < <(srcinfo.print_var "${srcfile}" "pkgname" | awk '{sub(/^declare -a |^declare -- /, ""); print}')
+        && mapfile -t declares < <(srcinfo.print_var "${srcfile}" "pkgname" | awk '{sub(/^declare -a |^declare -- |^declare -x /, ""); print}')
     for d in "${declares[@]}"; do
         if [[ ${d%=\(*} =~ = ]]; then
             declare -- "${d}"
@@ -352,5 +552,15 @@ function srcinfo.match_pkg() {
         fi
         [[ ${b} == "${match}" ]] && printf '%s\n' "${!guy}"
     done
+}
+
+function srcinfo.print_out() {
+    (
+        # shellcheck disable=SC2064
+        trap "$(shopt -p extglob)" RETURN
+        shopt -s extglob
+        srcinfo.vars
+        srcinfo.gen
+    )
 }
 # vim:set ft=sh ts=4 sw=4 et:

@@ -166,22 +166,22 @@ function hashcheck() {
         fancy_message error "Hashes do not match (with method ${hashMethod})"
         fancy_message sub "Got:      ${BRed}${fileHash}${NC}"
         fancy_message sub "Expected: ${BGreen}${inputHash}${NC}"
-        error_log 16 "install $PACKAGE"
+        error_log 16 "install ${pacname}"
         clean_fail_down
     fi
 }
 
 function fail_down() {
-    error_log 1 "download $PACKAGE"
+    error_log 1 "download ${pacname}"
     fancy_message error "Failed to download package"
     clean_fail_down
 }
 
 function gather_down() {
-    export srcdir="${PACDIR}/${PACKAGE}~${pkgver}"
+    export srcdir="${PACDIR}/${pacname}~${pkgver}"
     mkdir -p "${srcdir}"
     cd "${srcdir}" || {
-        error_log 1 "gather-main $PACKAGE"
+        error_log 1 "gather-main ${pacname}"
         fancy_message error "Could not enter into the main directory ${YELLOW}${srcdir}${NC}"
         clean_fail_down
     }
@@ -212,7 +212,7 @@ function git_down() {
     eval "git clone --depth=1 --jobs=10 ${quiet} \"${source_url}\" \"${dest}\" ${gitopts[*]} ${silence[*]}" || fail_down
     # cd into the directory
     cd "./${dest}" 2> /dev/null || {
-        error_log 1 "install $PACKAGE"
+        error_log 1 "install ${pacname}"
         fancy_message error "Could not enter into the cloned git repository"
         clean_fail_down
     }
@@ -284,7 +284,7 @@ function genextr_down() {
     if [[ ${source[i]} == "${source[0]}" && ${extract} == "true" ]]; then
         # cd in
         cd ./*/ 2> /dev/null || {
-            error_log 1 "install $PACKAGE"
+            error_log 1 "install ${pacname}"
             fancy_message warn "Could not enter into the extracted archive"
         }
         # if archive is not set and we entered something, this becomes archive
@@ -299,7 +299,7 @@ function genextr_down() {
 function deb_down() {
     hashcheck_down
     local upgrade=false
-    if is_package_installed "${pkgname}" && type -t pre_upgrade &> /dev/null; then
+    if is_package_installed "${pacname}" && type -t pre_upgrade &> /dev/null; then
         upgrade=true
         fancy_message sub "Running pre_upgrade hook"
         if ! pre_upgrade; then
@@ -317,8 +317,8 @@ function deb_down() {
     fi
     if [[ -n ${pacdeps[*]} || ${depends[*]} || ${makedepends[*]} || ${checkdepends[*]} ]] && repacstall "${dest}" || sudo apt install -y -f ./"${dest}" 2> /dev/null; then
         meta_log
-        if [[ -f /tmp/pacstall-pacdeps-"$pkgname" ]]; then
-            sudo apt-mark auto "${gives:-$pkgname}" 2> /dev/null
+        if [[ -f /tmp/pacstall-pacdeps-"$pacname" ]]; then
+            sudo apt-mark auto "${gives:-$pacname}" 2> /dev/null
         fi
         fancy_message info "Performing post install operations"
         if type -t post_upgrade &> /dev/null && ${upgrade}; then
@@ -337,23 +337,25 @@ function deb_down() {
             fi
         fi
         fancy_message sub "Storing pacscript"
-        sudo mkdir -p "/var/cache/pacstall/$PACKAGE/${full_version}"
+        sudo mkdir -p "/var/cache/pacstall/${pacname}/${full_version}"
         if ! cd "$DIR" 2> /dev/null; then
-            error_log 1 "install $PACKAGE"
+            error_log 1 "install ${pacname}"
             fancy_message error "Could not enter into ${DIR}"
             exit 1
         fi
-        sudo cp -r "${pacfile}" "/var/cache/pacstall/$PACKAGE/${full_version}"
-        sudo chmod o+r "/var/cache/pacstall/$PACKAGE/${full_version}/$PACKAGE.pacscript"
+        sudo cp -r "${pacfile}" "/var/cache/pacstall/${pacname}/${full_version}"
+        sudo chmod o+r "/var/cache/pacstall/${pacname}/${full_version}/${PACKAGE}.pacscript"
+        sudo cp -r "${srcinfile}" "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
+        sudo chmod o+r "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
         fancy_message sub "Cleaning up"
         cleanup
-        fancy_message info "Done installing ${BPurple}$PACKAGE${NC}"
+        fancy_message info "Done installing ${BPurple}${pacname}${NC}"
         unset expectedHash dest source_url git_branch git_tag git_commit ext_deps ext_method hashsum_method payload_arr
         return 0
     else
         fancy_message error "Failed to install the package"
-        error_log 14 "install $PACKAGE"
-        sudo apt purge "${gives:-$pkgname}" -y > /dev/null
+        error_log 14 "install ${pacname}"
+        sudo apt purge "${gives:-$pacname}" -y > /dev/null
         clean_fail_down
     fi
 }
@@ -374,7 +376,7 @@ function file_down() {
     elif [[ ${source[i]} == "${source[0]}" && -d ${dest} ]]; then
         # cd in
         cd "./${dest}" 2> /dev/null || {
-            error_log 1 "install $PACKAGE"
+            error_log 1 "install ${pacname}"
             fancy_message warn "Could not enter into the copied archive"
         }
         # if archive not exist and we entered, its here
@@ -399,13 +401,13 @@ function append_hash_entry() {
             if [[ -n ${!hash_arr} && -z ${extend} ]]; then
                 export exp_method="${type}"
                 for a in ${!hash_arr}; do
-                    [[ ${pkgname} == *"-deb" ]] && append=("${a}") || append+=("${a}")
+                    [[ ${pacname} == *"-deb" ]] && append=("${a}") || append+=("${a}")
                 done
                 break
             elif [[ -n ${!hash_arch} ]]; then
                 [[ -z ${!hash_arr} && -z ${append[*]} ]] && export exp_method="${type}"
                 for a in ${!hash_arch}; do
-                    [[ ${pkgname} == *"-deb" ]] && append=("${a}") || append+=("${a}")
+                    [[ ${pacname} == *"-deb" ]] && append=("${a}") || append+=("${a}")
                 done
                 break
             fi
@@ -418,7 +420,7 @@ function append_var_arch() {
     declare -n ref_inputvar="${inputvar}"
     if [[ -n ${!inputvar_arch} ]]; then
         for inp in ${!inputvar_arch}; do
-            if [[ ${pkgname} == *"-deb" && ${inputvar} == "source" ]]; then
+            if [[ ${pacname} == *"-deb" && ${inputvar} == "source" ]]; then
                 ref_inputvar=("${inp}")
             elif ! array.contains ref_inputvar "${inp}" || [[ ${inputvar} == "source" ]]; then
                 ref_inputvar+=("${inp}")
@@ -429,7 +431,7 @@ function append_var_arch() {
 
 function append_modifier_entries() {
     unset hashsum_method
-	# shellcheck disable=SC2034
+    # shellcheck disable=SC2034
     local APPARCH="${1}" APPDISTRO="${2}"
     # append arrays from least to most specific
     append_hash_entry hash PACSTALL_KNOWN_SUMS hashsum_method
@@ -451,7 +453,7 @@ function append_modifier_entries() {
     # gives_arch | gives_distrobase | gives_distrover | gives_distrobase_arch | gives_distrover_arch
     gives_array=("gives_${APPARCH}" "gives_${APPDISTRO%:*}" "gives_${APPDISTRO#*:}" "gives_${APPDISTRO%:*}_${APPARCH}" "gives_${APPDISTRO#*:}_${APPARCH}")
     for gives_choice in "${gives_array[@]}"; do
-        if [[ -n "${!gives_choice}" ]]; then
+        if [[ -n ${!gives_choice} ]]; then
             gives="${!gives_choice}"
             break
         fi
@@ -636,26 +638,26 @@ function install_builddepends() {
     if ((${#not_installed_yet_builddepends[@]} != 0)) && ((${#not_installed_yet_checkdepends[@]} == 0)); then
         # if any makedeps are not installed, and there are no checkdeps to install
         dep_const.comma_array bdeps_array bdeps_str
-        fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to build"
+        fancy_message info "${BLUE}$pacname${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to build"
     elif ((${#not_installed_yet_builddepends[@]} == 0)) && ((${#not_installed_yet_checkdepends[@]} != 0)); then
         # if any checkdeps are not installed, and there are no makedeps to install
         dep_const.comma_array cdeps_array bdeps_str
-        fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}${not_installed_yet_checkdepends[*]}${NC} to perform checks"
+        fancy_message info "${BLUE}$pacname${NC} requires ${CYAN}${not_installed_yet_checkdepends[*]}${NC} to perform checks"
     elif ((${#not_installed_yet_builddepends[@]} != 0)) && ((${#not_installed_yet_checkdepends[@]} != 0)); then
         # if both need installs, append needed checkdeps to makedeps
         bdeps_array+=("${cdeps_array[@]}")
         dep_const.comma_array bdeps_array bdeps_str
-        fancy_message info "${BLUE}$pkgname${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to build, and ${CYAN}${not_installed_yet_checkdepends[*]}${NC} to perform checks"
+        fancy_message info "${BLUE}$pacname${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to build, and ${CYAN}${not_installed_yet_checkdepends[*]}${NC} to perform checks"
     fi
-    if ((${#not_installed_yet_builddepends[@]} != 0 || ${#not_installed_yet_checkdepends[@]} != 0 || ${#makeconflicts[@]} != 0 || ${#checkconflicts[@]} != 0 )); then
+    if ((${#not_installed_yet_builddepends[@]} != 0 || ${#not_installed_yet_checkdepends[@]} != 0 || ${#makeconflicts[@]} != 0 || ${#checkconflicts[@]} != 0)); then
         fancy_message sub "Creating build dependency/conflicts dummy package"
         (
             unset pre_{upgrade,install,remove} post_{upgrade,install,remove} priority provides conflicts replaces breaks gives enhances recommends custom_fields
             # shellcheck disable=SC2030
             PACSTALL_INSTALL=1
             # shellcheck disable=SC2030
-            pkgname="${PACKAGE}-dummy-builddeps"
-            sudo mkdir -p "${STAGEDIR}/${pkgname}/DEBIAN"
+            pacname="${PACKAGE}-dummy-builddeps"
+            sudo mkdir -p "${STAGEDIR}/${pacname}/DEBIAN"
             deblog "Depends" "${bdeps_str}"
             # shellcheck disable=SC2034
             bcons_array=("${makeconflicts[@]}" "${checkconflicts[@]}")
@@ -663,15 +665,17 @@ function install_builddepends() {
             deblog "Conflicts" "${bcons_str}"
             makedeb
         ) || {
-                fancy_message error "Failed to install build or check dependencies"
-                error_log 8 "install $PACKAGE"
-                clean_fail_down
-            }
+            fancy_message error "Failed to install build or check dependencies"
+            # shellcheck disable=SC2031
+            error_log 8 "install ${pacname}"
+            clean_fail_down
+        }
     fi
 }
 
 function compare_remote_version() {
-    local crv_input="${1}" remote_tmp remote_safe remotever localver crv_pkgver crv_pkgrel crv_epoch crv_source remv
+    local crv_input="${1}" remote_tmp remote_safe remotever localver crv_pkgver crv_pkgrel crv_epoch crv_source remv crv_fetch crv_base
+    unset _pkgbase
     source "$METADIR/$crv_input" || return 1
     [[ ${_remoterepo} == "orphan" ]] && _remoterepo="${REPO}"
     if [[ -z ${_remoterepo} ]]; then
@@ -683,18 +687,24 @@ function compare_remote_version() {
     else
         local remoterepo="${_remoterepo}"
     fi
+    if [[ -n ${_pkgbase} ]]; then
+        crv_fetch="${_pkgbase}"
+    else
+        crv_fetch="${crv_input}"
+    fi
     remotever="$(
         unset pkgrel
         remote_tmp="$(sudo mktemp -p "${PACDIR}" -t "compare-repo-ver-$crv_input.XXXXXX")"
         remote_safe="${remote_tmp}"
-        curl -fsSL "$remoterepo/packages/$crv_input/.SRCINFO" | sudo tee "${remote_safe}" > /dev/null || return 1
+        curl -fsSL "$remoterepo/packages/$crv_fetch/.SRCINFO" | sudo tee "${remote_safe}" > /dev/null || return 1
         sudo chown "${PACSTALL_USER}" "${remote_safe}"
+        crv_base="$(srcinfo.match_pkg "${remote_safe}" pkgbase)"
         for remv in "pkgver" "pkgrel" "epoch"; do
             local -n deremv="crv_${remv}"
             # shellcheck disable=SC2034
-            deremv="$(srcinfo.match_pkg "${remote_safe}" "${remv}" "${crv_input}")"
+            deremv="$(srcinfo.match_pkg "${remote_safe}" "${remv}" "${crv_base}")"
         done
-        mapfile -t crv_source < <(srcinfo.match_pkg "${remote_safe}" "source" "${crv_input}")
+        mapfile -t crv_source < <(srcinfo.match_pkg "${remote_safe}" "source" "${crv_base}")
         if [[ ${crv_input} == *-git ]]; then
             parse_source_entry "${crv_source[0]}"
             calc_git_pkgver
