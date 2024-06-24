@@ -701,6 +701,7 @@ function compare_remote_version() {
     trap stacktrace ERR
     local crv_input="${1}" remote_tmp remote_safe remotever localver crv_pkgver crv_pkgrel crv_epoch crv_source remv crv_fetch crv_base
     unset _pkgbase
+    # shellcheck source=/dev/null
     source "$METADIR/$crv_input" || { ignore_stack=true && return 1; }
     [[ ${_remoterepo} == "orphan" ]] && _remoterepo="${REPO}"
     if [[ -z ${_remoterepo} ]]; then
@@ -721,6 +722,7 @@ function compare_remote_version() {
         unset pkgrel
         remote_tmp="$(sudo mktemp -p "${PACDIR}" -t "compare-repo-ver-$crv_input.XXXXXX")"
         remote_safe="${remote_tmp}"
+        # shellcheck disable=SC2034
         curl -fsSL "$remoterepo/packages/$crv_fetch/.SRCINFO" | sudo tee "${remote_safe}" > /dev/null || { ignore_stack=true && return 1; }
         sudo chown "${PACSTALL_USER}" "${remote_safe}"
         crv_base="$(srcinfo.match_pkg "${remote_safe}" pkgbase)"

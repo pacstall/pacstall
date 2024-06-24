@@ -280,6 +280,7 @@ function srcinfo._contains() {
             return 0
         fi
     done
+    # shellcheck disable=SC2034
     { ignore_stack=true && return 1; }
 }
 

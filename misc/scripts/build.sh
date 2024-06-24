@@ -732,7 +732,12 @@ function check_if_pacdep() {
         } END {
                 if (!found) {exit 1}
         }' {} \; -print)"
-    [[ ${found} ]] && return 0 || { ignore_stack=true && return 1; }
+    if [[ ${found} ]]; then
+        return 0
+    else
+        # shellcheck disable=SC2034
+        { ignore_stack=true && return 1; }
+    fi
 }
 
 function write_meta() {

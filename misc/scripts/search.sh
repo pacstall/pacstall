@@ -220,6 +220,7 @@ if ((LEN == 0)); then
         exit 1
     fi
 
+    # shellcheck disable=SC2034
     { ignore_stack=true && return 1; }
 # Check if it's upgrading packages
 elif [[ -n $UPGRADE ]]; then

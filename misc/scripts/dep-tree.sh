@@ -47,6 +47,7 @@ function dep_tree.has_deps() {
     if [[ -n $(dpkg-query '--showformat=${Depends}\n' --show "${le_pkg}") ]]; then
         return 0
     else
+        # shellcheck disable=SC2034
         { ignore_stack=true && return 1; }
     fi
 }
