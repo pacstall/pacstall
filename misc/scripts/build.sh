@@ -38,7 +38,7 @@ function cleanup() {
     if [[ -n $KEEP ]]; then
         sudo rm -rf "/tmp/pacstall-keep/$pacname"
         mkdir -p "/tmp/pacstall-keep/$pacname"
-        #shellcheck disable=SC2153
+        # shellcheck disable=SC2153
         sudo mv "${PACDIR:?}/${PACKAGE}.pacscript" "/tmp/pacstall-keep/$pacname"
         sudo mv "${PACDIR:?}/${PACKAGE}.SRCINFO" "/tmp/pacstall-keep/$pacname/.SRCINFO"
         sudo mv "${PACDIR:?}/${pacname}~${pkgver}" "/tmp/pacstall-keep/$pacname"
@@ -52,7 +52,7 @@ function cleanup() {
         fi
         sudo rm -rf /tmp/pacstall-gives
     fi
-    #shellcheck disable=SC2153
+    # shellcheck disable=SC2153
     sudo rm -rf "${STAGEDIR}/${pacname:-$PACKAGE}.deb"
     sudo rm -f /tmp/pacstall-select-options
     sudo rm -f "${PACDIR}/bwrapenv.*"
