@@ -37,11 +37,6 @@
 #     Copyright (C) 2009-2024 Pacman Development Team
 #     <pacman-dev@lists.archlinux.org>
 
-function srcinfo.die() {
-    printf >&2 'ERROR: %s\n' "$@"
-    exit 1
-}
-
 function srcinfo.array_build() {
     local dest="${1}" src="${2}" i keys values
     declare -p "$2" &> /dev/null || return 1
