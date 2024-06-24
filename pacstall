@@ -251,9 +251,9 @@ function stacktrace() {
             linen="${BASH_LINENO[i - 1]}"
             src="${BASH_SOURCE[i]}"
             [[ -z ${src} ]] && src=non_file_source
-            echo -e "${stack_color}${func:+├}${trace:+╰}───${GREEN}${func}${NC}${trace}${NC}${func:+()}${trace:+:} ${src%/*}/${PURPLE}${src##*/}${NC}:${YELLOW}${linen}${NC}" >&2
+            echo -e "${stack_color}${func:+├}${trace:+╰}───➤${GREEN}${func}${NC}${trace}${NC}${func:+()}${trace:+:} ${src%/*}/${PURPLE}${src##*/}${NC}:${YELLOW}${linen}${NC}" >&2
             # shellcheck disable=SC2027
-            echo -e "${stack_color}${func:+│}${trace:+ }${NC}   ${CYAN}╰───➤${NC} \033[38;5;242m"$(awk "NR==${linen}" "${src}")"${NC}" >&2
+            echo -e "${stack_color}${func:+│}${trace:+ }${NC}    ${CYAN}╰───➤${NC} \033[38;5;242m"$(awk "NR==${linen}" "${src}")"${NC}" >&2
         done
         fancy_message info "Cleaning up"
         cleanup
