@@ -22,19 +22,22 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+trap stacktrace ERR
+
 # shellcheck source=./misc/scripts/checks.sh
 source "${SCRIPTDIR}/scripts/checks.sh" || {
     fancy_message error "Could not find checks.sh"
-    return 1
+    { ignore_stack=true && return 1; }
 }
 
 # shellcheck source=./misc/scripts/fetch-sources.sh
 source "${SCRIPTDIR}/scripts/fetch-sources.sh" || {
     fancy_message error "Could not find fetch-sources.sh"
-    return 1
+    { ignore_stack=true && return 1; }
 }
 
 function trap_ctrlc() {
+    trap stacktrace ERR
     fancy_message warn "\nInterrupted, cleaning up"
     # shellcheck disable=SC2031
     if is_apt_package_installed "${pacname}"; then
@@ -48,6 +51,7 @@ function trap_ctrlc() {
 }
 
 function package_override() {
+    trap stacktrace ERR
     # shellcheck disable=SC2031
     local o all_ovars opac="${pacname}" obase="${pkgbase}" ovars=("gives" "pkgdesc" "url" "priority")
     all_ovars=("${ovars[@]}" "arch" "license" "checkdepends" "optdepends" "pacdeps" "provides" "conflicts" "breaks" "replaces" "enhances" "recommends" "backup" "repology")
@@ -80,6 +84,7 @@ function package_override() {
 }
 
 function package_pkg() {
+    trap stacktrace ERR
     # shellcheck disable=SC2031
     if [[ -n ${pkgbase} ]]; then
         # shellcheck disable=SC2031

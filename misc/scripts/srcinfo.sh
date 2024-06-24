@@ -37,9 +37,12 @@
 #     Copyright (C) 2009-2024 Pacman Development Team
 #     <pacman-dev@lists.archlinux.org>
 
+trap stacktrace ERR
+
 function srcinfo.array_build() {
+    # trap stacktrace ERR
     local dest="${1}" src="${2}" i keys values
-    declare -p "$2" &> /dev/null || return 1
+    declare -p "$2" &> /dev/null || { ignore_stack=true && return 1; }
     eval "keys=(\"\${!$2[@]}\")"
     eval "${dest}=()"
     for i in "${keys[@]}"; do
@@ -49,6 +52,7 @@ function srcinfo.array_build() {
 }
 
 function srcinfo.extr_globvar() {
+    # trap stacktrace ERR
     local attr="${1}" isarray="${2}" outputvar="${3}" ref
     if ((isarray)); then
         srcinfo.array_build ref "${attr}"
@@ -59,6 +63,7 @@ function srcinfo.extr_globvar() {
 }
 
 function srcinfo.extr_fnvar() {
+    # trap stacktrace ERR
     local funcname="${1}" attr="${2}" isarray="${3}" outputvar="${4}"
     local attr_regex decl r=1
     if ((isarray)); then
@@ -68,7 +73,7 @@ function srcinfo.extr_fnvar() {
     fi
     local func_body
     func_body=$(declare -f "${funcname}" 2> /dev/null)
-    [[ -z ${func_body} ]] && return 1
+    [[ -z ${func_body} ]] && { ignore_stack=true && return 1; }
     IFS=$'\n' read -r -d '' -a lines <<< "${func_body}"
     for line in "${lines[@]}"; do
         [[ ${line} =~ ${attr_regex} ]] || continue
@@ -76,10 +81,11 @@ function srcinfo.extr_fnvar() {
         eval "${decl/#${attr}/${outputvar}}"
         r=0
     done
-    return "${r}"
+    { ignore_stack=true && return "${r}"; }
 }
 
 function srcinfo.get_attr() {
+    # trap stacktrace ERR
     local pkgname="${1}" attrname="${2}" isarray="${3}" outputvar="${4}"
     if ((isarray)); then
         eval "${outputvar}=()"
@@ -95,6 +101,7 @@ function srcinfo.get_attr() {
 }
 
 function srcinfo.write_attr() {
+    trap stacktrace ERR
     local attrname="${1}" attrvalues=("${@:2}")
     attrvalues=("${attrvalues[@]//+([[:space:]])/ }")
     attrvalues=("${attrvalues[@]#[[:space:]]}")
@@ -103,6 +110,7 @@ function srcinfo.write_attr() {
 }
 
 function srcinfo.extract() {
+    trap stacktrace ERR
     local pkgname="${1}" attrname="${2}" isarray="${3}" outvalue
     if srcinfo.get_attr "${pkgname}" "${attrname}" "${isarray}" 'outvalue'; then
         srcinfo.write_attr "${attrname}" "${outvalue[@]}"
@@ -110,6 +118,7 @@ function srcinfo.extract() {
 }
 
 function srcinfo.write_details() {
+    trap stacktrace ERR
     local attr package_arch a
     for attr in "${singlevalued[@]}"; do
         srcinfo.extract "$1" "${attr}" 0
@@ -130,6 +139,7 @@ function srcinfo.write_details() {
 }
 
 function srcinfo.vars() {
+    trap stacktrace ERR
     local _distros _vars _archs _sums distros \
         vars="depends makedepends optdepends pacdeps checkdepends provides conflicts breaks replaces enhances recommends makeconflicts checkconflicts source" \
         sums="b2 sha512 sha384 sha256 sha224 sha1 md5"
@@ -144,6 +154,7 @@ function srcinfo.vars() {
 }
 
 function srcinfo.write_global() {
+    trap stacktrace ERR
     # shellcheck disable=SC2034
     local CARCH='CARCH_REPLACE' DISTRO="${DISTRO}" CDISTRO="${CDISTRO}" AARCH='AARCH_REPLACE' var ar aars bar ars rar rep seek
     local -A AARCHS_MAP=(
@@ -215,6 +226,7 @@ function srcinfo.write_global() {
 }
 
 function srcinfo.write_package() {
+    trap stacktrace ERR
     local singlevalued=(gives pkgdesc url priority)
     local multivalued=(arch license checkdepends optdepends pacdeps
         provides conflicts breaks replaces enhances recommends backup repology)
@@ -223,6 +235,7 @@ function srcinfo.write_package() {
 }
 
 function srcinfo.gen() {
+    trap stacktrace ERR
     local pkg
     srcinfo.write_global
     for pkg in "${pkgname[@]}"; do
@@ -240,6 +253,7 @@ function srcinfo.gen() {
 # @arg $1 string Key value assignment
 # @arg $2 string Name of associated array
 function srcinfo.parse_key_val() {
+    trap stacktrace ERR
     local key value input="${1}"
     declare -n out_array="${2}"
     key="${input%%=*}"
@@ -253,10 +267,12 @@ function srcinfo.parse_key_val() {
 }
 
 function srcinfo._basic_check() {
+    trap stacktrace ERR
     [[ ${1} == *"="* ]]
 }
 
 function srcinfo._contains() {
+    trap stacktrace ERR
     local -n arr_name="${1}"
     local key="${2}" z
     for z in "${arr_name[@]}"; do
@@ -264,7 +280,7 @@ function srcinfo._contains() {
             return 0
         fi
     done
-    return 1
+    { ignore_stack=true && return 1; }
 }
 
 # @description Create array based on input
@@ -278,6 +294,7 @@ function srcinfo._contains() {
 #
 # @stdout Name of array created.
 function srcinfo._create_array() {
+    trap stacktrace ERR
     local pkgbase="${1}" var_name="${2}" var_pref="${3}"
     if [[ -n ${pkgbase} ]]; then
         if ! [[ -v "${var_pref}_${pkgbase}_array_${var_name}" ]]; then
@@ -300,6 +317,7 @@ function srcinfo._create_array() {
 #
 # @arg $1 string Name of array to promote
 function srcinfo._promote_to_variable() {
+    trap stacktrace ERR
     local var_name="${1}" key value
     key="${var_name}"
     value="${!var_name[0]}"
@@ -307,6 +325,7 @@ function srcinfo._promote_to_variable() {
 }
 
 function srcinfo.parse() {
+    trap stacktrace ERR
     # We need this for trimming whitespace without external tools.
     # shellcheck disable=SC2064
     trap "$(shopt -p extglob)" RETURN
@@ -397,6 +416,7 @@ function srcinfo.parse() {
 }
 
 function srcinfo.cleanup() {
+    trap stacktrace ERR
     local var_prefix="${1:?No var_prefix passed to srcinfo.cleanup}" i z
     local main_loop_template="${var_prefix}_access" compg
     declare -n main_loop="${main_loop_template}"
@@ -428,6 +448,7 @@ function srcinfo.cleanup() {
 # @arg $1 string Associative array to reformat
 # @arg $2 string Ref string of indexed array to append conversion to (can be anything)
 function srcinfo.reformat_assoc_arr() {
+    trap stacktrace ERR
     local pfx base ida new pfs in_name="${1}"
     local -n in_arr="${in_name}" app="${2}"
     IFS='_' read -r -a pfs <<< "${in_name}"
@@ -445,6 +466,7 @@ function srcinfo.reformat_assoc_arr() {
 # @arg $1 string .SRCINFO file path
 # @arg $2 string Variable or Array to print
 function srcinfo.print_var() {
+    trap stacktrace ERR
     local srcinfo_file="${1}" found="${2}" var_prefix="srcinfo" pkgbase output var name idx evil eviler e printed
     local -n bases="${var_prefix}_access"
     srcinfo.parse "${srcinfo_file}" "${var_prefix}"
@@ -514,6 +536,7 @@ function srcinfo.print_var() {
 # @arg $2 string Variable or Array to search
 # @arg $3 string Package name or base to get output for
 function srcinfo.match_pkg() {
+    trap stacktrace ERR
     local declares d bases b guy match out srcfile="${1}" search="${2}" pkg="${3}"
     if [[ ${pkg} == "pkgbase:"* || ${search} == "pkgbase" ]]; then
         pkg="${pkg/pkgbase:/}"
@@ -555,6 +578,7 @@ function srcinfo.match_pkg() {
 }
 
 function srcinfo.print_out() {
+    trap stacktrace ERR
     (
         # shellcheck disable=SC2064
         trap "$(shopt -p extglob)" RETURN

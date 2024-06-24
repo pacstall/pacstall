@@ -22,6 +22,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+trap stacktrace ERR
+
 if [[ ${external_connection} == "true" ]]; then
     fancy_message warn "This package will connect to the internet during its build process."
 fi
@@ -43,7 +45,7 @@ if ((PACSTALL_INSTALL == 0)) && [[ ${pacname} == *-deb ]]; then
     parse_source_entry "${source[0]}"
     if ! download "${source[0]}" "${dest}"; then
         fancy_message error "Failed to download '${source[0]}'"
-        return 1
+        { ignore_stack=true && return 1; }
     else
         fancy_message info "Moving ${BGreen}${PACDIR}/${dest}${NC} to ${BGreen}${PACDEB_DIR}/${dest}${NC}"
         sudo mv ./"${dest}" "${PACDEB_DIR}"
@@ -259,7 +261,7 @@ done
 unset dest_list
 install_builddepends
 
-prompt_optdepends || return 1
+prompt_optdepends || { ignore_stack=true && return 1; }
 
 fancy_message info "Retrieving packages"
 mkdir -p "${PACDIR}"
@@ -329,12 +331,11 @@ export pkgdir="$STAGEDIR/$pacname"
 export -f ask fancy_message select_options
 
 # Trap so that we can clean up (hopefully without messing up anything)
-trap cleanup ERR
 trap - SIGINT
-
 clean_logdir
 
 function fail_out_functions() {
+    trap stacktrace ERR
     local func="$1"
     trap - ERR
     eval "$restoreshopt"
@@ -346,6 +347,7 @@ function fail_out_functions() {
 }
 
 function safe_run() {
+    trap stacktrace ERR
     local func="$1"
     export restoreshopt="$(shopt -p)
 $(shopt -p -o)"

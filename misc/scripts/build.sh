@@ -22,46 +22,22 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+trap stacktrace ERR
+
 # shellcheck source=./misc/scripts/version-constraints.sh
 source "${SCRIPTDIR}/scripts/version-constraints.sh" || {
     fancy_message error "Could not find version-constraints"
-    return 1
+    { ignore_stack=true && return 1; }
 }
 
 # shellcheck source=./misc/scripts/srcinfo.sh
 source "${SCRIPTDIR}/scripts/srcinfo.sh" || {
     fancy_message error "Could not find srcinfo.sh"
-    return 1
-}
-
-function cleanup() {
-    if [[ -n $KEEP ]]; then
-        sudo rm -rf "/tmp/pacstall-keep/$pacname"
-        mkdir -p "/tmp/pacstall-keep/$pacname"
-        # shellcheck disable=SC2153
-        sudo mv "${PACDIR:?}/${PACKAGE}.pacscript" "/tmp/pacstall-keep/$pacname"
-        sudo mv "${PACDIR:?}/${PACKAGE}.SRCINFO" "/tmp/pacstall-keep/$pacname/.SRCINFO"
-        sudo mv "${PACDIR:?}/${pacname}~${pkgver}" "/tmp/pacstall-keep/$pacname"
-    fi
-    if [[ -f "/tmp/pacstall-pacdeps-$pacname" ]]; then
-        sudo rm -rf "/tmp/pacstall-pacdeps-$pacname"
-    else
-        sudo rm -rf "${PACDIR:?}"/*
-        if [[ -n $pacname ]]; then
-            sudo rm -rf "${STAGEDIR:-/usr/src/pacstall}/${pacname}"
-        fi
-        sudo rm -rf /tmp/pacstall-gives
-    fi
-    # shellcheck disable=SC2153
-    sudo rm -rf "${STAGEDIR}/${pacname:-$PACKAGE}.deb"
-    sudo rm -f /tmp/pacstall-select-options
-    sudo rm -f "${PACDIR}/bwrapenv.*"
-    unset "${pacstallvars[@]}" 2> /dev/null
-    unset -f pre_install pre_upgrade pre_remove post_install post_upgrade post_remove prepare build check package 2> /dev/null
-    sudo rm -f "${pacfile}"
+    { ignore_stack=true && return 1; }
 }
 
 function deblog() {
+    trap stacktrace ERR
     local key="$1"
     shift
     local content=("$@")
@@ -69,11 +45,13 @@ function deblog() {
 }
 
 function clean_builddir() {
-    sudo rm -rf "${STAGEDIR}/${pacname:?}"
-    sudo rm -f "${STAGEDIR}/${pacname}.deb"
+    trap stacktrace ERR
+    sudo rm -rf "${STAGEDIR:?}/${pacname:?}"
+    sudo rm -f "${STAGEDIR:?}/${pacname}.deb"
 }
 
 function prompt_optdepends() {
+    trap stacktrace ERR
     local deps optdep opt optdesc just_name=() missing_optdeps=() not_satisfied_optdeps=()
     deps=("${depends[@]}")
     if ((${#optdepends[@]} != 0)); then
@@ -240,11 +218,13 @@ function prompt_optdepends() {
 }
 
 function generate_changelog() {
+    trap stacktrace ERR
     printf "%s (%s) %s; urgency=medium\n\n  * Version now at %s.\n\n -- %s %(%a, %d %b %Y %T %z)T\n" \
         "${pacname}" "${full_version}" "${CDISTRO#*:}" "${full_version}" "${maintainer[0]}"
 }
 
 function clean_logdir() {
+    trap stacktrace ERR
     if [[ ! -d ${LOGDIR} ]]; then
         sudo mkdir -p "${LOGDIR}"
     fi
@@ -252,6 +232,7 @@ function clean_logdir() {
 }
 
 function createdeb() {
+    trap stacktrace ERR
     local debname="${1}_${2}_${3}"
     if ((PACSTALL_INSTALL == 0)); then
         # We are not going to immediately install, meaning the user might want to share their deb with someone else, so create the highest compression.
@@ -264,13 +245,13 @@ function createdeb() {
         local compression="gz"
         local command="gzip"
     fi
-    cd "$STAGEDIR/$pacname" || return 1
+    cd "$STAGEDIR/$pacname" || { ignore_stack=true && return 1; }
     # https://tldp.org/HOWTO/html_single/Debian-Binary-Package-Building-HOWTO/#AEN66
     echo "2.0" | sudo tee debian-binary > /dev/null
     sudo tar -cf "$PWD/control.tar" -T /dev/null
     local CONTROL_LOCATION="$PWD/control.tar"
     # avoid having to cd back
-    pushd DEBIAN > /dev/null || return 1
+    pushd DEBIAN > /dev/null || { ignore_stack=true && return 1; }
     for i in *; do
         if [[ -f $i ]]; then
             local files_for_control+=("$i")
@@ -278,7 +259,7 @@ function createdeb() {
     done
     fancy_message sub "Packing control.tar"
     sudo tar -rf "$CONTROL_LOCATION" "${files_for_control[@]}"
-    popd > /dev/null || return 1
+    popd > /dev/null || { ignore_stack=true && return 1; }
     sudo tar -cf "$PWD/data.tar" -T /dev/null
     local DATA_LOCATION="$PWD/data.tar"
     # collect every top level file/dir except for deb stuff
@@ -297,6 +278,7 @@ function createdeb() {
 }
 
 function is_builddep_arch() {
+    trap stacktrace ERR
     local buildar="${1}_${TARCH}[*]" buildar_distb="${1}_${DISTRO%:*}_${TARCH}[*]" buildar_distv="${1}_${DISTRO#*:}_${TARCH}[*]"
     local -n appendar="${2}"
     [[ -n ${!buildar} ]] && appendar+=("${!buildar}")
@@ -306,6 +288,7 @@ function is_builddep_arch() {
 }
 
 function makedeb() {
+    trap stacktrace ERR
     # It looks weird for it to say: `Packaging foo as foo`
     if [[ -n $gives && $pacname != "$gives" ]]; then
         fancy_message info "Packaging ${BGreen}$pacname${NC} as ${BBlue}$gives${NC}"
@@ -528,11 +511,13 @@ function makedeb() {
         fi
     done
     unset pre_inst_upg post_inst_upg
-    echo -e "sudo rm -f $METADIR/$pacname\nsudo rm -f /etc/apt/preferences.d/$pacname-pin" | sudo tee -a "$STAGEDIR/$pacname/DEBIAN/postrm" > /dev/null
+    echo -e "sudo rm -f ${METADIR:?}/$pacname\nsudo rm -f /etc/apt/preferences.d/$pacname-pin" | sudo tee -a "$STAGEDIR/$pacname/DEBIAN/postrm" > /dev/null
     local postfile
     for postfile in {postrm,postinst,preinst}; do
-        sudo chmod -x "$STAGEDIR/$pacname/DEBIAN/${postfile}" &> /dev/null
-        sudo chmod 755 "$STAGEDIR/$pacname/DEBIAN/${postfile}" &> /dev/null
+        if [[ -f "$STAGEDIR/$pacname/DEBIAN/${postfile}" ]]; then
+            sudo chmod -x "$STAGEDIR/$pacname/DEBIAN/${postfile}" &> /dev/null
+            sudo chmod 755 "$STAGEDIR/$pacname/DEBIAN/${postfile}" &> /dev/null
+        fi
     done
 
     # Handle `backup` key
@@ -606,7 +591,7 @@ function makedeb() {
 
     generate_changelog | sudo tee -a "$STAGEDIR/$pacname/DEBIAN/changelog" > /dev/null
 
-    cd "$STAGEDIR" || return 1
+    cd "$STAGEDIR" || { ignore_stack=true && return 1; }
     if array.contains arch "${CARCH}" || array.contains arch "${AARCH}"; then
         local deb_arch="${CARCH}"
     else
@@ -617,12 +602,13 @@ function makedeb() {
         error_log 5 "install $pacname"
         fancy_message info "Cleaning up"
         cleanup
-        return 1
+        { ignore_stack=true && return 1; }
     fi
     install_deb "${pacname}" "${full_version}" "${deb_arch}"
 }
 
 function install_deb() {
+    trap stacktrace ERR
     local debname="${1}_${2}_${3}"
     if ((PACSTALL_INSTALL != 0)); then
         # --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
@@ -638,8 +624,8 @@ function install_deb() {
         if [[ -f /tmp/pacstall-pacdeps-"$pacname" ]]; then
             sudo apt-mark auto "${gives:-$pacname}" 2> /dev/null
         fi
-        sudo rm -rf "$STAGEDIR/$pacname"
-        sudo rm -rf "$PACDIR/$debname.deb"
+        sudo rm -rf "${STAGEDIR:?}/${pacname}"
+        sudo rm -rf "${PACDIR:?}/${debname}.deb"
 
         if ! [[ -d /etc/apt/preferences.d/ ]]; then
             sudo mkdir -p /etc/apt/preferences.d
@@ -654,7 +640,7 @@ function install_deb() {
         sudo chown "$PACSTALL_USER":"$PACSTALL_USER" "$PACDEB_DIR/$debname.deb"
         fancy_message info "Package built at ${BGreen}$PACDEB_DIR/$debname.deb${NC}"
         fancy_message info "Moving ${BGreen}$STAGEDIR/$pacname${NC} to ${BGreen}/tmp/pacstall-no-build/$pacname${NC}"
-        sudo rm -rf "/tmp/pacstall-no-build/$pacname"
+        sudo rm -rf "/tmp/pacstall-no-build/${pacname:?}"
         mkdir -p "/tmp/pacstall-no-build/$pacname"
         sudo mv "$STAGEDIR/$pacname" "/tmp/pacstall-no-build/$pacname"
         return 0
@@ -662,6 +648,7 @@ function install_deb() {
 }
 
 function repacstall() {
+    trap stacktrace ERR
     # shellcheck disable=SC2034
     local depends_array unpackdir depends_line deper pacgives meper ceper pacdep depends_array_form repac_depends_str upcontrol input_dest="${1}"
     unpackdir="${STAGEDIR}/${pacname}"
@@ -731,12 +718,13 @@ function repacstall() {
         error_log 5 "install $pacname"
         fancy_message info "Cleaning up"
         cleanup
-        return 1
+        { ignore_stack=true && return 1; }
     fi
     install_deb "${pacname}" "${full_version}" "${deb_arch}"
 }
 
 function check_if_pacdep() {
+    trap stacktrace ERR
     local package="${1}" finddir="${2}" found
     found="$(find "${finddir}" -type f -exec awk -v pkg="${package}" '
         $0 ~ "_pacdeps=\\(\\[" "[0-9]+" "\\]=\"" pkg "\"" {
@@ -744,10 +732,11 @@ function check_if_pacdep() {
         } END {
                 if (!found) {exit 1}
         }' {} \; -print)"
-    [[ ${found} ]] && return 0 || return 1
+    [[ ${found} ]] && return 0 || { ignore_stack=true && return 1; }
 }
 
 function write_meta() {
+    trap stacktrace ERR
     echo "_name=\"$pacname\""
     if [[ -n $pkgbase ]]; then
         echo "_pkgbase=\"$pkgbase\""
@@ -792,6 +781,7 @@ function write_meta() {
 }
 
 function meta_log() {
+    trap stacktrace ERR
     # Origin repo info parsing
     if [[ ${local} == "no" ]]; then
         # shellcheck disable=SC2153

@@ -22,9 +22,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+trap stacktrace ERR
+
 function safe_source() {
+    trap stacktrace ERR
     local input="${1}"
-    mkdir "${PACDIR}" 2> /dev/null
+    mkdir -p "${PACDIR}" 2> /dev/null
     tmpfile="$(sudo mktemp -p "${PACDIR}")"
     local allvar_str pacfunc_str debfunc_str pacstall_funcs=("prepare" "build" "check" "package") \
     debian_funcs=("post_install" "post_remove" "post_upgrade" "pre_install" "pre_remove" "pre_upgrade")
@@ -89,6 +92,7 @@ EOF
 }
 
 function bwrap_function() {
+    trap stacktrace ERR
     local func="$1"
     tmpfile="$(sudo mktemp -p "${PWD}")"
     sudo tee -a "$tmpfile" > /dev/null << EOF

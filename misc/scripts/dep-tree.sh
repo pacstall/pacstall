@@ -22,16 +22,17 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-# The order we prefer is pkgs with only pacdeps (class 1), pacdeps+deps (class 2), everything else (class 3), and just pacdeps (class 4)
+trap stacktrace ERR
 
 function array.remove() {
+    trap stacktrace ERR
     local array_name to_remove i
     declare -n array_name="${1:?No array given to array.remove}"
     to_remove="${2:?No element given to array.remove}"
 
     for i in "${!array_name[@]}"; do
         if [[ ${array_name[i]} == "${to_remove}" ]]; then
-            unset "array_name[${i}]" || return 1
+            unset "array_name[${i}]" || { ignore_stack=true && return 1; }
             # Adjust the indices so there are none are jumped
             array_name=("${array_name[@]}")
             break 2
@@ -41,15 +42,17 @@ function array.remove() {
 }
 
 function dep_tree.has_deps() {
+    trap stacktrace ERR
     local le_pkg="${1:?No pkg given to dep_tree.has_deps}"
     if [[ -n $(dpkg-query '--showformat=${Depends}\n' --show "${le_pkg}") ]]; then
         return 0
     else
-        return 1
+        { ignore_stack=true && return 1; }
     fi
 }
 
 function dep_tree.load_traits() {
+    trap stacktrace ERR
     local pkg
     local -n out_arr
     pkg="${1:?No pkg given to dep_tree.load_traits}"
@@ -82,6 +85,7 @@ function dep_tree.load_traits() {
 }
 
 function dep_tree.sort_traits_into_array() {
+    trap stacktrace ERR
     local pkg="${1:?No pkg given to dep_tree.sort_traits_into_array}"
     local -n trait c_one c_two c_three c_four c_five c_six
     local trait="${2:?No trait array given to dep_tree.sort_traits_into_array}"
@@ -131,6 +135,7 @@ function dep_tree.sort_traits_into_array() {
 }
 
 function dep_tree.loop_traits() {
+    trap stacktrace ERR
     local -n merged_array="${1:?No array given to dep_tree.loop_traits}"
     shift
     local class_one=() class_two=() class_three=() class_four=() class_five=() class_six=() i
@@ -146,6 +151,7 @@ function dep_tree.loop_traits() {
 }
 
 function dep_tree.trim_pacdeps() {
+    trap stacktrace ERR
     # shellcheck disable=SC2178
     local -n merged_array="${1:?Pass array to dep_tree.trim_pacdeps}"
     local i z

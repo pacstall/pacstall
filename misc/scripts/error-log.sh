@@ -22,6 +22,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+trap stacktrace ERR
+
 if [[ ! -d ${LOGDIR} ]]; then
     sudo mkdir -p "${LOGDIR}"
 fi
@@ -45,6 +47,7 @@ declare -r -A ErrMsg=([1]="Unknown cause of failure."
     [16]="Specified hash does not exist or failed to sign package.")
 
 function error_log() {
+    trap stacktrace ERR
     local code="${1}"
     local scope="${2}"
     local time
