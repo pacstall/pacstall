@@ -704,5 +704,6 @@ function checks() {
     for check in "${linting_checks[@]}"; do
         "${check}" || ret=1
     done
+    # shellcheck disable=SC2034
     { ignore_stack=true && return "${ret}"; }
 }
