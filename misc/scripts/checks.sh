@@ -32,20 +32,20 @@ function lint_pacname() {
     fi
     # https://www.debian.org/doc/debian-policy/ch-controlfields.html#source
     if ((${#pacname} < 2)); then
-        fancy_message error "'pacname' must be at least two characters long"
+        fancy_message error "pacname: '${pacname}' must be at least two characters long"
         ret=1
     fi
     # shellcheck disable=SC1001
     if [[ ${pacname:0:1} == [.\-+] ]]; then
-        fancy_message error "'pacname' must start with an alphanumeric character"
+        fancy_message error "pacname: '${pacname}' must start with an alphanumeric character"
         ret=1
     fi
     if [[ $pacname =~ [[:upper:]] ]]; then
-        fancy_message error "'pacname' contains uppercase characters"
+        fancy_message error "pacname: '${pacname}' contains uppercase characters"
         ret=1
     fi
     if [[ $pacname == *[^[:alnum:]+.-]* ]]; then
-        fancy_message error "'pacname' contains characters that are not lowercase, digits, minus, or periods"
+        fancy_message error "pacname: '${pacname}' contains characters that are not lowercase, digits, minus, or periods"
         ret=1
     fi
     return "${ret}"
