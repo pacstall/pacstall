@@ -40,7 +40,7 @@
 trap stacktrace ERR
 
 function srcinfo.array_build() {
-    # trap stacktrace ERR
+    trap stacktrace ERR
     local dest="${1}" src="${2}" i keys values
     declare -p "$2" &> /dev/null || { ignore_stack=true && return 1; }
     eval "keys=(\"\${!$2[@]}\")"
@@ -52,7 +52,7 @@ function srcinfo.array_build() {
 }
 
 function srcinfo.extr_globvar() {
-    # trap stacktrace ERR
+    trap stacktrace ERR
     local attr="${1}" isarray="${2}" outputvar="${3}" ref
     if ((isarray)); then
         srcinfo.array_build ref "${attr}"
@@ -63,7 +63,7 @@ function srcinfo.extr_globvar() {
 }
 
 function srcinfo.extr_fnvar() {
-    # trap stacktrace ERR
+    trap stacktrace ERR
     local funcname="${1}" attr="${2}" isarray="${3}" outputvar="${4}"
     local attr_regex decl r=1
     if ((isarray)); then
@@ -85,7 +85,7 @@ function srcinfo.extr_fnvar() {
 }
 
 function srcinfo.get_attr() {
-    # trap stacktrace ERR
+    trap stacktrace ERR
     local pkgname="${1}" attrname="${2}" isarray="${3}" outputvar="${4}"
     if ((isarray)); then
         eval "${outputvar}=()"
@@ -128,7 +128,7 @@ function srcinfo.write_details() {
         srcinfo.extract "$1" "${attr}" 1
     done
 
-    srcinfo.get_attr "$1" 'arch' 1 'package_arch'
+    srcinfo.get_attr "$1" 'arch' 1 'package_arch' || package_arch=("all")
     for a in "${package_arch[@]}"; do
         [[ ${a} == any || ${a} == all ]] && continue
 
