@@ -386,8 +386,6 @@ if [[ -n ${pac_functions[*]} ]]; then
     done
 fi
 
-trap - ERR
-
 cd "$HOME" 2> /dev/null || (
     error_log 1 "install ${pacname}"
     fancy_message warn "Could not enter into ${HOME}"
