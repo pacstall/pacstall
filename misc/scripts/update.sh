@@ -25,7 +25,7 @@
 # Update should be self-contained and should use mutable functions or variables
 # Color variables are ok, while "$USERNAME" and "$BRANCH" are needed
 
-trap stacktrace ERR
+{ ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
 
 export BOLD='\033[1m'
 export NC='\033[0m'
@@ -41,7 +41,7 @@ SCRIPTDIR="/usr/share/pacstall"
 required_packages=(aptitude bubblewrap jq distro-info-data)
 
 function suggested_solution() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     if [[ -z $PACSTALL_SUPPRESS_SOLUTIONS ]]; then
         local inputs=("${@}")
         if ((${#inputs[@]} > 1)); then

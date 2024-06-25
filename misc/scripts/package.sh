@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-trap stacktrace ERR
+{ ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
 
 if [[ ${external_connection} == "true" ]]; then
     fancy_message warn "This package will connect to the internet during its build process."
@@ -336,7 +336,7 @@ trap - SIGINT
 clean_logdir
 
 function fail_out_functions() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local func="$1"
     trap - ERR
     eval "$restoreshopt"
@@ -347,7 +347,7 @@ function fail_out_functions() {
 }
 
 function safe_run() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local func="$1"
     export restoreshopt="$(shopt -p)
 $(shopt -p -o)"

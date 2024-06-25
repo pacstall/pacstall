@@ -24,7 +24,7 @@
 
 # This script downloads pacscripts from the interwebs
 
-trap stacktrace ERR
+{ ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
 
 if check_url "${URL}"; then
     if [[ $type == "install" ]]; then

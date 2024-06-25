@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-trap stacktrace ERR
+{ ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
 
 # shellcheck source=./misc/scripts/version-constraints.sh
 source "${SCRIPTDIR}/scripts/version-constraints.sh" || {
@@ -37,7 +37,7 @@ source "${SCRIPTDIR}/scripts/srcinfo.sh" || {
 }
 
 function deblog() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local key="$1"
     shift
     local content=("$@")
@@ -45,13 +45,13 @@ function deblog() {
 }
 
 function clean_builddir() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     sudo rm -rf "${STAGEDIR:?}/${pacname:?}"
     sudo rm -f "${STAGEDIR:?}/${pacname}.deb"
 }
 
 function prompt_optdepends() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local deps optdep opt optdesc just_name=() missing_optdeps=() not_satisfied_optdeps=()
     deps=("${depends[@]}")
     if ((${#optdepends[@]} != 0)); then
@@ -218,13 +218,13 @@ function prompt_optdepends() {
 }
 
 function generate_changelog() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     printf "%s (%s) %s; urgency=medium\n\n  * Version now at %s.\n\n -- %s %(%a, %d %b %Y %T %z)T\n" \
         "${pacname}" "${full_version}" "${CDISTRO#*:}" "${full_version}" "${maintainer[0]}"
 }
 
 function clean_logdir() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     if [[ ! -d ${LOGDIR} ]]; then
         sudo mkdir -p "${LOGDIR}"
     fi
@@ -232,7 +232,7 @@ function clean_logdir() {
 }
 
 function createdeb() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local debname="${1}_${2}_${3}"
     if ((PACSTALL_INSTALL == 0)); then
         # We are not going to immediately install, meaning the user might want to share their deb with someone else, so create the highest compression.
@@ -278,7 +278,7 @@ function createdeb() {
 }
 
 function is_builddep_arch() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local buildar="${1}_${TARCH}[*]" buildar_distb="${1}_${DISTRO%:*}_${TARCH}[*]" buildar_distv="${1}_${DISTRO#*:}_${TARCH}[*]"
     local -n appendar="${2}"
     [[ -n ${!buildar} ]] && appendar+=("${!buildar}")
@@ -288,7 +288,7 @@ function is_builddep_arch() {
 }
 
 function makedeb() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     # It looks weird for it to say: `Packaging foo as foo`
     if [[ -n $gives && $pacname != "$gives" ]]; then
         fancy_message info "Packaging ${BGreen}$pacname${NC} as ${BBlue}$gives${NC}"
@@ -608,7 +608,7 @@ function makedeb() {
 }
 
 function install_deb() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local debname="${1}_${2}_${3}"
     if ((PACSTALL_INSTALL != 0)); then
         # --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
@@ -648,7 +648,7 @@ function install_deb() {
 }
 
 function repacstall() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     # shellcheck disable=SC2034
     local depends_array unpackdir depends_line deper pacgives meper ceper pacdep depends_array_form repac_depends_str upcontrol input_dest="${1}"
     unpackdir="${STAGEDIR}/${pacname}"
@@ -724,7 +724,7 @@ function repacstall() {
 }
 
 function check_if_pacdep() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local package="${1}" finddir="${2}" found
     found="$(find "${finddir}" -type f -exec awk -v pkg="${package}" '
         $0 ~ "_pacdeps=\\(\\[" "[0-9]+" "\\]=\"" pkg "\"" {
@@ -741,7 +741,7 @@ function check_if_pacdep() {
 }
 
 function write_meta() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     echo "_name=\"$pacname\""
     if [[ -n $pkgbase ]]; then
         echo "_pkgbase=\"$pkgbase\""
@@ -786,7 +786,7 @@ function write_meta() {
 }
 
 function meta_log() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     # Origin repo info parsing
     if [[ ${local} == "no" ]]; then
         # shellcheck disable=SC2153

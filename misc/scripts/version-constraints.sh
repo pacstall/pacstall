@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-trap stacktrace ERR
+{ ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
 
 # @description Checks if a package is compatible with given constraint
 # @internal
@@ -32,7 +32,7 @@ trap stacktrace ERR
 #
 # @arg $1 string A versioned string.
 function dep_const.apt_compare_to_constraints() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local compare_pkg="${1}" split_up=() pkg_version stripped
     dep_const.strip_description "${compare_pkg}" stripped
     dep_const.split_name_and_version "${stripped}" split_up
@@ -55,7 +55,7 @@ function dep_const.apt_compare_to_constraints() {
 }
 
 function dep_const.get_arch() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     if [[ $1 == *":"* ]]; then
         echo "${1##*:}"
     else
@@ -65,7 +65,7 @@ function dep_const.get_arch() {
 
 # https://stackoverflow.com/a/17841619/13449010
 function dep_const.join_by() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local d="${1-}" f="${2-}"
     if shift 2; then
         printf "%s" "${f}" "${@/#/$d}"
@@ -81,7 +81,7 @@ function dep_const.join_by() {
 # @arg $1 string A pipe delimited string.
 # @arg $2 string An array name to save split into.
 function dep_const.pipe_split() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local pipe_str="${1}"
     local -n out_var_pipe="${2}"
     # shellcheck disable=SC2034
@@ -97,7 +97,7 @@ function dep_const.pipe_split() {
 # @arg $1 string A bash array.
 # @arg $2 string An output string.
 function dep_const.comma_array() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local -n input_arr="${1}"
     local -n output_str="${2}"
     printf -v output_str '%s, ' "${input_arr[@]}"
@@ -113,7 +113,7 @@ function dep_const.comma_array() {
 # @arg $1 string A versioned package.
 # @arg $2 string An array name to save name and version into.
 function dep_const.split_name_and_version() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local string="${1}"
     local -n out_var="${2}"
     # shellcheck disable=SC2034
@@ -140,7 +140,7 @@ function dep_const.split_name_and_version() {
 # How this works is that we loop through the list and check if it is installed, and if so,
 # we use that, if not, we go to the next one, and repeat. If no package is installed, we choose list[0].
 function dep_const.get_pipe() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local string="${1}" pkg the_array=() viable_packages=() check_name=()
     dep_const.pipe_split "${string}" the_array
     for pkg in "${the_array[@]}"; do
@@ -168,7 +168,7 @@ function dep_const.get_pipe() {
 # @arg $1 string A string description.
 # @arg $2 string A variable to output the package to.
 function dep_const.strip_description() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local -n desc_out="${2}"
     # shellcheck disable=SC2034
     printf -v desc_out "%s" "${1%%: *}"
@@ -183,7 +183,7 @@ function dep_const.strip_description() {
 # @arg $1 string A string description.
 # @arg $2 string A variable to output the description to.
 function dep_const.extract_description() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local -n desc_ext="${2}"
     # shellcheck disable=SC2034
     printf -v desc_ext "%s" "${1##*: }"
@@ -199,7 +199,7 @@ function dep_const.extract_description() {
 # @arg $1 string A versioned string.
 # @arg $2 string An array name to append to.
 function dep_const.format_version() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local str="${1}" const relation pkg_stuff=() constraints=('<=' '>=' '=' '<' '>')
     local -n out_arr="${2}"
     for const in "${constraints[@]}"; do
@@ -225,7 +225,7 @@ function dep_const.format_version() {
 }
 
 function dep_const.is_pipe() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     perl -ne 'exit 1 unless /^(?:[^\s|:]+(?::[^\s|:]+)?\s\|\s)+[^\s|:]+(?::[^\s|:]+)?(?::\s[^|:]+)?(?<!\s)$/' <<< "$1"
 }
 
@@ -241,7 +241,7 @@ function dep_const.is_pipe() {
 # @arg $1 string An array name.
 # @arg $2 string An array name to output to.
 function dep_const.format_control() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local i z strip pipes=() formatted_pipes=() dep_arr=()
     local -n deps="${1}"
     local -n out="${2}"

@@ -22,10 +22,10 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-trap stacktrace ERR
+{ ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
 
 function safe_source() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local input="${1}"
     mkdir -p "${PACDIR}" 2> /dev/null
     tmpfile="$(sudo mktemp -p "${PACDIR}")"

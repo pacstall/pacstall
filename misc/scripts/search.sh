@@ -24,7 +24,7 @@
 
 # This script searches for packages in all repos saved on pacstallrepo
 
-trap stacktrace ERR
+{ ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
 
 if [[ -n $UPGRADE ]]; then
     [[ ! -f /tmp/pacstall-pacdeps-${PACKAGE%@*} ]] && PACKAGE="${i}"
@@ -32,7 +32,7 @@ if [[ -n $UPGRADE ]]; then
 fi
 
 function getPath() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local path="${1}"
     local var="${2}"
     path="${path/"file://"/}"
@@ -43,7 +43,7 @@ function getPath() {
 }
 
 function specifyRepo() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local SPLIT
     mapfile -t SPLIT <<< "${1//[\/]/$'\n'}"
 
@@ -67,7 +67,7 @@ function specifyRepo() {
 # Also adds hyperlink for the
 # terminals that support them
 function parseRepo() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local REPO="${1}"
     local SPLIT REPODIR
     mapfile -t SPLIT <<< "${REPO//[\/]/$'\n'}"
@@ -85,7 +85,7 @@ function parseRepo() {
 }
 
 function formatRepo() {
-    trap stacktrace ERR
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     ! [[ $1 =~ ^\ *# ]] \
         && [[ $1 =~ ^([^[:space:]]+)([[:space:]]+#.*)?$ ]] \
         && echo "${BASH_REMATCH[1]}"
