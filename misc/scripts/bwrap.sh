@@ -93,6 +93,7 @@ EOF
 
 function bwrap_function() {
     local func="$1"
+    # shellcheck disable=SC2064
     trap "fail_out_functions '$func' || stacktrace" ERR
     tmpfile="$(sudo mktemp -p "${PWD}")"
     sudo tee -a "$tmpfile" > /dev/null << EOF
