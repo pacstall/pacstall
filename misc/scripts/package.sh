@@ -343,7 +343,7 @@ function fail_out_functions() {
     error_log 5 "$func ${pacname}"
     echo -ne "\t"
     fancy_message error "Could not $func ${pacname} properly"
-    sudo dpkg -r "${gives:-$pacname}" > /dev/null
+    sudo dpkg -P "${gives:-$pacname}" > /dev/null
     clean_fail_down
 }
 

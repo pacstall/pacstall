@@ -92,8 +92,8 @@ EOF
 }
 
 function bwrap_function() {
-    trap stacktrace ERR
     local func="$1"
+    trap "fail_out_functions '$func' || stacktrace" ERR
     tmpfile="$(sudo mktemp -p "${PWD}")"
     sudo tee -a "$tmpfile" > /dev/null << EOF
 #!/bin/bash -a
@@ -104,7 +104,7 @@ if [[ \$FUNCSTATUS ]]; then \
     mapfile -t NEW_ENV < <(/bin/env -0 \${OLD_ENV[@]} | \
         sed -ze 's/BASH_FUNC_\(.*\)%%=\(.*\)\$/\\n/g;s/^\\(.[[:alnum:]_]*\\)=\\(.*\\)\$/\\1/g'|tr '\0' '\n'); \
     declare -p \${NEW_ENV[@]} >> "${bwrapenv}"; \
-fi && exit \$FUNCSTATUS
+fi && ignore_stack=true && exit \$FUNCSTATUS
 EOF
     sudo chmod +x "$tmpfile"
 
