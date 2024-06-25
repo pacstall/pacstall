@@ -44,6 +44,7 @@ export PACSTALL_INSTALL=1
 
 # declare verbose debug output
 declare -gx PS4=$'\E[0;10m\E[1m\033[1;31m\033[1;37m[\033[1;35m${BASH_SOURCE[0]##*/}:\033[1;34m${FUNCNAME[0]:-NOFUNC}():\033[1;33m${LINENO}\033[1;37m] - \033[1;33mDEBUG: \E[0;10m'
+set -o pipefail
 
 function def_colors() {
     # Colors
@@ -240,7 +241,7 @@ function cleanup() {
 
 function stacktrace() {
     if ! ${ignore_stack}; then
-        local i j stack_size=${#FUNCNAME[@]} func linen src trace content stack_color color_idx \
+        local i stack_size=${#FUNCNAME[@]} func linen src trace content stack_color color_idx \
             colors=(196 197 198 199 200 201 165 129 93 57 21 27 33 39 45 51 50 49 48 47 46 82 118 154 190 226 220 214 208 202)
         echo -e "[${BRed}!${NC}] ${BOLD}ERROR${NC}: Stacktrace (most recent call last)" >&2
         for ((i = stack_size - 1; i >= 1; i--)); do
