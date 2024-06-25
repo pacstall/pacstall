@@ -347,6 +347,7 @@ function fail_out_functions() {
 }
 
 function safe_run() {
+    # shellcheck disable=SC2034
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local func="$1"
     export restoreshopt="$(shopt -p)

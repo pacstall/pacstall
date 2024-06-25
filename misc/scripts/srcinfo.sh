@@ -578,6 +578,7 @@ function srcinfo.match_pkg() {
 }
 
 function srcinfo.print_out() {
+    # shellcheck disable=SC2034
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     (
         trap "shopt -u extglob" RETURN

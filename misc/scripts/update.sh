@@ -41,6 +41,7 @@ SCRIPTDIR="/usr/share/pacstall"
 required_packages=(aptitude bubblewrap jq distro-info-data)
 
 function suggested_solution() {
+    # shellcheck disable=SC2034
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     if [[ -z $PACSTALL_SUPPRESS_SOLUTIONS ]]; then
         local inputs=("${@}")

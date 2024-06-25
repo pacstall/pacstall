@@ -241,6 +241,7 @@ function dep_const.is_pipe() {
 # @arg $1 string An array name.
 # @arg $2 string An array name to output to.
 function dep_const.format_control() {
+    # shellcheck disable=SC2034
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local i z strip pipes=() formatted_pipes=() dep_arr=()
     local -n deps="${1}"

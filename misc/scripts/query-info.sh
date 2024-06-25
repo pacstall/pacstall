@@ -37,6 +37,7 @@ fi
 source "$METADIR/$PACKAGE"
 
 function get_field() {
+    # shellcheck disable=SC2034
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     # input 1: package
     # input 2: field

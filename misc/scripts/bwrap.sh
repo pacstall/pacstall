@@ -25,6 +25,7 @@
 { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
 
 function safe_source() {
+    # shellcheck disable=SC2034
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local input="${1}"
     mkdir -p "${PACDIR}" 2> /dev/null

@@ -52,6 +52,7 @@ function parse_link() {
 }
 
 function cleanup_qa() {
+    # shellcheck disable=SC2034
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     if [[ -f "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak" ]]; then
         fancy_message info "Returning ${CYAN}$SCRIPTDIR/repo/pacstallrepo${NC} backup"

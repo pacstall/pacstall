@@ -786,6 +786,7 @@ function write_meta() {
 }
 
 function meta_log() {
+    # shellcheck disable=SC2034
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     # Origin repo info parsing
     if [[ ${local} == "no" ]]; then

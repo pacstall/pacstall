@@ -25,6 +25,7 @@
 { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
 
 function parse_repo() {
+    # shellcheck disable=SC2034
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local ADDR
     IFS=':' read -ra ADDR <<< "$1"
