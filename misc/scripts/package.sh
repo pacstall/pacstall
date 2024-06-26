@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-{ ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+{ ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
 
 if [[ ${external_connection} == "true" ]]; then
     fancy_message warn "This package will connect to the internet during its build process."

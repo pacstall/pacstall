@@ -239,7 +239,8 @@ function cleanup() {
 }
 
 function stacktrace() {
-    if ! ${ignore_stack}; then
+    catch=$?
+    if ((catch==1)) && ! ${ignore_stack}; then
         local i stack_size=${#FUNCNAME[@]} func linen src trace content stack_color color_idx \
             colors=(196 197 198 199 200 201 165 129 93 57 21 27 33 39 45 51 50 49 48 47 46 82 118 154 190 226 220 214 208 202)
         echo -e "[${BRed}!${NC}] ${BOLD}ERROR${NC}: Stacktrace (most recent call last)" >&2

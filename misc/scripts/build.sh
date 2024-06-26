@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-{ ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+{ ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
 
 # shellcheck source=./misc/scripts/version-constraints.sh
 source "${SCRIPTDIR}/scripts/version-constraints.sh" || {
@@ -37,7 +37,7 @@ source "${SCRIPTDIR}/scripts/srcinfo.sh" || {
 }
 
 function deblog() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local key="$1"
     shift
     local content=("$@")
@@ -45,13 +45,13 @@ function deblog() {
 }
 
 function clean_builddir() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     sudo rm -rf "${STAGEDIR:?}/${pacname:?}"
     sudo rm -f "${STAGEDIR:?}/${pacname}.deb"
 }
 
 function prompt_optdepends() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local deps optdep opt optdesc just_name=() missing_optdeps=() not_satisfied_optdeps=()
     deps=("${depends[@]}")
     if ((${#optdepends[@]} != 0)); then
@@ -111,7 +111,7 @@ function prompt_optdepends() {
                 for i in "${suggested_optdeps[@]}"; do
                     # print optdepends with bold package name
                     echo -e "\t\t[${BICyan}$z${NC}] ${BOLD}${i%%:\ *}${NC}: ${i#*:\ }"
-                    ((z++))
+                    { ignore_stack=true && ((z++)); }
                 done
                 unset z
                 # tab over the next line
@@ -125,7 +125,7 @@ function prompt_optdepends() {
                         local skip_opt+=("$i")
                         unset 'choices[$choice_inc]'
                     fi
-                    ((choice_inc++))
+                    { ignore_stack=true && ((choice_inc++)); }
                 done
                 if [[ -n ${skip_opt[*]} ]]; then
                     fancy_message warn "${BGreen}${skip_opt[*]}${NC} has exceeded the maximum number of optional dependencies. Skipping"
@@ -200,7 +200,7 @@ function prompt_optdepends() {
             local pipe_nomatch=0
             for ze_dep_split in "${ze_dep_splits[@]}"; do
                 if ! dep_const.apt_compare_to_constraints "${ze_dep_split}"; then
-                    ((pipe_nomatch++))
+                    { ignore_stack=true && ((pipe_nomatch++)); }
                 fi
             done
             if ((pipe_nomatch == ${#ze_dep_splits[@]})); then
@@ -218,13 +218,13 @@ function prompt_optdepends() {
 }
 
 function generate_changelog() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     printf "%s (%s) %s; urgency=medium\n\n  * Version now at %s.\n\n -- %s %(%a, %d %b %Y %T %z)T\n" \
         "${pacname}" "${full_version}" "${CDISTRO#*:}" "${full_version}" "${maintainer[0]}"
 }
 
 function clean_logdir() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if [[ ! -d ${LOGDIR} ]]; then
         sudo mkdir -p "${LOGDIR}"
     fi
@@ -232,7 +232,7 @@ function clean_logdir() {
 }
 
 function createdeb() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local debname="${1}_${2}_${3}"
     if ((PACSTALL_INSTALL == 0)); then
         # We are not going to immediately install, meaning the user might want to share their deb with someone else, so create the highest compression.
@@ -278,17 +278,21 @@ function createdeb() {
 }
 
 function is_builddep_arch() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local buildar="${1}_${TARCH}[*]" buildar_distb="${1}_${DISTRO%:*}_${TARCH}[*]" buildar_distv="${1}_${DISTRO#*:}_${TARCH}[*]"
     local -n appendar="${2}"
     [[ -n ${!buildar} ]] && appendar+=("${!buildar}")
     [[ -n ${!buildar_distb} ]] && appendar+=("${!buildar_distb}")
     [[ -n ${!buildar_distv} ]] && appendar+=("${!buildar_distv}")
-    [[ -n ${appendar[*]} ]]
+    if [[ -n ${appendar[*]} ]]; then
+        return 0
+    else
+        { ignore_stack=true && return 1; }
+    fi
 }
 
 function makedeb() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # It looks weird for it to say: `Packaging foo as foo`
     if [[ -n $gives && $pacname != "$gives" ]]; then
         fancy_message info "Packaging ${BGreen}$pacname${NC} as ${BBlue}$gives${NC}"
@@ -566,25 +570,25 @@ function makedeb() {
         install_size="$(
             numfmt ${numargs} --format="%3.2f" "${rawsize}" \
                 | awk '{
-			    if (match($0, /[A-Za-z]+$/)) {
-			        num = sprintf("%.3g", $1);
-					if (num == int(num)) {
-						if (int(num) < 10) {
-							num = sprintf("%.2f", num);
-						} else if (int(num) < 100) {
-							num = sprintf("%.1f", num);
-						} else {
-							num = sprintf("%.0f", num);
-						}
-					}
-			        unit = substr($0, RSTART, RLENGTH);
-			        if (unit == "K") unit = "k";
-			        printf "%s %sB\n", num, unit;
-			    } else {
-			        num = sprintf("%3.2f", $1);
-			        printf "%s B\n", num;
-			    }
-			}'
+                if (match($0, /[A-Za-z]+$/)) {
+                    num = sprintf("%.3g", $1);
+                    if (num == int(num)) {
+                        if (int(num) < 10) {
+                            num = sprintf("%.2f", num);
+                        } else if (int(num) < 100) {
+                            num = sprintf("%.1f", num);
+                        } else {
+                            num = sprintf("%.0f", num);
+                        }
+                    }
+                    unit = substr($0, RSTART, RLENGTH);
+                    if (unit == "K") unit = "k";
+                    printf "%s %sB\n", num, unit;
+                } else {
+                    num = sprintf("%3.2f", $1);
+                    printf "%s B\n", num;
+                }
+            }'
         )"
     fi
     export install_size
@@ -608,7 +612,7 @@ function makedeb() {
 }
 
 function install_deb() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local debname="${1}_${2}_${3}"
     if ((PACSTALL_INSTALL != 0)); then
         # --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
@@ -616,7 +620,7 @@ function install_deb() {
             echo -ne "\t"
             fancy_message error "Failed to install $pacname deb"
             error_log 8 "install $pacname"
-            sudo dpkg -r --force-all "$pacname" 2> /dev/null
+            sudo dpkg -r --force-all "$pacname" > /dev/null
             fancy_message info "Cleaning up"
             cleanup
             exit 1
@@ -648,7 +652,7 @@ function install_deb() {
 }
 
 function repacstall() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # shellcheck disable=SC2034
     local depends_array unpackdir depends_line deper pacgives meper ceper pacdep depends_array_form repac_depends_str upcontrol input_dest="${1}"
     unpackdir="${STAGEDIR}/${pacname}"
@@ -724,7 +728,7 @@ function repacstall() {
 }
 
 function check_if_pacdep() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local package="${1}" finddir="${2}" found
     found="$(find "${finddir}" -type f -exec awk -v pkg="${package}" '
         $0 ~ "_pacdeps=\\(\\[" "[0-9]+" "\\]=\"" pkg "\"" {
@@ -741,7 +745,7 @@ function check_if_pacdep() {
 }
 
 function write_meta() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     echo "_name=\"$pacname\""
     if [[ -n $pkgbase ]]; then
         echo "_pkgbase=\"$pkgbase\""
@@ -787,7 +791,7 @@ function write_meta() {
 
 function meta_log() {
     # shellcheck disable=SC2034
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # Origin repo info parsing
     if [[ ${local} == "no" ]]; then
         # shellcheck disable=SC2153

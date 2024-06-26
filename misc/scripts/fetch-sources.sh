@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-{ ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+{ ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
 
 # shellcheck source=./misc/scripts/build.sh
 source "${SCRIPTDIR}/scripts/build.sh" || {
@@ -31,7 +31,7 @@ source "${SCRIPTDIR}/scripts/build.sh" || {
 }
 
 function parse_source_entry() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     unset source_url dest git_branch git_tag git_commit
     local entry="$1"
     source_url="${entry#*::}"
@@ -67,7 +67,7 @@ function parse_source_entry() {
 }
 
 function calc_git_pkgver() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     unset comp_git_pkgver
     local calc_commit
     if [[ $source_url == git+* ]]; then
@@ -86,7 +86,7 @@ function calc_git_pkgver() {
 }
 
 function genextr_declare() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     unset ext_method ext_deps
     # shellcheck disable=SC2031,SC2034
     case "${source_url,,}" in
@@ -154,14 +154,14 @@ function genextr_declare() {
 }
 
 function clean_fail_down() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     fancy_message info "Cleaning up"
     cleanup
     exit 1
 }
 
 function hashcheck() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local inputFile="${1}" inputHash="${2}" hashMethod="${3}sum" fileHash
     # Get hash of file
     fileHash="$(${hashMethod} "${inputFile}")"
@@ -179,14 +179,14 @@ function hashcheck() {
 }
 
 function fail_down() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     error_log 1 "download ${pacname}"
     fancy_message error "Failed to download package"
     clean_fail_down
 }
 
 function gather_down() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     export srcdir="${PACDIR}/${pacname}~${pkgver}"
     mkdir -p "${srcdir}"
     cd "${srcdir}" || {
@@ -197,7 +197,7 @@ function gather_down() {
 }
 
 function git_down() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local revision gitopts submodules=true no_submodule silence quiet
     ${PACSTALL_VERBOSE} || silence=("&>" "/dev/null") quiet="--quiet"
     dest="${dest%.git}"
@@ -262,14 +262,14 @@ function git_down() {
 }
 
 function net_down() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     fancy_message info "Downloading ${BPurple}${dest}${NC}"
     # shellcheck disable=SC2031
     download "$source_url" "$dest" || fail_down
 }
 
 function hashcheck_down() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if [[ -n ${expectedHash} && ${expectedHash} != "SKIP" ]]; then
         fancy_message sub "Checking hash ${YELLOW}${expectedHash:0:8}${NC}[${YELLOW}...${NC}]"
         hashcheck "${dest}" "${expectedHash}" "${hashsum_method}" || { ignore_stack=true && return 1; }
@@ -277,7 +277,7 @@ function hashcheck_down() {
 }
 
 function genextr_down() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     hashcheck_down
     local extract=true keep_archive
     for keep_archive in "${noextract[@]}"; do
@@ -310,7 +310,7 @@ function genextr_down() {
 }
 
 function deb_down() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     hashcheck_down
     local upgrade=false
     if is_package_installed "${pacname}" && type -t pre_upgrade &> /dev/null; then
@@ -375,7 +375,7 @@ function deb_down() {
 }
 
 function file_down() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     fancy_message info "Copying local archive ${BPurple}${dest}${NC}"
     # shellcheck disable=SC2031
     cp -r "${source_url}" "${dest}" || fail_down
@@ -407,7 +407,7 @@ function file_down() {
 
 # currently expecting: 1=hash 2=PACSTALL_KNOWN_SUMS 3=hashum_method 4=${CARCH}/${DISTRO} 5=${CARCH}
 function append_hash_entry() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local -n append="${1}" sums="${2}" exp_method="${3}"
     local hash_arch hash_arr extend="${4}${5:+_$5}"
     for type in "${sums[@]}"; do
@@ -432,7 +432,7 @@ function append_hash_entry() {
 }
 
 function append_var_arch() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local inp inputvar="${1}" inputvar_arch="${1}_${2}${3:+_$3}[*]"
     declare -n ref_inputvar="${inputvar}"
     if [[ -n ${!inputvar_arch} ]]; then
@@ -447,7 +447,7 @@ function append_var_arch() {
 }
 
 function append_modifier_entries() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     unset hashsum_method
     # shellcheck disable=SC2034
     local APPARCH="${1}" APPDISTRO="${2}"
@@ -479,7 +479,7 @@ function append_modifier_entries() {
 }
 
 function calc_distro() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local distro_pretty_name key value
     while IFS='=' read -r key value; do
         case "${key}" in
@@ -510,7 +510,7 @@ function calc_distro() {
 }
 
 function set_distro() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local distro_name distro_version_name distro_version_number distro_parent distro_parent_vname distro_parent_number
     calc_distro
     if [[ ${1} == "parent" ]]; then
@@ -521,7 +521,7 @@ function set_distro() {
 }
 
 function get_compatible_releases() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # example for this function is "ubuntu:jammy"
     local distro_name distro_version_name distro_version_number distro_parent distro_parent_vname distro_parent_number is_compat=false comp_list=("${@,,}")
     calc_distro
@@ -560,7 +560,7 @@ function get_compatible_releases() {
 }
 
 function get_incompatible_releases() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # example for this function is "ubuntu:jammy"
     local distro_name distro_version_name distro_version_number distro_parent distro_parent_vname distro_parent_number incomp_list=("${@,,}")
     calc_distro
@@ -608,7 +608,7 @@ function get_incompatible_releases() {
 }
 
 function is_compatible_arch() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local inarch=("${@}") ret=1 pacarch farch
     # shellcheck disable=SC2076,SC2153
     if array.contains inarch "any" \
@@ -638,7 +638,7 @@ function is_compatible_arch() {
 }
 
 function install_builddepends() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # shellcheck disable=SC2034
     local build_dep not_installed_yet_builddepends bdeps_array bdeps_str check_dep not_installed_yet_checkdepends cdeps_array bcons_array bcons_str
     if [[ -n ${makedepends[*]} ]]; then
@@ -698,7 +698,7 @@ function install_builddepends() {
 }
 
 function compare_remote_version() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local crv_input="${1}" remote_tmp remote_safe remotever localver crv_pkgver crv_pkgrel crv_epoch crv_source remv crv_fetch crv_base
     unset _pkgbase
     # shellcheck source=/dev/null

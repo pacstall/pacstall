@@ -24,10 +24,10 @@
 
 # A collection of checks to verify a pacscript is correct
 
-{ ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+{ ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
 
 function lint_pacname() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local ret=0
     if [[ -z $pacname ]]; then
         fancy_message error "Package does not contain 'pacname'"
@@ -55,7 +55,7 @@ function lint_pacname() {
 }
 
 function lint_gives() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local ret=0
     if [[ -z $gives && $pacname == *-deb ]]; then
         fancy_message warn "Deb package does not contain gives"
@@ -85,7 +85,7 @@ function lint_gives() {
 }
 
 function lint_pkgrel() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local ret=0
     if [[ -v pkgrel ]]; then
         if [[ -z ${pkgrel} ]]; then
@@ -100,7 +100,7 @@ function lint_pkgrel() {
 }
 
 function lint_epoch() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local ret=0
     if [[ -v epoch ]]; then
         if [[ -z ${epoch} ]]; then
@@ -115,7 +115,7 @@ function lint_epoch() {
 }
 
 function lint_version() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local ret=0 lint_pkgver
     if [[ -n $pkgver ]]; then
         # https://www.debian.org/doc/debian-policy/ch-controlfields.html#version
@@ -131,7 +131,7 @@ function lint_version() {
 }
 
 function lint_source_deb_test() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # shellcheck disable=SC2206
     local input_source=($@)
     for i in "${!input_source[@]}"; do
@@ -149,7 +149,7 @@ function lint_source_deb_test() {
 }
 
 function lint_source() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local ret=0 test_source has_source=0 source_distro_archs
     for source_distro in "${PACSTALL_KNOWN_DISTROS[@]}"; do
         for known_arch in "${PACSTALL_KNOWN_ARCH[@]}"; do
@@ -222,7 +222,7 @@ function lint_source() {
 }
 
 function lint_pkgdesc() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local ret=0
     if [[ -z $pkgdesc ]]; then
         fancy_message error "Package does not contain 'pkgdesc'"
@@ -232,7 +232,7 @@ function lint_pkgdesc() {
 }
 
 function lint_maintainer() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if [[ -z ${maintainer[*]} ]]; then
         fancy_message warn "Package does not have a maintainer. Please be advised"
     fi
@@ -240,7 +240,7 @@ function lint_maintainer() {
 }
 
 function lint_var_arch() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local tinp tinputvar="${1}" tinputvar_arch="${1}_${2}${3:+_$3}[*]"
     declare -n test_ref_inputvar="test_${tinputvar}"
     if [[ -n ${!tinputvar_arch} ]]; then
@@ -253,12 +253,12 @@ function lint_var_arch() {
 }
 
 function lint_pipe_check() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     perl -ne 'exit 1 unless /^(?:[^\s|:]+(?::[^\s|:]+)?\s\|\s)+[^\s|:]+(?::[^\s|:]+)?(?::\s[^|:]+)?(?<!\s)$/' <<< "$1"
 }
 
 function lint_deps() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local dep_type dep_array ret=0 dep idx kdarch kdistro kddarch
     for dep_type in "depends" "makedepends" "optdepends" "checkdepends" "pacdeps"; do
         local -n dep_array="test_${dep_type}"
@@ -290,7 +290,7 @@ function lint_deps() {
                     fancy_message error "'${dep_type}' index '${idx}' is not formatted correctly"
                     ret=1
                 fi
-                ((idx++))
+                { ignore_stack=true ((idx++))((idx++)) ((idx++)); }
             done
         fi
         if ((ret == 1)); then
@@ -301,7 +301,7 @@ function lint_deps() {
 }
 
 function lint_ppa() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local ret=0 el_ppa idx=0
     if [[ -n ${ppa[*]} ]]; then
         for el_ppa in "${ppa[@]}"; do
@@ -309,7 +309,7 @@ function lint_ppa() {
                 fancy_message error "'ppa' index '${idx}' cannot be empty"
                 ret=1
             fi
-            ((idx++))
+            { ignore_stack=true ((idx++))((idx++)) ((idx++)); }
         done
         if ((ret != 0)); then
             { ignore_stack=true && return 1; }
@@ -320,7 +320,7 @@ function lint_ppa() {
                 fancy_message error "'ppa' index '${idx}' cannot start with 'ppa:'"
                 ret=1
             fi
-            ((idx++))
+            { ignore_stack=true ((idx++))((idx++)) ((idx++)); }
         done
         idx=0
         for el_ppa in "${ppa[@]}"; do
@@ -328,14 +328,14 @@ function lint_ppa() {
                 fancy_message error "'ppa' index '${idx}' is improperly formatted"
                 ret=1
             fi
-            ((idx++))
+            { ignore_stack=true ((idx++))((idx++)) ((idx++)); }
         done
     fi
     { ignore_stack=true && return "${ret}"; }
 }
 
 function lint_relations() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local rel_type rel_array ret=0 rela idx rdarch rdistro rddarch
     for rel_type in "conflicts" "breaks" "replaces" "provides" "enhances" "recommends" "makeconflicts" "checkconflicts"; do
         local -n rel_array="test_${rel_type}"
@@ -359,7 +359,7 @@ function lint_relations() {
                     fancy_message error "'${rel_type}' index '${idx}' cannot be empty"
                     ret=1
                 fi
-                ((idx++))
+                { ignore_stack=true ((idx++))((idx++)) ((idx++)); }
             done
         fi
         if ((ret == 1)); then
@@ -370,7 +370,7 @@ function lint_relations() {
 }
 
 function lint_capital_check() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local str="${1}" i=0 c x z split_chars=()
     while printf -v c "%s%n" "${str:i++:1}" x; do
         if ((x)); then
@@ -390,7 +390,7 @@ function lint_capital_check() {
 }
 
 function lint_field_fmt() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local infield="${1}"
     # Ensure no spaces
     if [[ ${infield} =~ [[:space:]] ]]; then
@@ -413,7 +413,7 @@ function lint_field_fmt() {
 }
 
 function lint_fields() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # shellcheck disable=SC2034
     local ret=0 idx=0 tfield tlogvar deblog_used=("Suggests" "Depends" "Package" "Version" "Architecture" "Section" "Priority"
         "Essential" "Vcs-Git" "Build-Depends" "Build-Depends-Arch" "Build-Conflicts" "Build-Conflicts-Arch"
@@ -450,14 +450,14 @@ function lint_fields() {
                         ;;
                 esac
             fi
-            ((idx++))
+            { ignore_stack=true ((idx++))((idx++)) ((idx++)); }
         done
         { ignore_stack=true && return "${ret}"; }
     fi
 }
 
 function lint_hash() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local ret=0 test_hash harch test_hashsum_type test_hashsum_style test_hash_arch test_hashsum_method test_hashsum_value \
         hash_distro_archs
     for hash_distro in "${PACSTALL_KNOWN_DISTROS[@]}"; do
@@ -547,7 +547,7 @@ function lint_hash() {
 }
 
 function lint_incompatible() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local ret=0 incompat compat idx=0 comp_err=0
     if [[ -n ${compatible[*]} ]]; then
         if [[ -n ${incompatible[*]} ]]; then
@@ -562,7 +562,7 @@ function lint_incompatible() {
                 fancy_message error "'compatible' index '${idx}' cannot be empty"
                 ret=1
             fi
-            ((idx++))
+            { ignore_stack=true ((idx++))((idx++)) ((idx++)); }
         done
         idx=0
         for compat in "${compatible[@]}"; do
@@ -570,7 +570,7 @@ function lint_incompatible() {
                 fancy_message error "'compatible' index '${idx}' is improperly formatted"
                 ret=1
             fi
-            ((idx++))
+            { ignore_stack=true ((idx++))((idx++)) ((idx++)); }
         done
     elif [[ -n ${incompatible[*]} ]]; then
         if [[ -n ${compatible[*]} ]]; then
@@ -585,7 +585,7 @@ function lint_incompatible() {
                 fancy_message error "'incompatible' index '${idx}' cannot be empty"
                 ret=1
             fi
-            ((idx++))
+            { ignore_stack=true ((idx++))((idx++)) ((idx++)); }
         done
         idx=0
         for incompat in "${incompatible[@]}"; do
@@ -593,14 +593,14 @@ function lint_incompatible() {
                 fancy_message error "'incompatible' index '${idx}' is improperly formatted"
                 ret=1
             fi
-            ((idx++))
+            { ignore_stack=true ((idx++))((idx++)) ((idx++)); }
         done
     fi
     { ignore_stack=true && return "${ret}"; }
 }
 
 function lint_arch() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # shellcheck disable=SC2034
     local ret=0 el_arch key idx=0 has_carch=false has_aarch=false known_archs=("any" "all" "${PACSTALL_KNOWN_ARCH[@]}")
     local -A AARCHS_MAP=(
@@ -616,7 +616,7 @@ function lint_arch() {
                 fancy_message error "'arch' index '${idx}' cannot be empty"
                 ret=1
             fi
-            ((idx++))
+            { ignore_stack=true ((idx++))((idx++)) ((idx++)); }
         done
         # Fail point
         if ((ret != 0)); then
@@ -645,7 +645,7 @@ function lint_arch() {
 }
 
 function lint_mask() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local ret=0 masked idx=0
     if [[ -n ${mask[*]} ]]; then
         for masked in "${mask[@]}"; do
@@ -653,14 +653,14 @@ function lint_mask() {
                 fancy_message error "'mask' index '${idx}' cannot be empty"
                 ret=1
             fi
-            ((idx++))
+            { ignore_stack=true ((idx++))((idx++)) ((idx++)); }
         done
     fi
     { ignore_stack=true && return "${ret}"; }
 }
 
 function lint_priority() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     shopt -s extglob
     local ret=0
     if [[ -v priority ]]; then
@@ -677,7 +677,7 @@ function lint_priority() {
 }
 
 function lint_license() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # shellcheck disable=SC2034
     local ret=0 linlicense idx=0 license_list=("0BSD" "ADSL" "AFL-1.1" "AFL-1.2" "AFL-2.0" "AFL-2.1" "AFL-3.0" "AGPL-1.0-only" "AGPL-1.0-or-later" "AGPL-3.0-only" "AGPL-3.0-or-later" "AMDPLPA" "AML" "AMPAS" "APAFML" "APSL-1.0" "APSL-1.1" "APSL-1.2" "APSL-2.0" "Abstyles" "Adobe-2006" "Adobe-Glyph" "Afmparse" "Aladdin" "Apache-1.0" "Apache-1.1" "Apache-2.0" "Artistic-1.0-Perl" "Artistic-1.0-cl8" "Artistic-1.0" "Artistic-2.0" "BSD-1-Clause" "BSD-2-Clause-FreeBSD" "BSD-2-Clause-NetBSD" "BSD-2-Clause-Patent" "BSD-2-Clause" "BSD-3-Clause-Attribution" "BSD-3-Clause-Clear" "BSD-3-Clause-LBNL" "BSD-3-Clause-No-Nuclear-License-2014" "BSD-3-Clause-No-Nuclear-License" "BSD-3-Clause-No-Nuclear-Warranty" "BSD-3-Clause-Open-MPI" "BSD-3-Clause" "BSD-4-Clause-UC" "BSD-4-Clause" "BSD-Protection" "BSD-Source-Code" "BSL-1.0" "Bahyph" "BitTorrent-1.0" "BitTorrent-1.1" "BlueOak-1.0.0" "Borceux" "CATOSL-1.1" "CC-BY-1.0" "CC-BY-2.0" "CC-BY-2.5" "CC-BY-3.0" "CC-BY-4.0" "CC-BY-NC-1.0" "CC-BY-NC-2.0" "CC-BY-NC-2.5" "CC-BY-NC-3.0" "CC-BY-NC-4.0" "CC-BY-NC-ND-1.0" "CC-BY-NC-ND-2.0" "CC-BY-NC-ND-2.5" "CC-BY-NC-ND-3.0" "CC-BY-NC-ND-4.0" "CC-BY-NC-SA-1.0" "CC-BY-NC-SA-2.0" "CC-BY-NC-SA-2.5" "CC-BY-NC-SA-3.0" "CC-BY-NC-SA-4.0" "CC-BY-ND-1.0" "CC-BY-ND-2.0" "CC-BY-ND-2.5" "CC-BY-ND-3.0" "CC-BY-ND-4.0" "CC-BY-SA-1.0" "CC-BY-SA-2.0" "CC-BY-SA-2.5" "CC-BY-SA-3.0" "CC-BY-SA-4.0" "CC-PDDC" "CC0-1.0" "CDDL-1.0" "CDDL-1.1" "CDLA-Permissive-1.0" "CDLA-Sharing-1.0" "CECILL-1.0" "CECILL-1.1" "CECILL-2.0" "CECILL-2.1" "CECILL-B" "CECILL-C" "CERN-OHL-1.1" "CERN-OHL-1.2" "CNRI-Jython" "CNRI-Python-GPL-Compatible" "CNRI-Python" "CPAL-1.0" "CPL-1.0" "CPOL-1.02" "CUA-OPL-1.0" "Caldera" "ClArtistic" "Condor-1.1" "Cube" "D-FSL-1.0" "DSDP" "Dotseqn" "ECL-1.0" "ECL-2.0" "EFL-1.0" "EFL-2.0" "EPL-1.0" "EPL-2.0" "EUDatagrid" "EUPL-1.0" "EUPL-1.1" "EUPL-1.2" "Entessa" "Eurosym" "FSFAP" "FSFUL" "FSFULLR" "FTL" "Frameworx-1.0" "GFDL-1.1-only" "GFDL-1.1-or-later" "GFDL-1.2-only" "GFDL-1.2-or-later" "GFDL-1.3-only" "GFDL-1.3-or-later" "GL2PS" "GPL-1.0-only" "GPL-1.0-or-later" "GPL-2.0-only" "GPL-2.0-or-later" "GPL-3.0-linking-exception" "GPL-3.0-linking-source-exception" "GPL-3.0-only" "GPL-3.0-or-later" "GPL-CC-1.0" "Giftware" "Glulxe" "HPND-sell-variant" "HPND" "HaskellReport" "IBM-pibs" "ICU" "IJG" "IPA" "IPL-1.0" "ISC" "ImageMagick" "Imlib2" "Info-ZIP" "Intel-ACPI" "Intel" "JPNIC" "JSON" "JasPer-2.0" "LAL-1.2" "LAL-1.3" "LGPL-2.0-only" "LGPL-2.0-or-later" "LGPL-2.1-only" "LGPL-2.1-or-later" "LGPL-3.0-only" "LGPL-3.0-or-later" "LGPLLR" "LPL-1.0" "LPL-1.02" "LPPL-1.0" "LPPL-1.1" "LPPL-1.2" "LPPL-1.3a" "LPPL-1.3c" "Latex2e" "Leptonica" "LiLiQ-P-1.1" "LiLiQ-R-1.1" "LiLiQ-Rplus-1.1" "Libpng" "Linux-OpenIB" "Linux-syscall-note" "MIT-0" "MIT-CMU" "MIT-advertising" "MIT-enna" "MIT-feh" "MIT" "MITNFA" "MPL-1.0" "MPL-1.1" "MPL-2.0" "MS-PL" "MS-RL" "MTLL" "MakeIndex" "MirOS" "MulanPSL-1.0" "Multics" "Mup" "NASA-1.3" "NBPL-1.0" "NCSA" "NGPL" "NLOD-1.0" "NLPL" "NPL-1.0" "NPL-1.1" "NPOSL-3.0" "NRL" "NTP-0" "NTP" "Naumen" "Net-SNMP" "NetCDF" "Newsletr" "Nokia" "Noweb" "OCCT-PL" "OCLC-2.0" "ODC-By-1.0" "ODbL-1.0" "OFL-1.0-RFN" "OFL-1.0-no-RFN" "OFL-1.0" "OFL-1.1-RFN" "OFL-1.1-no-RFN" "OFL-1.1" "OGL-Canada-2.0" "OGL-UK-1.0" "OGL-UK-2.0" "OGL-UK-3.0" "OGTSL" "OLDAP-1.1" "OLDAP-1.2" "OLDAP-1.3" "OLDAP-1.4" "OLDAP-2.0.1" "OLDAP-2.0" "OLDAP-2.1" "OLDAP-2.2.1" "OLDAP-2.2.2" "OLDAP-2.2" "OLDAP-2.3" "OLDAP-2.4" "OLDAP-2.5" "OLDAP-2.6" "OLDAP-2.7" "OLDAP-2.8" "OML" "OPL-1.0" "OSET-PL-2.1" "OSL-1.0" "OSL-1.1" "OSL-2.0" "OSL-2.1" "OSL-3.0" "OpenSSL" "PDDL-1.0" "PHP-3.0" "PHP-3.01" "PSF-2.0" "Plexus" "PostgreSQL" "Python-2.0" "QPL-1.0" "Qhull" "RHeCos-1.1" "RPL-1.1" "RPL-1.5" "RPSL-1.0" "RSA-MD" "RSCPL" "Rdisc" "Ruby" "SAX-PD" "SCEA" "SGI-B-1.0" "SGI-B-1.1" "SGI-B-2.0" "SHL-0.5" "SHL-0.51" "SISSL-1.2" "SISSL" "SMLNJ" "SMPPL" "SNIA" "SPL-1.0" "SSH-OpenSSH" "SSPL-1.0" "SWL" "Saxpath" "Sendmail-8.23" "Sendmail" "SimPL-2.0" "Sleepycat" "TAPR-OHL-1.0" "TCL" "TCP-wrappers" "TMate" "TORQUE-1.1" "TOSL" "TU-Berlin-1.0" "TU-Berlin-2.0" "UCL-1.0" "UPL-1.0" "Unicode-DFS-2015" "Unicode-DFS-2016" "Unlicense" "VOSTROM" "VSL-1.0" "Vim" "W3C-19980720" "W3C-20150513" "W3C" "WTFPL" "Wsuipa" "X11" "XFree86-1.1" "Xerox" "Xnet" "ZPL-1.1" "ZPL-2.0" "ZPL-2.1" "Zed" "Zend-2.0" "Zlib" "bzip2-1.0.5" "bzip2-1.0.6" "curl" "eGenix" "etalab-2.0" "gSOAP-1.3b" "gnuplot" "iMatix" "libpng-2.0" "libselinux-1.0" "libtiff" "mpich2" "psfrag" "psutils" "xinetd" "xpp")
     if [[ -n ${license[*]} ]]; then
@@ -686,7 +686,7 @@ function lint_license() {
                 fancy_message error "'license' index '${idx}' cannot be empty"
                 ret=1
             fi
-            ((idx++))
+            { ignore_stack=true ((idx++))((idx++)) ((idx++)); }
             if ! array.contains license_list "${linlicense}"; then
                 if [[ ${linlicense} != "custom:"* ]]; then
                     fancy_message error "'${linlicense}' is not a valid license"
@@ -699,7 +699,7 @@ function lint_license() {
 }
 
 function checks() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local ret=0 check linting_checks=(lint_pacname lint_gives lint_pkgrel lint_epoch lint_version lint_source lint_pkgdesc lint_maintainer lint_deps lint_ppa lint_relations lint_fields lint_hash lint_incompatible lint_arch lint_mask lint_priority lint_license)
     for check in "${linting_checks[@]}"; do
         "${check}" || ret=1

@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-{ ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+{ ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
 
 # shellcheck source=./misc/scripts/dep-tree.sh
 source "${SCRIPTDIR}/scripts/dep-tree.sh" || {
@@ -43,7 +43,7 @@ source "${SCRIPTDIR}/scripts/srcinfo.sh" || {
 }
 
 function ver_compare() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local first second
     first="${1#"${1/[0-9]*/}"}"
     second="${2#"${2/[0-9]*/}"}"
@@ -52,7 +52,7 @@ function ver_compare() {
 }
 
 function calc_repo_ver() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local compare_repo="$1" compare_package="$2" compare_tmp compare_safe compare_pkgver compare_pkgrel compare_epoch compare_source comp compare_base
     unset comp_repo_ver
     compare_tmp="$(sudo mktemp -p "${PACDIR}" -t "calc-repo-ver-$compare_package.XXXXXX")"

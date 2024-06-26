@@ -22,11 +22,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-{ ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+{ ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
 
 function parse_repo() {
     # shellcheck disable=SC2034
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local ADDR
     IFS=':' read -ra ADDR <<< "$1"
     PROV="${ADDR[0]}"

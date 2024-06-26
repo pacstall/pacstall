@@ -24,7 +24,7 @@
 
 # This script searches for packages in all repos saved on pacstallrepo
 
-{ ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+{ ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
 
 if [[ -n $UPGRADE ]]; then
     [[ ! -f /tmp/pacstall-pacdeps-${PACKAGE%@*} ]] && PACKAGE="${i}"
@@ -32,7 +32,7 @@ if [[ -n $UPGRADE ]]; then
 fi
 
 function getPath() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local path="${1}"
     local var="${2}"
     path="${path/"file://"/}"
@@ -43,7 +43,7 @@ function getPath() {
 }
 
 function specifyRepo() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local SPLIT
     mapfile -t SPLIT <<< "${1//[\/]/$'\n'}"
 
@@ -67,7 +67,7 @@ function specifyRepo() {
 # Also adds hyperlink for the
 # terminals that support them
 function parseRepo() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local REPO="${1}"
     local SPLIT REPODIR
     mapfile -t SPLIT <<< "${REPO//[\/]/$'\n'}"
@@ -85,7 +85,7 @@ function parseRepo() {
 }
 
 function formatRepo() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     ! [[ $1 =~ ^\ *# ]] \
         && [[ $1 =~ ^([^[:space:]]+)([[:space:]]+#.*)?$ ]] \
         && echo "${BASH_REMATCH[1]}"
@@ -187,7 +187,7 @@ if ((${#any_masks[@]} != 0)); then
         if array.contains any_masks "${pkg}"; then
             unset "PACKAGELIST[$mask_itr]"
         fi
-        ((mask_itr++))
+        { ignore_stack=true && ((mask_itr++)); }
     done
     PACKAGELIST=("${PACKAGELIST[@]}")
     unset mask_itr
