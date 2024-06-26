@@ -530,9 +530,12 @@ function is_apt_package_installed() {
 }
 
 function is_array() {
-    { set -o pipefail; trap stacktrace ERR; }
-    ignore_stack=true
-    [[ ${!1@a} == *a* ]] && return $?
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    if [[ ${!1@a} == *a* ]]; then
+        return 0
+    else
+        { ignore_stack=true && return 1; }
+    fi
 }
 
 function is_function() {
