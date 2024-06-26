@@ -93,6 +93,7 @@ EOF
 }
 
 function bwrap_function() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local func="$1"
     tmpfile="$(sudo mktemp -p "${PWD}")"
     sudo tee -a "$tmpfile" > /dev/null << EOF

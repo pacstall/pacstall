@@ -333,28 +333,6 @@ export -f ask fancy_message select_options
 
 clean_logdir
 
-function fail_out_functions() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
-    local func="$1"
-    trap - ERR
-    eval "$restoreshopt"
-    error_log 5 "$func ${pacname}"
-    echo -ne "\t"
-    fancy_message error "Could not $func ${pacname} properly"
-    clean_fail_down
-}
-
-function safe_run() {
-    # shellcheck disable=SC2034
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
-    local func="$1"
-    export restoreshopt="$(shopt -p); $(shopt -p -o);"
-    local -
-    shopt -o -s errexit errtrace pipefail
-    bwrap_function "$func" || fail_out_functions "$func"
-    eval "$restoreshopt"
-}
-
 unset pac_functions
 if [[ $NOCHECK == true ]]; then
     for i in "prepare" "build" "package${pkgbase:+_$pacname}"; do
@@ -372,7 +350,12 @@ fi
 if [[ -n ${pac_functions[*]} ]]; then
     fancy_message info "Running functions"
     for function in "${pac_functions[@]}"; do
-        safe_run "$function" || fail_out_functions "$function"
+        if ! bwrap_function "${function}"; then
+            error_log 5 "${function} ${pacname}"
+            echo -ne "\t"
+            fancy_message error "Could not ${function} ${pacname} properly"
+            clean_fail_down
+        fi
     done
 fi
 
