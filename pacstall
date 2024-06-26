@@ -230,7 +230,7 @@ function cleanup() {
         sudo rm -rf /tmp/pacstall-gives
     fi
     #shellcheck disable=SC2153
-    [[ -n ${STAGEDIR} && -n ${PACKAGE} ]] && sudo rm -rf "${STAGEDIR}/${pacname:-$PACKAGE}*_${pkgver}*.deb"
+    [[ -n ${STAGEDIR} && -n ${PACKAGE} ]] && sudo rm -rf "${STAGEDIR}/${pacname:-$PACKAGE}"*".deb"
     sudo rm -f /tmp/pacstall-select-options
     [[ -n ${PACDIR} ]] && sudo rm -f "${PACDIR}/bwrapenv.*"
     unset "${pacstallvars[@]}" 2> /dev/null
