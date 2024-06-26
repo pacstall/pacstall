@@ -260,10 +260,10 @@ function stacktrace() {
         cleanup
         exit 1
     else
-        ignore_stack=false
+        export ignore_stack=false
     fi
 }
-{ ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+{ export ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
 
 # This is the ask function. You can source this code block and then run something like:
 # ask "Do you like the color blue? " Y
@@ -530,8 +530,9 @@ function is_apt_package_installed() {
 }
 
 function is_array() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
-    [[ ${!1@a} == *a* ]]
+    { set -o pipefail; trap stacktrace ERR; }
+    ignore_stack=true
+    [[ ${!1@a} == *a* ]] && return $?
 }
 
 function is_function() {

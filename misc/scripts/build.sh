@@ -602,7 +602,7 @@ function makedeb() {
         error_log 5 "install $pacname"
         fancy_message info "Cleaning up"
         cleanup
-        { ignore_stack=true && return 1; }
+        exit 1
     fi
     install_deb "${pacname}" "${full_version}" "${deb_arch}"
 }
@@ -718,7 +718,7 @@ function repacstall() {
         error_log 5 "install $pacname"
         fancy_message info "Cleaning up"
         cleanup
-        { ignore_stack=true && return 1; }
+        exit 1
     fi
     install_deb "${pacname}" "${full_version}" "${deb_arch}"
 }
