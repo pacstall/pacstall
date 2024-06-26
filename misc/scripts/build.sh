@@ -616,7 +616,7 @@ function install_deb() {
             echo -ne "\t"
             fancy_message error "Failed to install $pacname deb"
             error_log 8 "install $pacname"
-            sudo dpkg -r --force-all "$pacname" > /dev/null
+            sudo dpkg -r --force-all "$pacname" 2> /dev/null
             fancy_message info "Cleaning up"
             cleanup
             exit 1

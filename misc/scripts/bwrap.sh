@@ -93,6 +93,7 @@ EOF
 }
 
 function bwrap_function() {
+    # shellcheck disable=SC2034
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local func="$1"
     tmpfile="$(sudo mktemp -p "${PWD}")"
