@@ -331,8 +331,6 @@ sudo chown -R root:root . 2> /dev/null
 export pkgdir="$STAGEDIR/$pacname"
 export -f ask fancy_message select_options
 
-# Trap so that we can clean up (hopefully without messing up anything)
-trap - SIGINT
 clean_logdir
 
 function fail_out_functions() {
@@ -350,19 +348,11 @@ function safe_run() {
     # shellcheck disable=SC2034
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
     local func="$1"
-    export restoreshopt="$(shopt -p)
-$(shopt -p -o)"
+    export restoreshopt="$(shopt -p); $(shopt -p -o);"
     local -
     shopt -o -s errexit errtrace pipefail
-
-    local restoretrap="$(trap -p ERR)"
-    trap "fail_out_functions '$func'" ERR
-
-    bwrap_function "$func"
-
-    trap - ERR
+    bwrap_function "$func" || fail_out_functions "$func"
     eval "$restoreshopt"
-    eval "$restoretrap"
 }
 
 unset pac_functions
@@ -382,7 +372,7 @@ fi
 if [[ -n ${pac_functions[*]} ]]; then
     fancy_message info "Running functions"
     for function in "${pac_functions[@]}"; do
-        safe_run "$function"
+        safe_run "$function" || fail_out_functions "$function"
     done
 fi
 
