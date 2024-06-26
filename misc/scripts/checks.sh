@@ -116,7 +116,7 @@ function lint_epoch() {
 
 function lint_version() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local ret=0 lint_pkgver
+    local ret=0
     if [[ -n $pkgver ]]; then
         # https://www.debian.org/doc/debian-policy/ch-controlfields.html#version
         if [[ ! $pkgver =~ ^[0-9][a-zA-Z0-9.+-~]+$ ]]; then
