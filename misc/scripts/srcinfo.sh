@@ -324,9 +324,6 @@ function srcinfo._promote_to_variable() {
 
 function srcinfo.parse() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    # We need this for trimming whitespace without external tools.
-    trap "shopt -u extglob" RETURN
-    shopt -s extglob
     local srcinfo_file var_prefix locbase temp_array ref total_list loop part i part_two split_up
     srcinfo_file="${1:?No .SRCINFO passed to srcinfo.parse}"
     var_prefix="${2:?Variable prefix not passed to srcinfo.parse}"
@@ -576,10 +573,11 @@ function srcinfo.print_out() {
     # shellcheck disable=SC2034
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     (
-        trap "shopt -u extglob" RETURN
+        # We need this for trimming whitespace without external tools.
         shopt -s extglob
         srcinfo.vars
         srcinfo.gen
+        shopt -u extglob
     )
 }
 # vim:set ft=sh ts=4 sw=4 et:
