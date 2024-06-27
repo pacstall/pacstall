@@ -27,7 +27,7 @@
 # shellcheck source=./misc/scripts/build.sh
 source "${SCRIPTDIR}/scripts/build.sh" || {
     fancy_message error "Could not find build.sh"
-    { ignore_stack=true && return 1; }
+    { ignore_stack=true; return 1; }
 }
 
 function parse_source_entry() {
@@ -272,7 +272,7 @@ function hashcheck_down() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if [[ -n ${expectedHash} && ${expectedHash} != "SKIP" ]]; then
         fancy_message sub "Checking hash ${YELLOW}${expectedHash:0:8}${NC}[${YELLOW}...${NC}]"
-        hashcheck "${dest}" "${expectedHash}" "${hashsum_method}" || { ignore_stack=true && return 1; }
+        hashcheck "${dest}" "${expectedHash}" "${hashsum_method}" || { ignore_stack=true; return 1; }
     fi
 }
 
@@ -554,7 +554,7 @@ function get_compatible_releases() {
     done
     if [[ ${is_compat} == "false" || ${is_compat} != "true" ]]; then
         fancy_message error "This Pacscript does not work on ${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${distro_name}:${distro_version_number}${NC}"
-        { ignore_stack=true && return 1; }
+        { ignore_stack=true; return 1; }
     fi
     return 0
 }
@@ -588,20 +588,20 @@ function get_incompatible_releases() {
             # check for `22.04` or `jammy`
             if [[ ${key#*:} == "${distro_version_number}" || ${key#*:} == "${distro_version_name}" ]]; then
                 fancy_message error "This Pacscript does not work on ${BBlue}${distro_version_name}${NC}/${BBlue}${distro_version_number}${NC}"
-                { ignore_stack=true && return 1; }
+                { ignore_stack=true; return 1; }
             fi
         # check for `ubuntu:*`
         elif [[ $key == *":*" ]]; then
             # check for `ubuntu`
             if [[ ${key%%:*} == "${distro_name}" ]]; then
                 fancy_message error "This Pacscript does not work on ${BBlue}${distro_name}${NC}"
-                { ignore_stack=true && return 1; }
+                { ignore_stack=true; return 1; }
             fi
         else
             # check for `ubuntu:jammy` or `ubuntu:22.04`
             if [[ $key == "${distro_name}:${distro_version_name}" || $key == "${distro_name}:${distro_version_number}" ]]; then
                 fancy_message error "This Pacscript does not work on ${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${distro_name}:${distro_version_number}${NC}"
-                { ignore_stack=true && return 1; }
+                { ignore_stack=true; return 1; }
             fi
         fi
     done
@@ -634,7 +634,7 @@ function is_compatible_arch() {
     if ((ret == 1)); then
         fancy_message error "This Pacscript does not work on ${BBlue}${CARCH}/${AARCH}${NC}"
     fi
-    { ignore_stack=true && return "${ret}"; }
+    { ignore_stack=true; return "${ret}"; }
 }
 
 function install_builddepends() {
@@ -702,7 +702,7 @@ function compare_remote_version() {
     local crv_input="${1}" remote_tmp remote_safe remotever localver crv_pkgver crv_pkgrel crv_epoch crv_source remv crv_fetch crv_base
     unset _pkgbase
     # shellcheck source=/dev/null
-    source "$METADIR/$crv_input" || { ignore_stack=true && return 1; }
+    source "$METADIR/$crv_input" || { ignore_stack=true; return 1; }
     [[ ${_remoterepo} == "orphan" ]] && _remoterepo="${REPO}"
     if [[ -z ${_remoterepo} ]]; then
         return 0
@@ -723,7 +723,7 @@ function compare_remote_version() {
         remote_tmp="$(sudo mktemp -p "${PACDIR}" -t "compare-repo-ver-$crv_input.XXXXXX")"
         remote_safe="${remote_tmp}"
         # shellcheck disable=SC2034
-        curl -fsSL "$remoterepo/packages/$crv_fetch/.SRCINFO" | sudo tee "${remote_safe}" > /dev/null || { ignore_stack=true && return 1; }
+        curl -fsSL "$remoterepo/packages/$crv_fetch/.SRCINFO" | sudo tee "${remote_safe}" > /dev/null || { ignore_stack=true; return 1; }
         sudo chown "${PACSTALL_USER}" "${remote_safe}"
         crv_base="$(srcinfo.match_pkg "${remote_safe}" pkgbase)"
         for remv in "pkgver" "pkgrel" "epoch"; do

@@ -27,19 +27,19 @@
 # shellcheck source=./misc/scripts/dep-tree.sh
 source "${SCRIPTDIR}/scripts/dep-tree.sh" || {
     fancy_message error "Could not load dep-tree.sh"
-    { ignore_stack=true && return 1; }
+    { ignore_stack=true; return 1; }
 }
 
 # shellcheck source=./misc/scripts/fetch-sources.sh
 source "${SCRIPTDIR}/scripts/fetch-sources.sh" || {
     fancy_message error "Could not find fetch-sources.sh"
-    { ignore_stack=true && return 1; }
+    { ignore_stack=true; return 1; }
 }
 
 # shellcheck source=./misc/scripts/srcinfo.sh
 source "${SCRIPTDIR}/scripts/srcinfo.sh" || {
     fancy_message error "Could not find srcinfo.sh"
-    { ignore_stack=true && return 1; }
+    { ignore_stack=true; return 1; }
 }
 
 function ver_compare() {
@@ -57,7 +57,7 @@ function calc_repo_ver() {
     unset comp_repo_ver
     compare_tmp="$(sudo mktemp -p "${PACDIR}" -t "calc-repo-ver-$compare_package.XXXXXX")"
     compare_safe="${compare_tmp}"
-    curl -fsSL "$compare_repo/packages/$compare_package/.SRCINFO" | sudo tee "${compare_safe}" > /dev/null || { ignore_stack=true && return 1; }
+    curl -fsSL "$compare_repo/packages/$compare_package/.SRCINFO" | sudo tee "${compare_safe}" > /dev/null || { ignore_stack=true; return 1; }
     sudo chown "${PACSTALL_USER}" "${compare_safe}"
     compare_base="$(srcinfo.match_pkg "${compare_safe}" pkgbase)"
     for comp in "pkgver" "pkgrel" "epoch"; do

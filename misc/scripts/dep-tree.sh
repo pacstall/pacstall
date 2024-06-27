@@ -32,7 +32,7 @@ function array.remove() {
 
     for i in "${!array_name[@]}"; do
         if [[ ${array_name[i]} == "${to_remove}" ]]; then
-            unset "array_name[${i}]" || { ignore_stack=true && return 1; }
+            unset "array_name[${i}]" || { ignore_stack=true; return 1; }
             # Adjust the indices so there are none are jumped
             array_name=("${array_name[@]}")
             break 2
@@ -48,7 +48,7 @@ function dep_tree.has_deps() {
         return 0
     else
         # shellcheck disable=SC2034
-        { ignore_stack=true && return 1; }
+        { ignore_stack=true; return 1; }
     fi
 }
 

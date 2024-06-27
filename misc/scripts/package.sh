@@ -45,7 +45,7 @@ if ((PACSTALL_INSTALL == 0)) && [[ ${pacname} == *-deb ]]; then
     parse_source_entry "${source[0]}"
     if ! download "${source[0]}" "${dest}"; then
         fancy_message error "Failed to download '${source[0]}'"
-        { ignore_stack=true && return 1; }
+        { ignore_stack=true; return 1; }
     else
         fancy_message info "Moving ${BGreen}${PACDIR}/${dest}${NC} to ${BGreen}${PACDEB_DIR}/${dest}${NC}"
         sudo mv ./"${dest}" "${PACDEB_DIR}"
@@ -262,7 +262,7 @@ unset dest_list
 install_builddepends
 
 # shellcheck disable=SC2034
-prompt_optdepends || { ignore_stack=true && return 1; }
+prompt_optdepends || { ignore_stack=true; return 1; }
 
 fancy_message info "Retrieving packages"
 mkdir -p "${PACDIR}"

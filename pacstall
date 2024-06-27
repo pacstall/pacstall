@@ -363,7 +363,7 @@ function check_url() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if [[ ${1} == "file://"* ]]; then
         if ! [[ -f ${1/"file://"/} ]]; then
-            { ignore_stack=true && return 1; }
+            { ignore_stack=true; return 1; }
         fi
     else
         local http_code="$(curl --location -o /dev/null -s --head --write-out '%{http_code}\n' -- "${1}")"
@@ -376,12 +376,12 @@ function check_url() {
                     fancy_message error "Failed to download file, check your connection"
                 fi
                 error_log 1 "get ${PACKAGE} pacscript"
-                { ignore_stack=true && return 1; }
+                { ignore_stack=true; return 1; }
                 ;;
             404)
                 fancy_message error "The URL cannot be found"
                 suggested_solution "Confirm that '${UGreen}$1${NC}' exists"
-                { ignore_stack=true && return 1; }
+                { ignore_stack=true; return 1; }
                 ;;
             200 | 301 | 302)
                 return 0
@@ -389,7 +389,7 @@ function check_url() {
             *)
                 fancy_message error "Failed with http code ${http_code}"
                 suggested_solution "Confirm that '${UGreen}$1${NC}' is accessible"
-                { ignore_stack=true && return 1; }
+                { ignore_stack=true; return 1; }
                 ;;
         esac
     fi
@@ -422,23 +422,23 @@ function download() {
 
     case "$PACSTALL_DOWNLOADER" in
         verbose-axel)
-            axel -ao "$out" "$src" || { ignore_stack=true && return 1; }
+            axel -ao "$out" "$src" || { ignore_stack=true; return 1; }
             ;;
         axel)
-            axel -a -q -o "$out" "$src" || { ignore_stack=true && return 1; }
+            axel -a -q -o "$out" "$src" || { ignore_stack=true; return 1; }
             ;;
         verbose-curl)
-            curl -L -# -o "$out" "$src" || { ignore_stack=true && return 1; }
+            curl -L -# -o "$out" "$src" || { ignore_stack=true; return 1; }
             ;;
         curl)
-            curl -sSL -o "$out" "$src" || { ignore_stack=true && return 1; }
+            curl -sSL -o "$out" "$src" || { ignore_stack=true; return 1; }
             ;;
         verbose-wget)
-            wget -q --show-progress --progress=bar:force -O "$out" -- "$src" 2>&1 || { ignore_stack=true && return 1; }
+            wget -q --show-progress --progress=bar:force -O "$out" -- "$src" 2>&1 || { ignore_stack=true; return 1; }
             ;;
         payload) ;;
         wget | *)
-            wget -q -O "$out" -- "$src" 2>&1 || { ignore_stack=true && return 1; }
+            wget -q -O "$out" -- "$src" 2>&1 || { ignore_stack=true; return 1; }
             ;;
     esac
 }
@@ -516,7 +516,7 @@ function is_package_installed() {
             return 0
         fi
     done < <(pacstall -L)
-    { ignore_stack=true && return 1; }
+    { ignore_stack=true; return 1; }
 }
 
 # Returns 0 if exists, 1 if not
@@ -525,7 +525,7 @@ function is_apt_package_installed() {
     if [[ $(dpkg-query -W --showformat='${db:Status-Status}' "${1}" 2> /dev/null) == "installed" ]]; then
         return 0
     else
-        { ignore_stack=true && return 1; }
+        { ignore_stack=true; return 1; }
     fi
 }
 
@@ -534,7 +534,7 @@ function is_array() {
     if [[ ${!1@a} == *a* ]]; then
         return 0
     else
-        { ignore_stack=true && return 1; }
+        { ignore_stack=true; return 1; }
     fi
 }
 
@@ -543,7 +543,7 @@ function is_function() {
     if [[ $(type -t "${1}") == "function" ]]; then
         return 0
     else
-        { ignore_stack=true && return 1; }
+        { ignore_stack=true; return 1; }
     fi
 }
 
@@ -557,7 +557,7 @@ function array.contains() {
             return 0
         fi
     done
-    { ignore_stack=true && return 1; }
+    { ignore_stack=true; return 1; }
 }
 
 function getMasks() {
@@ -594,7 +594,7 @@ function getMasks_offending_pkg() {
         fi
         unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch _mask 2> /dev/null
     done
-    { ignore_stack=true && return 1; }
+    { ignore_stack=true; return 1; }
 }
 
 # run sudo apt update if it's been more than a week
@@ -682,23 +682,23 @@ function lock() {
 
     for ((i = 1; i <= option_flags + 1; i++)); do
         if [[ $ignore =~ (^|[[:space:]])"${!i}"($|[[:space:]]) ]]; then
-            { ignore_stack=true && return 1; }
+            { ignore_stack=true; return 1; }
         fi
         j=$((i + 1))
         if [[ -f "/tmp/pacstall-pacdeps-${!j%%@*}" ]]; then
-            { ignore_stack=true && return 1; }
+            { ignore_stack=true; return 1; }
         fi
     done
 
     if [[ -f "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak" ]]; then
         instances=($(pidof -o %PPID -x "$0"))
         if [[ ${#instances[@]} -lt 2 ]]; then
-            { ignore_stack=true && return 1; }
+            { ignore_stack=true; return 1; }
         fi
         return 0
     fi
 
-    pidof -o %PPID -x "$0" > /dev/null && return 0 || { ignore_stack=true && return 1; }
+    pidof -o %PPID -x "$0" > /dev/null && return 0 || { ignore_stack=true; return 1; }
 }
 
 while lock $@; do

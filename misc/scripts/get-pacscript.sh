@@ -63,6 +63,6 @@ if check_url "${URL}"; then
 else
     error_log 1 "get $PACKAGE pacscript"
     # shellcheck disable=SC2034
-    { ignore_stack=true && return 1; }
+    { ignore_stack=true; return 1; }
 fi
 # vim:set ft=sh ts=4 sw=4 et:

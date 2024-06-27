@@ -27,13 +27,13 @@
 # shellcheck source=./misc/scripts/checks.sh
 source "${SCRIPTDIR}/scripts/checks.sh" || {
     fancy_message error "Could not find checks.sh"
-    { ignore_stack=true && return 1; }
+    { ignore_stack=true; return 1; }
 }
 
 # shellcheck source=./misc/scripts/fetch-sources.sh
 source "${SCRIPTDIR}/scripts/fetch-sources.sh" || {
     fancy_message error "Could not find fetch-sources.sh"
-    { ignore_stack=true && return 1; }
+    { ignore_stack=true; return 1; }
 }
 
 function trap_ctrlc() {
@@ -97,7 +97,7 @@ function package_pkg() {
                 for i in "${pkgname[@]}"; do
                     # print optdepends with bold package name
                     echo -e "\t\t[${BICyan}$z${NC}] ${BOLD}${i%%:\ *}${NC}"
-                    { ignore_stack=true && ((z++)); }
+                    { ignore_stack=true; ((z++)); }
                 done
                 unset z
                 # tab over the next line
@@ -111,7 +111,7 @@ function package_pkg() {
                         local skip_pkg+=("$i")
                         unset 'choices[$choice_inc]'
                     fi
-                    { ignore_stack=true && ((choice_inc++)); }
+                    { ignore_stack=true; ((choice_inc++)); }
                 done
                 if [[ -n ${skip_pkg[*]} ]]; then
                     fancy_message warn "${BGreen}${skip_pkg[*]}${NC} has exceeded the maximum number of packages to build. Skipping"

@@ -52,7 +52,7 @@ function dep_const.apt_compare_to_constraints() {
         *"<"*) dpkg --compare-versions "${pkg_version}" lt "${split_up[1]}"; ret=$? ;;
         *">"*) dpkg --compare-versions "${pkg_version}" gt "${split_up[1]}"; ret=$? ;;
     esac
-    { ignore_stack=true && return "${ret}"; }
+    { ignore_stack=true; return "${ret}"; }
 }
 
 function dep_const.get_arch() {
@@ -230,7 +230,7 @@ function dep_const.is_pipe() {
     if perl -ne 'exit 1 unless /^(?:[^\s|:]+(?::[^\s|:]+)?\s\|\s)+[^\s|:]+(?::[^\s|:]+)?(?::\s[^|:]+)?(?<!\s)$/' <<< "$1"; then
         return 0
     else
-        { ignore_stack=true && return 1; }
+        { ignore_stack=true; return 1; }
     fi
 }
 

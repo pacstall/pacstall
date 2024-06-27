@@ -27,13 +27,13 @@
 # shellcheck source=./misc/scripts/version-constraints.sh
 source "${SCRIPTDIR}/scripts/version-constraints.sh" || {
     fancy_message error "Could not find version-constraints"
-    { ignore_stack=true && return 1; }
+    { ignore_stack=true; return 1; }
 }
 
 # shellcheck source=./misc/scripts/srcinfo.sh
 source "${SCRIPTDIR}/scripts/srcinfo.sh" || {
     fancy_message error "Could not find srcinfo.sh"
-    { ignore_stack=true && return 1; }
+    { ignore_stack=true; return 1; }
 }
 
 function deblog() {
@@ -111,7 +111,7 @@ function prompt_optdepends() {
                 for i in "${suggested_optdeps[@]}"; do
                     # print optdepends with bold package name
                     echo -e "\t\t[${BICyan}$z${NC}] ${BOLD}${i%%:\ *}${NC}: ${i#*:\ }"
-                    { ignore_stack=true && ((z++)); }
+                    { ignore_stack=true; ((z++)); }
                 done
                 unset z
                 # tab over the next line
@@ -125,7 +125,7 @@ function prompt_optdepends() {
                         local skip_opt+=("$i")
                         unset 'choices[$choice_inc]'
                     fi
-                    { ignore_stack=true && ((choice_inc++)); }
+                    { ignore_stack=true; ((choice_inc++)); }
                 done
                 if [[ -n ${skip_opt[*]} ]]; then
                     fancy_message warn "${BGreen}${skip_opt[*]}${NC} has exceeded the maximum number of optional dependencies. Skipping"
@@ -200,7 +200,7 @@ function prompt_optdepends() {
             local pipe_nomatch=0
             for ze_dep_split in "${ze_dep_splits[@]}"; do
                 if ! dep_const.apt_compare_to_constraints "${ze_dep_split}"; then
-                    { ignore_stack=true && ((pipe_nomatch++)); }
+                    { ignore_stack=true; ((pipe_nomatch++)); }
                 fi
             done
             if ((pipe_nomatch == ${#ze_dep_splits[@]})); then
@@ -245,13 +245,13 @@ function createdeb() {
         local compression="gz"
         local command="gzip"
     fi
-    cd "$STAGEDIR/$pacname" || { ignore_stack=true && return 1; }
+    cd "$STAGEDIR/$pacname" || { ignore_stack=true; return 1; }
     # https://tldp.org/HOWTO/html_single/Debian-Binary-Package-Building-HOWTO/#AEN66
     echo "2.0" | sudo tee debian-binary > /dev/null
     sudo tar -cf "$PWD/control.tar" -T /dev/null
     local CONTROL_LOCATION="$PWD/control.tar"
     # avoid having to cd back
-    pushd DEBIAN > /dev/null || { ignore_stack=true && return 1; }
+    pushd DEBIAN > /dev/null || { ignore_stack=true; return 1; }
     for i in *; do
         if [[ -f $i ]]; then
             local files_for_control+=("$i")
@@ -259,7 +259,7 @@ function createdeb() {
     done
     fancy_message sub "Packing control.tar"
     sudo tar -rf "$CONTROL_LOCATION" "${files_for_control[@]}"
-    popd > /dev/null || { ignore_stack=true && return 1; }
+    popd > /dev/null || { ignore_stack=true; return 1; }
     sudo tar -cf "$PWD/data.tar" -T /dev/null
     local DATA_LOCATION="$PWD/data.tar"
     # collect every top level file/dir except for deb stuff
@@ -287,7 +287,7 @@ function is_builddep_arch() {
     if [[ -n ${appendar[*]} ]]; then
         return 0
     else
-        { ignore_stack=true && return 1; }
+        { ignore_stack=true; return 1; }
     fi
 }
 
@@ -595,7 +595,7 @@ function makedeb() {
 
     generate_changelog | sudo tee -a "$STAGEDIR/$pacname/DEBIAN/changelog" > /dev/null
 
-    cd "$STAGEDIR" || { ignore_stack=true && return 1; }
+    cd "$STAGEDIR" || { ignore_stack=true; return 1; }
     if array.contains arch "${CARCH}" || array.contains arch "${AARCH}"; then
         local deb_arch="${CARCH}"
     else
@@ -728,7 +728,7 @@ function check_if_pacdep() {
         return 0
     else
         # shellcheck disable=SC2034
-        { ignore_stack=true && return 1; }
+        { ignore_stack=true; return 1; }
     fi
 }
 

@@ -42,7 +42,7 @@
 function srcinfo.array_build() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local dest="${1}" src="${2}" i keys values
-    declare -p "$2" &> /dev/null || { ignore_stack=true && return 1; }
+    declare -p "$2" &> /dev/null || { ignore_stack=true; return 1; }
     eval "keys=(\"\${!$2[@]}\")"
     eval "${dest}=()"
     for i in "${keys[@]}"; do
@@ -73,7 +73,7 @@ function srcinfo.extr_fnvar() {
     fi
     local func_body
     func_body=$(declare -f "${funcname}" 2> /dev/null)
-    [[ -z ${func_body} ]] && { ignore_stack=true && return 1; }
+    [[ -z ${func_body} ]] && { ignore_stack=true; return 1; }
     IFS=$'\n' read -r -d '' -a lines <<< "${func_body}"
     for line in "${lines[@]}"; do
         [[ ${line} =~ ${attr_regex} ]] || continue
@@ -81,7 +81,7 @@ function srcinfo.extr_fnvar() {
         eval "${decl/#${attr}/${outputvar}}"
         r=0
     done
-    { ignore_stack=true && return "${r}"; }
+    { ignore_stack=true; return "${r}"; }
 }
 
 function srcinfo.get_attr() {
@@ -280,7 +280,7 @@ function srcinfo._contains() {
         fi
     done
     # shellcheck disable=SC2034
-    { ignore_stack=true && return 1; }
+    { ignore_stack=true; return 1; }
 }
 
 # @description Create array based on input

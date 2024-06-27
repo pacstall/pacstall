@@ -187,7 +187,7 @@ if ((${#any_masks[@]} != 0)); then
         if array.contains any_masks "${pkg}"; then
             unset "PACKAGELIST[$mask_itr]"
         fi
-        { ignore_stack=true && ((mask_itr++)); }
+        { ignore_stack=true; ((mask_itr++)); }
     done
     PACKAGELIST=("${PACKAGELIST[@]}")
     unset mask_itr
@@ -221,7 +221,7 @@ if ((LEN == 0)); then
     fi
 
     # shellcheck disable=SC2034
-    { ignore_stack=true && return 1; }
+    { ignore_stack=true; return 1; }
 # Check if it's upgrading packages
 elif [[ -n $UPGRADE ]]; then
     REPOS=()

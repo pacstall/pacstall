@@ -31,7 +31,7 @@ function lint_pacname() {
     local ret=0
     if [[ -z $pacname ]]; then
         fancy_message error "Package does not contain 'pacname'"
-        { ignore_stack=true && return 1; }
+        { ignore_stack=true; return 1; }
     fi
     # https://www.debian.org/doc/debian-policy/ch-controlfields.html#source
     if ((${#pacname} < 2)); then
@@ -51,7 +51,7 @@ function lint_pacname() {
         fancy_message error "pacname: '${pacname}' contains characters that are not lowercase, digits, minus, or periods"
         ret=1
     fi
-    { ignore_stack=true && return "${ret}"; }
+    { ignore_stack=true; return "${ret}"; }
 }
 
 function lint_gives() {
@@ -81,7 +81,7 @@ function lint_gives() {
             ret=1
         fi
     fi
-    { ignore_stack=true && return "${ret}"; }
+    { ignore_stack=true; return "${ret}"; }
 }
 
 function lint_pkgrel() {
@@ -96,7 +96,7 @@ function lint_pkgrel() {
             ret=1
         fi
     fi
-    { ignore_stack=true && return "${ret}"; }
+    { ignore_stack=true; return "${ret}"; }
 }
 
 function lint_epoch() {
@@ -111,7 +111,7 @@ function lint_epoch() {
             ret=1
         fi
     fi
-    { ignore_stack=true && return "${ret}"; }
+    { ignore_stack=true; return "${ret}"; }
 }
 
 function lint_version() {
@@ -127,7 +127,7 @@ function lint_version() {
         fancy_message error "Package does not contain 'pkgver'"
         ret=1
     fi
-    { ignore_stack=true && return "${ret}"; }
+    { ignore_stack=true; return "${ret}"; }
 }
 
 function lint_source_deb_test() {
@@ -218,7 +218,7 @@ function lint_source() {
             lint_source_deb_test "${source[@]}"
         fi
     fi
-    { ignore_stack=true && return "${ret}"; }
+    { ignore_stack=true; return "${ret}"; }
 }
 
 function lint_pkgdesc() {
@@ -228,7 +228,7 @@ function lint_pkgdesc() {
         fancy_message error "Package does not contain 'pkgdesc'"
         ret=1
     fi
-    { ignore_stack=true && return "${ret}"; }
+    { ignore_stack=true; return "${ret}"; }
 }
 
 function lint_maintainer() {
@@ -290,14 +290,14 @@ function lint_deps() {
                     fancy_message error "'${dep_type}' index '${idx}' is not formatted correctly"
                     ret=1
                 fi
-                { ignore_stack=true && ((idx++)); }
+                { ignore_stack=true; ((idx++)); }
             done
         fi
         if ((ret == 1)); then
             break
         fi
     done
-    { ignore_stack=true && return "${ret}"; }
+    { ignore_stack=true; return "${ret}"; }
 }
 
 function lint_ppa() {
@@ -309,10 +309,10 @@ function lint_ppa() {
                 fancy_message error "'ppa' index '${idx}' cannot be empty"
                 ret=1
             fi
-            { ignore_stack=true && ((idx++)); }
+            { ignore_stack=true; ((idx++)); }
         done
         if ((ret != 0)); then
-            { ignore_stack=true && return 1; }
+            { ignore_stack=true; return 1; }
         fi
         idx=0
         for el_ppa in "${ppa[@]}"; do
@@ -320,7 +320,7 @@ function lint_ppa() {
                 fancy_message error "'ppa' index '${idx}' cannot start with 'ppa:'"
                 ret=1
             fi
-            { ignore_stack=true && ((idx++)); }
+            { ignore_stack=true; ((idx++)); }
         done
         idx=0
         for el_ppa in "${ppa[@]}"; do
@@ -328,10 +328,10 @@ function lint_ppa() {
                 fancy_message error "'ppa' index '${idx}' is improperly formatted"
                 ret=1
             fi
-            { ignore_stack=true && ((idx++)); }
+            { ignore_stack=true; ((idx++)); }
         done
     fi
-    { ignore_stack=true && return "${ret}"; }
+    { ignore_stack=true; return "${ret}"; }
 }
 
 function lint_relations() {
@@ -359,14 +359,14 @@ function lint_relations() {
                     fancy_message error "'${rel_type}' index '${idx}' cannot be empty"
                     ret=1
                 fi
-                { ignore_stack=true && ((idx++)); }
+                { ignore_stack=true; ((idx++)); }
             done
         fi
         if ((ret == 1)); then
             break
         fi
     done
-    { ignore_stack=true && return "${ret}"; }
+    { ignore_stack=true; return "${ret}"; }
 }
 
 function lint_capital_check() {
@@ -383,7 +383,7 @@ function lint_capital_check() {
         if [[ ${split_chars[$z]} == '-' ]]; then
             # Is the next letter a capital?
             if [[ ${split_chars[z + 1]} != "${split_chars[z + 1]^}" ]]; then
-                { ignore_stack=true && return 1; }
+                { ignore_stack=true; return 1; }
             fi
         fi
     done
@@ -394,7 +394,7 @@ function lint_field_fmt() {
     local infield="${1}"
     # Ensure no spaces
     if [[ ${infield} =~ [[:space:]] ]]; then
-        { ignore_stack=true && return 1; }
+        { ignore_stack=true; return 1; }
     # Ensure no numbers
     elif [[ ${infield} =~ [0-9] ]]; then
         return 2
@@ -450,9 +450,9 @@ function lint_fields() {
                         ;;
                 esac
             fi
-            { ignore_stack=true && ((idx++)); }
+            { ignore_stack=true; ((idx++)); }
         done
-        { ignore_stack=true && return "${ret}"; }
+        { ignore_stack=true; return "${ret}"; }
     fi
 }
 
@@ -543,7 +543,7 @@ function lint_hash() {
             fi
         done
     fi
-    { ignore_stack=true && return "${ret}"; }
+    { ignore_stack=true; return "${ret}"; }
 }
 
 function lint_incompatible() {
@@ -562,7 +562,7 @@ function lint_incompatible() {
                 fancy_message error "'compatible' index '${idx}' cannot be empty"
                 ret=1
             fi
-            { ignore_stack=true && ((idx++)); }
+            { ignore_stack=true; ((idx++)); }
         done
         idx=0
         for compat in "${compatible[@]}"; do
@@ -570,7 +570,7 @@ function lint_incompatible() {
                 fancy_message error "'compatible' index '${idx}' is improperly formatted"
                 ret=1
             fi
-            { ignore_stack=true && ((idx++)); }
+            { ignore_stack=true; ((idx++)); }
         done
     elif [[ -n ${incompatible[*]} ]]; then
         if [[ -n ${compatible[*]} ]]; then
@@ -585,7 +585,7 @@ function lint_incompatible() {
                 fancy_message error "'incompatible' index '${idx}' cannot be empty"
                 ret=1
             fi
-            { ignore_stack=true && ((idx++)); }
+            { ignore_stack=true; ((idx++)); }
         done
         idx=0
         for incompat in "${incompatible[@]}"; do
@@ -593,10 +593,10 @@ function lint_incompatible() {
                 fancy_message error "'incompatible' index '${idx}' is improperly formatted"
                 ret=1
             fi
-            { ignore_stack=true && ((idx++)); }
+            { ignore_stack=true; ((idx++)); }
         done
     fi
-    { ignore_stack=true && return "${ret}"; }
+    { ignore_stack=true; return "${ret}"; }
 }
 
 function lint_arch() {
@@ -616,11 +616,11 @@ function lint_arch() {
                 fancy_message error "'arch' index '${idx}' cannot be empty"
                 ret=1
             fi
-            { ignore_stack=true && ((idx++)); }
+            { ignore_stack=true; ((idx++)); }
         done
         # Fail point
         if ((ret != 0)); then
-            { ignore_stack=true && return 1; }
+            { ignore_stack=true; return 1; }
         fi
         for el_arch in "${arch[@]}"; do
             if ! array.contains known_archs "${el_arch}"; then
@@ -641,7 +641,7 @@ function lint_arch() {
             ret=1
         fi
     fi
-    { ignore_stack=true && return "${ret}"; }
+    { ignore_stack=true; return "${ret}"; }
 }
 
 function lint_mask() {
@@ -653,10 +653,10 @@ function lint_mask() {
                 fancy_message error "'mask' index '${idx}' cannot be empty"
                 ret=1
             fi
-            { ignore_stack=true && ((idx++)); }
+            { ignore_stack=true; ((idx++)); }
         done
     fi
-    { ignore_stack=true && return "${ret}"; }
+    { ignore_stack=true; return "${ret}"; }
 }
 
 function lint_priority() {
@@ -673,7 +673,7 @@ function lint_priority() {
         fi
     fi
     shopt -u extglob
-    { ignore_stack=true && return "${ret}"; }
+    { ignore_stack=true; return "${ret}"; }
 }
 
 function lint_license() {
@@ -686,7 +686,7 @@ function lint_license() {
                 fancy_message error "'license' index '${idx}' cannot be empty"
                 ret=1
             fi
-            { ignore_stack=true && ((idx++)); }
+            { ignore_stack=true; ((idx++)); }
             if ! array.contains license_list "${linlicense}"; then
                 if [[ ${linlicense} != "custom:"* ]]; then
                     fancy_message error "'${linlicense}' is not a valid license"
@@ -695,7 +695,7 @@ function lint_license() {
             fi
         done
     fi
-    { ignore_stack=true && return "${ret}"; }
+    { ignore_stack=true; return "${ret}"; }
 }
 
 function checks() {
@@ -705,5 +705,5 @@ function checks() {
         "${check}" || ret=1
     done
     # shellcheck disable=SC2034
-    { ignore_stack=true && return "${ret}"; }
+    { ignore_stack=true; return "${ret}"; }
 }
