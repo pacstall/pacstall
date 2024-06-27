@@ -89,7 +89,9 @@ function srcinfo.get_attr() {
     local pkgname="${1}" attrname="${2}" isarray="${3}" outputvar="${4}"
     if [[ -n ${pkgname} ]]; then
         srcinfo.extr_globvar "${attrname}" "${isarray}" "${outputvar}"
-        is_function "package_${pkgname}" && srcinfo.extr_fnvar "package_${pkgname}" "${attrname}" "${isarray}" "${outputvar}"
+        if is_function "package_${pkgname}"; then
+            srcinfo.extr_fnvar "package_${pkgname}" "${attrname}" "${isarray}" "${outputvar}"
+        fi
     else
         srcinfo.extr_globvar "${attrname}" "${isarray}" "${outputvar}"
     fi

@@ -322,12 +322,10 @@ function ask() {
         case "$reply" in
             Y* | y*)
                 export answer=1
-                return 0
                 break
                 ;;
             N* | n*)
                 export answer=0
-                { ignore_stack=true && return 1; }
                 break
                 ;;
             *)
