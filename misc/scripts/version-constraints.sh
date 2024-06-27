@@ -33,7 +33,7 @@
 # @arg $1 string A versioned string.
 function dep_const.apt_compare_to_constraints() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local compare_pkg="${1}" split_up=() pkg_version stripped
+    local compare_pkg="${1}" split_up=() pkg_version stripped ret
     dep_const.strip_description "${compare_pkg}" stripped
     dep_const.split_name_and_version "${stripped}" split_up
     if ((${#split_up[@]} == 1)); then
@@ -46,12 +46,13 @@ function dep_const.apt_compare_to_constraints() {
     fi
     case "${compare_pkg}" in
         # Example: foo@1.2.4 where foo<=1.2.5 should return true, because 1.2.4 is less than 1.2.5
-        *"<="*) dpkg --compare-versions "${pkg_version}" le "${split_up[1]}" ;;
-        *">="*) dpkg --compare-versions "${pkg_version}" ge "${split_up[1]}" ;;
-        *"="*) dpkg --compare-versions "${pkg_version}" eq "${split_up[1]}" ;;
-        *"<"*) dpkg --compare-versions "${pkg_version}" lt "${split_up[1]}" ;;
-        *">"*) dpkg --compare-versions "${pkg_version}" gt "${split_up[1]}" ;;
+        *"<="*) dpkg --compare-versions "${pkg_version}" le "${split_up[1]}"; ret=$? ;;
+        *">="*) dpkg --compare-versions "${pkg_version}" ge "${split_up[1]}"; ret=$? ;;
+        *"="*) dpkg --compare-versions "${pkg_version}" eq "${split_up[1]}"; ret=$? ;;
+        *"<"*) dpkg --compare-versions "${pkg_version}" lt "${split_up[1]}"; ret=$? ;;
+        *">"*) dpkg --compare-versions "${pkg_version}" gt "${split_up[1]}"; ret=$? ;;
     esac
+    { ignore_stack=true && return "${ret}"; }
 }
 
 function dep_const.get_arch() {

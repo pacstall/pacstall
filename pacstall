@@ -262,6 +262,7 @@ function stacktrace() {
         exit 1
     else
         export ignore_stack=false
+        return "${catch}"
     fi
 }
 { export ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
