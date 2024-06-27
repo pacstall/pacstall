@@ -377,7 +377,7 @@ sudo mkdir -p "/var/cache/pacstall/${pacname}/${full_version}"
 if ! cd "$DIR" 2> /dev/null; then
     error_log 1 "install ${pacname}"
     fancy_message error "Could not enter into ${DIR}"
-    sudo dpkg -r "${gives:-$pacname}" > /dev/null
+    sudo dpkg -r "${gives:-$pacname}" 2> /dev/null
     clean_fail_down
 fi
 

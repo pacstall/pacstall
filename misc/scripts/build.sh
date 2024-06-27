@@ -601,13 +601,7 @@ function makedeb() {
     else
         local deb_arch="all"
     fi
-    if ! createdeb "${pacname}" "${full_version}" "${deb_arch}"; then
-        fancy_message error "Could not create package"
-        error_log 5 "install $pacname"
-        fancy_message info "Cleaning up"
-        cleanup
-        exit 1
-    fi
+    createdeb "${pacname}" "${full_version}" "${deb_arch}"
     install_deb "${pacname}" "${full_version}" "${deb_arch}"
 }
 
@@ -620,7 +614,7 @@ function install_deb() {
             echo -ne "\t"
             fancy_message error "Failed to install $pacname deb"
             error_log 8 "install $pacname"
-            sudo dpkg -r --force-all "$pacname" > /dev/null
+            sudo dpkg -r --force-all "${gives:-$pacname}" 2> /dev/null
             fancy_message info "Cleaning up"
             cleanup
             exit 1
@@ -717,13 +711,7 @@ function repacstall() {
     else
         local deb_arch="all"
     fi
-    if ! createdeb "${pacname}" "${full_version}" "${deb_arch}"; then
-        fancy_message error "Could not create package"
-        error_log 5 "install $pacname"
-        fancy_message info "Cleaning up"
-        cleanup
-        exit 1
-    fi
+    createdeb "${pacname}" "${full_version}" "${deb_arch}"
     install_deb "${pacname}" "${full_version}" "${deb_arch}"
 }
 
