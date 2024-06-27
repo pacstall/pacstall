@@ -264,7 +264,7 @@ function stacktrace() {
         export ignore_stack=false
     fi
 }
-{ export ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+{ export ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
 
 # This is the ask function. You can source this code block and then run something like:
 # ask "Do you like the color blue? " Y
@@ -277,7 +277,7 @@ function stacktrace() {
 # Y=1 and N=0
 # You can specify {Y,N} or leave it out to prevent entering the default but this is not allowed in pacstall because of the -P flag which gives unattended install
 function ask() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local prompt default reply
 
     if [[ ${2-} == 'Y' ]]; then
@@ -345,7 +345,7 @@ function ask() {
 #   UPurple: text
 # Make sure to quote ('') commands and files/URLS
 function suggested_solution() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if [[ -z $PACSTALL_SUPPRESS_SOLUTIONS ]]; then
         local inputs=("${@}")
         if ((${#inputs[@]} > 1)); then
@@ -361,7 +361,7 @@ function suggested_solution() {
 }
 
 function check_url() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if [[ ${1} == "file://"* ]]; then
         if ! [[ -f ${1/"file://"/} ]]; then
             { ignore_stack=true && return 1; }
@@ -399,13 +399,13 @@ function check_url() {
 # Checks if a command is available.
 # Plain "command -v" succeeds if the argument is in PATH, even if not executable.
 function has_command() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     [[ -x $(command -v "$1" 2> /dev/null) ]]
 }
 
 # use axel if available
 function download() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local src="$1" out="${2:-${src##*/}}"
     if [[ $PACSTALL_DOWNLOADER != "payload" ]]; then
         sudo rm -f "${out:?}"
@@ -448,7 +448,7 @@ function download() {
 #   $ select_options "My message I want to send" "${#array[@]}"
 # This will then output the options given by the user to /tmp/pacstall-select-options, which you can then turn into another array
 function select_options() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     rm -f /tmp/pacstall-select-options
     local message="${1}"
     local length="${2}"
@@ -510,7 +510,7 @@ function select_options() {
 
 # Return 0 if exists, 1 if not
 function is_package_installed() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local input="${1}"
     while read -r line; do
         if [[ ${line} == "${input}" ]]; then
@@ -522,7 +522,7 @@ function is_package_installed() {
 
 # Returns 0 if exists, 1 if not
 function is_apt_package_installed() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if [[ $(dpkg-query -W --showformat='${db:Status-Status}' "${1}" 2> /dev/null) == "installed" ]]; then
         return 0
     else
@@ -531,7 +531,7 @@ function is_apt_package_installed() {
 }
 
 function is_array() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if [[ ${!1@a} == *a* ]]; then
         return 0
     else
@@ -540,7 +540,7 @@ function is_array() {
 }
 
 function is_function() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if [[ $(type -t "${1}") == "function" ]]; then
         return 0
     else
@@ -549,7 +549,7 @@ function is_function() {
 }
 
 function array.contains() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local check
     local -n arra="${1:?No array passed to array.contains}"
     local input="${2:?No input given to array.contains}"
@@ -562,7 +562,7 @@ function array.contains() {
 }
 
 function getMasks() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local pkgs pkg
     local -n masks="${1}"
     mapfile -t pkgs < <(pacstall -L 2> /dev/null)
@@ -579,7 +579,7 @@ function getMasks() {
 }
 
 function getMasks_offending_pkg() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local the_name="${1}"
     mapfile -t pkgs < <(pacstall -L)
     if ((${#pkgs[@]} == 0)); then
@@ -674,7 +674,7 @@ fi
 unset short_commands long_commands commands matches arguments_list unique_arguments_list hashed_arguments
 
 function lock() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # Total number of options flags, increase when needed
     local option_flags=5
     local ignore_short="-S -D -A -Rr -V -L -Qi -T -h"
