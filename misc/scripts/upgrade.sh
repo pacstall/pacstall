@@ -51,7 +51,7 @@ function ver_compare() {
         first_git="${first#*~git}"; first="${first%~git*}"
         second_git="${second#*~git}"; second="${second%~git*}"
     fi
-    if [[ -n ${second_git} && ${first_git} != ${second_git} ]]; then
+    if [[ -n ${second_git} && ${first_git} != "${second_git}" ]]; then
         result=0
     else
         { dpkg --compare-versions "${first}" lt "${second}"; result=$?; }

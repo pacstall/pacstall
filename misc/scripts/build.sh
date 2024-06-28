@@ -52,8 +52,44 @@ function clean_builddir() {
 
 function prompt_optdepends() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local deps optdep opt optdesc just_name=() missing_optdeps=() not_satisfied_optdeps=()
-    deps=("${depends[@]}")
+    local dep real_dep optdep opt optdesc deps just_name missing_optdeps not_satisfied_optdeps missing_deps not_satisfied_deps
+    for dep in "${depends[@]}"; do
+        # Firstly, check if this is an alt dep list
+        if dep_const.is_pipe "${dep}"; then
+            real_dep="${dep}"
+            dep="$(dep_const.get_pipe "${dep}")"
+        fi
+        # Let's get just the name
+        dep_const.split_name_and_version "${dep}" just_name
+        echo "${just_name[0]}"
+        # Check if package exists in the repos, and if not, go to the next program
+        if [[ -z $(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]%:*})?architecture($(dep_const.get_arch "${just_name[0]}"))" -F "%V") ]]; then
+            missing_deps+=("${real_dep}")
+            continue
+        fi
+        # Next let's check if the version (if available) is in the repos
+        if ! dep_const.apt_compare_to_constraints "${dep}"; then
+            # Just put the name in
+            not_satisfied_deps+=("${real_dep}")
+            continue
+        fi
+        # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
+        # If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of it'>
+        if ! is_apt_package_installed "${dep}"; then
+            deps+=("${real_dep}")
+        fi
+    done
+    if [[ -n ${missing_deps[*]} ]]; then
+        fancy_message error "${BLUE}${missing_deps[*]}${NC} does not exist in apt repositories"
+    fi
+    if [[ -n ${not_satisfied_deps[*]} ]]; then
+        fancy_message error "${BLUE}${not_satisfied_deps[*]}${NC} versions cannot be satisfied"
+    fi
+    if [[ -n ${missing_deps[*]} || -n ${not_satisfied_deps[*]} ]]; then
+        fancy_message info "Cleaning up"
+        cleanup
+        exit 1
+    fi
     if ((${#optdepends[@]} != 0)); then
         local suggested_optdeps=()
         for optdep in "${optdepends[@]}"; do
@@ -101,7 +137,6 @@ function prompt_optdepends() {
         if [[ -n ${not_satisfied_optdeps[*]} ]]; then
             echo -ne "\t"
             fancy_message warn "${BLUE}${not_satisfied_optdeps[*]}${NC} versions cannot be satisfied"
-
         fi
         if ((${#suggested_optdeps[@]} != 0)); then
             if ((PACSTALL_INSTALL != 0)); then
