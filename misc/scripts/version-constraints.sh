@@ -42,7 +42,7 @@ function dep_const.apt_compare_to_constraints() {
     if is_apt_package_installed "${split_up[0]}"; then
         pkg_version="$(dpkg-query --showformat='${Version}' --show "${split_up[0]}")"
     else
-        pkg_version="$(aptitude search --quiet --disable-columns "?exact-name(${split_up[0]})?architecture($(dep_const.get_arch "${split_up[0]}"))" -F "%V")"
+        pkg_version="$(aptitude search --quiet --disable-columns "?exact-name(${split_up[0]%:*})?architecture($(dep_const.get_arch "${split_up[0]}"))" -F "%V")"
     fi
     case "${compare_pkg}" in
         # Example: foo@1.2.4 where foo<=1.2.5 should return true, because 1.2.4 is less than 1.2.5

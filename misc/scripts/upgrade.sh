@@ -44,11 +44,19 @@ source "${SCRIPTDIR}/scripts/srcinfo.sh" || {
 
 function ver_compare() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local first second
+    local first second first_git second_git result
     first="${1#"${1/[0-9]*/}"}"
     second="${2#"${2/[0-9]*/}"}"
-    # shellcheck disable=SC2046
-    return $(dpkg --compare-versions "$first" lt "$second")
+    if [[ ${first} =~ "~git" && ${second} =~ "~git" ]]; then
+        first_git="${first#*~git}"; first="${first%~git*}"
+        second_git="${second#*~git}"; second="${second%~git*}"
+    fi
+    if [[ -n ${second_git} && ${first_git} != ${second_git} ]]; then
+        result=0
+    else
+        { dpkg --compare-versions "${first}" lt "${second}"; result=$?; }
+    fi
+    { ignore_stack=true; return "${result}"; }
 }
 
 function calc_repo_ver() {

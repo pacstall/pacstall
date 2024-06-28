@@ -71,7 +71,7 @@ function prompt_optdepends() {
             # Let's get just the name
             dep_const.split_name_and_version "${opt}" just_name
             # Check if package exists in the repos, and if not, go to the next program
-            if [[ -z "$(apt-cache search --no-generate --names-only "^${just_name[0]}\$" 2> /dev/null || apt-cache search --names-only "^${just_name[0]}\$")" ]]; then
+            if [[ -z $(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]%:*})?architecture($(dep_const.get_arch "${just_name[0]}"))" -F "%V") ]]; then
                 missing_optdeps+=("${just_name[0]}")
                 continue
             fi
