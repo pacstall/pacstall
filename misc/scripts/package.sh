@@ -153,7 +153,7 @@ if [[ -n $pacdeps ]]; then
                     clean_fail_down
                 fi
             else
-                fancy_message info "The pacstall dependency ${i} is already installed and at latest version"
+                fancy_message sub "The pacstall dependency ${PURPLE}${i}${NC} is already installed and at latest version"
                 if ! awk '/_pacstall_depends="true"/ {found=1; exit} END {if (found != 1) exit 1}' "${METADIR}/${i}"; then
                     echo '_pacstall_depends="true"' | sudo tee -a "${METADIR}/${i}" > /dev/null
                 fi

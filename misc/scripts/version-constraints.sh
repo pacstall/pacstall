@@ -151,7 +151,9 @@ function dep_const.get_pipe() {
                 echo "${pkg}"
                 return 0
             else
-                viable_packages+=("${pkg}")
+                if [[ -n "$(aptitude search --quiet --disable-columns "?exact-name(${check_name[0]%:*})?architecture($(dep_const.get_arch "${check_name[0]}"))" -F "%p")" ]]; then
+                    viable_packages+=("${pkg}")
+                fi
             fi
         fi
     done
