@@ -79,7 +79,7 @@ function prompt_optdepends() {
         dep_const.apt_compare_to_constraints "${dep}" || { not_satisfied_deps+=("${real_dep}"); continue; }
         # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
         # If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of i>
-        deps+=("${dep}")
+        deps+=("${real_dep}")
     done
     if [[ -n ${missing_deps[*]} ]]; then
         echo -ne "\t"
@@ -131,7 +131,7 @@ function prompt_optdepends() {
             # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
             # If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of it's status
             if ! is_apt_package_installed "${opt}"; then
-                suggested_optdeps+=("${optdep}")
+                suggested_optdeps+=("${realopt}: ${optdesc}")
             else
                 already_installed_optdeps+=("${realopt}")
             fi
