@@ -399,7 +399,11 @@ function check_url() {
 # Plain "command -v" succeeds if the argument is in PATH, even if not executable.
 function has_command() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    [[ -x $(command -v "$1" 2> /dev/null) ]]
+    if [[ -x $(command -v "$1" 2> /dev/null) ]]; then
+        return 0
+    else
+        { ignore_stack=true; return 1; }
+    fi
 }
 
 # use axel if available
