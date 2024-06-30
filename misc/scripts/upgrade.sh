@@ -22,38 +22,50 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+{ ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+
 # shellcheck source=./misc/scripts/dep-tree.sh
 source "${SCRIPTDIR}/scripts/dep-tree.sh" || {
     fancy_message error "Could not load dep-tree.sh"
-    return 1
+    { ignore_stack=true; return 1; }
 }
 
 # shellcheck source=./misc/scripts/fetch-sources.sh
 source "${SCRIPTDIR}/scripts/fetch-sources.sh" || {
     fancy_message error "Could not find fetch-sources.sh"
-    return 1
+    { ignore_stack=true; return 1; }
 }
 
 # shellcheck source=./misc/scripts/srcinfo.sh
 source "${SCRIPTDIR}/scripts/srcinfo.sh" || {
     fancy_message error "Could not find srcinfo.sh"
-    return 1
+    { ignore_stack=true; return 1; }
 }
 
 function ver_compare() {
-    local first second
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+    local first second first_git second_git result
     first="${1#"${1/[0-9]*/}"}"
     second="${2#"${2/[0-9]*/}"}"
-    # shellcheck disable=SC2046
-    return $(dpkg --compare-versions "$first" lt "$second")
+    if [[ ${first} =~ "~git" && ${second} =~ "~git" ]]; then
+        first_git="${first#*~git}"; first="${first%~git*}"
+        second_git="${second#*~git}"; second="${second%~git*}"
+    fi
+    if [[ -n ${second_git} && ${first_git} != "${second_git}" ]]; then
+        result=0
+    else
+        { dpkg --compare-versions "${first}" lt "${second}"; result=$?; }
+    fi
+    { ignore_stack=true; return "${result}"; }
 }
 
 function calc_repo_ver() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local compare_repo="$1" compare_package="$2" compare_tmp compare_safe compare_pkgver compare_pkgrel compare_epoch compare_source comp compare_base
     unset comp_repo_ver
     compare_tmp="$(sudo mktemp -p "${PACDIR}" -t "calc-repo-ver-$compare_package.XXXXXX")"
     compare_safe="${compare_tmp}"
-    curl -fsSL "$compare_repo/packages/$compare_package/.SRCINFO" | sudo tee "${compare_safe}" > /dev/null || return 1
+    curl -fsSL "$compare_repo/packages/$compare_package/.SRCINFO" | sudo tee "${compare_safe}" > /dev/null || { ignore_stack=true; return 1; }
     sudo chown "${PACSTALL_USER}" "${compare_safe}"
     compare_base="$(srcinfo.match_pkg "${compare_safe}" pkgbase)"
     for comp in "pkgver" "pkgrel" "epoch"; do
@@ -69,7 +81,7 @@ function calc_repo_ver() {
     else
         comp_repo_ver="${compare_epoch:+$compare_epoch:}${compare_pkgver}-pacstall${compare_pkgrel:-1}"
     fi
-    sudo rm -rf "${compare_safe}"
+    sudo rm -rf "${compare_safe:?}"
 }
 
 export UPGRADE="yes"
@@ -264,5 +276,5 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
     done
 fi
 
-rm -f "${up_list}" "${up_print}" "${up_urls}"
+rm -f "${up_list:?}" "${up_print:?}" "${up_urls:?}"
 # vim:set ft=sh ts=4 sw=4 et:

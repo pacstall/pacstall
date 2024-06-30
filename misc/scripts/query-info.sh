@@ -22,6 +22,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+{ ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+
 if [[ -z $PACKAGE ]]; then
     fancy_message error "You failed to specify a package"
     exit 1
@@ -35,6 +37,8 @@ fi
 source "$METADIR/$PACKAGE"
 
 function get_field() {
+    # shellcheck disable=SC2034
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # input 1: package
     # input 2: field
     # input 3: out_var

@@ -24,6 +24,9 @@
 
 # Update should be self-contained and should use mutable functions or variables
 # Color variables are ok, while "$USERNAME" and "$BRANCH" are needed
+
+{ ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+
 export BOLD='\033[1m'
 export NC='\033[0m'
 export UCyan='\033[4;36m'
@@ -38,6 +41,8 @@ SCRIPTDIR="/usr/share/pacstall"
 required_packages=(aptitude bubblewrap jq distro-info-data)
 
 function suggested_solution() {
+    # shellcheck disable=SC2034
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if [[ -z $PACSTALL_SUPPRESS_SOLUTIONS ]]; then
         local inputs=("${@}")
         if ((${#inputs[@]} > 1)); then
@@ -96,7 +101,7 @@ for i in {error-log.sh,add-repo.sh,search.sh,dep-tree.sh,version-constraints.sh,
 done
 # Remove renamed files
 for i in {error_log.sh,download.sh,download-local.sh,install-local.sh,build-local.sh}; do
-    sudo rm -f "$SCRIPTDIR/scripts/$i"
+    sudo rm -f "${SCRIPTDIR:?}/scripts/$i"
 done
 
 sudo curl -s -o /bin/pacstall "$REPO/pacstall" &

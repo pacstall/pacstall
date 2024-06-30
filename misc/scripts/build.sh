@@ -22,46 +22,22 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+{ ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+
 # shellcheck source=./misc/scripts/version-constraints.sh
 source "${SCRIPTDIR}/scripts/version-constraints.sh" || {
     fancy_message error "Could not find version-constraints"
-    return 1
+    { ignore_stack=true; return 1; }
 }
 
 # shellcheck source=./misc/scripts/srcinfo.sh
 source "${SCRIPTDIR}/scripts/srcinfo.sh" || {
     fancy_message error "Could not find srcinfo.sh"
-    return 1
-}
-
-function cleanup() {
-    if [[ -n $KEEP ]]; then
-        sudo rm -rf "/tmp/pacstall-keep/$pacname"
-        mkdir -p "/tmp/pacstall-keep/$pacname"
-        # shellcheck disable=SC2153
-        sudo mv "${PACDIR:?}/${PACKAGE}.pacscript" "/tmp/pacstall-keep/$pacname"
-        sudo mv "${PACDIR:?}/${PACKAGE}.SRCINFO" "/tmp/pacstall-keep/$pacname/.SRCINFO"
-        sudo mv "${PACDIR:?}/${pacname}~${pkgver}" "/tmp/pacstall-keep/$pacname"
-    fi
-    if [[ -f "/tmp/pacstall-pacdeps-$pacname" ]]; then
-        sudo rm -rf "/tmp/pacstall-pacdeps-$pacname"
-    else
-        sudo rm -rf "${PACDIR:?}"/*
-        if [[ -n $pacname ]]; then
-            sudo rm -rf "${STAGEDIR:-/usr/src/pacstall}/${pacname}"
-        fi
-        sudo rm -rf /tmp/pacstall-gives
-    fi
-    # shellcheck disable=SC2153
-    sudo rm -rf "${STAGEDIR}/${pacname:-$PACKAGE}.deb"
-    sudo rm -f /tmp/pacstall-select-options
-    sudo rm -f "${PACDIR}/bwrapenv.*"
-    unset "${pacstallvars[@]}" 2> /dev/null
-    unset -f pre_install pre_upgrade pre_remove post_install post_upgrade post_remove prepare build check package 2> /dev/null
-    sudo rm -f "${pacfile}"
+    { ignore_stack=true; return 1; }
 }
 
 function deblog() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local key="$1"
     shift
     local content=("$@")
@@ -69,20 +45,64 @@ function deblog() {
 }
 
 function clean_builddir() {
-    sudo rm -rf "${STAGEDIR}/${pacname:?}"
-    sudo rm -f "${STAGEDIR}/${pacname}.deb"
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+    sudo rm -rf "${STAGEDIR:?}/${pacname:?}"
+    sudo rm -f "${STAGEDIR:?}/${pacname}.deb"
 }
 
 function prompt_optdepends() {
-    local deps optdep opt optdesc just_name=() missing_optdeps=() not_satisfied_optdeps=()
-    deps=("${depends[@]}")
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+    local dep real_dep optdep opt realopt optdesc deps just_name just_arch missing_optdeps not_satisfied_optdeps missing_deps not_satisfied_deps
+    fancy_message sub "Checking apt dependencies"
+    for dep in "${depends[@]}"; do
+        real_dep="${dep}"
+        # Firstly, check if this is an alt dep list
+        if dep_const.is_pipe "${dep}"; then
+            dep="$(dep_const.get_pipe "${dep}")"
+        fi
+        # Let's get just the name
+        dep_const.split_name_and_version "${dep}" just_name
+        just_arch="$(dep_const.get_arch "${just_name[0]}")"
+        # Check if package exists in the repos, and if not, go to the next program
+        if [[ -n ${just_arch} ]]; then
+            if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]%:*})?architecture(${just_arch})" -F "%p")" ]]; then
+                missing_deps+=("${real_dep}")
+                continue
+            fi
+        else
+            if [[ -z "$(apt-cache search --no-generate --names-only "^${just_name[0]}\$" 2> /dev/null || apt-cache search --names-only "^${just_name[0]}\$")" ]]; then
+                missing_deps+=("${real_dep}")
+                continue
+            fi
+        fi
+        # Next let's check if the version (if available) is in the repos
+        dep_const.apt_compare_to_constraints "${dep}" || { not_satisfied_deps+=("${real_dep}"); continue; }
+        # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
+        # If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of i>
+        deps+=("${real_dep}")
+    done
+    if [[ -n ${missing_deps[*]} ]]; then
+        echo -ne "\t"
+        fancy_message error "${BLUE}$(printf "${BLUE}%s${NC}, " "${missing_deps[@]}" | sed 's/, $/\n/')${NC} does not exist in apt repositories"
+    fi
+    if [[ -n ${not_satisfied_deps[*]} ]]; then
+        echo -ne "\t"
+        fancy_message error "${BLUE}$(printf "${BLUE}%s${NC}, " "${not_satisfied_deps[@]}" | sed 's/, $/\n/')${NC} version(s) cannot be satisfied"
+    fi
+    if [[ -n ${missing_deps[*]} || -n ${not_satisfied_deps[*]} ]]; then
+        fancy_message info "Cleaning up"
+        cleanup
+        exit 1
+    fi
+    unset just_arch just_name
     if ((${#optdepends[@]} != 0)); then
         local suggested_optdeps=()
         for optdep in "${optdepends[@]}"; do
+            dep_const.extract_description "${optdep}" optdesc
+            dep_const.strip_description "${optdep}" realopt
             # Firstly, check if this is an alt dep list
             if dep_const.is_pipe "${optdep}"; then
                 # Ok, we need to select *one* of those deps to be our sacrificial lamb Ψ(•̀ᴗ•́ )⤴
-                dep_const.extract_description "${optdep}" optdesc
                 optdep="$(dep_const.get_pipe "${optdep}")"
             fi
             if ! [[ ${optdep} =~ ${optdesc} ]]; then
@@ -92,24 +112,28 @@ function prompt_optdepends() {
             dep_const.strip_description "${optdep}" opt
             # Let's get just the name
             dep_const.split_name_and_version "${opt}" just_name
+            just_arch="$(dep_const.get_arch "${just_name[0]}")"
             # Check if package exists in the repos, and if not, go to the next program
-            if [[ -z "$(apt-cache search --no-generate --names-only "^${just_name[0]}\$" 2> /dev/null || apt-cache search --names-only "^${just_name[0]}\$")" ]]; then
-                missing_optdeps+=("${just_name[0]}")
-                continue
+            if [[ -n ${just_arch} ]]; then
+                if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]%:*})?architecture(${just_arch})" -F "%p")" ]]; then
+                    missing_optdeps+=("${realopt}")
+                    continue
+                fi
+            else
+                if [[ -z "$(apt-cache search --no-generate --names-only "^${just_name[0]}\$" 2> /dev/null || apt-cache search --names-only "^${just_name[0]}\$")" ]]; then
+                    missing_optdeps+=("${realopt}")
+                    continue
+                fi
             fi
             # Next let's check if the version (if available) is in the repos
-            if ! dep_const.apt_compare_to_constraints "${opt}"; then
-                # Just put the name in
-                not_satisfied_optdeps+=("${just_name[0]}")
-                continue
-            fi
+            dep_const.apt_compare_to_constraints "${opt}" || { not_satisfied_optdeps+=("${realopt}"); continue; }
 
             # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
             # If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of it's status
             if ! is_apt_package_installed "${opt}"; then
-                suggested_optdeps+=("${optdep}")
+                suggested_optdeps+=("${realopt}: ${optdesc}")
             else
-                already_installed_optdeps+=("${opt}")
+                already_installed_optdeps+=("${realopt}")
             fi
         done
 
@@ -118,12 +142,11 @@ function prompt_optdepends() {
         fi
         if [[ -n ${missing_optdeps[*]} ]]; then
             echo -ne "\t"
-            fancy_message warn "${BLUE}${missing_optdeps[*]}${NC} does not exist in apt repositories"
+            fancy_message warn "${BLUE}$(printf "${BLUE}%s${NC}, " "${missing_optdeps[@]}" | sed 's/, $/\n/')${NC} does not exist in apt repositories"
         fi
         if [[ -n ${not_satisfied_optdeps[*]} ]]; then
             echo -ne "\t"
-            fancy_message warn "${BLUE}${not_satisfied_optdeps[*]}${NC} versions cannot be satisfied"
-
+            fancy_message warn "${BLUE}$(printf "${BLUE}%s${NC}, " "${not_satisfied_optdeps[@]}" | sed 's/, $/\n/')${NC} version(s) cannot be satisfied"
         fi
         if ((${#suggested_optdeps[@]} != 0)); then
             if ((PACSTALL_INSTALL != 0)); then
@@ -133,7 +156,7 @@ function prompt_optdepends() {
                 for i in "${suggested_optdeps[@]}"; do
                     # print optdepends with bold package name
                     echo -e "\t\t[${BICyan}$z${NC}] ${BOLD}${i%%:\ *}${NC}: ${i#*:\ }"
-                    ((z++))
+                    { ignore_stack=true; ((z++)); }
                 done
                 unset z
                 # tab over the next line
@@ -147,7 +170,7 @@ function prompt_optdepends() {
                         local skip_opt+=("$i")
                         unset 'choices[$choice_inc]'
                     fi
-                    ((choice_inc++))
+                    { ignore_stack=true; ((choice_inc++)); }
                 done
                 if [[ -n ${skip_opt[*]} ]]; then
                     fancy_message warn "${BGreen}${skip_opt[*]}${NC} has exceeded the maximum number of optional dependencies. Skipping"
@@ -222,7 +245,7 @@ function prompt_optdepends() {
             local pipe_nomatch=0
             for ze_dep_split in "${ze_dep_splits[@]}"; do
                 if ! dep_const.apt_compare_to_constraints "${ze_dep_split}"; then
-                    ((pipe_nomatch++))
+                    { ignore_stack=true; ((pipe_nomatch++)); }
                 fi
             done
             if ((pipe_nomatch == ${#ze_dep_splits[@]})); then
@@ -240,11 +263,13 @@ function prompt_optdepends() {
 }
 
 function generate_changelog() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     printf "%s (%s) %s; urgency=medium\n\n  * Version now at %s.\n\n -- %s %(%a, %d %b %Y %T %z)T\n" \
         "${pacname}" "${full_version}" "${CDISTRO#*:}" "${full_version}" "${maintainer[0]}"
 }
 
 function clean_logdir() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if [[ ! -d ${LOGDIR} ]]; then
         sudo mkdir -p "${LOGDIR}"
     fi
@@ -252,6 +277,7 @@ function clean_logdir() {
 }
 
 function createdeb() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local debname="${1}_${2}_${3}"
     if ((PACSTALL_INSTALL == 0)); then
         # We are not going to immediately install, meaning the user might want to share their deb with someone else, so create the highest compression.
@@ -264,13 +290,13 @@ function createdeb() {
         local compression="gz"
         local command="gzip"
     fi
-    cd "$STAGEDIR/$pacname" || return 1
+    cd "$STAGEDIR/$pacname" || { ignore_stack=true; return 1; }
     # https://tldp.org/HOWTO/html_single/Debian-Binary-Package-Building-HOWTO/#AEN66
     echo "2.0" | sudo tee debian-binary > /dev/null
     sudo tar -cf "$PWD/control.tar" -T /dev/null
     local CONTROL_LOCATION="$PWD/control.tar"
     # avoid having to cd back
-    pushd DEBIAN > /dev/null || return 1
+    pushd DEBIAN > /dev/null || { ignore_stack=true; return 1; }
     for i in *; do
         if [[ -f $i ]]; then
             local files_for_control+=("$i")
@@ -278,7 +304,7 @@ function createdeb() {
     done
     fancy_message sub "Packing control.tar"
     sudo tar -rf "$CONTROL_LOCATION" "${files_for_control[@]}"
-    popd > /dev/null || return 1
+    popd > /dev/null || { ignore_stack=true; return 1; }
     sudo tar -cf "$PWD/data.tar" -T /dev/null
     local DATA_LOCATION="$PWD/data.tar"
     # collect every top level file/dir except for deb stuff
@@ -297,15 +323,21 @@ function createdeb() {
 }
 
 function is_builddep_arch() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local buildar="${1}_${TARCH}[*]" buildar_distb="${1}_${DISTRO%:*}_${TARCH}[*]" buildar_distv="${1}_${DISTRO#*:}_${TARCH}[*]"
     local -n appendar="${2}"
     [[ -n ${!buildar} ]] && appendar+=("${!buildar}")
     [[ -n ${!buildar_distb} ]] && appendar+=("${!buildar_distb}")
     [[ -n ${!buildar_distv} ]] && appendar+=("${!buildar_distv}")
-    [[ -n ${appendar[*]} ]]
+    if [[ -n ${appendar[*]} ]]; then
+        return 0
+    else
+        { ignore_stack=true; return 1; }
+    fi
 }
 
 function makedeb() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # It looks weird for it to say: `Packaging foo as foo`
     if [[ -n $gives && $pacname != "$gives" ]]; then
         fancy_message info "Packaging ${BGreen}$pacname${NC} as ${BBlue}$gives${NC}"
@@ -528,11 +560,13 @@ function makedeb() {
         fi
     done
     unset pre_inst_upg post_inst_upg
-    echo -e "sudo rm -f $METADIR/$pacname\nsudo rm -f /etc/apt/preferences.d/$pacname-pin" | sudo tee -a "$STAGEDIR/$pacname/DEBIAN/postrm" > /dev/null
+    echo -e "sudo rm -f ${METADIR:?}/$pacname\nsudo rm -f /etc/apt/preferences.d/$pacname-pin" | sudo tee -a "$STAGEDIR/$pacname/DEBIAN/postrm" > /dev/null
     local postfile
     for postfile in {postrm,postinst,preinst}; do
-        sudo chmod -x "$STAGEDIR/$pacname/DEBIAN/${postfile}" &> /dev/null
-        sudo chmod 755 "$STAGEDIR/$pacname/DEBIAN/${postfile}" &> /dev/null
+        if [[ -f "$STAGEDIR/$pacname/DEBIAN/${postfile}" ]]; then
+            sudo chmod -x "$STAGEDIR/$pacname/DEBIAN/${postfile}" &> /dev/null
+            sudo chmod 755 "$STAGEDIR/$pacname/DEBIAN/${postfile}" &> /dev/null
+        fi
     done
 
     # Handle `backup` key
@@ -581,48 +615,43 @@ function makedeb() {
         install_size="$(
             numfmt ${numargs} --format="%3.2f" "${rawsize}" \
                 | awk '{
-			    if (match($0, /[A-Za-z]+$/)) {
-			        num = sprintf("%.3g", $1);
-					if (num == int(num)) {
-						if (int(num) < 10) {
-							num = sprintf("%.2f", num);
-						} else if (int(num) < 100) {
-							num = sprintf("%.1f", num);
-						} else {
-							num = sprintf("%.0f", num);
-						}
-					}
-			        unit = substr($0, RSTART, RLENGTH);
-			        if (unit == "K") unit = "k";
-			        printf "%s %sB\n", num, unit;
-			    } else {
-			        num = sprintf("%3.2f", $1);
-			        printf "%s B\n", num;
-			    }
-			}'
+                if (match($0, /[A-Za-z]+$/)) {
+                    num = sprintf("%.3g", $1);
+                    if (num == int(num)) {
+                        if (int(num) < 10) {
+                            num = sprintf("%.2f", num);
+                        } else if (int(num) < 100) {
+                            num = sprintf("%.1f", num);
+                        } else {
+                            num = sprintf("%.0f", num);
+                        }
+                    }
+                    unit = substr($0, RSTART, RLENGTH);
+                    if (unit == "K") unit = "k";
+                    printf "%s %sB\n", num, unit;
+                } else {
+                    num = sprintf("%3.2f", $1);
+                    printf "%s B\n", num;
+                }
+            }'
         )"
     fi
     export install_size
 
     generate_changelog | sudo tee -a "$STAGEDIR/$pacname/DEBIAN/changelog" > /dev/null
 
-    cd "$STAGEDIR" || return 1
+    cd "$STAGEDIR" || { ignore_stack=true; return 1; }
     if array.contains arch "${CARCH}" || array.contains arch "${AARCH}"; then
         local deb_arch="${CARCH}"
     else
         local deb_arch="all"
     fi
-    if ! createdeb "${pacname}" "${full_version}" "${deb_arch}"; then
-        fancy_message error "Could not create package"
-        error_log 5 "install $pacname"
-        fancy_message info "Cleaning up"
-        cleanup
-        return 1
-    fi
+    createdeb "${pacname}" "${full_version}" "${deb_arch}"
     install_deb "${pacname}" "${full_version}" "${deb_arch}"
 }
 
 function install_deb() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local debname="${1}_${2}_${3}"
     if ((PACSTALL_INSTALL != 0)); then
         # --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
@@ -630,7 +659,7 @@ function install_deb() {
             echo -ne "\t"
             fancy_message error "Failed to install $pacname deb"
             error_log 8 "install $pacname"
-            sudo dpkg -r --force-all "$pacname" > /dev/null
+            sudo dpkg -r --force-all "${gives:-$pacname}" 2> /dev/null
             fancy_message info "Cleaning up"
             cleanup
             exit 1
@@ -638,8 +667,8 @@ function install_deb() {
         if [[ -f /tmp/pacstall-pacdeps-"$pacname" ]]; then
             sudo apt-mark auto "${gives:-$pacname}" 2> /dev/null
         fi
-        sudo rm -rf "$STAGEDIR/$pacname"
-        sudo rm -rf "$PACDIR/$debname.deb"
+        sudo rm -rf "${STAGEDIR:?}/${pacname}"
+        sudo rm -rf "${PACDIR:?}/${debname}.deb"
 
         if ! [[ -d /etc/apt/preferences.d/ ]]; then
             sudo mkdir -p /etc/apt/preferences.d
@@ -654,7 +683,7 @@ function install_deb() {
         sudo chown "$PACSTALL_USER":"$PACSTALL_USER" "$PACDEB_DIR/$debname.deb"
         fancy_message info "Package built at ${BGreen}$PACDEB_DIR/$debname.deb${NC}"
         fancy_message info "Moving ${BGreen}$STAGEDIR/$pacname${NC} to ${BGreen}/tmp/pacstall-no-build/$pacname${NC}"
-        sudo rm -rf "/tmp/pacstall-no-build/$pacname"
+        sudo rm -rf "/tmp/pacstall-no-build/${pacname:?}"
         mkdir -p "/tmp/pacstall-no-build/$pacname"
         sudo mv "$STAGEDIR/$pacname" "/tmp/pacstall-no-build/$pacname"
         return 0
@@ -662,6 +691,7 @@ function install_deb() {
 }
 
 function repacstall() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # shellcheck disable=SC2034
     local depends_array unpackdir depends_line deper pacgives meper ceper pacdep depends_array_form repac_depends_str upcontrol input_dest="${1}"
     unpackdir="${STAGEDIR}/${pacname}"
@@ -726,17 +756,12 @@ function repacstall() {
     else
         local deb_arch="all"
     fi
-    if ! createdeb "${pacname}" "${full_version}" "${deb_arch}"; then
-        fancy_message error "Could not create package"
-        error_log 5 "install $pacname"
-        fancy_message info "Cleaning up"
-        cleanup
-        return 1
-    fi
+    createdeb "${pacname}" "${full_version}" "${deb_arch}"
     install_deb "${pacname}" "${full_version}" "${deb_arch}"
 }
 
 function check_if_pacdep() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local package="${1}" finddir="${2}" found
     found="$(find "${finddir}" -type f -exec awk -v pkg="${package}" '
         $0 ~ "_pacdeps=\\(\\[" "[0-9]+" "\\]=\"" pkg "\"" {
@@ -744,10 +769,16 @@ function check_if_pacdep() {
         } END {
                 if (!found) {exit 1}
         }' {} \; -print)"
-    [[ ${found} ]] && return 0 || return 1
+    if [[ ${found} ]]; then
+        return 0
+    else
+        # shellcheck disable=SC2034
+        { ignore_stack=true; return 1; }
+    fi
 }
 
 function write_meta() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     echo "_name=\"$pacname\""
     if [[ -n $pkgbase ]]; then
         echo "_pkgbase=\"$pkgbase\""
@@ -792,6 +823,8 @@ function write_meta() {
 }
 
 function meta_log() {
+    # shellcheck disable=SC2034
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # Origin repo info parsing
     if [[ ${local} == "no" ]]; then
         # shellcheck disable=SC2153

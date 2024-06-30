@@ -24,6 +24,8 @@
 
 # This script downloads pacscripts from the interwebs
 
+{ ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+
 if check_url "${URL}"; then
     if [[ $type == "install" ]]; then
         mkdir -p "$PACDIR" || {
@@ -60,6 +62,7 @@ if check_url "${URL}"; then
     return 0
 else
     error_log 1 "get $PACKAGE pacscript"
-    return 1
+    # shellcheck disable=SC2034
+    { ignore_stack=true; return 1; }
 fi
 # vim:set ft=sh ts=4 sw=4 et:

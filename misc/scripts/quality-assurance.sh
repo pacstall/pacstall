@@ -22,7 +22,10 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
-parse_pr() {
+{ ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+
+function parse_pr() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     IFS=':' read -ra ADDR <<< "$1"
     local provider user repo pr
     provider="${ADDR[0]}"
@@ -32,7 +35,8 @@ parse_pr() {
     echo "$provider" "$user" "$repo" "$pr"
 }
 
-parse_link() {
+function parse_link() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     unset login
     local provider="$1" user="$2" repo="$3" pr="$4"
     if [[ $provider == "github" ]]; then
@@ -47,10 +51,12 @@ parse_link() {
     fi
 }
 
-cleanup_qa() {
+function cleanup_qa() {
+    # shellcheck disable=SC2034
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if [[ -f "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak" ]]; then
         fancy_message info "Returning ${CYAN}$SCRIPTDIR/repo/pacstallrepo${NC} backup"
-        sudo rm -f "${SCRIPTDIR:-/usr/share/pacstall}/repo/pacstallrepo"
+        sudo rm -f "${SCRIPTDIR:?}/repo/pacstallrepo"
         sudo mv "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak" "$SCRIPTDIR/repo/pacstallrepo"
     fi
 }

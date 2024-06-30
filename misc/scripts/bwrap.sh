@@ -22,9 +22,13 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+{ ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+
 function safe_source() {
+    # shellcheck disable=SC2034
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local input="${1}"
-    mkdir "${PACDIR}" 2> /dev/null
+    mkdir -p "${PACDIR}" 2> /dev/null
     tmpfile="$(sudo mktemp -p "${PACDIR}")"
     local allvar_str pacfunc_str debfunc_str pacstall_funcs=("prepare" "build" "check" "package") \
     debian_funcs=("post_install" "post_remove" "post_upgrade" "pre_install" "pre_remove" "pre_upgrade")
@@ -89,6 +93,8 @@ EOF
 }
 
 function bwrap_function() {
+    # shellcheck disable=SC2034
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local func="$1"
     tmpfile="$(sudo mktemp -p "${PWD}")"
     sudo tee -a "$tmpfile" > /dev/null << EOF
@@ -100,7 +106,7 @@ if [[ \$FUNCSTATUS ]]; then \
     mapfile -t NEW_ENV < <(/bin/env -0 \${OLD_ENV[@]} | \
         sed -ze 's/BASH_FUNC_\(.*\)%%=\(.*\)\$/\\n/g;s/^\\(.[[:alnum:]_]*\\)=\\(.*\\)\$/\\1/g'|tr '\0' '\n'); \
     declare -p \${NEW_ENV[@]} >> "${bwrapenv}"; \
-fi && exit \$FUNCSTATUS
+fi && ignore_stack=true && exit \$FUNCSTATUS
 EOF
     sudo chmod +x "$tmpfile"
 

@@ -177,6 +177,96 @@ function fancy_message() {
     esac
 }
 
+function decl_scriptvars() {
+    local _distros _vars _archs _sums distros \
+        vars="source depends makedepends optdepends pacdeps checkdepends provides conflicts breaks replaces enhances recommends makeconflicts checkconflicts" \
+        archs="amd64 x86_64 arm64 aarch64 armel arm armhf armv7h i386 i686 mips64el ppc64el riscv64 s390x" \
+        sums="b2 sha512 sha384 sha256 sha224 sha1 md5"
+    pacstallvars=(pkgbase pkgname repology pkgver git_pkgver epoch source_url source depends makedepends checkdepends conflicts
+        breaks replaces gives pkgdesc hash optdepends ppa arch maintainer pacdeps NOBUILDDEP provides incompatible
+        compatible srcdir url backup pkgrel mask pac_functions repo priority noextract nosubmodules _archive license
+        bwrapenv safeenv external_connection enhances recommends custom_fields makeconflicts checkconflicts)
+    mapfile -t distros < <(awk -F ',' -v current_date="$(date +'%Y-%m-%d')" '
+      BEGIN {
+        is_first = 1
+      }
+      $3 == "series" {
+        if (is_first) {
+          print "ubuntu"
+          is_first = 0
+        } else {
+          print "devel\ndebian"
+        }
+        next
+      }
+      NR > 1 && (($6 > current_date) || ($7 > current_date) || ($6 == "")) &&
+      ($4 <= current_date) && $3 != "experimental" {
+        print $3
+      }' /usr/share/distro-info/{ubuntu,debian}.csv)
+    export PACSTALL_KNOWN_DISTROS=("${distros[@]}")
+    eval "PACSTALL_KNOWN_ARCH=(${archs}) PACSTALL_KNOWN_SUMS=(${sums})"
+    distros="${distros[*]}"
+    _distros="{${distros// /,}}" _vars="{${vars// /,}}" _archs="{${archs// /,}}" _sums="{${sums// /,}}"
+    eval "pacstallvars+=(${_vars}_${_distros} ${_vars}_${_archs} ${_vars}_${_distros}_${_archs} ${_sums}sums ${_sums}sums_${_distros} ${_sums}sums_${_archs} ${_sums}sums_${_distros}_${_archs} gives_${_distros} gives_${_archs} gives_${_distros}_${_archs})"
+}
+decl_scriptvars
+
+function cleanup() {
+    if [[ -n ${KEEP} && -n ${pacname} ]]; then
+        sudo rm -rf "/tmp/pacstall-keep/${pacname}"
+        mkdir -p "/tmp/pacstall-keep/${pacname}"
+        #shellcheck disable=SC2153
+        sudo mv "${PACDIR:?}/${PACKAGE}.pacscript" "/tmp/pacstall-keep/${pacname}"
+        sudo mv "${PACDIR:?}/${PACKAGE}.SRCINFO" "/tmp/pacstall-keep/${pacname}/.SRCINFO"
+        sudo mv "${PACDIR:?}/${pacname}~${pkgver}" "/tmp/pacstall-keep/${pacname}"
+    fi
+    if [[ -n ${pacname} && -f "/tmp/pacstall-pacdeps-${pacname}" ]]; then
+        sudo rm -rf "/tmp/pacstall-pacdeps-${pacname}"
+    else
+        [[ -n ${PACDIR} ]] && sudo rm -rf "${PACDIR}"/*
+        if [[ -n ${pacname} ]]; then
+            sudo rm -rf "${STAGEDIR:-/usr/src/pacstall}/${pacname}"
+        fi
+        sudo rm -rf /tmp/pacstall-gives
+    fi
+    #shellcheck disable=SC2153
+    [[ -n ${STAGEDIR} && -n ${PACKAGE} ]] && sudo rm -rf "${STAGEDIR}/${pacname:-$PACKAGE}"*".deb"
+    sudo rm -f /tmp/pacstall-select-options
+    [[ -n ${PACDIR} ]] && sudo rm -f "${PACDIR}/bwrapenv.*"
+    [[ -n ${pacfile} ]] && sudo rm -f "${pacfile}"
+    unset "${pacstallvars[@]}" 2> /dev/null
+    unset -f pre_install pre_upgrade pre_remove post_install post_upgrade post_remove prepare build check package 2> /dev/null
+}
+
+function stacktrace() {
+    local catch=$?
+    if ((catch==1)) && ! ${ignore_stack}; then
+        local i stack_size=${#FUNCNAME[@]} func linen src trace content stack_color color_idx \
+            colors=(196 197 198 199 200 201 165 129 93 57 21 27 33 39 45 51 50 49 48 47 46 82 118 154 190 226 220 214 208 202)
+        echo -e "[${BRed}!${NC}] ${BOLD}ERROR${NC}: Stacktrace (most recent call last)" >&2
+        for ((i = stack_size - 1; i >= 1; i--)); do
+            color_idx=$(( (stack_size - 1 - i) % ${#colors[@]} ))
+            stack_color="\033[38;5;${colors[color_idx]}m"
+            ((i != stack_stack_size - 1)) && func="${FUNCNAME[i - 1]}"
+            [[ -z ${func} ]] && func='MAIN'
+            [[ ${func} == "stacktrace" ]] && { unset func; trace="${RED}TRACEBACK${NC}"; }
+            linen="${BASH_LINENO[i - 1]}"
+            src="${BASH_SOURCE[i]}"
+            [[ -z ${src} ]] && src=non_file_source
+            echo -e " ${stack_color}${func:+├}${trace:+╰}─➤${GREEN}${func}${NC}${trace}${NC}${func:+()}${trace:+:} ${src%/*}/${PURPLE}${src##*/}${NC}:${YELLOW}${linen}${NC}" >&2
+            # shellcheck disable=SC2027
+            echo -e " ${stack_color}${func:+│}${trace:+ }${NC}  ${CYAN}╰───➤${NC} \033[38;5;242m"$(tail -n +"${linen}" "${src}" | head -n1)"${NC}" >&2
+        done
+        fancy_message info "Cleaning up"
+        cleanup
+        exit 1
+    else
+        export ignore_stack=false
+        return "${catch}"
+    fi
+}
+{ export ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+
 # This is the ask function. You can source this code block and then run something like:
 # ask "Do you like the color blue? " Y
 # if ((answer == 1)); then
@@ -188,6 +278,7 @@ function fancy_message() {
 # Y=1 and N=0
 # You can specify {Y,N} or leave it out to prevent entering the default but this is not allowed in pacstall because of the -P flag which gives unattended install
 function ask() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local prompt default reply
 
     if [[ ${2-} == 'Y' ]]; then
@@ -232,12 +323,10 @@ function ask() {
         case "$reply" in
             Y* | y*)
                 export answer=1
-                return 0 #return code for backwards compatibility
                 break
                 ;;
             N* | n*)
                 export answer=0
-                return 1 #return code
                 break
                 ;;
             *)
@@ -255,6 +344,7 @@ function ask() {
 #   UPurple: text
 # Make sure to quote ('') commands and files/URLS
 function suggested_solution() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if [[ -z $PACSTALL_SUPPRESS_SOLUTIONS ]]; then
         local inputs=("${@}")
         if ((${#inputs[@]} > 1)); then
@@ -270,9 +360,10 @@ function suggested_solution() {
 }
 
 function check_url() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if [[ ${1} == "file://"* ]]; then
         if ! [[ -f ${1/"file://"/} ]]; then
-            return 1
+            { ignore_stack=true; return 1; }
         fi
     else
         local http_code="$(curl --location -o /dev/null -s --head --write-out '%{http_code}\n' -- "${1}")"
@@ -285,12 +376,12 @@ function check_url() {
                     fancy_message error "Failed to download file, check your connection"
                 fi
                 error_log 1 "get ${PACKAGE} pacscript"
-                return 1
+                { ignore_stack=true; return 1; }
                 ;;
             404)
                 fancy_message error "The URL cannot be found"
                 suggested_solution "Confirm that '${UGreen}$1${NC}' exists"
-                return 1
+                { ignore_stack=true; return 1; }
                 ;;
             200 | 301 | 302)
                 return 0
@@ -298,7 +389,7 @@ function check_url() {
             *)
                 fancy_message error "Failed with http code ${http_code}"
                 suggested_solution "Confirm that '${UGreen}$1${NC}' is accessible"
-                return 1
+                { ignore_stack=true; return 1; }
                 ;;
         esac
     fi
@@ -307,14 +398,20 @@ function check_url() {
 # Checks if a command is available.
 # Plain "command -v" succeeds if the argument is in PATH, even if not executable.
 function has_command() {
-    [[ -x $(command -v "$1" 2> /dev/null) ]]
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+    if [[ -x $(command -v "$1" 2> /dev/null) ]]; then
+        return 0
+    else
+        { ignore_stack=true; return 1; }
+    fi
 }
 
 # use axel if available
 function download() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local src="$1" out="${2:-${src##*/}}"
     if [[ $PACSTALL_DOWNLOADER != "payload" ]]; then
-        sudo rm -f "$out"
+        sudo rm -f "${out:?}"
     fi
     if [[ -z $PACSTALL_DOWNLOADER || -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
         if has_command axel; then
@@ -329,23 +426,23 @@ function download() {
 
     case "$PACSTALL_DOWNLOADER" in
         verbose-axel)
-            axel -ao "$out" "$src" || return 1
+            axel -ao "$out" "$src" || { ignore_stack=true; return 1; }
             ;;
         axel)
-            axel -a -q -o "$out" "$src" || return 1
+            axel -a -q -o "$out" "$src" || { ignore_stack=true; return 1; }
             ;;
         verbose-curl)
-            curl -L -# -o "$out" "$src" || return 1
+            curl -L -# -o "$out" "$src" || { ignore_stack=true; return 1; }
             ;;
         curl)
-            curl -sSL -o "$out" "$src" || return 1
+            curl -sSL -o "$out" "$src" || { ignore_stack=true; return 1; }
             ;;
         verbose-wget)
-            wget -q --show-progress --progress=bar:force -O "$out" -- "$src" 2>&1 || return 1
+            wget -q --show-progress --progress=bar:force -O "$out" -- "$src" 2>&1 || { ignore_stack=true; return 1; }
             ;;
         payload) ;;
         wget | *)
-            wget -q -O "$out" -- "$src" 2>&1 || return 1
+            wget -q -O "$out" -- "$src" 2>&1 || { ignore_stack=true; return 1; }
             ;;
     esac
 }
@@ -354,6 +451,7 @@ function download() {
 #   $ select_options "My message I want to send" "${#array[@]}"
 # This will then output the options given by the user to /tmp/pacstall-select-options, which you can then turn into another array
 function select_options() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     rm -f /tmp/pacstall-select-options
     local message="${1}"
     local length="${2}"
@@ -415,37 +513,46 @@ function select_options() {
 
 # Return 0 if exists, 1 if not
 function is_package_installed() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local input="${1}"
     while read -r line; do
         if [[ ${line} == "${input}" ]]; then
             return 0
         fi
     done < <(pacstall -L)
-    return 1
+    { ignore_stack=true; return 1; }
 }
 
 # Returns 0 if exists, 1 if not
 function is_apt_package_installed() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if [[ $(dpkg-query -W --showformat='${db:Status-Status}' "${1}" 2> /dev/null) == "installed" ]]; then
         return 0
     else
-        return 1
+        { ignore_stack=true; return 1; }
     fi
 }
 
 function is_array() {
-    [[ ${!1@a} == *a* ]]
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+    if [[ ${!1@a} == *a* ]]; then
+        return 0
+    else
+        { ignore_stack=true; return 1; }
+    fi
 }
 
 function is_function() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if [[ $(type -t "${1}") == "function" ]]; then
         return 0
     else
-        return 1
+        { ignore_stack=true; return 1; }
     fi
 }
 
 function array.contains() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local check
     local -n arra="${1:?No array passed to array.contains}"
     local input="${2:?No input given to array.contains}"
@@ -454,10 +561,11 @@ function array.contains() {
             return 0
         fi
     done
-    return 1
+    { ignore_stack=true; return 1; }
 }
 
 function getMasks() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local pkgs pkg
     local -n masks="${1}"
     mapfile -t pkgs < <(pacstall -L 2> /dev/null)
@@ -474,6 +582,7 @@ function getMasks() {
 }
 
 function getMasks_offending_pkg() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local the_name="${1}"
     mapfile -t pkgs < <(pacstall -L)
     if ((${#pkgs[@]} == 0)); then
@@ -489,43 +598,8 @@ function getMasks_offending_pkg() {
         fi
         unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch _mask 2> /dev/null
     done
-    return 1
+    { ignore_stack=true; return 1; }
 }
-
-function decl_scriptvars() {
-    local _distros _vars _archs _sums distros \
-        vars="source depends makedepends optdepends pacdeps checkdepends provides conflicts breaks replaces enhances recommends makeconflicts checkconflicts" \
-        archs="amd64 x86_64 arm64 aarch64 armel arm armhf armv7h i386 i686 mips64el ppc64el riscv64 s390x" \
-        sums="b2 sha512 sha384 sha256 sha224 sha1 md5"
-    pacstallvars=(pkgbase pkgname repology pkgver git_pkgver epoch source_url source depends makedepends checkdepends conflicts
-        breaks replaces gives pkgdesc hash optdepends ppa arch maintainer pacdeps NOBUILDDEP provides incompatible
-        compatible srcdir url backup pkgrel mask pac_functions repo priority noextract nosubmodules _archive license
-        bwrapenv safeenv external_connection enhances recommends custom_fields makeconflicts checkconflicts)
-    mapfile -t distros < <(awk -F ',' -v current_date="$(date +'%Y-%m-%d')" '
-      BEGIN {
-        is_first = 1
-      }
-      $3 == "series" {
-        if (is_first) {
-          print "ubuntu"
-          is_first = 0
-        } else {
-          print "devel\ndebian"
-        }
-        next
-      }
-      NR > 1 && (($6 > current_date) || ($7 > current_date) || ($6 == "")) &&
-      ($4 <= current_date) && $3 != "experimental" {
-        print $3
-      }' /usr/share/distro-info/{ubuntu,debian}.csv)
-    export PACSTALL_KNOWN_DISTROS=("${distros[@]}")
-    eval "PACSTALL_KNOWN_ARCH=(${archs}) PACSTALL_KNOWN_SUMS=(${sums})"
-    distros="${distros[*]}"
-    _distros="{${distros// /,}}" _vars="{${vars// /,}}" _archs="{${archs// /,}}" _sums="{${sums// /,}}"
-    eval "pacstallvars+=(${_vars}_${_distros} ${_vars}_${_archs} ${_vars}_${_distros}_${_archs} ${_sums}sums ${_sums}sums_${_distros} ${_sums}sums_${_archs} ${_sums}sums_${_distros}_${_archs} gives_${_distros} gives_${_archs} gives_${_distros}_${_archs})"
-}
-
-decl_scriptvars
 
 # run sudo apt update if it's been more than a week
 [[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ]] && sudo apt-get update -qq --allow-releaseinfo-change
@@ -603,6 +677,7 @@ fi
 unset short_commands long_commands commands matches arguments_list unique_arguments_list hashed_arguments
 
 function lock() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # Total number of options flags, increase when needed
     local option_flags=5
     local ignore_short="-S -D -A -Rr -V -L -Qi -T -h"
@@ -611,23 +686,23 @@ function lock() {
 
     for ((i = 1; i <= option_flags + 1; i++)); do
         if [[ $ignore =~ (^|[[:space:]])"${!i}"($|[[:space:]]) ]]; then
-            return 1
+            { ignore_stack=true; return 1; }
         fi
         j=$((i + 1))
         if [[ -f "/tmp/pacstall-pacdeps-${!j%%@*}" ]]; then
-            return 1
+            { ignore_stack=true; return 1; }
         fi
     done
 
     if [[ -f "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak" ]]; then
         instances=($(pidof -o %PPID -x "$0"))
         if [[ ${#instances[@]} -lt 2 ]]; then
-            return 1
+            { ignore_stack=true; return 1; }
         fi
         return 0
     fi
 
-    pidof -o %PPID -x "$0" > /dev/null && return 0 || return 1
+    pidof -o %PPID -x "$0" > /dev/null && return 0 || { ignore_stack=true; return 1; }
 }
 
 while lock $@; do
@@ -719,7 +794,7 @@ Helpful links:
             ;;
 
         -I | --install)
-            unset CHILD PACKAGE
+            unset CHILD PKGPATH
             if [[ -z $2 ]]; then
                 fancy_message error "You failed to specify a package"
                 exit 1
@@ -755,7 +830,7 @@ Helpful links:
                     elif [[ -d $PKGPATH ]]; then
                         cd "$PKGPATH"
                     fi
-
+                    export PKGPATH="${PWD}"
                     # Check if the file exist
                     if [[ ! -f "$PACKAGE".pacscript ]]; then
                         fancy_message error "$2 does not exist"
@@ -820,8 +895,9 @@ Helpful links:
                     fi
                     export PACKAGE="${PACKAGE/:pkgbase/}"
                     specifyRepo "$REPO"
-                    export REPO
-                    export URL="${REPO:-https://raw.githubusercontent.com/pacstall/pacstall-programs/master}/packages/$PACKAGE/$PACKAGE.pacscript"
+                    # sanity write
+                    export REPO="${REPO}"
+                    export URL="${REPO}/packages/$PACKAGE/$PACKAGE.pacscript"
 
                     # shellcheck source=./misc/scripts/get-pacscript.sh
                     if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then

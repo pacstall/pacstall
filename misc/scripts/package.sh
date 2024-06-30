@@ -22,6 +22,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+{ ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+
 if [[ ${external_connection} == "true" ]]; then
     fancy_message warn "This package will connect to the internet during its build process."
 fi
@@ -43,7 +45,7 @@ if ((PACSTALL_INSTALL == 0)) && [[ ${pacname} == *-deb ]]; then
     parse_source_entry "${source[0]}"
     if ! download "${source[0]}" "${dest}"; then
         fancy_message error "Failed to download '${source[0]}'"
-        return 1
+        { ignore_stack=true; return 1; }
     else
         fancy_message info "Moving ${BGreen}${PACDIR}/${dest}${NC} to ${BGreen}${PACDEB_DIR}/${dest}${NC}"
         sudo mv ./"${dest}" "${PACDEB_DIR}"
@@ -151,7 +153,7 @@ if [[ -n $pacdeps ]]; then
                     clean_fail_down
                 fi
             else
-                fancy_message info "The pacstall dependency ${i} is already installed and at latest version"
+                fancy_message sub "The pacstall dependency ${PURPLE}${i}${NC} is already installed and at latest version"
                 if ! awk '/_pacstall_depends="true"/ {found=1; exit} END {if (found != 1) exit 1}' "${METADIR}/${i}"; then
                     echo '_pacstall_depends="true"' | sudo tee -a "${METADIR}/${i}" > /dev/null
                 fi
@@ -259,7 +261,8 @@ done
 unset dest_list
 install_builddepends
 
-prompt_optdepends || return 1
+# shellcheck disable=SC2034
+prompt_optdepends || { ignore_stack=true; return 1; }
 
 fancy_message info "Retrieving packages"
 mkdir -p "${PACDIR}"
@@ -281,12 +284,15 @@ for i in "${!source[@]}"; do
         done
     fi
     if [[ $source_url != *://* ]]; then
-        if [[ -z ${REPO} ]]; then
-            # shellcheck disable=SC2086
-            REPO="$(< ${SCRIPTDIR}/repo/pacstallrepo)"
+        if [[ -f "${PKGPATH}/${dest}" ]]; then
+            source_url="file://${PKGPATH}/${dest}"
+        else
+            if [[ -z ${REPO} ]]; then
+                REPO="$(head -n1 "${SCRIPTDIR}/repo/pacstallrepo")"
+            fi
+            # shellcheck disable=SC2031
+            source_url="${REPO}/packages/${pacname}/${source_url}"
         fi
-        # shellcheck disable=SC2031
-        source_url="${REPO}/packages/${pacname}/${source_url}"
     fi
     case "${source_url}" in
         *file://*)
@@ -328,39 +334,7 @@ sudo chown -R root:root . 2> /dev/null
 export pkgdir="$STAGEDIR/$pacname"
 export -f ask fancy_message select_options
 
-# Trap so that we can clean up (hopefully without messing up anything)
-trap cleanup ERR
-trap - SIGINT
-
 clean_logdir
-
-function fail_out_functions() {
-    local func="$1"
-    trap - ERR
-    eval "$restoreshopt"
-    error_log 5 "$func ${pacname}"
-    echo -ne "\t"
-    fancy_message error "Could not $func ${pacname} properly"
-    sudo dpkg -r "${gives:-$pacname}" > /dev/null
-    clean_fail_down
-}
-
-function safe_run() {
-    local func="$1"
-    export restoreshopt="$(shopt -p)
-$(shopt -p -o)"
-    local -
-    shopt -o -s errexit errtrace pipefail
-
-    local restoretrap="$(trap -p ERR)"
-    trap "fail_out_functions '$func'" ERR
-
-    bwrap_function "$func"
-
-    trap - ERR
-    eval "$restoreshopt"
-    eval "$restoretrap"
-}
 
 unset pac_functions
 if [[ $NOCHECK == true ]]; then
@@ -379,11 +353,14 @@ fi
 if [[ -n ${pac_functions[*]} ]]; then
     fancy_message info "Running functions"
     for function in "${pac_functions[@]}"; do
-        safe_run "$function"
+        if ! bwrap_function "${function}"; then
+            error_log 5 "${function} ${pacname}"
+            echo -ne "\t"
+            fancy_message error "Could not ${function} ${pacname} properly"
+            clean_fail_down
+        fi
     done
 fi
-
-trap - ERR
 
 cd "$HOME" 2> /dev/null || (
     error_log 1 "install ${pacname}"
@@ -403,7 +380,7 @@ sudo mkdir -p "/var/cache/pacstall/${pacname}/${full_version}"
 if ! cd "$DIR" 2> /dev/null; then
     error_log 1 "install ${pacname}"
     fancy_message error "Could not enter into ${DIR}"
-    sudo dpkg -r "${gives:-$pacname}" > /dev/null
+    sudo dpkg -r "${gives:-$pacname}" 2> /dev/null
     clean_fail_down
 fi
 

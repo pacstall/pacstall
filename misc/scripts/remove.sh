@@ -22,6 +22,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+# shellcheck disable=SC2034
+{ ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+
 source "$METADIR/$PACKAGE" 2> /dev/null || {
     fancy_message error "$PACKAGE is not installed"
     exit 1

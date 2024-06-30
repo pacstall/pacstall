@@ -24,12 +24,15 @@
 
 # This script searches for packages in all repos saved on pacstallrepo
 
+{ ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+
 if [[ -n $UPGRADE ]]; then
     [[ ! -f /tmp/pacstall-pacdeps-${PACKAGE%@*} ]] && PACKAGE="${i}"
     [[ -n ${_pkgbase} ]] && PACKAGE="${_pkgbase}:${PACKAGE}"
 fi
 
 function getPath() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local path="${1}"
     local var="${2}"
     path="${path/"file://"/}"
@@ -40,22 +43,29 @@ function getPath() {
 }
 
 function specifyRepo() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local SPLIT
     mapfile -t SPLIT <<< "${1//[\/]/$'\n'}"
-
     if [[ $1 == "file://"* ]] || [[ $1 == "/"* ]] || [[ $1 == "~"* ]] || [[ $1 == "."* ]]; then
         export URLNAME
         getPath "${1}" URLNAME
     elif [[ $1 == "github:"* ]] || [[ $1 == "gitlab:"* ]]; then
         export URLNAME="${1}"
     elif [[ $1 == *"github"* ]]; then
-        export URLNAME="github:${SPLIT[-3]}/${SPLIT[-2]}"
+        if [[ ${SPLIT[-1]} == "master" || ${SPLIT[-1]} == "main" ]]; then
+            export URLNAME="github:${SPLIT[-3]}/${SPLIT[-2]}"
+        else
+            export URLNAME="github:${SPLIT[-3]}/${SPLIT[-2]}#${SPLIT[-1]}"
+        fi
     elif [[ $1 == *"gitlab"* ]]; then
-        export URLNAME="gitlab:${SPLIT[-4]}/${SPLIT[-3]}"
+        if [[ ${SPLIT[-1]} == "master" || ${SPLIT[-1]} == "main" ]]; then
+            export URLNAME="github:${SPLIT[-4]}/${SPLIT[-3]}"
+        else
+            export URLNAME="github:${SPLIT[-4]}/${SPLIT[-3]}#${SPLIT[-1]}"
+        fi
     else
         export URLNAME="$REPO"
     fi
-
 }
 
 # Parses github and gitlab URL's
@@ -63,6 +73,7 @@ function specifyRepo() {
 # Also adds hyperlink for the
 # terminals that support them
 function parseRepo() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local REPO="${1}"
     local SPLIT REPODIR
     mapfile -t SPLIT <<< "${REPO//[\/]/$'\n'}"
@@ -80,6 +91,7 @@ function parseRepo() {
 }
 
 function formatRepo() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     ! [[ $1 =~ ^\ *# ]] \
         && [[ $1 =~ ^([^[:space:]]+)([[:space:]]+#.*)?$ ]] \
         && echo "${BASH_REMATCH[1]}"
@@ -181,7 +193,7 @@ if ((${#any_masks[@]} != 0)); then
         if array.contains any_masks "${pkg}"; then
             unset "PACKAGELIST[$mask_itr]"
         fi
-        ((mask_itr++))
+        { ignore_stack=true; ((mask_itr++)); }
     done
     PACKAGELIST=("${PACKAGELIST[@]}")
     unset mask_itr
@@ -214,7 +226,8 @@ if ((LEN == 0)); then
         exit 1
     fi
 
-    return 1
+    # shellcheck disable=SC2034
+    { ignore_stack=true; return 1; }
 # Check if it's upgrading packages
 elif [[ -n $UPGRADE ]]; then
     REPOS=()
