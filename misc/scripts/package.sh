@@ -288,8 +288,8 @@ for i in "${!source[@]}"; do
             source_url="file://${PKGPATH}/${dest}"
         else
             if [[ -z ${REPO} ]]; then
-                # shellcheck disable=SC2086
-                REPO="$(< ${SCRIPTDIR}/repo/pacstallrepo)"
+                mapfile -t REPO < <(< "${SCRIPTDIR}/repo/pacstallrepo")
+                REPO="${REPO[0]}"
             fi
             # shellcheck disable=SC2031
             source_url="${REPO}/packages/${pacname}/${source_url}"
