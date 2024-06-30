@@ -895,8 +895,9 @@ Helpful links:
                     fi
                     export PACKAGE="${PACKAGE/:pkgbase/}"
                     specifyRepo "$REPO"
-                    export REPO
-                    export URL="${REPO:-https://raw.githubusercontent.com/pacstall/pacstall-programs/master}/packages/$PACKAGE/$PACKAGE.pacscript"
+                    # sanity write
+                    export REPO="${REPO}"
+                    export URL="${REPO}/packages/$PACKAGE/$PACKAGE.pacscript"
 
                     # shellcheck source=./misc/scripts/get-pacscript.sh
                     if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then
