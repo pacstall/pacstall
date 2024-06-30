@@ -233,9 +233,9 @@ function cleanup() {
     [[ -n ${STAGEDIR} && -n ${PACKAGE} ]] && sudo rm -rf "${STAGEDIR}/${pacname:-$PACKAGE}"*".deb"
     sudo rm -f /tmp/pacstall-select-options
     [[ -n ${PACDIR} ]] && sudo rm -f "${PACDIR}/bwrapenv.*"
+    [[ -n ${pacfile} ]] && sudo rm -f "${pacfile}"
     unset "${pacstallvars[@]}" 2> /dev/null
     unset -f pre_install pre_upgrade pre_remove post_install post_upgrade post_remove prepare build check package 2> /dev/null
-    [[ -n ${pacfile} ]] && sudo rm -f "${pacfile}"
 }
 
 function stacktrace() {
