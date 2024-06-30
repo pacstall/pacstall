@@ -46,20 +46,26 @@ function specifyRepo() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local SPLIT
     mapfile -t SPLIT <<< "${1//[\/]/$'\n'}"
-
     if [[ $1 == "file://"* ]] || [[ $1 == "/"* ]] || [[ $1 == "~"* ]] || [[ $1 == "."* ]]; then
         export URLNAME
         getPath "${1}" URLNAME
     elif [[ $1 == "github:"* ]] || [[ $1 == "gitlab:"* ]]; then
         export URLNAME="${1}"
     elif [[ $1 == *"github"* ]]; then
-        export URLNAME="github:${SPLIT[-3]}/${SPLIT[-2]}"
+        if [[ ${SPLIT[-1]} == "master" || ${SPLIT[-1]} == "main" ]]; then
+            export URLNAME="github:${SPLIT[-3]}/${SPLIT[-2]}"
+        else
+            export URLNAME="github:${SPLIT[-3]}/${SPLIT[-2]}#${SPLIT[-1]}"
+        fi
     elif [[ $1 == *"gitlab"* ]]; then
-        export URLNAME="gitlab:${SPLIT[-4]}/${SPLIT[-3]}"
+        if [[ ${SPLIT[-1]} == "master" || ${SPLIT[-1]} == "main" ]]; then
+            export URLNAME="github:${SPLIT[-4]}/${SPLIT[-3]}"
+        else
+            export URLNAME="github:${SPLIT[-4]}/${SPLIT[-3]}#${SPLIT[-1]}"
+        fi
     else
         export URLNAME="$REPO"
     fi
-
 }
 
 # Parses github and gitlab URL's
