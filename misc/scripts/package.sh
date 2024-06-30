@@ -284,12 +284,16 @@ for i in "${!source[@]}"; do
         done
     fi
     if [[ $source_url != *://* ]]; then
-        if [[ -z ${REPO} ]]; then
-            # shellcheck disable=SC2086
-            REPO="$(< ${SCRIPTDIR}/repo/pacstallrepo)"
+        if [[ -f "${PKGPATH}/${dest}" ]]; then
+            source_url="file://${PKGPATH}/${dest}"
+        else
+            if [[ -z ${REPO} ]]; then
+                # shellcheck disable=SC2086
+                REPO="$(< ${SCRIPTDIR}/repo/pacstallrepo)"
+            fi
+            # shellcheck disable=SC2031
+            source_url="${REPO}/packages/${pacname}/${source_url}"
         fi
-        # shellcheck disable=SC2031
-        source_url="${REPO}/packages/${pacname}/${source_url}"
     fi
     case "${source_url}" in
         *file://*)

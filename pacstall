@@ -794,7 +794,7 @@ Helpful links:
             ;;
 
         -I | --install)
-            unset CHILD PACKAGE
+            unset CHILD PKGPATH
             if [[ -z $2 ]]; then
                 fancy_message error "You failed to specify a package"
                 exit 1
@@ -830,7 +830,7 @@ Helpful links:
                     elif [[ -d $PKGPATH ]]; then
                         cd "$PKGPATH"
                     fi
-
+                    export PKGPATH="${PWD}"
                     # Check if the file exist
                     if [[ ! -f "$PACKAGE".pacscript ]]; then
                         fancy_message error "$2 does not exist"
