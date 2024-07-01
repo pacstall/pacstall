@@ -504,7 +504,9 @@ function calc_distro() {
             distro_parent_vname=""
         else
             distro_parent_number="$(awk -F',' -v ver="${distro_parent_vname}" '$3 == ver { gsub(" LTS", "", $1); print $1 }' "/usr/share/distro-info/${distro_parent}.csv")"
-            [[ ${distro_pretty_name##*/} == "sid" ]] && distro_parent_number="sid"
+            if [[ ${distro_pretty_name##*/} == "sid" ]]; then
+                distro_parent_number="sid"
+            fi
         fi
     fi
 }
