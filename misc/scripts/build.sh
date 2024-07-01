@@ -64,7 +64,7 @@ function prompt_optdepends() {
         dep_const.split_name_and_version "${dep}" just_name
         just_arch="$(dep_const.get_arch "${just_name[0]}")"
         # Check if package exists in the repos, and if not, go to the next program
-        if [[ -n ${just_arch} ]]; then
+        if [[ ${just_name[0]} == *":${just_arch}" ]]; then
             if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]%:*})?architecture(${just_arch})" -F "%p")" ]]; then
                 missing_deps+=("${real_dep}")
                 continue
