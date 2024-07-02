@@ -65,7 +65,7 @@ function check_apt_dep() {
         if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]%:*})?architecture(${just_arch})" -F "%p")" ]]; then
             if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_name[0]%:*}$)?architecture(${just_arch})" -F "%p")" ]]; then
                 missing_deps+=("${real_dep}")
-                continue
+                return 0
             fi
         fi
     else
@@ -73,13 +73,13 @@ function check_apt_dep() {
             if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]})?architecture(${just_arch})" -F "%p")" ]]; then
                 if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_name[0]}$)?architecture(${just_arch})" -F "%p")" ]]; then
                     missing_deps+=("${real_dep}")
-                    continue
+                    return 0
                 fi
             fi
         fi
     fi
     # Next let's check if the version (if available) is in the repos
-    dep_const.apt_compare_to_constraints "${dep}" || { not_satisfied_deps+=("${real_dep}"); continue; }
+    dep_const.apt_compare_to_constraints "${dep}" || { not_satisfied_deps+=("${real_dep}"); return 0; }
     # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
     # If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of i>
     deps+=("${real_dep}")
@@ -114,7 +114,7 @@ function check_opt_dep() {
         if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]%:*})?architecture(${just_arch})" -F "%p")" ]]; then
             if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_name[0]%:*}$)?architecture(${just_arch})" -F "%p")" ]]; then
                 missing_optdeps+=("${realopt}")
-                continue
+                return 0
             fi
         fi
     else
@@ -122,13 +122,13 @@ function check_opt_dep() {
             if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]})?architecture(${just_arch})" -F "%p")" ]]; then
                 if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_name[0]}$)?architecture(${just_arch})" -F "%p")" ]]; then
                     missing_optdeps+=("${realopt}")
-                    continue
+                    return 0
                 fi
             fi
         fi
     fi
     # Next let's check if the version (if available) is in the repos
-    dep_const.apt_compare_to_constraints "${opt}" || { not_satisfied_optdeps+=("${realopt}"); continue; }
+    dep_const.apt_compare_to_constraints "${opt}" || { not_satisfied_optdeps+=("${realopt}"); return 0; }
 
     # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
     # If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of it's status
