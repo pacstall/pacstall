@@ -154,7 +154,8 @@ function dep_const.get_pipe() {
                 echo "${pkg}"
                 return 0
             else
-                if [[ -n "$(aptitude search --quiet --disable-columns "?exact-name(${check_name[0]%:*})?architecture($(dep_const.get_arch "${check_name[0]}"))" -F "%p")" ]]; then
+                if [[ -n "$(aptitude search --quiet --disable-columns "?exact-name(${check_name[0]%:*})?architecture($(dep_const.get_arch "${check_name[0]}"))" -F "%p")" || \
+                    -n "$(aptitude search --quiet --disable-columns "?provides(^${check_name[0]%:*}$)?architecture($(dep_const.get_arch "${check_name[0]}"))" -F "%p")" ]]; then
                     viable_packages+=("${pkg}")
                 fi
             fi
