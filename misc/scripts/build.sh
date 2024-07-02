@@ -53,7 +53,7 @@ function clean_builddir() {
 function prompt_optdepends() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local dep real_dep optdep opt realopt optdesc deps just_name just_arch missing_optdeps not_satisfied_optdeps missing_deps not_satisfied_deps
-    fancy_message sub "Checking apt dependencies"
+    fancy_message info "Checking apt dependencies"
     for dep in "${depends[@]}"; do
         real_dep="${dep}"
         # Firstly, check if this is an alt dep list
@@ -86,6 +86,13 @@ function prompt_optdepends() {
         # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
         # If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of i>
         deps+=("${real_dep}")
+        if ! array.contains missing_deps "${real_dep}" && ! array.contains not_satisfied_deps "${real_dep}"; then
+            if ! is_apt_package_installed "${just_name[0]}"; then
+                fancy_message sub "${BLUE}${just_name[0]} ${GREEN}↑${YELLOW}↓${NC} [remote]"
+            else
+                fancy_message sub "${BLUE}${just_name[0]} ${GREEN}✓${NC} [installed]"
+            fi
+        fi
     done
     if [[ -n ${missing_deps[*]} ]]; then
         echo -ne "\t"
@@ -150,7 +157,7 @@ function prompt_optdepends() {
         done
 
         if [[ -n ${missing_optdeps[*]} || -n ${not_satisfied_optdeps[*]} ]] || ((${#suggested_optdeps[@]} != 0)); then
-            fancy_message sub "Optional dependencies"
+            fancy_message info "Optional dependencies"
         fi
         if [[ -n ${missing_optdeps[*]} ]]; then
             echo -ne "\t"
