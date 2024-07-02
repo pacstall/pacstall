@@ -34,11 +34,18 @@ export BPurple='\033[1;35m'
 
 METADIR="/var/lib/pacstall/metadata"
 LOGDIR="/var/log/pacstall/error_log"
-PACDIR="/tmp/pacstall"
-PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER:-$(whoami)}}")
 SCRIPTDIR="/usr/share/pacstall"
+PACDIR="/tmp/pacstall"
+MANDIR="/usr/share/man/man8"
+BASH_COMPLETION_DIR="/usr/share/bash-completion/completions"
+FISH_COMPLETION_DIR="/usr/share/fish/vendor_completions.d"
+PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER:-$(whoami)}}")
 
-required_packages=(aptitude bubblewrap jq distro-info-data)
+pacstall_deps=(
+    "sudo" "wget" "build-essential" "unzip" "git"
+    "zstd" "iputils-ping" "aptitude" "bubblewrap"
+    "jq" "distro-info-data" "spdx-licenses"
+)
 
 function suggested_solution() {
     # shellcheck disable=SC2034
@@ -57,16 +64,9 @@ function suggested_solution() {
     fi
 }
 
-sudo mkdir -p "$METADIR"
-sudo mkdir -p "$LOGDIR"
-sudo chown "$PACSTALL_USER" -R "$LOGDIR"
+mkdir -p "${METADIR}" "${LOGDIR}" "${MANDIR}" "${BASH_COMPLETION_DIR}" "${FISH_COMPLETION_DIR}"
 
-sudo mkdir -p "$PACDIR"
-sudo chown "$PACSTALL_USER" -R "$PACDIR"
-
-sudo mkdir -p /usr/share/bash-completion/completions
-
-for pkg in "${required_packages[@]}"; do
+for pkg in "${pacstall_deps[@]}"; do
     if ! dpkg -s "${pkg}" > /dev/null 2>&1; then
         to_install+=("${pkg}")
     fi
@@ -89,40 +89,40 @@ old_branch="${old_info[1]}"
 if [[ -n $GIT_USER ]]; then
     REPO="file://$PWD"
 else
-    REPO="https://raw.githubusercontent.com/$USERNAME/pacstall/$BRANCH"
-    if ! curl -s --fail "$REPO/pacstall" > /dev/null; then
+    REPO="https://raw.githubusercontent.com/${USERNAME}/pacstall/${BRANCH}"
+    if ! curl -s --fail "${REPO}/pacstall" > /dev/null; then
         fancy_message error "Invalid URL"
-        suggested_solution "Confirm that '${UCyan}$REPO/pacstall${NC}' is valid"
+        suggested_solution "Confirm that '${UCyan}${REPO}/pacstall${NC}' is valid"
         exit 1
     fi
 fi
-for i in {error-log.sh,add-repo.sh,search.sh,dep-tree.sh,version-constraints.sh,checks.sh,get-pacscript.sh,package.sh,package-base.sh,fetch-sources.sh,build.sh,upgrade.sh,remove.sh,update.sh,query-info.sh,quality-assurance.sh,bwrap.sh,srcinfo.sh}; do
-    sudo curl -s -o "$SCRIPTDIR/scripts/$i" "$REPO/misc/scripts/$i" &
+pacstall_scripts=(
+    "error-log" "add-repo" "search" "dep-tree" "version-constraints"
+    "checks" "get-pacscript" "package" "package-base" "fetch-sources"
+    "build" "upgrade" "remove" "update" "query-info" "quality-assurance"
+    "bwrap" "srcinfo"
+)
+for script in "${pacstall_scripts[@]}"; do
+    sudo curl -s -o "$SCRIPTDIR/scripts/${script}.sh" "${REPO}/misc/scripts/${script}.sh" &
 done
 # Remove renamed files
-for i in {error_log.sh,download.sh,download-local.sh,install-local.sh,build-local.sh}; do
+for i in {error_log,download,download-local,install-local,build-local}.sh; do
     sudo rm -f "${SCRIPTDIR:?}/scripts/$i"
 done
+sudo curl -s -o "/usr/bin/pacstall" "${REPO}/pacstall" &
+sudo curl -s -o "${MANDIR}/pacstall.8" "${REPO}/misc/pacstall.8" &
+sudo curl -s -o "${BASH_COMPLETION_DIR}/pacstall" "${REPO}/misc/completion/bash" &
+sudo curl -s -o "${FISH_COMPLETION_DIR}/pacstall.fish" "${REPO}/misc/completion/fish" &
+wait && stty "${tty_settings}"
 
-sudo curl -s -o /bin/pacstall "$REPO/pacstall" &
-sudo curl -s -o /usr/share/man/man8/pacstall.8 "$REPO/misc/pacstall.8" &
-sudo curl -s -o /usr/share/bash-completion/completions/pacstall "$REPO/misc/completion/bash" &
-
-if command -v fish &> /dev/null; then
-    sudo curl -s -o /usr/share/fish/vendor_completions.d/pacstall.fish "$REPO/misc/completion/fish" &
-fi
-
-wait && stty "$tty_settings"
-
-sudo chmod +x /bin/pacstall
-sudo chmod +x /usr/share/pacstall/scripts/*
-
-sudo gzip --force -9n /usr/share/man/man8/pacstall.8
+sudo chmod +x "/usr/bin/pacstall"
+sudo chmod +x "${SCRIPTDIR}/scripts/"*
+sudo gzip --force -9n "${MANDIR}/pacstall.8"
 
 if [[ -n $GIT_USER ]]; then
-    echo "pacstall master" | sudo tee "$SCRIPTDIR/repo/update" > /dev/null
+    echo "pacstall master" | sudo tee "${SCRIPTDIR}/repo/update" > /dev/null
 else
-    echo "$USERNAME $BRANCH" | sudo tee "$SCRIPTDIR/repo/update" > /dev/null
+    echo "${USERNAME} ${BRANCH}" | sudo tee "${SCRIPTDIR}/repo/update" > /dev/null
 fi
 
 if [[ -f ${SCRIPTDIR}/repo/pacstallrepo.txt ]]; then
@@ -136,11 +136,6 @@ new_version=($(pacstall -V))
 
 new_username="${new_info[0]}"
 new_branch="${new_info[1]}"
-
-# TODO: Remove this after a while
-if [[ ${old_version[0]} =~ 3\.[0-9]+\.[0-9]+ ]] && [[ ${new_version[0]} =~ 4\.[0-9]+\.[0-9]+ ]]; then
-    curl -s https://raw.githubusercontent.com/pacstall/pacstall-4.0.0-scripts/master/convert.sh | bash
-fi
 
 # Bling Bling update ascii
 if [[ -n ${GIT_USER} || ${new_branch} != "master" ]]; then
