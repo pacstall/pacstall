@@ -278,7 +278,7 @@ function stacktrace() {
 # Y=1 and N=0
 # You can specify {Y,N} or leave it out to prevent entering the default but this is not allowed in pacstall because of the -P flag which gives unattended install
 function ask() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+    # stacktrace can't handle whatever sorcery happens with 'echo N | pacstall'
     local prompt default reply
 
     if [[ ${2-} == 'Y' ]]; then
