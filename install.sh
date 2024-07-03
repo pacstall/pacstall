@@ -78,6 +78,8 @@ function check_url() {
     esac
 }
 
+((EUID != 0)) && { fancy_message error "Must be root to install Pacstall!"; exit 1; }
+
 if [[ ! -t 0 ]]; then
     NON_INTERACTIVE=true
     fancy_message warn "Reading input from pipe"
@@ -111,64 +113,61 @@ if [[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ]]; then
 fi
 
 fancy_message info "Installing packages"
-
+pacstall_deps=(
+    "sudo" "wget" "build-essential" "unzip" "git"
+    "zstd" "iputils-ping" "aptitude" "bubblewrap"
+    "jq" "distro-info-data" "spdx-licenses"
+)
 echo -ne "Do you want to install axel (faster downloads)? [${BGreen}Y${NC}/${RED}n${NC}] "
 read -r reply <&0
 case "$reply" in
-    N* | n*) unset axel_inst ;;
+    N* | n*) ;;
     *)
-        axel_inst=axel
+        pacstall_deps+=("axel")
         ;;
 esac
 
 if [[ ${GITHUB_ACTIONS} == "true" ]]; then
-    apt-get install -qq -y sudo wget build-essential unzip git zstd iputils-ping aptitude bubblewrap jq distro-info-data ${axel_inst}
+    apt-get install -qq -y "${pacstall_deps[@]}"
 else
-    apt-get install -y sudo wget build-essential unzip git zstd iputils-ping aptitude bubblewrap jq distro-info-data ${axel_inst}
+    apt-get install -y "${pacstall_deps[@]}"
 fi
 
 METADIR="/var/lib/pacstall/metadata"
 LOGDIR="/var/log/pacstall/error_log"
 SCRIPTDIR="/usr/share/pacstall"
 PACDIR="/tmp/pacstall"
+MANDIR="/usr/share/man/man8"
+BASH_COMPLETION_DIR="/usr/share/bash-completion/completions"
+FISH_COMPLETION_DIR="/usr/share/fish/vendor_completions.d"
+REPO="https://raw.githubusercontent.com/pacstall/pacstall/master"
 PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER:-$(whoami)}}")
 
 fancy_message info "Making directories"
-mkdir -p "$SCRIPTDIR"
-mkdir -p "$SCRIPTDIR/scripts"
-mkdir -p "$SCRIPTDIR/repo"
-
-mkdir -p "$PACDIR"
-chown "$PACSTALL_USER" -R "$PACDIR"
-
-mkdir -p "$METADIR"
-mkdir -p "$LOGDIR"
-chown "$PACSTALL_USER" -R "$LOGDIR"
-
-mkdir -p "/usr/share/man/man8"
-mkdir -p "/usr/share/bash-completion/completions"
-
-rm -f "$SCRIPTDIR/repo/pacstallrepo" > /dev/null
-touch "$SCRIPTDIR/repo/pacstallrepo"
-echo "https://raw.githubusercontent.com/pacstall/pacstall-programs/master" > $SCRIPTDIR/repo/pacstallrepo
+mkdir -p "${SCRIPTDIR}/scripts" "${SCRIPTDIR}/repo" "${PACDIR}" "${METADIR}" "${LOGDIR}" "${MANDIR}" "${BASH_COMPLETION_DIR}" "${FISH_COMPLETION_DIR}"
+chown "${PACSTALL_USER}" -cR "${PACDIR}" "${LOGDIR}"
 
 fancy_message info "Pulling scripts from GitHub"
-for i in {error-log.sh,add-repo.sh,search.sh,dep-tree.sh,version-constraints.sh,checks.sh,get-pacscript.sh,package.sh,package-base.sh,fetch-sources.sh,build.sh,upgrade.sh,remove.sh,update.sh,query-info.sh,quality-assurance.sh,bwrap.sh,srcinfo.sh}; do
-    wget -q --show-progress -N https://raw.githubusercontent.com/pacstall/pacstall/master/misc/scripts/"$i" -P "$SCRIPTDIR/scripts" &
+pacstall_scripts=(
+    "error-log" "add-repo" "search" "dep-tree" "version-constraints"
+    "checks" "get-pacscript" "package" "package-base" "fetch-sources"
+    "build" "upgrade" "remove" "update" "query-info" "quality-assurance"
+    "bwrap" "srcinfo"
+)
+rm -f "${SCRIPTDIR}/repo/pacstallrepo" > /dev/null
+echo "${REPO/pacstall\/pacstall/pacstall\/pacstall-programs}" > "${SCRIPTDIR}/repo/pacstallrepo"
+for script in "${pacstall_scripts[@]}"; do
+    wget -q --show-progress -N "${REPO}/misc/scripts/${script}.sh" -P "${SCRIPTDIR}/scripts" &
 done
-
-wget -q --show-progress --progress=bar:force -O "/bin/pacstall" "https://raw.githubusercontent.com/pacstall/pacstall/master/pacstall" &
-wget -q --show-progress --progress=bar:force -O "/usr/share/man/man8/pacstall.8" "https://raw.githubusercontent.com/pacstall/pacstall/master/misc/pacstall.8" &
-
-mkdir -p "/usr/share/bash-completion/completions"
-mkdir -p "/usr/share/fish/vendor_completions.d"
-wget -q --show-progress --progress=bar:force -O "/usr/share/bash-completion/completions/pacstall" "https://raw.githubusercontent.com/pacstall/pacstall/master/misc/completion/bash" &
-wget -q --show-progress --progress=bar:force -O "/usr/share/fish/vendor_completions.d/pacstall.fish" "https://raw.githubusercontent.com/pacstall/pacstall/master/misc/completion/fish" &
-
+wget -q --show-progress --progress=bar:force -O "/usr/bin/pacstall" "${REPO}/pacstall" &
+wget -q --show-progress --progress=bar:force -O "${MANDIR}/pacstall.8" "${REPO}/misc/pacstall.8" &
+wget -q --show-progress --progress=bar:force -O "${BASH_COMPLETION_DIR}/pacstall" "${REPO}/misc/completion/bash" &
+wget -q --show-progress --progress=bar:force -O "${FISH_COMPLETION_DIR}/pacstall.fish" "${REPO}/misc/completion/fish" &
 wait
 
-gzip --force -9n "/usr/share/man/man8/pacstall.8"
+chmod +x "/usr/bin/pacstall"
+chmod +x "${SCRIPTDIR}/scripts/"*
+gzip --force -9n "${MANDIR}/pacstall.8"
 
-chmod +x "/bin/pacstall"
-chmod +x $SCRIPTDIR/scripts/*
+fancy_message info "Installation complete"
 # vim:set ft=sh ts=4 sw=4 et:
