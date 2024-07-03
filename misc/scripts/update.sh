@@ -104,7 +104,7 @@ for script in "${pacstall_scripts[@]}"; do
     sudo curl -s -o "$SCRIPTDIR/scripts/${script}.sh" "${REPO}/misc/scripts/${script}.sh" &
 done
 # Remove renamed files
-for i in {error_log.sh,download.sh,download-local.sh,install-local.sh,build-local.sh}; do
+for i in {error_log,download,download-local,install-local,build-local}.sh; do
     sudo rm -f "${SCRIPTDIR:?}/scripts/$i"
 done
 sudo curl -s -o "/usr/bin/pacstall" "${REPO}/pacstall" &
