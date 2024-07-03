@@ -77,20 +77,22 @@ echo "	2. Remove Pacstall only (Keep installed packages)."
 while true; do
     echo -ne "Type selection number [${BIRed}1${NC}/${BIGreen}2${NC}] "
     read -r reply <&0
+    if ((reply == 1)) || ((reply == 2)); then
+        if ((reply == 1)); then
+            fancy_message info "Removing Pacstall and installed packages..."
 
-    if ((reply == 1)); then
-        fancy_message info "Removing Pacstall and installed packages..."
-
-        # Remove packages
-        if [[ -z $(pacstall -L) ]]; then
-            fancy_message warn "Nothing is installed using Pacstall yet"
-            fancy_message warn "Skipping package uninstallation"
-        else
-            for i in $(pacstall -L); do
-                pacstall -PR "$i"
-            done
+            # Remove packages
+            if [[ -z $(pacstall -L) ]]; then
+                fancy_message warn "Nothing is installed using Pacstall yet"
+                fancy_message warn "Skipping package uninstallation"
+            else
+                for i in $(pacstall -L); do
+                    pacstall -PR "$i"
+                done
+            fi
+            fancy_message info "Removing package metadata"
+            sudo rm -rf /var/lib/pacstall/metadata/
         fi
-
         fancy_message info "Removing Pacstall"
         sudo rm "$(command -v pacstall)"
 
@@ -105,35 +107,11 @@ while true; do
         fancy_message info "Removing log files"
         sudo rm -rf /var/log/pacstall/
         # Remove cache
-        fancy_message info "Removing cache"type selection number:
-        sudo rm -rf /var/cache/pacstall/
-        # Remove tmp files
-        fancy_message info "Removing temporary files"
-        sudo rm -rf /tmp/pacstall/
-
-        break
-
-    elif ((reply == 2)); then
-        fancy_message info "Only uninstalling Pacstall..."
-        sudo rm "$(command -v pacstall)"
-
-        # Remove scripts and repos
-        fancy_message info "Removing scripts and repositories"
-        sudo rm -rf /usr/share/pacstall/
-        # Remove man page
-        fancy_message info "Removing man page"
-        sudo rm /usr/share/man/man8/pacstall.8.gz
-
-        # Remove logs
-        fancy_message info "Removing log files"
-        sudo rm -rf /var/log/pacstall/
-        # Remove cache
         fancy_message info "Removing cache"
-        sudo rm -rf /var/cache/pacstall/
+        sudo rm -rf /usr/src/pacstall/
         # Remove tmp files
         fancy_message info "Removing temporary files"
         sudo rm -rf /tmp/pacstall/
-
         break
     fi
 done
