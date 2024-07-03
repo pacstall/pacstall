@@ -47,4 +47,5 @@ if [[ -n ${_ppa[*]} ]]; then
 fi
 
 sudo rm -f "${METADIR:?}/${_name}"
+sudo rm -f "/etc/apt/preferences.d/${_name//./-}-pin"
 # vim:set ft=sh ts=4 sw=4 et:
