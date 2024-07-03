@@ -132,7 +132,7 @@ if [[ -n $pacdeps ]]; then
     for i in "${pacdeps[@]}"; do
         # If /tmp/pacstall-pacdeps-"$i" is available, it will trigger the logger to log it as a dependency
         touch "/tmp/pacstall-pacdeps-$i"
-
+        fancy_message info "Pacstall dependencies"
         cmd="-I"
         [[ $KEEP ]] && cmd+="K"
         [[ $DISABLE_PROMPTS == "yes" ]] && cmd+="P"
@@ -146,7 +146,7 @@ if [[ -n $pacdeps ]]; then
         if is_package_installed "${i}"; then
             pacstall_pacdep_status="$(compare_remote_version "$i")"
             if [[ $pacstall_pacdep_status == "update" ]]; then
-                fancy_message info "Found newer version for $i pacdep"
+                fancy_message sub "Found newer version for $i pacdep"
                 if ! pacstall "$cmd" "${i}${repo}"; then
                     fancy_message error "Failed to install dependency (${i} from ${PACKAGE})"
                     error_log 8 "install ${pacname}"

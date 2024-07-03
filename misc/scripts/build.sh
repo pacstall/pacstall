@@ -50,36 +50,111 @@ function clean_builddir() {
     sudo rm -f "${STAGEDIR:?}/${pacname}.deb"
 }
 
+function check_apt_dep() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+    local dep="${1}" just_name just_arch real_dep
+    real_dep="${dep}"
+    # Firstly, check if this is an alt dep list
+    if dep_const.is_pipe "${dep}"; then
+        dep="$(dep_const.get_pipe "${dep}")"
+    fi
+    # Let's get just the name
+    dep_const.split_name_and_version "${dep}" just_name
+    just_arch="$(dep_const.get_arch "${just_name[0]}")"
+    # Check if package exists in the repos, and if not, go to the next program
+    if [[ ${just_name[0]} == *":${just_arch}" ]]; then
+        if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]%:*})?architecture(${just_arch})" -F "%p")" ]]; then
+            if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_name[0]%:*}$)?architecture(${just_arch})" -F "%p")" ]]; then
+                echo "${real_dep}" >> "${PACDIR}-missing-deps-${pacname}"
+                return 0
+            fi
+        fi
+    else
+        if [[ -z "$(apt-cache search --no-generate --names-only "^${just_name[0]}\$" 2> /dev/null || apt-cache search --names-only "^${just_name[0]}\$")" ]]; then
+            if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]})?architecture(${just_arch})" -F "%p")" ]]; then
+                if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_name[0]}$)?architecture(${just_arch})" -F "%p")" ]]; then
+                    echo "${real_dep}" >> "${PACDIR}-missing-deps-${pacname}"
+                    return 0
+                fi
+            fi
+        fi
+    fi
+    # Next let's check if the version (if available) is in the repos
+    dep_const.apt_compare_to_constraints "${dep}" || { echo "${real_dep}" >> "${PACDIR}-not-satisfied-deps-${pacname}"; return 0; }
+    # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
+    echo "${real_dep}" >> "${PACDIR}-deps-${pacname}"
+    if ! is_apt_package_installed "${just_name[0]}"; then
+        fancy_message sub "${BLUE}${just_name[0]} ${GREEN}↑${YELLOW}↓${NC} [remote]"
+    else
+        fancy_message sub "${BLUE}${just_name[0]} ${GREEN}✓${NC} [installed]"
+    fi
+}
+
+function check_opt_dep() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+    local optdep="${1}" just_name just_arch realopt optdesc opt
+    dep_const.extract_description "${optdep}" optdesc
+    dep_const.strip_description "${optdep}" realopt
+    # Firstly, check if this is an alt dep list
+    if dep_const.is_pipe "${optdep}"; then
+        # Ok, we need to select *one* of those deps to be our sacrificial lamb Ψ(•̀ᴗ•́ )⤴
+        optdep="$(dep_const.get_pipe "${optdep}")"
+    fi
+    if ! [[ ${optdep} =~ ${optdesc} ]]; then
+        optdep="${optdep}: ${optdesc}"
+    fi
+    # Strip the description, `opt` is now the canonical optdep name
+    dep_const.strip_description "${optdep}" opt
+    # Let's get just the name
+    dep_const.split_name_and_version "${opt}" just_name
+    just_arch="$(dep_const.get_arch "${just_name[0]}")"
+    # Check if package exists in the repos, and if not, go to the next program
+    if [[ ${just_name[0]} == *":${just_arch}" ]]; then
+        if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]%:*})?architecture(${just_arch})" -F "%p")" ]]; then
+            if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_name[0]%:*}$)?architecture(${just_arch})" -F "%p")" ]]; then
+                echo "${realopt}" >> "${PACDIR}-missing-optdeps-${pacname}"
+                return 0
+            fi
+        fi
+    else
+        if [[ -z "$(apt-cache search --no-generate --names-only "^${just_name[0]}\$" 2> /dev/null || apt-cache search --names-only "^${just_name[0]}\$")" ]]; then
+            if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]})?architecture(${just_arch})" -F "%p")" ]]; then
+                if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_name[0]}$)?architecture(${just_arch})" -F "%p")" ]]; then
+                    echo "${realopt}" >> "${PACDIR}-missing-optdeps-${pacname}"
+                    return 0
+                fi
+            fi
+        fi
+    fi
+    # Next let's check if the version (if available) is in the repos
+    dep_const.apt_compare_to_constraints "${opt}" || { echo "${realopt}" >> "${PACDIR}-not-satisfied-optdeps-${pacname}"; return 0; }
+
+    # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
+    # If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of it's status
+    if ! is_apt_package_installed "${opt}"; then
+        echo "${realopt}: ${optdesc}" >> "${PACDIR}-suggested-optdeps-${pacname}"
+    else
+        echo "${realopt}" >> "${PACDIR}-already-installed-optdeps-${pacname}"
+    fi
+}
+
 function prompt_optdepends() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local dep real_dep optdep opt realopt optdesc deps just_name just_arch missing_optdeps not_satisfied_optdeps missing_deps not_satisfied_deps
-    fancy_message sub "Checking apt dependencies"
-    for dep in "${depends[@]}"; do
-        real_dep="${dep}"
-        # Firstly, check if this is an alt dep list
-        if dep_const.is_pipe "${dep}"; then
-            dep="$(dep_const.get_pipe "${dep}")"
+    local d o deps missing_optdeps not_satisfied_optdeps missing_deps not_satisfied_deps
+    fancy_message info "Checking apt dependencies"
+    for i in "deps" "pacdeps" "missing_deps" "not_satisfied_deps" "suggested_optdeps" "missing_optdeps" "not_satisfied_optdeps" "already_installed_optdeps"; do
+        sudo rm -rf "${PACDIR}-${i/_/-}-${pacname}"
+        touch "${PACDIR}-${i/_/-}-${pacname}"
+    done
+    for d in "${depends[@]}"; do
+        check_apt_dep "${d}" &
+    done
+    wait
+    for i in "deps" "missing_deps" "not_satisfied_deps"; do
+        if [[ -f "${PACDIR}-${i/_/-}-${pacname}" ]]; then
+            mapfile -t "${i}" <"${PACDIR}-${i/_/-}-${pacname}"
+            rm -rf "${PACDIR}-${i/_/-}-${pacname}"
         fi
-        # Let's get just the name
-        dep_const.split_name_and_version "${dep}" just_name
-        just_arch="$(dep_const.get_arch "${just_name[0]}")"
-        # Check if package exists in the repos, and if not, go to the next program
-        if [[ ${just_name[0]} == *":${just_arch}" ]]; then
-            if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]%:*})?architecture(${just_arch})" -F "%p")" ]]; then
-                missing_deps+=("${real_dep}")
-                continue
-            fi
-        else
-            if [[ -z "$(apt-cache search --no-generate --names-only "^${just_name[0]}\$" 2> /dev/null || apt-cache search --names-only "^${just_name[0]}\$")" ]]; then
-                missing_deps+=("${real_dep}")
-                continue
-            fi
-        fi
-        # Next let's check if the version (if available) is in the repos
-        dep_const.apt_compare_to_constraints "${dep}" || { not_satisfied_deps+=("${real_dep}"); continue; }
-        # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
-        # If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of i>
-        deps+=("${real_dep}")
     done
     if [[ -n ${missing_deps[*]} ]]; then
         echo -ne "\t"
@@ -94,51 +169,20 @@ function prompt_optdepends() {
         cleanup
         exit 1
     fi
-    unset just_arch just_name
     if ((${#optdepends[@]} != 0)); then
         local suggested_optdeps=()
-        for optdep in "${optdepends[@]}"; do
-            dep_const.extract_description "${optdep}" optdesc
-            dep_const.strip_description "${optdep}" realopt
-            # Firstly, check if this is an alt dep list
-            if dep_const.is_pipe "${optdep}"; then
-                # Ok, we need to select *one* of those deps to be our sacrificial lamb Ψ(•̀ᴗ•́ )⤴
-                optdep="$(dep_const.get_pipe "${optdep}")"
-            fi
-            if ! [[ ${optdep} =~ ${optdesc} ]]; then
-                optdep="${optdep}: ${optdesc}"
-            fi
-            # Strip the description, `opt` is now the canonical optdep name
-            dep_const.strip_description "${optdep}" opt
-            # Let's get just the name
-            dep_const.split_name_and_version "${opt}" just_name
-            just_arch="$(dep_const.get_arch "${just_name[0]}")"
-            # Check if package exists in the repos, and if not, go to the next program
-            if [[ -n ${just_arch} ]]; then
-                if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]%:*})?architecture(${just_arch})" -F "%p")" ]]; then
-                    missing_optdeps+=("${realopt}")
-                    continue
-                fi
-            else
-                if [[ -z "$(apt-cache search --no-generate --names-only "^${just_name[0]}\$" 2> /dev/null || apt-cache search --names-only "^${just_name[0]}\$")" ]]; then
-                    missing_optdeps+=("${realopt}")
-                    continue
-                fi
-            fi
-            # Next let's check if the version (if available) is in the repos
-            dep_const.apt_compare_to_constraints "${opt}" || { not_satisfied_optdeps+=("${realopt}"); continue; }
-
-            # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
-            # If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of it's status
-            if ! is_apt_package_installed "${opt}"; then
-                suggested_optdeps+=("${realopt}: ${optdesc}")
-            else
-                already_installed_optdeps+=("${realopt}")
+        for o in "${optdepends[@]}"; do
+            check_opt_dep "${o}" &
+        done
+        wait
+        for i in "suggested_optdeps" "missing_optdeps" "not_satisfied_optdeps" "already_installed_optdeps"; do
+            if [[ -f "${PACDIR}-${i/_/-}-${pacname}" ]]; then
+                mapfile -t "${i}" <"${PACDIR}-${i/_/-}-${pacname}"
+                rm -rf "${PACDIR}-${i/_/-}-${pacname}"
             fi
         done
-
         if [[ -n ${missing_optdeps[*]} || -n ${not_satisfied_optdeps[*]} ]] || ((${#suggested_optdeps[@]} != 0)); then
-            fancy_message sub "Optional dependencies"
+            fancy_message info "Optional dependencies"
         fi
         if [[ -n ${missing_optdeps[*]} ]]; then
             echo -ne "\t"

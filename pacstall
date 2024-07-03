@@ -220,12 +220,21 @@ function cleanup() {
         sudo mv "${PACDIR:?}/${PACKAGE}.SRCINFO" "/tmp/pacstall-keep/${pacname}/.SRCINFO"
         sudo mv "${PACDIR:?}/${pacname}~${pkgver}" "/tmp/pacstall-keep/${pacname}"
     fi
-    if [[ -n ${pacname} && -f "/tmp/pacstall-pacdeps-${pacname}" ]]; then
-        sudo rm -rf "/tmp/pacstall-pacdeps-${pacname}"
+    if [[ -n ${PACDIR} && -n ${pacname} && -f "${PACDIR}-pacdeps-${pacname}" ]]; then
+        for i in "deps" "pacdeps" "missing_deps" "not_satisfied_deps" "suggested_optdeps" "missing_optdeps" "not_satisfied_optdeps" "already_installed_optdeps"; do
+            if [[ -f "${PACDIR}-${i/_/-}-${pacname}" ]]; then
+                sudo rm -rf "${PACDIR}-${i/_/-}-${pacname}"
+            fi
+        done
     else
         [[ -n ${PACDIR} ]] && sudo rm -rf "${PACDIR}"/*
         if [[ -n ${pacname} ]]; then
             sudo rm -rf "${STAGEDIR:-/usr/src/pacstall}/${pacname}"
+            for i in "deps" "missing_deps" "not_satisfied_deps" "suggested_optdeps" "missing_optdeps" "not_satisfied_optdeps" "already_installed_optdeps"; do
+                if [[ -n ${PACDIR} && -f "${PACDIR}-${i/_/-}-${pacname}" ]]; then
+                    sudo rm -rf "${PACDIR}-${i/_/-}-${pacname}"
+                fi
+            done
         fi
         sudo rm -rf /tmp/pacstall-gives
     fi

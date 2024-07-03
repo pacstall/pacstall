@@ -43,6 +43,9 @@ function dep_const.apt_compare_to_constraints() {
         pkg_version="$(dpkg-query --showformat='${Version}' --show "${split_up[0]}")"
     else
         pkg_version="$(aptitude search --quiet --disable-columns "?exact-name(${split_up[0]%:*})?architecture($(dep_const.get_arch "${split_up[0]}"))" -F "%V")"
+        if [[ -z ${pkg_version} ]]; then
+            pkg_version="$(aptitude search --quiet --disable-columns "?provides(^${split_up[0]%:*}$)?architecture($(dep_const.get_arch "${split_up[0]}"))" -F "%V")"
+        fi
     fi
     case "${compare_pkg}" in
         # Example: foo@1.2.4 where foo<=1.2.5 should return true, because 1.2.4 is less than 1.2.5
@@ -151,7 +154,8 @@ function dep_const.get_pipe() {
                 echo "${pkg}"
                 return 0
             else
-                if [[ -n "$(aptitude search --quiet --disable-columns "?exact-name(${check_name[0]%:*})?architecture($(dep_const.get_arch "${check_name[0]}"))" -F "%p")" ]]; then
+                if [[ -n "$(aptitude search --quiet --disable-columns "?exact-name(${check_name[0]%:*})?architecture($(dep_const.get_arch "${check_name[0]}"))" -F "%p")" || \
+                    -n "$(aptitude search --quiet --disable-columns "?provides(^${check_name[0]%:*}$)?architecture($(dep_const.get_arch "${check_name[0]}"))" -F "%p")" ]]; then
                     viable_packages+=("${pkg}")
                 fi
             fi
