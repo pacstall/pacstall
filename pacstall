@@ -222,8 +222,8 @@ function cleanup() {
     fi
     if [[ -n ${PACDIR} && -n ${pacname} && -f "${PACDIR}-pacdeps-${pacname}" ]]; then
         for i in "deps" "pacdeps" "missing_deps" "not_satisfied_deps" "suggested_optdeps" "missing_optdeps" "not_satisfied_optdeps" "already_installed_optdeps"; do
-            if [[ -f "${PACDIR}-${i/_/-}-${pacname}" ]]; then
-                sudo rm -rf "${PACDIR}-${i/_/-}-${pacname}"
+            if [[ -f "${PACDIR}-${i//_/-}-${pacname}" ]]; then
+                sudo rm -rf "${PACDIR}-${i//_/-}-${pacname}"
             fi
         done
     else
@@ -231,8 +231,8 @@ function cleanup() {
         if [[ -n ${pacname} ]]; then
             sudo rm -rf "${STAGEDIR:-/usr/src/pacstall}/${pacname}"
             for i in "deps" "missing_deps" "not_satisfied_deps" "suggested_optdeps" "missing_optdeps" "not_satisfied_optdeps" "already_installed_optdeps"; do
-                if [[ -n ${PACDIR} && -f "${PACDIR}-${i/_/-}-${pacname}" ]]; then
-                    sudo rm -rf "${PACDIR}-${i/_/-}-${pacname}"
+                if [[ -n ${PACDIR} && -f "${PACDIR}-${i//_/-}-${pacname}" ]]; then
+                    sudo rm -rf "${PACDIR}-${i//_/-}-${pacname}"
                 fi
             done
         fi

@@ -143,17 +143,17 @@ function prompt_optdepends() {
     local d o deps missing_optdeps not_satisfied_optdeps missing_deps not_satisfied_deps
     fancy_message info "Checking apt dependencies"
     for i in "deps" "pacdeps" "missing_deps" "not_satisfied_deps" "suggested_optdeps" "missing_optdeps" "not_satisfied_optdeps" "already_installed_optdeps"; do
-        sudo rm -rf "${PACDIR}-${i/_/-}-${pacname}"
-        touch "${PACDIR}-${i/_/-}-${pacname}"
+        sudo rm -rf "${PACDIR}-${i//_/-}-${pacname}"
+        touch "${PACDIR}-${i//_/-}-${pacname}"
     done
     for d in "${depends[@]}"; do
         check_apt_dep "${d}" &
     done
     wait
     for i in "deps" "missing_deps" "not_satisfied_deps"; do
-        if [[ -f "${PACDIR}-${i/_/-}-${pacname}" ]]; then
-            mapfile -t "${i}" <"${PACDIR}-${i/_/-}-${pacname}"
-            rm -rf "${PACDIR}-${i/_/-}-${pacname}"
+        if [[ -f "${PACDIR}-${i//_/-}-${pacname}" ]]; then
+            mapfile -t "${i}" <"${PACDIR}-${i//_/-}-${pacname}"
+            rm -rf "${PACDIR}-${i//_/-}-${pacname}"
         fi
     done
     if [[ -n ${missing_deps[*]} ]]; then
@@ -176,9 +176,9 @@ function prompt_optdepends() {
         done
         wait
         for i in "suggested_optdeps" "missing_optdeps" "not_satisfied_optdeps" "already_installed_optdeps"; do
-            if [[ -f "${PACDIR}-${i/_/-}-${pacname}" ]]; then
-                mapfile -t "${i}" <"${PACDIR}-${i/_/-}-${pacname}"
-                rm -rf "${PACDIR}-${i/_/-}-${pacname}"
+            if [[ -f "${PACDIR}-${i//_/-}-${pacname}" ]]; then
+                mapfile -t "${i}" <"${PACDIR}-${i//_/-}-${pacname}"
+                rm -rf "${PACDIR}-${i//_/-}-${pacname}"
             fi
         done
         if [[ -n ${missing_optdeps[*]} || -n ${not_satisfied_optdeps[*]} ]] || ((${#suggested_optdeps[@]} != 0)); then
@@ -604,7 +604,7 @@ function makedeb() {
         fi
     done
     unset pre_inst_upg post_inst_upg
-    echo -e "sudo rm -f ${METADIR:?}/$pacname\nsudo rm -f /etc/apt/preferences.d/$pacname-pin" | sudo tee -a "$STAGEDIR/$pacname/DEBIAN/postrm" > /dev/null
+    echo -e "sudo rm -f ${METADIR:?}/$pacname\nsudo rm -f /etc/apt/preferences.d/${pacname//./-}-pin" | sudo tee -a "$STAGEDIR/$pacname/DEBIAN/postrm" > /dev/null
     local postfile
     for postfile in {postrm,postinst,preinst}; do
         if [[ -f "$STAGEDIR/$pacname/DEBIAN/${postfile}" ]]; then
@@ -718,9 +718,9 @@ function install_deb() {
             sudo mkdir -p /etc/apt/preferences.d
         fi
         local combined_pinning=("${provides[@]}" "${gives:-${pacname}}")
-        echo "Package: ${combined_pinning[*]}" | sudo tee "/etc/apt/preferences.d/${pacname}-pin" > /dev/null
-        echo "Pin: version *" | sudo tee -a "/etc/apt/preferences.d/${pacname}-pin" > /dev/null
-        echo "Pin-Priority: -1" | sudo tee -a "/etc/apt/preferences.d/${pacname}-pin" > /dev/null
+        echo "Package: ${combined_pinning[*]}" | sudo tee "/etc/apt/preferences.d/${pacname//./-}-pin" > /dev/null
+        echo "Pin: version *" | sudo tee -a "/etc/apt/preferences.d/${pacname//./-}-pin" > /dev/null
+        echo "Pin-Priority: -1" | sudo tee -a "/etc/apt/preferences.d/${pacname//./-}-pin" > /dev/null
         return 0
     else
         sudo mv "$STAGEDIR/$debname.deb" "$PACDEB_DIR"

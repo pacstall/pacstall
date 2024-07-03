@@ -45,7 +45,8 @@ function trap_ctrlc() {
         sudo apt-get purge "${gives:-$pacname}" -y > /dev/null
     fi
     # shellcheck disable=SC2031
-    sudo rm -f "/etc/apt/preferences.d/${pacname:-$PACKAGE}-pin"
+    true_pkg="${pacname:-$PACKAGE}"
+    sudo rm -f "/etc/apt/preferences.d/${true_pkg//./-}-pin"
     cleanup
     exit 1
 }
