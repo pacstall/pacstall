@@ -25,8 +25,6 @@
 # Update should be self-contained and should use mutable functions or variables
 # Color variables are ok, while "$USERNAME" and "$BRANCH" are needed
 
-{ ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-
 export BOLD='\033[1m'
 export NC='\033[0m'
 export UCyan='\033[4;36m'
@@ -48,8 +46,6 @@ pacstall_deps=(
 )
 
 function suggested_solution() {
-    # shellcheck disable=SC2034
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if [[ -z $PACSTALL_SUPPRESS_SOLUTIONS ]]; then
         local inputs=("${@}")
         if ((${#inputs[@]} > 1)); then
@@ -64,7 +60,9 @@ function suggested_solution() {
     fi
 }
 
-mkdir -p "${METADIR}" "${LOGDIR}" "${MANDIR}" "${BASH_COMPLETION_DIR}" "${FISH_COMPLETION_DIR}"
+for i in "${METADIR}" "${LOGDIR}" "${MANDIR}" "${BASH_COMPLETION_DIR}" "${FISH_COMPLETION_DIR}"; do
+    mkdir -p "${i}"
+done
 
 for pkg in "${pacstall_deps[@]}"; do
     if ! dpkg -s "${pkg}" > /dev/null 2>&1; then
@@ -106,7 +104,7 @@ for script in "${pacstall_scripts[@]}"; do
     sudo curl -s -o "$SCRIPTDIR/scripts/${script}.sh" "${REPO}/misc/scripts/${script}.sh" &
 done
 # Remove renamed files
-for i in {error_log,download,download-local,install-local,build-local}.sh; do
+for i in {error_log.sh,download.sh,download-local.sh,install-local.sh,build-local.sh}; do
     sudo rm -f "${SCRIPTDIR:?}/scripts/$i"
 done
 sudo curl -s -o "/usr/bin/pacstall" "${REPO}/pacstall" &
