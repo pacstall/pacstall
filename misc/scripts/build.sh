@@ -142,13 +142,19 @@ function prompt_optdepends() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local d o deps missing_optdeps not_satisfied_optdeps missing_deps not_satisfied_deps
     fancy_message info "Checking apt dependencies"
+    for i in "deps" "pacdeps" "missing_deps" "not_satisfied_deps" "suggested_optdeps" "missing_optdeps" "not_satisfied_optdeps" "already_installed_optdeps"; do
+        sudo rm -rf "${PACDIR}-${i/_/-}-${pacname}"
+        touch "${PACDIR}-${i/_/-}-${pacname}"
+    done
     for d in "${depends[@]}"; do
         check_apt_dep "${d}" &
     done
     wait
     for i in "deps" "missing_deps" "not_satisfied_deps"; do
-        mapfile -t "${i}" <"${PACDIR}-${i/_/-}-${pacname}"
-        rm -f "${PACDIR}-${i/_/-}-${pacname}"
+        if [[ -f "${PACDIR}-${i/_/-}-${pacname}" ]]; then
+            mapfile -t "${i}" <"${PACDIR}-${i/_/-}-${pacname}"
+            rm -rf "${PACDIR}-${i/_/-}-${pacname}"
+        fi
     done
     if [[ -n ${missing_deps[*]} ]]; then
         echo -ne "\t"
@@ -170,8 +176,10 @@ function prompt_optdepends() {
         done
         wait
         for i in "suggested_optdeps" "missing_optdeps" "not_satisfied_optdeps" "already_installed_optdeps"; do
-            mapfile -t "${i}" <"${PACDIR}-${i/_/-}-${pacname}"
-            rm -f "${PACDIR}-${i/_/-}-${pacname}"
+            if [[ -f "${PACDIR}-${i/_/-}-${pacname}" ]]; then
+                mapfile -t "${i}" <"${PACDIR}-${i/_/-}-${pacname}"
+                rm -rf "${PACDIR}-${i/_/-}-${pacname}"
+            fi
         done
         if [[ -n ${missing_optdeps[*]} || -n ${not_satisfied_optdeps[*]} ]] || ((${#suggested_optdeps[@]} != 0)); then
             fancy_message info "Optional dependencies"
