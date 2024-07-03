@@ -78,6 +78,8 @@ function check_url() {
     esac
 }
 
+((EUID != 0)) && { fancy_message error "Must be root to install Pacstall!"; exit 1; }
+
 if [[ ! -t 0 ]]; then
     NON_INTERACTIVE=true
     fancy_message warn "Reading input from pipe"
