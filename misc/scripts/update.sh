@@ -25,8 +25,6 @@
 # Update should be self-contained and should use mutable functions or variables
 # Color variables are ok, while "$USERNAME" and "$BRANCH" are needed
 
-{ ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-
 export BOLD='\033[1m'
 export NC='\033[0m'
 export UCyan='\033[4;36m'
@@ -48,8 +46,6 @@ pacstall_deps=(
 )
 
 function suggested_solution() {
-    # shellcheck disable=SC2034
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if [[ -z $PACSTALL_SUPPRESS_SOLUTIONS ]]; then
         local inputs=("${@}")
         if ((${#inputs[@]} > 1)); then
@@ -64,7 +60,9 @@ function suggested_solution() {
     fi
 }
 
-mkdir -p "${METADIR}" "${LOGDIR}" "${MANDIR}" "${BASH_COMPLETION_DIR}" "${FISH_COMPLETION_DIR}"
+for i in "${METADIR}" "${LOGDIR}" "${MANDIR}" "${BASH_COMPLETION_DIR}" "${FISH_COMPLETION_DIR}"; do
+    mkdir -p "${i}"
+done
 
 for pkg in "${pacstall_deps[@]}"; do
     if ! dpkg -s "${pkg}" > /dev/null 2>&1; then
