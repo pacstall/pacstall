@@ -88,6 +88,7 @@ while true; do
             else
                 for i in $(pacstall -L); do
                     pacstall -PR "$i"
+                    rm -rf "/etc/apt/preferences.d/${i//./-}-pin"
                 done
             fi
             fancy_message info "Removing package metadata"
