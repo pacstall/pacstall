@@ -56,28 +56,6 @@ function fancy_message() {
     esac
 }
 
-function check_url() {
-    http_code="$(curl -o /dev/null -s --head --write-out '%{http_code}\n' -- "${1}")"
-    case "${http_code}" in
-        000)
-            fancy_message error "Failed to download file, check your connection"
-            error_log 1 "get ${PACKAGE} pacscript"
-            return 1
-            ;;
-        404)
-            fancy_message error "The URL cannot be found"
-            return 1
-            ;;
-        200 | 301 | 302)
-            true
-            ;;
-        *)
-            fancy_message error "Failed with http code ${http_code}"
-            return 1
-            ;;
-    esac
-}
-
 ((EUID != 0)) && { fancy_message error "Must be root to install Pacstall!"; exit 1; }
 
 if [[ ! -t 0 ]]; then
@@ -95,13 +73,6 @@ if ! command -v curl &> /dev/null; then
 fi
 
 echo -e "${PACYELLOW}┌────────────────────────┐\n│   ${PACCYAN}Pacstall Installer${PACYELLOW}   │\n└────────────────────────┘${NC}"
-
-if [[ ${GITHUB_ACTIONS} != "true" ]]; then
-    check_url "https://github.com" || {
-        fancy_message error "Could not connect to the internet"
-        exit 1
-    }
-fi
 
 echo
 if [[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ]]; then
