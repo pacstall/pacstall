@@ -256,7 +256,7 @@ function stacktrace() {
         for ((i = stack_size - 1; i >= 1; i--)); do
             color_idx=$(( (stack_size - 1 - i) % ${#colors[@]} ))
             stack_color="\033[38;5;${colors[color_idx]}m"
-            ((i != stack_stack_size - 1)) && func="${FUNCNAME[i - 1]}"
+            ((i != stack_size - 1)) && func="${FUNCNAME[i - 1]}"
             [[ -z ${func} ]] && func='MAIN'
             [[ ${func} == "stacktrace" ]] && { unset func; trace="${RED}TRACEBACK${NC}"; }
             linen="${BASH_LINENO[i - 1]}"
