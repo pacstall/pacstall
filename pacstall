@@ -178,10 +178,11 @@ function fancy_message() {
 }
 
 # This function is used to undo a raw repo URL into its base components.
+# It is sort of flawed because for self-hosted instances, it might not catch the name that it needs
+# in order to parse, and if that eventually comes up, we'll deal with it then.
 function parse_repo_unraw() {
     local rep="${1}"
-    # shellcheck disable=SC2153
-    case $rep in
+    case "${rep}" in
         *"githubusercontent"*)
             export pURL="${rep/'raw.githubusercontent.com'/'github.com'}"
             export pURL="${pURL%/*}"
@@ -202,6 +203,12 @@ function parse_repo_unraw() {
             local project_name="${pURL##*/}"
             local project_owner="${pURL%/*}"
             export pISSUES="https://lists.sr.ht/${project_owner##*/}/${project_name}"
+            export branch="yes"
+            ;;
+        *"codeberg"*)
+            export pURL="${rep%raw/branch/*}"
+            export pBRANCH="${rep##*/}"
+            export pISSUES="${pURL}/issues"
             export branch="yes"
             ;;
         *)
