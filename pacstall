@@ -456,7 +456,7 @@ function download() {
 }
 
 # source this code block and run like so:
-#   $ select_options "My message I want to send" "${#array[@]}"
+#   $ select_options "My message I want to send" "${#array[@]}" "message"
 # This will then output the options given by the user to ${PACDIR}-selectopts-${varname}-${pacname}, which you can then turn into another array
 function select_options() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
@@ -513,7 +513,7 @@ function select_options() {
         done
         echo "${out[@]}" | tee "${PACDIR}-selectopts-${varname}-${pacname}" > /dev/null
     else
-        select_options "$message" "$length"
+        select_options "$message" "$length" "$varname"
     fi
 }
 
