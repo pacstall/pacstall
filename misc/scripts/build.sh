@@ -380,6 +380,36 @@ function is_builddep_arch() {
     fi
 }
 
+# This function is used to undo a raw repo URL into its base components.
+# It is sort of flawed because for self-hosted instances, it might not catch the name that it needs
+# in order to parse, and if that eventually comes up, we'll deal with it then.
+function parse_repo_unraw() {
+    local rep="${1}"
+    case "${rep}" in
+        *"githubusercontent"*)
+            pURL="${rep/'raw.githubusercontent.com'/'github.com'}"
+            pURL="${pURL%/*}"
+            export pURL pBRANCH="${rep##*/}" pISSUES="${pURL}/issues" branch="yes"
+
+            ;;
+        *"gitlab"*)
+            pURL="${rep%/-/raw/*}"
+            export pURL pBRANCH="${rep##*/-/raw/}" pISSUES="${pURL}/-/issues" branch="yes"
+            ;;
+        *"git.sr.ht"*)
+            pURL="${rep%/blob*}"
+            export pURL pBRANCH="${rep##*/}" pISSUES="https://lists.sr.ht/~${pURL#*~}" branch="yes"
+            ;;
+        *"codeberg"*)
+            pURL="${rep%raw/branch/*}"
+            export pURL pBRANCH="${rep##*/}" pISSUES="${pURL}/issues" branch="yes"
+            ;;
+        *)
+            export pURL="$rep" branch="no"
+            ;;
+    esac
+}
+
 function makedeb() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # It looks weird for it to say: `Packaging foo as foo`
