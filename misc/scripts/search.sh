@@ -27,7 +27,7 @@
 { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
 
 if [[ -n $UPGRADE ]]; then
-    [[ ! -f /tmp/pacstall-pacdeps-${PACKAGE%@*} ]] && PACKAGE="${i}"
+    [[ ! -f ${PACDIR}-pacdeps-${PACKAGE%@*} ]] && PACKAGE="${i}"
     [[ -n ${_pkgbase} ]] && PACKAGE="${_pkgbase}:${PACKAGE}"
 fi
 

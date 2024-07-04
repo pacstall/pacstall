@@ -212,37 +212,41 @@ function decl_scriptvars() {
 decl_scriptvars
 
 function cleanup() {
-    if [[ -n ${KEEP} && -n ${pacname} ]]; then
-        sudo rm -rf "/tmp/pacstall-keep/${pacname}"
-        mkdir -p "/tmp/pacstall-keep/${pacname}"
-        #shellcheck disable=SC2153
-        sudo mv "${PACDIR:?}/${PACKAGE}.pacscript" "/tmp/pacstall-keep/${pacname}"
-        sudo mv "${PACDIR:?}/${PACKAGE}.SRCINFO" "/tmp/pacstall-keep/${pacname}/.SRCINFO"
-        sudo mv "${PACDIR:?}/${pacname}~${pkgver}" "/tmp/pacstall-keep/${pacname}"
-    fi
-    if [[ -n ${PACDIR} && -n ${pacname} && -f "${PACDIR}-pacdeps-${pacname}" ]]; then
-        for i in "deps" "pacdeps" "missing_deps" "not_satisfied_deps" "suggested_optdeps" "missing_optdeps" "not_satisfied_optdeps" "already_installed_optdeps"; do
-            if [[ -f "${PACDIR}-${i//_/-}-${pacname}" ]]; then
-                sudo rm -rf "${PACDIR}-${i//_/-}-${pacname}"
-            fi
-        done
-    else
-        [[ -n ${PACDIR} ]] && sudo rm -rf "${PACDIR}"/*
+    if [[ -n ${PACDIR} ]]; then
+        if [[ -n ${KEEP} && -n ${pacname} ]]; then
+            sudo rm -rf "${PACDIR}-keep/${pacname}"
+            mkdir -p "${PACDIR}-keep/${pacname}"
+            #shellcheck disable=SC2153
+            sudo mv "${PACDIR}/${PACKAGE}.pacscript" "${PACDIR}-keep/${pacname}"
+            sudo mv "${PACDIR}/${PACKAGE}.SRCINFO" "${PACDIR}-keep/${pacname}/.SRCINFO"
+            sudo mv "${PACDIR}/${pacname}~${pkgver}" "${PACDIR}-keep/${pacname}"
+        fi
         if [[ -n ${pacname} ]]; then
+            if [[ -f "${PACDIR}-pacdeps-${pacname}" ]]; then
+                for i in "pacdeps" "gives"; do
+                    if [[ -f "${PACDIR}-${i}-${pacname}" ]]; then
+                        sudo rm -rf "${PACDIR}-${i}-${pacname}"
+                    fi
+                done
+                sudo rm -rf "${PACDIR}/${pacname}"*
+            else
+                sudo rm -rf "${PACDIR}/"*
+            fi
             sudo rm -rf "${STAGEDIR:-/usr/src/pacstall}/${pacname}"
-            for i in "deps" "missing_deps" "not_satisfied_deps" "suggested_optdeps" "missing_optdeps" "not_satisfied_optdeps" "already_installed_optdeps"; do
-                if [[ -n ${PACDIR} && -f "${PACDIR}-${i//_/-}-${pacname}" ]]; then
-                    sudo rm -rf "${PACDIR}-${i//_/-}-${pacname}"
+            for i in "deps" "missing-deps" "not-satisfied-deps" "suggested-optdeps" "missing-optdeps" "not-satisfied-optdeps" "already-installed-optdeps" "selectopts-optdeps"; do
+                if [[ -n ${PACDIR} && -f "${PACDIR}-${i}-${pacname}" ]]; then
+                    sudo rm -rf "${PACDIR}-${i}-${pacname}"
                 fi
             done
         fi
-        sudo rm -rf /tmp/pacstall-gives
+        [[ -n ${pkgbase} ]] && sudo rm -rf "${PACDIR}-selectopts-pkgbase-${pkgbase}"
+        # shellcheck disable=SC2153
+        [[ -n ${STAGEDIR} && -n ${PACKAGE} ]] && sudo rm -rf "${STAGEDIR}/${pacname:-$PACKAGE}"*
+        [[ -n ${pacfile} ]] && sudo rm -f "${pacfile}"
+        [[ -n ${srcinfile} ]] && sudo rm -f "${srcinfile}"
+        [[ -n ${bwrapenv} ]] && sudo rm -f "${bwrapenv}"
+        [[ -n ${safeenv} ]] && sudo rm -f "${safeenv}"
     fi
-    #shellcheck disable=SC2153
-    [[ -n ${STAGEDIR} && -n ${PACKAGE} ]] && sudo rm -rf "${STAGEDIR}/${pacname:-$PACKAGE}"*".deb"
-    sudo rm -f /tmp/pacstall-select-options
-    [[ -n ${PACDIR} ]] && sudo rm -f "${PACDIR}/bwrapenv.*"
-    [[ -n ${pacfile} ]] && sudo rm -f "${pacfile}"
     unset "${pacstallvars[@]}" 2> /dev/null
     unset -f pre_install pre_upgrade pre_remove post_install post_upgrade post_remove prepare build check package 2> /dev/null
 }
@@ -422,7 +426,7 @@ function download() {
     if [[ $PACSTALL_DOWNLOADER != "payload" ]]; then
         sudo rm -f "${out:?}"
     fi
-    if [[ -z $PACSTALL_DOWNLOADER || -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
+    if [[ -z $PACSTALL_DOWNLOADER || -f "${PACDIR}-pacdeps-$PACKAGE" ]]; then
         if has_command axel; then
             PACSTALL_DOWNLOADER=axel
         elif has_command wget; then
@@ -458,13 +462,11 @@ function download() {
 
 # source this code block and run like so:
 #   $ select_options "My message I want to send" "${#array[@]}"
-# This will then output the options given by the user to /tmp/pacstall-select-options, which you can then turn into another array
+# This will then output the options given by the user to ${PACDIR}-selectopts-${varname}-${pacname}, which you can then turn into another array
 function select_options() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    rm -f /tmp/pacstall-select-options
-    local message="${1}"
-    local length="${2}"
-
+    local message="${1}" length="${2}" varname="${3}"
+    rm -f "${PACDIR}-selectopts-${varname}-${pacname}"
     if ((length >= 6)); then
         echo -ne "${message} [${BOLD}1-$length${NC} or ${BIGreen}Y${NC}] "
     else
@@ -483,9 +485,9 @@ function select_options() {
         input="Y"
     fi
     if [[ -z $input ]] || [[ $input =~ ^[Yy]$ ]]; then
-        seq -s ' ' 1 "$length" | tee /tmp/pacstall-select-options > /dev/null
+        seq -s ' ' 1 "$length" | tee "${PACDIR}-selectopts-${varname}-${pacname}" > /dev/null
     elif ((input == 0)) || [[ $input =~ ^[Nn]$ ]]; then
-        echo "n" | tee /tmp/pacstall-select-options > /dev/null
+        echo "n" | tee "${PACDIR}-selectopts-${varname}-${pacname}" > /dev/null
     elif ! [[ $input =~ [a-zA-Z]+ ]] || [[ $input =~ ^[0-9]+$ ]]; then
         for i in "${input[@]}"; do
             unset split_arr
@@ -496,16 +498,16 @@ function select_options() {
                         for line in ${i//-/ }; do
                             split_arr+=("$line")
                         done
-                        if ((${split_arr[0]} > ${split_arr[-1]} || ${split_arr[0]} == ${split_arr[-1]})); then select_options "$message" "$length"; fi
+                        if ((${split_arr[0]} > ${split_arr[-1]} || ${split_arr[0]} == ${split_arr[-1]})); then select_options "$message" "$length" "$varname"; fi
                         ;;
                     *..*)
                         for line in ${i//../ }; do
                             split_arr+=("$line")
                         done
-                        if ((${split_arr[0]} > ${split_arr[-1]} || ${split_arr[0]} == ${split_arr[-1]})); then select_options "$message" "$length"; fi
+                        if ((${split_arr[0]} > ${split_arr[-1]} || ${split_arr[0]} == ${split_arr[-1]})); then select_options "$message" "$length" "$varname"; fi
                         ;;
                     *)
-                        select_options "$message" "$length"
+                        select_options "$message" "$length" "$varname"
                         ;;
                 esac
                 out+=($(seq "${split_arr[0]}" "${split_arr[1]}"))
@@ -514,7 +516,7 @@ function select_options() {
                 out+=("$i")
             fi
         done
-        echo "${out[@]}" | tee /tmp/pacstall-select-options > /dev/null
+        echo "${out[@]}" | tee "${PACDIR}-selectopts-${varname}-${pacname}" > /dev/null
     else
         select_options "$message" "$length"
     fi
@@ -698,7 +700,7 @@ function lock() {
             { ignore_stack=true; return 1; }
         fi
         j=$((i + 1))
-        if [[ -f "/tmp/pacstall-pacdeps-${!j%%@*}" ]]; then
+        if [[ -f "${PACDIR}-pacdeps-${!j%%@*}" ]]; then
             { ignore_stack=true; return 1; }
         fi
     done
@@ -877,7 +879,7 @@ Helpful links:
                         exit 1
                     fi
 
-                    if [[ -n $PACSTALL_PAYLOAD && ! -f "/tmp/pacstall-pacdeps-${PACKAGE/:pkgbase/}" ]]; then
+                    if [[ -n $PACSTALL_PAYLOAD && ! -f "${PACDIR}-pacdeps-${PACKAGE/:pkgbase/}" ]]; then
                         export PACSTALL_DOWNLOADER="payload"
                         if [[ ! -f $PACSTALL_PAYLOAD ]]; then
                             fancy_message error "Payload not found"
@@ -918,7 +920,7 @@ Helpful links:
                 # shellcheck source=./misc/scripts/package-base.sh
                 if ! source "$SCRIPTDIR/scripts/package-base.sh"; then
                     fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
-                    if ! [[ -f "/tmp/pacstall-pacdeps-$PACKAGE" ]]; then
+                    if ! [[ -f "${PACDIR}-pacdeps-$PACKAGE" ]]; then
                         sudo rm -rf "${PACDIR:?}"
                     fi
                     exit 1
