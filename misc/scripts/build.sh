@@ -472,7 +472,9 @@ function makedeb() {
         fi
     fi
 
-    provides+=("${gives:-${pacname}}")
+    if ! array.contains provides "${gives:-${pacname}}"; then
+        provides+=("${gives:-${pacname}}")
+    fi
     # shellcheck disable=SC2001
     deblog "Provides" "$(sed 's/ /, /g' <<< "${provides[@]}")"
 
