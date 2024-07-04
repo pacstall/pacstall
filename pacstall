@@ -194,13 +194,9 @@ function parse_repo_unraw() {
             export pURL pBRANCH="${rep##*/-/raw/}" pISSUES="${pURL}/-/issues" branch="yes"
             ;;
         *"git.sr.ht"*)
-            export pURL="${rep%/*}"
-            export pURL="${pURL%/*}"
-            export pBRANCH="${rep##*/}"
-            local project_name="${pURL##*/}"
-            local project_owner="${pURL%/*}"
-            export pISSUES="https://lists.sr.ht/${project_owner##*/}/${project_name}"
-            export branch="yes"
+            pURL="${rep%/blob*}"
+            local project="${pURL#*~}" 
+            export pURL pBRANCH="${rep##*/}" pISSUES="https://lists.sr.ht/~${project}" branch="yes"
             ;;
         *"codeberg"*)
             pURL="${rep%raw/branch/*}"
