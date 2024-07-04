@@ -418,6 +418,15 @@ function makedeb() {
         deblog "Priority" "${priority:-optional}"
     fi
 
+    if [[ -n ${bugs} ]]; then
+        deblog "Bugs" "${bugs}"
+    else
+        parse_repo_unraw "$REPO"
+        if [[ -n ${pISSUES} ]]; then
+            deblog "Bugs" "${pISSUES}"
+        fi
+    fi
+
     if [[ $pacname == *-git ]]; then
         parse_source_entry "${source[0]}"
         # shellcheck disable=SC2031
@@ -871,24 +880,7 @@ function meta_log() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # Origin repo info parsing
     if [[ ${local} == "no" ]]; then
-        # shellcheck disable=SC2153
-        case $REPO in
-            *"github"*)
-                pURL="${REPO/'raw.githubusercontent.com'/'github.com'}"
-                pURL="${pURL%/*}"
-                pBRANCH="${REPO##*/}"
-                branch="yes"
-                ;;
-            *"gitlab"*)
-                pURL="${REPO%/-/raw/*}"
-                pBRANCH="${REPO##*/-/raw/}"
-                branch="yes"
-                ;;
-            *)
-                pURL="$REPO"
-                branch="no"
-                ;;
-        esac
+        parse_repo_unraw "$REPO"
     fi
 
     # Metadata writing

@@ -177,6 +177,40 @@ function fancy_message() {
     esac
 }
 
+# This function is used to undo a raw repo URL into its base components.
+function parse_repo_unraw() {
+    local rep="${1}"
+    # shellcheck disable=SC2153
+    case $rep in
+        *"githubusercontent"*)
+            export pURL="${rep/'raw.githubusercontent.com'/'github.com'}"
+            export pURL="${pURL%/*}"
+            export pBRANCH="${rep##*/}"
+            export pISSUES="${pURL}/issues"
+            export branch="yes"
+            ;;
+        *"gitlab"*)
+            export pURL="${rep%/-/raw/*}"
+            export pBRANCH="${rep##*/-/raw/}"
+            export pISSUES="${pURL}/-/issues"
+            export branch="yes"
+            ;;
+        *"git.sr.ht"*)
+            export pURL="${rep%/*}"
+            export pURL="${pURL%/*}"
+            export pBRANCH="${rep##*/}"
+            local project_name="${pURL##*/}"
+            local project_owner="${pURL%/*}"
+            export pISSUES="https://lists.sr.ht/${project_owner##*/}/${project_name}"
+            export branch="yes"
+            ;;
+        *)
+            export pURL="$rep"
+            export branch="no"
+            ;;
+    esac
+}
+
 function decl_scriptvars() {
     local _distros _vars _archs _sums distros \
         vars="source depends makedepends optdepends pacdeps checkdepends provides conflicts breaks replaces enhances recommends makeconflicts checkconflicts" \
@@ -185,7 +219,7 @@ function decl_scriptvars() {
     pacstallvars=(pkgbase pkgname repology pkgver git_pkgver epoch source_url source depends makedepends checkdepends conflicts
         breaks replaces gives pkgdesc hash optdepends ppa arch maintainer pacdeps NOBUILDDEP provides incompatible
         compatible srcdir url backup pkgrel mask pac_functions repo priority noextract nosubmodules _archive license
-        bwrapenv safeenv external_connection enhances recommends custom_fields makeconflicts checkconflicts)
+        bwrapenv safeenv external_connection enhances recommends custom_fields makeconflicts checkconflicts bugs)
     mapfile -t distros < <(awk -F ',' -v current_date="$(date +'%Y-%m-%d')" '
       BEGIN {
         is_first = 1
