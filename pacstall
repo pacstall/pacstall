@@ -184,17 +184,14 @@ function parse_repo_unraw() {
     local rep="${1}"
     case "${rep}" in
         *"githubusercontent"*)
-            export pURL="${rep/'raw.githubusercontent.com'/'github.com'}"
-            export pURL="${pURL%/*}"
-            export pBRANCH="${rep##*/}"
-            export pISSUES="${pURL}/issues"
-            export branch="yes"
+            pURL="${rep/'raw.githubusercontent.com'/'github.com'}"
+            pURL="${pURL%/*}"
+            export pURL pBRANCH="${rep##*/}" pISSUES="${pURL}/issues" branch="yes"
+             
             ;;
         *"gitlab"*)
-            export pURL="${rep%/-/raw/*}"
-            export pBRANCH="${rep##*/-/raw/}"
-            export pISSUES="${pURL}/-/issues"
-            export branch="yes"
+            pURL="${rep%/-/raw/*}"
+            export pURL pBRANCH="${rep##*/-/raw/}" pISSUES="${pURL}/-/issues" branch="yes"
             ;;
         *"git.sr.ht"*)
             export pURL="${rep%/*}"
@@ -206,14 +203,11 @@ function parse_repo_unraw() {
             export branch="yes"
             ;;
         *"codeberg"*)
-            export pURL="${rep%raw/branch/*}"
-            export pBRANCH="${rep##*/}"
-            export pISSUES="${pURL}/issues"
-            export branch="yes"
+            pURL="${rep%raw/branch/*}"
+            export pURL pBRANCH="${rep##*/}" pISSUES="${pURL}/issues" branch="yes"
             ;;
         *)
-            export pURL="$rep"
-            export branch="no"
+            export pURL="$rep" branch="no"
             ;;
     esac
 }
