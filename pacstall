@@ -185,7 +185,7 @@ function decl_scriptvars() {
     pacstallvars=(pkgbase pkgname repology pkgver git_pkgver epoch source_url source depends makedepends checkdepends conflicts
         breaks replaces gives pkgdesc hash optdepends ppa arch maintainer pacdeps NOBUILDDEP provides incompatible
         compatible srcdir url backup pkgrel mask pac_functions repo priority noextract nosubmodules _archive license
-        bwrapenv safeenv external_connection enhances recommends custom_fields makeconflicts checkconflicts)
+        bwrapenv safeenv external_connection enhances recommends custom_fields makeconflicts checkconflicts bugs)
     mapfile -t distros < <(awk -F ',' -v current_date="$(date +'%Y-%m-%d')" '
       BEGIN {
         is_first = 1
