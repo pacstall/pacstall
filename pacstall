@@ -229,7 +229,7 @@ function cleanup() {
             fi
             sudo rm -rf "${STAGEDIR:-/usr/src/pacstall}/${pacname}"
             for i in "deps" "gives" "missing-deps" "not-satisfied-deps" "suggested-optdeps" "missing-optdeps" "not-satisfied-optdeps" "already-installed-optdeps" "selectopts-optdeps"; do
-                if [[ -n ${PACDIR} && -f "${PACDIR}-${i}-${pacname}" ]]; then
+                if [[ -f "${PACDIR}-${i}-${pacname}" ]]; then
                     sudo rm -rf "${PACDIR}-${i}-${pacname}"
                 fi
             done
