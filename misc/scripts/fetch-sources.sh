@@ -361,8 +361,6 @@ function deb_down() {
         sudo chmod o+r "/var/cache/pacstall/${pacname}/${full_version}/${PACKAGE}.pacscript"
         sudo cp -r "${srcinfile}" "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
         sudo chmod o+r "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
-        fancy_message sub "Cleaning up"
-        cleanup
         fancy_message info "Done installing ${BPurple}${pacname}${NC}"
         unset expectedHash dest source_url git_branch git_tag git_commit ext_deps ext_method hashsum_method payload_arr
         return 0

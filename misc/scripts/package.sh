@@ -129,10 +129,10 @@ if [[ -n $ppa ]]; then
 fi
 
 if [[ -n ${pacdeps[*]} ]]; then
+    fancy_message info "Pacstall dependencies"
     for pdep in "${pacdeps[@]}"; do
         # If "${PACDIR}-pacdeps-$i" is available, it will trigger the logger to log it as a dependency
         touch "${PACDIR}-pacdeps-$pdep"
-        fancy_message info "Pacstall dependencies"
         cmd="-I"
         [[ $KEEP ]] && cmd+="K"
         [[ $DISABLE_PROMPTS == "yes" ]] && cmd+="P"
