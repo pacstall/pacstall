@@ -507,10 +507,11 @@ function makedeb() {
         fi
     fi
 
-    if [[ -n ${provides[*]} ]]; then
-        # shellcheck disable=SC2001
-        deblog "Provides" "$(sed 's/ /, /g' <<< "${provides[@]}")"
+    if ! array.contains provides "${gives:-${pacname}}"; then
+        provides+=("${gives:-${pacname}}")
     fi
+    # shellcheck disable=SC2001
+    deblog "Provides" "$(sed 's/ /, /g' <<< "${provides[@]}")"
 
     if [[ -n ${conflicts[*]} ]]; then
         # shellcheck disable=SC2001
