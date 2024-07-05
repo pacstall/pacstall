@@ -128,10 +128,10 @@ if [[ -n $ppa ]]; then
     done
 fi
 
-if [[ -n $pacdeps ]]; then
-    for i in "${pacdeps[@]}"; do
-        # If /tmp/pacstall-pacdeps-"$i" is available, it will trigger the logger to log it as a dependency
-        touch "/tmp/pacstall-pacdeps-$i"
+if [[ -n ${pacdeps[*]} ]]; then
+    for pdep in "${pacdeps[@]}"; do
+        # If "${PACDIR}-pacdeps-$i" is available, it will trigger the logger to log it as a dependency
+        touch "${PACDIR}-pacdeps-$pdep"
         fancy_message info "Pacstall dependencies"
         cmd="-I"
         [[ $KEEP ]] && cmd+="K"
@@ -140,31 +140,31 @@ if [[ -n $pacdeps ]]; then
         [[ $NOSANDBOX ]] && cmd+="Ns"
         ${PACSTALL_VERBOSE} || cmd+="Q"
 
-        if pacstall -S "${i}@${REPO}" &> /dev/null; then
+        if pacstall -S "${pdep}@${REPO}" &> /dev/null; then
             repo="@${REPO}"
         fi
-        if is_package_installed "${i}"; then
-            pacstall_pacdep_status="$(compare_remote_version "$i")"
+        if is_package_installed "${pdep}"; then
+            pacstall_pacdep_status="$(compare_remote_version "$pdep")"
             if [[ $pacstall_pacdep_status == "update" ]]; then
-                fancy_message sub "Found newer version for $i pacdep"
-                if ! pacstall "$cmd" "${i}${repo}"; then
-                    fancy_message error "Failed to install dependency (${i} from ${PACKAGE})"
+                fancy_message sub "Found newer version for $pdep pacdep"
+                if ! pacstall "$cmd" "${pdep}${repo}"; then
+                    fancy_message error "Failed to install dependency (${pdep} from ${PACKAGE})"
                     error_log 8 "install ${pacname}"
                     clean_fail_down
                 fi
             else
-                fancy_message sub "The pacstall dependency ${PURPLE}${i}${NC} is already installed and at latest version"
-                if ! awk '/_pacstall_depends="true"/ {found=1; exit} END {if (found != 1) exit 1}' "${METADIR}/${i}"; then
-                    echo '_pacstall_depends="true"' | sudo tee -a "${METADIR}/${i}" > /dev/null
+                fancy_message sub "The pacstall dependency ${PURPLE}${pdep}${NC} is already installed and at latest version"
+                if ! awk '/_pacstall_depends="true"/ {found=1; exit} END {if (found != 1) exit 1}' "${METADIR}/${pdep}"; then
+                    echo '_pacstall_depends="true"' | sudo tee -a "${METADIR}/${pdep}" > /dev/null
                 fi
             fi
-        elif fancy_message info "Installing dependency ${PURPLE}${i}${NC}" && ! pacstall "$cmd" "${i}${repo}"; then
-            fancy_message error "Failed to install dependency (${i} from ${PACKAGE})"
+        elif fancy_message info "Installing dependency ${PURPLE}${pdep}${NC}" && ! pacstall "$cmd" "${pdep}${repo}"; then
+            fancy_message error "Failed to install dependency (${pdep} from ${PACKAGE})"
             error_log 8 "install ${pacname}"
             clean_fail_down
         fi
         unset repo
-        rm -f "/tmp/pacstall-pacdeps-$i"
+        rm -f "${PACDIR}-pacdeps-$pdep"
     done
 fi
 
@@ -269,7 +269,7 @@ mkdir -p "${PACDIR}"
 gather_down
 
 unset payload_arr
-if [[ -n $PACSTALL_PAYLOAD && ! -f "/tmp/pacstall-pacdeps-${pacname}" ]]; then
+if [[ -n $PACSTALL_PAYLOAD && ! -f "${PACDIR}-pacdeps-${pacname}" ]]; then
     IFS=$'\n' read -rd '' -a payload_arr <<< "$(awk -v RS=';:' '{if (NF) print $0}' <<< "${PACSTALL_PAYLOAD}")"
 fi
 

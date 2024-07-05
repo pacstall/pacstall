@@ -331,7 +331,7 @@ function deb_down() {
     fi
     if [[ -n ${pacdeps[*]} || ${depends[*]} || ${makedepends[*]} || ${checkdepends[*]} ]] && repacstall "${dest}" || sudo apt install -y -f ./"${dest}" 2> /dev/null; then
         meta_log
-        if [[ -f /tmp/pacstall-pacdeps-"$pacname" ]]; then
+        if [[ -f "${PACDIR}-pacdeps-$pacname" ]]; then
             sudo apt-mark auto "${gives:-$pacname}" 2> /dev/null
         fi
         fancy_message info "Performing post install operations"

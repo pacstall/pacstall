@@ -142,7 +142,7 @@ function prompt_optdepends() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local d o deps missing_optdeps not_satisfied_optdeps missing_deps not_satisfied_deps
     fancy_message info "Checking apt dependencies"
-    for i in "deps" "pacdeps" "missing_deps" "not_satisfied_deps" "suggested_optdeps" "missing_optdeps" "not_satisfied_optdeps" "already_installed_optdeps"; do
+    for i in "deps" "missing_deps" "not_satisfied_deps" "suggested_optdeps" "missing_optdeps" "not_satisfied_optdeps" "already_installed_optdeps"; do
         sudo rm -rf "${PACDIR}-${i//_/-}-${pacname}"
         touch "${PACDIR}-${i//_/-}-${pacname}"
     done
@@ -205,8 +205,8 @@ function prompt_optdepends() {
                 unset z
                 # tab over the next line
                 echo -ne "\t"
-                select_options "Select optional dependencies to install" "${#suggested_optdeps[@]}"
-                read -ra choices < /tmp/pacstall-select-options
+                select_options "Select optional dependencies to install" "${#suggested_optdeps[@]}" "optdeps"
+                read -ra choices < "${PACDIR}-selectopts-optdeps-${pacname}"
                 local choice_inc=0
                 for i in "${choices[@]}"; do
                     # have we gone over the maximum number in choices[@]?
@@ -228,15 +228,11 @@ function prompt_optdepends() {
                     done
                     if [[ -n ${not_installed_yet_optdeps[*]} ]]; then
                         fancy_message info "Selecting packages ${BCyan}${not_installed_yet_optdeps[*]%%:\ *}${NC}"
-                        # final_merged_deps is a dep list of *every* type of dep we want to be logged into Suggests. This includes
-                        # already installed optdeps, not yet installed ones (selected by user) and the rest
-                        local final_merged_deps=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${suggested_optdeps[@]}")
                         local log_depends log_depends_str
                         dep_const.format_control optdepends log_depends
                         dep_const.comma_array log_depends log_depends_str
                         deblog "Suggests" "${log_depends_str}"
                         fancy_message info "Installing selected optional dependencies"
-                        sudo -E apt-get install "${not_installed_yet_optdeps[@]}" -y 2> /dev/null
                     fi
                 else # Did we get 0 or n?
                     # Add everything to Suggests
@@ -264,9 +260,9 @@ function prompt_optdepends() {
                 #shellcheck disable=SC1090
                 source "$METADIR/$i"
                 if [[ -n $_gives ]]; then
-                    echo "$_gives" | tee -a /tmp/pacstall-gives > /dev/null
+                    echo "$_gives" | tee -a "${PACDIR}-gives-${pacname}" > /dev/null
                 else
-                    echo "$_name" | tee -a /tmp/pacstall-gives > /dev/null
+                    echo "$_name" | tee -a "${PACDIR}-gives-${pacname}" > /dev/null
                 fi
             )
         done
@@ -275,12 +271,12 @@ function prompt_optdepends() {
             if ! array.contains deps "${line}"; then
                 deps+=("${line}")
             fi
-        done < /tmp/pacstall-gives
+        done < "${PACDIR}-gives-${pacname}"
     fi
     # Do we have any deps or optdeps scheduled for installation?
-    if [[ -n ${deps[*]} || -n ${not_installed_yet_optdeps[*]} ]]; then
+    if [[ -n ${deps[*]} || -n ${not_installed_yet_optdeps[*]} || -n ${already_installed_optdeps[*]} ]]; then
         # shellcheck disable=SC2034
-        local all_deps_to_install=("${not_installed_yet_optdeps[@]}" "${deps[@]}") ze_dep ze_dep_splits ze_dep_split
+        local all_deps_to_install=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${deps[@]}") ze_dep ze_dep_splits ze_dep_split
         # So basically, we're gonna now check if the `depends` elements can be installed on this system based on the
         # version constraints (if available), because I'd be very pissed if I tried building wine only to figure out
         # 8 hours later the versions specified in `depends` aren't available.
@@ -747,7 +743,7 @@ function install_deb() {
             cleanup
             exit 1
         fi
-        if [[ -f /tmp/pacstall-pacdeps-"$pacname" ]]; then
+        if [[ -f "${PACDIR}-pacdeps-$pacname" ]]; then
             sudo apt-mark auto "${gives:-$pacname}" 2> /dev/null
         fi
         sudo rm -rf "${STAGEDIR:?}/${pacname}"
@@ -765,10 +761,10 @@ function install_deb() {
         sudo mv "$STAGEDIR/$debname.deb" "$PACDEB_DIR"
         sudo chown "$PACSTALL_USER":"$PACSTALL_USER" "$PACDEB_DIR/$debname.deb"
         fancy_message info "Package built at ${BGreen}$PACDEB_DIR/$debname.deb${NC}"
-        fancy_message info "Moving ${BGreen}$STAGEDIR/$pacname${NC} to ${BGreen}/tmp/pacstall-no-build/$pacname${NC}"
-        sudo rm -rf "/tmp/pacstall-no-build/${pacname:?}"
-        mkdir -p "/tmp/pacstall-no-build/$pacname"
-        sudo mv "$STAGEDIR/$pacname" "/tmp/pacstall-no-build/$pacname"
+        fancy_message info "Moving ${BGreen}$STAGEDIR/$pacname${NC} to ${BGreen}${PACDIR}-no-build/$pacname${NC}"
+        sudo rm -rf "${PACDIR}-no-build/${pacname:?}"
+        mkdir -p "${PACDIR}-no-build/$pacname"
+        sudo mv "$STAGEDIR/$pacname" "${PACDIR}-no-build/$pacname"
         return 0
     fi
 }
@@ -884,7 +880,7 @@ function write_meta() {
     if [[ -n $gives ]]; then
         echo "_gives=\"$gives\""
     fi
-    if [[ -f /tmp/pacstall-pacdeps-"$pacname" ]] || check_if_pacdep "${pacname}" "${METADIR}"; then
+    if [[ -f "${PACDIR}-pacdeps-$pacname" ]] || check_if_pacdep "${pacname}" "${METADIR}"; then
         echo '_pacstall_depends="true"'
     fi
     if [[ $local == 'no' ]]; then

@@ -103,8 +103,8 @@ function package_pkg() {
                 unset z
                 # tab over the next line
                 echo -ne "\t"
-                select_options "Select packages to be built" "${#pkgname[@]}"
-                read -ra choices < /tmp/pacstall-select-options
+                select_options "Select packages to be built" "${#pkgname[@]}" "pkgbase"
+                read -ra choices < "${PACDIR}-selectopts-pkgbase-${pkgbase}"
                 local choice_inc=0
                 for i in "${choices[@]}"; do
                     # have we gone over the maximum number in choices[@]?
@@ -140,7 +140,7 @@ function package_pkg() {
                             # shellcheck disable=SC2031
                             fancy_message error "Failed to install ${GREEN}${pacname}${NC}"
                             # shellcheck disable=SC2031
-                            if ! [[ -f "/tmp/pacstall-pacdeps-${pacname}" ]]; then
+                            if ! [[ -f "${PACDIR}-pacdeps-${pacname}" ]]; then
                                 sudo rm -rf "${PACDIR:?}"
                             fi
                             exit 1
@@ -162,7 +162,7 @@ function package_pkg() {
             # shellcheck disable=SC2031
             fancy_message error "Failed to install ${GREEN}${pacname}${NC}"
             # shellcheck disable=SC2031
-            if ! [[ -f "/tmp/pacstall-pacdeps-${pacname}" ]]; then
+            if ! [[ -f "${PACDIR}-pacdeps-${pacname}" ]]; then
                 sudo rm -rf "${PACDIR:?}"
             fi
             exit 1

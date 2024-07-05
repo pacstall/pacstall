@@ -110,6 +110,7 @@ while true; do
         # Remove cache
         fancy_message info "Removing cache"
         sudo rm -rf /usr/src/pacstall/
+        sudo rm -rf /var/cache/pacstall/
         # Remove tmp files
         fancy_message info "Removing temporary files"
         sudo rm -rf /tmp/pacstall/
