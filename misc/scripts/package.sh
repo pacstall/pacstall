@@ -129,7 +129,7 @@ if [[ -n $ppa ]]; then
 fi
 
 if [[ -n ${pacdeps[*]} ]]; then
-    fancy_message info "Checking Pacstall dependencies"
+    fancy_message info "Checking pacstall dependencies"
     for pdep in "${pacdeps[@]}"; do
         # If "${PACDIR}-pacdeps-$i" is available, it will trigger the logger to log it as a dependency
         touch "${PACDIR}-pacdeps-$pdep"
@@ -146,7 +146,7 @@ if [[ -n ${pacdeps[*]} ]]; then
         if is_package_installed "${pdep}"; then
             pacstall_pacdep_status="$(compare_remote_version "$pdep")"
             if [[ $pacstall_pacdep_status == "update" ]]; then
-                fancy_message sub "${PURPLE}$pdep${NC} ${GREEN}↑${YELLOW}↓${NC} [update]"
+                fancy_message sub "${PURPLE}${pdep}${NC} ${GREEN}↑${YELLOW}↓${NC} [update]"
                 if ! pacstall "$cmd" "${pdep}${repo}"; then
                     fancy_message error "Failed to install dependency (${pdep} from ${PACKAGE})"
                     error_log 8 "install ${pacname}"
