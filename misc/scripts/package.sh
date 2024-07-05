@@ -310,7 +310,7 @@ for i in "${!source[@]}"; do
             net_down
             deb_down && return 0
             ;;
-        *.zip | *.tar.gz | *.tgz | *.tar.bz2 | *.tbz2 | *.tar.xz | *.txz | *.tar.zst | *.tzst | *.gz | *.bz2 | *.xz | *.lz | *.lzma | *.zst | *.7z | *.rar | *.lz4 | *.tar)
+        *.zip | *.tar.gz | *.tgz | *.tar.bz2 | *.tbz2 | *.tar.bz | *.tbz | *.tar.xz | *.txz | *.tar.zst | *.tzst | *.gz | *.bz2 | *.xz | *.lz | *.lzma | *.zst | *.7z | *.rar | *.lz4 | *.tar)
             net_down
             genextr_declare
             genextr_down

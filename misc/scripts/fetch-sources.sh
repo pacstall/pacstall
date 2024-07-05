@@ -98,7 +98,7 @@ function genextr_declare() {
             ext_method="tar -xzf"
             ext_deps=("tar" "gzip")
             ;;
-        *.tar.bz2 | *.tbz2)
+        *.tar.bz2 | *.tbz2 | *.tar.bz | *.tbz)
             ext_method="tar -xjf"
             ext_deps=("tar" "bzip2")
             ;;
