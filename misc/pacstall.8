@@ -14,7 +14,7 @@
 . ftr VB CB
 . ftr VBI CBI
 .\}
-.TH "Pacstall" "8" "June 8, 2024" "Pacstall 5.2.1 Lemon-Lime-Flavored Non-Caffeinated Soft Drink" "General Commands Manual"
+.TH "Pacstall" "8" "July 6, 2024" "Pacstall 5.3.0 Phthalo" "General Commands Manual"
 .hy
 .SH NAME
 .PP
@@ -88,6 +88,20 @@ Install \f[B]alacritty\f[R] from
 .PP
 $ \f[B]pacstall -I neofetch.pacscript\f[R] # Install \f[B]neofetch\f[R]
 from local pacscript
+.RE
+.RE
+.RS
+.RS
+.PP
+$ \f[B]pacstall -I parent:pkgbase\f[R] # Install all pkgnames in the
+pkgbase named \f[B]parent\f[R]
+.RE
+.RE
+.RS
+.RS
+.PP
+$ \f[B]pacstall -I parent:child\f[R] # Install only the pkgname
+\f[B]child\f[R] from the pkgbase \f[B]parent\f[R]
 .RE
 .RE
 .TP
@@ -418,9 +432,8 @@ If you find any bugs in a Pacscript, please submit a bug request at
 <\f[B]https://github.com/pacstall/pacstall-programs/issues\f[R]>.
 .PP
 The main method Pacstall developers and users uses to communicate with
-each other is through Discord
-(<\f[B]https://discord.gg/yzrjXJV6K8\f[R]>), but we provide a Matrix
-instance as well (<\f[B]https://matrix.to/#/#pacstall:matrix.org\f[R]>).
+each other is through Discord, but you may also communicate through
+GitHub issues.
 .SH AUTHORS
 .PP
 The Pacstall team (pacstall\[at]pm.me)
