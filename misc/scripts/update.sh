@@ -34,7 +34,8 @@ METADIR="/var/lib/pacstall/metadata"
 LOGDIR="/var/log/pacstall/error_log"
 SCRIPTDIR="/usr/share/pacstall"
 PACDIR="/tmp/pacstall"
-MANDIR="/usr/share/man/man8"
+MAN8DIR="/usr/share/man/man8"
+MAN5DIR="/usr/share/man/man5"
 BASH_COMPLETION_DIR="/usr/share/bash-completion/completions"
 FISH_COMPLETION_DIR="/usr/share/fish/vendor_completions.d"
 PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER:-$(whoami)}}")
@@ -60,7 +61,7 @@ function suggested_solution() {
     fi
 }
 
-for i in "${METADIR}" "${LOGDIR}" "${MANDIR}" "${BASH_COMPLETION_DIR}" "${FISH_COMPLETION_DIR}"; do
+for i in "${METADIR}" "${LOGDIR}" "${MAN8DIR}" "${MAN5DIR}" "${BASH_COMPLETION_DIR}" "${FISH_COMPLETION_DIR}"; do
     mkdir -p "${i}"
 done
 
@@ -114,23 +115,23 @@ for i in {error_log,download,download-local,install-local,build-local}.sh; do
     sudo rm -f "${SCRIPTDIR:?}/scripts/$i"
 done
 sudo curl -s -o "/usr/bin/pacstall" "${REPO}/pacstall" &
-sudo curl -s -o "${MANDIR}/pacstall.8" "${REPO}/misc/pacstall.8" &
+sudo curl -s -o "${MAN8DIR}/pacstall.8" "${REPO}/misc/man/pacstall.8" &
+sudo curl -s -o "${MAN5DIR}/update.5" "${REPO}/misc/man/update.5" &
+sudo curl -s -o "${MAN5DIR}/pacstallrepo.5" "${REPO}/misc/man/pacstallrepo.5" &
 sudo curl -s -o "${BASH_COMPLETION_DIR}/pacstall" "${REPO}/misc/completion/bash" &
 sudo curl -s -o "${FISH_COMPLETION_DIR}/pacstall.fish" "${REPO}/misc/completion/fish" &
 wait && stty "${tty_settings}"
 
 sudo chmod +x "/usr/bin/pacstall"
 sudo chmod +x "${SCRIPTDIR}/scripts/"*
-sudo gzip --force -9n "${MANDIR}/pacstall.8"
+sudo gzip --force -9n "${MAN8DIR}/pacstall.8"
+sudo gzip --force -9n "${MAN5DIR}/update.5"
+sudo gzip --force -9n "${MAN5DIR}/pacstallrepo.5"
 
 if [[ -n $GIT_USER ]]; then
     echo "pacstall master" | sudo tee "${SCRIPTDIR}/repo/update" > /dev/null
 else
     echo "${USERNAME} ${BRANCH}" | sudo tee "${SCRIPTDIR}/repo/update" > /dev/null
-fi
-
-if [[ -f ${SCRIPTDIR}/repo/pacstallrepo.txt ]]; then
-    sudo mv "${SCRIPTDIR}/repo/pacstallrepo.txt" "${SCRIPTDIR}/repo/pacstallrepo"
 fi
 
 # shellcheck disable=SC2207

@@ -88,32 +88,34 @@ while true; do
             else
                 for i in $(pacstall -L); do
                     pacstall -PR "$i"
-                    rm -rf "/etc/apt/preferences.d/${i//./-}-pin"
+                    rm -rfv "/etc/apt/preferences.d/${i//./-}-pin"
                 done
             fi
             fancy_message info "Removing package metadata"
-            sudo rm -rf /var/lib/pacstall/metadata/
+            sudo rm -rfv /var/lib/pacstall/metadata/
         fi
         fancy_message info "Removing Pacstall"
-        sudo rm "$(command -v pacstall)"
+        sudo rm -v "$(command -v pacstall)"
 
         # Remove scripts and repos
         fancy_message info "Removing scripts and repositories"
-        sudo rm -rf /usr/share/pacstall/
+        sudo rm -rfv /usr/share/pacstall/
         # Remove man page
-        fancy_message info "Removing man page"
-        sudo rm /usr/share/man/man8/pacstall.8.gz
+        fancy_message info "Removing man pages"
+        sudo rm -v /usr/share/man/man8/pacstall.8.gz
+        sudo rm -v /usr/share/man/man5/pacstallrepo.5.gz
+        sudo rm -v /usr/share/man/man5/update.5.gz
 
         # Remove logs
         fancy_message info "Removing log files"
-        sudo rm -rf /var/log/pacstall/
+        sudo rm -rfv /var/log/pacstall/
         # Remove cache
         fancy_message info "Removing cache"
-        sudo rm -rf /usr/src/pacstall/
-        sudo rm -rf /var/cache/pacstall/
+        sudo rm -rfv /usr/src/pacstall/
+        sudo rm -rfv /var/cache/pacstall/
         # Remove tmp files
         fancy_message info "Removing temporary files"
-        sudo rm -rf /tmp/pacstall/
+        sudo rm -rfv /tmp/pacstall/
         break
     fi
 done
