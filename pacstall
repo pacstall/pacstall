@@ -25,7 +25,7 @@
 # Pacstall version
 version_number="5.3.0"
 version_name="Phthalo"
-declare -A version_color=([r]="36" [g]="76" [b]="78")
+declare -A version_color=([r]="25" [g]="82" [b]="86")
 
 # Configuration
 export LC_ALL=C
