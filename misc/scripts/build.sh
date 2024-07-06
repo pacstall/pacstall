@@ -762,10 +762,12 @@ function install_deb() {
         sudo mv "$STAGEDIR/$debname.deb" "$PACDEB_DIR"
         sudo chown "$PACSTALL_USER":"$PACSTALL_USER" "$PACDEB_DIR/$debname.deb"
         fancy_message info "Package built at ${BGreen}$PACDEB_DIR/$debname.deb${NC}"
-        fancy_message info "Moving ${BGreen}$STAGEDIR/$pacname${NC} to ${BGreen}${PACDIR}-no-build/$pacname${NC}"
-        sudo rm -rf "${PACDIR}-no-build/${pacname:?}"
-        mkdir -p "${PACDIR}-no-build/$pacname"
-        sudo mv "$STAGEDIR/$pacname" "${PACDIR}-no-build/$pacname"
+        if [[ $KEEP ]]; then
+            fancy_message info "Moving ${BGreen}$STAGEDIR/$pacname${NC} to ${BGreen}${PACDIR}-no-build/$pacname${NC}"
+            sudo rm -rf "${PACDIR}-no-build/${pacname:?}"
+            mkdir -p "${PACDIR}-no-build/$pacname"
+            sudo mv "$STAGEDIR/$pacname" "${PACDIR}-no-build/$pacname"
+        fi
         return 0
     fi
 }
