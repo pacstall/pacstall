@@ -121,7 +121,8 @@ METADIR="/var/lib/pacstall/metadata"
 LOGDIR="/var/log/pacstall/error_log"
 SCRIPTDIR="/usr/share/pacstall"
 PACDIR="/tmp/pacstall"
-MANDIR="/usr/share/man/man8"
+MAN8DIR="/usr/share/man/man8"
+MAN5DIR="/usr/share/man/man5"
 BASH_COMPLETION_DIR="/usr/share/bash-completion/completions"
 FISH_COMPLETION_DIR="/usr/share/fish/vendor_completions.d"
 REPO="https://raw.githubusercontent.com/pacstall/pacstall/master"
@@ -144,14 +145,18 @@ for script in "${pacstall_scripts[@]}"; do
     wget -q --show-progress -N "${REPO}/misc/scripts/${script}.sh" -P "${SCRIPTDIR}/scripts" &
 done
 wget -q --show-progress --progress=bar:force -O "/usr/bin/pacstall" "${REPO}/pacstall" &
-wget -q --show-progress --progress=bar:force -O "${MANDIR}/pacstall.8" "${REPO}/misc/pacstall.8" &
+wget -q --show-progress --progress=bar:force -O "${MAN8DIR}/pacstall.8" "${REPO}/misc/man/pacstall.8" &
+wget -q --show-progress --progress=bar:force -O "${MAN5DIR}/update.8" "${REPO}/misc/man/update.5" &
+wget -q --show-progress --progress=bar:force -O "${MAN5DIR}/pacstallrepo.8" "${REPO}/misc/man/pacstallrepo.5" &
 wget -q --show-progress --progress=bar:force -O "${BASH_COMPLETION_DIR}/pacstall" "${REPO}/misc/completion/bash" &
 wget -q --show-progress --progress=bar:force -O "${FISH_COMPLETION_DIR}/pacstall.fish" "${REPO}/misc/completion/fish" &
 wait
 
 chmod +x "/usr/bin/pacstall"
 chmod +x "${SCRIPTDIR}/scripts/"*
-gzip --force -9n "${MANDIR}/pacstall.8"
+gzip --force -9n "${MAN8DIR}/pacstall.8"
+gzip --force -9n "${MAN5DIR}/update.5"
+gzip --force -9n "${MAN5DIR}/pacstallrepo.5"
 
 fancy_message info "Installation complete"
 # vim:set ft=sh ts=4 sw=4 et:
