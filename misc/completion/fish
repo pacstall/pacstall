@@ -23,6 +23,23 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 alias _seen "__fish_seen_subcommand_from"
 
+function _pacstall_get_repo_urls
+    while read -l part
+        set -l split (string split ' ' $part)
+        if test (count $split) -eq 1
+            echo $split[1]
+        else if test (count $split) -eq 2
+            if string match -q '[*' $split[1]
+                echo $split[2]
+            else
+                echo $split[1]
+            end
+        else
+            echo $split[2]
+        end
+    end < /usr/share/pacstall/repo/pacstallrepo
+end
+
 # Flag lists
 set -l pacstall_cmds -I --install -S --search --remove -A --add-repo -U --update -V --version -L --list -Up --upgrade -Qi --query-info -D --download -T --tree -P --disable-prompts -K --keep -PI -PR -PUp -IP -RP -UpP -KI -KUp -IK -UpK -BI -IB -PK -KP -BK -KB -PB -BP -PKI -PKUp -KPI -KPUp -PIK -PUpK -KIP -KUpP -IPK -UpPK -IKP -UpKP -PBI -BPI -PIB -BIP -IPB -IBP -KBI -BKI -KIB -KIP -IPK -IKP -BPK -BKP -PBK -PKB -KBP -KPB -BPKI -BKPI -PBKI -PKBI -KBPI -KPBI -BPIK -BKIP -PBIK -PKIB -KBIP -KPIB -BIPK -BIKP -PIBK -PIKB -KIBP -KIPB -IBPK -IBKP -IPBK -IPKB -IKBP -IKPB
 
@@ -124,7 +141,7 @@ set -l log_cmds -R -PR -RP --remove -L --list -Qi --query-info -T --tree
 set -l pacscript_cmds -I --install -PI -IP -KI -IK -BI -IB -KPI -KIP -PKI -PIK -IKP -IPK -BPI -BIP -PBI -PIB -IBP -IPB -KBI -KIB -BKI -BIK -IKB -IBK -BPKI -BKPI -PBKI -PKBI -KBPI -KPBI -BPIK -BKIP -PBIK -PKIB -KBIP -KPIB -BIPK -BIKP -PIBK -PIKB -KIBP -KIPB -IBPK -IBKP -IPBK -IPKB -IKBP -IKPB
 
 # Completion for the package related flags
-complete -f -c pacstall -n "_seen $package_cmds" -a "(sed -e 's/\$/\/packagelist/' /usr/share/pacstall/repo/pacstallrepo | xargs -n 1 curl -s | sort -u)"
+complete -f -c pacstall -n "_seen $package_cmds" -a "(_pacstall_get_repo_urls | xargs -I{} echo "{}/packagelist" | xargs -n 1 curl -s | sort -u)"
 
 # Completion for the log related flags
 complete -f -c pacstall -n "_seen $log_cmds" -a "(command ls -1aA /var/lib/pacstall/metadata)"
