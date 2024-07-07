@@ -52,7 +52,7 @@ function srcinfo.array_build() {
 }
 
 function srcinfo.extr_globvar() {
-    { ignore_stack=false; set -eo pipefail; trap stacktrace ERR RETURN; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local attr="${1}" isarray="${2}" outputvar="${3}" ref
     if ((isarray==1)); then
         srcinfo.array_build ref "${attr}"
@@ -140,7 +140,7 @@ function srcinfo.vars() {
     local _distros _vars _archs _sums distros \
         vars="depends makedepends optdepends pacdeps checkdepends provides conflicts breaks replaces enhances recommends makeconflicts checkconflicts source" \
         sums="b2 sha512 sha384 sha256 sha224 sha1 md5"
-    allvars=(pkgname gives pkgver pkgrel epoch pkgdesc url priority)
+    allvars=(gives pkgver pkgrel epoch pkgdesc url priority)
     allars=(arch depends makedepends checkdepends optdepends pacdeps conflicts makeconflicts checkconflicts breaks replaces provides enhances recommends incompatible compatible backup mask noextract nosubmodules license maintainer repology custom_fields source)
     # shellcheck disable=SC2124
     distros="${PACSTALL_KNOWN_DISTROS[@]}"
@@ -565,7 +565,9 @@ function srcinfo.match_pkg() {
                 continue
             fi
         fi
-        [[ ${b} == "${match}" ]] && printf '%s\n' "${!guy}"
+        if [[ ${b} == "${match}" ]]; then
+            printf '%s\n' "${!guy}"
+        fi
     done
 }
 
