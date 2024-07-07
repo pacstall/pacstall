@@ -147,7 +147,7 @@ function srcinfo.vars() {
     local _distros _vars _archs _sums distros \
         vars="depends makedepends optdepends pacdeps checkdepends provides conflicts breaks replaces enhances recommends makeconflicts checkconflicts source" \
         sums="b2 sha512 sha384 sha256 sha224 sha1 md5"
-    allvars=(gives pkgver pkgrel epoch pkgdesc url priority)
+    allvars=(pkgname gives pkgver pkgrel epoch pkgdesc url priority)
     allars=(arch depends makedepends checkdepends optdepends pacdeps conflicts makeconflicts checkconflicts breaks replaces provides enhances recommends incompatible compatible backup mask noextract nosubmodules license maintainer repology custom_fields source)
     # shellcheck disable=SC2124
     distros="${PACSTALL_KNOWN_DISTROS[@]}"
