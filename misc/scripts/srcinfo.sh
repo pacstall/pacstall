@@ -108,7 +108,9 @@ function srcinfo.write_attr() {
     attrvalues=("${attrvalues[@]//+([[:space:]])/ }")
     attrvalues=("${attrvalues[@]#[[:space:]]}")
     attrvalues=("${attrvalues[@]%[[:space:]]}")
-    printf "\t${attrname} = %s\n" "${attrvalues[@]}"
+    if [[ -n "${attrvalues[@]}" ]]; then
+        printf "\t${attrname} = %s\n" "${attrvalues[@]}"
+    fi
 }
 
 function srcinfo.extract() {
@@ -123,13 +125,11 @@ function srcinfo.write_details() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local attr package_arch a
     for attr in "${singlevalued[@]}"; do
-        local -n at="${attr}"
-        [[ -n ${at} ]] && srcinfo.extract "$1" "${attr}" 0
+        srcinfo.extract "$1" "${attr}" 0
     done
 
     for attr in "${multivalued[@]}"; do
-        local -n at="${attr}"
-        [[ -n ${at[*]} ]] && srcinfo.extract "$1" "${attr}" 1
+        srcinfo.extract "$1" "${attr}" 1
     done
 
     srcinfo.get_attr "$1" 'arch' 1 'package_arch' || package_arch=("all")
