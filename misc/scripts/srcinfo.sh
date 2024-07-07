@@ -65,7 +65,7 @@ function srcinfo.extr_globvar() {
 function srcinfo.extr_fnvar() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local funcname="${1}" attr="${2}" isarray="${3}" outputvar="${4}"
-    local attr_regex decl
+    local attr_regex decl r=1
     if ((isarray==1)); then
         printf -v attr_regex '^[[:space:]]* %s\+?=\(' "${attr}"
     else
@@ -79,16 +79,23 @@ function srcinfo.extr_fnvar() {
         [[ ${line} =~ ${attr_regex} ]] || continue
         decl=${line##*([[:space:]])}
         eval "${decl/#${attr}/${outputvar}}"
+        r=0
     done
+    { ignore_stack=true; return "${r}"; }
 }
 
 function srcinfo.get_attr() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local pkgname="${1}" attrname="${2}" isarray="${3}" outputvar="${4}"
+    if ((isarray==1)); then
+        eval "${outputvar}=()"
+    else
+        printf -v "${outputvar}" %s ''
+    fi
     if [[ -n ${pkgname} ]]; then
         srcinfo.extr_globvar "${attrname}" "${isarray}" "${outputvar}"
         if is_function "package_${pkgname}"; then
-            srcinfo.extr_fnvar "package_${pkgname}" "${attrname}" "${isarray}" "${outputvar}"
+            srcinfo.extr_fnvar "package_${pkgname}" "${attrname}" "${isarray}" "${outputvar}" || { ignore_stack=true; return 1; }
         fi
     else
         srcinfo.extr_globvar "${attrname}" "${isarray}" "${outputvar}"
