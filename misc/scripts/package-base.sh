@@ -67,7 +67,7 @@ function package_override() {
                 over="${look}"
             else
                 # shellcheck disable=SC2034
-                over+=("${look[@]}")
+                over=("${look[@]}")
             fi
         else
             mapfile -t lbase < <(unset "${pacstallvars[@]}" && srcinfo.match_pkg "${srcinfile}" "${o}" "pkgbase:${obase}")
@@ -77,7 +77,7 @@ function package_override() {
                     over="${lbase}"
                 else
                     # shellcheck disable=SC2034
-                    over+=("${lbase[@]}")
+                    over=("${lbase[@]}")
                 fi
             fi
         fi
