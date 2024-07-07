@@ -824,9 +824,14 @@ Helpful links:
                 else
                     unset pac_body pac_text
                 fi
-                if [[ ${2##*.} == "pacscript" ]]; then
-                    export PACKAGE="${2%.pacscript}"
-                    PACKAGE="${PACKAGE##*/}"
+                if [[ ${2##*.} == "pacscript" || ${2##*.} == "pacscript:"* ]]; then
+                    if [[ ${2##*.} =~ ^pacscript(:([a-zA-Z0-9_.-]+))$ ]]; then
+                        export CHILD="${BASH_REMATCH[2]/\:/}"
+                        PACKAGE="${2%.pacscript:${CHILD}}"
+                    else
+                        PACKAGE="${2%.pacscript}"
+                    fi
+                    export PACKAGE="${PACKAGE##*/}"
                     export type="install"
                     export local="yes"
                     PKGPATH="${2%/*}"
