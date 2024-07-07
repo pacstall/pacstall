@@ -108,7 +108,7 @@ function srcinfo.write_attr() {
     attrvalues=("${attrvalues[@]//+([[:space:]])/ }")
     attrvalues=("${attrvalues[@]#[[:space:]]}")
     attrvalues=("${attrvalues[@]%[[:space:]]}")
-    if [[ -n "${attrvalues[@]}" ]]; then
+    if [[ -n "${attrvalues[*]}" ]]; then
         printf "\t${attrname} = %s\n" "${attrvalues[@]}"
     fi
 }
