@@ -91,7 +91,7 @@ function package_pkg() {
         # shellcheck disable=SC2031
         fancy_message info "Found pkgbase: ${PURPLE}${pkgbase}${NC}"
         if ((${#pkgname[@]} > 1)); then
-            if [[ -z ${CHILD} ]]; then
+            if [[ -z ${CHILD} || ${CHILD} == "pkgbase" ]]; then
                 # We do this so that arrays 'start at' 1 to the user
                 z=1
                 echo -e "\t\t[${BIRed}0${NC}] Exit"
@@ -121,8 +121,14 @@ function package_pkg() {
             # Did we get actual answers?
             if [[ ${choices[0]} != "n" && ${choices[0]} != "0" ]] || [[ -n ${CHILD} ]]; then
                 local pacnames
-                if [[ -n ${CHILD} ]]; then
-                    pacnames=("${CHILD}")
+                if [[ -n ${CHILD} && ${CHILD} != "pkgbase" ]]; then
+                    if array.contains pkgname "${CHILD}"; then
+                        pacnames=("${CHILD}")
+                    else
+                        fancy_message error "${PKGPATH:+${PKGPATH}/}${PACKAGE}${PKGPATH:+.pacscript}:${CHILD} does not exist"
+                        cleanup
+                        exit 1
+                    fi
                 else
                     for i in "${choices[@]}"; do
                         # Set our user array that started at 1 down to 0 based
