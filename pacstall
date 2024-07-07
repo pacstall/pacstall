@@ -460,8 +460,8 @@ function download() {
 # This will then output the options given by the user to ${PACDIR}-selectopts-${varname}-${pacname}, which you can then turn into another array
 function select_options() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local message="${1}" length="${2}" varname="${3}"
-    rm -f "${PACDIR}-selectopts-${varname}-${pacname}"
+    local message="${1}" length="${2}" varname="${3}" optname="${pkgbase:-${pacname}}"
+    rm -f "${PACDIR}-selectopts-${varname}-${optname}"
     if ((length >= 6)); then
         echo -ne "${message} [${BOLD}1-$length${NC} or ${BIGreen}Y${NC}] "
     else
@@ -480,9 +480,9 @@ function select_options() {
         input="Y"
     fi
     if [[ -z $input ]] || [[ $input =~ ^[Yy]$ ]]; then
-        seq -s ' ' 1 "$length" | tee "${PACDIR}-selectopts-${varname}-${pacname}" > /dev/null
+        seq -s ' ' 1 "$length" | tee "${PACDIR}-selectopts-${varname}-${optname}" > /dev/null
     elif ((input == 0)) || [[ $input =~ ^[Nn]$ ]]; then
-        echo "n" | tee "${PACDIR}-selectopts-${varname}-${pacname}" > /dev/null
+        echo "n" | tee "${PACDIR}-selectopts-${varname}-${optname}" > /dev/null
     elif ! [[ $input =~ [a-zA-Z]+ ]] || [[ $input =~ ^[0-9]+$ ]]; then
         for i in "${input[@]}"; do
             unset split_arr
@@ -511,7 +511,7 @@ function select_options() {
                 out+=("$i")
             fi
         done
-        echo "${out[@]}" | tee "${PACDIR}-selectopts-${varname}-${pacname}" > /dev/null
+        echo "${out[@]}" | tee "${PACDIR}-selectopts-${varname}-${optname}" > /dev/null
     else
         select_options "$message" "$length" "$varname"
     fi

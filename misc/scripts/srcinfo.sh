@@ -65,7 +65,7 @@ function srcinfo.extr_globvar() {
 function srcinfo.extr_fnvar() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local funcname="${1}" attr="${2}" isarray="${3}" outputvar="${4}"
-    local attr_regex decl r=1
+    local attr_regex decl
     if ((isarray==1)); then
         printf -v attr_regex '^[[:space:]]* %s\+?=\(' "${attr}"
     else
@@ -79,9 +79,7 @@ function srcinfo.extr_fnvar() {
         [[ ${line} =~ ${attr_regex} ]] || continue
         decl=${line##*([[:space:]])}
         eval "${decl/#${attr}/${outputvar}}"
-        r=0
     done
-    { ignore_stack=true; return "${r}"; }
 }
 
 function srcinfo.get_attr() {
