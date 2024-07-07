@@ -14,7 +14,7 @@
 . ftr VB CB
 . ftr VBI CBI
 .\}
-.TH "Pacstall" "8" "July 6, 2024" "Pacstall 5.3.0 Phthalo" "General Commands Manual"
+.TH "Pacstall" "8" "July 7, 2024" "Pacstall 5.3.1 Skobeloff" "General Commands Manual"
 .hy
 .SH NAME
 .PP
@@ -93,15 +93,24 @@ from local pacscript
 .RS
 .RS
 .PP
-$ \f[B]pacstall -I parent:pkgbase\f[R] # Install all pkgnames in the
+$ \f[B]pacstall -I ${parent}:pkgbase\f[R] # Install all pkgnames in the
 pkgbase named \f[B]parent\f[R]
 .RE
 .RE
 .RS
 .RS
 .PP
-$ \f[B]pacstall -I parent:child\f[R] # Install only the pkgname
-\f[B]child\f[R] from the pkgbase \f[B]parent\f[R]
+$ \f[B]pacstall -I
+\f[BI]p\f[B]\f[BI]a\f[B]\f[BI]r\f[B]\f[BI]e\f[B]\f[BI]n\f[B]\f[BI]t\f[B]:{child}\f[R]
+# Install only the pkgname \f[B]child\f[R] from the pkgbase
+\f[B]parent\f[R]
+.RE
+.RE
+.RS
+.RS
+.PP
+$ \f[B]pacstall -I package.pacscript:${child}\f[R] # Install only the
+pkgname \f[B]child\f[R] from a local split package
 .RE
 .RE
 .TP
