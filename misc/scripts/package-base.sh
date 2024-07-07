@@ -55,7 +55,7 @@ function package_override() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # shellcheck disable=SC2031
     local o all_ovars opac="${pacname}" obase="${pkgbase}" ovars=("gives" "pkgdesc" "url" "priority")
-    all_ovars=("${ovars[@]}" "arch" "license" "checkdepends" "optdepends" "pacdeps" "provides" "conflicts" "breaks" "replaces" "enhances" "recommends" "backup" "repology")
+    all_ovars=("${ovars[@]}" "arch" "license" "depends" "checkdepends" "optdepends" "pacdeps" "provides" "checkconflicts" "conflicts" "breaks" "replaces" "enhances" "recommends" "backup" "repology")
     for o in "${all_ovars[@]}"; do
         local look lbase
         # shellcheck disable=SC2034
@@ -67,7 +67,7 @@ function package_override() {
                 over="${look}"
             else
                 # shellcheck disable=SC2034
-                over=("${look[@]}")
+                over+=("${look[@]}")
             fi
         else
             mapfile -t lbase < <(unset "${pacstallvars[@]}" && srcinfo.match_pkg "${srcinfile}" "${o}" "pkgbase:${obase}")
@@ -77,7 +77,7 @@ function package_override() {
                     over="${lbase}"
                 else
                     # shellcheck disable=SC2034
-                    over=("${lbase[@]}")
+                    over+=("${lbase[@]}")
                 fi
             fi
         fi
