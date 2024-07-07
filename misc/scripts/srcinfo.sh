@@ -52,7 +52,7 @@ function srcinfo.array_build() {
 }
 
 function srcinfo.extr_globvar() {
-    { ignore_stack=false; set -eo pipefail; trap stacktrace ERR RETURN; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local attr="${1}" isarray="${2}" outputvar="${3}" ref
     if ((isarray==1)); then
         srcinfo.array_build ref "${attr}"
@@ -87,10 +87,15 @@ function srcinfo.extr_fnvar() {
 function srcinfo.get_attr() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local pkgname="${1}" attrname="${2}" isarray="${3}" outputvar="${4}"
+    if ((isarray==1)); then
+        eval "${outputvar}=()"
+    else
+        printf -v "${outputvar}" %s ''
+    fi
     if [[ -n ${pkgname} ]]; then
         srcinfo.extr_globvar "${attrname}" "${isarray}" "${outputvar}"
         if is_function "package_${pkgname}"; then
-            srcinfo.extr_fnvar "package_${pkgname}" "${attrname}" "${isarray}" "${outputvar}"
+            srcinfo.extr_fnvar "package_${pkgname}" "${attrname}" "${isarray}" "${outputvar}" || { ignore_stack=true; return 1; }
         fi
     else
         srcinfo.extr_globvar "${attrname}" "${isarray}" "${outputvar}"
@@ -103,7 +108,9 @@ function srcinfo.write_attr() {
     attrvalues=("${attrvalues[@]//+([[:space:]])/ }")
     attrvalues=("${attrvalues[@]#[[:space:]]}")
     attrvalues=("${attrvalues[@]%[[:space:]]}")
-    printf "\t${attrname} = %s\n" "${attrvalues[@]}"
+    if [[ -n "${attrvalues[*]}" ]]; then
+        printf "\t${attrname} = %s\n" "${attrvalues[@]}"
+    fi
 }
 
 function srcinfo.extract() {
@@ -118,13 +125,11 @@ function srcinfo.write_details() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local attr package_arch a
     for attr in "${singlevalued[@]}"; do
-        local -n at="${attr}"
-        [[ -n ${at} ]] && srcinfo.extract "$1" "${attr}" 0
+        srcinfo.extract "$1" "${attr}" 0
     done
 
     for attr in "${multivalued[@]}"; do
-        local -n at="${attr}"
-        [[ -n ${at[*]} ]] && srcinfo.extract "$1" "${attr}" 1
+        srcinfo.extract "$1" "${attr}" 1
     done
 
     srcinfo.get_attr "$1" 'arch' 1 'package_arch' || package_arch=("all")
@@ -227,8 +232,8 @@ function srcinfo.write_global() {
 function srcinfo.write_package() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local singlevalued=(gives pkgdesc url priority)
-    local multivalued=(arch license checkdepends optdepends pacdeps
-        provides conflicts breaks replaces enhances recommends backup repology)
+    local multivalued=(arch license depends checkdepends optdepends pacdeps
+        provides checkconflicts conflicts breaks replaces enhances recommends backup repology)
     printf '%s = %s\n' 'pkgname' "$1"
     srcinfo.write_details "$1"
 }
@@ -567,7 +572,9 @@ function srcinfo.match_pkg() {
                 continue
             fi
         fi
-        [[ ${b} == "${match}" ]] && printf '%s\n' "${!guy}"
+        if [[ ${b} == "${match}" ]]; then
+            printf '%s\n' "${!guy}"
+        fi
     done
 }
 
