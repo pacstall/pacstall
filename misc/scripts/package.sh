@@ -270,7 +270,7 @@ gather_down
 
 unset payload_arr
 if [[ -n $PACSTALL_PAYLOAD && ! -f "${PACDIR}-pacdeps-${pacname}" ]]; then
-    IFS=$'\n' read -rd '' -a payload_arr <<< "$(awk -v RS=';:' '{if (NF) print $0}' <<< "${PACSTALL_PAYLOAD}")"
+    mapfile -t payload_arr < <(awk -v RS=';:' '{if (NF) print $0}' <<< "${PACSTALL_PAYLOAD}")
 fi
 
 for i in "${!source[@]}"; do
