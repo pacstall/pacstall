@@ -719,7 +719,7 @@ function install_builddepends() {
             touch "${PACDIR}-${i}-${pacname}"
         done
         for c in "${checkdepends[@]}"; do
-            check_builddepends "${m}" "checkdepends" &
+            check_builddepends "${c}" "checkdepends" &
         done
         wait
         for i in "needed-checkdepends" "missing-checkdepends" "unsatisfied-checkdepends"; do
