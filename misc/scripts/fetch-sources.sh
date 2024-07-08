@@ -649,7 +649,7 @@ function install_builddepends() {
                  build_dep="$(dep_const.get_pipe "${build_dep}")"
             fi
             dep_const.split_name_and_version "${build_dep}" just_build
-            if dep_const.apt_compare_to_constraints "${build_dep}"; then 
+            if dep_const.apt_compare_to_constraints "${build_dep}"; then
                 if ! is_apt_package_installed "${just_build[0]}"; then
                     # If not installed yet, we can mark it as possibly removable
                     not_installed_yet_builddepends+=("${realbuild}")
@@ -672,7 +672,7 @@ function install_builddepends() {
                  check_dep="$(dep_const.get_pipe "${check_dep}")"
             fi
             dep_const.split_name_and_version "${check_dep}" just_check
-            if dep_const.apt_compare_to_constraints "${check_dep}"; then 
+            if dep_const.apt_compare_to_constraints "${check_dep}"; then
                 if ! is_apt_package_installed "${just_check[0]}"; then
                     # If not installed yet, we can mark it as possibly removable
                     not_installed_yet_checkdepends+=("${realcheck}")
