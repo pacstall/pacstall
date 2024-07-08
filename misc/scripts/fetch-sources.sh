@@ -637,53 +637,71 @@ function is_compatible_arch() {
     { ignore_stack=true; return "${ret}"; }
 }
 
+function check_builddepends() {
+    local build_dep="${1}" type="${2}" realbuild just_build just_arch
+    realbuild="${build_dep}"
+    if dep_const.is_pipe "${build_dep}"; then
+         build_dep="$(dep_const.get_pipe "${build_dep}")"
+    fi
+    dep_const.split_name_and_version "${build_dep}" just_build
+    if dep_const.apt_compare_to_constraints "${build_dep}"; then
+        if ! is_apt_package_installed "${just_build[0]}"; then
+            echo "${realbuild}" >> "${PACDIR}-needed-${type}-${pacname}"
+
+            not_installed_yet_builddepends+=("${realbuild}")
+            just_arch="$(dep_const.get_arch "${just_build[0]}")"
+            if [[ ${just_build[0]} == *":${just_arch}" ]]; then
+                if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_build[0]%:*})?architecture(${just_arch})" -F "%p")" ]]; then
+                    if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_build[0]%:*}$)?architecture(${just_arch})" -F "%p")" ]]; then
+                        fancy_message sub "${CYAN}${realbuild}${NC} ${RED}✗${NC} [required]"
+                        continue
+                    fi
+                fi
+            else
+                if [[ -z "$(apt-cache search --no-generate --names-only "^${just_build[0]}\$" 2> /dev/null || apt-cache search --names-only "^${just_build[0]}\$")" ]]; then
+                    if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_build[0]})?architecture(${just_build})" -F "%p")" ]]; then
+                        if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_build[0]}$)?architecture(${just_build})" -F "%p")" ]]; then
+                            fancy_message sub "${CYAN}${realbuild}${NC} ${RED}✗${NC} [required]"
+                            continue
+                        fi
+                    fi
+                fi
+            fi
+            fancy_message sub "${CYAN}${just_build[0]}${NC} ${GREEN}↑${YELLOW}↓${NC} [remote]"
+        else
+            fancy_message sub "${CYAN}${just_build[0]}${NC} ${GREEN}✓${NC} [installed]"
+        fi
+    else
+        fancy_message sub "${CYAN}${realbuild}${NC} ${RED}✗${NC} [required]"
+    fi
+}
+
 function install_builddepends() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # shellcheck disable=SC2034
-    local build_dep not_installed_yet_builddepends bdeps_array bdeps_str check_dep not_installed_yet_checkdepends cdeps_array bcons_array bcons_str realbuild realcheck just_build just_check
+    local c m not_installed_yet_builddepends bdeps_array bdeps_str not_installed_yet_checkdepends cdeps_array bcons_array bcons_str
     if [[ -n ${makedepends[*]} ]]; then
         fancy_message info "Checking build dependencies"
-        for build_dep in "${makedepends[@]}"; do
-            realbuild="${build_dep}"
-            if dep_const.is_pipe "${build_dep}"; then
-                 build_dep="$(dep_const.get_pipe "${build_dep}")"
-            fi
-            dep_const.split_name_and_version "${build_dep}" just_build
-            if dep_const.apt_compare_to_constraints "${build_dep}"; then
-                if ! is_apt_package_installed "${just_build[0]}"; then
-                    # If not installed yet, we can mark it as possibly removable
-                    not_installed_yet_builddepends+=("${realbuild}")
-                    fancy_message sub "${CYAN}${just_build[0]}${NC} ${GREEN}↑${YELLOW}↓${NC} [remote]"
-                else
-                    fancy_message sub "${CYAN}${just_build[0]}${NC} ${GREEN}✓${NC} [installed]"
-                fi
-            else
-                fancy_message sub "${CYAN}${realbuild}${NC} ${RED}✗${NC} [required]"
-            fi
+        sudo rm -rf "${PACDIR}-needed-builddepends-${pacname}"
+        for m in "${makedepends[@]}"; do
+            check_builddepends "${m}" "builddepends" &
         done
+        wait
+        mapfile -t not_installed_yet_builddepends <"${PACDIR}-needed-builddepends-${pacname}"
+        sudo rm -rf "${PACDIR}-needed-builddepends-${pacname}"
         # format for apt satisfy/deb control file
         dep_const.format_control not_installed_yet_builddepends bdeps_array
     fi
-    if [[ -n ${checkdepends[*]} ]] && is_function "check"; then
+    if [[ -n ${checkdepends[*]} ]]; then
         fancy_message info "Checking check dependencies"
-        for check_dep in "${checkdepends[@]}"; do
-            realcheck="${check_dep}"
-            if dep_const.is_pipe "${check_dep}"; then
-                 check_dep="$(dep_const.get_pipe "${check_dep}")"
-            fi
-            dep_const.split_name_and_version "${check_dep}" just_check
-            if dep_const.apt_compare_to_constraints "${check_dep}"; then
-                if ! is_apt_package_installed "${just_check[0]}"; then
-                    # If not installed yet, we can mark it as possibly removable
-                    not_installed_yet_checkdepends+=("${realcheck}")
-                    fancy_message sub "${CYAN}${just_check[0]}${NC} ${GREEN}↑${YELLOW}↓${NC} [remote]"
-                else
-                    fancy_message sub "${CYAN}${just_check[0]}${NC} ${GREEN}✓${NC} [installed]"
-                fi
-            else
-                fancy_message sub "${CYAN}${realcheck}${NC} ${RED}✗${NC} [required]"
-            fi
+        sudo rm -rf "${PACDIR}-needed-checkdepends-${pacname}"
+        for c in "${checkdepends[@]}"; do
+            check_builddepends "${m}" "checkdepends" &
         done
+        wait
+        mapfile -t not_installed_yet_checkdepends <"${PACDIR}-needed-checkdepends-${pacname}"
+        sudo rm -rf "${PACDIR}-needed-checkdepends-${pacname}"
+        # format for apt satisfy/deb control file
         dep_const.format_control not_installed_yet_checkdepends cdeps_array
     fi
     if ((${#not_installed_yet_builddepends[@]} != 0)) && ((${#not_installed_yet_checkdepends[@]} == 0)); then
