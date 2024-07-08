@@ -638,6 +638,7 @@ function is_compatible_arch() {
 }
 
 function check_builddepends() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local build_dep="${1}" type="${2}" realbuild just_build just_arch
     realbuild="${build_dep}"
     if dep_const.is_pipe "${build_dep}"; then
@@ -655,8 +656,8 @@ function check_builddepends() {
         fi
     else
         if [[ -z "$(apt-cache search --no-generate --names-only "^${just_build[0]}\$" 2> /dev/null || apt-cache search --names-only "^${just_build[0]}\$")" ]]; then
-            if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_build[0]})?architecture(${just_build})" -F "%p")" ]]; then
-                if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_build[0]}$)?architecture(${just_build})" -F "%p")" ]]; then
+            if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_build[0]})?architecture(${just_arch})" -F "%p")" ]]; then
+                if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_build[0]}$)?architecture(${just_arch})" -F "%p")" ]]; then
                     fancy_message sub "${CYAN}${realbuild}${NC} ${RED}✗${NC} [required]"
                     echo "${realbuild}" >> "${PACDIR}-missing-${type}-${pacname}"
                     return 0
