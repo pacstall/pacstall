@@ -23,9 +23,9 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 # Pacstall version
-version_number="5.3.1"
-version_name="Skobeloff"
-declare -A version_color=([r]="0" [g]="116" [b]="116")
+version_number="5.3.2"
+version_name="Verdigris"
+declare -A version_color=([r]="67" [g]="179" [b]="174")
 
 # Configuration
 export LC_ALL=C
