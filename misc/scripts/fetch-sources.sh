@@ -640,13 +640,17 @@ function is_compatible_arch() {
 function install_builddepends() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # shellcheck disable=SC2034
-    local build_dep not_installed_yet_builddepends bdeps_array bdeps_str check_dep not_installed_yet_checkdepends cdeps_array bcons_array bcons_str
+    local build_dep not_installed_yet_builddepends bdeps_array bdeps_str check_dep not_installed_yet_checkdepends cdeps_array bcons_array bcons_str realbuild realcheck
     if [[ -n ${makedepends[*]} ]]; then
         fancy_message info "Checking build dependencies"
         for build_dep in "${makedepends[@]}"; do
+            realbuild="${build_dep}"
+            if dep_const.is_pipe "${build_dep}"; then
+                 build_dep="$(dep_const.get_pipe "${build_dep}")"
+            fi
             if ! is_apt_package_installed "${build_dep}"; then
                 # If not installed yet, we can mark it as possibly removable
-                not_installed_yet_builddepends+=("${build_dep}")
+                not_installed_yet_builddepends+=("${realbuild}")
                 fancy_message sub "${CYAN}${build_dep}${NC} ${RED}✗${NC} [required]"
             else
                 fancy_message sub "${CYAN}${build_dep}${NC} ${GREEN}✓${NC} [installed]"
@@ -658,8 +662,12 @@ function install_builddepends() {
     if [[ -n ${checkdepends[*]} ]] && is_function "check"; then
         fancy_message info "Checking check dependencies"
         for check_dep in "${checkdepends[@]}"; do
+            realcheck="${check_dep}"
+            if dep_const.is_pipe "${check_dep}"; then
+                 check_dep="$(dep_const.get_pipe "${check_dep}")"
+            fi
             if ! is_apt_package_installed "${check_dep}"; then
-                not_installed_yet_checkdepends+=("${check_dep}")
+                not_installed_yet_checkdepends+=("${realcheck}")
                 fancy_message sub "${CYAN}${check_dep}${NC} ${RED}✗${NC} [required]"
             else
                 fancy_message sub "${CYAN}${check_dep}${NC} ${GREEN}✓${NC} [installed]"
