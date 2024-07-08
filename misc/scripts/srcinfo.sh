@@ -539,9 +539,9 @@ function srcinfo.match_pkg() {
     local declares d bases b guy match out srcfile="${1}" search="${2}" pkg="${3}"
     if [[ ${pkg} == "pkgbase:"* || ${search} == "pkgbase" ]]; then
         pkg="${pkg/pkgbase:/}"
-        match="srcinfo_${search}_${pkg//-/_}_pkgbase"
+        match="srcinfo_${search%%_*}_${pkg//-/_}_pkgbase"
     else
-        match="srcinfo_${search}_${pkg//-/_}"
+        match="srcinfo_${search%%_*}_${pkg//-/_}"
     fi
     mapfile -t declares < <(srcinfo.print_var "${srcfile}" "${search}" | awk '{sub(/^declare -a |^declare -- |^declare -x /, ""); print}')
     [[ ${search} == "pkgbase" && -z ${declares[*]} ]] \
