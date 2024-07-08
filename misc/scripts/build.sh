@@ -66,6 +66,7 @@ function check_apt_dep() {
         if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]%:*})?architecture(${just_arch})" -F "%p")" ]]; then
             if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_name[0]%:*}$)?architecture(${just_arch})" -F "%p")" ]]; then
                 echo "${real_dep}" >> "${PACDIR}-missing-deps-${pacname}"
+                fancy_message sub "${BLUE}${real_dep}${NC} ${RED}✗${NC} [required]"
                 return 0
             fi
         fi
@@ -74,6 +75,7 @@ function check_apt_dep() {
             if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]})?architecture(${just_arch})" -F "%p")" ]]; then
                 if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_name[0]}$)?architecture(${just_arch})" -F "%p")" ]]; then
                     echo "${real_dep}" >> "${PACDIR}-missing-deps-${pacname}"
+                    fancy_message sub "${BLUE}${real_dep}${NC} ${RED}✗${NC} [required]"
                     return 0
                 fi
             fi
