@@ -637,43 +637,123 @@ function is_compatible_arch() {
     { ignore_stack=true; return "${ret}"; }
 }
 
+function check_builddepends() {
+    local build_dep="${1}" type="${2}" realbuild just_build just_arch
+    realbuild="${build_dep}"
+    if dep_const.is_pipe "${build_dep}"; then
+         build_dep="$(dep_const.get_pipe "${build_dep}")"
+    fi
+    dep_const.split_name_and_version "${build_dep}" just_build
+    just_arch="$(dep_const.get_arch "${just_build[0]}")"
+    if [[ ${just_build[0]} == *":${just_arch}" ]]; then
+        if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_build[0]%:*})?architecture(${just_arch})" -F "%p")" ]]; then
+            if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_build[0]%:*}$)?architecture(${just_arch})" -F "%p")" ]]; then
+                fancy_message sub "${CYAN}${realbuild}${NC} ${RED}✗${NC} [required]"
+                echo "${realbuild}" >> "${PACDIR}-missing-${type}-${pacname}"
+                return 0
+            fi
+        fi
+    else
+        if [[ -z "$(apt-cache search --no-generate --names-only "^${just_build[0]}\$" 2> /dev/null || apt-cache search --names-only "^${just_build[0]}\$")" ]]; then
+            if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_build[0]})?architecture(${just_build})" -F "%p")" ]]; then
+                if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_build[0]}$)?architecture(${just_build})" -F "%p")" ]]; then
+                    fancy_message sub "${CYAN}${realbuild}${NC} ${RED}✗${NC} [required]"
+                    echo "${realbuild}" >> "${PACDIR}-missing-${type}-${pacname}"
+                    return 0
+                fi
+            fi
+        fi
+    fi
+    if dep_const.apt_compare_to_constraints "${build_dep}"; then
+        if ! is_apt_package_installed "${just_build[0]}"; then
+            echo "${realbuild}" >> "${PACDIR}-needed-${type}-${pacname}"
+            just_arch="$(dep_const.get_arch "${just_build[0]}")"
+            fancy_message sub "${CYAN}${just_build[0]}${NC} ${GREEN}↑${YELLOW}↓${NC} [remote]"
+        else
+            fancy_message sub "${CYAN}${just_build[0]}${NC} ${GREEN}✓${NC} [installed]"
+        fi
+    else
+        echo "${realbuild}" >> "${PACDIR}-unsatisifed-${type}-${pacname}"
+        fancy_message sub "${CYAN}${realbuild}${NC} ${RED}✗${NC} [required]"
+    fi
+}
+
 function install_builddepends() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # shellcheck disable=SC2034
-    local build_dep not_installed_yet_builddepends bdeps_array bdeps_str check_dep not_installed_yet_checkdepends cdeps_array bcons_array bcons_str
+    local c m needed_builddepends missing_builddepends unsatisfied_builddepends needed_checkdepends missing_checkdepends unsatisfied_checkdepends bdeps_array bdeps_str cdeps_array bcons_array bcons_str
     if [[ -n ${makedepends[*]} ]]; then
-        for build_dep in "${makedepends[@]}"; do
-            if ! is_apt_package_installed "${build_dep}"; then
-                # If not installed yet, we can mark it as possibly removable
-                not_installed_yet_builddepends+=("${build_dep}")
-            fi
+        fancy_message info "Checking build dependencies"
+        for i in "needed-builddepends" "missing-builddepends" "unsatisfied-builddepends"; do
+            sudo rm -rf "${PACDIR}-${i}-${pacname}"
+            touch "${PACDIR}-${i}-${pacname}"
         done
+        for m in "${makedepends[@]}"; do
+            check_builddepends "${m}" "builddepends" &
+        done
+        wait
+        for i in "needed-builddepends" "missing-builddepends" "unsatisfied-builddepends"; do
+            mapfile -t "${i//-/_}" <"${PACDIR}-${i}-${pacname}"
+            sudo rm -rf "${PACDIR}-${i}-${pacname}"
+        done
+        if [[ -n ${missing_builddepends[*]} ]]; then
+            echo -ne "\t"
+            fancy_message error "${CYAN}$(printf "${CYAN}%s${NC}, " "${missing_builddepends[@]}" | sed 's/, $/\n/')${NC} does not exist in apt repositories"
+        fi
+        if [[ -n ${unsatisfied_builddepends[*]} ]]; then
+            echo -ne "\t"
+            fancy_message error "${CYAN}$(printf "${CYAN}%s${NC}, " "${unsatisfied_builddepends[@]}" | sed 's/, $/\n/')${NC} version(s) cannot be satisfied"
+        fi
+        if [[ -n ${missing_builddepends[*]} || -n ${unsatisfied_builddepends[*]} ]]; then
+            fancy_message info "Cleaning up"
+            cleanup
+            exit 1
+        fi
         # format for apt satisfy/deb control file
-        dep_const.format_control not_installed_yet_builddepends bdeps_array
+        dep_const.format_control needed_builddepends bdeps_array
     fi
-    if [[ -n ${checkdepends[*]} ]] && is_function "check"; then
-        for check_dep in "${checkdepends[@]}"; do
-            if ! is_apt_package_installed "${check_dep}"; then
-                not_installed_yet_checkdepends+=("${check_dep}")
-            fi
+    if [[ -n ${checkdepends[*]} ]]; then
+        fancy_message info "Checking check dependencies"
+        for i in "needed-checkdepends" "missing-checkdepends" "unsatisfied-checkdepends"; do
+            sudo rm -rf "${PACDIR}-${i}-${pacname}"
+            touch "${PACDIR}-${i}-${pacname}"
         done
-        dep_const.format_control not_installed_yet_checkdepends cdeps_array
+        for c in "${checkdepends[@]}"; do
+            check_builddepends "${c}" "checkdepends" &
+        done
+        wait
+        for i in "needed-checkdepends" "missing-checkdepends" "unsatisfied-checkdepends"; do
+            mapfile -t "${i//-/_}" <"${PACDIR}-${i}-${pacname}"
+            sudo rm -rf "${PACDIR}-${i}-${pacname}"
+        done
+        if [[ -n ${missing_checkdepends[*]} ]]; then
+            echo -ne "\t"
+            fancy_message error "${CYAN}$(printf "${CYAN}%s${NC}, " "${missing_checkdepends[@]}" | sed 's/, $/\n/')${NC} does not exist in apt repositories"
+        fi
+        if [[ -n ${unsatisfied_checkdepends[*]} ]]; then
+            echo -ne "\t"
+            fancy_message error "${CYAN}$(printf "${CYAN}%s${NC}, " "${unsatisfied_checkdepends[@]}" | sed 's/, $/\n/')${NC} version(s) cannot be satisfied"
+        fi
+        if [[ -n ${missing_checkdepends[*]} || -n ${unsatisfied_checkdepends[*]} ]]; then
+            fancy_message info "Cleaning up"
+            cleanup
+            exit 1
+        fi
+        # format for apt satisfy/deb control file
+        dep_const.format_control needed_checkdepends cdeps_array
     fi
-    if ((${#not_installed_yet_builddepends[@]} != 0)) && ((${#not_installed_yet_checkdepends[@]} == 0)); then
+    if ((${#needed_builddepends[@]} != 0)) && ((${#needed_checkdepends[@]} == 0)); then
         # if any makedeps are not installed, and there are no checkdeps to install
         dep_const.comma_array bdeps_array bdeps_str
-        fancy_message info "${BLUE}$pacname${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to build"
-    elif ((${#not_installed_yet_builddepends[@]} == 0)) && ((${#not_installed_yet_checkdepends[@]} != 0)); then
+    elif ((${#needed_builddepends[@]} == 0)) && ((${#needed_checkdepends[@]} != 0)); then
         # if any checkdeps are not installed, and there are no makedeps to install
         dep_const.comma_array cdeps_array bdeps_str
-        fancy_message info "${BLUE}$pacname${NC} requires ${CYAN}${not_installed_yet_checkdepends[*]}${NC} to perform checks"
-    elif ((${#not_installed_yet_builddepends[@]} != 0)) && ((${#not_installed_yet_checkdepends[@]} != 0)); then
+    elif ((${#needed_builddepends[@]} != 0)) && ((${#needed_checkdepends[@]} != 0)); then
         # if both need installs, append needed checkdeps to makedeps
         bdeps_array+=("${cdeps_array[@]}")
         dep_const.comma_array bdeps_array bdeps_str
-        fancy_message info "${BLUE}$pacname${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to build, and ${CYAN}${not_installed_yet_checkdepends[*]}${NC} to perform checks"
     fi
-    if ((${#not_installed_yet_builddepends[@]} != 0 || ${#not_installed_yet_checkdepends[@]} != 0 || ${#makeconflicts[@]} != 0 || ${#checkconflicts[@]} != 0)); then
+    if ((${#needed_builddepends[@]} != 0 || ${#needed_checkdepends[@]} != 0 || ${#makeconflicts[@]} != 0 || ${#checkconflicts[@]} != 0)); then
         fancy_message sub "Creating build dependency/conflicts dummy package"
         (
             unset pre_{upgrade,install,remove} post_{upgrade,install,remove} priority provides conflicts replaces breaks gives enhances recommends custom_fields

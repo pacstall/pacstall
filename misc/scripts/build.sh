@@ -66,6 +66,7 @@ function check_apt_dep() {
         if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]%:*})?architecture(${just_arch})" -F "%p")" ]]; then
             if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_name[0]%:*}$)?architecture(${just_arch})" -F "%p")" ]]; then
                 echo "${real_dep}" >> "${PACDIR}-missing-deps-${pacname}"
+                fancy_message sub "${BLUE}${real_dep}${NC} ${RED}✗${NC} [required]"
                 return 0
             fi
         fi
@@ -74,6 +75,7 @@ function check_apt_dep() {
             if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]})?architecture(${just_arch})" -F "%p")" ]]; then
                 if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_name[0]}$)?architecture(${just_arch})" -F "%p")" ]]; then
                     echo "${real_dep}" >> "${PACDIR}-missing-deps-${pacname}"
+                    fancy_message sub "${BLUE}${real_dep}${NC} ${RED}✗${NC} [required]"
                     return 0
                 fi
             fi
@@ -131,7 +133,7 @@ function check_opt_dep() {
 
     # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
     # If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of it's status
-    if ! is_apt_package_installed "${opt}"; then
+    if ! is_apt_package_installed "${just_name[0]}"; then
         echo "${realopt}: ${optdesc}" >> "${PACDIR}-suggested-optdeps-${pacname}"
     else
         echo "${realopt}" >> "${PACDIR}-already-installed-optdeps-${pacname}"
