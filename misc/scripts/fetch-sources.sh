@@ -640,7 +640,7 @@ function is_compatible_arch() {
 function install_builddepends() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # shellcheck disable=SC2034
-    local build_dep not_installed_yet_builddepends bdeps_array bdeps_str check_dep not_installed_yet_checkdepends cdeps_array bcons_array bcons_str realbuild realcheck
+    local build_dep not_installed_yet_builddepends bdeps_array bdeps_str check_dep not_installed_yet_checkdepends cdeps_array bcons_array bcons_str realbuild realcheck just_build just_check
     if [[ -n ${makedepends[*]} ]]; then
         fancy_message info "Checking build dependencies"
         for build_dep in "${makedepends[@]}"; do
@@ -648,12 +648,17 @@ function install_builddepends() {
             if dep_const.is_pipe "${build_dep}"; then
                  build_dep="$(dep_const.get_pipe "${build_dep}")"
             fi
-            if ! is_apt_package_installed "${build_dep}"; then
-                # If not installed yet, we can mark it as possibly removable
-                not_installed_yet_builddepends+=("${realbuild}")
-                fancy_message sub "${CYAN}${build_dep}${NC} ${RED}✗${NC} [required]"
+            dep_const.split_name_and_version "${build_dep}" just_build
+            if dep_const.apt_compare_to_constraints "${build_dep}"; then 
+                if ! is_apt_package_installed "${just_build[0]}"; then
+                    # If not installed yet, we can mark it as possibly removable
+                    not_installed_yet_builddepends+=("${realbuild}")
+                    fancy_message sub "${CYAN}${just_build[0]}${NC} ${GREEN}↑${YELLOW}↓${NC} [remote]"
+                else
+                    fancy_message sub "${CYAN}${just_build[0]}${NC} ${GREEN}✓${NC} [installed]"
+                fi
             else
-                fancy_message sub "${CYAN}${build_dep}${NC} ${GREEN}✓${NC} [installed]"
+                fancy_message sub "${CYAN}${realbuild}${NC} ${RED}✗${NC} [required]"
             fi
         done
         # format for apt satisfy/deb control file
@@ -666,11 +671,17 @@ function install_builddepends() {
             if dep_const.is_pipe "${check_dep}"; then
                  check_dep="$(dep_const.get_pipe "${check_dep}")"
             fi
-            if ! is_apt_package_installed "${check_dep}"; then
-                not_installed_yet_checkdepends+=("${realcheck}")
-                fancy_message sub "${CYAN}${check_dep}${NC} ${RED}✗${NC} [required]"
+            dep_const.split_name_and_version "${check_dep}" just_check
+            if dep_const.apt_compare_to_constraints "${check_dep}"; then 
+                if ! is_apt_package_installed "${just_check[0]}"; then
+                    # If not installed yet, we can mark it as possibly removable
+                    not_installed_yet_checkdepends+=("${realcheck}")
+                    fancy_message sub "${CYAN}${just_check[0]}${NC} ${GREEN}↑${YELLOW}↓${NC} [remote]"
+                else
+                    fancy_message sub "${CYAN}${just_check[0]}${NC} ${GREEN}✓${NC} [installed]"
+                fi
             else
-                fancy_message sub "${CYAN}${check_dep}${NC} ${GREEN}✓${NC} [installed]"
+                fancy_message sub "${CYAN}${realcheck}${NC} ${RED}✗${NC} [required]"
             fi
         done
         dep_const.format_control not_installed_yet_checkdepends cdeps_array
