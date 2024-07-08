@@ -649,7 +649,7 @@ function install_builddepends() {
                 not_installed_yet_builddepends+=("${build_dep}")
                 fancy_message sub "${CYAN}${build_dep}${NC} ${RED}✗${NC} [required]"
             else
-                fancy_message sub "${CYAN}${build_dep} ${GREEN}✓${NC} [installed]"
+                fancy_message sub "${CYAN}${build_dep}${NC} ${GREEN}✓${NC} [installed]"
             fi
         done
         # format for apt satisfy/deb control file
@@ -662,7 +662,7 @@ function install_builddepends() {
                 not_installed_yet_checkdepends+=("${check_dep}")
                 fancy_message sub "${CYAN}${check_dep}${NC} ${RED}✗${NC} [required]"
             else
-                fancy_message sub "${CYAN}${check_dep} ${GREEN}✓${NC} [installed]"
+                fancy_message sub "${CYAN}${check_dep}${NC} ${GREEN}✓${NC} [installed]"
             fi
         done
         dep_const.format_control not_installed_yet_checkdepends cdeps_array
