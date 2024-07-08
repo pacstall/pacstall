@@ -300,6 +300,9 @@ function prompt_optdepends() {
         dep_const.comma_array depends_for_logging out_str
         deblog "Depends" "${out_str}"
     fi
+    for i in "gives" "deps" "missing-deps" "not-satisfied-deps" "suggested-optdeps" "missing-optdeps" "not-satisfied-optdeps" "already-installed-optdeps"; do
+        sudo rm -rf "${PACDIR}-${i}-${pacname}"
+    done
 }
 
 function generate_changelog() {
