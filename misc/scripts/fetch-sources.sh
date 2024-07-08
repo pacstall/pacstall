@@ -654,7 +654,7 @@ function check_builddepends() {
                 if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_build[0]%:*})?architecture(${just_arch})" -F "%p")" ]]; then
                     if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_build[0]%:*}$)?architecture(${just_arch})" -F "%p")" ]]; then
                         fancy_message sub "${CYAN}${realbuild}${NC} ${RED}✗${NC} [required]"
-                        continue
+                        return 0
                     fi
                 fi
             else
@@ -662,7 +662,7 @@ function check_builddepends() {
                     if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_build[0]})?architecture(${just_build})" -F "%p")" ]]; then
                         if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_build[0]}$)?architecture(${just_build})" -F "%p")" ]]; then
                             fancy_message sub "${CYAN}${realbuild}${NC} ${RED}✗${NC} [required]"
-                            continue
+                            return 0
                         fi
                     fi
                 fi
