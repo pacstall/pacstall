@@ -642,19 +642,27 @@ function install_builddepends() {
     # shellcheck disable=SC2034
     local build_dep not_installed_yet_builddepends bdeps_array bdeps_str check_dep not_installed_yet_checkdepends cdeps_array bcons_array bcons_str
     if [[ -n ${makedepends[*]} ]]; then
+        fancy_message info "Checking build dependencies"
         for build_dep in "${makedepends[@]}"; do
             if ! is_apt_package_installed "${build_dep}"; then
                 # If not installed yet, we can mark it as possibly removable
                 not_installed_yet_builddepends+=("${build_dep}")
+                fancy_message sub "${CYAN}${build_dep}${NC} ${RED}✗${NC} [required]"
+            else
+                fancy_message sub "${CYAN}${build_dep} ${GREEN}✓${NC} [installed]"
             fi
         done
         # format for apt satisfy/deb control file
         dep_const.format_control not_installed_yet_builddepends bdeps_array
     fi
     if [[ -n ${checkdepends[*]} ]] && is_function "check"; then
+        fancy_message info "Checking check dependencies"
         for check_dep in "${checkdepends[@]}"; do
             if ! is_apt_package_installed "${check_dep}"; then
                 not_installed_yet_checkdepends+=("${check_dep}")
+                fancy_message sub "${CYAN}${check_dep}${NC} ${RED}✗${NC} [required]"
+            else
+                fancy_message sub "${CYAN}${check_dep} ${GREEN}✓${NC} [installed]"
             fi
         done
         dep_const.format_control not_installed_yet_checkdepends cdeps_array
@@ -662,16 +670,13 @@ function install_builddepends() {
     if ((${#not_installed_yet_builddepends[@]} != 0)) && ((${#not_installed_yet_checkdepends[@]} == 0)); then
         # if any makedeps are not installed, and there are no checkdeps to install
         dep_const.comma_array bdeps_array bdeps_str
-        fancy_message info "${BLUE}$pacname${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to build"
     elif ((${#not_installed_yet_builddepends[@]} == 0)) && ((${#not_installed_yet_checkdepends[@]} != 0)); then
         # if any checkdeps are not installed, and there are no makedeps to install
         dep_const.comma_array cdeps_array bdeps_str
-        fancy_message info "${BLUE}$pacname${NC} requires ${CYAN}${not_installed_yet_checkdepends[*]}${NC} to perform checks"
     elif ((${#not_installed_yet_builddepends[@]} != 0)) && ((${#not_installed_yet_checkdepends[@]} != 0)); then
         # if both need installs, append needed checkdeps to makedeps
         bdeps_array+=("${cdeps_array[@]}")
         dep_const.comma_array bdeps_array bdeps_str
-        fancy_message info "${BLUE}$pacname${NC} requires ${CYAN}${not_installed_yet_builddepends[*]}${NC} to build, and ${CYAN}${not_installed_yet_checkdepends[*]}${NC} to perform checks"
     fi
     if ((${#not_installed_yet_builddepends[@]} != 0 || ${#not_installed_yet_checkdepends[@]} != 0 || ${#makeconflicts[@]} != 0 || ${#checkconflicts[@]} != 0)); then
         fancy_message sub "Creating build dependency/conflicts dummy package"
