@@ -23,9 +23,9 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 # Pacstall version
-version_number="5.2.1"
-version_name="Lemon-Lime-Flavored Non-Caffeinated Soft Drink"
-declare -A version_color=([r]="0" [g]="186" [b]="71")
+version_number="5.3.3"
+version_name="Keppel"
+declare -A version_color=([r]="58" [g]="176" [b]="158")
 
 # Configuration
 export LC_ALL=C
@@ -228,7 +228,7 @@ function cleanup() {
                 sudo rm -rf "${PACDIR}/"*
             fi
             sudo rm -rf "${STAGEDIR:-/usr/src/pacstall}/${pacname}"
-            for i in "deps" "gives" "missing-deps" "not-satisfied-deps" "suggested-optdeps" "missing-optdeps" "not-satisfied-optdeps" "already-installed-optdeps" "selectopts-optdeps"; do
+            for i in "deps" "gives" "missing-deps" "not-satisfied-deps" "suggested-optdeps" "missing-optdeps" "not-satisfied-optdeps" "already-installed-optdeps" "selectopts-optdeps" "needed-builddepends" "missing-builddepends" "unsatisfied-builddepends" "needed-checkdepends" "missing-checkdepends" "unsatisfied-checkdepends"; do
                 if [[ -f "${PACDIR}-${i}-${pacname}" ]]; then
                     sudo rm -rf "${PACDIR}-${i}-${pacname}"
                 fi
@@ -460,8 +460,8 @@ function download() {
 # This will then output the options given by the user to ${PACDIR}-selectopts-${varname}-${pacname}, which you can then turn into another array
 function select_options() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local message="${1}" length="${2}" varname="${3}"
-    rm -f "${PACDIR}-selectopts-${varname}-${pacname}"
+    local message="${1}" length="${2}" varname="${3}" optname="${pkgbase:-${pacname}}"
+    rm -f "${PACDIR}-selectopts-${varname}-${optname}"
     if ((length >= 6)); then
         echo -ne "${message} [${BOLD}1-$length${NC} or ${BIGreen}Y${NC}] "
     else
@@ -480,9 +480,9 @@ function select_options() {
         input="Y"
     fi
     if [[ -z $input ]] || [[ $input =~ ^[Yy]$ ]]; then
-        seq -s ' ' 1 "$length" | tee "${PACDIR}-selectopts-${varname}-${pacname}" > /dev/null
+        seq -s ' ' 1 "$length" | tee "${PACDIR}-selectopts-${varname}-${optname}" > /dev/null
     elif ((input == 0)) || [[ $input =~ ^[Nn]$ ]]; then
-        echo "n" | tee "${PACDIR}-selectopts-${varname}-${pacname}" > /dev/null
+        echo "n" | tee "${PACDIR}-selectopts-${varname}-${optname}" > /dev/null
     elif ! [[ $input =~ [a-zA-Z]+ ]] || [[ $input =~ ^[0-9]+$ ]]; then
         for i in "${input[@]}"; do
             unset split_arr
@@ -511,7 +511,7 @@ function select_options() {
                 out+=("$i")
             fi
         done
-        echo "${out[@]}" | tee "${PACDIR}-selectopts-${varname}-${pacname}" > /dev/null
+        echo "${out[@]}" | tee "${PACDIR}-selectopts-${varname}-${optname}" > /dev/null
     else
         select_options "$message" "$length" "$varname"
     fi
@@ -824,9 +824,14 @@ Helpful links:
                 else
                     unset pac_body pac_text
                 fi
-                if [[ ${2##*.} == "pacscript" ]]; then
-                    export PACKAGE="${2%.pacscript}"
-                    PACKAGE="${PACKAGE##*/}"
+                if [[ ${2##*.} == "pacscript" || ${2##*.} == "pacscript:"* ]]; then
+                    if [[ ${2##*.} =~ ^pacscript(:([a-zA-Z0-9_.-]+))$ ]]; then
+                        export CHILD="${BASH_REMATCH[2]/\:/}"
+                        PACKAGE="${2%.pacscript:${CHILD}}"
+                    else
+                        PACKAGE="${2%.pacscript}"
+                    fi
+                    export PACKAGE="${PACKAGE##*/}"
                     export type="install"
                     export local="yes"
                     PKGPATH="${2%/*}"
