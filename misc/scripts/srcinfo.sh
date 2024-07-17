@@ -313,6 +313,7 @@ function srcinfo._create_array() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local pkgbase="${1}" var_name="${2}" var_pref="${3}"
     if [[ -n ${pkgbase} ]]; then
+        pkgbase="${pkgbase//./_}" var_name="${var_name//./_}"
         if ! [[ -v "${var_pref}_${pkgbase}_array_${var_name}" ]]; then
             declare -ag "${var_pref}_${pkgbase}_array_${var_name}"
         fi
@@ -342,7 +343,7 @@ function srcinfo._promote_to_variable() {
 
 function srcinfo.parse() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local srcinfo_file var_prefix locbase temp_array ref total_list loop part i part_two split_up
+    local srcinfo_file var_prefix locbase temp_array ref total_list loop part i part_two split_up suffix
     srcinfo_file="${1:?No .SRCINFO passed to srcinfo.parse}"
     var_prefix="${2:?Variable prefix not passed to srcinfo.parse}"
     srcinfo.cleanup "${var_prefix}"
@@ -368,7 +369,7 @@ function srcinfo.parse() {
             # Do we have pkgbase first?
             if [[ ${temp_line[key]} == "pkgbase" ]]; then
                 locbase="pkgbase_${temp_line[value]//-/_}"
-                export globase="${temp_line[value]}"
+                export globase="${temp_line[value]//./_}"
             else
                 locbase="${temp_line[value]//-/_}"
                 export globase="temporary_pacstall_pkgbase"
@@ -396,10 +397,12 @@ function srcinfo.parse() {
             declare -n var_name="${var_prefix}_access"
             [[ ${loop} == "${var_prefix}_pkgbase"* ]] && global="pkgbase_"
             for i in "${!part[@]}"; do
+                suffix="${global}${part[${i}]//-/_}"
+                suffix="${suffix//./_}"
                 # Create our inner part
-                declare -ga "${var_prefix}_${global}${part[${i}]//-/_}"
+                declare -ga "${var_prefix}_${suffix}"
                 # Declare that relationship
-                var_name["${var_prefix}_${global}${part[${i}]//-/_}"]="${var_prefix}_${global}${part[${i}]//-/_}"
+                var_name["${var_prefix}_${suffix}"]="${var_prefix}_${suffix}"
             done
             unset global
         fi
@@ -466,6 +469,7 @@ function srcinfo.reformat_assoc_arr() {
     IFS='_' read -r -a pfs <<< "${in_name}"
     for pfx in "${!in_arr[@]}"; do
         base="${pfx%-*}" ida="${pfx##*-}" new="${base//-/_}"
+        new="${new//./_}"
         app+=("$(printf "%s[%s]=\"%s\"\n" "${pfs[0]}_${pfs[1]}_${new}" "${ida}" "${in_arr[${pfx}]}")")
     done
 }
@@ -490,6 +494,7 @@ function srcinfo.print_var() {
         return 0
     fi
     for var in "${bases[@]}"; do
+        var="${var//./_}"
         declare -n output="${var}_array_${found}"
         declare -n name="${var}_array_pkgname"
         if [[ -n ${output[*]} ]]; then
@@ -548,6 +553,7 @@ function srcinfo.print_var() {
 function srcinfo.match_pkg() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local declares d bases b guy match out srcfile="${1}" search="${2}" pkg="${3}"
+    pkg="${pkg//./_}"
     if [[ ${pkg} == "pkgbase:"* || ${search} == "pkgbase" ]]; then
         pkg="${pkg/pkgbase:/}"
         match="srcinfo_${search%%_*}_${pkg//-/_}_pkgbase"
