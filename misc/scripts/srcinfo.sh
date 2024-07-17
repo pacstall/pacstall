@@ -226,6 +226,7 @@ function srcinfo.write_global() {
                             eval "${_//${seek}/${rep}}"
                         fi
                     done
+                    # shellcheck disable=SC2076
                     if [[ " ${multivalued_arch_attrs[*]} " =~ " ${ar} " ]]; then
                         unset "${ar}"
                     fi
