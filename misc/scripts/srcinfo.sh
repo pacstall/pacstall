@@ -160,7 +160,7 @@ function srcinfo.vars() {
 function srcinfo.write_global() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # shellcheck disable=SC2034
-    local CARCH='CARCH_REPLACE' DISTRO="${DISTRO}" CDISTRO="${CDISTRO}" AARCH='AARCH_REPLACE' var ar aars bar ars rar rep seek
+    local CARCH='CARCH_REPLACE' DISTRO="${DISTRO}" CDISTRO="${CDISTRO}" AARCH='AARCH_REPLACE' var ar aars bar ars rar rep seek multilist
     local -A AARCHS_MAP=(
         ["amd64"]="x86_64"
         ["arm64"]="aarch64"
@@ -183,9 +183,14 @@ function srcinfo.write_global() {
         ["riscv64"]="riscv64"
         ["s390x"]="s390x"
     )
-    for ar in "${allars[@]}"; do
-        [[ ${ar} != "arch" ]] \
-            && local -n bar="${ar}"
+    multilist=("${multivalued_arch_attrs[@]}")
+    for i in "${multivalued_arch_attrs[@]}"; do
+        for j in {amd64,x86_64,arm64,aarch64,armel,arm,armhf,armv7h,i386,i686,mips64el,ppc64el,riscv64,s390x}; do
+          multilist+=("${i}_${j}")
+        done
+    done
+    for ar in "${multilist[@]}"; do
+        local -n bar="${ar}"
         if [[ -n ${bar[*]} ]]; then
             for ars in "${bar[@]}"; do
                 ars="${ars//+([[:space:]])/ }"
@@ -209,6 +214,7 @@ function srcinfo.write_global() {
                                 rep="${aars}"
                             fi
                         fi
+                        local -n fin="${ar}_${rep}"
                         # shellcheck disable=SC2076
                         if [[ " ${AARCHS_MAP[*]} " =~ " ${ar##*_} " || " ${!AARCHS_MAP[*]} " =~ " ${ar##*_} " || ${ar} == *"x86_64" ]]; then
                             : "${ar}=${ars}"
@@ -216,9 +222,14 @@ function srcinfo.write_global() {
                         else
                             : "${ar}_${aars}=${ars}"
                         fi
-                        eval "${_//${seek}/${rep}}"
+                        if [[ -z ${fin[*]} ]]; then
+                            eval "${_//${seek}/${rep}}"
+                        fi
                     done
-                    unset "${ar}"
+                    # shellcheck disable=SC2076
+                    if [[ " ${multivalued_arch_attrs[*]} " =~ " ${ar} " ]]; then
+                        unset "${ar}"
+                    fi
                 fi
             done
         fi
