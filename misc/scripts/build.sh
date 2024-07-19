@@ -647,7 +647,7 @@ function makedeb() {
     unset pre_inst_upg post_inst_upg
     echo -e "sudo rm -f ${METADIR:?}/$pacname\nsudo rm -f /etc/apt/preferences.d/${pacname//./-}-pin" | sudo tee -a "$STAGEDIR/$pacname/DEBIAN/postrm" > /dev/null
     local postfile
-    for postfile in {postrm,postinst,preinst}; do
+    for postfile in {postrm,postinst,preinst,prerm}; do
         if [[ -f "$STAGEDIR/$pacname/DEBIAN/${postfile}" ]]; then
             sudo chmod -x "$STAGEDIR/$pacname/DEBIAN/${postfile}" &> /dev/null
             sudo chmod 755 "$STAGEDIR/$pacname/DEBIAN/${postfile}" &> /dev/null
