@@ -510,6 +510,7 @@ function makedeb() {
     fi
 
     if [[ -n ${suggests[*]} || ${optdepends[*]} ]]; then
+        # shellcheck disable=SC2034
         local all_suggests=("${suggests[@]}" "${optdepends[@]}")
         deblog_depends all_suggests "Suggests"
     fi
