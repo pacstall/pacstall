@@ -145,10 +145,10 @@ function srcinfo.write_details() {
 function srcinfo.vars() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local _distros _vars _archs _sums distros \
-        vars="depends makedepends optdepends pacdeps checkdepends provides conflicts breaks replaces enhances recommends makeconflicts checkconflicts source" \
+        vars="depends makedepends optdepends pacdeps checkdepends provides conflicts breaks replaces enhances recommends suggests makeconflicts checkconflicts source" \
         sums="b2 sha512 sha384 sha256 sha224 sha1 md5"
     allvars=(pkgname gives pkgver pkgrel epoch pkgdesc url priority)
-    allars=(arch depends makedepends checkdepends optdepends pacdeps conflicts makeconflicts checkconflicts breaks replaces provides enhances recommends incompatible compatible backup mask noextract nosubmodules license maintainer repology custom_fields source)
+    allars=(arch depends makedepends checkdepends optdepends pacdeps conflicts makeconflicts checkconflicts breaks replaces provides enhances recommends suggests incompatible compatible backup mask noextract nosubmodules license maintainer repology custom_fields source)
     # shellcheck disable=SC2124
     distros="${PACSTALL_KNOWN_DISTROS[@]}"
     _distros="{${distros// /,}}" _vars="{${vars// /,}}" _sums="{${sums// /,}}"
@@ -244,7 +244,7 @@ function srcinfo.write_package() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local singlevalued=(gives pkgdesc url priority)
     local multivalued=(arch license depends checkdepends optdepends pacdeps
-        provides checkconflicts conflicts breaks replaces enhances recommends backup repology)
+        provides checkconflicts conflicts breaks replaces enhances recommends suggests backup repology)
     printf '%s = %s\n' 'pkgname' "$1"
     srcinfo.write_details "$1"
 }

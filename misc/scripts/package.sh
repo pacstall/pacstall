@@ -262,7 +262,7 @@ unset dest_list
 install_builddepends
 
 # shellcheck disable=SC2034
-prompt_optdepends || { ignore_stack=true; return 1; }
+prompt_depends || { ignore_stack=true; return 1; }
 
 fancy_message info "Retrieving packages"
 mkdir -p "${PACDIR}"
