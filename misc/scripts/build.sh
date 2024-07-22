@@ -217,6 +217,7 @@ function prompt_optdepends() {
 
 function deblog_depends() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+    # shellcheck disable=SC2034
     local log_depends log_depends_str input_depends="${1}" todeblog="${2}"
     dep_const.format_control "${input_depends}" log_depends
     dep_const.comma_array log_depends log_depends_str
@@ -509,8 +510,7 @@ function makedeb() {
     fi
 
     if [[ -n ${suggests[*]} || ${optdepends[*]} ]]; then
-        local all_suggests
-        all_suggests=("${suggests[@]}" "${optdepends[@]}")
+        local all_suggests=("${suggests[@]}" "${optdepends[@]}")
         deblog_depends all_suggests "Suggests"
     fi
 
