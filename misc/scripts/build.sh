@@ -444,69 +444,50 @@ function makedeb() {
     fi
 
     if [[ -n ${makedepends[*]} ]]; then
-        # shellcheck disable=SC2034
-        local builddepends builddepends_str builddependsarch bdaform bdaform_str
+        local builddependsarch
         is_function "check" && [[ -n ${checkdepends[*]} ]] && makedepends+=("${checkdepends[@]}")
-        dep_const.format_control makedepends builddepends
-        dep_const.comma_array builddepends builddepends_str
-        # shellcheck disable=SC2001
-        deblog "Build-Depends" "${builddepends_str}"
+        deblog_depends makedepends "Build-Depends"
         if is_builddep_arch makedepends builddependsarch; then
             if is_function "check"; then
                 is_builddep_arch checkdepends builddependsarch \
                     || builddependsarch=("${builddependsarch[@]}")
             fi
-            dep_const.format_control builddependsarch bdaform
-            dep_const.comma_array bdaform bdaform_str
-            # shellcheck disable=SC2001
-            deblog "Build-Depends-Arch" "${bdaform_str}"
+            deblog_depends builddependsarch "Build-Depends-Arch"
         fi
     fi
 
     if [[ -n ${makeconflicts[*]} ]]; then
-        # shellcheck disable=SC2034
-        local buildconflicts buildconflicts_str buildconflictsarch bcaform bcaform_str
+        local buildconflictsarch
         is_function "check" && [[ -n ${checkconflicts[*]} ]] && makeconflicts+=("${checkconflicts[@]}")
-        dep_const.format_control makeconflicts buildconflicts
-        dep_const.comma_array buildconflicts buildconflicts_str
-        # shellcheck disable=SC2001
-        deblog "Build-Conflicts" "${buildconflicts_str}"
+        deblog_depends makeconflicts "Build-Conflicts"
         if is_builddep_arch makeconflicts buildconflictsarch; then
             if is_function "check"; then
                 is_builddep_arch checkconflicts buildconflictsarch \
                     || buildconflictsarch=("${buildconflictsarch[@]}")
             fi
-            dep_const.format_control buildconflictsarch bcaform
-            dep_const.comma_array bcaform bcaform_str
-            # shellcheck disable=SC2001
-            deblog "Build-Conflicts-Arch" "${bcaform_str}"
+            deblog_depends buildconflictsarch "Build-Conflicts-Arch"
         fi
     fi
 
     if ! array.contains provides "${gives:-${pacname}}"; then
         provides+=("${gives:-${pacname}}")
     fi
-    # shellcheck disable=SC2001
-    deblog "Provides" "$(sed 's/ /, /g' <<< "${provides[@]}")"
+    deblog_depends provides "Provides"
 
     if [[ -n ${conflicts[*]} ]]; then
-        # shellcheck disable=SC2001
-        deblog "Conflicts" "$(sed 's/ /, /g' <<< "${conflicts[@]}")"
+        deblog_depends conflicts "Conflicts"
     fi
 
     if [[ -n ${breaks[*]} ]]; then
-        # shellcheck disable=SC2001
-        deblog "Breaks" "$(sed 's/ /, /g' <<< "${breaks[@]}")"
+        deblog_depends breaks "Breaks"
     fi
 
     if [[ -n ${enhances[*]} ]]; then
-        # shellcheck disable=SC2001
-        deblog "Enhances" "$(sed 's/ /, /g' <<< "${enhances[@]}")"
+        deblog_depends enhances "Enhances"
     fi
 
     if [[ -n ${recommends[*]} ]]; then
-        # shellcheck disable=SC2001
-        deblog "Recommends" "$(sed 's/ /, /g' <<< "${recommends[@]}")"
+        deblog_depends recommends "Recommends"
     fi
 
     if [[ -n ${suggests[*]} || ${optdepends[*]} ]]; then
@@ -516,8 +497,7 @@ function makedeb() {
     fi
 
     if [[ -n ${replaces[*]} ]]; then
-        # shellcheck disable=SC2001
-        deblog "Replaces" "$(sed 's/ /, /g' <<< "${replaces[@]}")"
+        deblog_depends replaces "Replaces"
     fi
 
     if [[ -n ${url} ]]; then
