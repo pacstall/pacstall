@@ -458,7 +458,7 @@ function append_modifier_entries() {
     append_hash_entry hash PACSTALL_KNOWN_SUMS hashsum_method "${APPDISTRO#*:}"
     append_hash_entry hash PACSTALL_KNOWN_SUMS hashsum_method "${APPDISTRO%:*}" "${APPARCH}"
     append_hash_entry hash PACSTALL_KNOWN_SUMS hashsum_method "${APPDISTRO#*:}" "${APPARCH}"
-    for i in {source,depends,makedepends,optdepends,pacdeps,checkdepends,provides,conflicts,breaks,replaces,enhances,recommends,makeconflicts,checkconflicts}; do
+    for i in {source,depends,makedepends,optdepends,pacdeps,checkdepends,provides,conflicts,breaks,replaces,enhances,recommends,suggests,makeconflicts,checkconflicts}; do
         append_var_arch "${i}" "${APPARCH}"
         append_var_arch "${i}" "${APPDISTRO%:*}"
         append_var_arch "${i}" "${APPDISTRO#*:}"
@@ -757,7 +757,7 @@ function install_builddepends() {
     if ((${#needed_builddepends[@]} != 0 || ${#needed_checkdepends[@]} != 0 || ${#makeconflicts[@]} != 0 || ${#checkconflicts[@]} != 0)); then
         fancy_message sub "Creating build dependency/conflicts dummy package"
         (
-            unset pre_{upgrade,install,remove} post_{upgrade,install,remove} priority provides conflicts replaces breaks gives enhances recommends custom_fields
+            unset pre_{upgrade,install,remove} post_{upgrade,install,remove} priority provides conflicts replaces breaks gives enhances recommends suggests custom_fields
             # shellcheck disable=SC2030
             PACSTALL_INSTALL=1
             # shellcheck disable=SC2030

@@ -140,9 +140,93 @@ function check_opt_dep() {
     fi
 }
 
+function prompt_aptdepends() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+    # So basically, we're gonna now check if the `depends` elements can be installed on this system based on the
+    # version constraints (if available), because I'd be very pissed if I tried building wine only to figure out
+    # 8 hours later the versions specified in `depends` aren't available.
+    if [[ -n ${missing_deps[*]} ]]; then
+        echo -ne "\t"
+        fancy_message error "${BLUE}$(printf "${BLUE}%s${NC}, " "${missing_deps[@]}" | sed 's/, $/\n/')${NC} does not exist in apt repositories"
+    fi
+    if [[ -n ${not_satisfied_deps[*]} ]]; then
+        echo -ne "\t"
+        fancy_message error "${BLUE}$(printf "${BLUE}%s${NC}, " "${not_satisfied_deps[@]}" | sed 's/, $/\n/')${NC} version(s) cannot be satisfied"
+    fi
+    if [[ -n ${missing_deps[*]} || -n ${not_satisfied_deps[*]} ]]; then
+        fancy_message info "Cleaning up"
+        cleanup
+        exit 1
+    fi
+}
+
 function prompt_optdepends() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local d o deps missing_optdeps not_satisfied_optdeps missing_deps not_satisfied_deps
+    if [[ -n ${missing_optdeps[*]} || -n ${not_satisfied_optdeps[*]} ]] || ((${#suggested_optdeps[@]} != 0)); then
+        fancy_message info "Optional dependencies"
+    fi
+    if [[ -n ${missing_optdeps[*]} ]]; then
+        echo -ne "\t"
+        fancy_message warn "${BLUE}$(printf "${BLUE}%s${NC}, " "${missing_optdeps[@]}" | sed 's/, $/\n/')${NC} does not exist in apt repositories"
+    fi
+    if [[ -n ${not_satisfied_optdeps[*]} ]]; then
+        echo -ne "\t"
+        fancy_message warn "${BLUE}$(printf "${BLUE}%s${NC}, " "${not_satisfied_optdeps[@]}" | sed 's/, $/\n/')${NC} version(s) cannot be satisfied"
+    fi
+    if ((${#suggested_optdeps[@]} != 0)); then
+        if ((PACSTALL_INSTALL != 0)); then
+            # We do this so that arrays 'start at' 1 to the user
+            z=1
+            echo -e "\t\t[${BIRed}0${NC}] Select none"
+            for i in "${suggested_optdeps[@]}"; do
+                # print optdepends with bold package name
+                echo -e "\t\t[${BICyan}$z${NC}] ${BOLD}${i%%:\ *}${NC}: ${i#*:\ }"
+                { ignore_stack=true; ((z++)); }
+            done
+            unset z
+            # tab over the next line
+            echo -ne "\t"
+            select_options "Select optional dependencies to install" "${#suggested_optdeps[@]}" "optdeps"
+            read -ra choices < "${PACDIR}-selectopts-optdeps-${pacname}"
+            local choice_inc=0
+            for i in "${choices[@]}"; do
+                # have we gone over the maximum number in choices[@]?
+                if [[ $i != "n" && $i != "y" ]] && ((i > ${#suggested_optdeps[@]})); then
+                    local skip_opt+=("$i")
+                    unset 'choices[$choice_inc]'
+                fi
+                { ignore_stack=true; ((choice_inc++)); }
+            done
+            if [[ -n ${skip_opt[*]} ]]; then
+                fancy_message warn "${BGreen}${skip_opt[*]}${NC} has exceeded the maximum number of optional dependencies. Skipping"
+            fi
+
+            # Did we get actual answers?
+            if [[ ${choices[0]} != "n" && ${choices[0]} != "0" ]]; then
+                for i in "${choices[@]}"; do
+                    # Set our user array that started at 1 down to 0 based
+                    not_installed_yet_optdeps+=("${suggested_optdeps[$((i - 1))]}")
+                done
+                if [[ -n ${not_installed_yet_optdeps[*]} ]]; then
+                    fancy_message info "Selecting packages ${BCyan}${not_installed_yet_optdeps[*]%%:\ *}${NC}"
+                fi
+            fi
+        fi
+    fi
+}
+
+function deblog_depends() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+    # shellcheck disable=SC2034
+    local log_depends log_depends_str input_depends="${1}" todeblog="${2}"
+    dep_const.format_control "${input_depends}" log_depends
+    dep_const.comma_array log_depends log_depends_str
+    deblog "${todeblog}" "${log_depends_str}"
+}
+
+function prompt_depends() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+    local d o deps missing_optdeps not_satisfied_optdeps missing_deps not_satisfied_deps suggested_optdeps
     fancy_message info "Checking apt dependencies"
     for i in "deps" "missing_deps" "not_satisfied_deps" "suggested_optdeps" "missing_optdeps" "not_satisfied_optdeps" "already_installed_optdeps"; do
         sudo rm -rf "${PACDIR}-${i//_/-}-${pacname}"
@@ -158,21 +242,8 @@ function prompt_optdepends() {
             rm -rf "${PACDIR}-${i//_/-}-${pacname}"
         fi
     done
-    if [[ -n ${missing_deps[*]} ]]; then
-        echo -ne "\t"
-        fancy_message error "${BLUE}$(printf "${BLUE}%s${NC}, " "${missing_deps[@]}" | sed 's/, $/\n/')${NC} does not exist in apt repositories"
-    fi
-    if [[ -n ${not_satisfied_deps[*]} ]]; then
-        echo -ne "\t"
-        fancy_message error "${BLUE}$(printf "${BLUE}%s${NC}, " "${not_satisfied_deps[@]}" | sed 's/, $/\n/')${NC} version(s) cannot be satisfied"
-    fi
-    if [[ -n ${missing_deps[*]} || -n ${not_satisfied_deps[*]} ]]; then
-        fancy_message info "Cleaning up"
-        cleanup
-        exit 1
-    fi
+    prompt_aptdepends
     if ((${#optdepends[@]} != 0)); then
-        local suggested_optdeps=()
         for o in "${optdepends[@]}"; do
             check_opt_dep "${o}" &
         done
@@ -183,90 +254,11 @@ function prompt_optdepends() {
                 rm -rf "${PACDIR}-${i//_/-}-${pacname}"
             fi
         done
-        if [[ -n ${missing_optdeps[*]} || -n ${not_satisfied_optdeps[*]} ]] || ((${#suggested_optdeps[@]} != 0)); then
-            fancy_message info "Optional dependencies"
-        fi
-        if [[ -n ${missing_optdeps[*]} ]]; then
-            echo -ne "\t"
-            fancy_message warn "${BLUE}$(printf "${BLUE}%s${NC}, " "${missing_optdeps[@]}" | sed 's/, $/\n/')${NC} does not exist in apt repositories"
-        fi
-        if [[ -n ${not_satisfied_optdeps[*]} ]]; then
-            echo -ne "\t"
-            fancy_message warn "${BLUE}$(printf "${BLUE}%s${NC}, " "${not_satisfied_optdeps[@]}" | sed 's/, $/\n/')${NC} version(s) cannot be satisfied"
-        fi
-        if ((${#suggested_optdeps[@]} != 0)); then
-            if ((PACSTALL_INSTALL != 0)); then
-                # We do this so that arrays 'start at' 1 to the user
-                z=1
-                echo -e "\t\t[${BIRed}0${NC}] Select none"
-                for i in "${suggested_optdeps[@]}"; do
-                    # print optdepends with bold package name
-                    echo -e "\t\t[${BICyan}$z${NC}] ${BOLD}${i%%:\ *}${NC}: ${i#*:\ }"
-                    { ignore_stack=true; ((z++)); }
-                done
-                unset z
-                # tab over the next line
-                echo -ne "\t"
-                select_options "Select optional dependencies to install" "${#suggested_optdeps[@]}" "optdeps"
-                read -ra choices < "${PACDIR}-selectopts-optdeps-${pacname}"
-                local choice_inc=0
-                for i in "${choices[@]}"; do
-                    # have we gone over the maximum number in choices[@]?
-                    if [[ $i != "n" && $i != "y" ]] && ((i > ${#suggested_optdeps[@]})); then
-                        local skip_opt+=("$i")
-                        unset 'choices[$choice_inc]'
-                    fi
-                    { ignore_stack=true; ((choice_inc++)); }
-                done
-                if [[ -n ${skip_opt[*]} ]]; then
-                    fancy_message warn "${BGreen}${skip_opt[*]}${NC} has exceeded the maximum number of optional dependencies. Skipping"
-                fi
-
-                # Did we get actual answers?
-                if [[ ${choices[0]} != "n" && ${choices[0]} != "0" ]]; then
-                    for i in "${choices[@]}"; do
-                        # Set our user array that started at 1 down to 0 based
-                        local not_installed_yet_optdeps+=("${suggested_optdeps[$((i - 1))]}")
-                    done
-                    if [[ -n ${not_installed_yet_optdeps[*]} ]]; then
-                        fancy_message info "Selecting packages ${BCyan}${not_installed_yet_optdeps[*]%%:\ *}${NC}"
-                        local log_depends log_depends_str
-                        dep_const.format_control optdepends log_depends
-                        dep_const.comma_array log_depends log_depends_str
-                        deblog "Suggests" "${log_depends_str}"
-                        fancy_message info "Installing selected optional dependencies"
-                    fi
-                else # Did we get 0 or n?
-                    # Add everything to Suggests
-                    local log_depends log_depends_str
-                    dep_const.format_control optdepends log_depends
-                    dep_const.comma_array log_depends log_depends_str
-                    deblog "Suggests" "${log_depends_str}"
-                fi
-            else # If `-B` is being used
-                # We can log everything from optdepends to Suggests
-                # shellcheck disable=SC2034
-                local log_depends log_depends_str
-                dep_const.format_control optdepends log_depends
-                dep_const.comma_array log_depends log_depends_str
-                deblog "Suggests" "${log_depends_str}"
-            fi
-        fi
+        prompt_optdepends
     fi
-
-    # shellcheck disable=SC2034
-    local depends_for_logging out_str
     if [[ -n ${pacdeps[*]} ]]; then
         for i in "${pacdeps[@]}"; do
-            (
-                #shellcheck disable=SC1090
-                source "$METADIR/$i"
-                if [[ -n $_gives ]]; then
-                    echo "$_gives" | tee -a "${PACDIR}-gives-${pacname}" > /dev/null
-                else
-                    echo "$_name" | tee -a "${PACDIR}-gives-${pacname}" > /dev/null
-                fi
-            )
+            awk -F'=' '/^_gives=/{gives=$2} /^_name=/{name=$2} END{print (gives ? gives : name)}' "${METADIR}/${i}" >> "${PACDIR}-gives-${pacname}"
         done
         # shellcheck disable=SC2031
         while IFS= read -r line; do
@@ -278,29 +270,8 @@ function prompt_optdepends() {
     # Do we have any deps or optdeps scheduled for installation?
     if [[ -n ${deps[*]} || -n ${not_installed_yet_optdeps[*]} || -n ${already_installed_optdeps[*]} ]]; then
         # shellcheck disable=SC2034
-        local all_deps_to_install=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${deps[@]}") ze_dep ze_dep_splits ze_dep_split
-        # So basically, we're gonna now check if the `depends` elements can be installed on this system based on the
-        # version constraints (if available), because I'd be very pissed if I tried building wine only to figure out
-        # 8 hours later the versions specified in `depends` aren't available.
-        for ze_dep in "${deps[@]}"; do
-            dep_const.pipe_split "${ze_dep}" ze_dep_splits
-            local pipe_nomatch=0
-            for ze_dep_split in "${ze_dep_splits[@]}"; do
-                if ! dep_const.apt_compare_to_constraints "${ze_dep_split}"; then
-                    { ignore_stack=true; ((pipe_nomatch++)); }
-                fi
-            done
-            if ((pipe_nomatch == ${#ze_dep_splits[@]})); then
-                fancy_message error "'${BBlue}${ze_dep}${NC}' version(s) cannot be satisfied"
-                fancy_message info "Cleaning up"
-                cleanup
-                exit 1
-            fi
-        done
-
-        dep_const.format_control all_deps_to_install depends_for_logging
-        dep_const.comma_array depends_for_logging out_str
-        deblog "Depends" "${out_str}"
+        local all_deps_to_install=("${not_installed_yet_optdeps[@]}" "${already_installed_optdeps[@]}" "${deps[@]}")
+        deblog_depends all_deps_to_install "Depends"
     fi
     for i in "gives" "deps" "missing-deps" "not-satisfied-deps" "suggested-optdeps" "missing-optdeps" "not-satisfied-optdeps" "already-installed-optdeps"; do
         sudo rm -rf "${PACDIR}-${i}-${pacname}"
@@ -536,6 +507,12 @@ function makedeb() {
     if [[ -n ${recommends[*]} ]]; then
         # shellcheck disable=SC2001
         deblog "Recommends" "$(sed 's/ /, /g' <<< "${recommends[@]}")"
+    fi
+
+    if [[ -n ${suggests[*]} || ${optdepends[*]} ]]; then
+        # shellcheck disable=SC2034
+        local all_suggests=("${suggests[@]}" "${optdepends[@]}")
+        deblog_depends all_suggests "Suggests"
     fi
 
     if [[ -n ${replaces[*]} ]]; then

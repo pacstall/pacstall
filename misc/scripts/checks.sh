@@ -337,7 +337,7 @@ function lint_ppa() {
 function lint_relations() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local rel_type rel_array ret=0 rela idx rdarch rdistro rddarch
-    for rel_type in "conflicts" "breaks" "replaces" "provides" "enhances" "recommends" "makeconflicts" "checkconflicts"; do
+    for rel_type in "conflicts" "breaks" "replaces" "provides" "enhances" "recommends" "suggests" "makeconflicts" "checkconflicts"; do
         local -n rel_array="test_${rel_type}"
         local -n rtype_array="${rel_type}"
         rel_array=("${rtype_array[@]}")
