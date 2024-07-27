@@ -258,7 +258,7 @@ function prompt_depends() {
     fi
     if [[ -n ${pacdeps[*]} ]]; then
         for i in "${pacdeps[@]}"; do
-            awk -F'=' '/^_gives=/{gives=$2} /^_name=/{name=$2} END{print (gives ? gives : name)}' "${METADIR}/${i}" >> "${PACDIR}-gives-${pacname}"
+            awk -F'=' '/^_gives=/{gives=$2} /^_name=/{name=$2} END{val=(gives ? gives : name); gsub(/"/, "", val); print val}' "${METADIR}/${i}" >> "${PACDIR}-gives-${pacname}"
         done
         # shellcheck disable=SC2031
         while IFS= read -r line; do
