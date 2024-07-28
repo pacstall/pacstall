@@ -414,13 +414,13 @@ function append_hash_entry() {
         if [[ ${exp_method} == "${type}" || -z ${exp_method} ]]; then
             if [[ -n ${!hash_arr} && -z ${extend} ]]; then
                 export exp_method="${type}"
-                for a in "${!hash_arr}"; do
+                for a in ${!hash_arr}; do
                     [[ ${pacname} == *"-deb" ]] && append=("${a}") || append+=("${a}")
                 done
                 break
             elif [[ -n ${!hash_arch} ]]; then
                 [[ -z ${!hash_arr} && -z ${append[*]} ]] && export exp_method="${type}"
-                for a in "${!hash_arch}"; do
+                for a in ${!hash_arch}; do
                     [[ ${pacname} == *"-deb" ]] && append=("${a}") || append+=("${a}")
                 done
                 break
