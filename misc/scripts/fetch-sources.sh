@@ -434,7 +434,7 @@ function append_var_arch() {
     local inp inputvar="${1}" inputvar_arch="${1}_${2}${3:+_$3}[*]"
     declare -n ref_inputvar="${inputvar}"
     if [[ -n ${!inputvar_arch} ]]; then
-        for inp in ${!inputvar_arch}; do
+        for inp in "${!inputvar_arch}"; do
             if [[ ${pacname} == *"-deb" && ${inputvar} == "source" ]]; then
                 ref_inputvar=("${inp}")
             elif ! array.contains ref_inputvar "${inp}" || [[ ${inputvar} == "source" ]]; then
