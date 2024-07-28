@@ -696,6 +696,15 @@ function install_deb() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local debname="${1}_${2}_${3}"
     if ((PACSTALL_INSTALL != 0)); then
+        for pkg in "${replaces[@]}"; do
+            if is_apt_package_installed "${pkg}"; then
+                if [[ ${priority} == "essential" ]]; then
+                    sudo apt-get remove -y "${pkg}" --allow-remove-essential
+                else
+                    sudo apt-get remove -y "${pkg}"
+                fi
+            fi
+        done
         # --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
         if ! sudo -E apt-get install --reinstall "$STAGEDIR/$debname.deb" -y --allow-downgrades 2> /dev/null; then
             echo -ne "\t"
