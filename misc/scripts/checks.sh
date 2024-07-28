@@ -244,7 +244,7 @@ function lint_var_arch() {
     local tinp tinputvar="${1}" tinputvar_arch="${1}_${2}${3:+_$3}[*]"
     declare -n test_ref_inputvar="test_${tinputvar}"
     if [[ -n ${!tinputvar_arch} ]]; then
-        for tinp in ${!tinputvar_arch}; do
+        for tinp in "${!tinputvar_arch}"; do
             if ! array.contains ref_inputvar "${tinp}"; then
                 test_ref_inputvar+=("${tinp}")
             fi
@@ -532,7 +532,7 @@ function lint_hash() {
             # md5
             "${PACSTALL_KNOWN_SUMS[6]}") test_hashsum_value=32 ;;
         esac
-        for i in ${!test_hash[*]}; do
+        for i in "${!test_hash[@]}"; do
             if [[ ${test_hash[i]} == "SKIP" ]]; then
                 ret=0
 

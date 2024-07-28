@@ -414,13 +414,13 @@ function append_hash_entry() {
         if [[ ${exp_method} == "${type}" || -z ${exp_method} ]]; then
             if [[ -n ${!hash_arr} && -z ${extend} ]]; then
                 export exp_method="${type}"
-                for a in ${!hash_arr}; do
+                for a in "${!hash_arr}"; do
                     [[ ${pacname} == *"-deb" ]] && append=("${a}") || append+=("${a}")
                 done
                 break
             elif [[ -n ${!hash_arch} ]]; then
                 [[ -z ${!hash_arr} && -z ${append[*]} ]] && export exp_method="${type}"
-                for a in ${!hash_arch}; do
+                for a in "${!hash_arch}"; do
                     [[ ${pacname} == *"-deb" ]] && append=("${a}") || append+=("${a}")
                 done
                 break
@@ -434,7 +434,7 @@ function append_var_arch() {
     local inp inputvar="${1}" inputvar_arch="${1}_${2}${3:+_$3}[*]"
     declare -n ref_inputvar="${inputvar}"
     if [[ -n ${!inputvar_arch} ]]; then
-        for inp in ${!inputvar_arch}; do
+        for inp in "${!inputvar_arch}"; do
             if [[ ${pacname} == *"-deb" && ${inputvar} == "source" ]]; then
                 ref_inputvar=("${inp}")
             elif ! array.contains ref_inputvar "${inp}" || [[ ${inputvar} == "source" ]]; then
