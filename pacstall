@@ -627,7 +627,7 @@ for i in "${@}"; do
     # Just add argument if doesn't start with exactly one hyphen.
     if ! [[ ${i} =~ ^-[^-] ]]; then
         # if argument is '-B', '-P', '-K' or '-Nc', add to beginning of argument list.
-        if [[ ${i} == "--build" || ${i} == "--disable-prompts" || ${i} == "--keep" || ${i} == "--nocheck" || ${i} == "--quiet" || ${i} == "--nosandbox" ]]; then
+        if [[ ${i} == "--build" || ${i} == "--disable-prompts" || ${i} == "--keep" || ${i} == "--nocheck" || ${i} == "--quiet" || ${i} == "--nosandbox"|| ${i} == "--description" ]]; then
             argument_list=("${i}" "${argument_list[@]}")
         else
             argument_list+=("${i}")
@@ -640,7 +640,7 @@ for i in "${@}"; do
     # Arguments start with uppercase except 'h'.
     for j in $(sed -E 's/[[:upper:]]|h/ &/g' <<< "${i:1}"); do
         # If current string is 'B', 'P', 'K' or 'Nc', add to beginning of argument list.
-        if [[ ${j} == "B" || ${j} == "P" || ${j} == "K" || ${j} == "Nc" || ${j} == "Q" || ${j} == "Ns" ]]; then
+        if [[ ${j} == "B" || ${j} == "P" || ${j} == "K" || ${j} == "Nc" || ${j} == "Q" || ${j} == "Ns" || ${j} == "Ds" ]]; then
             argument_list=("-${j}" "${argument_list[@]}")
         else
             argument_list+=("-${j}")
@@ -655,7 +655,7 @@ declare -A arg_map=(
     ["--add-repo"]="-A" ["--remove-repo"]="-Rr" ["--update"]="-U" ["--list"]="-L" ["--upgrade"]="-Up"
     ["--query-info"]="-Qi" ["--tree"]="-T" ["--version"]="-V" ["--help"]="-h"
     ["--build"]="-B" ["--keep"]="-K" ["--disable-prompts"]="-P" ["--nocheck"]="-Nc"
-    ["--quality-assurance"]="-Qa" ["--quiet"]="-Q" ["--nosandbox"]="-Ns"
+    ["--quality-assurance"]="-Qa" ["--quiet"]="-Q" ["--nosandbox"]="-Ns" ["--description"]="-Ds"
 )
 declare -A hashed_arguments
 unique_argument_list=()
@@ -741,7 +741,7 @@ while [[ $1 != "--" ]]; do
             ;;
 
         -h | --help)
-            echo -e "Usage: pacstall [-h] {-I,-S,-R,-D,-A,-Rr,-U,-L,-Up,-Qa,-Qi,-T,-V} [-P] [-K] [-B] [-Nc] [-Q] [-Ns]
+            echo -e "Usage: pacstall [-h] {-I,-S,-R,-D,-A,-Rr,-U,-L,-Up,-Qa,-Qi,-T,-V} [-P] [-K] [-B] [-Nc] [-Q] [-Ns] [-Ds]
 
 An AUR inspired package manager for Ubuntu.
 
@@ -788,6 +788,8 @@ Options:
         Download package entries quietly.
     ${BOLD}-Ns${NC}, ${BOLD}--nosandbox${NC}
         Build the package without bwrap.
+    ${BOLD}-Ds${NC}, ${BOLD}--description${NC}
+        Search with description.
 
 Helpful links:
     ${BOLD}https://github.com/pacstall/pacstall${NC}
@@ -1230,6 +1232,10 @@ Helpful links:
             fancy_message warn "Building package without bwrap sandbox"
             fancy_message sub "Be cautious, this exposes your system to potential harm"
             NOSANDBOX=true
+            ;;
+
+        -Ds | --description)
+            DESCON=true
             ;;
 
         *)
