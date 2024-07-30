@@ -167,6 +167,7 @@ function srclist.parse() {
     local SRCFILE="${1}" DESCARR="${3}" KWD="${4}" SEARCH CHILD searchlist foundname founddesc exact=false
     # shellcheck disable=SC2034
     local -n PKGFILE="${2}" LOCARR="${DESCARR}"
+    # shellcheck disable=SC2034
     declare -A LOCARR=()
     SEARCH="${KWD%% *}"
     if [[ ${KWD} == \'*\' ]]; then
@@ -194,8 +195,10 @@ function srclist.parse() {
             continue
         fi
         if array.contains PKGFILE "${foundname}"; then
+            # shellcheck disable=SC2034
             LOCARR["${foundname}"]="${founddesc}"
         elif array.contains PKGFILE "${foundname}:pkgbase"; then
+            # shellcheck disable=SC2034
             LOCARR["${foundname}:pkgbase"]="${founddesc}"
         fi
     done
