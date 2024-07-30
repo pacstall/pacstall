@@ -303,13 +303,23 @@ if [[ $SEARCH == *@* ]] || [[ $PACKAGE == *@* ]]; then
                 exit 1
             fi
             if [[ -n $SEARCH ]]; then
+                searchedrepo="$(parseRepo "${URL}")"
+                if [[ ${URL} == *"github"* ]]; then
+                    srBRANCH="${URL##*/}"
+                elif [[ ${URL} == *"gitlab"* ]]; then
+                    srBRANCH="${URL##*/-/raw/}"
+                else
+                    unset srBRANCH
+                fi
+                [[ -n ${srBRANCH} && ${srBRANCH} != "master" && ${srBRANCH} != "main" ]] && searchedrepo+="${YELLOW}#${srBRANCH}${NC}"
                 for ids in "${_LEN[@]}"; do
                     if [[ ${DESCON} ]]; then
-                        echo -e "$GREEN${ids} ${BLUE}-${NC} ${SEARCHDESC[$ids]} $PURPLE@ $CYAN$(parseRepo "$URL") $NC"
+                        echo -e "$GREEN${ids} ${BLUE}-${NC} ${SEARCHDESC[$ids]} $PURPLE@ $CYAN${searchedrepo} $NC"
                     else
-                        echo -e "$GREEN${PACKAGELIST[$ids]} $PURPLE@ $CYAN$(parseRepo "$URL") $NC"
+                        echo -e "$GREEN${PACKAGELIST[$ids]} $PURPLE@ $CYAN${searchedrepo} $NC"
                     fi
                 done
+                unset searchedrepo srBRANCH
             else
                 export PACKAGE
                 export REPO="$URL"
@@ -355,15 +365,23 @@ if [[ -n ${SEARCH} ]]; then
         if ((LEN == 0)) || [[ -z ${_LEN[*]} ]]; then
             continue
         fi
-        if [[ -n $SEARCH ]]; then
-            for ids in "${_LEN[@]}"; do
-                if [[ ${DESCON} ]]; then
-                    searchout+=("$GREEN${ids} ${BLUE}-${NC} ${SEARCHDESC[$ids]} $PURPLE@ $CYAN$(parseRepo "$URL") $NC")
-                else
-                    searchout+=("$GREEN${PACKAGELIST[$ids]} $PURPLE@ $CYAN$(parseRepo "$URL") $NC")
-                fi
-            done
+        searchedrepo="$(parseRepo "${URL}")"
+        if [[ ${URL} == *"github"* ]]; then
+            srBRANCH="${URL##*/}"
+        elif [[ ${URL} == *"gitlab"* ]]; then
+            srBRANCH="${URL##*/-/raw/}"
+        else
+            unset srBRANCH
         fi
+        [[ -n ${srBRANCH} && ${srBRANCH} != "master" && ${srBRANCH} != "main" ]] && searchedrepo+="${YELLOW}#${srBRANCH}${NC}"
+        for ids in "${_LEN[@]}"; do
+            if [[ ${DESCON} ]]; then
+                searchout+=("$GREEN${ids} ${BLUE}-${NC} ${SEARCHDESC[$ids]} $PURPLE@ $CYAN${searchedrepo} $NC")
+            else
+                searchout+=("$GREEN${PACKAGELIST[$ids]} $PURPLE@ $CYAN${searchedrepo} $NC")
+            fi
+        done
+        unset searchedrepo srBRANCH
     done < "$SCRIPTDIR/repo/pacstallrepo"
     mapfile -t searchout < <(printf "%s\n" "${searchout[@]}" | sort -V)
     LEN=${#searchout[@]}
@@ -409,6 +427,7 @@ done < "$SCRIPTDIR/repo/pacstallrepo"
 
 REPOMSG=1
 
+# Remove any `mask` from output
 any_masks=()
 getMasks any_masks
 if ((${#any_masks[@]} != 0)); then
