@@ -468,7 +468,7 @@ mapfile -t _LEN < <(printf "%s\n" "${_LEN[@]}" | sort -V)
 LEN=${#_LEN[@]}
 
 # Check if there are results
-if ((LEN == 0)); then
+if ((LEN == 0)) || [[ -z ${_LEN[*]} ]]; then
     fancy_message error "There is no package with the name $IRed$PACKAGE$NC"
     error_log 3 "search $PACKAGE"
     exit 1
@@ -483,11 +483,20 @@ elif [[ -n $UPGRADE ]]; then
     return 0
 # check if we are looking at info
 elif [[ ${SEARCHINFO} ]]; then
+    INFORESULTS=()
     while IFS= read -r URL; do
         # shellcheck disable=SC2034
         mapfile -t SRCLIST < <(curl -s -- "$URL"/srclist)
-        srclist.info SRCLIST "${INFOQUERY}"
+        mapfile -t PARTRESULTS < <(srclist.info SRCLIST "${INFOQUERY}")
+        INFORESULTS+=("${PARTRESULTS[@]}")
     done < "$SCRIPTDIR/repo/pacstallrepo"
+    if [[ -z ${INFORESULTS[*]} ]]; then
+        fancy_message error "There is no package with the name $IRed$INFOQUERY$NC"
+        error_log 3 "search $INFOQUERY"
+        exit 1
+    fi
+    printf '%s\n' "${INFORESULTS[@]}"
+    unset INFORESULTS
     return 0
 # Options left: install or download
 # Variable $type used for the prompt
