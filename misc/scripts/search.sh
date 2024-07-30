@@ -164,7 +164,8 @@ function srclist.search() {
 # Usage: eval "$(srclist.parse SRCLIST PACKAGELIST desc_array <pkgname | pkgbase:pkgname | keyword | "spaced keyword" | "'Case Sensitive Keyword'">)"
 function srclist.parse() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local SRCFILE="${1}" DESCARR="${3}" KWD="${4}" SEARCH CHILD searchlist pkglist foundname founddesc exact=false
+    local SRCFILE="${1}" DESCARR="${3}" KWD="${4}" SEARCH CHILD searchlist foundname founddesc exact=false
+    # shellcheck disable=SC2034
     local -n PKGFILE="${2}" LOCARR="${DESCARR}"
     declare -A LOCARR=()
     SEARCH="${KWD%% *}"
@@ -258,6 +259,7 @@ if [[ $SEARCH == *@* ]] || [[ $PACKAGE == *@* ]]; then
         if [[ $URLNAME == "$REPONAME" ]]; then
             mapfile -t PACKAGELIST < <(curl -s -- "$URL"/packagelist)
             if [[ ${DESCON} ]]; then
+                # shellcheck disable=SC2034
                 mapfile -t SRCLIST < <(curl -s -- "$URL"/srclist)
             fi
             any_masks=()
@@ -276,7 +278,7 @@ if [[ $SEARCH == *@* ]] || [[ $PACKAGE == *@* ]]; then
             if [[ -n $SEARCH ]]; then
                 if [[ ${DESCON} ]]; then
                     eval "$(srclist.parse SRCLIST PACKAGELIST SEARCHDESC "${SEARCH}")"
-                    IDXSEARCH="${!SEARCHDESC[@]}"
+                    IDXSEARCH="${!SEARCHDESC[*]}"
                 else
                     IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | awk "\$1 ~ /${SEARCH}/ {print NR-1}")
                 fi
@@ -338,6 +340,7 @@ if [[ -n ${SEARCH} ]]; then
     while IFS= read -r URL; do
         mapfile -t PACKAGELIST < <(curl -s -- "$URL"/packagelist)
         if [[ ${DESCON} ]]; then
+            # shellcheck disable=SC2034
             mapfile -t SRCLIST < <(curl -s -- "$URL"/srclist)
         fi
         any_masks=()
@@ -355,7 +358,7 @@ if [[ -n ${SEARCH} ]]; then
         fi
         if [[ ${DESCON} ]]; then
             eval "$(srclist.parse SRCLIST PACKAGELIST SEARCHDESC "${SEARCH}")"
-            IDXSEARCH="${!SEARCHDESC[@]}"
+            IDXSEARCH="${!SEARCHDESC[*]}"
         else
             IDXSEARCH=$(printf "%s\n" "${PACKAGELIST[@]}" | awk "\$1 ~ /${SEARCH}/ {print NR-1}")
         fi
