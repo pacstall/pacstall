@@ -488,14 +488,29 @@ elif [[ ${SEARCHINFO} ]]; then
         # shellcheck disable=SC2034
         mapfile -t SRCLIST < <(curl -s -- "$URL"/srclist)
         mapfile -t PARTRESULTS < <(srclist.info SRCLIST "${INFOQUERY}")
-        INFORESULTS+=("${PARTRESULTS[@]}")
+        if [[ -n ${PARTRESULTS[*]} ]]; then
+            searchedrepo="$(parseRepo "${URL}")"
+            if [[ ${URL} == *"github"* ]]; then
+                srBRANCH="${URL##*/}"
+            elif [[ ${URL} == *"gitlab"* ]]; then
+                srBRANCH="${URL##*/-/raw/}"
+            else
+                unset srBRANCH
+            fi
+            [[ -n ${srBRANCH} && ${srBRANCH} != "master" && ${srBRANCH} != "main" ]] && searchedrepo+="${YELLOW}#${srBRANCH}${NC}"
+            PARTRESULTS=("${PURPLE}---${NC} ${CYAN}${searchedrepo}${NC} ${PURPLE}---${NC}" "${PARTRESULTS[@]}")
+            INFORESULTS+=("${PARTRESULTS[@]}")
+            unset searchedrepo srBRANCH
+        fi
     done < "$SCRIPTDIR/repo/pacstallrepo"
     if [[ -z ${INFORESULTS[*]} ]]; then
         fancy_message error "There is no package with the name $IRed$INFOQUERY$NC"
         error_log 3 "search $INFOQUERY"
         exit 1
     fi
-    printf '%s\n' "${INFORESULTS[@]}"
+    for inres in "${INFORESULTS[@]}"; do
+        echo -e "${inres}"
+    done
     unset INFORESULTS
     return 0
 # Options left: install or download
