@@ -653,7 +653,7 @@ done
 declare -A arg_map=(
     ["--install"]="-I" ["--search"]="-S" ["--remove"]="-R" ["--download"]="-D"
     ["--add-repo"]="-A" ["--remove-repo"]="-Rr" ["--update"]="-U" ["--list"]="-L" ["--upgrade"]="-Up"
-    ["--query-info"]="-Qi" ["--tree"]="-T" ["--version"]="-V" ["--help"]="-h"
+    ["--query-info"]="-Qi" ["--tree"]="-T" ["--version"]="-V" ["--info"]="-In" ["--help"]="-h"
     ["--build"]="-B" ["--keep"]="-K" ["--disable-prompts"]="-P" ["--nocheck"]="-Nc"
     ["--quality-assurance"]="-Qa" ["--quiet"]="-Q" ["--nosandbox"]="-Ns" ["--description"]="-Ds"
 )
@@ -668,8 +668,8 @@ for arg in "${argument_list[@]}"; do
 done
 
 # Check if only one command flag is being used
-short_commands=("-I" "-S" "-R" "-D" "-A" "-Rr" "-U" "-L" "-Up" "-Qi" "-Qa" "-T" "-V" "-h")
-long_commands=("--install" "--search" "--remove" "--download" "--add-repo" "--remove-repo" "--update" "--list" "--upgrade" "--query-info" "--quality-assurance" "--tree" "--version" "--help")
+short_commands=("-I" "-S" "-R" "-D" "-A" "-Rr" "-U" "-L" "-Up" "-Qi" "-Qa" "-T" "-V" "-In" "-h")
+long_commands=("--install" "--search" "--remove" "--download" "--add-repo" "--remove-repo" "--update" "--list" "--upgrade" "--query-info" "--quality-assurance" "--tree" "--version" "--info" "--help")
 commands=("${short_commands[@]}" "${long_commands[@]}")
 matches=($(comm -12 <(sort <(printf "%s\n" "${unique_argument_list[@]}")) <(sort <(printf "%s\n" "${commands[@]}"))))
 if ((${#matches[@]} <= 1)); then
@@ -686,8 +686,8 @@ function lock() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # Total number of options flags, increase when needed
     local option_flags=5
-    local ignore_short="-S -D -A -Rr -V -L -Qi -T -h"
-    local ignore_long="--search --download --add-repo --remove-repo --version --query-info --tree --help"
+    local ignore_short="-S -D -A -Rr -V -L -Qi -T -In -h"
+    local ignore_long="--search --download --add-repo --remove-repo --version --query-info --tree --info --help"
     local ignore="$ignore_short $ignore_long"
 
     for ((i = 1; i <= option_flags + 1; i++)); do
@@ -741,7 +741,7 @@ while [[ $1 != "--" ]]; do
             ;;
 
         -h | --help)
-            echo -e "Usage: pacstall [-h] {-I,-S,-R,-D,-A,-Rr,-U,-L,-Up,-Qa,-Qi,-T,-V} [-P] [-K] [-B] [-Nc] [-Q] [-Ns] [-Ds]
+            echo -e "Usage: pacstall [-h] {-I,-S,-R,-D,-A,-Rr,-U,-L,-Up,-Qa,-Qi,-In,-T,-V} [-P] [-K] [-B] [-Nc] [-Q] [-Ns] [-Ds]
 
 An AUR inspired package manager for Ubuntu.
 
@@ -767,7 +767,9 @@ Commands:
     ${BOLD}-Qa${NC}, ${BOLD}--quality-assurance${NC} <package>#<number>
         Test a package PR from downstream. Optional: @[provider]:[owner]/[repo]
     ${BOLD}-Qi${NC}, ${BOLD}--query-info${NC} <package>
-        Query information about a package.
+        Query information about an installed package.
+    ${BOLD}-In${NC}, ${BOLD}--info${NC} <package>
+        Query information about a remote package.
     ${BOLD}-T${NC}, ${BOLD}--tree${NC} <package>
         Display a tree graph of a package.
     ${BOLD}-V${NC}, ${BOLD}--version${NC}
@@ -946,6 +948,46 @@ Helpful links:
                 exit 1
             }
 
+            # shellcheck source=./misc/scripts/search.sh
+            source "$SCRIPTDIR/scripts/search.sh"
+            exit 0
+            ;;
+
+        -In | --info)
+            INFOQUERY="${2}"
+            if [[ $2 =~ ^([a-zA-Z0-9_.-]+)(:([a-zA-Z0-9_.-]+))(@(.+))$ ]]; then
+                PACKAGE="${BASH_REMATCH[1]}:pkgbase"
+                if [[ ${BASH_REMATCH[2]} == ":"* ]]; then
+                    CHILD="${BASH_REMATCH[2]/\:/}"
+                else
+                    CHILD="${BASH_REMATCH[3]}"
+                fi
+                if [[ ${BASH_REMATCH[3]} =~ '@' ]]; then
+                    PACKAGE+="${BASH_REMATCH[3]}"
+                elif [[ -n ${BASH_REMATCH[5]} ]]; then
+                    PACKAGE+="@${BASH_REMATCH[5]}"
+                fi
+            elif [[ $2 =~ ^([a-zA-Z0-9_.-]+)(@(.+))$ ]]; then
+                PACKAGE="${2}"
+            elif [[ ${2} =~ ':' ]]; then
+                PACKAGE="${2%:*}:pkgbase"
+                CHILD="${2#*:}"
+            else
+                PACKAGE="${2}"
+            fi
+            [[ ${CHILD} == "pkgbase" ]] && unset CHILD
+            export PACKAGE CHILD
+            if [[ -z $PACKAGE ]]; then
+                fancy_message error "You failed to specify a package"
+                exit 1
+            fi
+            check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
+                fancy_message error "Could not connect to the internet"
+                suggested_solution "Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
+                exit 1
+            }
+
+            SEARCHINFO=true
             # shellcheck source=./misc/scripts/search.sh
             source "$SCRIPTDIR/scripts/search.sh"
             exit 0

@@ -35,6 +35,10 @@ if [[ -z ${SEARCH} ]]; then
     unset DESCON
 fi
 
+if [[ -z ${INFOQUERY} ]]; then
+    unset SEARCHINFO
+fi
+
 function getPath() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local path="${1}"
@@ -476,6 +480,14 @@ elif [[ -n $UPGRADE ]]; then
         ! array.contains REPOS "${URLLIST[$IDX]}" && mapfile -t -O"${#REPOS[@]}" REPOS <<< "${URLLIST[$IDX]}"
     done
     export REPOS
+    return 0
+# check if we are looking at info
+elif [[ ${SEARCHINFO} ]]; then
+    while IFS= read -r URL; do
+        # shellcheck disable=SC2034
+        mapfile -t SRCLIST < <(curl -s -- "$URL"/srclist)
+        srclist.info SRCLIST "${INFOQUERY}"
+    done < "$SCRIPTDIR/repo/pacstallrepo"
     return 0
 # Options left: install or download
 # Variable $type used for the prompt
