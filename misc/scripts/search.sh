@@ -265,7 +265,7 @@ if [[ $SEARCH == *@* ]] || [[ $PACKAGE == *@* ]]; then
         specifyRepo "$URL"
         if [[ $URLNAME == "$REPONAME" ]]; then
             mapfile -t PACKAGELIST < <(curl -s -- "$URL"/packagelist)
-            if [[ ${DESCON} ]]; then
+            if [[ ${DESCON} || ${SEARCHINFO} ]]; then
                 # shellcheck disable=SC2034
                 mapfile -t SRCLIST < <(curl -s -- "$URL"/srclist)
             fi
@@ -329,6 +329,33 @@ if [[ $SEARCH == *@* ]] || [[ $PACKAGE == *@* ]]; then
                     fi
                 done
                 unset searchedrepo srBRANCH
+            elif [[ ${SEARCHINFO} ]]; then
+                INFORESULTS=()
+                # shellcheck disable=SC2034
+                mapfile -t PARTRESULTS < <(srclist.info SRCLIST "${INFOQUERY%%@*}")
+                if [[ -n ${PARTRESULTS[*]} ]]; then
+                    searchedrepo="$(parseRepo "${URL}")"
+                    if [[ ${URL} == *"github"* ]]; then
+                        srBRANCH="${URL##*/}"
+                    elif [[ ${URL} == *"gitlab"* ]]; then
+                        srBRANCH="${URL##*/-/raw/}"
+                    else
+                        unset srBRANCH
+                    fi
+                    [[ -n ${srBRANCH} && ${srBRANCH} != "master" && ${srBRANCH} != "main" ]] && searchedrepo+="${YELLOW}#${srBRANCH}${NC}"
+                    PARTRESULTS=("${PURPLE}---${NC} ${CYAN}${searchedrepo}${NC} ${PURPLE}---${NC}" "${PARTRESULTS[@]}")
+                    INFORESULTS+=("${PARTRESULTS[@]}")
+                    unset searchedrepo srBRANCH
+                fi
+                if [[ -z ${INFORESULTS[*]} ]]; then
+                    fancy_message error "There is no package with the name $IRed${INFOQUERY%%@*}$NC in the repo $CYAN$REPONAME$NC"
+                    error_log 3 "search $INFOQUERY"
+                    exit 1
+                fi
+                for inres in "${INFORESULTS[@]}"; do
+                    echo -e "${inres}"
+                done
+                unset INFORESULTS
             else
                 export PACKAGE
                 export REPO="$URL"
