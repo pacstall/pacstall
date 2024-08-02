@@ -627,7 +627,7 @@ for i in "${@}"; do
     # Just add argument if doesn't start with exactly one hyphen.
     if ! [[ ${i} =~ ^-[^-] ]]; then
         # if argument is '-B', '-P', '-K' or '-Nc', add to beginning of argument list.
-        if [[ ${i} == "--build" || ${i} == "--disable-prompts" || ${i} == "--keep" || ${i} == "--nocheck" || ${i} == "--quiet" || ${i} == "--nosandbox"|| ${i} == "--description" ]]; then
+        if [[ ${i} == "--build" || ${i} == "--disable-prompts" || ${i} == "--keep" || ${i} == "--nocheck" || ${i} == "--quiet" || ${i} == "--nosandbox" ]]; then
             argument_list=("${i}" "${argument_list[@]}")
         else
             argument_list+=("${i}")
@@ -640,7 +640,7 @@ for i in "${@}"; do
     # Arguments start with uppercase except 'h'.
     for j in $(sed -E 's/[[:upper:]]|h/ &/g' <<< "${i:1}"); do
         # If current string is 'B', 'P', 'K' or 'Nc', add to beginning of argument list.
-        if [[ ${j} == "B" || ${j} == "P" || ${j} == "K" || ${j} == "Nc" || ${j} == "Q" || ${j} == "Ns" || ${j} == "Ds" ]]; then
+        if [[ ${j} == "B" || ${j} == "P" || ${j} == "K" || ${j} == "Nc" || ${j} == "Q" || ${j} == "Ns" ]]; then
             argument_list=("-${j}" "${argument_list[@]}")
         else
             argument_list+=("-${j}")
@@ -653,9 +653,9 @@ done
 declare -A arg_map=(
     ["--install"]="-I" ["--search"]="-S" ["--remove"]="-R" ["--download"]="-D"
     ["--add-repo"]="-A" ["--remove-repo"]="-Rr" ["--update"]="-U" ["--list"]="-L" ["--upgrade"]="-Up"
-    ["--query-info"]="-Qi" ["--tree"]="-T" ["--version"]="-V" ["--info"]="-In" ["--help"]="-h"
-    ["--build"]="-B" ["--keep"]="-K" ["--disable-prompts"]="-P" ["--nocheck"]="-Nc"
-    ["--quality-assurance"]="-Qa" ["--quiet"]="-Q" ["--nosandbox"]="-Ns" ["--description"]="-Ds"
+    ["--search-description"]="-Sd" ["--search-info"]="-Si" ["--cache-info"]="-Ci"
+    ["--quality-assurance"]="-Qa" ["--tree"]="-T" ["--version"]="-V" ["--help"]="-h" ["--build"]="-B"
+    ["--keep"]="-K" ["--disable-prompts"]="-P" ["--nocheck"]="-Nc" ["--quiet"]="-Q" ["--nosandbox"]="-Ns"
 )
 declare -A hashed_arguments
 unique_argument_list=()
@@ -668,8 +668,8 @@ for arg in "${argument_list[@]}"; do
 done
 
 # Check if only one command flag is being used
-short_commands=("-I" "-S" "-R" "-D" "-A" "-Rr" "-U" "-L" "-Up" "-Qi" "-Qa" "-T" "-V" "-In" "-h")
-long_commands=("--install" "--search" "--remove" "--download" "--add-repo" "--remove-repo" "--update" "--list" "--upgrade" "--query-info" "--quality-assurance" "--tree" "--version" "--info" "--help")
+short_commands=("-I" "-S" "-R" "-D" "-A" "-Rr" "-U" "-L" "-Up" "-Qa" "-Sd" "-Si" "-Ci" "-T" "-V" "-h")
+long_commands=("--install" "--search" "--remove" "--download" "--add-repo" "--remove-repo" "--update" "--list" "--upgrade" "--quality-assurance" "--search-description" "--search-info" "--cache-info" "--tree" "--version" "--help")
 commands=("${short_commands[@]}" "${long_commands[@]}")
 matches=($(comm -12 <(sort <(printf "%s\n" "${unique_argument_list[@]}")) <(sort <(printf "%s\n" "${commands[@]}"))))
 if ((${#matches[@]} <= 1)); then
@@ -686,8 +686,8 @@ function lock() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # Total number of options flags, increase when needed
     local option_flags=5
-    local ignore_short="-S -D -A -Rr -V -L -Qi -T -In -h"
-    local ignore_long="--search --download --add-repo --remove-repo --version --query-info --tree --info --help"
+    local ignore_short="-S -D -A -Rr -V -L -T -Sd -Si -Ci -h"
+    local ignore_long="--search --download --add-repo --remove-repo --version --tree --search-description --search-info --cache-info --help"
     local ignore="$ignore_short $ignore_long"
 
     for ((i = 1; i <= option_flags + 1; i++)); do
@@ -741,7 +741,7 @@ while [[ $1 != "--" ]]; do
             ;;
 
         -h | --help)
-            echo -e "Usage: pacstall [-h] {-I,-S,-R,-D,-A,-Rr,-U,-L,-Up,-Qa,-Qi,-In,-T,-V} [-P] [-K] [-B] [-Nc] [-Q] [-Ns] [-Ds]
+            echo -e "Usage: pacstall [-h] {-I,-S,-R,-D,-A,-Rr,-U,-L,-Up,-Qa,-Sd,-Si,-Ci,-T,-V} [-P] [-K] [-B] [-Nc] [-Q] [-Ns]
 
 An AUR inspired package manager for Ubuntu.
 
@@ -766,12 +766,14 @@ Commands:
         Upgrade all installed packages.
     ${BOLD}-Qa${NC}, ${BOLD}--quality-assurance${NC} <package>#<number>
         Test a package PR from downstream. Optional: @[provider]:[owner]/[repo]
-    ${BOLD}-Qi${NC}, ${BOLD}--query-info${NC} <package>
-        Query information about an installed package.
-    ${BOLD}-In${NC}, ${BOLD}--info${NC} <package>
+    ${BOLD}-Sd${NC}, ${BOLD}--search-description${NC} <package>
+        Search for a package or description keyword.
+    ${BOLD}-Si${NC}, ${BOLD}--search-info${NC} <package>
         Query information about a remote package.
+    ${BOLD}-Ci${NC}, ${BOLD}--cache-info${NC} <package>
+        Query information about an installed package.
     ${BOLD}-T${NC}, ${BOLD}--tree${NC} <package>
-        Display a tree graph of a package.
+        Display a tree graph of an installed package.
     ${BOLD}-V${NC}, ${BOLD}--version${NC}
         Display the version number.
     ${BOLD}-h${NC}, ${BOLD}--help${NC}
@@ -790,8 +792,6 @@ Options:
         Download package entries quietly.
     ${BOLD}-Ns${NC}, ${BOLD}--nosandbox${NC}
         Build the package without bwrap.
-    ${BOLD}-Ds${NC}, ${BOLD}--description${NC}
-        Search with description.
 
 Helpful links:
     ${BOLD}https://github.com/pacstall/pacstall${NC}
@@ -934,7 +934,10 @@ Helpful links:
             exit 0
             ;;
 
-        -S | --search)
+        -S | --search | -Sd | --search-description)
+            if [[ ${1} == "-Sd" || ${1} == --search-description ]]; then
+                DESCON=true
+            fi
 
             export SEARCH=$2
             if [[ -z $SEARCH ]]; then
@@ -953,7 +956,8 @@ Helpful links:
             exit 0
             ;;
 
-        -In | --info)
+        -Si | --search-info)
+            unset CHILD
             INFOQUERY="${2}"
             if [[ $2 =~ ^([a-zA-Z0-9_.-]+)(:([a-zA-Z0-9_.-]+))(@(.+))$ ]]; then
                 PACKAGE="${BASH_REMATCH[1]}:pkgbase"
@@ -1232,7 +1236,7 @@ Helpful links:
             exit 0
             ;;
 
-        -Qi | --query-info)
+        -Ci | --cache-info)
             PACKAGE=$2
             QUERY=$3
             # shellcheck source=./misc/scripts/query-info.sh
@@ -1274,10 +1278,6 @@ Helpful links:
             fancy_message warn "Building package without bwrap sandbox"
             fancy_message sub "Be cautious, this exposes your system to potential harm"
             NOSANDBOX=true
-            ;;
-
-        -Ds | --description)
-            DESCON=true
             ;;
 
         *)
