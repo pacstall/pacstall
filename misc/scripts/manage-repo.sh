@@ -100,7 +100,6 @@ function repo.unraw() {
 function repo.get_where() {
     { ignore_stack=true; set -o pipefail; trap stacktrace ERR RETURN; }
     local where="${1:?no type passed}" name="${2:?no specifier or alias passed}" line
-    ```
     while IFS= read -r line; do
         local -A get_where
         repo.split_components "${line}" "get_where"
