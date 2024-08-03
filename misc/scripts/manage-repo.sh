@@ -99,13 +99,15 @@ function repo.unraw() {
 # Something like `repo.get_where alias "foo"`
 function repo.get_where() {
     { ignore_stack=true; set -o pipefail; trap stacktrace ERR RETURN; }
-    local where="${1}" name="${2}" line
+    local where="${1:?no type passed}" name="${2:?no specifier or alias passed}" line
+    ```
     while IFS= read -r line; do
         local -A get_where
         repo.split_components "${line}" "get_where"
         case "${where}" in
             "specifier") if [[ "${get_where['specifier']}" == "${name}" ]]; then echo "${get_where['url']}"; fi ;;
             "alias") if [[ "${get_where['alias']}" == "${name}" ]]; then echo "${get_where['url']}"; fi ;;
+            *) fancy_message error "'repo.get_where' valid types are: 'alias', 'specificer'; return 1 ;;
         esac
         unset get_where
     done < "${SCRIPTDIR}/repo/pacstallrepo"
