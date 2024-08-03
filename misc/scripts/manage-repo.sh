@@ -107,7 +107,7 @@ function repo.get_where() {
         case "${where}" in
             "specifier") if [[ "${get_where['specifier']}" == "${name}" ]]; then echo "${get_where['url']}"; fi ;;
             "alias") if [[ "${get_where['alias']}" == "${name}" ]]; then echo "${get_where['url']}"; fi ;;
-            *) fancy_message error "'repo.get_where' valid types are: 'alias', 'specificer'; return 1 ;;
+            *) fancy_message error "'repo.get_where' valid types are: 'alias', 'specificer'"; return 1 ;;
         esac
         unset get_where
     done < "${SCRIPTDIR}/repo/pacstallrepo"
