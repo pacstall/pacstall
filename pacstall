@@ -909,7 +909,7 @@ Helpful links:
                         continue
                     fi
                     export PACKAGE="${PACKAGE/:pkgbase/}"
-                    specifyRepo "$REPO"
+                    repo.specify "$REPO"
                     # sanity write
                     export REPO="${REPO}"
                     export URL="${REPO}/packages/$PACKAGE/$PACKAGE.pacscript"
@@ -1186,7 +1186,7 @@ Helpful links:
                     continue
                 fi
 
-                specifyRepo "$REPO"
+                repo.specify "$REPO"
                 export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 
                 # shellcheck source=./misc/scripts/get-pacscript.sh
