@@ -780,20 +780,26 @@ function install_builddepends() {
 
 function compare_remote_version() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local crv_input="${1}" remote_tmp remote_safe remotever localver crv_pkgver crv_pkgrel crv_epoch crv_source remv crv_fetch crv_base
+    local crv_input="${1}" remote_tmp remote_safe remoterepo remotever localver crv_pkgver crv_pkgrel crv_epoch crv_source remv crv_fetch crv_base
     unset _pkgbase
     # shellcheck source=/dev/null
     source "$METADIR/$crv_input" || { ignore_stack=true; return 1; }
     [[ ${_remoterepo} == "orphan" ]] && _remoterepo="${REPO}"
     if [[ -z ${_remoterepo} ]]; then
         return 0
-    elif [[ ${_remoterepo} == *"github.com"* ]]; then
-        local remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}"
-    elif [[ ${_remoterepo} == *"gitlab.com"* ]]; then
-        local remoterepo="${_remoterepo}/-/raw/${_remotebranch}"
-    else
-        local remoterepo="${_remoterepo}"
     fi
+    case "${_remoterepo}" in
+        *"github.com"*)
+            remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}" ;;
+        *"gitlab.com"*)
+            remoterepo="${_remoterepo}/-/raw/${_remotebranch}" ;;
+        *"git.sr.ht"*)
+            remoterepo="${_remoterepo}/blob/${_remotebranch}" ;;
+        *"codeberg"*)
+            remoterepo="${_remoterepo}/raw/branch/${_remotebranch}" ;;
+        *)
+            remoterepo="${_remoterepo}" ;;
+    esac
     if [[ -n ${_pkgbase} ]]; then
         crv_fetch="${_pkgbase}"
     else

@@ -105,7 +105,7 @@ pacstall_scripts=(
     "error-log" "add-repo" "search" "dep-tree" "version-constraints"
     "checks" "get-pacscript" "package" "package-base" "fetch-sources"
     "build" "upgrade" "remove" "update" "query-info" "quality-assurance"
-    "bwrap" "srcinfo"
+    "bwrap" "srcinfo" "manage-repo"
 )
 for script in "${pacstall_scripts[@]}"; do
     sudo curl -s -o "$SCRIPTDIR/scripts/${script}.sh" "${REPO}/misc/scripts/${script}.sh" &

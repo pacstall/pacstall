@@ -137,7 +137,7 @@ pacstall_scripts=(
     "error-log" "add-repo" "search" "dep-tree" "version-constraints"
     "checks" "get-pacscript" "package" "package-base" "fetch-sources"
     "build" "upgrade" "remove" "update" "query-info" "quality-assurance"
-    "bwrap" "srcinfo"
+    "bwrap" "srcinfo" "manage-repo"
 )
 rm -f "${SCRIPTDIR}/repo/pacstallrepo" > /dev/null
 echo "${REPO/pacstall\/pacstall/pacstall\/pacstall-programs}" > "${SCRIPTDIR}/repo/pacstallrepo"

@@ -125,7 +125,7 @@ function repo.to_metalink() {
 
 function repo.from_metalink() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local fromlist=("${@}") outlist
+    local fromlist=("${@}") outlist PROV USER HEAD
     for i in "${fromlist[@]}"; do
         local ADDR PROV USER HEAD BRANCH
         IFS=':' read -ra ADDR <<< "${i}"
@@ -224,34 +224,32 @@ function repo.parse() {
     local SPLIT REPODIR
     mapfile -t SPLIT <<< "${REPO//[\/]/$'\n'}"
     case "${REPO}" in
-    "file://"*)
-        repo.get_path "${REPO}" REPODIR
-        echo "\e]8;;$REPO\a$REPODIR\e]8;;\a"
+        "file://"*)
+            repo.get_path "${REPO}" REPODIR
+            echo "\e]8;;$REPO\a$REPODIR\e]8;;\a"
+            ;;
+        *"github"*|*"git.sr.ht"*)
+            repo.unraw "${REPO}"
+            echo -e "\e]8;;${pURL}/tree/${pBRANCH}\a$(repo.to_metalink "${REPO}")\e]8;;\a"
+            ;;
+        *"gitlab"*)
+            repo.unraw "${REPO}"
+            echo -e "\e]8;;${pURL}/-/tree/${pBRANCH}\a$(repo.to_metalink "${REPO}")\e]8;;\a"
+            ;;
+        *"codeberg"*)
+            repo.unraw "${REPO}"
+            echo -e "\e]8;;${pURL}/src/branch/${pBRANCH}\a$(repo.to_metalink "${REPO}")\e]8;;\a"
+            ;;
+        *)
+            echo -e "\e]8;;$REPO\a$REPO\e]8;;\a"
         ;;
-    *"github"*|*"git.sr.ht"*)
-        repo.unraw "${REPO}"
-        echo -e "\e]8;;${pURL}/tree/${pBRANCH}\a$(repo.to_metalink "${REPO}")\e]8;;\a"
-        ;;
-    *"gitlab"*)
-        repo.unraw "${REPO}"
-        echo -e "\e]8;;${pURL}/-/tree/${pBRANCH}\a$(repo.to_metalink "${REPO}")\e]8;;\a"
-        ;;
-    *"codeberg"*)
-        repo.unraw "${REPO}"
-        echo -e "\e]8;;${pURL}/src/branch/${pBRANCH}\a$(repo.to_metalink "${REPO}")\e]8;;\a"
-        ;;
-    *)
-        echo -e "\e]8;;$REPO\a$REPO\e]8;;\a"
-    ;;
-esac
+    esac
 }
 
 function repo.format() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if ! [[ ${1} =~ ^\ *# ]] && [[ ${1} =~ ^([^[:space:]]+)([[:space:]]@[a-zA-Z0-9_-]+)?([[:space:]]+#.*)?$ ]]; then
         echo "${BASH_REMATCH[1]}"
-    else
-        { ignore_stack=true; return 1; }
     fi
 }
 

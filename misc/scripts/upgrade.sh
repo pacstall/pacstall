@@ -42,6 +42,12 @@ source "${SCRIPTDIR}/scripts/srcinfo.sh" || {
     { ignore_stack=true; return 1; }
 }
 
+# shellcheck source=./misc/scripts/manage-repo.sh
+source "${SCRIPTDIR}/scripts/manage-repo.sh" || {
+    fancy_message error "Could not find manage-repo.sh"
+    { ignore_stack=true; return 1; }
+}
+
 function ver_compare() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local first second first_git second_git result
@@ -136,13 +142,18 @@ N="$(nproc)"
             # if localver does not end with the correct pacstall version format, append it
             [[ ! $localver =~ -pacstall[0-9]+$ && ! $localver =~ -pacstall[0-9]+~git[a-zA-Z0-9_-]{8}$ ]] && localver="${localver}-pacstall1"
 
-            if [[ ${_remoterepo} == *"github.com"* ]]; then
-                remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}"
-            elif [[ ${_remoterepo} == *"gitlab.com"* ]]; then
-                remoterepo="${_remoterepo}/-/raw/${_remotebranch}"
-            else
-                remoterepo="${_remoterepo}"
-            fi
+            case "${_remoterepo}" in
+                *"github.com"*)
+                    remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}" ;;
+                *"gitlab.com"*)
+                    remoterepo="${_remoterepo}/-/raw/${_remotebranch}" ;;
+                *"git.sr.ht"*)
+                    remoterepo="${_remoterepo}/blob/${_remotebranch}" ;;
+                *"codeberg"*)
+                    remoterepo="${_remoterepo}/raw/branch/${_remotebranch}" ;;
+                *)
+                    remoterepo="${_remoterepo}" ;;
+            esac
             remotebranch="${_remotebranch}"
             unset _remoterepo
 

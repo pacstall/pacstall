@@ -24,20 +24,10 @@
 
 { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
 
-function parse_repo() {
-    # shellcheck disable=SC2034
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local ADDR
-    IFS=':' read -ra ADDR <<< "$1"
-    PROV="${ADDR[0]}"
-    USER=$(echo "${ADDR[1]}" | cut -d'/' -f1)
-    HEAD=$(echo "${ADDR[1]}" | cut -d'/' -f2 | cut -d'#' -f1)
-    if [[ ${ADDR[1]} =~ "#" ]]; then
-        BRANCH="$(echo "${ADDR[1]}" | cut -d'#' -f2)"
-    else
-        BRANCH="master"
-        fancy_message warn "Assuming that git branch is ${GREEN}master${NC}"
-    fi
+# shellcheck source=./misc/scripts/manage-repo.sh
+source "${SCRIPTDIR}/scripts/manage-repo.sh" || {
+    fancy_message error "Could not find manage-repo.sh"
+    { ignore_stack=true; return 1; }
 }
 
 REPO="${2%/}"
@@ -60,13 +50,27 @@ case ${REPO} in
             REPO="${REPO/"/tree/"/"/raw/"}"
         fi
         ;;
-    *"github:"*)
-        parse_repo "${REPO}"
-        REPO="https://raw.${PROV}usercontent.com/${USER}/${HEAD}/${BRANCH}"
+    *"git.sr.ht"*)
+        if [[ $REPO != *"/tree/"* ]]; then
+            REPO="${REPO%/tree*}/blob/master"
+            fancy_message warn "Assuming that git branch is ${GREEN}master${NC}"
+        else
+            REPO="${REPO/"/tree/"/"/blob/"}"
+        fi
         ;;
-    *"gitlab:"*)
-        parse_repo "${REPO}"
-        REPO="https://${PROV}.com/${USER}/${HEAD}/-/raw/${BRANCH}"
+    *"codeberg"*)
+        if [[ $REPO != *"/src/branch/"* ]]; then
+            REPO="$REPO/raw/branch/master"
+            fancy_message warn "Assuming that git branch is ${GREEN}master${NC}"
+        else
+            REPO="${REPO/"/src/branch/"/"/raw/branch/"}"
+        fi
+        ;;
+    *"github:"*|*"gitlab:"*|*"sourcehut:"*|*"codeberg:"*)
+        if ! [[ "${REPO}" =~ "#" ]]; then
+            fancy_message warn "Assuming that git branch is ${GREEN}master${NC}"
+        fi
+        REPO="$(repo.from_metalink "${REPO}")"
         ;;
     *)
         [[ ${REPO} == "local:"* ]] && REPO="file://${REPO/local:/}"
