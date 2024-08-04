@@ -164,7 +164,7 @@ function repo.get_where() {
         repo.split_components "${line}" "get_where"
         case "${where}" in
             "alias") if [[ "${get_where['alias']}" == "${name}" && "${name}" != "none" ]]; then echo "${get_where['url']}"; fi ;;
-            "metalink") echo "$(repo.from_metalink "${get_where['url']}")" ;;
+            "metalink") repo.from_metalink "${get_where['url']}" ;;
             *) fancy_message error "'repo.get_where' valid types are: 'alias', 'metalink'"; return 1 ;;
         esac
         unset get_where
@@ -180,7 +180,7 @@ function repo.get_all_type() {
         case "${type}" in
             "url") if [[ -n "${get_all_type['url']}" ]]; then echo "${get_all_type['url']}"; fi ;;
             "alias") if [[ -n "${get_all_type['alias']}" ]]; then echo "${get_all_type['alias']}"; fi ;;
-            "metalink") echo "$(repo.to_metalink "${get_where['url']}")" ;;
+            "metalink") repo.to_metalink "${get_where['url']}" ;;
             *) fancy_message error "'repo.get_all_type' valid types are: 'url', 'alias', 'metalink'"; return 1 ;;
         esac
         unset get_all_type
@@ -226,7 +226,7 @@ function repo.parse() {
     case "${REPO}" in
         "file://"*)
             repo.get_path "${REPO}" REPODIR
-            echo "\e]8;;$REPO\a$REPODIR\e]8;;\a"
+            echo -e "\e]8;;${REPO}\a${REPODIR}\e]8;;\a"
             ;;
         *"github"*|*"git.sr.ht"*)
             repo.unraw "${REPO}"

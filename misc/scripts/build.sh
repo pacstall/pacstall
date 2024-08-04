@@ -836,7 +836,7 @@ function write_meta() {
     fi
     if [[ $local == 'no' ]]; then
         echo "_remoterepo=\"$pURL\""
-        if [[ -n ${$pBRANCH} ]]; then
+        if [[ -n ${pBRANCH} ]]; then
             echo "_remotebranch=\"$pBRANCH\""
         fi
     fi
