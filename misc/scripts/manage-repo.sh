@@ -201,8 +201,6 @@ function repo.get_path() {
 
 function repo.specify() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local SPLIT
-    mapfile -t SPLIT <<< "${1//[\/]/$'\n'}"
     if [[ $1 == "file://"* ]] || [[ $1 == "/"* ]] || [[ $1 == "~"* ]] || [[ $1 == "."* ]]; then
         repo.get_path "${1}" URLNAME
         export URLNAME
