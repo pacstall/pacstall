@@ -101,7 +101,7 @@ case ${REPOCMD} in
             fi
         fi
         if array.contains urllist "${REPO}"; then
-            fancy_message warn "'${RED}${REPO}${NC}' is already in the repo list${NC}"
+            fancy_message warn "${CYAN}${REPO}${NC} is already in the repo list, doing nothing${NC}"
             exit 0
         fi
         ask "Do you want to add ${CYAN}${REPO}${NC}${ALIAS:+ ${BLUE}@${ALIAS}${NC}} to the repo list?" Y
