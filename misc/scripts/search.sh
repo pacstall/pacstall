@@ -194,7 +194,8 @@ if [[ $SEARCH == *@* ]] || [[ $PACKAGE == *@* ]]; then
         REPONAME=${PACKAGE#*@}
         PACKAGE=${PACKAGE%%@*}
     fi
-    if ! [[ ${REPONAME} =~ "://" ]] && [[ ${REPONAME} != "/"* && ${REPONAME} != "~"* && ${REPONAME} != "."* ]]; then
+    if ! [[ ${REPONAME} =~ "://" ]] && [[ ${REPONAME} != "/"* && ${REPONAME} != "~"* && ${REPONAME} != "."* ]] && \
+        [[ ${REPONAME} != "github:"* && ${REPONAME} != "gitlab:"* && ${REPONAME} != "sourcehut:"* && ${REPONAME} != "codeberg:"* ]]; then
         REPONAME="$(repo.get_where alias "${REPONAME}")"
     fi
     if [[ $REPONAME == "file://"* ]] || [[ $REPONAME == "/"* ]] || [[ $REPONAME == "~"* ]] || [[ $REPONAME == "."* ]]; then
