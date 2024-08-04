@@ -253,7 +253,7 @@ if [[ $SEARCH == *@* ]] || [[ $PACKAGE == *@* ]]; then
             fi
             if [[ -n $SEARCH ]]; then
                 searchedrepo="$(repo.parse "${URL}")"
-                if [[ ${pBRANCH} != "master" && ${pBRANCH} != "main" ]]; then
+                if [[ ${searchedrepo} =~ "#" ]]; then
                     searchedrepo="${searchedrepo%%#*}${YELLOW}#${searchedrepo##*#}${NC}"
                 fi
                 for ids in "${_LEN[@]}"; do
@@ -263,19 +263,19 @@ if [[ $SEARCH == *@* ]] || [[ $PACKAGE == *@* ]]; then
                         echo -e "$GREEN${PACKAGELIST[$ids]} $PURPLE@ $CYAN${searchedrepo} $NC"
                     fi
                 done
-                unset searchedrepo pURL pBRANCH pISSUES pTYPE pREPO pOWNER
+                unset searchedrepo
             elif [[ ${SEARCHINFO} ]]; then
                 INFORESULTS=()
                 # shellcheck disable=SC2034
                 mapfile -t PARTRESULTS < <(srclist.info SRCLIST "${INFOQUERY%%@*}")
                 if [[ -n ${PARTRESULTS[*]} ]]; then
                     searchedrepo="$(repo.parse "${URL}")"
-                    if [[ ${pBRANCH} != "master" && ${pBRANCH} != "main" ]]; then
+                    if [[ ${searchedrepo} =~ "#" ]]; then
                         searchedrepo="${searchedrepo%%#*}${YELLOW}#${searchedrepo##*#}${NC}"
                     fi
                     PARTRESULTS=("${PURPLE}---${NC} ${CYAN}${searchedrepo}${NC} ${PURPLE}---${NC}" "${PARTRESULTS[@]}")
                     INFORESULTS+=("${PARTRESULTS[@]}")
-                    unset searchedrepo pURL pBRANCH pISSUES pTYPE pREPO pOWNER
+                    unset searchedrepo
                 fi
                 if [[ -z ${INFORESULTS[*]} ]]; then
                     fancy_message error "There is no package with the name $IRed${INFOQUERY%%@*}$NC in the repo $CYAN$REPONAME$NC"
@@ -333,7 +333,7 @@ if [[ -n ${SEARCH} ]]; then
             continue
         fi
         searchedrepo="$(repo.parse "${URL}")"
-        if [[ ${pBRANCH} != "master" && ${pBRANCH} != "main" ]]; then
+        if [[ ${searchedrepo} =~ "#" ]]; then
             searchedrepo="${searchedrepo%%#*}${YELLOW}#${searchedrepo##*#}${NC}"
         fi
         for ids in "${_LEN[@]}"; do
@@ -343,7 +343,7 @@ if [[ -n ${SEARCH} ]]; then
                 searchout+=("$GREEN${PACKAGELIST[$ids]} $PURPLE@ $CYAN${searchedrepo} $NC")
             fi
         done
-        unset searchedrepo pURL pBRANCH pISSUES pTYPE pREPO pOWNER
+        unset searchedrepo
     done < "$SCRIPTDIR/repo/pacstallrepo"
     mapfile -t searchout < <(printf "%s\n" "${searchout[@]}" | sort -V)
     LEN=${#searchout[@]}
@@ -449,12 +449,12 @@ elif [[ ${SEARCHINFO} ]]; then
         mapfile -t PARTRESULTS < <(srclist.info SRCLIST "${INFOQUERY}")
         if [[ -n ${PARTRESULTS[*]} ]]; then
             searchedrepo="$(repo.parse "${URL}")"
-            if [[ ${pBRANCH} != "master" && ${pBRANCH} != "main" ]]; then
+            if [[ ${searchedrepo} =~ "#" ]]; then
                 searchedrepo="${searchedrepo%%#*}${YELLOW}#${searchedrepo##*#}${NC}"
             fi
             PARTRESULTS=("${PURPLE}---${NC} ${CYAN}${searchedrepo}${NC} ${PURPLE}---${NC}" "${PARTRESULTS[@]}")
             INFORESULTS+=("${PARTRESULTS[@]}")
-            unset searchedrepo pURL pBRANCH pISSUES pTYPE pREPO pOWNER
+            unset searchedrepo
         fi
     done < "$SCRIPTDIR/repo/pacstallrepo"
     if [[ -z ${INFORESULTS[*]} ]]; then
@@ -503,11 +503,11 @@ else
             fi
             # Overwrite last question
             searchedrepo="$(repo.parse "${URLLIST[$IDX]}")"
-            if [[ ${pBRANCH} != "master" && ${pBRANCH} != "main" ]]; then
+            if [[ ${searchedrepo} =~ "#" ]]; then
                 searchedrepo="${searchedrepo%%#*}${YELLOW}#${searchedrepo##*#}${NC}"
             fi
             ask "\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN${searchedrepo}$NC?" Y
-            unset searchedrepo pURL pBRANCH pISSUES pTYPE pREPO pOWNER
+            unset searchedrepo
             if ((answer == 1)); then
                 export PACKAGE=${PACKAGELIST[$IDX]}
                 export REPO=${URLLIST[$IDX]}

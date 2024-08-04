@@ -168,7 +168,7 @@ N="$(nproc)"
                 remoteurl="${REPOS[$IDXMATCH]}"
             else
                 parsedrepo="$(repo.parse "${remoterepo}")"
-                if [[ ${pBRANCH} != "master" && ${pBRANCH} != "main" ]]; then
+                if [[ ${parsedrepo} =~ "#" ]]; then
                     parsedrepo="${parsedrepo%%#*}${YELLOW}#${parsedrepo##*#}${NC}"
                 fi
                 if [[ ${remoterepo} != "orphan" ]]; then
@@ -176,7 +176,7 @@ N="$(nproc)"
                     sudo sed -i 's/_remoterepo=".*"/_remoterepo="orphan"/g' "$METADIR/$i"
                     sudo sed -i '/_remotebranch=/d' "$METADIR/$i"
                 fi
-                unset parsedrepo pURL pBRANCH pISSUES pTYPE pREPO pOWNER
+                unset parsedrepo
             fi
 
             if [[ $remotever != "${localver}" ]]; then
@@ -217,13 +217,13 @@ N="$(nproc)"
                         echo "$i" | tee -a "${up_list}" > /dev/null
                     fi
                     updaterepo="$(repo.parse "${remoteurl}")"
-                    if [[ ${pBRANCH} != "master" && ${pBRANCH} != "main" ]]; then
+                    if [[ ${updaterepo} =~ "#" ]]; then
                         updaterepo="${updaterepo%%#*}${YELLOW}#${updaterepo##*#}${NC}"
                     fi
                     printf "\t%s%s%s @ %s%s ( %s%s%s -> %s%s%s )\n" \
                         "${GREEN}" "${i}" "${CYAN}" "${updaterepo}" "${NC}" "${BLUE}" "${localver:-unknown}" "${NC}" "${BLUE}" "${remotever:-unknown}" "${NC}" | tee -a "${up_print}" > /dev/null
                     echo "$remoteurl" | tee -a "${up_urls}" > /dev/null
-                    unset updaterepo pURL pBRANCH pISSUES pTYPE pREPO pOWNER
+                    unset updaterepo
                 fi
             fi
         ) &
