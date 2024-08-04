@@ -100,6 +100,12 @@ case ${REPOCMD} in
             if [[ ${ALIAS} == "none" ]]; then
                 fancy_message error "Repository alias cannot be 'none'"
                 exit 1
+            elif [[ ${ALIAS} =~ "://" ]]; then
+                fancy_message error "Repository alias cannot be a hyperlink"
+                exit 1
+            elif [[ ${ALIAS} == "/"* || ${ALIAS} == "~"* || ${ALIAS} == "."* ]]; then
+                fancy_message error "Repository alias cannot start with '/', '~', or '.'"
+                exit 1
             fi
             mapfile -t aliaslist < <(repo.get_all_type alias)
             if array.contains aliaslist "${ALIAS}"; then
