@@ -26,39 +26,15 @@ pacstallrepo - repository management file
 .PP
 This manual page describes the format of the pacstallrepo file.
 This is a simple text file which contains newline separated information.
-There are two optional parts and one required component:
+There is one optional component and one required component:
 .RS
 .RS
 .PP
-[specifier] url \[at]alias
+url \[at]alias
 .RE
 .RE
 .PP
-Where \f[B]specifier\f[R] and \f[B]alias\f[R] are optional.
-.SS specifier
-.PP
-The specifier takes the form of a word surrounded by brackets
-(\f[B][]\f[R]) and denotes a repository type.
-This is strictly optional but will help and sometimes fix repositories
-where the platform cannot be determined based on its name alone.
-It can contain the following types:
-.IP \[bu] 2
-\f[V]github\f[R]
-.IP \[bu] 2
-\f[V]gitlab\f[R]
-.IP \[bu] 2
-\f[V]codeberg\f[R]
-.IP \[bu] 2
-\f[V]sourcehut\f[R]
-.SS url
-.PP
-This takes the form of a \f[B]raw\f[R] URL where paths will be appended
-to in order to get files from a repository.
-For instance, take our official repository at
-\f[B]https://github.com/pacstall/pacstall-programs\f[R].
-The raw URL that we just need to append file paths to in order to get
-files is
-\f[B]https://raw.githubusercontent.com/pacstall/pacstall-programs/master\f[R].
+Where \f[B]alias\f[R] is optional.
 .SS alias
 .PP
 This takes the form of \f[B]\[at]alias\f[R] where \f[B]alias\f[R] can be
