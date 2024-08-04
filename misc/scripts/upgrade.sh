@@ -220,8 +220,8 @@ N="$(nproc)"
                     if [[ ${updaterepo} =~ "#" ]]; then
                         updaterepo="${updaterepo%%#*}${YELLOW}#${updaterepo##*#}${NC}"
                     fi
-                    printf "\t%s%s%s @ %s%s ( %s%s%s -> %s%s%s )\n" \
-                        "${GREEN}" "${i}" "${CYAN}" "${updaterepo}" "${NC}" "${BLUE}" "${localver:-unknown}" "${NC}" "${BLUE}" "${remotever:-unknown}" "${NC}" | tee -a "${up_print}" > /dev/null
+                    printf "\t%s%s%s @ %s%s%s ( %s%s%s -> %s%s%s )\n" \
+                        "${GREEN}" "${i}" "${PURPLE}" "${CYAN}" "${updaterepo}" "${NC}" "${BLUE}" "${localver:-unknown}" "${NC}" "${BLUE}" "${remotever:-unknown}" "${NC}" | tee -a "${up_print}" > /dev/null
                     echo "$remoteurl" | tee -a "${up_urls}" > /dev/null
                     unset updaterepo
                 fi
