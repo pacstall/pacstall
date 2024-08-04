@@ -113,6 +113,7 @@ case ${REPOCMD} in
     remove)
         ask "Do you want to remove ${CYAN}${REPO}${NC} from the repo list?" Y
         if [[ ${REPO} == "@"* || -z ${ALIAS} ]]; then
+            # shellcheck disable=SC2034
             mapfile -t aliaslist < <(repo.get_all_type alias)
             if array.contains aliaslist "${REPO#*@}"; then
                 ALIAS="${REPO#*@}"
