@@ -112,7 +112,6 @@ case ${REPOCMD} in
                 fancy_message error "The alias '${RED}${ALIAS}${NC}' is already in use by ${CYAN}$(repo.get_where alias "${ALIAS}")${NC}"
                 exit 1
             fi
-            fancy_message sub "Adding with alias ${BLUE}${ALIAS}${NC}"
         fi
         REPOLIST+=("${REPO}${ALIAS:+ @$ALIAS}")
         ;;
