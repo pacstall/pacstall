@@ -226,7 +226,7 @@ function deblog_depends() {
 
 function prompt_depends() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local d o deps missing_optdeps not_satisfied_optdeps missing_deps not_satisfied_deps suggested_optdeps
+    local d o deps missing_optdeps not_satisfied_optdeps missing_deps not_satisfied_deps suggested_optdeps not_installed_yet_optdeps already_installed_optdeps
     fancy_message info "Checking apt dependencies"
     for i in "deps" "missing_deps" "not_satisfied_deps" "suggested_optdeps" "missing_optdeps" "not_satisfied_optdeps" "already_installed_optdeps"; do
         sudo rm -rf "${PACDIR}-${i//_/-}-${pacname}"
