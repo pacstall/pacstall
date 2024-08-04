@@ -179,7 +179,6 @@ if [[ ${new_username} == "pacstall" ]]; then
     echo -e "\t${BCyan}GitHub${NC}: ${BOLD}https://github.com/pacstall${NC}"
     echo -e "\t${BRed}Report Bugs${NC}: ${BOLD}https://github.com/${new_username}/pacstall/issues${NC}"
     echo -e "\t${BBlue}Discord${NC}: ${BOLD}https://discord.gg/yzrjXJV6K8${NC}"
-    echo -e "\t${BGreen}Matrix${NC}: ${BOLD}https://matrix.to/#/#pacstall:matrix.org${NC}"
 fi
 exit 0
 
