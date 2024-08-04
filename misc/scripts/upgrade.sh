@@ -154,7 +154,6 @@ N="$(nproc)"
                 *)
                     remoterepo="${_remoterepo}" ;;
             esac
-            remotebranch="${_remotebranch}"
             unset _remoterepo
 
             # shellcheck source=./misc/scripts/search.sh
@@ -168,14 +167,17 @@ N="$(nproc)"
                 unset comp_repo_ver
                 remoteurl="${REPOS[$IDXMATCH]}"
             else
-                parsedrepo="$(parseRepo "${remoterepo}")"
-                if [[ -n ${remotebranch} ]]; then
-                    parsedrepo+="${YELLOW}#${remotebranch}${NC}"
+                parsedrepo="$(repo.parse "${remoterepo}")"
+                if [[ ${pBRANCH} != "master" && ${pBRANCH} != "main" ]]; then
+                    parsedrepo="${parsedrepo%%#*}${YELLOW}#${parsedrepo##*#}${NC}"
                 fi
-                [[ ${remoterepo} != "orphan" ]] && fancy_message warn "Package ${GREEN}${i}${NC} is not on ${CYAN}${parsedrepo}${NC} anymore" \
-                    && sudo sed -i 's/_remoterepo=".*"/_remoterepo="orphan"/g' "$METADIR/$i" && sudo sed -i '/_remotebranch=/d' "$METADIR/$i"
+                if [[ ${remoterepo} != "orphan" ]]; then
+                    fancy_message warn "Package ${GREEN}${i}${NC} is not on ${CYAN}${parsedrepo}${NC} anymore"
+                    sudo sed -i 's/_remoterepo=".*"/_remoterepo="orphan"/g' "$METADIR/$i"
+                    sudo sed -i '/_remotebranch=/d' "$METADIR/$i"
+                fi
+                unset parsedrepo pURL pBRANCH pISSUES pTYPE pREPO pOWNER
             fi
-            unset remotebranch parsedrepo
 
             if [[ $remotever != "${localver}" ]]; then
                 alterver="0.0.0"
@@ -207,14 +209,6 @@ N="$(nproc)"
                 return
             fi
 
-            if [[ ${remoteurl} == *"github"* ]]; then
-                upBRANCH="${remoteurl##*/}"
-            elif [[ ${remoteurl} == *"gitlab"* ]]; then
-                upBRANCH="${remoteurl##*/-/raw/}"
-            else
-                unset upBRANCH
-            fi
-
             if [[ -n $remotever ]]; then
                 if ver_compare "$localver" "$remotever"; then
                     if [[ -n ${_pkgbase} ]]; then
@@ -222,14 +216,14 @@ N="$(nproc)"
                     else
                         echo "$i" | tee -a "${up_list}" > /dev/null
                     fi
-                    updaterepo="$(parseRepo "${remoteurl}")"
-                    if [[ -n ${upBRANCH} && ${upBRANCH} != "master" && ${upBRANCH} != "main" ]]; then
-                        updaterepo+="${YELLOW}#${upBRANCH}${NC}"
+                    updaterepo="$(repo.parse "${remoteurl}")"
+                    if [[ ${pBRANCH} != "master" && ${pBRANCH} != "main" ]]; then
+                        updaterepo="${updaterepo%%#*}${YELLOW}#${updaterepo##*#}${NC}"
                     fi
                     printf "\t%s%s%s @ %s%s ( %s%s%s -> %s%s%s )\n" \
                         "${GREEN}" "${i}" "${CYAN}" "${updaterepo}" "${NC}" "${BLUE}" "${localver:-unknown}" "${NC}" "${BLUE}" "${remotever:-unknown}" "${NC}" | tee -a "${up_print}" > /dev/null
                     echo "$remoteurl" | tee -a "${up_urls}" > /dev/null
-                    unset upBRANCH updaterepo
+                    unset updaterepo pURL pBRANCH pISSUES pTYPE pREPO pOWNER
                 fi
             fi
         ) &
