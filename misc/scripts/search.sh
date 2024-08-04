@@ -205,6 +205,7 @@ if [[ $SEARCH == *@* ]] || [[ $PACKAGE == *@* ]]; then
     fi
 
     while IFS= read -r URL; do
+        URL="$(repo.format "${URL}")"
         repo.specify "$URL"
         if [[ $URLNAME == "$REPONAME" ]]; then
             mapfile -t PACKAGELIST < <(curl -s -- "$URL"/packagelist)
@@ -305,6 +306,7 @@ fi
 if [[ -n ${SEARCH} ]]; then
     searchout=()
     while IFS= read -r URL; do
+        URL="$(repo.format "${URL}")"
         mapfile -t PACKAGELIST < <(curl -s -- "$URL"/packagelist)
         if [[ ${DESCON} ]]; then
             # shellcheck disable=SC2034
@@ -366,6 +368,7 @@ fi
 PACKAGELIST=()
 URLLIST=()
 while IFS= read -r URL; do
+    URL="$(repo.format "${URL}")"
     if [[ ${URL} == "/"* ]] || [[ ${URL} == "~"* ]] || [[ ${URL} == "."* ]]; then
         sed -i "s#${URL}#file://$(readlink -f ${URL})#g" "$SCRIPTDIR/repo/pacstallrepo" 2> /dev/null \
             || fancy_message warn "Add \"file://\" to the local repo absolute path on \e]8;;file://$SCRIPTDIR/repo/pacstallrepo\a$CYAN$SCRIPTDIR/repo/pacstallrepo$NC\e]8;;\a"
@@ -447,6 +450,7 @@ elif [[ -n $UPGRADE ]]; then
 elif [[ ${SEARCHINFO} ]]; then
     INFORESULTS=()
     while IFS= read -r URL; do
+        URL="$(repo.format "${URL}")"
         # shellcheck disable=SC2034
         mapfile -t SRCLIST < <(curl -s -- "$URL"/srclist)
         mapfile -t PARTRESULTS < <(srclist.info SRCLIST "${INFOQUERY}")
