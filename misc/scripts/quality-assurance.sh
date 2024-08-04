@@ -47,6 +47,7 @@ function parse_link() {
         echo "https://raw.githubusercontent.com/$head_repo_full_name/$head_sha" "$login"
     else
         fancy_message error "${CYAN}$provider${NC} is not a valid provider!"
+        fancy_message sub "available providers are: 'github'"
         exit 1
     fi
 }

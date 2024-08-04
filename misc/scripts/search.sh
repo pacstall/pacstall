@@ -26,6 +26,12 @@
 
 { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
 
+# shellcheck source=./misc/scripts/manage-repo.sh
+source "${SCRIPTDIR}/scripts/manage-repo.sh" || {
+    fancy_message error "Could not find manage-repo.sh"
+    { ignore_stack=true; return 1; }
+}
+
 if [[ -n $UPGRADE ]]; then
     [[ ! -f "${PACDIR}-pacdeps-${PACKAGE%@*}" ]] && PACKAGE="${i}"
     [[ -n ${_pkgbase} ]] && PACKAGE="${_pkgbase}:${PACKAGE}"
@@ -38,72 +44,6 @@ fi
 if [[ -z ${INFOQUERY} ]]; then
     unset SEARCHINFO
 fi
-
-function getPath() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local path="${1}"
-    local var="${2}"
-    path="${path/"file://"/}"
-    path="${path/"~"/"$HOME"}"
-    path="$(realpath "${path}")"
-    path="${path/"$HOME"/"~"}"
-    printf -v "${var}" "%s" "${path}"
-}
-
-function specifyRepo() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local SPLIT
-    mapfile -t SPLIT <<< "${1//[\/]/$'\n'}"
-    if [[ $1 == "file://"* ]] || [[ $1 == "/"* ]] || [[ $1 == "~"* ]] || [[ $1 == "."* ]]; then
-        export URLNAME
-        getPath "${1}" URLNAME
-    elif [[ $1 == "github:"* ]] || [[ $1 == "gitlab:"* ]]; then
-        export URLNAME="${1}"
-    elif [[ $1 == *"github"* ]]; then
-        if [[ ${SPLIT[-1]} == "master" || ${SPLIT[-1]} == "main" ]]; then
-            export URLNAME="github:${SPLIT[-3]}/${SPLIT[-2]}"
-        else
-            export URLNAME="github:${SPLIT[-3]}/${SPLIT[-2]}#${SPLIT[-1]}"
-        fi
-    elif [[ $1 == *"gitlab"* ]]; then
-        if [[ ${SPLIT[-1]} == "master" || ${SPLIT[-1]} == "main" ]]; then
-            export URLNAME="github:${SPLIT[-4]}/${SPLIT[-3]}"
-        else
-            export URLNAME="github:${SPLIT[-4]}/${SPLIT[-3]}#${SPLIT[-1]}"
-        fi
-    else
-        export URLNAME="$REPO"
-    fi
-}
-
-# Parses github and gitlab URL's
-# url -> maintainer/repo
-# Also adds hyperlink for the
-# terminals that support them
-function parseRepo() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local REPO="${1}"
-    local SPLIT REPODIR
-    mapfile -t SPLIT <<< "${REPO//[\/]/$'\n'}"
-
-    if [[ $REPO == "file://"* ]]; then
-        getPath "${REPO}" REPODIR
-        echo "\e]8;;$REPO\a$REPODIR\e]8;;\a"
-    elif [[ $REPO == *"github"* ]]; then
-        echo -e "\e]8;;https://github.com/${SPLIT[-3]}/${SPLIT[-2]}\agithub:${SPLIT[-3]}/${SPLIT[-2]}\e]8;;\a"
-    elif [[ $REPO == *"gitlab"* ]]; then
-        echo -e "\e]8;;https://gitlab.com/${SPLIT[-4]}/${SPLIT[-3]}\agitlab:${SPLIT[-4]}/${SPLIT[-3]}\e]8;;\a"
-    else
-        echo "\e]8;;$REPO\a$REPO\e]8;;\a"
-    fi
-}
-
-function formatRepo() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    ! [[ $1 =~ ^\ *# ]] \
-        && [[ $1 =~ ^([^[:space:]]+)([[:space:]]+#.*)?$ ]] \
-        && echo "${BASH_REMATCH[1]}"
-}
 
 # Usage: see srclist.parse
 function srclist.search() {
@@ -254,15 +194,20 @@ if [[ $SEARCH == *@* ]] || [[ $PACKAGE == *@* ]]; then
         REPONAME=${PACKAGE#*@}
         PACKAGE=${PACKAGE%%@*}
     fi
+    if ! [[ ${REPONAME} =~ "://" ]] && [[ ${REPONAME} != "/"* && ${REPONAME} != "~"* && ${REPONAME} != "."* ]] && \
+        [[ ${REPONAME} != "github:"* && ${REPONAME} != "gitlab:"* && ${REPONAME} != "sourcehut:"* && ${REPONAME} != "codeberg:"* ]]; then
+        REPONAME="$(repo.get_where alias "${REPONAME}")"
+    fi
     if [[ $REPONAME == "file://"* ]] || [[ $REPONAME == "/"* ]] || [[ $REPONAME == "~"* ]] || [[ $REPONAME == "."* ]]; then
-        getPath "${REPONAME}" REPONAME
+        repo.get_path "${REPONAME}" REPONAME
     else
-        specifyRepo "$REPONAME"
+        repo.specify "$REPONAME"
         REPONAME="$URLNAME"
     fi
 
     while IFS= read -r URL; do
-        specifyRepo "$URL"
+        URL="$(repo.format "${URL}")"
+        repo.specify "$URL"
         if [[ $URLNAME == "$REPONAME" ]]; then
             mapfile -t PACKAGELIST < <(curl -s -- "$URL"/packagelist)
             if [[ ${DESCON} || ${SEARCHINFO} ]]; then
@@ -312,15 +257,10 @@ if [[ $SEARCH == *@* ]] || [[ $PACKAGE == *@* ]]; then
                 exit 1
             fi
             if [[ -n $SEARCH ]]; then
-                searchedrepo="$(parseRepo "${URL}")"
-                if [[ ${URL} == *"github"* ]]; then
-                    srBRANCH="${URL##*/}"
-                elif [[ ${URL} == *"gitlab"* ]]; then
-                    srBRANCH="${URL##*/-/raw/}"
-                else
-                    unset srBRANCH
+                searchedrepo="$(repo.parse "${URL}")"
+                if [[ ${searchedrepo} =~ "#" ]]; then
+                    searchedrepo="${searchedrepo%%#*}${YELLOW}#${searchedrepo##*#}${NC}"
                 fi
-                [[ -n ${srBRANCH} && ${srBRANCH} != "master" && ${srBRANCH} != "main" ]] && searchedrepo+="${YELLOW}#${srBRANCH}${NC}"
                 for ids in "${_LEN[@]}"; do
                     if [[ ${DESCON} ]]; then
                         echo -e "$GREEN${ids} ${BLUE}-${NC} ${SEARCHDESC[$ids]} $PURPLE@ $CYAN${searchedrepo} $NC"
@@ -328,24 +268,19 @@ if [[ $SEARCH == *@* ]] || [[ $PACKAGE == *@* ]]; then
                         echo -e "$GREEN${PACKAGELIST[$ids]} $PURPLE@ $CYAN${searchedrepo} $NC"
                     fi
                 done
-                unset searchedrepo srBRANCH
+                unset searchedrepo
             elif [[ ${SEARCHINFO} ]]; then
                 INFORESULTS=()
                 # shellcheck disable=SC2034
                 mapfile -t PARTRESULTS < <(srclist.info SRCLIST "${INFOQUERY%%@*}")
                 if [[ -n ${PARTRESULTS[*]} ]]; then
-                    searchedrepo="$(parseRepo "${URL}")"
-                    if [[ ${URL} == *"github"* ]]; then
-                        srBRANCH="${URL##*/}"
-                    elif [[ ${URL} == *"gitlab"* ]]; then
-                        srBRANCH="${URL##*/-/raw/}"
-                    else
-                        unset srBRANCH
+                    searchedrepo="$(repo.parse "${URL}")"
+                    if [[ ${searchedrepo} =~ "#" ]]; then
+                        searchedrepo="${searchedrepo%%#*}${YELLOW}#${searchedrepo##*#}${NC}"
                     fi
-                    [[ -n ${srBRANCH} && ${srBRANCH} != "master" && ${srBRANCH} != "main" ]] && searchedrepo+="${YELLOW}#${srBRANCH}${NC}"
                     PARTRESULTS=("${PURPLE}---${NC} ${CYAN}${searchedrepo}${NC} ${PURPLE}---${NC}" "${PARTRESULTS[@]}")
                     INFORESULTS+=("${PARTRESULTS[@]}")
-                    unset searchedrepo srBRANCH
+                    unset searchedrepo
                 fi
                 if [[ -z ${INFORESULTS[*]} ]]; then
                     fancy_message error "There is no package with the name $IRed${INFOQUERY%%@*}$NC in the repo $CYAN$REPONAME$NC"
@@ -372,6 +307,7 @@ fi
 if [[ -n ${SEARCH} ]]; then
     searchout=()
     while IFS= read -r URL; do
+        URL="$(repo.format "${URL}")"
         mapfile -t PACKAGELIST < <(curl -s -- "$URL"/packagelist)
         if [[ ${DESCON} ]]; then
             # shellcheck disable=SC2034
@@ -402,15 +338,10 @@ if [[ -n ${SEARCH} ]]; then
         if ((LEN == 0)) || [[ -z ${_LEN[*]} ]]; then
             continue
         fi
-        searchedrepo="$(parseRepo "${URL}")"
-        if [[ ${URL} == *"github"* ]]; then
-            srBRANCH="${URL##*/}"
-        elif [[ ${URL} == *"gitlab"* ]]; then
-            srBRANCH="${URL##*/-/raw/}"
-        else
-            unset srBRANCH
+        searchedrepo="$(repo.parse "${URL}")"
+        if [[ ${searchedrepo} =~ "#" ]]; then
+            searchedrepo="${searchedrepo%%#*}${YELLOW}#${searchedrepo##*#}${NC}"
         fi
-        [[ -n ${srBRANCH} && ${srBRANCH} != "master" && ${srBRANCH} != "main" ]] && searchedrepo+="${YELLOW}#${srBRANCH}${NC}"
         for ids in "${_LEN[@]}"; do
             if [[ ${DESCON} ]]; then
                 searchout+=("$GREEN${ids} ${BLUE}-${NC} ${SEARCHDESC[$ids]} $PURPLE@ $CYAN${searchedrepo} $NC")
@@ -418,7 +349,7 @@ if [[ -n ${SEARCH} ]]; then
                 searchout+=("$GREEN${PACKAGELIST[$ids]} $PURPLE@ $CYAN${searchedrepo} $NC")
             fi
         done
-        unset searchedrepo srBRANCH
+        unset searchedrepo
     done < "$SCRIPTDIR/repo/pacstallrepo"
     mapfile -t searchout < <(printf "%s\n" "${searchout[@]}" | sort -V)
     LEN=${#searchout[@]}
@@ -438,6 +369,7 @@ fi
 PACKAGELIST=()
 URLLIST=()
 while IFS= read -r URL; do
+    URL="$(repo.format "${URL}")"
     if [[ ${URL} == "/"* ]] || [[ ${URL} == "~"* ]] || [[ ${URL} == "."* ]]; then
         sed -i "s#${URL}#file://$(readlink -f ${URL})#g" "$SCRIPTDIR/repo/pacstallrepo" 2> /dev/null \
             || fancy_message warn "Add \"file://\" to the local repo absolute path on \e]8;;file://$SCRIPTDIR/repo/pacstallrepo\a$CYAN$SCRIPTDIR/repo/pacstallrepo$NC\e]8;;\a"
@@ -447,14 +379,19 @@ while IFS= read -r URL; do
             || fancy_message warn "Replace '~' with the full home path on \e]8;;file://$SCRIPTDIR/repo/pacstallrepo\a$CYAN$SCRIPTDIR/repo/pacstallrepo$NC\e]8;;\a"
         URL="${URL/'~'/$HOME}"
     fi
-    URL="$(formatRepo "${URL}")"
-    if [[ -n ${URL} ]] && ! check_url "${URL}/packagelist"; then
-        if [[ -z $REPOMSG ]]; then
+    URL="$(repo.format "${URL}")"
+    if ((REPOMSG!=1)); then
+        if [[ -z ${URL} ]]; then
             fancy_message error "Pacstall repo line improperly formatted: ${CYAN}${URL}${NC}"
             fancy_message warn "You can remove or fix the URL by editing $CYAN$SCRIPTDIR/repo/pacstallrepo$NC"
-            exit 1
+            REPOMSG=1
+            continue
+        elif ! check_url "${URL}/packagelist"; then
+            fancy_message error "Cannot connect to Pacstall repo: ${CYAN}${URL}${NC}"
+            fancy_message warn "You can remove or fix the URL by editing $CYAN$SCRIPTDIR/repo/pacstallrepo$NC"
+            REPOMSG=1
+            continue
         fi
-        continue
     fi
     mapfile -t PARTIALLIST < <(curl -s -- "$URL"/packagelist)
     URLLIST+=("${PARTIALLIST[@]/*/$URL}")
@@ -462,7 +399,9 @@ while IFS= read -r URL; do
     unset PARTIALLIST
 done < "$SCRIPTDIR/repo/pacstallrepo"
 
-REPOMSG=1
+if ((REPOMSG==1)); then
+    exit 1
+fi
 
 # Remove any `mask` from output
 any_masks=()
@@ -512,22 +451,18 @@ elif [[ -n $UPGRADE ]]; then
 elif [[ ${SEARCHINFO} ]]; then
     INFORESULTS=()
     while IFS= read -r URL; do
+        URL="$(repo.format "${URL}")"
         # shellcheck disable=SC2034
         mapfile -t SRCLIST < <(curl -s -- "$URL"/srclist)
         mapfile -t PARTRESULTS < <(srclist.info SRCLIST "${INFOQUERY}")
         if [[ -n ${PARTRESULTS[*]} ]]; then
-            searchedrepo="$(parseRepo "${URL}")"
-            if [[ ${URL} == *"github"* ]]; then
-                srBRANCH="${URL##*/}"
-            elif [[ ${URL} == *"gitlab"* ]]; then
-                srBRANCH="${URL##*/-/raw/}"
-            else
-                unset srBRANCH
+            searchedrepo="$(repo.parse "${URL}")"
+            if [[ ${searchedrepo} =~ "#" ]]; then
+                searchedrepo="${searchedrepo%%#*}${YELLOW}#${searchedrepo##*#}${NC}"
             fi
-            [[ -n ${srBRANCH} && ${srBRANCH} != "master" && ${srBRANCH} != "main" ]] && searchedrepo+="${YELLOW}#${srBRANCH}${NC}"
             PARTRESULTS=("${PURPLE}---${NC} ${CYAN}${searchedrepo}${NC} ${PURPLE}---${NC}" "${PARTRESULTS[@]}")
             INFORESULTS+=("${PARTRESULTS[@]}")
-            unset searchedrepo srBRANCH
+            unset searchedrepo
         fi
     done < "$SCRIPTDIR/repo/pacstallrepo"
     if [[ -z ${INFORESULTS[*]} ]]; then
@@ -575,7 +510,12 @@ else
                 continue
             fi
             # Overwrite last question
-            ask "\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN$(parseRepo "${URLLIST[$IDX]}")$NC?" Y
+            searchedrepo="$(repo.parse "${URLLIST[$IDX]}")"
+            if [[ ${searchedrepo} =~ "#" ]]; then
+                searchedrepo="${searchedrepo%%#*}${YELLOW}#${searchedrepo##*#}${NC}"
+            fi
+            ask "\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN${searchedrepo}$NC?" Y
+            unset searchedrepo
             if ((answer == 1)); then
                 export PACKAGE=${PACKAGELIST[$IDX]}
                 export REPO=${URLLIST[$IDX]}

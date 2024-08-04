@@ -42,6 +42,12 @@ source "${SCRIPTDIR}/scripts/srcinfo.sh" || {
     { ignore_stack=true; return 1; }
 }
 
+# shellcheck source=./misc/scripts/manage-repo.sh
+source "${SCRIPTDIR}/scripts/manage-repo.sh" || {
+    fancy_message error "Could not find manage-repo.sh"
+    { ignore_stack=true; return 1; }
+}
+
 function ver_compare() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local first second first_git second_git result
@@ -136,14 +142,18 @@ N="$(nproc)"
             # if localver does not end with the correct pacstall version format, append it
             [[ ! $localver =~ -pacstall[0-9]+$ && ! $localver =~ -pacstall[0-9]+~git[a-zA-Z0-9_-]{8}$ ]] && localver="${localver}-pacstall1"
 
-            if [[ ${_remoterepo} == *"github.com"* ]]; then
-                remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}"
-            elif [[ ${_remoterepo} == *"gitlab.com"* ]]; then
-                remoterepo="${_remoterepo}/-/raw/${_remotebranch}"
-            else
-                remoterepo="${_remoterepo}"
-            fi
-            remotebranch="${_remotebranch}"
+            case "${_remoterepo}" in
+                *"github.com"*)
+                    remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}" ;;
+                *"gitlab.com"*)
+                    remoterepo="${_remoterepo}/-/raw/${_remotebranch}" ;;
+                *"git.sr.ht"*)
+                    remoterepo="${_remoterepo}/blob/${_remotebranch}" ;;
+                *"codeberg"*)
+                    remoterepo="${_remoterepo}/raw/branch/${_remotebranch}" ;;
+                *)
+                    remoterepo="${_remoterepo}" ;;
+            esac
             unset _remoterepo
 
             # shellcheck source=./misc/scripts/search.sh
@@ -157,14 +167,17 @@ N="$(nproc)"
                 unset comp_repo_ver
                 remoteurl="${REPOS[$IDXMATCH]}"
             else
-                parsedrepo="$(parseRepo "${remoterepo}")"
-                if [[ -n ${remotebranch} ]]; then
-                    parsedrepo+="${YELLOW}#${remotebranch}${NC}"
+                parsedrepo="$(repo.parse "${remoterepo}")"
+                if [[ ${parsedrepo} =~ "#" ]]; then
+                    parsedrepo="${parsedrepo%%#*}${YELLOW}#${parsedrepo##*#}${NC}"
                 fi
-                [[ ${remoterepo} != "orphan" ]] && fancy_message warn "Package ${GREEN}${i}${NC} is not on ${CYAN}${parsedrepo}${NC} anymore" \
-                    && sudo sed -i 's/_remoterepo=".*"/_remoterepo="orphan"/g' "$METADIR/$i" && sudo sed -i '/_remotebranch=/d' "$METADIR/$i"
+                if [[ ${remoterepo} != "orphan" ]]; then
+                    fancy_message warn "Package ${GREEN}${i}${NC} is not on ${CYAN}${parsedrepo}${NC} anymore"
+                    sudo sed -i 's/_remoterepo=".*"/_remoterepo="orphan"/g' "$METADIR/$i"
+                    sudo sed -i '/_remotebranch=/d' "$METADIR/$i"
+                fi
+                unset parsedrepo
             fi
-            unset remotebranch parsedrepo
 
             if [[ $remotever != "${localver}" ]]; then
                 alterver="0.0.0"
@@ -196,14 +209,6 @@ N="$(nproc)"
                 return
             fi
 
-            if [[ ${remoteurl} == *"github"* ]]; then
-                upBRANCH="${remoteurl##*/}"
-            elif [[ ${remoteurl} == *"gitlab"* ]]; then
-                upBRANCH="${remoteurl##*/-/raw/}"
-            else
-                unset upBRANCH
-            fi
-
             if [[ -n $remotever ]]; then
                 if ver_compare "$localver" "$remotever"; then
                     if [[ -n ${_pkgbase} ]]; then
@@ -211,14 +216,14 @@ N="$(nproc)"
                     else
                         echo "$i" | tee -a "${up_list}" > /dev/null
                     fi
-                    updaterepo="$(parseRepo "${remoteurl}")"
-                    if [[ -n ${upBRANCH} && ${upBRANCH} != "master" && ${upBRANCH} != "main" ]]; then
-                        updaterepo+="${YELLOW}#${upBRANCH}${NC}"
+                    updaterepo="$(repo.parse "${remoteurl}")"
+                    if [[ ${updaterepo} =~ "#" ]]; then
+                        updaterepo="${updaterepo%%#*}${YELLOW}#${updaterepo##*#}${NC}"
                     fi
-                    printf "\t%s%s%s @ %s%s ( %s%s%s -> %s%s%s )\n" \
-                        "${GREEN}" "${i}" "${CYAN}" "${updaterepo}" "${NC}" "${BLUE}" "${localver:-unknown}" "${NC}" "${BLUE}" "${remotever:-unknown}" "${NC}" | tee -a "${up_print}" > /dev/null
+                    printf "\t%s%s%s @ %s%s%s ( %s%s%s -> %s%s%s )\n" \
+                        "${GREEN}" "${i}" "${PURPLE}" "${CYAN}" "${updaterepo}" "${NC}" "${BLUE}" "${localver:-unknown}" "${NC}" "${BLUE}" "${remotever:-unknown}" "${NC}" | tee -a "${up_print}" > /dev/null
                     echo "$remoteurl" | tee -a "${up_urls}" > /dev/null
-                    unset upBRANCH updaterepo
+                    unset updaterepo
                 fi
             fi
         ) &

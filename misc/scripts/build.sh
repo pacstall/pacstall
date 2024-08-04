@@ -36,6 +36,12 @@ source "${SCRIPTDIR}/scripts/srcinfo.sh" || {
     { ignore_stack=true; return 1; }
 }
 
+# shellcheck source=./misc/scripts/manage-repo.sh
+source "${SCRIPTDIR}/scripts/manage-repo.sh" || {
+    fancy_message error "Could not find manage-repo.sh"
+    { ignore_stack=true; return 1; }
+}
+
 function deblog() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local key="$1"
@@ -352,36 +358,6 @@ function is_builddep_arch() {
     fi
 }
 
-# This function is used to undo a raw repo URL into its base components.
-# It is sort of flawed because for self-hosted instances, it might not catch the name that it needs
-# in order to parse, and if that eventually comes up, we'll deal with it then.
-function parse_repo_unraw() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local rep="${1}"
-    case "${rep}" in
-        *"githubusercontent"*)
-            pURL="${rep/'raw.githubusercontent.com'/'github.com'}"
-            pURL="${pURL%/*}"
-            export pURL pBRANCH="${rep##*/}" pISSUES="${pURL}/issues" branch="yes"
-            ;;
-        *"gitlab"*)
-            pURL="${rep%/-/raw/*}"
-            export pURL pBRANCH="${rep##*/-/raw/}" pISSUES="${pURL}/-/issues" branch="yes"
-            ;;
-        *"git.sr.ht"*)
-            pURL="${rep%/blob*}"
-            export pURL pBRANCH="${rep##*/}" pISSUES="https://lists.sr.ht/~${pURL#*~}" branch="yes"
-            ;;
-        *"codeberg"*)
-            pURL="${rep%raw/branch/*}"
-            export pURL pBRANCH="${rep##*/}" pISSUES="${pURL}/issues" branch="yes"
-            ;;
-        *)
-            export pURL="$rep" branch="no"
-            ;;
-    esac
-}
-
 function makedeb() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # It looks weird for it to say: `Packaging foo as foo`
@@ -423,10 +399,11 @@ function makedeb() {
     if [[ -n ${bugs} ]]; then
         deblog "Bugs" "${bugs}"
     else
-        parse_repo_unraw "$REPO"
+        repo.unraw "$REPO"
         if [[ -n ${pISSUES} ]]; then
             deblog "Bugs" "${pISSUES}"
         fi
+        unset pURL pBRANCH pISSUES pTYPE pREPO pOWNER
     fi
 
     if [[ $pacname == *-git ]]; then
@@ -859,7 +836,7 @@ function write_meta() {
     fi
     if [[ $local == 'no' ]]; then
         echo "_remoterepo=\"$pURL\""
-        if [[ $branch == 'yes' ]]; then
+        if [[ -n ${pBRANCH} ]]; then
             echo "_remotebranch=\"$pBRANCH\""
         fi
     fi
@@ -880,11 +857,12 @@ function meta_log() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # Origin repo info parsing
     if [[ ${local} == "no" ]]; then
-        parse_repo_unraw "$REPO"
+        repo.unraw "$REPO"
     fi
 
     # Metadata writing
     write_meta | sudo tee "$METADIR/$pacname" > /dev/null
+    unset pURL pBRANCH pISSUES pTYPE pREPO pOWNER
 }
 
 # vim:set ft=sh ts=4 sw=4 et:

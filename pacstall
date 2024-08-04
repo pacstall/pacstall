@@ -909,7 +909,7 @@ Helpful links:
                         continue
                     fi
                     export PACKAGE="${PACKAGE/:pkgbase/}"
-                    specifyRepo "$REPO"
+                    repo.specify "$REPO"
                     # sanity write
                     export REPO="${REPO}"
                     export URL="${REPO}/packages/$PACKAGE/$PACKAGE.pacscript"
@@ -1016,7 +1016,8 @@ Helpful links:
             ;;
 
         -A | --add-repo)
-            REPO="$2"
+            REPO="${2%/}"
+            ALIAS="${3#*@}"
             REPOCMD="add"
 
             if [[ ! -f "$SCRIPTDIR/repo/pacstallrepo" ]]; then
@@ -1036,7 +1037,8 @@ Helpful links:
             ;;
 
         -Rr | --remove-repo)
-            REPO="$2"
+            REPO="${2%/}"
+            ALIAS="${3#*@}"
             REPOCMD="remove"
 
             if [[ ! -f "$SCRIPTDIR/repo/pacstallrepo" ]]; then
@@ -1186,7 +1188,7 @@ Helpful links:
                     continue
                 fi
 
-                specifyRepo "$REPO"
+                repo.specify "$REPO"
                 export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
 
                 # shellcheck source=./misc/scripts/get-pacscript.sh

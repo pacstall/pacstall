@@ -21,6 +21,26 @@
 # You should have received a copy of the GNU General Public License
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
+_pacstall_get_repo_urls() {
+    local part split
+    while read -r part; do
+        mapfile -t split <<< "${part// /$'\n'}"
+        if ((${#split[@]} == 1)); then
+            echo "${split[0]}"
+        elif ((${#split[@]} == 2)); then
+            if [[ ${split[0]:0:1} == '[' ]]; then
+                # Get the second one, the URL
+                echo "${split[1]}"
+            else
+                # Then we just have a URL and an alias
+                echo "${split[0]}"
+            fi
+        else
+            echo "${split[1]}"
+        fi
+    done < /usr/share/pacstall/repo/pacstallrepo
+}
+
 _pacstall() {
     cur=${COMP_WORDS[COMP_CWORD]}
     prev=${COMP_WORDS[1]}
@@ -38,12 +58,12 @@ _pacstall() {
             ;;
 
         -?(P)S?(P) | --search)
-            COMPREPLY=($(compgen -W "$(xargs -I{} echo "{}/packagelist" < /usr/share/pacstall/repo/pacstallrepo | xargs -n 1 curl -s | sort -u)" -- "$cur"))
+            COMPREPLY=($(compgen -W "$(xargs -I{} echo "{}/packagelist" < <(_pacstall_get_repo_urls) | xargs -n 1 curl -s | sort -u)" -- "$cur"))
             return
             ;;
 
         -?(P)I?(P) | -?(K)I?(K) | -?(PK)I?(PK) | -?(KP)I?(KP) | -?(B)I?(B) | -?(BP)I?(BP) | -?(BK)I?(BK) | -?(BPK)I?(BPK) | -?(BKP)I?(BKP) | -?(PBK)I?(PBK) | -?(KBP)I?(KBP) | -?(PKB)I?(PKB) | -?(KPB)I?(KPB) | --install)
-            COMPREPLY=($(compgen -W "$(xargs -I{} echo "{}/packagelist" < /usr/share/pacstall/repo/pacstallrepo | xargs -n 1 curl -s | sort -u)" -- "$cur"))
+            COMPREPLY=($(compgen -W "$(xargs -I{} echo "{}/packagelist" < <(_pacstall_get_repo_urls) | xargs -n 1 curl -s | sort -u)" -- "$cur"))
             return
             ;;
 
@@ -58,7 +78,7 @@ _pacstall() {
             ;;
 
         -?(P)D?(P) | --download)
-            COMPREPLY=($(compgen -W "$(xargs -I{} echo "{}/packagelist" < /usr/share/pacstall/repo/pacstallrepo | xargs -n 1 curl -s | sort -u)" -- "$cur"))
+            COMPREPLY=($(compgen -W "$(xargs -I{} echo "{}/packagelist" < <(_pacstall_get_repo_urls) | xargs -n 1 curl -s | sort -u)" -- "$cur"))
             return
             ;;
 
