@@ -31,8 +31,6 @@ source "${SCRIPTDIR}/scripts/manage-repo.sh" || {
     { ignore_stack=true; return 1; }
 }
 
-REPO="${2%/}"
-
 case ${REPO} in
     *"github.com"*)
         REPO="${REPO/'github.com'/'raw.githubusercontent.com'}"
@@ -98,16 +96,35 @@ case ${REPOCMD} in
         while IFS= read -r REPOURL; do
             REPOLIST+=("${REPOURL}")
         done < "$SCRIPTDIR/repo/pacstallrepo"
-        REPOLIST+=("$REPO")
+        if [[ -n ${ALIAS} ]]; then
+            if [[ ${ALIAS} == "none" ]]; then
+                fancy_message error "Repository alias cannot be 'none'"
+                exit 1
+            fi
+            mapfile -t aliaslist < <(repo.get_all_type alias)
+            if array.contains aliaslist "${ALIAS}"; then
+                fancy_message error "The alias '${ALIAS}' is already in use by $(repo.get_where alias "${ALIAS}")"
+                exit 1
+            fi
+            fancy_message info "Adding with alias ${ALIAS}"
+        fi
+        REPOLIST+=("${REPO}${ALIAS:+ @$ALIAS}")
         ;;
     remove)
         ask "Do you want to remove ${CYAN}${REPO}${NC} from the repo list?" Y
+        if [[ ${REPO} == "@"* || -z ${ALIAS} ]]; then
+            mapfile -t aliaslist < <(repo.get_all_type alias)
+            if array.contains aliaslist "${REPO#*@}"; then
+                ALIAS="${REPO#*@}"
+                REPO="$(repo.get_where alias "${ALIAS}")"
+            fi
+        fi
         if ((answer == 0)); then
             exit 3
         fi
         REPOLIST=()
         while IFS= read -r REPOURL; do
-            [[ ${REPOURL} != "$REPO" ]] && REPOLIST+=("${REPOURL}")
+            [[ ${REPOURL} != "${REPO}${ALIAS:+ @$ALIAS}" ]] && REPOLIST+=("${REPOURL}")
         done < "$SCRIPTDIR/repo/pacstallrepo"
         ;;
 esac

@@ -1016,7 +1016,8 @@ Helpful links:
             ;;
 
         -A | --add-repo)
-            REPO="$2"
+            REPO="${2%/}"
+            ALIAS="${3#*@}"
             REPOCMD="add"
 
             if [[ ! -f "$SCRIPTDIR/repo/pacstallrepo" ]]; then
@@ -1036,7 +1037,8 @@ Helpful links:
             ;;
 
         -Rr | --remove-repo)
-            REPO="$2"
+            REPO="${2%/}"
+            ALIAS="${3#*@}"
             REPOCMD="remove"
 
             if [[ ! -f "$SCRIPTDIR/repo/pacstallrepo" ]]; then

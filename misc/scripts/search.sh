@@ -194,6 +194,9 @@ if [[ $SEARCH == *@* ]] || [[ $PACKAGE == *@* ]]; then
         REPONAME=${PACKAGE#*@}
         PACKAGE=${PACKAGE%%@*}
     fi
+    if [[ "${REPONAME}" == ":"* ]]; then
+        REPONAME="$(repo.get_where alias "${REPONAME#*:}")"
+    fi
     if [[ $REPONAME == "file://"* ]] || [[ $REPONAME == "/"* ]] || [[ $REPONAME == "~"* ]] || [[ $REPONAME == "."* ]]; then
         repo.get_path "${REPONAME}" REPONAME
     else
