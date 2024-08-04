@@ -126,7 +126,7 @@ case ${REPOCMD} in
                 REPO="$(repo.get_where alias "${ALIAS}")"
             else
                 for i in "${!urllist[@]}"; do
-                    if [[ ${urllist[i]} == ${REPO} ]]; then
+                    if [[ ${urllist[i]} == "${REPO}" ]]; then
                         ALIAS="${aliaslist[i]}"
                         if [[ ${ALIAS} == "none" ]]; then
                             unset ALIAS
