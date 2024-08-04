@@ -103,8 +103,7 @@ while true; do
         # Remove man page
         fancy_message info "Removing man pages"
         sudo rm -v /usr/share/man/man8/pacstall.8.gz
-        sudo rm -v /usr/share/man/man5/pacstallrepo.5.gz
-        sudo rm -v /usr/share/man/man5/update.5.gz
+        sudo rm -v /usr/share/man/man5/pacstall.5.gz
 
         # Remove logs
         fancy_message info "Removing log files"

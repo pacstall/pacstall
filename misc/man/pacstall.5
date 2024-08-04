@@ -14,7 +14,7 @@
 . ftr VB CB
 . ftr VBI CBI
 .\}
-.TH "pacstallrepo" "5" "June 5, 2024" "Pacstall" "File Commands Manual"
+.TH "Pacstall" "5" "Aug 4, 2024" "Pacstall" "File Commands Manual"
 .hy
 .SH NAME
 .PP
@@ -28,10 +28,8 @@ This manual page describes the format of the pacstallrepo file.
 This is a simple text file which contains newline separated information.
 There is one optional component and one required component:
 .RS
-.RS
 .PP
 url \[at]alias
-.RE
 .RE
 .PP
 Where \f[B]alias\f[R] is optional.
@@ -48,6 +46,34 @@ pkg\[at]me/pacstall-enhanced-repo\f[R].
 .SH FILES
 .PP
 /usr/share/pacstall/repo/pacstallrepo
+.SH NAME
+.PP
+update - update management file
+.SH SYNOPSIS
+.PP
+/usr/share/pacstall/repo/update
+.SH DESCRIPTION
+.PP
+This manual page describes the format of the update file.
+Usually this file does not need to be manually updated.
+If \f[B]pacstall -U .\f[R] on a local repository is run, it will be set
+to \f[B]pacstall master\f[R].
+This is the format the update file takes:
+.RS
+.PP
+username branch
+.RE
+.SS username
+.PP
+Since Pacstall is hosted on GitHub, the update file does not support
+anything except GitHub, and \f[B]username\f[R] will take the username
+where a repository named \f[B]pacstall\f[R] is created inside.
+.SS branch
+.PP
+This is the branch name, usually master.
+.SH FILES
+.PP
+/usr/share/pacstall/repo/update
 .SH SEE ALSO
 .PP
-\f[B]pacstall(8)\f[R], \f[B]update(5)\f[R]
+\f[B]pacstall(8)\f[R], \f[B]pacstallrepo(5)\f[R]

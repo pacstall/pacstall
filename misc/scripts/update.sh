@@ -116,8 +116,7 @@ for i in {error_log,download,download-local,install-local,build-local}.sh; do
 done
 sudo curl -s -o "/usr/bin/pacstall" "${REPO}/pacstall" &
 sudo curl -s -o "${MAN8DIR}/pacstall.8" "${REPO}/misc/man/pacstall.8" &
-sudo curl -s -o "${MAN5DIR}/update.5" "${REPO}/misc/man/update.5" &
-sudo curl -s -o "${MAN5DIR}/pacstallrepo.5" "${REPO}/misc/man/pacstallrepo.5" &
+sudo curl -s -o "${MAN5DIR}/pacstall.5" "${REPO}/misc/man/pacstall.5" &
 sudo curl -s -o "${BASH_COMPLETION_DIR}/pacstall" "${REPO}/misc/completion/bash" &
 sudo curl -s -o "${FISH_COMPLETION_DIR}/pacstall.fish" "${REPO}/misc/completion/fish" &
 wait && stty "${tty_settings}"
@@ -125,8 +124,7 @@ wait && stty "${tty_settings}"
 sudo chmod +x "/usr/bin/pacstall"
 sudo chmod +x "${SCRIPTDIR}/scripts/"*
 sudo gzip --force -9n "${MAN8DIR}/pacstall.8"
-sudo gzip --force -9n "${MAN5DIR}/update.5"
-sudo gzip --force -9n "${MAN5DIR}/pacstallrepo.5"
+sudo gzip --force -9n "${MAN5DIR}/pacstall.5"
 
 if [[ -n $GIT_USER ]]; then
     echo "pacstall master" | sudo tee "${SCRIPTDIR}/repo/update" > /dev/null
