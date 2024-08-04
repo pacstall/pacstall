@@ -83,7 +83,7 @@ esac
 
 case ${REPOCMD} in
     add)
-        ask "Do you want to add ${CYAN}${REPO}${NC} to the repo list?" Y
+        ask "Do you want to add ${CYAN}${REPO}${NC}${ALIAS:+ ${BLUE}@${ALIAS}${NC}} to the repo list?" Y
         if ((answer == 0)); then
             exit 3
         fi
@@ -103,15 +103,14 @@ case ${REPOCMD} in
             fi
             mapfile -t aliaslist < <(repo.get_all_type alias)
             if array.contains aliaslist "${ALIAS}"; then
-                fancy_message error "The alias '${ALIAS}' is already in use by $(repo.get_where alias "${ALIAS}")"
+                fancy_message error "The alias '${RED}${ALIAS}${NC}' is already in use by ${CYAN}$(repo.get_where alias "${ALIAS}")${NC}"
                 exit 1
             fi
-            fancy_message info "Adding with alias ${ALIAS}"
+            fancy_message sub "Adding with alias ${BLUE}${ALIAS}${NC}"
         fi
         REPOLIST+=("${REPO}${ALIAS:+ @$ALIAS}")
         ;;
     remove)
-        ask "Do you want to remove ${CYAN}${REPO}${NC} from the repo list?" Y
         if [[ ${REPO} == "@"* || -z ${ALIAS} ]]; then
             # shellcheck disable=SC2034
             mapfile -t aliaslist < <(repo.get_all_type alias)
@@ -120,6 +119,7 @@ case ${REPOCMD} in
                 REPO="$(repo.get_where alias "${ALIAS}")"
             fi
         fi
+        ask "Do you want to remove ${CYAN}${REPO}${NC}${ALIAS:+ ${BLUE}@${ALIAS}${NC}} from the repo list?" Y
         if ((answer == 0)); then
             exit 3
         fi
