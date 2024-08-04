@@ -120,9 +120,20 @@ case ${REPOCMD} in
         if [[ ${REPO} == "@"* || -z ${ALIAS} ]]; then
             # shellcheck disable=SC2034
             mapfile -t aliaslist < <(repo.get_all_type alias)
+            mapfile -t urllist < <(repo.get_all_type url)
             if array.contains aliaslist "${REPO#*@}"; then
                 ALIAS="${REPO#*@}"
                 REPO="$(repo.get_where alias "${ALIAS}")"
+            else
+                for i in "${!urllist[@]}"; do
+                    if [[ ${urllist[i]} == ${REPO} ]]; then
+                        ALIAS="${aliaslist[i]}"
+                        if [[ ${ALIAS} == "none" ]]; then
+                            unset ALIAS
+                        fi
+                        break
+                    fi
+                done
             fi
         fi
         ask "Do you want to remove ${CYAN}${REPO}${NC}${ALIAS:+ ${BLUE}@${ALIAS}${NC}} from the repo list?" Y
