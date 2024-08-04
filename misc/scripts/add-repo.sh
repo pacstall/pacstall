@@ -83,6 +83,27 @@ esac
 
 case ${REPOCMD} in
     add)
+        mapfile -t aliaslist < <(repo.get_all_type alias)
+        mapfile -t urllist < <(repo.get_all_type url)
+        if [[ -n ${ALIAS} ]]; then
+            if [[ ${ALIAS} == "none" ]]; then
+                fancy_message error "Repository alias cannot be 'none'"
+                exit 1
+            elif [[ ${ALIAS} =~ "://" ]]; then
+                fancy_message error "Repository alias cannot be a hyperlink"
+                exit 1
+            elif [[ ${ALIAS} == "/"* || ${ALIAS} == "~"* || ${ALIAS} == "."* ]]; then
+                fancy_message error "Repository alias cannot start with '/', '~', or '.'"
+                exit 1
+            elif array.contains aliaslist "${ALIAS}"; then
+                fancy_message error "The alias ${RED}@${ALIAS}${NC} is already in use by ${CYAN}$(repo.get_where alias "${ALIAS}")${NC}"
+                exit 1
+            fi
+        fi
+        if array.contains urllist "${REPO}"; then
+            fancy_message warn "'${RED}${REPO}${NC}' is already in the repo list${NC}"
+            exit 0
+        fi
         ask "Do you want to add ${CYAN}${REPO}${NC}${ALIAS:+ ${BLUE}@${ALIAS}${NC}} to the repo list?" Y
         if ((answer == 0)); then
             exit 3
@@ -96,23 +117,6 @@ case ${REPOCMD} in
         while IFS= read -r REPOURL; do
             REPOLIST+=("${REPOURL}")
         done < "$SCRIPTDIR/repo/pacstallrepo"
-        if [[ -n ${ALIAS} ]]; then
-            if [[ ${ALIAS} == "none" ]]; then
-                fancy_message error "Repository alias cannot be 'none'"
-                exit 1
-            elif [[ ${ALIAS} =~ "://" ]]; then
-                fancy_message error "Repository alias cannot be a hyperlink"
-                exit 1
-            elif [[ ${ALIAS} == "/"* || ${ALIAS} == "~"* || ${ALIAS} == "."* ]]; then
-                fancy_message error "Repository alias cannot start with '/', '~', or '.'"
-                exit 1
-            fi
-            mapfile -t aliaslist < <(repo.get_all_type alias)
-            if array.contains aliaslist "${ALIAS}"; then
-                fancy_message error "The alias '${RED}${ALIAS}${NC}' is already in use by ${CYAN}$(repo.get_where alias "${ALIAS}")${NC}"
-                exit 1
-            fi
-        fi
         REPOLIST+=("${REPO}${ALIAS:+ @$ALIAS}")
         ;;
     remove)
