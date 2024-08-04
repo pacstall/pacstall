@@ -36,6 +36,7 @@ function repo.split_components() {
     # Then we either have a specifier + url, or a url + alias
     elif ((${#split[@]} == 2)); then
         prefix['url']="${split[0]}"
+        # shellcheck disable=SC2034
         prefix['alias']="${split[1]:1}"
     fi
 }
@@ -203,12 +204,13 @@ function repo.specify() {
     local SPLIT
     mapfile -t SPLIT <<< "${1//[\/]/$'\n'}"
     if [[ $1 == "file://"* ]] || [[ $1 == "/"* ]] || [[ $1 == "~"* ]] || [[ $1 == "."* ]]; then
-        export URLNAME
         repo.get_path "${1}" URLNAME
+        export URLNAME
     elif [[ $1 == "github:"* ]] || [[ $1 == "gitlab:"* ]] || [[ $1 == "sourchut:"* ]] || [[ $1 == "codeberg:"* ]]; then
         export URLNAME="${1}"
     elif [[ $1 == *"github"* ]] || [[ $1 == *"gitlab"* ]] || [[ $1 == *"git.sr.ht"* ]] || [[ $1 == *"codeberg"* ]]; then
-        export URLNAME="$(repo.to_metalink "${1}")"
+        URLNAME="$(repo.to_metalink "${1}")"
+        export URLNAME
     else
         export URLNAME="$REPO"
     fi
@@ -220,9 +222,7 @@ function repo.specify() {
 # terminals that support them
 function repo.parse() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local REPO="${1}"
-    local SPLIT REPODIR
-    mapfile -t SPLIT <<< "${REPO//[\/]/$'\n'}"
+    local REPO="${1}" REPODIR
     case "${REPO}" in
         "file://"*)
             repo.get_path "${REPO}" REPODIR
@@ -247,6 +247,7 @@ function repo.parse() {
 }
 
 function repo.format() {
+    # shellcheck disable=SC2034
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if ! [[ ${1} =~ ^\ *# ]] && [[ ${1} =~ ^([^[:space:]]+)([[:space:]]@[a-zA-Z0-9_-]+)?([[:space:]]+#.*)?$ ]]; then
         echo "${BASH_REMATCH[1]}"

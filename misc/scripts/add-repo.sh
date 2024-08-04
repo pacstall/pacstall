@@ -27,6 +27,7 @@
 # shellcheck source=./misc/scripts/manage-repo.sh
 source "${SCRIPTDIR}/scripts/manage-repo.sh" || {
     fancy_message error "Could not find manage-repo.sh"
+    # shellcheck disable=SC2034
     { ignore_stack=true; return 1; }
 }
 
@@ -58,7 +59,7 @@ case ${REPO} in
             REPO="${REPO/"/tree/"/"/blob/"}"
         fi
         ;;
-    *"codeberg"*)
+    *"codeberg.org"*)
         if [[ $REPO != *"/src/branch/"* ]]; then
             REPO="$REPO/raw/branch/master"
             fancy_message warn "Assuming that git branch is ${GREEN}master${NC}"
