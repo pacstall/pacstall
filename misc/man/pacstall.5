@@ -35,7 +35,7 @@ These are simple text files which contain newline separated information.
 There is one optional component and one required component:
 .RS
 .PP
-\f[I]url\f[R] \[at]*alias*
+\f[I]url\f[R] \f[I]\[at]alias\f[R]
 .RE
 .PP
 Where \f[B]alias\f[R] is optional.
@@ -48,14 +48,14 @@ This \f[I]should\f[R] normally end in \f[B]user/reponame\f[R].
 .PP
 \f[B]alias\f[R]
 .PP
-This takes the form of \[at]**alias\f[B] where \f[R]alias\f[B] can be
+This takes the form of \f[B]\[at]alias\f[R] where \f[B]alias\f[R] can be
 anything alphanumeric.
-This would be useful if you wanted to do something like \f[R]pacstall
--I\f[B] pkg\[at]pacstall vs \f[R]pacstall -I pkg\[at]enhanced\f[B] where
-\f[R]pacstall\f[B] is the official repository and \f[R]enhanced\f[B] is
+This would be useful if you wanted to do something like \f[B]pacstall
+-I\f[R] pkg\[at]pacstall vs \f[B]pacstall -I pkg\[at]enhanced\f[R] where
+\f[B]pacstall\f[R] is the official repository and \f[B]enhanced\f[R] is
 your repository with additional modifications, instead of
-\f[R]pacstall\f[B] -I pkg\[at]pacstall/pacstall-programs and
-\f[R]pacstall -I** pkg\[at]me/pacstall-enhanced-repo.
+\f[B]pacstall\f[R] -I pkg\[at]pacstall/pacstall-programs and
+\f[B]pacstall -I\f[R] pkg\[at]me/pacstall-enhanced-repo.
 .SS update
 .PP
 Usually this file does not need to be manually updated.
