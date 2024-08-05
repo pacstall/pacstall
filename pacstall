@@ -23,9 +23,9 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 # Pacstall version
-version_number="5.3.3"
-version_name="Keppel"
-declare -A version_color=([r]="58" [g]="176" [b]="158")
+version_number="5.4.0"
+version_name="Quinacridone"
+declare -A version_color=([r]="154" [g]="17" [b]="79")
 
 # Configuration
 export LC_ALL=C
