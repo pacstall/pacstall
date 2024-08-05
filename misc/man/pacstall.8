@@ -14,7 +14,7 @@
 . ftr VB CB
 . ftr VBI CBI
 .\}
-.TH "Pacstall" "8" "July 8, 2024" "Pacstall 5.3.3 Keppel" "General Commands Manual"
+.TH "Pacstall" "8" "August 4, 2024" "Pacstall 5.4.0 Quinacridone" "General Commands Manual"
 .hy
 .SH NAME
 .PP
@@ -26,7 +26,9 @@ Pacstall - The AUR for Ubuntu
 \f[B]pacstall\f[R] [\f[B]-P -K -B -Q -Nc -Ns\f[R]] \f[B]-I\f[R]
 \f[I]package\f[R] \&...
 .PP
-\f[B]pacstall -S\f[R] \f[I]term\f[R]
+\f[B]pacstall\f[R] [\f[B]-S -Sd\f[R]] \f[I]term\f[R]
+.PP
+\f[B]pacstall -Si\f[R] \f[I]package\f[R]
 .PP
 \f[B]pacstall\f[R] [\f[B]-P\f[R]] \f[B]-R\f[R] \f[I]package\f[R] \&...
 .PP
@@ -42,7 +44,7 @@ Pacstall - The AUR for Ubuntu
 .PP
 \f[B]pacstall\f[R] [\f[B]-P -K\f[R]] \f[B]-Up\f[R]
 .PP
-\f[B]pacstall -Qi\f[R] \f[I]package\f[R] [\f[I]key\f[R]]
+\f[B]pacstall -Ci\f[R] \f[I]package\f[R] [\f[I]key\f[R]]
 .PP
 \f[B]pacstall -Qa\f[R]
 \f[I]package\f[R]#\f[I]number\f[R](\[at]*metalink*)
@@ -60,8 +62,12 @@ Show the help message and exit.
 .TP
 \f[B]-I\f[R], \f[B]--install\f[R]
 Installs a given package from a repository, or a pacscript.
-The \f[B]-I\f[R] flag has the ability to install packages from an
-arbitrary repository, defaulting to GitHub.
+The \f[B]-I\f[R] flag has the ability to install packages from the
+following repository providers: \f[I]github:\f[R], \f[I]gitlab:\f[R],
+\f[I]sourcehut:\f[R], \f[I]codeberg:\f[R].
+Other git providers may use a direct link.
+These must be added beforehand to the repository list with
+\f[B]-A\f[R]/\f[B]\[en]add-repo\f[R].
 If multiple repositories are enabled, \f[B]pacstall\f[R] will default to
 \f[B]pacstall/pacstall-programs\f[R], but you can still choose to
 install from another repository.
@@ -78,9 +84,24 @@ $ \f[B]pacstall -I neofetch\f[R] # Install \f[B]neofetch\f[R]
 .RS
 .PP
 $ \f[B]pacstall -I\f[R]
-\[lq]\f[B]alacritty\f[R]\[at]\f[I]user\f[R]/\f[I]reponame\f[R]\[rq] #
-Install \f[B]alacritty\f[R] from
+\[lq]\f[B]alacritty\f[R]\[at]\f[I]github\f[R]:\f[I]user\f[R]/\f[I]reponame\f[R]\[rq]
+# Install \f[B]alacritty\f[R] from
 <\f[B]https://github.com/user/reponame\f[R]>
+.RE
+.RE
+.RS
+.RS
+.PP
+$ \f[B]pacstall -I\f[R]
+\[lq]\f[B]alacritty\f[R]\[at]\f[B]https://raw.githubusercontent.com/user/reponame/master\f[R]
+# Install \f[B]alacritty\f[R] from the raw link
+.RE
+.RE
+.RS
+.RS
+.PP
+$ \f[B]pacstall -I\f[R] \[lq]\f[B]alacritty\f[R]\[at]\f[B]myrepo\f[R] #
+Install \f[B]alacritty\f[R] from the \[at]**myrepo** alias
 .RE
 .RE
 .RS
@@ -129,6 +150,7 @@ Searches for a given package from all available repositories.
 A clickable hyperlink to the repositories containing the packages are
 displayed in VTE terminals.
 Other repositories can be added using the \f[B]-A\f[R] flag.
+To search in a specific repository, use the **\[at]** separator.
 .RS
 .RS
 .PP
@@ -138,7 +160,73 @@ $ \f[B]pacstall -S\f[R] \f[I]-git\f[R] # search for all git packages
 .RS
 .RS
 .PP
-$ \f[B]pacstall -S\f[R] \f[I]-bin\f[R] # search for all binary packages
+$ \f[B]pacstall -S\f[R]
+\f[I]-bin\f[R]\[at]\f[I]github\f[R]:\f[I]user\f[R]/\f[I]reponame\f[R]\[rq]
+# search for all binary packages from
+<\f[B]https://github.com/user/reponame\f[R]>
+.RE
+.RE
+.TP
+\f[B]-Sd\f[R], \f[B]--search-description\f[R]
+Like search, but both displays descriptions on output, and searches
+through descriptions upon the query.
+To do a case-sensitive search, use quotes within quotes
+(\[lq]\[cq]`\[rq] or'\[rq]\[lq]\[cq]).
+.RS
+.RS
+.PP
+$ \f[B]pacstall -Sd\f[R] \f[I]browser\f[R] # search for all packages
+which have browser in their name or description
+.RE
+.RE
+.RS
+.RS
+.PP
+$ \f[B]pacstall -Sd\f[R] \f[I]\[lq]`Browser'\[rq]\f[R] # search for all
+packages which have Browser in their description
+.RE
+.RE
+.TP
+\f[B]-Si\f[R], \f[B]--search-info\f[R]
+Display metadata (SRCINFO) of a remote package.
+Only accepts real package names.
+.RS
+.RS
+.PP
+$ \f[B]pacstall -Si neofetch\f[R] # Search \f[B]neofetch\f[R] info
+.RE
+.RE
+.RS
+.RS
+.PP
+$ \f[B]pacstall -Si\f[R]
+\[lq]\f[B]alacritty\f[R]\[at]\f[I]github\f[R]:\f[I]user\f[R]/\f[I]reponame\f[R]\[rq]
+# Search \f[B]alacritty\f[R] info from
+<\f[B]https://github.com/user/reponame\f[R]>
+.RE
+.RE
+.RS
+.RS
+.PP
+$ \f[B]pacstall -Si\f[R]
+\[lq]\f[B]alacritty\f[R]\[at]\f[B]https://raw.githubusercontent.com/user/reponame/master\f[R]
+# Search \f[B]alacritty\f[R] info from the raw link
+.RE
+.RE
+.RS
+.RS
+.PP
+$ \f[B]pacstall -Si ${parent}:pkgbase\f[R] # Search all pkgnames in the
+pkgbase named \f[B]parent\f[R]
+.RE
+.RE
+.RS
+.RS
+.PP
+$ \f[B]pacstall -Si
+\f[BI]p\f[B]\f[BI]a\f[B]\f[BI]r\f[B]\f[BI]e\f[B]\f[BI]n\f[B]\f[BI]t\f[B]:{child}\f[R]
+# Search only the pkgname \f[B]child\f[R] from the pkgbase
+\f[B]parent\f[R]
 .RE
 .RE
 .TP
@@ -150,6 +238,8 @@ a \f[I]branch\f[R].
 Local repositories are also supported, which can be useful for testing
 pacscripts without pushing remotely, having a portable repository on a
 USB stick, custom/private applications, etc.
+Additionally, an alias can optionally be linked to an added repository,
+so that it is easier to search and install from.
 The following commands are valid ways to add a repository:
 .RS
 .RS
@@ -179,6 +269,12 @@ $ \f[B]pacstall -A github:user/repo#branch\f[R]
 .RS
 .RS
 .PP
+$ \f[B]pacstall -A github:user/repo\f[R] \[at]*alias*
+.RE
+.RE
+.RS
+.RS
+.PP
 $ \f[B]pacstall -A https://gitlab.com\f[R]/\f[I]user\f[R]/\f[I]repo\f[R]
 .RE
 .RE
@@ -201,6 +297,7 @@ https://raw.githubusercontent.com\f[R]/\f[I]user\f[R]/\f[I]repo\f[R]/\f[I]master
 .PP
 $ \f[B]pacstall -A
 https://gitlab.com\f[R]/\f[I]user\f[R]/\f[I]repo\f[R]/\f[B]-\f[R]/\f[B]raw\f[R]/\f[I]master\f[R]
+\f[I]\[at]myrepo\f[R]
 .RE
 .RE
 .RS
@@ -213,6 +310,30 @@ $ \f[B]pacstall -A gitlab:user/repo\f[R]
 .RS
 .PP
 $ \f[B]pacstall -A gitlab:user/repo#branch\f[R]
+.RE
+.RE
+.RS
+.RS
+.PP
+$ \f[B]pacstall -A sourcehut:user/repo\f[R]
+.RE
+.RE
+.RS
+.RS
+.PP
+$ \f[B]pacstall -A sourcehut:user/repo#branch\f[R]
+.RE
+.RE
+.RS
+.RS
+.PP
+$ \f[B]pacstall -A codeberg:user/repo\f[R]
+.RE
+.RE
+.RS
+.RS
+.PP
+$ \f[B]pacstall -A codeberg:user/repo#branch\f[R]
 .RE
 .RE
 .RS
@@ -238,6 +359,7 @@ $ \f[B]pacstall -A local:/home/user/local-repository\f[R]
 .PP
 $ \f[B]pacstall -A
 https://myonlinerepository.com/directory_containing_packagelist\f[R]
+\f[I]\[at]myrepo\f[R]
 .RE
 .RE
 .TP
@@ -245,6 +367,13 @@ https://myonlinerepository.com/directory_containing_packagelist\f[R]
 Remove a given repository from \f[B]pacstall\f[R].
 See \f[I]-A\f[R], \f[I]--add-repo\f[R] for syntax usage, swapping
 \f[I]-A\f[R] with \f[I]-Rr\f[R].
+Passing just an alias can also prompt it to be removed:
+.RS
+.RS
+.PP
+$ **pacstall -Rr \f[I]\[at]myrepo\f[R]
+.RE
+.RE
 .TP
 \f[B]-U\f[R], \f[B]--update\f[R]
 Updates \f[B]pacstall\f[R] and needed scripts.
@@ -328,15 +457,22 @@ This downloads the neofetch pacscript from
 .RE
 .RE
 .TP
-\f[B]-Qi\f[R], \f[B]--query-info\f[R]
+\f[B]-Ci\f[R], \f[B]--cache-info\f[R]
 Display metadata of an installed package.
-Supply a key from the output to get it\[cq]s value.
+Supply a key from the output to get it\[cq]s value, or no key to get all
+values.
 If a key has spaces in it, replace them with an underscore.
 For example:
 .RS
 .RS
 .PP
-$ \f[B]pacstall -Qi\f[R] \f[I]neofetch\f[R] \f[I]install_type\f[R]
+$ \f[B]pacstall -Ci\f[R] \f[I]neofetch\f[R] \f[I]install_type\f[R]
+.RE
+.RE
+.RS
+.RS
+.PP
+$ \f[B]pacstall -Ci\f[R] \f[I]alacritty\f[R]
 .RE
 .RE
 .TP
@@ -458,3 +594,6 @@ saenai255
 oklopfer
 .IP \[bu] 2
 0oAstro
+.SH SEE ALSO
+.PP
+\f[B]pacstall(5)\f[R]

@@ -398,7 +398,7 @@ function makedeb() {
 
     if [[ -n ${bugs} ]]; then
         deblog "Bugs" "${bugs}"
-    else
+    elif [[ ${local} == "no" ]]; then
         repo.unraw "$REPO"
         if [[ -n ${pISSUES} ]]; then
             deblog "Bugs" "${pISSUES}"

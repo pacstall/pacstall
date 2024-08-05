@@ -14,64 +14,72 @@
 . ftr VB CB
 . ftr VBI CBI
 .\}
-.TH "Pacstall" "5" "Aug 4, 2024" "Pacstall" "File Commands Manual"
+.TH "Pacstall" "5" "August 4, 2024" "Pacstall 5.4.0 Quinacridone" "General Commands Manual"
 .hy
 .SH NAME
 .PP
-pacstallrepo - repository management file
+Pacstall - Management Files
 .SH SYNOPSIS
 .PP
-/usr/share/pacstall/repo/pacstallrepo
+pacstallrepo - repository management file
+.PP
+update - update management file
 .SH DESCRIPTION
 .PP
-This manual page describes the format of the pacstallrepo file.
-This is a simple text file which contains newline separated information.
+This manual page describes the format of the pacstallrepo and update
+file.
+These are simple text files which contain newline separated information.
+.SH OPTIONS
+.SS pacstallrepo
+.PP
 There is one optional component and one required component:
 .RS
 .PP
-url \[at]alias
+\f[I]url\f[R] \f[I]\[at]alias\f[R]
 .RE
 .PP
 Where \f[B]alias\f[R] is optional.
-.SS alias
+.PP
+\f[B]url\f[R]
+.PP
+This is the raw url to a git repository.
+This should \f[I]not\f[R] end in \f[B].git\f[R].
+This \f[I]should\f[R] normally end in \f[B]user/reponame\f[R].
+.PP
+\f[B]alias\f[R]
 .PP
 This takes the form of \f[B]\[at]alias\f[R] where \f[B]alias\f[R] can be
 anything alphanumeric.
-This would be useful if you wanted to do something like \f[B]pacstall -I
-pkg\[at]pacstall\f[R] vs \f[B]pacstall -I pkg\[at]enhanced\f[R] where
+This would be useful if you wanted to do something like \f[B]pacstall
+-I\f[R] pkg\[at]pacstall vs \f[B]pacstall -I pkg\[at]enhanced\f[R] where
 \f[B]pacstall\f[R] is the official repository and \f[B]enhanced\f[R] is
-your repository with additional modifications, instead of \f[B]pacstall
--I pkg\[at]pacstall/pacstall-programs\f[R] and \f[B]pacstall -I
-pkg\[at]me/pacstall-enhanced-repo\f[R].
-.SH FILES
+your repository with additional modifications, instead of
+\f[B]pacstall\f[R] -I pkg\[at]github:pacstall/pacstall-programs and
+\f[B]pacstall -I\f[R] pkg\[at]github:me/pacstall-enhanced-repo,
+or other various long links.
+.SS update
 .PP
-/usr/share/pacstall/repo/pacstallrepo
-.SH NAME
-.PP
-update - update management file
-.SH SYNOPSIS
-.PP
-/usr/share/pacstall/repo/update
-.SH DESCRIPTION
-.PP
-This manual page describes the format of the update file.
 Usually this file does not need to be manually updated.
 If \f[B]pacstall -U .\f[R] on a local repository is run, it will be set
 to \f[B]pacstall master\f[R].
 This is the format the update file takes:
 .RS
 .PP
-username branch
+\f[I]username\f[R] \f[I]branch\f[R]
 .RE
-.SS username
+.PP
+\f[B]username\f[R]
 .PP
 Since Pacstall is hosted on GitHub, the update file does not support
 anything except GitHub, and \f[B]username\f[R] will take the username
 where a repository named \f[B]pacstall\f[R] is created inside.
-.SS branch
+.PP
+\f[B]branch\f[R]
 .PP
 This is the branch name, usually master.
 .SH FILES
+.PP
+/usr/share/pacstall/repo/pacstallrepo
 .PP
 /usr/share/pacstall/repo/update
 .SH SEE ALSO
