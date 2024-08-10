@@ -409,18 +409,18 @@ function append_hash_entry() {
     local -n append="${1}" sums="${2}" exp_method="${3}"
     local hash_arch hash_arr extend="${4}${5:+_$5}"
     for type in "${sums[@]}"; do
-        hash_arr="${type}sums[*]"
-        [[ ${extend} ]] && hash_arch="${type}sums_${extend}[*]"
+        local -n hash_arr="${type}sums"
+        [[ ${extend} ]] && local -n hash_arch="${type}sums_${extend}"
         if [[ ${exp_method} == "${type}" || -z ${exp_method} ]]; then
-            if [[ -n ${!hash_arr} && -z ${extend} ]]; then
+            if [[ -n ${hash_arr[*]} && -z ${extend} ]]; then
                 export exp_method="${type}"
-                for a in ${!hash_arr}; do
+                for a in "${hash_arr[@]}"; do
                     [[ ${pacname} == *"-deb" ]] && append=("${a}") || append+=("${a}")
                 done
                 break
-            elif [[ -n ${!hash_arch} ]]; then
-                [[ -z ${!hash_arr} && -z ${append[*]} ]] && export exp_method="${type}"
-                for a in ${!hash_arch}; do
+            elif [[ -n ${hash_arch[*]} ]]; then
+                [[ -z ${hash_arr[*]} && -z ${append[*]} ]] && export exp_method="${type}"
+                for a in "${hash_arch[@]}"; do
                     [[ ${pacname} == *"-deb" ]] && append=("${a}") || append+=("${a}")
                 done
                 break
@@ -431,10 +431,10 @@ function append_hash_entry() {
 
 function append_var_arch() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local inp inputvar="${1}" inputvar_arch="${1}_${2}${3:+_$3}[*]"
-    declare -n ref_inputvar="${inputvar}"
-    if [[ -n ${!inputvar_arch} ]]; then
-        for inp in "${!inputvar_arch}"; do
+    local inp inputvar="${1}"
+    local -n ref_inputvar="${inputvar}" inputvar_arch="${inputvar}_${2}${3:+_$3}"
+    if [[ -n ${inputvar_arch[*]} ]]; then
+        for inp in "${inputvar_arch[@]}"; do
             if [[ ${pacname} == *"-deb" && ${inputvar} == "source" ]]; then
                 ref_inputvar=("${inp}")
             elif ! array.contains ref_inputvar "${inp}" || [[ ${inputvar} == "source" ]]; then
