@@ -129,7 +129,7 @@ REPO="https://raw.githubusercontent.com/pacstall/pacstall/master"
 PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER:-$(whoami)}}")
 
 fancy_message info "Making directories"
-mkdir -p "${SCRIPTDIR}/scripts" "${SCRIPTDIR}/repo" "${PACDIR}" "${METADIR}" "${LOGDIR}" "${MANDIR}" "${BASH_COMPLETION_DIR}" "${FISH_COMPLETION_DIR}"
+mkdir -p "${SCRIPTDIR}/scripts" "${SCRIPTDIR}/repo" "${PACDIR}" "${METADIR}" "${LOGDIR}" "${MAN8DIR}" "${MAN5DIR}" "${BASH_COMPLETION_DIR}" "${FISH_COMPLETION_DIR}"
 chown "${PACSTALL_USER}" -cR "${PACDIR}" "${LOGDIR}"
 
 fancy_message info "Pulling scripts from GitHub"
