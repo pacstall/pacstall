@@ -200,7 +200,7 @@ if [[ -n ${pacdeps[*]} ]]; then
         [[ $NOSANDBOX ]] && cmd+="Ns"
         ${PACSTALL_VERBOSE} || cmd+="Q"
 
-        if pacstall -S "${pdep}@${REPO}" &> /dev/null; then
+        if [[ -n ${REPO} ]] && pacstall -S "${pdep}@${REPO}" &> /dev/null; then
             repo="@${REPO}"
         fi
         if is_package_installed "${pdep}"; then
