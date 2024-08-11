@@ -25,7 +25,7 @@
 { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
 
 function repo.split_components() {
-    { ignore_stack=true; set -o pipefail; trap stacktrace ERR RETURN; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local line="${1:?No line passed}" split
     local -n prefix="${2:?No prefix passed}"
     mapfile -t split <<< "${line// /$'\n'}"
@@ -42,7 +42,7 @@ function repo.split_components() {
 }
 
 function repo.unraw_types() {
-    { ignore_stack=true; set -o pipefail; trap stacktrace ERR RETURN; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     unset pURL pBRANCH pISSUES pTYPE pREPO pOWNER
     local rep="${1}" type="${2}" pSPLIT
     case "${type}" in
@@ -91,7 +91,7 @@ function repo.unraw_types() {
 }
 
 function repo.unraw() {
-    { ignore_stack=true; set -o pipefail; trap stacktrace ERR RETURN; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local rep="${1}"
     local -A repo_unraw
     repo.split_components "${rep}" "repo_unraw"
@@ -158,7 +158,7 @@ function repo.from_metalink() {
 
 # Something like `repo.get_where alias "foo"`
 function repo.get_where() {
-    { ignore_stack=true; set -o pipefail; trap stacktrace ERR RETURN; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local where="${1:?no type passed}" name="${2:?no alias or metalink passed}" line
     while IFS= read -r line; do
         local -A get_where
@@ -166,14 +166,14 @@ function repo.get_where() {
         case "${where}" in
             "alias") if [[ "${get_where['alias']}" == "${name}" && "${name}" != "none" ]]; then echo "${get_where['url']}"; fi ;;
             "metalink") repo.from_metalink "${get_where['url']}" ;;
-            *) fancy_message error "'repo.get_where' valid types are: 'alias', 'metalink'"; return 1 ;;
+            *) fancy_message error "'repo.get_where' valid types are: 'alias', 'metalink'"; { ignore_stack=true; return 1; } ;;
         esac
         unset get_where
     done < "${SCRIPTDIR}/repo/pacstallrepo"
 }
 
 function repo.get_all_type() {
-    { ignore_stack=true; set -o pipefail; trap stacktrace ERR RETURN; }
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local type="${1:?no type passed}" line
     while IFS= read -r line; do
         local -A get_all_type
@@ -182,7 +182,7 @@ function repo.get_all_type() {
             "url") if [[ -n "${get_all_type['url']}" ]]; then echo "${get_all_type['url']}"; fi ;;
             "alias") if [[ -n "${get_all_type['alias']}" ]]; then echo "${get_all_type['alias']}"; fi ;;
             "metalink") repo.to_metalink "${get_where['url']}" ;;
-            *) fancy_message error "'repo.get_all_type' valid types are: 'url', 'alias', 'metalink'"; return 1 ;;
+            *) fancy_message error "'repo.get_all_type' valid types are: 'url', 'alias', 'metalink'"; { ignore_stack=true; return 1; } ;;
         esac
         unset get_all_type
     done < "${SCRIPTDIR}/repo/pacstallrepo"
