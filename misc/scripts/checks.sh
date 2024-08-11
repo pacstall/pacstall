@@ -241,10 +241,10 @@ function lint_maintainer() {
 
 function lint_var_arch() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local tinp tinputvar="${1}" tinputvar_arch="${1}_${2}${3:+_$3}[*]"
-    declare -n test_ref_inputvar="test_${tinputvar}"
-    if [[ -n ${!tinputvar_arch} ]]; then
-        for tinp in "${!tinputvar_arch}"; do
+    local tinp tinputvar="${1}"
+    local -n test_ref_inputvar="test_${tinputvar}" tinputvar_arch="${tinputvar}_${2}${3:+_$3}"
+    if [[ -n ${tinputvar_arch[*]} ]]; then
+        for tinp in "${tinputvar_arch[@]}"; do
             if ! array.contains ref_inputvar "${tinp}"; then
                 test_ref_inputvar+=("${tinp}")
             fi
@@ -466,11 +466,10 @@ function lint_hash() {
         done
     done
     for test_hashsum_type in "${PACSTALL_KNOWN_SUMS[@]}"; do
-        test_hashsum_style="${test_hashsum_type}sums[*]"
-        if [[ -n ${!test_hashsum_style} ]]; then
+        local -n test_hashsum_style="${test_hashsum_type}sums"
+        if [[ -n ${test_hashsum_style[*]} ]]; then
             if [[ -z ${test_hash[*]} ]]; then
-                # shellcheck disable=SC2206
-                test_hash=(${!test_hashsum_style})
+                test_hash=("${test_hashsum_style[@]}")
                 test_hashsum_method="${test_hashsum_type}"
             else
                 fancy_message error "Only one checksum method can be provided for hashes"
@@ -484,19 +483,18 @@ function lint_hash() {
         if ((ret == 1)); then
             break
         fi
-        test_hashsum_style="${test_hashsum_type}sums[*]"
+        local -n test_hashsum_style="${test_hashsum_type}sums"
         for harch in "${PACSTALL_KNOWN_ARCH[@]}" "${PACSTALL_KNOWN_DISTROS[@]}" "${hash_distro_archs[@]}"; do
-            test_hash_arch="${test_hashsum_type}sums_${harch}[*]"
+            local -n test_hash_arch="${test_hashsum_type}sums_${harch}"
             [[ ${harch} != "${TARCH}" &&
                 ${harch} != "${DISTRO%:*}" &&
                 ${harch} != "${DISTRO#*:}" &&
                 ${harch} != "${DISTRO%:*}_${TARCH}" &&
                 ${harch} != "${DISTRO#*:}_${TARCH}" ]] \
-                && if [[ -n ${!test_hash_arch} ]]; then
-                    if [[ -z ${!test_hashsum_style} && -z ${test_hash[*]} ]]; then
+                && if [[ -n ${test_hash_arch[*]} ]]; then
+                    if [[ -z ${test_hashsum_style[*]} && -z ${test_hash[*]} ]]; then
                         if [[ -z ${test_hashsum_method} ]]; then
-                            # shellcheck disable=SC2206
-                            test_hash=(${!test_hash_arch})
+                            test_hash=("${test_hash_arch[@]}")
                             test_hashsum_method="${test_hashsum_type}"
                         else
                             fancy_message error "Only one checksum method can be provided for hashes"
@@ -505,8 +503,7 @@ function lint_hash() {
                             break
                         fi
                     elif [[ -n ${test_hashsum_method} && ${test_hashsum_method} == "${test_hashsum_type}" ]]; then
-                        # shellcheck disable=SC2206
-                        test_hash+=(${!test_hash_arch})
+                        test_hash+=("${test_hash_arch[@]}")
                     else
                         fancy_message error "Only one checksum method can be provided for hashes"
                         unset test_hash
@@ -516,8 +513,7 @@ function lint_hash() {
                 fi
         done
     done
-    # shellcheck disable=SC2128
-    if [[ -n ${test_hash} ]]; then
+    if [[ -n ${test_hash[*]} ]]; then
         case ${test_hashsum_method} in
             # b2 or sha512
             "${PACSTALL_KNOWN_SUMS[0]}" | "${PACSTALL_KNOWN_SUMS[1]}") test_hashsum_value=128 ;;
