@@ -491,8 +491,19 @@ function calc_distro() {
     done < /etc/os-release
     if [[ "${distro_name}" == "debian" ]]; then
         distro_version_number="$(awk -F',' -v ver="${distro_version_name}" '$3 == ver {print $1}' "/usr/share/distro-info/debian.csv")"
+    elif [[ "${distro_name}" == "devuan" ]]; then
+        distro_parent="debian"
+        if [[ ${distro_version_name##* } == "ceres" ]]; then
+            distro_version_name="${distro_version_name%% *}"
+            distro_parent_vname="sid"
+        else
+            read -r distro_parent_vname < /etc/debian_version
+            if [[ "${distro_parent_vname}" =~ '.' ]]; then
+                distro_parent_vname="$(awk -F',' -v ver="${distro_parent_vname%%.*}" '$1 == ver {print $3}' "/usr/share/distro-info/debian.csv")"
+            fi
+        fi
     fi
-    if [[ ${distro_pretty_name##*/} == "sid" ]]; then
+    if [[ ${distro_pretty_name##*/} == "sid" || ${distro_version_name} == "kali-rolling" ]]; then
         distro_parent="debian"
         distro_parent_vname="sid"
     fi
@@ -502,7 +513,7 @@ function calc_distro() {
             distro_parent_vname=""
         else
             distro_parent_number="$(awk -F',' -v ver="${distro_parent_vname}" '$3 == ver { gsub(" LTS", "", $1); print $1 }' "/usr/share/distro-info/${distro_parent}.csv")"
-            if [[ ${distro_pretty_name##*/} == "sid" ]]; then
+            if [[ ${distro_parent_vname} == "sid" ]]; then
                 distro_parent_number="sid"
             fi
         fi
