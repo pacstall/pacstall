@@ -136,7 +136,7 @@ fancy_message info "Making directories"
 mkdir -p "${SCRIPTDIR}/scripts" "${SCRIPTDIR}/repo" "${PACDIR}" "${METADIR}" "${LOGDIR}" "${MAN8DIR}" "${MAN5DIR}" "${PODIR}" "${BASH_COMPLETION_DIR}" "${FISH_COMPLETION_DIR}"
 chown "${PACSTALL_USER}" -cR "${PACDIR}" "${LOGDIR}"
 for lang in "${linguas[@]}"; do
-    mkdir -p "misc/locale/${lang}/LC_MESSAGES/"
+    mkdir -p "/usr/share/locale/${lang}/LC_MESSAGES/"
 done
 
 fancy_message info "Pulling scripts from GitHub"

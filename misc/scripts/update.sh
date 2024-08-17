@@ -83,7 +83,7 @@ for i in "${METADIR}" "${LOGDIR}" "${MAN8DIR}" "${MAN5DIR}" "${PODIR}" "${BASH_C
     sudo mkdir -p "${i}"
 done
 for lang in "${linguas[@]}"; do
-    sudo mkdir -p "misc/locale/${lang}/LC_MESSAGES/"
+    sudo mkdir -p "/usr/share/locale/${lang}/LC_MESSAGES/"
 done
 
 fancy_message sub $"Checking dependencies"
