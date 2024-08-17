@@ -56,7 +56,7 @@ msgstr ""
 #: pacstall:811 pacstall:884 pacstall:946 pacstall:987 pacstall:1005
 #: pacstall:1173 pacstall:1229 misc/scripts/query-info.sh:28
 msgid "You failed to specify a package"
-msgstr ""
+msgstr "No ha especificado un paquete"
 
 #: pacstall:816
 msgid "The installation of ${PACKAGE:-package} was interrupted, removing files"
