@@ -1,0 +1,1052 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: ENCODING\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: pacstall:270 misc/scripts/build.sh:163 misc/scripts/build.sh:691
+#: misc/scripts/fetch-sources.sh:158 misc/scripts/fetch-sources.sh:720
+#: misc/scripts/fetch-sources.sh:750 misc/scripts/package-base.sh:157
+#: misc/scripts/package-base.sh:176
+msgid "Cleaning up"
+msgstr ""
+
+#: pacstall:383
+msgid "Packagelist not found"
+msgstr ""
+
+#: pacstall:386
+msgid "Failed to download file, check your connection"
+msgstr ""
+
+#: pacstall:392
+msgid "The URL cannot be found"
+msgstr ""
+
+#: pacstall:400
+msgid "Failed with http code ${http_code}"
+msgstr ""
+
+#: pacstall:622
+msgid "Reading input from pipe"
+msgstr ""
+
+#: pacstall:681
+msgid "Only one command flag can be used at a time"
+msgstr ""
+
+#: pacstall:719
+msgid "Pacstall is already running another instance"
+msgstr ""
+
+#: pacstall:725
+msgid "The other instance has finished running, unlocking"
+msgstr ""
+
+#: pacstall:734
+msgid "Prompts are disabled"
+msgstr ""
+
+#: pacstall:741
+msgid "Package will be built and not installed"
+msgstr ""
+
+#: pacstall:811 pacstall:884 pacstall:946 pacstall:987 pacstall:1005
+#: pacstall:1173 pacstall:1229 misc/scripts/query-info.sh:28
+msgid "You failed to specify a package"
+msgstr ""
+
+#: pacstall:816
+msgid "The installation of ${PACKAGE:-package} was interrupted, removing files"
+msgstr ""
+
+#: pacstall:853
+msgid "$2 does not exist"
+msgstr ""
+
+#: pacstall:891
+msgid "Payload not found"
+msgstr ""
+
+#: pacstall:904 pacstall:951 pacstall:991 pacstall:1111 pacstall:1183
+#: pacstall:1216
+msgid "Could not connect to the internet"
+msgstr ""
+
+#: pacstall:921 pacstall:1198 misc/scripts/upgrade.sh:276
+msgid "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
+msgstr ""
+
+#: pacstall:928
+msgid "Failed to install ${GREEN}${PACKAGE}${NC}"
+msgstr ""
+
+#: pacstall:1014
+msgid "Failed to remove ${GREEN}${PACKAGE}${NC}"
+msgstr ""
+
+#: pacstall:1035
+msgid "You failed to specify a repo to add"
+msgstr ""
+
+#: pacstall:1056
+msgid "You failed to specify a repo to remove"
+msgstr ""
+
+#: pacstall:1080
+msgid "$PWD is not a git repository"
+msgstr ""
+
+#: pacstall:1117
+msgid ""
+"The repository you are trying to upgrade to contains a version of pacstall "
+"that cannot be updated from $(pacstall -V)"
+msgstr ""
+
+#: pacstall:1118
+msgid ""
+"Visit https://github.com/$USERNAME/pacstall/tree/$BRANCH for more "
+"information on how to reinstall. Most packages will also need to be "
+"reinstalled"
+msgstr ""
+
+#: pacstall:1130 pacstall:1211
+msgid "Invalid argument '$*'"
+msgstr ""
+
+#: pacstall:1142
+msgid "Nothing installed yet"
+msgstr ""
+
+#: pacstall:1203
+msgid ""
+"${GREEN}${PACKAGE}${NC}'s pacscript is downloaded to ${GREEN}${PWD}/$PACKAGE."
+"pacscript${NC}"
+msgstr ""
+
+#: pacstall:1233 misc/scripts/query-info.sh:33
+msgid "Package is not installed"
+msgstr ""
+
+#: pacstall:1267
+msgid "Keeping build files"
+msgstr ""
+
+#: pacstall:1272
+msgid "Skipping check() if present"
+msgstr ""
+
+#: pacstall:1277
+msgid "Downloading package entries quietly"
+msgstr ""
+
+#: pacstall:1282
+msgid "Building package without bwrap sandbox"
+msgstr ""
+
+#: pacstall:1283
+msgid "Be cautious, this exposes your system to potential harm"
+msgstr ""
+
+#: misc/scripts/add-repo.sh:29 misc/scripts/build.sh:41
+#: misc/scripts/search.sh:31 misc/scripts/upgrade.sh:47
+msgid "Could not find manage-repo.sh"
+msgstr ""
+
+#: misc/scripts/add-repo.sh:39 misc/scripts/add-repo.sh:47
+#: misc/scripts/add-repo.sh:55 misc/scripts/add-repo.sh:63
+#: misc/scripts/add-repo.sh:70
+msgid "Assuming that git branch is ${GREEN}master${NC}"
+msgstr ""
+
+#: misc/scripts/add-repo.sh:90
+msgid "Repository alias cannot be 'none'"
+msgstr ""
+
+#: misc/scripts/add-repo.sh:93
+msgid "Repository alias cannot be a hyperlink"
+msgstr ""
+
+#: misc/scripts/add-repo.sh:96
+msgid "Repository alias cannot start with '/', '~', or '.'"
+msgstr ""
+
+#: misc/scripts/add-repo.sh:99
+msgid ""
+"The alias ${RED}@${ALIAS}${NC} is already in use by ${CYAN}$(repo.get_where "
+"alias \"${ALIAS}\")${NC}"
+msgstr ""
+
+#: misc/scripts/add-repo.sh:104
+msgid "${CYAN}${REPO}${NC} is already in the repo list, doing nothing${NC}"
+msgstr ""
+
+#: misc/scripts/add-repo.sh:112
+msgid ""
+"If the URL is a private repo, edit ${CYAN}\\e]8;;file://$SCRIPTDIR/repo/"
+"pacstallrepo\\a$SCRIPTDIR/repo/pacstallrepo\\e]8;;\\a${NC}"
+msgstr ""
+
+#: misc/scripts/add-repo.sh:113
+msgid "packagelist file not found"
+msgstr ""
+
+#: misc/scripts/add-repo.sh:154
+msgid "The repo list has been updated"
+msgstr ""
+
+#: misc/scripts/build.sh:29
+msgid "Could not find version-constraints"
+msgstr ""
+
+#: misc/scripts/build.sh:35 misc/scripts/upgrade.sh:41
+msgid "Could not find srcinfo.sh"
+msgstr ""
+
+#: misc/scripts/build.sh:75 misc/scripts/build.sh:84
+msgid "${BLUE}${real_dep}${NC} ${RED}✗${NC} [required]"
+msgstr ""
+
+#: misc/scripts/build.sh:95
+msgid "${BLUE}${just_name[0]} ${GREEN}↑${YELLOW}↓${NC} [remote]"
+msgstr ""
+
+#: misc/scripts/build.sh:97
+msgid "${BLUE}${just_name[0]} ${GREEN}✓${NC} [installed]"
+msgstr ""
+
+#: misc/scripts/build.sh:156
+msgid ""
+"${BLUE}$(printf \"${BLUE}%s${NC}, \" \"${missing_deps[@]}\" | sed 's/, $/"
+"\\n/')${NC} does not exist in apt repositories"
+msgstr ""
+
+#: misc/scripts/build.sh:160
+msgid ""
+"${BLUE}$(printf \"${BLUE}%s${NC}, \" \"${not_satisfied_deps[@]}\" | sed 's/, "
+"$/\\n/')${NC} version(s) cannot be satisfied"
+msgstr ""
+
+#: misc/scripts/build.sh:172
+msgid "Optional dependencies"
+msgstr ""
+
+#: misc/scripts/build.sh:176
+msgid ""
+"${BLUE}$(printf \"${BLUE}%s${NC}, \" \"${missing_optdeps[@]}\" | sed 's/, $/"
+"\\n/')${NC} does not exist in apt repositories"
+msgstr ""
+
+#: misc/scripts/build.sh:180
+msgid ""
+"${BLUE}$(printf \"${BLUE}%s${NC}, \" \"${not_satisfied_optdeps[@]}\" | sed "
+"'s/, $/\\n/')${NC} version(s) cannot be satisfied"
+msgstr ""
+
+#: misc/scripts/build.sh:207
+msgid ""
+"${BGreen}${skip_opt[*]}${NC} has exceeded the maximum number of optional "
+"dependencies. Skipping"
+msgstr ""
+
+#: misc/scripts/build.sh:217
+msgid "Selecting packages ${BCyan}${not_installed_yet_optdeps[*]%%:\\ *}${NC}"
+msgstr ""
+
+#: misc/scripts/build.sh:236
+msgid "Checking apt dependencies"
+msgstr ""
+
+#: misc/scripts/build.sh:327
+msgid "Packing control.tar"
+msgstr ""
+
+#: misc/scripts/build.sh:337
+msgid "Packing data.tar"
+msgstr ""
+
+#: misc/scripts/build.sh:340
+msgid "Compressing"
+msgstr ""
+
+#: misc/scripts/build.sh:365
+msgid "Packaging ${BGreen}$pacname${NC} as ${BBlue}$gives${NC}"
+msgstr ""
+
+#: misc/scripts/build.sh:367
+msgid "Packaging ${BGreen}$pacname${NC}"
+msgstr ""
+
+#: misc/scripts/build.sh:596
+msgid "Empty key... Skipping"
+msgstr ""
+
+#: misc/scripts/build.sh:602
+msgid "'${file}' cannot contain empty path... Skipping"
+msgstr ""
+
+#: misc/scripts/build.sh:606 misc/scripts/build.sh:614
+msgid "'${file}' cannot contain path starting with '/'... Skipping"
+msgstr ""
+
+#: misc/scripts/build.sh:609
+msgid "'${file}' is inside the package... Skipping"
+msgstr ""
+
+#: misc/scripts/build.sh:688
+msgid "Failed to install $pacname deb"
+msgstr ""
+
+#: misc/scripts/build.sh:712
+msgid "Package built at ${BGreen}$PACDEB_DIR/$debname.deb${NC}"
+msgstr ""
+
+#: misc/scripts/build.sh:714
+msgid ""
+"Moving ${BGreen}$STAGEDIR/$pacname${NC} to ${BGreen}${PACDIR}-no-build/"
+"$pacname${NC}"
+msgstr ""
+
+#: misc/scripts/build.sh:731
+msgid "Repacking ${CYAN}${pacname/\\-deb/}.deb${NC}"
+msgstr ""
+
+#: misc/scripts/bwrap.sh:113
+msgid "Running $func"
+msgstr ""
+
+#: misc/scripts/checks.sh:33
+msgid "Package does not contain 'pacname'"
+msgstr ""
+
+#: misc/scripts/checks.sh:38
+msgid "pacname: '${pacname}' must be at least two characters long"
+msgstr ""
+
+#: misc/scripts/checks.sh:43
+msgid "pacname: '${pacname}' must start with an alphanumeric character"
+msgstr ""
+
+#: misc/scripts/checks.sh:47
+msgid "pacname: '${pacname}' contains uppercase characters"
+msgstr ""
+
+#: misc/scripts/checks.sh:51
+msgid ""
+"pacname: '${pacname}' contains characters that are not lowercase, digits, "
+"minus, or periods"
+msgstr ""
+
+#: misc/scripts/checks.sh:61
+msgid "Deb package does not contain gives"
+msgstr ""
+
+#: misc/scripts/checks.sh:67
+msgid "'gives' must be at least two characters long"
+msgstr ""
+
+#: misc/scripts/checks.sh:72
+msgid "'gives' must start with an alphanumeric character"
+msgstr ""
+
+#: misc/scripts/checks.sh:76
+msgid "'gives' contains uppercase characters"
+msgstr ""
+
+#: misc/scripts/checks.sh:80
+msgid ""
+"'gives' contains characters that are not lowercase, digits, minus, or periods"
+msgstr ""
+
+#: misc/scripts/checks.sh:92
+msgid "'pkgrel' is empty"
+msgstr ""
+
+#: misc/scripts/checks.sh:95
+msgid "'pkgrel' must be an unsigned integer"
+msgstr ""
+
+#: misc/scripts/checks.sh:107
+msgid "'epoch' is empty"
+msgstr ""
+
+#: misc/scripts/checks.sh:110
+msgid "'epoch' must be an unsigned integer"
+msgstr ""
+
+#: misc/scripts/checks.sh:123
+msgid ""
+"'pkgver' must contain only alphanumerics and the characters . + - ~ and "
+"should start with a digit"
+msgstr ""
+
+#: misc/scripts/checks.sh:127
+msgid "Package does not contain 'pkgver'"
+msgstr ""
+
+#: misc/scripts/checks.sh:144
+msgid ".deb files can only be provided as a singular 'source'"
+msgstr ""
+
+#: misc/scripts/checks.sh:175
+msgid "Package does not contain 'source'"
+msgstr ""
+
+#: misc/scripts/checks.sh:228
+msgid "Package does not contain 'pkgdesc'"
+msgstr ""
+
+#: misc/scripts/checks.sh:237
+msgid "Package does not have a maintainer. Please be advised"
+msgstr ""
+
+#: misc/scripts/checks.sh:282
+msgid "'${dep_type}' index '${idx}' cannot be empty"
+msgstr ""
+
+#: misc/scripts/checks.sh:286 misc/scripts/checks.sh:290
+msgid "'${dep_type}' index '${idx}' is not formatted correctly"
+msgstr ""
+
+#: misc/scripts/checks.sh:309
+msgid "'ppa' index '${idx}' cannot be empty"
+msgstr ""
+
+#: misc/scripts/checks.sh:320
+msgid "'ppa' index '${idx}' cannot start with 'ppa:'"
+msgstr ""
+
+#: misc/scripts/checks.sh:328
+msgid "'ppa' index '${idx}' is improperly formatted"
+msgstr ""
+
+#: misc/scripts/checks.sh:359
+msgid "'${rel_type}' index '${idx}' cannot be empty"
+msgstr ""
+
+#: misc/scripts/checks.sh:425
+msgid "'custom_fields' index '${idx}' cannot be empty"
+msgstr ""
+
+#: misc/scripts/checks.sh:430
+msgid "'${tlogvar}' is already used as a field in pacstall"
+msgstr ""
+
+#: misc/scripts/checks.sh:436
+msgid "'${tlogvar}' custom field cannot contain a space in field name"
+msgstr ""
+
+#: misc/scripts/checks.sh:440
+msgid "'${tlogvar}' custom field cannot contain a number in field name"
+msgstr ""
+
+#: misc/scripts/checks.sh:444
+msgid ""
+"'${tlogvar}' custom field must capitalize only the first letter of each word "
+"in field name"
+msgstr ""
+
+#: misc/scripts/checks.sh:448
+msgid "'${tlogvar}' custom field cannot start or end with a hyphen"
+msgstr ""
+
+#: misc/scripts/checks.sh:475 misc/scripts/checks.sh:500
+#: misc/scripts/checks.sh:508
+msgid "Only one checksum method can be provided for hashes"
+msgstr ""
+
+#: misc/scripts/checks.sh:536
+msgid "'hash' is improperly formatted"
+msgstr ""
+
+#: misc/scripts/checks.sh:551 misc/scripts/checks.sh:574
+msgid "'compatible' and 'incompatible' indices cannot both be provided"
+msgstr ""
+
+#: misc/scripts/checks.sh:558
+msgid "'compatible' index '${idx}' cannot be empty"
+msgstr ""
+
+#: misc/scripts/checks.sh:566
+msgid "'compatible' index '${idx}' is improperly formatted"
+msgstr ""
+
+#: misc/scripts/checks.sh:581
+msgid "'incompatible' index '${idx}' cannot be empty"
+msgstr ""
+
+#: misc/scripts/checks.sh:589
+msgid "'incompatible' index '${idx}' is improperly formatted"
+msgstr ""
+
+#: misc/scripts/checks.sh:612
+msgid "'arch' index '${idx}' cannot be empty"
+msgstr ""
+
+#: misc/scripts/checks.sh:623
+msgid "'${el_arch}' is not a valid architecture"
+msgstr ""
+
+#: misc/scripts/checks.sh:636
+msgid "cannot use both Debian and Arch style naming in 'arch' array"
+msgstr ""
+
+#: misc/scripts/checks.sh:649
+msgid "'mask' index '${idx}' cannot be empty"
+msgstr ""
+
+#: misc/scripts/checks.sh:663
+msgid "'bugs' is improperly formatted"
+msgstr ""
+
+#: misc/scripts/checks.sh:676
+msgid "'priority' is empty"
+msgstr ""
+
+#: misc/scripts/checks.sh:679
+msgid ""
+"'priority' must be either: 'essential', 'required', 'important', 'standard', "
+"or 'optional'"
+msgstr ""
+
+#: misc/scripts/checks.sh:694
+msgid "'license' index '${idx}' cannot be empty"
+msgstr ""
+
+#: misc/scripts/checks.sh:700
+msgid "'${linlicense}' is not a valid license"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:29
+msgid "Could not find build.sh"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:173
+msgid "Hashes do not match (with method ${hashMethod})"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:174
+msgid "Got:      ${BRed}${fileHash}${NC}"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:175
+msgid "Expected: ${BGreen}${inputHash}${NC}"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:184
+msgid "Failed to download package"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:194
+msgid "Could not enter into the main directory ${YELLOW}${srcdir}${NC}"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:207
+msgid "Cloning ${BPurple}${dest}${NC} from branch ${CYAN}${git_branch}${NC}"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:210
+msgid "Cloning ${BPurple}${dest}${NC} from tag ${CYAN}${git_tag}${NC}"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:215
+msgid "Cloning ${BPurple}${dest}${NC} with no blobs"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:218
+msgid "Cloning ${BPurple}${dest}${NC} from ${CYAN}HEAD${NC}"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:226
+msgid "Could not enter into the cloned git repository"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:230
+msgid "Fetching commit ${CYAN}${git_commit:0:8}${NC}"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:244
+msgid "Not cloning submodules for ${PURPLE}${dest}${NC}"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:250
+msgid "Checking integrity of ${YELLOW}${cloned_git_hash:0:8}${NC}"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:251
+msgid "Could not check integrity of cloned git repository"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:253
+msgid "Cloned git repository does not match upstream hash"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:266
+msgid "Downloading ${BPurple}${dest}${NC}"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:274
+msgid "Checking hash ${YELLOW}${expectedHash:0:8}${NC}[${YELLOW}...${NC}]"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:290
+msgid "Extracting ${CYAN}${dest}${NC}"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:301
+msgid "Could not enter into the extracted archive"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:318
+msgid "Running pre_upgrade hook"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:321 misc/scripts/fetch-sources.sh:328
+msgid "Could not run preinst hook successfully"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:325
+msgid "Running pre_install hook"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:337 misc/scripts/package.sh:374
+msgid "Performing post install operations"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:339
+msgid "Running post_upgrade hook"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:342 misc/scripts/fetch-sources.sh:349
+msgid "Could not run postinst hook successfully"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:346
+msgid "Running post_install hook"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:353 misc/scripts/package.sh:375
+msgid "Storing pacscript"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:357 misc/scripts/package.sh:379
+msgid "Could not enter into ${DIR}"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:364 misc/scripts/package.sh:389
+msgid "Done installing ${BPurple}${pacname}${NC}"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:368
+msgid "Failed to install the package"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:377
+msgid "Copying local archive ${BPurple}${dest}${NC}"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:393
+msgid "Could not enter into the copied archive"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:567 misc/scripts/fetch-sources.sh:614
+msgid ""
+"This Pacscript does not work on ${BBlue}${distro_name}:"
+"${distro_version_name}${NC}/${BBlue}${distro_name}:"
+"${distro_version_number}${NC}"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:601
+msgid ""
+"This Pacscript does not work on ${BBlue}${distro_version_name}${NC}/"
+"${BBlue}${distro_version_number}${NC}"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:608
+msgid "This Pacscript does not work on ${BBlue}${distro_name}${NC}"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:634
+msgid ""
+"This package is for ${BBlue}${farch}${NC}, which is a foreign architecture"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:646
+msgid "This Pacscript does not work on ${BBlue}${CARCH}/${AARCH}${NC}"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:663 misc/scripts/fetch-sources.sh:672
+#: misc/scripts/fetch-sources.sh:689
+msgid "${CYAN}${realbuild}${NC} ${RED}✗${NC} [required]"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:683
+msgid "${CYAN}${just_build[0]}${NC} ${GREEN}↑${YELLOW}↓${NC} [remote]"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:685
+msgid "${CYAN}${just_build[0]}${NC} ${GREEN}✓${NC} [installed]"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:698
+msgid "Checking build dependencies"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:713
+msgid ""
+"${CYAN}$(printf \"${CYAN}%s${NC}, \" \"${missing_builddepends[@]}\" | sed "
+"'s/, $/\\n/')${NC} does not exist in apt repositories"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:717
+msgid ""
+"${CYAN}$(printf \"${CYAN}%s${NC}, \" \"${unsatisfied_builddepends[@]}\" | "
+"sed 's/, $/\\n/')${NC} version(s) cannot be satisfied"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:728
+msgid "Checking check dependencies"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:743
+msgid ""
+"${CYAN}$(printf \"${CYAN}%s${NC}, \" \"${missing_checkdepends[@]}\" | sed "
+"'s/, $/\\n/')${NC} does not exist in apt repositories"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:747
+msgid ""
+"${CYAN}$(printf \"${CYAN}%s${NC}, \" \"${unsatisfied_checkdepends[@]}\" | "
+"sed 's/, $/\\n/')${NC} version(s) cannot be satisfied"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:769
+msgid "Creating build dependency/conflicts dummy package"
+msgstr ""
+
+#: misc/scripts/fetch-sources.sh:784
+msgid "Failed to install build or check dependencies"
+msgstr ""
+
+#: misc/scripts/get-pacscript.sh:38 misc/scripts/upgrade.sh:257
+msgid "Could not enter ${PACDIR}"
+msgstr ""
+
+#: misc/scripts/get-pacscript.sh:49 misc/scripts/get-pacscript.sh:57
+msgid "Could not download ${URL}"
+msgstr ""
+
+#: misc/scripts/manage-repo.sh:169
+msgid "'repo.get_where' valid types are: 'alias', 'metalink'"
+msgstr ""
+
+#: misc/scripts/manage-repo.sh:185
+msgid "'repo.get_all_type' valid types are: 'url', 'alias', 'metalink'"
+msgstr ""
+
+#: misc/scripts/package-base.sh:29
+msgid "Could not find checks.sh"
+msgstr ""
+
+#: misc/scripts/package-base.sh:35 misc/scripts/upgrade.sh:35
+msgid "Could not find fetch-sources.sh"
+msgstr ""
+
+#: misc/scripts/package-base.sh:41
+msgid "\\nInterrupted, cleaning up"
+msgstr ""
+
+#: misc/scripts/package-base.sh:92
+msgid "Found pkgbase: ${PURPLE}${pkgbase}${NC}"
+msgstr ""
+
+#: misc/scripts/package-base.sh:118
+msgid ""
+"${BGreen}${skip_pkg[*]}${NC} has exceeded the maximum number of packages to "
+"build. Skipping"
+msgstr ""
+
+#: misc/scripts/package-base.sh:128
+msgid ""
+"${PKGPATH:+${PKGPATH}/}${PACKAGE}${PKGPATH:+.pacscript}:${CHILD} does not "
+"exist"
+msgstr ""
+
+#: misc/scripts/package-base.sh:139
+msgid "Selecting packages ${BCyan}${pacnames[*]%%:\\ *}${NC}"
+msgstr ""
+
+#: misc/scripts/package-base.sh:143
+msgid "Packaging ${GREEN}${pacname}${NC}"
+msgstr ""
+
+#: misc/scripts/package-base.sh:147 misc/scripts/package-base.sh:169
+msgid "Failed to install ${GREEN}${pacname}${NC}"
+msgstr ""
+
+#: misc/scripts/package-base.sh:191
+msgid "${UCyan}PACSTALL_BUILD_CORES${NC} is not an integer. Falling back to 1"
+msgstr ""
+
+#: misc/scripts/package-base.sh:213
+msgid "Editor not found, falling back to 'sensible-editor'"
+msgstr ""
+
+#: misc/scripts/package-base.sh:218
+msgid "Sourcing pacscript"
+msgstr ""
+
+#: misc/scripts/package-base.sh:241
+msgid "Could not source pacscript"
+msgstr ""
+
+#: misc/scripts/package.sh:28
+msgid "This package will connect to the internet during its build process."
+msgstr ""
+
+#: misc/scripts/package.sh:47
+msgid "Failed to download '${source[0]}'"
+msgstr ""
+
+#: misc/scripts/package.sh:50
+msgid ""
+"Moving ${BGreen}${PACDIR}/${dest}${NC} to ${BGreen}${PACDEB_DIR}/${dest}${NC}"
+msgstr ""
+
+#: misc/scripts/package.sh:63
+msgid ""
+"The package ${BBlue}${offending_pkg}${NC} is masking ${BBlue}${pacname:-"
+"${PACKAGE}}${NC}. By installing the masked package, you may cause damage to "
+"your operating system"
+msgstr ""
+
+#: misc/scripts/package.sh:66
+msgid ""
+"Somehow, 'getMasks' found masked packages that match the package you want to "
+"install, but 'getMasks_offending_pkg' could not find it. Report this upstream"
+msgstr ""
+
+#: misc/scripts/package.sh:145
+msgid ""
+"${RED}$pacname${NC} conflicts with $pkg, which is currently installed by apt"
+msgstr ""
+
+#: misc/scripts/package.sh:153
+msgid ""
+"${RED}$pacname${NC} conflicts with $pkg, which is currently installed by "
+"pacstall"
+msgstr ""
+
+#: misc/scripts/package.sh:167
+msgid "${RED}$pacname${NC} breaks $pkg, which is currently installed by apt"
+msgstr ""
+
+#: misc/scripts/package.sh:174
+msgid ""
+"${RED}$pacname${NC} breaks $pkg, which is currently installed by pacstall"
+msgstr ""
+
+#: misc/scripts/package.sh:192
+msgid "Checking pacstall dependencies"
+msgstr ""
+
+#: misc/scripts/package.sh:209
+msgid "${PURPLE}${pdep}${NC} ${GREEN}↑${YELLOW}↓${NC} [update]"
+msgstr ""
+
+#: misc/scripts/package.sh:211 misc/scripts/package.sh:222
+msgid "Failed to install dependency (${pdep} from ${PACKAGE})"
+msgstr ""
+
+#: misc/scripts/package.sh:216
+msgid "${PURPLE}${pdep}${NC} ${GREEN}✓${NC} [installed]"
+msgstr ""
+
+#: misc/scripts/package.sh:221
+msgid "${PURPLE}${pdep}${NC} ${RED}✗${NC} [required]"
+msgstr ""
+
+#: misc/scripts/package.sh:237
+msgid "${dest} is associated with multiple source entries"
+msgstr ""
+
+#: misc/scripts/package.sh:264
+msgid "Retrieving packages"
+msgstr ""
+
+#: misc/scripts/package.sh:351
+msgid "Running functions"
+msgstr ""
+
+#: misc/scripts/package.sh:356
+msgid "Could not ${function} ${pacname} properly"
+msgstr ""
+
+#: misc/scripts/package.sh:364
+msgid "Could not enter into ${HOME}"
+msgstr ""
+
+#: misc/scripts/quality-assurance.sh:49
+msgid "${CYAN}$provider${NC} is not a valid provider!"
+msgstr ""
+
+#: misc/scripts/quality-assurance.sh:50
+msgid "available providers are: 'github'"
+msgstr ""
+
+#: misc/scripts/quality-assurance.sh:59
+msgid "Returning ${CYAN}$SCRIPTDIR/repo/pacstallrepo${NC} backup"
+msgstr ""
+
+#: misc/scripts/quality-assurance.sh:68
+msgid "'number' and 'package' cannot be empty!"
+msgstr ""
+
+#: misc/scripts/quality-assurance.sh:69
+msgid ""
+"use the syntax: -Qa ${GREEN}package${BYellow}#${YELLOW}NUM${NC}(${BPurple}"
+"@${PURPLE}metalink${NC})"
+msgstr ""
+
+#: misc/scripts/quality-assurance.sh:74
+msgid "Backing up ${CYAN}$SCRIPTDIR/repo/pacstallrepo${NC}"
+msgstr ""
+
+#: misc/scripts/quality-assurance.sh:77
+msgid "Installing ${GREEN}$inst${NC}(${PURPLE}$login${NC}:${RED}$pr${NC})"
+msgstr ""
+
+#: misc/scripts/query-info.sh:99
+msgid "Key '${QUERY}' does not exist"
+msgstr ""
+
+#: misc/scripts/remove.sh:29 misc/scripts/remove.sh:34
+msgid "$PACKAGE is not installed"
+msgstr ""
+
+#: misc/scripts/remove.sh:45
+msgid ""
+"You may have dangling PPAs on your system. You can remove them using "
+"'${UCyan}sudo add-apt-repository --remove ppa:$ppa${NC}'"
+msgstr ""
+
+#: misc/scripts/search.sh:252
+msgid ""
+"There is no package with the name $IRed${SEARCH%%@*}$NC in the repo "
+"$CYAN$REPONAME$NC"
+msgstr ""
+
+#: misc/scripts/search.sh:254
+msgid ""
+"There is no package with the name $IRed${PACKAGE%%@*}$NC in the repo "
+"$CYAN$REPONAME$NC"
+msgstr ""
+
+#: misc/scripts/search.sh:286
+msgid ""
+"There is no package with the name $IRed${INFOQUERY%%@*}$NC in the repo "
+"$CYAN$REPONAME$NC"
+msgstr ""
+
+#: misc/scripts/search.sh:302
+msgid "$IRed$REPONAME$NC is not on your repo list or does not exist"
+msgstr ""
+
+#: misc/scripts/search.sh:357
+msgid "There is no package with the name $IRed${SEARCH%%@*}$NC"
+msgstr ""
+
+#: misc/scripts/search.sh:375
+msgid ""
+"Add \\\"file://\\\" to the local repo absolute path on \\e]8;;file://"
+"$SCRIPTDIR/repo/pacstallrepo\\a$CYAN$SCRIPTDIR/repo/pacstallrepo$NC\\e]8;;\\a"
+msgstr ""
+
+#: misc/scripts/search.sh:379
+msgid ""
+"Replace '~' with the full home path on \\e]8;;file://$SCRIPTDIR/repo/"
+"pacstallrepo\\a$CYAN$SCRIPTDIR/repo/pacstallrepo$NC\\e]8;;\\a"
+msgstr ""
+
+#: misc/scripts/search.sh:385
+msgid "Pacstall repo line improperly formatted: ${CYAN}${URL}${NC}"
+msgstr ""
+
+#: misc/scripts/search.sh:386 misc/scripts/search.sh:391
+msgid ""
+"You can remove or fix the URL by editing $CYAN$SCRIPTDIR/repo/pacstallrepo$NC"
+msgstr ""
+
+#: misc/scripts/search.sh:390
+msgid "Cannot connect to Pacstall repo: ${CYAN}${URL}${NC}"
+msgstr ""
+
+#: misc/scripts/search.sh:438
+msgid "There is no package with the name $IRed$PACKAGE$NC"
+msgstr ""
+
+#: misc/scripts/search.sh:469
+msgid "There is no package with the name $IRed$INFOQUERY$NC"
+msgstr ""
+
+#: misc/scripts/update.sh:70
+msgid "Invalid URL"
+msgstr ""
+
+#: misc/scripts/update.sh:76
+msgid "Fetching translation list"
+msgstr ""
+
+#: misc/scripts/update.sh:79
+msgid "Updating directories"
+msgstr ""
+
+#: misc/scripts/update.sh:87
+msgid "Checking dependencies"
+msgstr ""
+
+#: misc/scripts/update.sh:114
+msgid "Pulling scripts from GitHub"
+msgstr ""
+
+#: misc/scripts/update.sh:138
+msgid "Rebuilding translations"
+msgstr ""
+
+#: misc/scripts/update.sh:143
+msgid "Rebuilding manpages"
+msgstr ""
+
+#: misc/scripts/update.sh:147
+msgid "Making scripts executable"
+msgstr ""
+
+#: misc/scripts/upgrade.sh:29
+msgid "Could not load dep-tree.sh"
+msgstr ""
+
+#: misc/scripts/upgrade.sh:104
+msgid "Checking for updates"
+msgstr ""
+
+#: misc/scripts/upgrade.sh:109 misc/scripts/upgrade.sh:235
+msgid "Nothing to upgrade"
+msgstr ""
+
+#: misc/scripts/upgrade.sh:112
+msgid "Building dependency tree"
+msgstr ""
+
+#: misc/scripts/upgrade.sh:123
+msgid "Checking versions"
+msgstr ""
+
+#: misc/scripts/upgrade.sh:175
+msgid "Package ${GREEN}${i}${NC} is not on ${CYAN}${parsedrepo}${NC} anymore"
+msgstr ""
+
+#: misc/scripts/upgrade.sh:238
+msgid "Packages can be upgraded"
+msgstr ""

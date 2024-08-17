@@ -28,7 +28,7 @@
 
 # shellcheck source=./misc/scripts/manage-repo.sh
 source "${SCRIPTDIR}/scripts/manage-repo.sh" || {
-    fancy_message error "Could not find manage-repo.sh"
+    fancy_message error $"Could not find manage-repo.sh"
     { ignore_stack=true; return 1; }
 }
 
@@ -249,9 +249,9 @@ if [[ $SEARCH == *@* ]] || [[ $PACKAGE == *@* ]]; then
             LEN=${#_LEN[@]}
             if ((LEN == 0)) || [[ -z ${_LEN[*]} ]]; then
                 if [[ -n $SEARCH ]]; then
-                    fancy_message warn "There is no package with the name $IRed${SEARCH%%@*}$NC in the repo $CYAN$REPONAME$NC"
+                    fancy_message warn $"There is no package with the name $IRed${SEARCH%%@*}$NC in the repo $CYAN$REPONAME$NC"
                 else
-                    fancy_message warn "There is no package with the name $IRed${PACKAGE%%@*}$NC in the repo $CYAN$REPONAME$NC"
+                    fancy_message warn $"There is no package with the name $IRed${PACKAGE%%@*}$NC in the repo $CYAN$REPONAME$NC"
                 fi
                 error_log 3 "search $PACKAGE@$REPONAME"
                 exit 1
@@ -283,7 +283,7 @@ if [[ $SEARCH == *@* ]] || [[ $PACKAGE == *@* ]]; then
                     unset searchedrepo
                 fi
                 if [[ -z ${INFORESULTS[*]} ]]; then
-                    fancy_message error "There is no package with the name $IRed${INFOQUERY%%@*}$NC in the repo $CYAN$REPONAME$NC"
+                    fancy_message error $"There is no package with the name $IRed${INFOQUERY%%@*}$NC in the repo $CYAN$REPONAME$NC"
                     error_log 3 "search $INFOQUERY"
                     exit 1
                 fi
@@ -299,7 +299,7 @@ if [[ $SEARCH == *@* ]] || [[ $PACKAGE == *@* ]]; then
         fi
     done < "$SCRIPTDIR/repo/pacstallrepo"
 
-    fancy_message warn "$IRed$REPONAME$NC is not on your repo list or does not exist"
+    fancy_message warn $"$IRed$REPONAME$NC is not on your repo list or does not exist"
     error_log 3 "search $PACKAGE@$REPONAME"
     exit 1
 fi
@@ -354,7 +354,7 @@ if [[ -n ${SEARCH} ]]; then
     mapfile -t searchout < <(printf "%s\n" "${searchout[@]}" | sort -V)
     LEN=${#searchout[@]}
     if ((LEN == 0)) || [[ -z ${searchout[*]} ]]; then
-        fancy_message warn "There is no package with the name $IRed${SEARCH%%@*}$NC"
+        fancy_message warn $"There is no package with the name $IRed${SEARCH%%@*}$NC"
         exit 1
     fi
     for s in "${searchout[@]}"; do
@@ -372,23 +372,23 @@ while IFS= read -r URL; do
     URL="$(repo.format "${URL}")"
     if [[ ${URL} == "/"* ]] || [[ ${URL} == "~"* ]] || [[ ${URL} == "."* ]]; then
         sed -i "s#${URL}#file://$(readlink -f ${URL})#g" "$SCRIPTDIR/repo/pacstallrepo" 2> /dev/null \
-            || fancy_message warn "Add \"file://\" to the local repo absolute path on \e]8;;file://$SCRIPTDIR/repo/pacstallrepo\a$CYAN$SCRIPTDIR/repo/pacstallrepo$NC\e]8;;\a"
+            || fancy_message warn $"Add \"file://\" to the local repo absolute path on \e]8;;file://$SCRIPTDIR/repo/pacstallrepo\a$CYAN$SCRIPTDIR/repo/pacstallrepo$NC\e]8;;\a"
         URL="file://$(readlink -f ${URL})"
     elif [[ ${URL} == "file://"* && ${URL} == *"/~/"* ]]; then
         sed -i "s#${URL}#${URL/'~'/$HOME}#g" "$SCRIPTDIR/repo/pacstallrepo" 2> /dev/null \
-            || fancy_message warn "Replace '~' with the full home path on \e]8;;file://$SCRIPTDIR/repo/pacstallrepo\a$CYAN$SCRIPTDIR/repo/pacstallrepo$NC\e]8;;\a"
+            || fancy_message warn $"Replace '~' with the full home path on \e]8;;file://$SCRIPTDIR/repo/pacstallrepo\a$CYAN$SCRIPTDIR/repo/pacstallrepo$NC\e]8;;\a"
         URL="${URL/'~'/$HOME}"
     fi
     URL="$(repo.format "${URL}")"
     if ((REPOMSG!=1)); then
         if [[ -z ${URL} ]]; then
-            fancy_message error "Pacstall repo line improperly formatted: ${CYAN}${URL}${NC}"
-            fancy_message warn "You can remove or fix the URL by editing $CYAN$SCRIPTDIR/repo/pacstallrepo$NC"
+            fancy_message error $"Pacstall repo line improperly formatted: ${CYAN}${URL}${NC}"
+            fancy_message warn $"You can remove or fix the URL by editing $CYAN$SCRIPTDIR/repo/pacstallrepo$NC"
             REPOMSG=1
             continue
         elif ! check_url "${URL}/packagelist"; then
-            fancy_message error "Cannot connect to Pacstall repo: ${CYAN}${URL}${NC}"
-            fancy_message warn "You can remove or fix the URL by editing $CYAN$SCRIPTDIR/repo/pacstallrepo$NC"
+            fancy_message error $"Cannot connect to Pacstall repo: ${CYAN}${URL}${NC}"
+            fancy_message warn $"You can remove or fix the URL by editing $CYAN$SCRIPTDIR/repo/pacstallrepo$NC"
             REPOMSG=1
             continue
         fi
@@ -435,7 +435,7 @@ LEN=${#_LEN[@]}
 
 # Check if there are results
 if ((LEN == 0)) || [[ -z ${_LEN[*]} ]]; then
-    fancy_message error "There is no package with the name $IRed$PACKAGE$NC"
+    fancy_message error $"There is no package with the name $IRed$PACKAGE$NC"
     error_log 3 "search $PACKAGE"
     exit 1
 # Check if it's upgrading packages
@@ -466,7 +466,7 @@ elif [[ ${SEARCHINFO} ]]; then
         fi
     done < "$SCRIPTDIR/repo/pacstallrepo"
     if [[ -z ${INFORESULTS[*]} ]]; then
-        fancy_message error "There is no package with the name $IRed$INFOQUERY$NC"
+        fancy_message error $"There is no package with the name $IRed$INFOQUERY$NC"
         error_log 3 "search $INFOQUERY"
         exit 1
     fi

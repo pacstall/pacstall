@@ -25,12 +25,12 @@
 { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
 
 if [[ -z $PACKAGE ]]; then
-    fancy_message error "You failed to specify a package"
+    fancy_message error $"You failed to specify a package"
     exit 1
 fi
 
 if [[ ! -f "$METADIR/$PACKAGE" ]]; then
-    fancy_message error "Package is not installed"
+    fancy_message error $"Package is not installed"
     exit 1
 fi
 
@@ -96,7 +96,7 @@ fi
 if [[ -n ${QUERY} ]]; then
     query="${!QUERY}"
     if [[ -z ${query} ]]; then
-        fancy_message error "Key '${QUERY}' does not exist"
+        fancy_message error $"Key '${QUERY}' does not exist"
         exit 1
     else
         echo "${query}"

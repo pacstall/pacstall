@@ -36,6 +36,8 @@ export LOGFILE
 export PACDIR="/tmp/pacstall"
 export SCRIPTDIR="/usr/share/pacstall"
 export STAGEDIR="/usr/src/pacstall"
+export TEXTDOMAIN="pacstall"
+export TEXTDOMAINDIR="/usr/share/locale"
 
 export PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER:-$(whoami)}}")
 
@@ -265,7 +267,7 @@ function stacktrace() {
             # shellcheck disable=SC2027
             echo -e " ${stack_color}${func:+│}${trace:+ }${NC}  ${CYAN}╰───➤${NC} \033[38;5;242m"$(tail -n +"${linen}" "${src}" | head -n1)"${NC}" >&2
         done
-        fancy_message info "Cleaning up"
+        fancy_message info $"Cleaning up"
         cleanup
         exit 1
     else
@@ -378,16 +380,16 @@ function check_url() {
         case "${http_code}" in
             000)
                 if [[ ${1} == *"packagelist" ]]; then
-                    fancy_message error "Packagelist not found"
+                    fancy_message error $"Packagelist not found"
                     suggested_solution "Confirm that '${UGreen}$1${NC}' exists"
                 else
-                    fancy_message error "Failed to download file, check your connection"
+                    fancy_message error $"Failed to download file, check your connection"
                 fi
                 error_log 1 "get ${PACKAGE} pacscript"
                 { ignore_stack=true; return 1; }
                 ;;
             404)
-                fancy_message error "The URL cannot be found"
+                fancy_message error $"The URL cannot be found"
                 suggested_solution "Confirm that '${UGreen}$1${NC}' exists"
                 { ignore_stack=true; return 1; }
                 ;;
@@ -395,7 +397,7 @@ function check_url() {
                 return 0
                 ;;
             *)
-                fancy_message error "Failed with http code ${http_code}"
+                fancy_message error $"Failed with http code ${http_code}"
                 suggested_solution "Confirm that '${UGreen}$1${NC}' is accessible"
                 { ignore_stack=true; return 1; }
                 ;;
@@ -617,7 +619,7 @@ source "$SCRIPTDIR/scripts/bwrap.sh"
 
 if [[ ! -t 0 ]]; then
     NON_INTERACTIVE=true
-    fancy_message warn "Reading input from pipe"
+    fancy_message warn $"Reading input from pipe"
 fi
 
 # Separate grouped short options
@@ -676,7 +678,7 @@ if ((${#matches[@]} <= 1)); then
     # Set the new list of arguments
     set -- "${unique_argument_list[@]}"
 else
-    fancy_message warn "Only one command flag can be used at a time"
+    fancy_message warn $"Only one command flag can be used at a time"
     set -- "-h"
 fi
 
@@ -714,13 +716,13 @@ function lock() {
 while lock $@; do
     if [[ -z $first ]]; then
         first=1
-        fancy_message warn "Pacstall is already running another instance"
+        fancy_message warn $"Pacstall is already running another instance"
     fi
     sleep 1
 done
 if [[ -n $first ]]; then
     unset first
-    fancy_message info "The other instance has finished running, unlocking"
+    fancy_message info $"The other instance has finished running, unlocking"
 fi
 
 # don't allow nosandbox to be run with envars
@@ -729,14 +731,14 @@ unset NOSANDBOX
 while [[ $1 != "--" ]]; do
     case "$1" in
         -P | --disable-prompts)
-            fancy_message warn "Prompts are disabled"
+            fancy_message warn $"Prompts are disabled"
             export DISABLE_PROMPTS=yes
             export DEBIAN_FRONTEND=noninteractive
             ;;
 
         -B | --build-only)
             export PACDEB_DIR="$PWD"
-            fancy_message info "Package will be built and not installed"
+            fancy_message info $"Package will be built and not installed"
             export PACSTALL_INSTALL=0
             ;;
 
@@ -806,12 +808,12 @@ Helpful links:
         -I | --install)
             unset CHILD PKGPATH
             if [[ -z $2 ]]; then
-                fancy_message error "You failed to specify a package"
+                fancy_message error $"You failed to specify a package"
                 exit 1
             fi
 
             function trap_ctrlc() {
-                fancy_message warn "The installation of ${PACKAGE:-package} was interrupted, removing files"
+                fancy_message warn $"The installation of ${PACKAGE:-package} was interrupted, removing files"
                 rm -rf "${PACDIR:?}"/* # :? makes bash error out in case PACDIR is empty, saving us from yoinking /* directory by mistake
                 exit 2
             }
@@ -848,7 +850,7 @@ Helpful links:
                     export PKGPATH="${PWD}"
                     # Check if the file exist
                     if [[ ! -f "$PACKAGE".pacscript ]]; then
-                        fancy_message error "$2 does not exist"
+                        fancy_message error $"$2 does not exist"
                         shift
                         continue
                     fi
@@ -879,14 +881,14 @@ Helpful links:
                     [[ ${CHILD} == "pkgbase" ]] && unset CHILD
                     export PACKAGE CHILD
                     if [[ -z $PACKAGE ]]; then
-                        fancy_message error "You failed to specify a package"
+                        fancy_message error $"You failed to specify a package"
                         exit 1
                     fi
 
                     if [[ -n $PACSTALL_PAYLOAD && ! -f "${PACDIR}-pacdeps-${PACKAGE/:pkgbase/}" ]]; then
                         export PACSTALL_DOWNLOADER="payload"
                         if [[ ! -f $PACSTALL_PAYLOAD ]]; then
-                            fancy_message error "Payload not found"
+                            fancy_message error $"Payload not found"
                             exit 1
                         fi
                     fi
@@ -899,7 +901,7 @@ Helpful links:
                     fi
 
                     check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
-                        fancy_message error "Could not connect to the internet"
+                        fancy_message error $"Could not connect to the internet"
                         suggested_solution "Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
                         exit 1
                     }
@@ -916,14 +918,14 @@ Helpful links:
 
                     # shellcheck source=./misc/scripts/get-pacscript.sh
                     if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then
-                        fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
+                        fancy_message error $"Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
                         suggested_solution "Confirm that the package exists by running '${UCyan}pacstall -S $PACKAGE${NC}'" "Check your internet connection"
                         continue
                     fi
                 fi
                 # shellcheck source=./misc/scripts/package-base.sh
                 if ! source "$SCRIPTDIR/scripts/package-base.sh"; then
-                    fancy_message error "Failed to install ${GREEN}${PACKAGE}${NC}"
+                    fancy_message error $"Failed to install ${GREEN}${PACKAGE}${NC}"
                     if ! [[ -f "${PACDIR}-pacdeps-$PACKAGE" ]]; then
                         sudo rm -rf "${PACDIR:?}"
                     fi
@@ -941,12 +943,12 @@ Helpful links:
 
             export SEARCH=$2
             if [[ -z $SEARCH ]]; then
-                fancy_message error "You failed to specify a package"
+                fancy_message error $"You failed to specify a package"
                 exit 1
             fi
 
             check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
-                fancy_message error "Could not connect to the internet"
+                fancy_message error $"Could not connect to the internet"
                 suggested_solution "Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
                 exit 1
             }
@@ -982,11 +984,11 @@ Helpful links:
             [[ ${CHILD} == "pkgbase" ]] && unset CHILD
             export PACKAGE CHILD
             if [[ -z $PACKAGE ]]; then
-                fancy_message error "You failed to specify a package"
+                fancy_message error $"You failed to specify a package"
                 exit 1
             fi
             check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
-                fancy_message error "Could not connect to the internet"
+                fancy_message error $"Could not connect to the internet"
                 suggested_solution "Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
                 exit 1
             }
@@ -1000,7 +1002,7 @@ Helpful links:
         -R | --remove)
 
             if [[ -z $2 ]]; then
-                fancy_message error "You failed to specify a package"
+                fancy_message error $"You failed to specify a package"
                 exit 1
             fi
 
@@ -1009,7 +1011,7 @@ Helpful links:
                 shift
                 # shellcheck source=./misc/scripts/remove.sh
                 if ! source "$SCRIPTDIR/scripts/remove.sh"; then
-                    fancy_message error "Failed to remove ${GREEN}${PACKAGE}${NC}"
+                    fancy_message error $"Failed to remove ${GREEN}${PACKAGE}${NC}"
                 fi
             done
             exit 0
@@ -1030,7 +1032,7 @@ Helpful links:
                 source "$SCRIPTDIR/scripts/add-repo.sh"
                 exit 0
             else
-                fancy_message error "You failed to specify a repo to add"
+                fancy_message error $"You failed to specify a repo to add"
                 suggested_solution "Add a repository in the following format:" "'${UCyan}pacstall -A https://github.com/username/repository-name${NC}'" "Consult the pacstall man page by running '${UCyan}man pacstall${NC}', and searching for the term '${UPurple}-A${NC}'"
                 exit 1
             fi
@@ -1051,7 +1053,7 @@ Helpful links:
                 source "$SCRIPTDIR/scripts/add-repo.sh"
                 exit 0
             else
-                fancy_message error "You failed to specify a repo to remove"
+                fancy_message error $"You failed to specify a repo to remove"
                 suggested_solution "Remove a repository in the following format:" "'${UCyan}pacstall -Rr https://github.com/username/repository-name${NC}'" "Consult the pacstall man page by running '${UCyan}man pacstall${NC}', and searching for the term '${UPurple}-Rr${NC}'"
                 exit 1
             fi
@@ -1075,7 +1077,7 @@ Helpful links:
             if [[ $2 == "." && -d $2 && -z $3 ]]; then
                 cd "${2}"
                 if ! git -C . rev-parse 2> /dev/null; then
-                    fancy_message error "$PWD is not a git repository"
+                    fancy_message error $"$PWD is not a git repository"
                     exit 1
                 fi
                 mapfile -d":" GIT_USER < <(git remote get-url origin)
@@ -1106,14 +1108,14 @@ Helpful links:
             fi
 
             check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
-                fancy_message error "Could not connect to the internet"
+                fancy_message error $"Could not connect to the internet"
                 suggested_solution "Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
                 exit 1
             }
 
             if curl --output /dev/null --silent --head --fail https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/pyproject.toml || curl --output /dev/null --silent --head --fail https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/Cargo.toml; then
-                fancy_message error "The repository you are trying to upgrade to contains a version of pacstall that cannot be updated from $(pacstall -V)"
-                fancy_message error "Visit https://github.com/$USERNAME/pacstall/tree/$BRANCH for more information on how to reinstall. Most packages will also need to be reinstalled"
+                fancy_message error $"The repository you are trying to upgrade to contains a version of pacstall that cannot be updated from $(pacstall -V)"
+                fancy_message error $"Visit https://github.com/$USERNAME/pacstall/tree/$BRANCH for more information on how to reinstall. Most packages will also need to be reinstalled"
                 exit 1
             fi
             sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/update.sh -P "$SCRIPTDIR/scripts" 2> /dev/null
@@ -1125,7 +1127,7 @@ Helpful links:
         -L | --list)
             shift
             if [[ -n $* ]]; then
-                fancy_message error "Invalid argument '$*'"
+                fancy_message error $"Invalid argument '$*'"
                 exit 1
             fi
 
@@ -1137,7 +1139,7 @@ Helpful links:
             shopt -s nullglob
             packages_installed=(*)
             if ((${#packages_installed[@]} == 0)) && [[ -t 1 ]]; then
-                fancy_message error "Nothing installed yet"
+                fancy_message error $"Nothing installed yet"
                 exit 1
             elif ((${#packages_installed[@]} == 0)); then
                 exit 1
@@ -1168,7 +1170,7 @@ Helpful links:
         -D | --download)
 
             if [[ -z $2 ]]; then
-                fancy_message error "You failed to specify a package"
+                fancy_message error $"You failed to specify a package"
                 exit 1
             fi
 
@@ -1178,7 +1180,7 @@ Helpful links:
                 export type="download"
 
                 check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
-                    fancy_message error "Could not connect to the internet"
+                    fancy_message error $"Could not connect to the internet"
                     suggested_solution "Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
                     exit 1
                 }
@@ -1193,12 +1195,12 @@ Helpful links:
 
                 # shellcheck source=./misc/scripts/get-pacscript.sh
                 if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then
-                    fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
+                    fancy_message error $"Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
                     suggested_solution "Confirm that the package exists by running '${UCyan}pacstall -S $PACKAGE${NC}'" "Check your internet connection"
                     continue
                 fi
 
-                fancy_message info "${GREEN}${PACKAGE}${NC}'s pacscript is downloaded to ${GREEN}${PWD}/$PACKAGE.pacscript${NC}"
+                fancy_message info $"${GREEN}${PACKAGE}${NC}'s pacscript is downloaded to ${GREEN}${PWD}/$PACKAGE.pacscript${NC}"
             done
             exit 0
             ;;
@@ -1206,12 +1208,12 @@ Helpful links:
         -Up | --upgrade)
             shift
             if [[ -n $* ]]; then
-                fancy_message error "Invalid argument '$*'"
+                fancy_message error $"Invalid argument '$*'"
                 exit 1
             fi
 
             check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
-                fancy_message error "Could not connect to the internet"
+                fancy_message error $"Could not connect to the internet"
                 suggested_solution "Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
                 exit 1
             }
@@ -1224,11 +1226,11 @@ Helpful links:
             PACKAGE="$2"
 
             if [[ -z $PACKAGE ]]; then
-                fancy_message error "You failed to specify a package"
+                fancy_message error $"You failed to specify a package"
                 exit 1
             fi
             if ! [[ -f $METADIR/$PACKAGE ]]; then
-                fancy_message error "Package is not installed"
+                fancy_message error $"Package is not installed"
                 exit 1
             fi
 
@@ -1262,23 +1264,23 @@ Helpful links:
             ;;
 
         -K | --keep)
-            fancy_message info "Keeping build files"
+            fancy_message info $"Keeping build files"
             KEEP=true
             ;;
 
         -Nc | --nocheck)
-            fancy_message info "Skipping check() if present"
+            fancy_message info $"Skipping check() if present"
             NOCHECK=true
             ;;
 
         -Q | --quiet)
-            fancy_message info "Downloading package entries quietly"
+            fancy_message info $"Downloading package entries quietly"
             PACSTALL_VERBOSE=false
             ;;
 
         -Ns | --nosandbox)
-            fancy_message warn "Building package without bwrap sandbox"
-            fancy_message sub "Be cautious, this exposes your system to potential harm"
+            fancy_message warn $"Building package without bwrap sandbox"
+            fancy_message sub $"Be cautious, this exposes your system to potential harm"
             NOSANDBOX=true
             ;;
 

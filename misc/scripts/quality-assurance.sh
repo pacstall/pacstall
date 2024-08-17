@@ -46,8 +46,8 @@ function parse_link() {
         login=$(echo "$gh_provides" | jq -r '.head.user.login')
         echo "https://raw.githubusercontent.com/$head_repo_full_name/$head_sha" "$login"
     else
-        fancy_message error "${CYAN}$provider${NC} is not a valid provider!"
-        fancy_message sub "available providers are: 'github'"
+        fancy_message error $"${CYAN}$provider${NC} is not a valid provider!"
+        fancy_message sub $"available providers are: 'github'"
         exit 1
     fi
 }
@@ -56,7 +56,7 @@ function cleanup_qa() {
     # shellcheck disable=SC2034
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if [[ -f "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak" ]]; then
-        fancy_message info "Returning ${CYAN}$SCRIPTDIR/repo/pacstallrepo${NC} backup"
+        fancy_message info $"Returning ${CYAN}$SCRIPTDIR/repo/pacstallrepo${NC} backup"
         sudo rm -f "${SCRIPTDIR:?}/repo/pacstallrepo"
         sudo mv "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak" "$SCRIPTDIR/repo/pacstallrepo"
     fi
@@ -65,16 +65,16 @@ function cleanup_qa() {
 trap cleanup_qa EXIT INT
 metalink="${METAURL:-github:pacstall/pacstall-programs}" number="$PRNUM" inst="$PACKAGE"
 if [[ -z $number || -z $inst ]]; then
-    fancy_message error "'number' and 'package' cannot be empty!"
-    fancy_message sub "use the syntax: -Qa ${GREEN}package${BYellow}#${YELLOW}NUM${NC}(${BPurple}@${PURPLE}metalink${NC})"
+    fancy_message error $"'number' and 'package' cannot be empty!"
+    fancy_message sub $"use the syntax: -Qa ${GREEN}package${BYellow}#${YELLOW}NUM${NC}(${BPurple}@${PURPLE}metalink${NC})"
     exit 1
 fi
 read -r provider user repo pr <<< "$(parse_pr "$metalink" "$number")"
 read -r provider_url login <<< "$(parse_link "$provider" "$user" "$repo" "$pr")"
-fancy_message info "Backing up ${CYAN}$SCRIPTDIR/repo/pacstallrepo${NC}"
+fancy_message info $"Backing up ${CYAN}$SCRIPTDIR/repo/pacstallrepo${NC}"
 sudo mv "$SCRIPTDIR/repo/pacstallrepo" "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak"
 echo "$provider_url" | sudo tee "$SCRIPTDIR/repo/pacstallrepo" > /dev/null
-fancy_message info "Installing ${GREEN}$inst${NC}(${PURPLE}$login${NC}:${RED}$pr${NC})"
+fancy_message info $"Installing ${GREEN}$inst${NC}(${PURPLE}$login${NC}:${RED}$pr${NC})"
 cmd="-I"
 [[ ${GITHUB_ACTIONS} == "true" ]] && cmd+="P"
 [[ $KEEP ]] && cmd+="K"

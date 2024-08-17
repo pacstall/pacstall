@@ -87,7 +87,7 @@ fancy_message info "Installing packages"
 pacstall_deps=(
     "sudo" "wget" "build-essential" "unzip" "git"
     "zstd" "iputils-ping" "aptitude" "bubblewrap"
-    "jq" "distro-info-data" "spdx-licenses"
+    "jq" "distro-info-data" "spdx-licenses" "gettext"
 )
 echo -ne "Do you want to install axel (faster downloads)? [${BGreen}Y${NC}/${RED}n${NC}] "
 read -r reply <&0
@@ -123,14 +123,21 @@ SCRIPTDIR="/usr/share/pacstall"
 PACDIR="/tmp/pacstall"
 MAN8DIR="/usr/share/man/man8"
 MAN5DIR="/usr/share/man/man5"
+PODIR="${SCRIPTDIR}/po"
 BASH_COMPLETION_DIR="/usr/share/bash-completion/completions"
 FISH_COMPLETION_DIR="/usr/share/fish/vendor_completions.d"
 REPO="https://raw.githubusercontent.com/pacstall/pacstall/master"
 PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER:-$(whoami)}}")
 
+fancy_message info "Fetching translation list"
+read -r -a linguas < <(wget -qO- "${REPO}/misc/po/LINGUAS")
+
 fancy_message info "Making directories"
-mkdir -p "${SCRIPTDIR}/scripts" "${SCRIPTDIR}/repo" "${PACDIR}" "${METADIR}" "${LOGDIR}" "${MAN8DIR}" "${MAN5DIR}" "${BASH_COMPLETION_DIR}" "${FISH_COMPLETION_DIR}"
+mkdir -p "${SCRIPTDIR}/scripts" "${SCRIPTDIR}/repo" "${PACDIR}" "${METADIR}" "${LOGDIR}" "${MAN8DIR}" "${MAN5DIR}" "${PODIR}" "${BASH_COMPLETION_DIR}" "${FISH_COMPLETION_DIR}"
 chown "${PACSTALL_USER}" -cR "${PACDIR}" "${LOGDIR}"
+for lang in "${linguas[@]}"; do
+    mkdir -p "misc/locale/${lang}/LC_MESSAGES/"
+done
 
 fancy_message info "Pulling scripts from GitHub"
 pacstall_scripts=(
@@ -144,6 +151,9 @@ echo "${REPO/pacstall\/pacstall/pacstall\/pacstall-programs}" > "${SCRIPTDIR}/re
 for script in "${pacstall_scripts[@]}"; do
     wget -q --show-progress -N "${REPO}/misc/scripts/${script}.sh" -P "${SCRIPTDIR}/scripts" &
 done
+for lang in "${linguas[@]}"; do
+    wget -q --show-progress -N "${REPO}/misc/po/${lang}.po" -P "${PODIR}" &
+done
 wget -q --show-progress --progress=bar:force -O "/usr/bin/pacstall" "${REPO}/pacstall" &
 wget -q --show-progress --progress=bar:force -O "${MAN8DIR}/pacstall.8" "${REPO}/misc/man/pacstall.8" &
 wget -q --show-progress --progress=bar:force -O "${MAN5DIR}/pacstall.5" "${REPO}/misc/man/pacstall.5" &
@@ -151,10 +161,18 @@ wget -q --show-progress --progress=bar:force -O "${BASH_COMPLETION_DIR}/pacstall
 wget -q --show-progress --progress=bar:force -O "${FISH_COMPLETION_DIR}/pacstall.fish" "${REPO}/misc/completion/fish" &
 wait
 
-chmod +x "/usr/bin/pacstall"
-chmod +x "${SCRIPTDIR}/scripts/"*
+fancy_message info "Building translations"
+for lang in "${linguas[@]}"; do
+    msgfmt -o "/usr/share/locale/${lang}/LC_MESSAGES/pacstall.mo" "${PODIR}/${lang}.po"
+done
+
+fancy_message info "Building manpages"
 gzip --force -9n "${MAN8DIR}/pacstall.8"
 gzip --force -9n "${MAN5DIR}/pacstall.5"
+
+fancy_message info "Making scripts executable"
+chmod +x "/usr/bin/pacstall"
+chmod +x "${SCRIPTDIR}/scripts/"*
 
 fancy_message info "Installation complete"
 # vim:set ft=sh ts=4 sw=4 et:

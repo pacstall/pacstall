@@ -35,7 +35,7 @@ if check_url "${URL}"; then
         }
         if ! cd "$PACDIR"; then
             error_log 1 "install $PACKAGE"
-            fancy_message error "Could not enter ${PACDIR}"
+            fancy_message error $"Could not enter ${PACDIR}"
             exit 1
         fi
     fi
@@ -46,7 +46,7 @@ if check_url "${URL}"; then
             [[ ${FILE} == ".SRCINFO" ]] && FILE="${PACKAGE}.SRCINFO"
             if ! curl --location -s -- "$URL" > "$FILE"; then
                 error_log 1 "download $PACKAGE"
-                fancy_message error "Could not download ${URL}"
+                fancy_message error $"Could not download ${URL}"
                 exit 1
             fi
             unset FILE
@@ -54,7 +54,7 @@ if check_url "${URL}"; then
         *)
             if ! download -- "$URL" > /dev/null 2>&1; then
                 error_log 1 "download $PACKAGE"
-                fancy_message error "Could not download ${URL}"
+                fancy_message error $"Could not download ${URL}"
                 exit 1
             fi
             ;;

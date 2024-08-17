@@ -26,25 +26,25 @@
 
 # shellcheck source=./misc/scripts/dep-tree.sh
 source "${SCRIPTDIR}/scripts/dep-tree.sh" || {
-    fancy_message error "Could not load dep-tree.sh"
+    fancy_message error $"Could not load dep-tree.sh"
     { ignore_stack=true; return 1; }
 }
 
 # shellcheck source=./misc/scripts/fetch-sources.sh
 source "${SCRIPTDIR}/scripts/fetch-sources.sh" || {
-    fancy_message error "Could not find fetch-sources.sh"
+    fancy_message error $"Could not find fetch-sources.sh"
     { ignore_stack=true; return 1; }
 }
 
 # shellcheck source=./misc/scripts/srcinfo.sh
 source "${SCRIPTDIR}/scripts/srcinfo.sh" || {
-    fancy_message error "Could not find srcinfo.sh"
+    fancy_message error $"Could not find srcinfo.sh"
     { ignore_stack=true; return 1; }
 }
 
 # shellcheck source=./misc/scripts/manage-repo.sh
 source "${SCRIPTDIR}/scripts/manage-repo.sh" || {
-    fancy_message error "Could not find manage-repo.sh"
+    fancy_message error $"Could not find manage-repo.sh"
     { ignore_stack=true; return 1; }
 }
 
@@ -101,15 +101,15 @@ DISTRO="$(set_distro parent)"
 CDISTRO="$(set_distro)"
 export CARCH AARCH DISTRO CDISTRO
 
-fancy_message info "Checking for updates"
+fancy_message info $"Checking for updates"
 
 # Get the list of the installed packages
 mapfile -t list < <(pacstall -L)
 if ((${#list[@]} == 0)); then
-    fancy_message info "Nothing to upgrade"
+    fancy_message info $"Nothing to upgrade"
     return 0
 fi
-fancy_message sub "Building dependency tree"
+fancy_message sub $"Building dependency tree"
 tput civis # Hide cursor
 dep_tree.loop_traits update_order "${list[@]}"
 tput cnorm # Show cursor again
@@ -120,7 +120,7 @@ up_list="$(mktemp /tmp/XXXXXX-pacstall-up-list)"
 up_print="$(mktemp /tmp/XXXXXX-pacstall-up-print)"
 up_urls="$(mktemp /tmp/XXXXXX-pacstall-up-urls)"
 
-fancy_message sub "Checking versions"
+fancy_message sub $"Checking versions"
 
 tty_settings=$(stty -g)
 N="$(nproc)"
@@ -172,7 +172,7 @@ N="$(nproc)"
                     parsedrepo="${parsedrepo%%#*}${YELLOW}#${parsedrepo##*#}${NC}"
                 fi
                 if [[ ${remoterepo} != "orphan" ]]; then
-                    fancy_message warn "Package ${GREEN}${i}${NC} is not on ${CYAN}${parsedrepo}${NC} anymore"
+                    fancy_message warn $"Package ${GREEN}${i}${NC} is not on ${CYAN}${parsedrepo}${NC} anymore"
                     sudo sed -i 's/_remoterepo=".*"/_remoterepo="orphan"/g' "$METADIR/$i"
                     sudo sed -i '/_remotebranch=/d' "$METADIR/$i"
                 fi
@@ -232,10 +232,10 @@ N="$(nproc)"
 )
 
 if [[ ! -s ${up_list} ]]; then
-    fancy_message info "Nothing to upgrade"
+    fancy_message info $"Nothing to upgrade"
 else
     echo
-    fancy_message info "Packages can be upgraded"
+    fancy_message info $"Packages can be upgraded"
     echo -e "Upgradable: $(wc -l < "${up_print}")
 ${BOLD}$(cat "${up_print}")${NC}\n"
 
@@ -254,7 +254,7 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
     export local='no'
     if ! cd "$PACDIR" 2> /dev/null; then
         error_log 1 "upgrade"
-        fancy_message error "Could not enter ${PACDIR}"
+        fancy_message error $"Could not enter ${PACDIR}"
         exit 1
     fi
     for to_upgrade in "${upgrade[@]}"; do
@@ -273,7 +273,7 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
         export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
         # shellcheck source=./misc/scripts/get-pacscript.sh
         if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then
-            fancy_message error "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
+            fancy_message error $"Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
             continue
         fi
         # shellcheck source=./misc/scripts/package-base.sh
