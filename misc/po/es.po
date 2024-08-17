@@ -991,35 +991,35 @@ msgstr ""
 msgid "There is no package with the name $IRed$INFOQUERY$NC"
 msgstr ""
 
-#: misc/scripts/update.sh:70
+#: misc/scripts/update.sh:72
 msgid "Invalid URL"
 msgstr ""
 
-#: misc/scripts/update.sh:76
+#: misc/scripts/update.sh:78
 msgid "Fetching translation list"
 msgstr ""
 
-#: misc/scripts/update.sh:79
+#: misc/scripts/update.sh:81
 msgid "Updating directories"
 msgstr ""
 
-#: misc/scripts/update.sh:87
+#: misc/scripts/update.sh:89
 msgid "Checking dependencies"
 msgstr ""
 
-#: misc/scripts/update.sh:114
+#: misc/scripts/update.sh:116
 msgid "Pulling scripts from GitHub"
 msgstr ""
 
-#: misc/scripts/update.sh:138
+#: misc/scripts/update.sh:140
 msgid "Rebuilding translations"
 msgstr ""
 
-#: misc/scripts/update.sh:143
+#: misc/scripts/update.sh:145
 msgid "Rebuilding manpages"
 msgstr ""
 
-#: misc/scripts/update.sh:147
+#: misc/scripts/update.sh:149
 msgid "Making scripts executable"
 msgstr ""
 
