@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-08-18 16:29+0000\n"
+"PO-Revision-Date: 2024-08-18 22:21+0000\n"
 "Last-Translator: Elsie <hwengerstickel@protonmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/es/>\n"
@@ -35,10 +35,8 @@ msgid "The URL cannot be found"
 msgstr "No se encuentra la URL"
 
 #: pacstall:420
-#, fuzzy
-#| msgid "Failed with http code ${http_code}"
 msgid "Failed with http code %s"
-msgstr "Fallo con código http ${http_code}"
+msgstr "Fallo con código http %s"
 
 #: pacstall:421
 msgid "Confirm that '${UGreen}$1${NC}' is accessible"
@@ -74,18 +72,12 @@ msgid "You failed to specify a package"
 msgstr "No has especificado un paquete"
 
 #: pacstall:836
-#, fuzzy
-#| msgid ""
-#| "The installation of ${PACKAGE:-package} was interrupted, removing files"
 msgid "The installation of %s was interrupted, removing files"
-msgstr ""
-"La instalación de ${PACKAGE:-package} se ha interrumpido, eliminando archivos"
+msgstr "La instalación de %s se ha interrumpido, eliminando archivos"
 
 #: pacstall:873 misc/scripts/package-base.sh:129
-#, fuzzy
-#| msgid "$2 does not exist"
 msgid "%s does not exist"
-msgstr "$2 no existe"
+msgstr "%s no existe"
 
 #: pacstall:911
 msgid "Payload not found"
@@ -104,10 +96,8 @@ msgid ""
 msgstr ""
 
 #: pacstall:941 pacstall:1218 misc/scripts/upgrade.sh:276
-#, fuzzy
-#| msgid "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
 msgid "Failed to download the %b pacscript"
-msgstr "Error al descargar ${GREEN}${PACKAGE}${NC} pacscript"
+msgstr "Error al descargar %b pacscript"
 
 #: pacstall:942 pacstall:1219
 msgid ""
@@ -121,14 +111,12 @@ msgstr ""
 
 #: pacstall:948 misc/scripts/package-base.sh:148
 #: misc/scripts/package-base.sh:170
-#, fuzzy
-#| msgid "Failed to install $pacname deb"
 msgid "Failed to install %b"
-msgstr "Fallo al instalar $pacname deb"
+msgstr "Fallo al instalar %b deb"
 
 #: pacstall:1034
 msgid "Failed to remove %b"
-msgstr ""
+msgstr "Error al eliminar %b"
 
 #: pacstall:1055
 msgid "You failed to specify a repo to add"
@@ -159,42 +147,28 @@ msgid ""
 msgstr ""
 
 #: pacstall:1100
-#, fuzzy
-#| msgid "$PWD is not a git repository"
 msgid "%s is not a git repository"
-msgstr "$PWD no es un repositorio git"
+msgstr "%s no es un repositorio git"
 
 #: pacstall:1137
-#, fuzzy
-#| msgid ""
-#| "The repository you are trying to upgrade to contains a version of "
-#| "pacstall that cannot be updated from $(pacstall -V)"
 msgid ""
 "The repository you are trying to upgrade to contains a version of pacstall "
 "that cannot be updated from %b"
 msgstr ""
 "El repositorio al que intenta actualizar contiene una versión de pacstall "
-"que no puede actualizarse desde $(pacstall -V)"
+"que no puede actualizarse desde %b"
 
 #: pacstall:1138
-#, fuzzy
-#| msgid ""
-#| "Visit https://github.com/$USERNAME/pacstall/tree/$BRANCH for more "
-#| "information on how to reinstall. Most packages will also need to be "
-#| "reinstalled"
 msgid ""
 "Visit %s for more information on how to reinstall. Most packages will also "
 "need to be reinstalled"
 msgstr ""
-"Visite https://github.com/$USERNAME/pacstall/tree/$BRANCH para obtener más "
-"información sobre cómo reinstalar. También será necesario reinstalar la "
-"mayoría de los paquetes"
+"Visite %s para obtener más información sobre cómo reinstalar. También será "
+"necesario reinstalar la mayoría de los paquetes"
 
 #: pacstall:1150 pacstall:1231
-#, fuzzy
-#| msgid "Invalid argument '$*'"
 msgid "Invalid argument '%s'"
-msgstr "Argumento no válido '$*'"
+msgstr "Argumento no válido '%s'"
 
 #: pacstall:1162
 msgid "Nothing installed yet"
@@ -202,7 +176,7 @@ msgstr "Aún no hay nada instalado"
 
 #: pacstall:1223
 msgid "%b pacscript is downloaded to %b"
-msgstr ""
+msgstr "%b pacscript se descarga en %b"
 
 #: pacstall:1253 misc/scripts/query-info.sh:33
 msgid "Package is not installed"
@@ -232,37 +206,28 @@ msgstr "No se encuentra manage-repo.sh"
 #: misc/scripts/add-repo.sh:39 misc/scripts/add-repo.sh:47
 #: misc/scripts/add-repo.sh:55 misc/scripts/add-repo.sh:63
 #: misc/scripts/add-repo.sh:70
-#, fuzzy
-#| msgid "Assuming that git branch is ${GREEN}master${NC}"
 msgid "Assuming that git branch is %b"
-msgstr "Asumiendo que la rama git es ${GREEN}master${NC}"
+msgstr "Asumiendo que la rama git es %b"
 
 #: misc/scripts/add-repo.sh:90
-#, fuzzy
-#| msgid "Repository alias cannot be 'none'"
 msgid "Repository alias cannot be '%s'"
-msgstr "El alias del repositorio no puede ser 'none'"
+msgstr "El alias del repositorio no puede ser '%s'"
 
 #: misc/scripts/add-repo.sh:93
 msgid "Repository alias cannot be a hyperlink"
 msgstr "El alias del repositorio no puede ser un hipervínculo"
 
 #: misc/scripts/add-repo.sh:96
-#, fuzzy
-#| msgid "Repository alias cannot start with '/', '~', or '.'"
 msgid "Repository alias cannot start with '%s', '%s', or '%s'"
-msgstr "Los alias de repositorio no pueden empezar por '/', '~', o '.'"
+msgstr "Los alias de repositorio no pueden empezar por '%s', '%s', o '%s'"
 
 #: misc/scripts/add-repo.sh:99
 msgid "The alias %b is already in use by %b"
-msgstr ""
+msgstr "El alias %b ya está siendo utilizado por %b"
 
 #: misc/scripts/add-repo.sh:104
-#, fuzzy
-#| msgid "${CYAN}${REPO}${NC} is already in the repo list, doing nothing${NC}"
 msgid "%b is already in the repo list, doing nothing"
-msgstr ""
-"${CYAN}${REPO}${NC} ya está en la lista de repositorios, sin hacer nada${NC}"
+msgstr "%b ya está en la lista de repositorios, sin hacer nada"
 
 #: misc/scripts/add-repo.sh:107
 msgid ""
@@ -304,48 +269,38 @@ msgstr "No se encuentra srcinfo.sh"
 #: misc/scripts/fetch-sources.sh:663 misc/scripts/fetch-sources.sh:672
 #: misc/scripts/fetch-sources.sh:689 misc/scripts/package.sh:221
 msgid "%b [required]"
-msgstr ""
+msgstr "%b [requerido]"
 
 #: misc/scripts/build.sh:95 misc/scripts/fetch-sources.sh:683
 msgid "%b [remote]"
-msgstr ""
+msgstr "%b [remoto]"
 
 #: misc/scripts/build.sh:97 misc/scripts/fetch-sources.sh:685
 #: misc/scripts/package.sh:216
 msgid "%b [installed]"
-msgstr ""
+msgstr "%b [instalado]"
 
 #: misc/scripts/build.sh:156 misc/scripts/build.sh:176
 #: misc/scripts/fetch-sources.sh:713 misc/scripts/fetch-sources.sh:743
-#, fuzzy
-#| msgid "$PWD is not a git repository"
 msgid "%b does not exist in apt repositories"
-msgstr "$PWD no es un repositorio git"
+msgstr "%b no es un repositorio git"
 
 #: misc/scripts/build.sh:160 misc/scripts/build.sh:180
 #: misc/scripts/fetch-sources.sh:717 misc/scripts/fetch-sources.sh:747
 msgid "%b version(s) cannot be satisfied"
-msgstr ""
+msgstr "La(s) versión(es) %b no puede(n) cumplirse"
 
 #: misc/scripts/build.sh:172
 msgid "Optional dependencies"
 msgstr "Dependencias opcionales"
 
 #: misc/scripts/build.sh:207
-#, fuzzy
-#| msgid ""
-#| "${BGreen}${skip_opt[*]}${NC} has exceeded the maximum number of optional "
-#| "dependencies. Skipping"
 msgid "%b has exceeded the maximum number of optional dependencies. Skipping"
-msgstr ""
-"${BGreen}${skip_opt[*]}${NC} ha superado el número máximo de dependencias "
-"opcionales. Saltar"
+msgstr "%b ha superado el número máximo de dependencias opcionales. Saltar"
 
 #: misc/scripts/build.sh:217 misc/scripts/package-base.sh:140
-#, fuzzy
-#| msgid "Retrieving packages"
 msgid "Selecting packages %b"
-msgstr "Recuperando paquetes"
+msgstr "Recuperando paquetes %b"
 
 #: misc/scripts/build.sh:236
 msgid "Checking apt dependencies"
@@ -365,158 +320,113 @@ msgstr "Comprimiendo"
 
 #: misc/scripts/build.sh:365
 msgid "Packaging %b as %b"
-msgstr ""
+msgstr "Empaquetado %b como %b"
 
 #: misc/scripts/build.sh:367 misc/scripts/package-base.sh:144
 msgid "Packaging %b"
-msgstr ""
+msgstr "Empaquetado %b"
 
 #: misc/scripts/build.sh:596
 msgid "Empty key... Skipping"
 msgstr "Tecla vacía... Saltar"
 
 #: misc/scripts/build.sh:602
-#, fuzzy
-#| msgid "'${file}' cannot contain empty path... Skipping"
 msgid "'%s' cannot contain empty path... Skipping"
-msgstr "'${file}' no puede contener una ruta vacía... Saltar"
+msgstr "'%s' no puede contener una ruta vacía... Saltar"
 
 #: misc/scripts/build.sh:606 misc/scripts/build.sh:614
-#, fuzzy
-#| msgid "'${file}' cannot contain path starting with '/'... Skipping"
 msgid "'%s' cannot contain path starting with '/'... Skipping"
-msgstr "'${file}' no puede contener una ruta que empiece por '/'... Saltar"
+msgstr "'%s' no puede contener una ruta que empiece por '/'... Saltar"
 
 #: misc/scripts/build.sh:609
-#, fuzzy
-#| msgid "'${file}' is inside the package... Skipping"
 msgid "'%s' is inside the package... Skipping"
-msgstr "'${file}' está dentro del paquete... Saltar"
+msgstr "'%s' está dentro del paquete... Saltar"
 
 #: misc/scripts/build.sh:688
-#, fuzzy
-#| msgid "Failed to install $pacname deb"
 msgid "Failed to install %s deb"
-msgstr "Fallo al instalar $pacname deb"
+msgstr "Fallo al instalar %s deb"
 
 #: misc/scripts/build.sh:712
-#, fuzzy
-#| msgid "Packagelist not found"
 msgid "Package built at %b"
-msgstr "Packagelist no encontrada"
+msgstr "Paquete construido en %b"
 
 #: misc/scripts/build.sh:714 misc/scripts/package.sh:50
 msgid "Moving %b to %b"
-msgstr ""
+msgstr "Moviendo %b a %b"
 
 #: misc/scripts/build.sh:731
 msgid "Repacking %b"
-msgstr ""
+msgstr "Reempaquetado %b"
 
 #: misc/scripts/bwrap.sh:113
-#, fuzzy
-#| msgid "Running $func"
 msgid "Running %s"
-msgstr "Ejecutando $func"
+msgstr "Ejecutando %s"
 
 #: misc/scripts/checks.sh:33 misc/scripts/checks.sh:127
 #: misc/scripts/checks.sh:175 misc/scripts/checks.sh:228
-#, fuzzy
-#| msgid "Package does not contain 'source'"
 msgid "Package does not contain '%s'"
-msgstr "El paquete no contiene 'source'"
+msgstr "El paquete no contiene '%s'"
 
 #: misc/scripts/checks.sh:38
-#, fuzzy
-#| msgid "'gives' must be at least two characters long"
 msgid "%s: '%s' must be at least two characters long"
-msgstr "'gives' debe tener al menos dos caracteres"
+msgstr "%s: '%s' debe tener al menos dos caracteres"
 
 #: misc/scripts/checks.sh:43
-#, fuzzy
-#| msgid "'gives' must start with an alphanumeric character"
 msgid "%s: '%s' must start with an alphanumeric character"
-msgstr "'gives' debe empezar por un carácter alfanumérico"
+msgstr "%s: '%s' debe empezar por un carácter alfanumérico"
 
 #: misc/scripts/checks.sh:47
-#, fuzzy
-#| msgid "'gives' contains uppercase characters"
 msgid "%s: '%s' contains uppercase characters"
-msgstr "'gives' contiene caracteres en mayúsculas"
+msgstr "%s: '%s' contiene caracteres en mayúsculas"
 
 #: misc/scripts/checks.sh:51
-#, fuzzy
-#| msgid ""
-#| "'gives' contains characters that are not lowercase, digits, minus, or "
-#| "periods"
 msgid ""
 "%s: '%s' contains characters that are not lowercase, digits, minus, or "
 "periods"
 msgstr ""
-"'gives' contiene caracteres que no son minúsculas, dígitos, menos o puntos"
+"%s: '%s' contiene caracteres que no son minúsculas, dígitos, menos o puntos"
 
 #: misc/scripts/checks.sh:61
 msgid "Deb package does not contain gives"
 msgstr "El paquete Deb no contiene 'gives'"
 
 #: misc/scripts/checks.sh:67
-#, fuzzy
-#| msgid "'gives' must be at least two characters long"
 msgid "'%s' must be at least two characters long"
-msgstr "'gives' debe tener al menos dos caracteres"
+msgstr "'%s' debe tener al menos dos caracteres"
 
 #: misc/scripts/checks.sh:72
-#, fuzzy
-#| msgid "'gives' must start with an alphanumeric character"
 msgid "'%s' must start with an alphanumeric character"
-msgstr "'gives' debe empezar por un carácter alfanumérico"
+msgstr "'%s' debe empezar por un carácter alfanumérico"
 
 #: misc/scripts/checks.sh:76
-#, fuzzy
-#| msgid "'gives' contains uppercase characters"
 msgid "'%s' contains uppercase characters"
-msgstr "'gives' contiene caracteres en mayúsculas"
+msgstr "'%s' contiene caracteres en mayúsculas"
 
 #: misc/scripts/checks.sh:80
-#, fuzzy
-#| msgid ""
-#| "'gives' contains characters that are not lowercase, digits, minus, or "
-#| "periods"
 msgid ""
 "'%s' contains characters that are not lowercase, digits, minus, or periods"
-msgstr ""
-"'gives' contiene caracteres que no son minúsculas, dígitos, menos o puntos"
+msgstr "'%s' contiene caracteres que no son minúsculas, dígitos, menos o puntos"
 
 #: misc/scripts/checks.sh:92 misc/scripts/checks.sh:107
 #: misc/scripts/checks.sh:676
-#, fuzzy
-#| msgid "'epoch' is empty"
 msgid "'%s' is empty"
-msgstr "'epoch' está vacío"
+msgstr "'%s' está vacío"
 
 #: misc/scripts/checks.sh:95 misc/scripts/checks.sh:110
-#, fuzzy
-#| msgid "'epoch' must be an unsigned integer"
 msgid "'%s' must be an unsigned integer"
-msgstr "'epoch' debe ser un entero sin signo"
+msgstr "'%s' debe ser un entero sin signo"
 
 #: misc/scripts/checks.sh:123
-#, fuzzy
-#| msgid ""
-#| "'pkgver' must contain only alphanumerics and the characters . + - ~ and "
-#| "should start with a digit"
 msgid ""
 "'%s' must contain only alphanumerics and the characters . + - ~ and should "
 "start with a digit"
 msgstr ""
-"'pkgver' debe contener sólo caracteres alfanuméricos y los caracteres . + - "
-"~ y debe empezar por un dígito"
+"'%s' debe contener sólo caracteres alfanuméricos y los caracteres . + - ~ y "
+"debe empezar por un dígito"
 
 #: misc/scripts/checks.sh:144
-#, fuzzy
-#| msgid ".deb files can only be provided as a singular 'source'"
 msgid ".deb files can only be provided as a singular '%s'"
-msgstr "Los archivos .deb sólo pueden proporcionarse como una única 'source'"
+msgstr "Los archivos .deb sólo pueden proporcionarse como una única '%s'"
 
 #: misc/scripts/checks.sh:237
 msgid "Package does not have a maintainer. Please be advised"
@@ -527,69 +437,48 @@ msgstr "El paquete no tiene responsable. Tenga en cuenta"
 #: misc/scripts/checks.sh:558 misc/scripts/checks.sh:581
 #: misc/scripts/checks.sh:612 misc/scripts/checks.sh:649
 #: misc/scripts/checks.sh:694
-#, fuzzy
-#| msgid "'mask' index '${idx}' cannot be empty"
 msgid "'%s' index '%s' cannot be empty"
-msgstr "'mask' índice '${idx}' no puede estar vacío"
+msgstr "'%s' índice '%s' no puede estar vacío"
 
 #: misc/scripts/checks.sh:286 misc/scripts/checks.sh:290
-#, fuzzy
-#| msgid "'${dep_type}' index '${idx}' is not formatted correctly"
 msgid "'%s' index '%s' is not formatted correctly"
-msgstr "'${dep_type}' índice '${idx}' no tiene el formato correcto"
+msgstr "'%s' índice '%s' no tiene el formato correcto"
 
 #: misc/scripts/checks.sh:320
-#, fuzzy
-#| msgid "'ppa' index '${idx}' cannot start with 'ppa:'"
 msgid "'%s' index '%s' cannot start with %s"
-msgstr "'ppa' índice '${idx}' no puede empezar por 'ppa:'"
+msgstr "'%s' índice '%s' no puede empezar por %s"
 
 #: misc/scripts/checks.sh:328
-#, fuzzy
-#| msgid "'ppa' index '${idx}' is improperly formatted"
 msgid "%s index '%s' is improperly formatted"
-msgstr "'ppa' índice '${idx}' tiene un formato incorrecto"
+msgstr "'%s' índice '%s' tiene un formato incorrecto"
 
 #: misc/scripts/checks.sh:430
-#, fuzzy
-#| msgid "'${tlogvar}' is already used as a field in pacstall"
 msgid "'%s' is already used as a field in pacstall"
-msgstr "'${tlogvar}' ya se utiliza como campo en pacstall"
+msgstr "'%s' ya se utiliza como campo en pacstall"
 
 #: misc/scripts/checks.sh:436
-#, fuzzy
-#| msgid "'${tlogvar}' custom field cannot contain a space in field name"
 msgid "'%s' custom field cannot contain a space in field name"
 msgstr ""
-"El campo personalizado '${tlogvar}' no puede contener un espacio en el "
-"nombre del campo"
+"El campo personalizado '%s' no puede contener un espacio en el nombre del "
+"campo"
 
 #: misc/scripts/checks.sh:440
-#, fuzzy
-#| msgid "'${tlogvar}' custom field cannot contain a number in field name"
 msgid "'%s' custom field cannot contain a number in field name"
 msgstr ""
-"El campo personalizado '${tlogvar}' no puede contener un número en el nombre "
-"del campo"
+"El campo personalizado '%s' no puede contener un número en el nombre del "
+"campo"
 
 #: misc/scripts/checks.sh:444
-#, fuzzy
-#| msgid ""
-#| "'${tlogvar}' custom field must capitalize only the first letter of each "
-#| "word in field name"
 msgid ""
 "'%s' custom field must capitalize only the first letter of each word in "
 "field name"
 msgstr ""
-"El campo personalizado '${tlogvar}' debe escribir en mayúsculas sólo la "
-"primera letra de cada palabra del nombre del campo"
+"El campo personalizado '%s' debe escribir en mayúsculas sólo la primera "
+"letra de cada palabra del nombre del campo"
 
 #: misc/scripts/checks.sh:448
-#, fuzzy
-#| msgid "'${tlogvar}' custom field cannot start or end with a hyphen"
 msgid "'%s' custom field cannot start or end with a hyphen"
-msgstr ""
-"El campo personalizado '${tlogvar}' no puede empezar o terminar con un guión"
+msgstr "El campo personalizado '%s' no puede empezar o terminar con un guión"
 
 #: misc/scripts/checks.sh:475 misc/scripts/checks.sh:500
 #: misc/scripts/checks.sh:508
@@ -598,93 +487,74 @@ msgstr ""
 "Sólo se puede proporcionar un método de suma de comprobación para los hashes"
 
 #: misc/scripts/checks.sh:536 misc/scripts/checks.sh:663
-#, fuzzy
-#| msgid "'bugs' is improperly formatted"
 msgid "'%s' is improperly formatted"
-msgstr "'bugs' tiene un formato incorrecto"
+msgstr "'%s' tiene un formato incorrecto"
 
 #: misc/scripts/checks.sh:551 misc/scripts/checks.sh:574
-#, fuzzy
-#| msgid "'compatible' and 'incompatible' indices cannot both be provided"
 msgid "'%s' and '%s' indices cannot both be provided"
-msgstr ""
-"Los índices 'compatible' e 'incompatible' no se pueden proporcionar a la vez"
+msgstr "Los índices '%s' e '%s' no se pueden proporcionar a la vez"
 
 #: misc/scripts/checks.sh:566 misc/scripts/checks.sh:589
-#, fuzzy
-#| msgid "'ppa' index '${idx}' is improperly formatted"
 msgid "'%s' index '%s' is improperly formatted"
-msgstr "'ppa' índice '${idx}' tiene un formato incorrecto"
+msgstr "'%s' índice '%s' tiene un formato incorrecto"
 
 #: misc/scripts/checks.sh:623
-#, fuzzy
-#| msgid "'${el_arch}' is not a valid architecture"
 msgid "'%s' is not a valid architecture"
-msgstr "'${el_arch}' no es una arquitectura válida"
+msgstr "'%s' no es una arquitectura válida"
 
 #: misc/scripts/checks.sh:636
-#, fuzzy
-#| msgid "cannot use both Debian and Arch style naming in 'arch' array"
 msgid "cannot use both Debian and Arch style naming in '%s' array"
 msgstr ""
 "no se puede usar tanto el estilo de nomenclatura de Debian como el de Arch "
-"en la matriz 'arch'"
+"en la matriz '%s'"
 
 #: misc/scripts/checks.sh:679
 msgid "'%s' must be either: '%s', '%s', '%s', '%s', or '%s'"
-msgstr ""
+msgstr "%s debe ser: '%s', '%s', '%s', '%s', o '%s'"
 
 #: misc/scripts/checks.sh:700
-#, fuzzy
-#| msgid "'${linlicense}' is not a valid license"
 msgid "'%s' is not a valid license"
-msgstr "'${linlicense}' no es una licencia válida"
+msgstr "'%s' no es una licencia válida"
 
 #: misc/scripts/fetch-sources.sh:29
 msgid "Could not find build.sh"
 msgstr "No se encuentra build.sh"
 
 #: misc/scripts/fetch-sources.sh:173
-#, fuzzy
-#| msgid "Hashes do not match (with method ${hashMethod})"
 msgid "Hashes do not match (with method %s)"
-msgstr "Los hashes no coinciden (con el método ${hashMethod})"
+msgstr "Los hashes no coinciden (con el método %s)"
 
 #: misc/scripts/fetch-sources.sh:174
 msgid "Got:      %b"
-msgstr ""
+msgstr "Obtenido: %b"
 
 #: misc/scripts/fetch-sources.sh:175
 msgid "Expected: %b"
-msgstr ""
+msgstr "Esperado: %b"
 
 #: misc/scripts/fetch-sources.sh:184
 msgid "Failed to download package"
 msgstr "No se ha podido descargar el paquete"
 
 #: misc/scripts/fetch-sources.sh:194
-#, fuzzy
-#| msgid "Could not enter into the cloned git repository"
 msgid "Could not enter into the main directory %b"
-msgstr "No se ha podido entrar en el repositorio git clonado"
+msgstr "No se ha podido entrar en el directorio principal %b"
 
 #: misc/scripts/fetch-sources.sh:207
 msgid "Cloning %b from branch %b"
-msgstr ""
+msgstr "Clonando %b de la rama %b"
 
 #: misc/scripts/fetch-sources.sh:210
 msgid "Cloning %b from tag %b"
-msgstr ""
+msgstr "Clonando %b de la etiqueta %b"
 
 #: misc/scripts/fetch-sources.sh:215
-#, fuzzy
-#| msgid "Cloning ${BPurple}${dest}${NC} with no blobs"
 msgid "Cloning %b with no blobs"
-msgstr "Clonando ${BPurple}${dest}${NC} sin blobs"
+msgstr "Clonando %b sin blobs"
 
 #: misc/scripts/fetch-sources.sh:218
 msgid "Cloning %b from %b"
-msgstr ""
+msgstr "Clonando %b de %b"
 
 #: misc/scripts/fetch-sources.sh:226
 msgid "Could not enter into the cloned git repository"
@@ -692,19 +562,15 @@ msgstr "No se ha podido entrar en el repositorio git clonado"
 
 #: misc/scripts/fetch-sources.sh:230
 msgid "Fetching commit %b"
-msgstr ""
+msgstr "Obteniendo commit %b"
 
 #: misc/scripts/fetch-sources.sh:244
-#, fuzzy
-#| msgid "Not cloning submodules for ${PURPLE}${dest}${NC}"
 msgid "Not cloning submodules for %b"
-msgstr "No clonar submódulos para ${PURPLE}${dest}${NC}"
+msgstr "No clonar submódulos para %b"
 
 #: misc/scripts/fetch-sources.sh:250
-#, fuzzy
-#| msgid "Checking versions"
 msgid "Checking integrity of %b"
-msgstr "Comprobando versiones"
+msgstr "Comprobando la integridad de %b"
 
 #: misc/scripts/fetch-sources.sh:251
 msgid "Could not check integrity of cloned git repository"
@@ -716,15 +582,15 @@ msgstr "El repositorio git clonado no coincide con el hash del upstream"
 
 #: misc/scripts/fetch-sources.sh:266
 msgid "Downloading %b"
-msgstr ""
+msgstr "Descargando %b"
 
 #: misc/scripts/fetch-sources.sh:274
 msgid "Checking hash %b[%b...%b]"
-msgstr ""
+msgstr "Comprobando hash %b[%b...%b]"
 
 #: misc/scripts/fetch-sources.sh:290
 msgid "Extracting %b"
-msgstr ""
+msgstr "Extrayendo %b"
 
 #: misc/scripts/fetch-sources.sh:301
 msgid "Could not enter into the extracted archive"
@@ -732,17 +598,13 @@ msgstr "No se ha podido entrar en el archivo extraído"
 
 #: misc/scripts/fetch-sources.sh:318 misc/scripts/fetch-sources.sh:325
 #: misc/scripts/fetch-sources.sh:339 misc/scripts/fetch-sources.sh:346
-#, fuzzy
-#| msgid "Running pre_install hook"
 msgid "Running %s hook"
-msgstr "Ejecutando el gancho pre_install"
+msgstr "Ejecutando el gancho %s"
 
 #: misc/scripts/fetch-sources.sh:321 misc/scripts/fetch-sources.sh:328
 #: misc/scripts/fetch-sources.sh:342 misc/scripts/fetch-sources.sh:349
-#, fuzzy
-#| msgid "Could not run preinst hook successfully"
 msgid "Could not run %s hook successfully"
-msgstr "No se ha podido ejecutar correctamente el gancho de preinst"
+msgstr "No se ha podido ejecutar correctamente el gancho de %s"
 
 #: misc/scripts/fetch-sources.sh:337 misc/scripts/package.sh:374
 msgid "Performing post install operations"
@@ -753,24 +615,20 @@ msgid "Storing pacscript"
 msgstr "Almacenando pacscript"
 
 #: misc/scripts/fetch-sources.sh:357
-#, fuzzy
-#| msgid "Could not enter into ${DIR}"
 msgid "Could not enter into %b"
-msgstr "No se ha podido entrar en ${DIR}"
+msgstr "No se ha podido entrar en %b"
 
 #: misc/scripts/fetch-sources.sh:364 misc/scripts/package.sh:389
 msgid "Done installing %b"
-msgstr ""
+msgstr "Finalizada la instalación de %b"
 
 #: misc/scripts/fetch-sources.sh:368
 msgid "Failed to install the package"
 msgstr "Error al instalar el paquete"
 
 #: misc/scripts/fetch-sources.sh:377
-#, fuzzy
-#| msgid "Copying local archive ${BPurple}${dest}${NC}"
 msgid "Copying local archive %b"
-msgstr "Copiando archivo local ${BPurple}${dest}${NC}"
+msgstr "Copiando archivo local %b"
 
 #: misc/scripts/fetch-sources.sh:393
 msgid "Could not enter into the copied archive"
@@ -779,19 +637,12 @@ msgstr "No se ha podido entrar en el archivo copiado"
 #: misc/scripts/fetch-sources.sh:567 misc/scripts/fetch-sources.sh:601
 #: misc/scripts/fetch-sources.sh:608 misc/scripts/fetch-sources.sh:614
 #: misc/scripts/fetch-sources.sh:646
-#, fuzzy
-#| msgid "This Pacscript does not work on ${BBlue}${distro_name}${NC}"
 msgid "This Pacscript does not work on %b"
-msgstr "Este Pacscript no funciona en ${BBlue}${distro_name}${NC}"
+msgstr "Este Pacscript no funciona en %b"
 
 #: misc/scripts/fetch-sources.sh:634
-#, fuzzy
-#| msgid ""
-#| "This package is for ${BBlue}${farch}${NC}, which is a foreign architecture"
 msgid "This package is for %b, which is a foreign architecture"
-msgstr ""
-"Este paquete es para ${BBlue}${farch}${NC}, que es una arquitectura "
-"extranjera"
+msgstr "Este paquete es para %b, que es una arquitectura extranjera"
 
 #: misc/scripts/fetch-sources.sh:698
 msgid "Checking build dependencies"
@@ -814,29 +665,20 @@ msgid "Run '${UCyan}sudo chown -R $PACSTALL_USER:$PACSTALL_USER $PACDIR'${NC}"
 msgstr ""
 
 #: misc/scripts/get-pacscript.sh:38 misc/scripts/upgrade.sh:257
-#, fuzzy
-#| msgid "Could not enter ${PACDIR}"
 msgid "Could not enter %s"
-msgstr "No se ha podido entrar en ${PACDIR}"
+msgstr "No se ha podido entrar en %s"
 
 #: misc/scripts/get-pacscript.sh:49 misc/scripts/get-pacscript.sh:57
-#, fuzzy
-#| msgid "Could not download ${URL}"
 msgid "Could not download %s"
-msgstr "No se ha podido descargar ${URL}"
+msgstr "No se ha podido descargar %s"
 
 #: misc/scripts/manage-repo.sh:169
-#, fuzzy
-#| msgid "'repo.get_where' valid types are: 'alias', 'metalink'"
 msgid "'%s' valid types are: '%s', '%s'"
-msgstr "Los tipos válidos de 'repo.get_where' son: 'alias', 'metalink'"
+msgstr "Los tipos válidos de '%s' son: '%s', '%s'"
 
 #: misc/scripts/manage-repo.sh:185
-#, fuzzy
-#| msgid "'repo.get_all_type' valid types are: 'url', 'alias', 'metalink'"
 msgid "'%s' valid types are: '%s', '%s', '%s'"
-msgstr ""
-"Los tipos válidos de 'repo.get_all_type' son: 'url', 'alias', 'metalink'"
+msgstr "Los tipos válidos de '%s' son: '%s', '%s', '%s'"
 
 #: misc/scripts/package-base.sh:29
 msgid "Could not find checks.sh"
@@ -847,42 +689,28 @@ msgid "Could not find fetch-sources.sh"
 msgstr "No se encuentra fetch-sources.sh"
 
 #: misc/scripts/package-base.sh:42
-#, fuzzy
-#| msgid "\\nInterrupted, cleaning up"
 msgid "Interrupted, cleaning up"
-msgstr "\\nInterrumpido, limpieza"
+msgstr "Interrumpido, limpieza"
 
 #: misc/scripts/package-base.sh:93
 msgid "Found pkgbase: %b"
-msgstr ""
+msgstr "Encontrado pkgbase: %b"
 
 #: misc/scripts/package-base.sh:119
-#, fuzzy
-#| msgid ""
-#| "${BGreen}${skip_pkg[*]}${NC} has exceeded the maximum number of packages "
-#| "to build. Skipping"
 msgid "%b has exceeded the maximum number of packages to build. Skipping"
-msgstr ""
-"${BGreen}${skip_pkg[*]}${NC} ha excedido el número máximo de paquetes a "
-"construir. Saltar"
+msgstr "%b ha excedido el número máximo de paquetes a construir. Saltar"
 
 #: misc/scripts/package-base.sh:192
-#, fuzzy
-#| msgid ""
-#| "${UCyan}PACSTALL_BUILD_CORES${NC} is not an integer. Falling back to 1"
 msgid "%b is not an integer. Falling back to 1"
-msgstr ""
-"${UCyan}PACSTALL_BUILD_CORES${NC} no es un número entero. Retroceso a 1"
+msgstr "%b no es un número entero. Retroceso a 1"
 
 #: misc/scripts/package-base.sh:201
 msgid "(${BPurple}$PACKAGE${NC}) Do you want to view/edit the pacscript?"
 msgstr "(${BPurple}$PACKAGE${NC}) ¿Quieres ver/editar el pacscript?"
 
 #: misc/scripts/package-base.sh:214
-#, fuzzy
-#| msgid "Editor not found, falling back to 'sensible-editor'"
 msgid "Editor not found, falling back to '%s'"
-msgstr "Editor no encontrado, volviendo a 'sensible-editor'"
+msgstr "Editor no encontrado, volviendo a '%s'"
 
 #: misc/scripts/package-base.sh:219
 msgid "Sourcing pacscript"
@@ -898,38 +726,25 @@ msgstr ""
 "Este paquete se conectará a Internet durante su proceso de construcción."
 
 #: misc/scripts/package.sh:47
-#, fuzzy
-#| msgid "Failed to download '${source[0]}'"
 msgid "Failed to download '%s'"
-msgstr "Error al descargar '${source[0]}'"
+msgstr "Error al descargar '%s'"
 
 #: misc/scripts/package.sh:63
-#, fuzzy
-#| msgid ""
-#| "The package ${BBlue}${offending_pkg}${NC} is masking ${BBlue}${pacname:-"
-#| "${PACKAGE}}${NC}. By installing the masked package, you may cause damage "
-#| "to your operating system"
 msgid ""
 "The package %b is masking %b. By installing the masked package, you may "
 "cause damage to your operating system"
 msgstr ""
-"El paquete ${BBlue}${offending_pkg}${NC} está enmascarando "
-"${BBlue}${pacname:-${PACKAGE}}${NC}. Si instala el paquete enmascarado, "
-"puede dañar su sistema operativo"
+"El paquete %b está enmascarando %b. Si instala el paquete enmascarado, puede "
+"dañar su sistema operativo"
 
 #: misc/scripts/package.sh:66
-#, fuzzy
-#| msgid ""
-#| "Somehow, 'getMasks' found masked packages that match the package you want "
-#| "to install, but 'getMasks_offending_pkg' could not find it. Report this "
-#| "upstream"
 msgid ""
 "Somehow, '%s' found masked packages that match the package you want to "
 "install, but '%s' could not find it. Report this upstream"
 msgstr ""
-"De alguna manera, 'getMasks' encontró paquetes enmascarados que coinciden "
-"con el paquete que desea instalar, pero 'getMasks_offending_pkg' no pudo "
-"encontrarlo. Informe de esto a upstream"
+"De alguna manera, '%s' encontró paquetes enmascarados que coinciden con el "
+"paquete que desea instalar, pero '%s' no pudo encontrarlo. Informe de esto a "
+"upstream"
 
 #: misc/scripts/package.sh:103
 msgid ""
@@ -944,46 +759,29 @@ msgid "This script replaces ${pkg}. Do you want to proceed?"
 msgstr "Este script sustituye a ${pkg}. ¿Quieres continuar?"
 
 #: misc/scripts/package.sh:145
-#, fuzzy
-#| msgid ""
-#| "${RED}$pacname${NC} conflicts with $pkg, which is currently installed by "
-#| "apt"
 msgid "%b conflicts with %s, which is currently installed by apt"
-msgstr ""
-"${RED}$pacname${NC} entra en conflicto con $pkg, que actualmente está "
-"instalado por apt"
+msgstr "%b entra en conflicto con %s, que actualmente está instalado por apt"
 
 #: misc/scripts/package.sh:146 misc/scripts/package.sh:168
 msgid "Remove the apt package by running '${UCyan}sudo apt purge $pkg${NC}'"
 msgstr ""
 
 #: misc/scripts/package.sh:153
-#, fuzzy
-#| msgid ""
-#| "${RED}$pacname${NC} conflicts with $pkg, which is currently installed by "
-#| "pacstall"
 msgid "%b conflicts with %s, which is currently installed by pacstall"
 msgstr ""
-"${RED}$pacname${NC} entra en conflicto con $pkg, que actualmente está "
-"instalado por pacstall"
+"%b entra en conflicto con %s, que actualmente está instalado por pacstall"
 
 #: misc/scripts/package.sh:154 misc/scripts/package.sh:175
 msgid "Remove the pacstall package by running '${UCyan}pacstall -R $pkg${NC}'"
 msgstr ""
 
 #: misc/scripts/package.sh:167
-#, fuzzy
-#| msgid "${RED}$pacname${NC} breaks $pkg, which is currently installed by apt"
 msgid "%b breaks %s, which is currently installed by apt"
-msgstr "${RED}$pacname${NC} rompe $pkg, que actualmente está instalado por apt"
+msgstr "%b rompe %s, que actualmente está instalado por apt"
 
 #: misc/scripts/package.sh:174
-#, fuzzy
-#| msgid ""
-#| "${RED}$pacname${NC} breaks $pkg, which is currently installed by pacstall"
 msgid "%b breaks %s, which is currently installed by pacstall"
-msgstr ""
-"${RED}$pacname${NC} rompe $pkg, que actualmente está instalado por pacstall"
+msgstr "%b rompe %s, que actualmente está instalado por pacstall"
 
 #: misc/scripts/package.sh:192
 msgid "Checking pacstall dependencies"
@@ -991,19 +789,15 @@ msgstr "Comprobando las dependencias de pacstall"
 
 #: misc/scripts/package.sh:209
 msgid "%b [update]"
-msgstr ""
+msgstr "%b [actualización]"
 
 #: misc/scripts/package.sh:211 misc/scripts/package.sh:222
-#, fuzzy
-#| msgid "Failed to install dependency (${pdep} from ${PACKAGE})"
 msgid "Failed to install dependency (%s from %s)"
-msgstr "Error al instalar la dependencia (${pdep} de ${PACKAGE})"
+msgstr "Error al instalar la dependencia (%s de %s)"
 
 #: misc/scripts/package.sh:237
-#, fuzzy
-#| msgid "${dest} is associated with multiple source entries"
 msgid "%s is associated with multiple source entries"
-msgstr "${dest} está asociado a varias entradas de 'source'"
+msgstr "%s está asociado a varias entradas de 'source'"
 
 #: misc/scripts/package.sh:264
 msgid "Retrieving packages"
@@ -1014,97 +808,69 @@ msgid "Running functions"
 msgstr "Ejecutando funciones"
 
 #: misc/scripts/package.sh:356
-#, fuzzy
-#| msgid "Could not ${function} ${pacname} properly"
 msgid "Could not %s %s properly"
-msgstr "No se ha podido ${function} a ${pacname} correctamente"
+msgstr "No se ha podido %s a %s correctamente"
 
 #: misc/scripts/package.sh:364 misc/scripts/package.sh:379
-#, fuzzy
-#| msgid "Could not enter into ${DIR}"
 msgid "Could not enter into %s"
-msgstr "No se ha podido entrar en ${DIR}"
+msgstr "No se ha podido entrar en %s"
 
 #: misc/scripts/quality-assurance.sh:49
-#, fuzzy
-#| msgid "${CYAN}$provider${NC} is not a valid provider!"
 msgid "%b is not a valid provider!"
-msgstr "¡${CYAN}$provider${NC} no es un proveedor válido!"
+msgstr "%b no es un proveedor válido!"
 
 #: misc/scripts/quality-assurance.sh:50
-#, fuzzy
-#| msgid "available providers are: 'github'"
 msgid "available providers are: '%s'"
-msgstr "los proveedores disponibles son: 'github'"
+msgstr "los proveedores disponibles son: '%s'"
 
 #: misc/scripts/quality-assurance.sh:59
 msgid "Returning %b backup"
-msgstr ""
+msgstr "Devolviendo copia de seguridad %b"
 
 #: misc/scripts/quality-assurance.sh:68
-#, fuzzy
-#| msgid "'number' and 'package' cannot be empty!"
 msgid "'%s' and '%s' cannot be empty!"
-msgstr "¡'number' y 'paquete' no pueden estar vacíos!"
+msgstr "¡'%s' y '%s' no pueden estar vacíos!"
 
 #: misc/scripts/quality-assurance.sh:69
 msgid "use the syntax: %b"
-msgstr ""
+msgstr "utilice la sintaxis: %b"
 
 #: misc/scripts/quality-assurance.sh:74
 msgid "Backing up %b"
-msgstr ""
+msgstr "Haciendo copia de seguridad %b"
 
 #: misc/scripts/quality-assurance.sh:77
 msgid "Installing %b"
-msgstr ""
+msgstr "Instalando %b"
 
 #: misc/scripts/query-info.sh:99
-#, fuzzy
-#| msgid "Key '${QUERY}' does not exist"
 msgid "Key '%s' does not exist"
-msgstr "La tecla '${QUERY}' no existe"
+msgstr "La tecla '%s' no existe"
 
 #: misc/scripts/remove.sh:29 misc/scripts/remove.sh:34
-#, fuzzy
-#| msgid "Package is not installed"
 msgid "%s is not installed"
-msgstr "El paquete no está instalado"
+msgstr "%s no está instalado"
 
 #: misc/scripts/remove.sh:45
-#, fuzzy
-#| msgid ""
-#| "You may have dangling PPAs on your system. You can remove them using "
-#| "'${UCyan}sudo add-apt-repository --remove ppa:$ppa${NC}'"
 msgid ""
 "You may have dangling PPAs on your system. You can remove them using '%b'"
 msgstr ""
 "Es posible que tengas PPAs sobrantes en tu sistema. Puedes eliminarlos con "
-"'${UCyan}sudo add-apt-repository --remove ppa:$ppa${NC}'"
+"'%b'"
 
 #: misc/scripts/search.sh:252 misc/scripts/search.sh:254
 #: misc/scripts/search.sh:286
-#, fuzzy
-#| msgid ""
-#| "There is no package with the name $IRed${SEARCH%%@*}$NC in the repo "
-#| "$CYAN$REPONAME$NC"
 msgid "There is no package with the name %b in the repo %b"
-msgstr ""
-"No hay ningún paquete con el nombre $IRed${SEARCH%%@*}$NC en el repo "
-"$CYAN$REPONAME$NC"
+msgstr "No hay ningún paquete con el nombre %b en el repo %b"
 
 #: misc/scripts/search.sh:302
-#, fuzzy
-#| msgid "$IRed$REPONAME$NC is not on your repo list or does not exist"
 msgid "%b is not on your repo list or does not exist"
-msgstr "$IRed$REPONAME$NC no está en tu lista de repositorios o no existe"
+msgstr "%b no está en tu lista de repositorios o no existe"
 
 #: misc/scripts/search.sh:357 misc/scripts/search.sh:438
 #: misc/scripts/search.sh:469
-#, fuzzy
-#| msgid "There is no package with the name $IRed$PACKAGE$NC"
 msgid "There is no package with the name %b"
-msgstr "No hay paquete con el nombre $IRed$PACKAGE$NC"
+msgstr "No hay paquete con el nombre %b"
 
 #: misc/scripts/search.sh:375
 msgid "Add %s to the local repo absolute path on %b"
@@ -1115,26 +881,16 @@ msgid "Replace '~' with the full home path on %b"
 msgstr ""
 
 #: misc/scripts/search.sh:385
-#, fuzzy
-#| msgid "Pacstall repo line improperly formatted: ${CYAN}${URL}${NC}"
 msgid "Pacstall repo line improperly formatted: %b"
-msgstr "Pacstall línea repo formato incorrecto: ${CYAN}${URL}${NC}"
+msgstr "Pacstall línea repo formato incorrecto: %b"
 
 #: misc/scripts/search.sh:386 misc/scripts/search.sh:391
-#, fuzzy
-#| msgid ""
-#| "You can remove or fix the URL by editing $CYAN$SCRIPTDIR/repo/"
-#| "pacstallrepo$NC"
 msgid "You can remove or fix the URL by editing %b"
-msgstr ""
-"Puedes eliminar o corregir la URL editando $CYAN$SCRIPTDIR/repo/"
-"pacstallrepo$NC"
+msgstr "Puedes eliminar o corregir la URL editando %b"
 
 #: misc/scripts/search.sh:390
-#, fuzzy
-#| msgid "Cannot connect to Pacstall repo: ${CYAN}${URL}${NC}"
 msgid "Cannot connect to Pacstall repo: %b"
-msgstr "No se puede conectar a Pacstall repo: ${CYAN}${URL}${NC}"
+msgstr "No se puede conectar a Pacstall repo: %b"
 
 #: misc/scripts/search.sh:499
 msgid ""
@@ -1209,10 +965,8 @@ msgid "Checking versions"
 msgstr "Comprobando versiones"
 
 #: misc/scripts/upgrade.sh:175
-#, fuzzy
-#| msgid "Package does not contain 'source'"
 msgid "Package %b is not on %b anymore"
-msgstr "El paquete no contiene 'source'"
+msgstr "El paquete %b ya no está en %b"
 
 #: misc/scripts/upgrade.sh:238
 msgid "Packages can be upgraded"
