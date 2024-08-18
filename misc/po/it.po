@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-08-18 16:11+0000\n"
-"Last-Translator: Elsie <hwengerstickel@protonmail.com>\n"
+"PO-Revision-Date: 2024-08-18 20:28+0000\n"
+"Last-Translator: Pietro Inglese <pietroinglese2016@gmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/it/>\n"
 "Language: it\n"
@@ -40,7 +40,7 @@ msgstr "Leggendo input da pipe"
 
 #: pacstall:680
 msgid "Only one command flag can be used at a time"
-msgstr ""
+msgstr "Puoi usare solo un comando bandire per volta"
 
 #: pacstall:718
 msgid "Pacstall is already running another instance"
@@ -52,16 +52,16 @@ msgstr "L'altra istanza ha finito di operare, sbloccata"
 
 #: pacstall:733
 msgid "Prompts are disabled"
-msgstr ""
+msgstr "i prompt sono diasbilitati"
 
 #: pacstall:740
 msgid "Package will be built and not installed"
-msgstr ""
+msgstr "il pacchetto sara costruito ma non istallato"
 
 #: pacstall:810 pacstall:883 pacstall:945 pacstall:986 pacstall:1004
 #: pacstall:1172 pacstall:1228 misc/scripts/query-info.sh:28
 msgid "You failed to specify a package"
-msgstr ""
+msgstr "hai fallito nello specificre il pachtto"
 
 #: pacstall:815
 msgid "The installation of ${PACKAGE:-package} was interrupted, removing files"
