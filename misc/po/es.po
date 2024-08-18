@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-08-18 02:34+0000\n"
+"PO-Revision-Date: 2024-08-18 03:10+0000\n"
 "Last-Translator: Elsie <hwengerstickel@protonmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/es/>\n"
@@ -16,47 +16,47 @@ msgstr ""
 #: misc/scripts/fetch-sources.sh:750 misc/scripts/package-base.sh:157
 #: misc/scripts/package-base.sh:176
 msgid "Cleaning up"
-msgstr ""
+msgstr "Limpiando"
 
 #: pacstall:383
 msgid "Packagelist not found"
-msgstr ""
+msgstr "Packagelist no encontrada"
 
 #: pacstall:386
 msgid "Failed to download file, check your connection"
-msgstr ""
+msgstr "No se ha podido descargar el archivo, compruebe su conexión"
 
 #: pacstall:392
 msgid "The URL cannot be found"
-msgstr ""
+msgstr "No se encuentra la URL"
 
 #: pacstall:400
 msgid "Failed with http code ${http_code}"
-msgstr ""
+msgstr "Fallo con código http ${http_code}"
 
 #: pacstall:622
 msgid "Reading input from pipe"
-msgstr ""
+msgstr "Lectura de la entrada de la tubería"
 
 #: pacstall:681
 msgid "Only one command flag can be used at a time"
-msgstr ""
+msgstr "Sólo se puede utilizar una bandera de comando a la vez"
 
 #: pacstall:719
 msgid "Pacstall is already running another instance"
-msgstr ""
+msgstr "Pacstall ya se está utilizando en otra instancia"
 
 #: pacstall:725
 msgid "The other instance has finished running, unlocking"
-msgstr ""
+msgstr "La otra instancia ha terminado su trabajo, desbloqueando"
 
 #: pacstall:734
 msgid "Prompts are disabled"
-msgstr ""
+msgstr "Preguntas desactivadas"
 
 #: pacstall:741
 msgid "Package will be built and not installed"
-msgstr ""
+msgstr "El paquete se creará pero no se instalará"
 
 #: pacstall:811 pacstall:884 pacstall:946 pacstall:987 pacstall:1005
 #: pacstall:1173 pacstall:1229 misc/scripts/query-info.sh:28
@@ -66,6 +66,7 @@ msgstr "No has especificado un paquete"
 #: pacstall:816
 msgid "The installation of ${PACKAGE:-package} was interrupted, removing files"
 msgstr ""
+"La instalación de ${PACKAGE:-package} se ha interrumpido, eliminando archivos"
 
 #: pacstall:853
 msgid "$2 does not exist"
@@ -73,42 +74,44 @@ msgstr "$2 no existe"
 
 #: pacstall:891
 msgid "Payload not found"
-msgstr ""
+msgstr "Carga no encontrada"
 
 #: pacstall:904 pacstall:951 pacstall:991 pacstall:1111 pacstall:1183
 #: pacstall:1216
 msgid "Could not connect to the internet"
-msgstr ""
+msgstr "No se puede conectar a Internet"
 
 #: pacstall:921 pacstall:1198 misc/scripts/upgrade.sh:276
 msgid "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
-msgstr ""
+msgstr "Error al descargar ${GREEN}${PACKAGE}${NC} pacscript"
 
 #: pacstall:928
 msgid "Failed to install ${GREEN}${PACKAGE}${NC}"
-msgstr ""
+msgstr "Error al instalar ${GREEN}${PACKAGE}${NC}"
 
 #: pacstall:1014
 msgid "Failed to remove ${GREEN}${PACKAGE}${NC}"
-msgstr ""
+msgstr "Error al eliminar ${GREEN}${PACKAGE}${NC}"
 
 #: pacstall:1035
 msgid "You failed to specify a repo to add"
-msgstr ""
+msgstr "No ha especificado un repositorio para añadir"
 
 #: pacstall:1056
 msgid "You failed to specify a repo to remove"
-msgstr ""
+msgstr "No ha especificado un repositorio para eliminar"
 
 #: pacstall:1080
 msgid "$PWD is not a git repository"
-msgstr ""
+msgstr "$PWD no es un repositorio git"
 
 #: pacstall:1117
 msgid ""
 "The repository you are trying to upgrade to contains a version of pacstall "
 "that cannot be updated from $(pacstall -V)"
 msgstr ""
+"El repositorio al que intenta actualizar contiene una versión de pacstall "
+"que no puede actualizarse desde $(pacstall -V)"
 
 #: pacstall:1118
 msgid ""
@@ -116,10 +119,13 @@ msgid ""
 "information on how to reinstall. Most packages will also need to be "
 "reinstalled"
 msgstr ""
+"Visite https://github.com/$USERNAME/pacstall/tree/$BRANCH para obtener más "
+"información sobre cómo reinstalar. También será necesario reinstalar la "
+"mayoría de los paquetes"
 
 #: pacstall:1130 pacstall:1211
 msgid "Invalid argument '$*'"
-msgstr ""
+msgstr "Argumento no válido '$*'"
 
 #: pacstall:1142
 msgid "Nothing installed yet"
@@ -130,274 +136,302 @@ msgid ""
 "${GREEN}${PACKAGE}${NC}'s pacscript is downloaded to ${GREEN}${PWD}/$PACKAGE."
 "pacscript${NC}"
 msgstr ""
+"El pacscript de ${GREEN}${PACKAGE}${NC} se descarga en "
+"${GREEN}${PWD}/$PACKAGE.pacscript${NC}"
 
 #: pacstall:1233 misc/scripts/query-info.sh:33
 msgid "Package is not installed"
-msgstr ""
+msgstr "El paquete no está instalado"
 
 #: pacstall:1267
 msgid "Keeping build files"
-msgstr ""
+msgstr "Mantener los archivos de construcción"
 
 #: pacstall:1272
 msgid "Skipping check() if present"
-msgstr ""
+msgstr "Saltarse check() si está presente"
 
 #: pacstall:1277
 msgid "Downloading package entries quietly"
-msgstr ""
+msgstr "Descarga de entradas de paquetes en silencio"
 
 #: pacstall:1282
 msgid "Building package without bwrap sandbox"
-msgstr ""
+msgstr "Construyendo paquete sin bwrap sandbox"
 
 #: pacstall:1283
 msgid "Be cautious, this exposes your system to potential harm"
-msgstr ""
+msgstr "Ten cuidado, esto expone tu sistema a posibles daños"
 
 #: misc/scripts/add-repo.sh:29 misc/scripts/build.sh:41
 #: misc/scripts/search.sh:31 misc/scripts/upgrade.sh:47
 msgid "Could not find manage-repo.sh"
-msgstr ""
+msgstr "No se encuentra manage-repo.sh"
 
 #: misc/scripts/add-repo.sh:39 misc/scripts/add-repo.sh:47
 #: misc/scripts/add-repo.sh:55 misc/scripts/add-repo.sh:63
 #: misc/scripts/add-repo.sh:70
 msgid "Assuming that git branch is ${GREEN}master${NC}"
-msgstr ""
+msgstr "Asumiendo que la rama git es ${GREEN}master${NC}"
 
 #: misc/scripts/add-repo.sh:90
 msgid "Repository alias cannot be 'none'"
-msgstr ""
+msgstr "El alias del repositorio no puede ser 'none'"
 
 #: misc/scripts/add-repo.sh:93
 msgid "Repository alias cannot be a hyperlink"
-msgstr ""
+msgstr "El alias del repositorio no puede ser un hipervínculo"
 
 #: misc/scripts/add-repo.sh:96
 msgid "Repository alias cannot start with '/', '~', or '.'"
-msgstr ""
+msgstr "Los alias de repositorio no pueden empezar por '/', '~', o '.'"
 
 #: misc/scripts/add-repo.sh:99
 msgid ""
 "The alias ${RED}@${ALIAS}${NC} is already in use by ${CYAN}$(repo.get_where "
 "alias \"${ALIAS}\")${NC}"
 msgstr ""
+"El alias ${RED}@${ALIAS}${NC} ya está en uso por ${CYAN}$(repo.get_where "
+"alias \"${ALIAS}\")${NC}"
 
 #: misc/scripts/add-repo.sh:104
 msgid "${CYAN}${REPO}${NC} is already in the repo list, doing nothing${NC}"
 msgstr ""
+"${CYAN}${REPO}${NC} ya está en la lista de repositorios, sin hacer nada${NC}"
 
 #: misc/scripts/add-repo.sh:112
 msgid ""
 "If the URL is a private repo, edit ${CYAN}\\e]8;;file://$SCRIPTDIR/repo/"
 "pacstallrepo\\a$SCRIPTDIR/repo/pacstallrepo\\e]8;;\\a${NC}"
 msgstr ""
+"Si la URL es un repositorio privado, edite ${CYAN}\\e]8;;file://$SCRIPTDIR/"
+"repo/pacstallrepo\\a$SCRIPTDIR/repo/pacstallrepo\\e]8;;\\a${NC}"
 
 #: misc/scripts/add-repo.sh:113
 msgid "packagelist file not found"
-msgstr ""
+msgstr "archivo packagelist no encontrada"
 
 #: misc/scripts/add-repo.sh:154
 msgid "The repo list has been updated"
-msgstr ""
+msgstr "Se ha actualizado la lista de repositorios"
 
 #: misc/scripts/build.sh:29
 msgid "Could not find version-constraints"
-msgstr ""
+msgstr "No se ha encontrado version-constraints"
 
 #: misc/scripts/build.sh:35 misc/scripts/upgrade.sh:41
 msgid "Could not find srcinfo.sh"
-msgstr ""
+msgstr "No se encuentra srcinfo.sh"
 
 #: misc/scripts/build.sh:75 misc/scripts/build.sh:84
 msgid "${BLUE}${real_dep}${NC} ${RED}✗${NC} [required]"
-msgstr ""
+msgstr "${BLUE}${real_dep}${NC} ${RED}✗${NC} [obligatorio]"
 
 #: misc/scripts/build.sh:95
 msgid "${BLUE}${just_name[0]} ${GREEN}↑${YELLOW}↓${NC} [remote]"
-msgstr ""
+msgstr "${BLUE}${just_name[0]} ${GREEN}↑${YELLOW}↓${NC} [remoto]"
 
 #: misc/scripts/build.sh:97
 msgid "${BLUE}${just_name[0]} ${GREEN}✓${NC} [installed]"
-msgstr ""
+msgstr "${BLUE}${just_name[0]} ${GREEN}✓${NC} [instalado]"
 
 #: misc/scripts/build.sh:156
 msgid ""
 "${BLUE}$(printf \"${BLUE}%s${NC}, \" \"${missing_deps[@]}\" | sed 's/, $/"
 "\\n/')${NC} does not exist in apt repositories"
 msgstr ""
+"${BLUE}$(printf \"${BLUE}%s${NC}, \" \"${missing_deps[@]}\" | sed 's/, $/\\n"
+"/')${NC} no existe en los repositorios apt"
 
 #: misc/scripts/build.sh:160
 msgid ""
 "${BLUE}$(printf \"${BLUE}%s${NC}, \" \"${not_satisfied_deps[@]}\" | sed 's/, "
 "$/\\n/')${NC} version(s) cannot be satisfied"
 msgstr ""
+"La(s) versión(es) ${BLUE}$(printf \"${BLUE}%s${NC}, \" \""
+"${not_satisfied_deps[@]}\" | sed 's/, $/\\n"
+"/')${NC} no puede(n) ser satisfecha(s)"
 
 #: misc/scripts/build.sh:172
 msgid "Optional dependencies"
-msgstr ""
+msgstr "Dependencias opcionales"
 
 #: misc/scripts/build.sh:176
 msgid ""
 "${BLUE}$(printf \"${BLUE}%s${NC}, \" \"${missing_optdeps[@]}\" | sed 's/, $/"
 "\\n/')${NC} does not exist in apt repositories"
 msgstr ""
+"${BLUE}$(printf \"${BLUE}%s${NC}, \" \"${missing_optdeps[@]}\" | sed 's/, $/"
+"\\n"
+"/')${NC} no existe en los repositorios"
 
 #: misc/scripts/build.sh:180
 msgid ""
 "${BLUE}$(printf \"${BLUE}%s${NC}, \" \"${not_satisfied_optdeps[@]}\" | sed "
 "'s/, $/\\n/')${NC} version(s) cannot be satisfied"
 msgstr ""
+"La(s) versión(es) ${BLUE}$(printf \"${BLUE}%s${NC}, \" \""
+"${not_satisfied_optdeps[@]}\" | sed 's/, $/\\n"
+"/')${NC} no puede(n) ser satisfecha(s)"
 
 #: misc/scripts/build.sh:207
 msgid ""
 "${BGreen}${skip_opt[*]}${NC} has exceeded the maximum number of optional "
 "dependencies. Skipping"
 msgstr ""
+"${BGreen}${skip_opt[*]}${NC} ha superado el número máximo de dependencias "
+"opcionales. Saltar"
 
 #: misc/scripts/build.sh:217
 msgid "Selecting packages ${BCyan}${not_installed_yet_optdeps[*]%%:\\ *}${NC}"
 msgstr ""
+"Selección de paquetes ${BCyan}${not_installed_yet_optdeps[*]%%:\\ *}${NC}"
 
 #: misc/scripts/build.sh:236
 msgid "Checking apt dependencies"
-msgstr ""
+msgstr "Comprobando las dependencias de apt"
 
 #: misc/scripts/build.sh:327
 msgid "Packing control.tar"
-msgstr ""
+msgstr "Empaquetando control.tar"
 
 #: misc/scripts/build.sh:337
 msgid "Packing data.tar"
-msgstr ""
+msgstr "Empaquetando data.tar"
 
 #: misc/scripts/build.sh:340
 msgid "Compressing"
-msgstr ""
+msgstr "Comprimiendo"
 
 #: misc/scripts/build.sh:365
 msgid "Packaging ${BGreen}$pacname${NC} as ${BBlue}$gives${NC}"
-msgstr ""
+msgstr "Empaquetar ${BGreen}$pacname${NC} como ${BBlue}$gives${NC}"
 
 #: misc/scripts/build.sh:367
 msgid "Packaging ${BGreen}$pacname${NC}"
-msgstr ""
+msgstr "Empaquetar ${BGreen}$pacname${NC}"
 
 #: misc/scripts/build.sh:596
 msgid "Empty key... Skipping"
-msgstr ""
+msgstr "Tecla vacía... Saltar"
 
 #: misc/scripts/build.sh:602
 msgid "'${file}' cannot contain empty path... Skipping"
-msgstr ""
+msgstr "'${file}' no puede contener una ruta vacía... Saltar"
 
 #: misc/scripts/build.sh:606 misc/scripts/build.sh:614
 msgid "'${file}' cannot contain path starting with '/'... Skipping"
-msgstr ""
+msgstr "'${file}' no puede contener una ruta que empiece por '/'... Saltar"
 
 #: misc/scripts/build.sh:609
 msgid "'${file}' is inside the package... Skipping"
-msgstr ""
+msgstr "'${file}' está dentro del paquete... Saltar"
 
 #: misc/scripts/build.sh:688
 msgid "Failed to install $pacname deb"
-msgstr ""
+msgstr "Fallo al instalar $pacname deb"
 
 #: misc/scripts/build.sh:712
 msgid "Package built at ${BGreen}$PACDEB_DIR/$debname.deb${NC}"
-msgstr ""
+msgstr "Paquete creado en ${BGreen}$PACDEB_DIR/$debname.deb${NC}"
 
 #: misc/scripts/build.sh:714
 msgid ""
 "Moving ${BGreen}$STAGEDIR/$pacname${NC} to ${BGreen}${PACDIR}-no-build/"
 "$pacname${NC}"
 msgstr ""
+"Moviendo ${BGreen}$STAGEDIR/$pacname${NC} a ${BGreen}${PACDIR}-no-build/"
+"$pacname${NC}"
 
 #: misc/scripts/build.sh:731
 msgid "Repacking ${CYAN}${pacname/\\-deb/}.deb${NC}"
-msgstr ""
+msgstr "Reempaquetando ${CYAN}${pacname/\\-deb/}.deb${NC}"
 
 #: misc/scripts/bwrap.sh:113
 msgid "Running $func"
-msgstr ""
+msgstr "Ejecutando $func"
 
 #: misc/scripts/checks.sh:33
 msgid "Package does not contain 'pacname'"
-msgstr ""
+msgstr "El paquete no contiene 'pacname'"
 
 #: misc/scripts/checks.sh:38
 msgid "pacname: '${pacname}' must be at least two characters long"
-msgstr ""
+msgstr "pacname: '${pacname}' debe tener al menos dos caracteres"
 
 #: misc/scripts/checks.sh:43
 msgid "pacname: '${pacname}' must start with an alphanumeric character"
-msgstr ""
+msgstr "pacname: '${pacname}' debe empezar por un carácter alfanumérico"
 
 #: misc/scripts/checks.sh:47
 msgid "pacname: '${pacname}' contains uppercase characters"
-msgstr ""
+msgstr "pacname: '${pacname}' contiene caracteres en mayúsculas"
 
 #: misc/scripts/checks.sh:51
 msgid ""
 "pacname: '${pacname}' contains characters that are not lowercase, digits, "
 "minus, or periods"
 msgstr ""
+"pacname: '${pacname}' contiene caracteres que no son minúsculas, dígitos, "
+"menos o puntos"
 
 #: misc/scripts/checks.sh:61
 msgid "Deb package does not contain gives"
-msgstr ""
+msgstr "El paquete Deb no contiene 'gives'"
 
 #: misc/scripts/checks.sh:67
 msgid "'gives' must be at least two characters long"
-msgstr ""
+msgstr "'gives' debe tener al menos dos caracteres"
 
 #: misc/scripts/checks.sh:72
 msgid "'gives' must start with an alphanumeric character"
-msgstr ""
+msgstr "'gives' debe empezar por un carácter alfanumérico"
 
 #: misc/scripts/checks.sh:76
 msgid "'gives' contains uppercase characters"
-msgstr ""
+msgstr "'gives' contiene caracteres en mayúsculas"
 
 #: misc/scripts/checks.sh:80
 msgid ""
 "'gives' contains characters that are not lowercase, digits, minus, or periods"
 msgstr ""
+"'gives' contiene caracteres que no son minúsculas, dígitos, menos o puntos"
 
 #: misc/scripts/checks.sh:92
 msgid "'pkgrel' is empty"
-msgstr ""
+msgstr "'pkgrel' está vacío"
 
 #: misc/scripts/checks.sh:95
 msgid "'pkgrel' must be an unsigned integer"
-msgstr ""
+msgstr "'pkgrel' debe ser un entero sin signo"
 
 #: misc/scripts/checks.sh:107
 msgid "'epoch' is empty"
-msgstr ""
+msgstr "'epoch' está vacío"
 
 #: misc/scripts/checks.sh:110
 msgid "'epoch' must be an unsigned integer"
-msgstr ""
+msgstr "'epoch' debe ser un entero sin signo"
 
 #: misc/scripts/checks.sh:123
 msgid ""
 "'pkgver' must contain only alphanumerics and the characters . + - ~ and "
 "should start with a digit"
 msgstr ""
+"'pkgver' debe contener sólo caracteres alfanuméricos y los caracteres . + - ~"
+" y debe empezar por un dígito"
 
 #: misc/scripts/checks.sh:127
 msgid "Package does not contain 'pkgver'"
-msgstr ""
+msgstr "El paquete no contiene 'pkgver'"
 
 #: misc/scripts/checks.sh:144
 msgid ".deb files can only be provided as a singular 'source'"
-msgstr ""
+msgstr "Los archivos .deb sólo pueden proporcionarse como una única 'source'"
 
 #: misc/scripts/checks.sh:175
 msgid "Package does not contain 'source'"
-msgstr ""
+msgstr "El paquete no contiene 'source'"
 
 #: misc/scripts/checks.sh:228
 msgid "Package does not contain 'pkgdesc'"
