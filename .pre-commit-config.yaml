@@ -23,14 +23,15 @@ repos:
     hooks:
       - id: codespell
         args: [
-          --check-hidden,
-          --check-filenames,
-          --write-changes,
-          --builtin,
-          clear,
-          rare,
-          informal,
-          usage,
-          code
+          "--skip=*.po",
+          "--check-hidden",
+          "--check-filenames",
+          "--write-changes",
+          "--builtin",
+          "clear",
+          "rare",
+          "informal",
+          "usage",
+          "code"
         ]
 # vim:set ft=yaml ts=2 sw=2 et:
