@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-08-18 03:10+0000\n"
+"PO-Revision-Date: 2024-08-18 12:37+0000\n"
 "Last-Translator: Elsie <hwengerstickel@protonmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/es/>\n"
@@ -435,144 +435,157 @@ msgstr "El paquete no contiene 'source'"
 
 #: misc/scripts/checks.sh:228
 msgid "Package does not contain 'pkgdesc'"
-msgstr ""
+msgstr "El paquete no contiene 'pkgdesc'"
 
 #: misc/scripts/checks.sh:237
 msgid "Package does not have a maintainer. Please be advised"
-msgstr ""
+msgstr "El paquete no tiene responsable. Tenga en cuenta"
 
 #: misc/scripts/checks.sh:282
 msgid "'${dep_type}' index '${idx}' cannot be empty"
-msgstr ""
+msgstr "'${dep_type}' índice '${idx}' no puede estar vacío"
 
 #: misc/scripts/checks.sh:286 misc/scripts/checks.sh:290
 msgid "'${dep_type}' index '${idx}' is not formatted correctly"
-msgstr ""
+msgstr "'${dep_type}' índice '${idx}' no tiene el formato correcto"
 
 #: misc/scripts/checks.sh:309
 msgid "'ppa' index '${idx}' cannot be empty"
-msgstr ""
+msgstr "'ppa' índice '${idx}' no puede estar vacío"
 
 #: misc/scripts/checks.sh:320
 msgid "'ppa' index '${idx}' cannot start with 'ppa:'"
-msgstr ""
+msgstr "'ppa' índice '${idx}' no puede empezar por 'ppa:'"
 
 #: misc/scripts/checks.sh:328
 msgid "'ppa' index '${idx}' is improperly formatted"
-msgstr ""
+msgstr "'ppa' índice '${idx}' tiene un formato incorrecto"
 
 #: misc/scripts/checks.sh:359
 msgid "'${rel_type}' index '${idx}' cannot be empty"
-msgstr ""
+msgstr "'${rel_type}' índice '${idx}' no puede estar vacío"
 
 #: misc/scripts/checks.sh:425
 msgid "'custom_fields' index '${idx}' cannot be empty"
-msgstr ""
+msgstr "'custom_fields' índice '${idx}' no puede estar vacío"
 
 #: misc/scripts/checks.sh:430
 msgid "'${tlogvar}' is already used as a field in pacstall"
-msgstr ""
+msgstr "'${tlogvar}' ya se utiliza como campo en pacstall"
 
 #: misc/scripts/checks.sh:436
 msgid "'${tlogvar}' custom field cannot contain a space in field name"
 msgstr ""
+"El campo personalizado '${tlogvar}' no puede contener un espacio en el "
+"nombre del campo"
 
 #: misc/scripts/checks.sh:440
 msgid "'${tlogvar}' custom field cannot contain a number in field name"
 msgstr ""
+"El campo personalizado '${tlogvar}' no puede contener un número en el nombre "
+"del campo"
 
 #: misc/scripts/checks.sh:444
 msgid ""
 "'${tlogvar}' custom field must capitalize only the first letter of each word "
 "in field name"
 msgstr ""
+"El campo personalizado '${tlogvar}' debe escribir en mayúsculas sólo la "
+"primera letra de cada palabra del nombre del campo"
 
 #: misc/scripts/checks.sh:448
 msgid "'${tlogvar}' custom field cannot start or end with a hyphen"
 msgstr ""
+"El campo personalizado '${tlogvar}' no puede empezar o terminar con un guión"
 
 #: misc/scripts/checks.sh:475 misc/scripts/checks.sh:500
 #: misc/scripts/checks.sh:508
 msgid "Only one checksum method can be provided for hashes"
 msgstr ""
+"Sólo se puede proporcionar un método de suma de comprobación para los hashes"
 
 #: misc/scripts/checks.sh:536
 msgid "'hash' is improperly formatted"
-msgstr ""
+msgstr "'hash' tiene un formato incorrecto"
 
 #: misc/scripts/checks.sh:551 misc/scripts/checks.sh:574
 msgid "'compatible' and 'incompatible' indices cannot both be provided"
 msgstr ""
+"Los índices 'compatible' e 'incompatible' no se pueden proporcionar a la vez"
 
 #: misc/scripts/checks.sh:558
 msgid "'compatible' index '${idx}' cannot be empty"
-msgstr ""
+msgstr "'compatible' índice '${idx}' no puede estar vacío"
 
 #: misc/scripts/checks.sh:566
 msgid "'compatible' index '${idx}' is improperly formatted"
-msgstr ""
+msgstr "'compatible' índice '${idx}' tiene un formato incorrecto"
 
 #: misc/scripts/checks.sh:581
 msgid "'incompatible' index '${idx}' cannot be empty"
-msgstr ""
+msgstr "'incompatible' índice '${idx}' no puede estar vacío"
 
 #: misc/scripts/checks.sh:589
 msgid "'incompatible' index '${idx}' is improperly formatted"
-msgstr ""
+msgstr "'incompatible' índice '${idx}'tiene un formato incorrecto"
 
 #: misc/scripts/checks.sh:612
 msgid "'arch' index '${idx}' cannot be empty"
-msgstr ""
+msgstr "'arch' índice '${idx}' no puede estar vacío"
 
 #: misc/scripts/checks.sh:623
 msgid "'${el_arch}' is not a valid architecture"
-msgstr ""
+msgstr "'${el_arch}' no es una arquitectura válida"
 
 #: misc/scripts/checks.sh:636
 msgid "cannot use both Debian and Arch style naming in 'arch' array"
 msgstr ""
+"no se puede usar tanto el estilo de nomenclatura de Debian como el de Arch "
+"en la matriz 'arch'"
 
 #: misc/scripts/checks.sh:649
 msgid "'mask' index '${idx}' cannot be empty"
-msgstr ""
+msgstr "'mask' índice '${idx}' no puede estar vacío"
 
 #: misc/scripts/checks.sh:663
 msgid "'bugs' is improperly formatted"
-msgstr ""
+msgstr "'bugs' tiene un formato incorrecto"
 
 #: misc/scripts/checks.sh:676
 msgid "'priority' is empty"
-msgstr ""
+msgstr "'priority' está vacío"
 
 #: misc/scripts/checks.sh:679
 msgid ""
 "'priority' must be either: 'essential', 'required', 'important', 'standard', "
 "or 'optional'"
 msgstr ""
+"'priority' debe ser: 'essential', 'required', 'important', 'standard' u "
+"'optional'"
 
 #: misc/scripts/checks.sh:694
 msgid "'license' index '${idx}' cannot be empty"
-msgstr ""
+msgstr "'license' índice '${idx}' no puede estar vacío"
 
 #: misc/scripts/checks.sh:700
 msgid "'${linlicense}' is not a valid license"
-msgstr ""
+msgstr "'${linlicense}' no es una licencia válida"
 
 #: misc/scripts/fetch-sources.sh:29
 msgid "Could not find build.sh"
-msgstr ""
+msgstr "No se encuentra build.sh"
 
 #: misc/scripts/fetch-sources.sh:173
 msgid "Hashes do not match (with method ${hashMethod})"
-msgstr ""
+msgstr "Los hashes no coinciden (con el método ${hashMethod})"
 
 #: misc/scripts/fetch-sources.sh:174
 msgid "Got:      ${BRed}${fileHash}${NC}"
-msgstr ""
+msgstr "Obtenido: ${BRed}${fileHash}${NC}"
 
 #: misc/scripts/fetch-sources.sh:175
 msgid "Expected: ${BGreen}${inputHash}${NC}"
-msgstr ""
+msgstr "Esperado: ${BGreen}${inputHash}${NC}"
 
 #: misc/scripts/fetch-sources.sh:184
 msgid "Failed to download package"
