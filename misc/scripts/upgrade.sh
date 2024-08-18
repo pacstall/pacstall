@@ -259,7 +259,7 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
     fi
     for to_upgrade in "${upgrade[@]}"; do
         PACKAGE="${to_upgrade}"
-        ask "Do you want to upgrade ${GREEN}${PACKAGE}${NC}?" Y
+        ask $"Do you want to upgrade ${GREEN}${PACKAGE}${NC}?" Y
         if ((answer == 0)); then
             continue
         fi

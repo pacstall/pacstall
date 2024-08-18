@@ -496,7 +496,7 @@ else
         done
         if [[ -n $PACSTALLREPO ]]; then
             # Overwrite last question
-            ask "\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the official repo?" Y
+            ask $"\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the official repo?" Y
             if ((answer == 1)); then
                 export PACKAGE=${PACKAGELIST[$PACSTALLREPO]}
                 export REPO=${URLLIST[$PACSTALLREPO]}
@@ -514,7 +514,7 @@ else
             if [[ ${searchedrepo} =~ "#" ]]; then
                 searchedrepo="${searchedrepo%%#*}${YELLOW}#${searchedrepo##*#}${NC}"
             fi
-            ask "\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN${searchedrepo}$NC?" Y
+            ask $"\e[1A\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the repo $CYAN${searchedrepo}$NC?" Y
             unset searchedrepo
             if ((answer == 1)); then
                 export PACKAGE=${PACKAGELIST[$IDX]}

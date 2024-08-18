@@ -100,7 +100,7 @@ fi
 
 # If priority exists and is required, and also that this package has not been installed before (first time)
 if [[ -n ${priority} && ${priority} == 'essential' ]] && ! is_package_installed "${pacname}"; then
-    ask "This package has 'priority=essential', meaning once this is installed, it should be assumed to be uninstallable. Do you want to continue?" Y
+    ask $"This package has 'priority=essential', meaning once this is installed, it should be assumed to be uninstallable. Do you want to continue?" Y
     if ((answer == 0)); then
         cleanup
         exit 1
@@ -126,7 +126,7 @@ if ! is_package_installed "${pacname}"; then
         # Ask user if they want to replace the program
         for pkg in "${replaces[@]}"; do
             if is_apt_package_installed "${pkg}"; then
-                ask "This script replaces ${pkg}. Do you want to proceed?" Y
+                ask $"This script replaces ${pkg}. Do you want to proceed?" Y
                 if ((answer == 0)); then
                     clean_fail_down
                 fi

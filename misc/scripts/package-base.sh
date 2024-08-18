@@ -197,7 +197,7 @@ else
 fi
 export NCPU
 
-ask "(${BPurple}$PACKAGE${NC}) Do you want to view/edit the pacscript?" N
+ask $"(${BPurple}$PACKAGE${NC}) Do you want to view/edit the pacscript?" N
 if ((answer == 1)); then
     (
         if [[ -n $PACSTALL_EDITOR ]]; then
