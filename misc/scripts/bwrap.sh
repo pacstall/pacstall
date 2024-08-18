@@ -110,7 +110,7 @@ fi && ignore_stack=true && exit \$FUNCSTATUS
 EOF
     sudo chmod +x "$tmpfile"
 
-    fancy_message sub $"Running $func"
+    fancy_message sub $"Running %s" "$func"
     if [[ ! -d ${LOGDIR} ]]; then
         sudo mkdir -p "${LOGDIR}"
     fi

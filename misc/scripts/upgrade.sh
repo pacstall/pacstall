@@ -172,7 +172,7 @@ N="$(nproc)"
                     parsedrepo="${parsedrepo%%#*}${YELLOW}#${parsedrepo##*#}${NC}"
                 fi
                 if [[ ${remoterepo} != "orphan" ]]; then
-                    fancy_message warn $"Package ${GREEN}${i}${NC} is not on ${CYAN}${parsedrepo}${NC} anymore"
+                    fancy_message warn $"Package %b is not on %b anymore" "${GREEN}${i}${NC}" "${CYAN}${parsedrepo}${NC}"
                     sudo sed -i 's/_remoterepo=".*"/_remoterepo="orphan"/g' "$METADIR/$i"
                     sudo sed -i '/_remotebranch=/d' "$METADIR/$i"
                 fi
@@ -254,7 +254,7 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
     export local='no'
     if ! cd "$PACDIR" 2> /dev/null; then
         error_log 1 "upgrade"
-        fancy_message error $"Could not enter ${PACDIR}"
+        fancy_message error $"Could not enter %s" "${PACDIR}"
         exit 1
     fi
     for to_upgrade in "${upgrade[@]}"; do
@@ -273,7 +273,7 @@ ${BOLD}$(cat "${up_print}")${NC}\n"
         export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
         # shellcheck source=./misc/scripts/get-pacscript.sh
         if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then
-            fancy_message error $"Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
+            fancy_message error $"Failed to download the %b pacscript" "${GREEN}${PACKAGE}${NC}"
             continue
         fi
         # shellcheck source=./misc/scripts/package-base.sh

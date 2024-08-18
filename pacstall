@@ -167,14 +167,35 @@ pac_body="
 # `fancy_message {info,warn,error,sub} "What you want to say"`
 function fancy_message() {
     local MESSAGE_TYPE="${1}"
-    local MESSAGE="${2}"
+    shift
+    local MESSAGE=("${@}")
 
     case ${MESSAGE_TYPE} in
-        info) echo -e "[${BGreen}+${NC}] ${BOLD}INFO${NC}: ${MESSAGE}" ;;
-        warn) echo >&2 -e "[${BYellow}*${NC}] ${BOLD}WARNING${NC}: ${MESSAGE}" ;;
-        error) echo >&2 -e "[${BRed}!${NC}] ${BOLD}ERROR${NC}: ${MESSAGE}" ;;
-        sub) echo -e "\t[${BBlue}>${NC}] ${MESSAGE}" ;;
-        *) echo >&2 -e "[${BOLD}?${NC}] ${BOLD}UNKNOWN${NC}: ${MESSAGE}" ;;
+        info)
+            echo -ne "[${BGreen}+${NC}] ${BOLD}INFO${NC}: "
+            printf "${MESSAGE[@]}"
+            printf '\n'
+        ;;
+        warn)
+            echo -ne "[${BYellow}*${NC}] ${BOLD}WARNING${NC}: " >&2
+            printf "${MESSAGE[@]}" >&2
+            printf '\n'
+        ;;
+        error)
+            echo -ne "[${BRed}!${NC}] ${BOLD}ERROR${NC}: " >&2
+            printf "${MESSAGE[@]}" >&2
+            printf '\n'
+        ;;
+        sub)
+            echo -ne "\t[${BBlue}>${NC}] "
+            printf "${MESSAGE[@]}"
+            printf '\n'
+        ;;
+        *)
+            echo -ne "[${BOLD}?${NC}] ${BOLD}UNKNOWN${NC}: " >&2
+            printf "${MESSAGE[@]}"
+            printf '\n'
+        ;;
     esac
 }
 
@@ -380,7 +401,7 @@ function check_url() {
             000)
                 if [[ ${1} == *"packagelist" ]]; then
                     fancy_message error $"Packagelist not found"
-                    suggested_solution "Confirm that '${UGreen}$1${NC}' exists"
+                    suggested_solution $"Confirm that '${UGreen}$1${NC}' exists"
                 else
                     fancy_message error $"Failed to download file, check your connection"
                 fi
@@ -389,15 +410,15 @@ function check_url() {
                 ;;
             404)
                 fancy_message error $"The URL cannot be found"
-                suggested_solution "Confirm that '${UGreen}$1${NC}' exists"
+                suggested_solution $"Confirm that '${UGreen}$1${NC}' exists"
                 { ignore_stack=true; return 1; }
                 ;;
             200 | 301 | 302)
                 return 0
                 ;;
             *)
-                fancy_message error $"Failed with http code ${http_code}"
-                suggested_solution "Confirm that '${UGreen}$1${NC}' is accessible"
+                fancy_message error $"Failed with http code %s" "${http_code}"
+                suggested_solution $"Confirm that '${UGreen}$1${NC}' is accessible"
                 { ignore_stack=true; return 1; }
                 ;;
         esac
@@ -812,7 +833,7 @@ Helpful links:
             fi
 
             function trap_ctrlc() {
-                fancy_message warn $"The installation of ${PACKAGE:-package} was interrupted, removing files"
+                fancy_message warn $"The installation of %s was interrupted, removing files" "${PACKAGE:-package}"
                 rm -rf "${PACDIR:?}"/* # :? makes bash error out in case PACDIR is empty, saving us from yoinking /* directory by mistake
                 exit 2
             }
@@ -849,7 +870,7 @@ Helpful links:
                     export PKGPATH="${PWD}"
                     # Check if the file exist
                     if [[ ! -f "$PACKAGE".pacscript ]]; then
-                        fancy_message error $"$2 does not exist"
+                        fancy_message error $"%s does not exist" "$2"
                         shift
                         continue
                     fi
@@ -901,7 +922,7 @@ Helpful links:
 
                     check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
                         fancy_message error $"Could not connect to the internet"
-                        suggested_solution "Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
+                        suggested_solution $"Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
                         exit 1
                     }
 
@@ -917,14 +938,14 @@ Helpful links:
 
                     # shellcheck source=./misc/scripts/get-pacscript.sh
                     if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then
-                        fancy_message error $"Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
-                        suggested_solution "Confirm that the package exists by running '${UCyan}pacstall -S $PACKAGE${NC}'" "Check your internet connection"
+                        fancy_message error $"Failed to download the %b pacscript" "$GREEN$PACKAGE$NC"
+                        suggested_solution $"Confirm that the package exists by running '${UCyan}pacstall -S $PACKAGE${NC}'" $"Check your internet connection"
                         continue
                     fi
                 fi
                 # shellcheck source=./misc/scripts/package-base.sh
                 if ! source "$SCRIPTDIR/scripts/package-base.sh"; then
-                    fancy_message error $"Failed to install ${GREEN}${PACKAGE}${NC}"
+                    fancy_message error $"Failed to install %b" "$GREEN$PACKAGE$NC"
                     if ! [[ -f "${PACDIR}-pacdeps-$PACKAGE" ]]; then
                         sudo rm -rf "${PACDIR:?}"
                     fi
@@ -948,7 +969,7 @@ Helpful links:
 
             check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
                 fancy_message error $"Could not connect to the internet"
-                suggested_solution "Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
+                suggested_solution $"Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
                 exit 1
             }
 
@@ -988,7 +1009,7 @@ Helpful links:
             fi
             check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
                 fancy_message error $"Could not connect to the internet"
-                suggested_solution "Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
+                suggested_solution $"Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
                 exit 1
             }
 
@@ -1010,7 +1031,7 @@ Helpful links:
                 shift
                 # shellcheck source=./misc/scripts/remove.sh
                 if ! source "$SCRIPTDIR/scripts/remove.sh"; then
-                    fancy_message error $"Failed to remove ${GREEN}${PACKAGE}${NC}"
+                    fancy_message error $"Failed to remove %b" "$GREEN$PACKAGE$NC"
                 fi
             done
             exit 0
@@ -1032,7 +1053,7 @@ Helpful links:
                 exit 0
             else
                 fancy_message error $"You failed to specify a repo to add"
-                suggested_solution "Add a repository in the following format:" "'${UCyan}pacstall -A https://github.com/username/repository-name${NC}'" "Consult the pacstall man page by running '${UCyan}man pacstall${NC}', and searching for the term '${UPurple}-A${NC}'"
+                suggested_solution $"Add a repository in the following format:" "'${UCyan}pacstall -A https://github.com/username/repository-name${NC}'" $"Consult the pacstall man page by running '${UCyan}man pacstall${NC}', and searching for the term '${UPurple}-A${NC}'"
                 exit 1
             fi
             ;;
@@ -1053,7 +1074,7 @@ Helpful links:
                 exit 0
             else
                 fancy_message error $"You failed to specify a repo to remove"
-                suggested_solution "Remove a repository in the following format:" "'${UCyan}pacstall -Rr https://github.com/username/repository-name${NC}'" "Consult the pacstall man page by running '${UCyan}man pacstall${NC}', and searching for the term '${UPurple}-Rr${NC}'"
+                suggested_solution $"Remove a repository in the following format:" "'${UCyan}pacstall -Rr https://github.com/username/repository-name${NC}'" $"Consult the pacstall man page by running '${UCyan}man pacstall${NC}', and searching for the term '${UPurple}-Rr${NC}'"
                 exit 1
             fi
             ;;
@@ -1076,7 +1097,7 @@ Helpful links:
             if [[ $2 == "." && -d $2 && -z $3 ]]; then
                 cd "${2}"
                 if ! git -C . rev-parse 2> /dev/null; then
-                    fancy_message error $"$PWD is not a git repository"
+                    fancy_message error $"%s is not a git repository" "$PWD"
                     exit 1
                 fi
                 mapfile -d":" GIT_USER < <(git remote get-url origin)
@@ -1108,13 +1129,13 @@ Helpful links:
 
             check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
                 fancy_message error $"Could not connect to the internet"
-                suggested_solution "Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
+                suggested_solution $"Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
                 exit 1
             }
 
             if curl --output /dev/null --silent --head --fail https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/pyproject.toml || curl --output /dev/null --silent --head --fail https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/Cargo.toml; then
-                fancy_message error $"The repository you are trying to upgrade to contains a version of pacstall that cannot be updated from $(pacstall -V)"
-                fancy_message error $"Visit https://github.com/$USERNAME/pacstall/tree/$BRANCH for more information on how to reinstall. Most packages will also need to be reinstalled"
+                fancy_message error $"The repository you are trying to upgrade to contains a version of pacstall that cannot be updated from %b" "$(pacstall -V)"
+                fancy_message error $"Visit %s for more information on how to reinstall. Most packages will also need to be reinstalled" "https://github.com/$USERNAME/pacstall/tree/$BRANCH"
                 exit 1
             fi
             sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/update.sh -P "$SCRIPTDIR/scripts" 2> /dev/null
@@ -1126,7 +1147,7 @@ Helpful links:
         -L | --list)
             shift
             if [[ -n $* ]]; then
-                fancy_message error $"Invalid argument '$*'"
+                fancy_message error $"Invalid argument '%s'" "$*"
                 exit 1
             fi
 
@@ -1180,7 +1201,7 @@ Helpful links:
 
                 check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
                     fancy_message error $"Could not connect to the internet"
-                    suggested_solution "Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
+                    suggested_solution $"Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
                     exit 1
                 }
 
@@ -1194,12 +1215,12 @@ Helpful links:
 
                 # shellcheck source=./misc/scripts/get-pacscript.sh
                 if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then
-                    fancy_message error $"Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
-                    suggested_solution "Confirm that the package exists by running '${UCyan}pacstall -S $PACKAGE${NC}'" "Check your internet connection"
+                    fancy_message error $"Failed to download the %b pacscript" "$GREEN$PACKAGE$NC"
+                    suggested_solution $"Confirm that the package exists by running '${UCyan}pacstall -S $PACKAGE${NC}'" $"Check your internet connection"
                     continue
                 fi
 
-                fancy_message info $"${GREEN}${PACKAGE}${NC}'s pacscript is downloaded to ${GREEN}${PWD}/$PACKAGE.pacscript${NC}"
+                fancy_message info $"%b pacscript is downloaded to %b" "$GREEN$PACKAGE$NC" "$GREEN$PWD/$PACKAGE.pacscript$NC"
             done
             exit 0
             ;;
@@ -1207,13 +1228,13 @@ Helpful links:
         -Up | --upgrade)
             shift
             if [[ -n $* ]]; then
-                fancy_message error $"Invalid argument '$*'"
+                fancy_message error $"Invalid argument '%s'" "$*"
                 exit 1
             fi
 
             check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
                 fancy_message error $"Could not connect to the internet"
-                suggested_solution "Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
+                suggested_solution $"Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}https://gitlab.com${NC}' are accessible"
                 exit 1
             }
             # shellcheck source=./misc/scripts/upgrade.sh

@@ -44,10 +44,10 @@ append_modifier_entries "${TARCH}" "${DISTRO}"
 if ((PACSTALL_INSTALL == 0)) && [[ ${pacname} == *-deb ]]; then
     parse_source_entry "${source[0]}"
     if ! download "${source[0]}" "${dest}"; then
-        fancy_message error $"Failed to download '${source[0]}'"
+        fancy_message error $"Failed to download '%s'" "${source[0]}"
         { ignore_stack=true; return 1; }
     else
-        fancy_message info $"Moving ${BGreen}${PACDIR}/${dest}${NC} to ${BGreen}${PACDEB_DIR}/${dest}${NC}"
+        fancy_message info $"Moving %b to %b" "${BGreen}${PACDIR}/${dest}${NC}" "${BGreen}${PACDEB_DIR}/${dest}${NC}"
         sudo mv ./"${dest}" "${PACDEB_DIR}"
     fi
     return 0
@@ -60,10 +60,10 @@ if ((${#masked_packages[@]} != 0)); then
         offending_pkg="$(getMasks_offending_pkg "${pacname:-${PACKAGE}}")"
         # shellcheck disable=SC2181
         if (($? == 0)); then
-            fancy_message error $"The package ${BBlue}${offending_pkg}${NC} is masking ${BBlue}${pacname:-${PACKAGE}}${NC}. By installing the masked package, you may cause damage to your operating system"
+            fancy_message error $"The package %b is masking %b. By installing the masked package, you may cause damage to your operating system" "${BBlue}${offending_pkg}${NC}" "${BBlue}${pacname:-${PACKAGE}}${NC}"
             exit 1
         else
-            fancy_message error $"Somehow, 'getMasks' found masked packages that match the package you want to install, but 'getMasks_offending_pkg' could not find it. Report this upstream"
+            fancy_message error $"Somehow, '%s' found masked packages that match the package you want to install, but '%s' could not find it. Report this upstream" "getMasks" "getMasks_offending_pkg"
             exit 1
         fi
     fi
@@ -142,16 +142,16 @@ if ! is_package_installed "${pacname}"; then
                 if is_apt_package_installed "${pkg}" && ! is_package_installed "${pkg}"; then
                     # Check if anything in conflicts variable is installed already
                     # shellcheck disable=SC2031
-                    fancy_message error $"${RED}$pacname${NC} conflicts with $pkg, which is currently installed by apt"
-                    suggested_solution "Remove the apt package by running '${UCyan}sudo apt purge $pkg${NC}'"
+                    fancy_message error $"%b conflicts with %s, which is currently installed by apt" "${RED}$pacname${NC}" "$pkg"
+                    suggested_solution $"Remove the apt package by running '${UCyan}sudo apt purge $pkg${NC}'"
                     error_log 13 "install ${pacname}"
                     clean_fail_down
                 fi
                 if [[ ${pkg} != "${pacname}" ]] && is_package_installed "${pkg}"; then
                     # Same thing, but check if anything is installed with pacstall
                     # shellcheck disable=SC2031
-                    fancy_message error $"${RED}$pacname${NC} conflicts with $pkg, which is currently installed by pacstall"
-                    suggested_solution "Remove the pacstall package by running '${UCyan}pacstall -R $pkg${NC}'"
+                    fancy_message error $"%b conflicts with %s, which is currently installed by pacstall" "${RED}$pacname${NC}" "$pkg"
+                    suggested_solution $"Remove the pacstall package by running '${UCyan}pacstall -R $pkg${NC}'"
                     error_log 13 "install ${pacname}"
                     clean_fail_down
                 fi
@@ -164,15 +164,15 @@ if ! is_package_installed "${pacname}"; then
                 # Do we have an apt package installed (but not pacstall)?
                 if is_apt_package_installed "${pkg}" && ! is_package_installed "${pkg}"; then
                     # Check if anything in breaks variable is installed already
-                    fancy_message error $"${RED}$pacname${NC} breaks $pkg, which is currently installed by apt"
-                    suggested_solution "Remove the apt package by running '${UCyan}sudo apt purge $pkg${NC}'"
+                    fancy_message error $"%b breaks %s, which is currently installed by apt" "${RED}$pacname${NC}" "$pkg"
+                    suggested_solution $"Remove the apt package by running '${UCyan}sudo apt purge $pkg${NC}'"
                     error_log 13 "install ${pacname}"
                     clean_fail_down
                 fi
                 if [[ ${pkg} != "${pacname}" ]] && is_package_installed "${pkg}"; then
                     # Same thing, but check if anything is installed with pacstall
-                    fancy_message error $"${RED}$pacname${NC} breaks $pkg, which is currently installed by pacstall"
-                    suggested_solution "Remove the pacstall package by running '${UCyan}pacstall -R $pkg${NC}'"
+                    fancy_message error $"%b breaks %s, which is currently installed by pacstall" "${RED}$pacname${NC}" "$pkg"
+                    suggested_solution $"Remove the pacstall package by running '${UCyan}pacstall -R $pkg${NC}'"
                     error_log 13 "install ${pacname}"
                     clean_fail_down
                 fi
@@ -206,20 +206,20 @@ if [[ -n ${pacdeps[*]} ]]; then
         if is_package_installed "${pdep}"; then
             pacstall_pacdep_status="$(compare_remote_version "$pdep")"
             if [[ $pacstall_pacdep_status == "update" ]]; then
-                fancy_message sub $"${PURPLE}${pdep}${NC} ${GREEN}↑${YELLOW}↓${NC} [update]"
+                fancy_message sub $"%b [update]" "${PURPLE}${pdep}${NC} ${GREEN}↑${YELLOW}↓${NC}"
                 if ! pacstall "$cmd" "${pdep}${repo}"; then
-                    fancy_message error $"Failed to install dependency (${pdep} from ${PACKAGE})"
+                    fancy_message error $"Failed to install dependency (%s from %s)" "${pdep}" "${PACKAGE}"
                     error_log 8 "install ${pacname}"
                     clean_fail_down
                 fi
             else
-                fancy_message sub $"${PURPLE}${pdep}${NC} ${GREEN}✓${NC} [installed]"
+                fancy_message sub $"%b [installed]" "${PURPLE}${pdep}${NC} ${GREEN}✓${NC}"
                 if ! awk '/_pacstall_depends="true"/ {found=1; exit} END {if (found != 1) exit 1}' "${METADIR}/${pdep}"; then
                     echo '_pacstall_depends="true"' | sudo tee -a "${METADIR}/${pdep}" > /dev/null
                 fi
             fi
-        elif fancy_message sub $"${PURPLE}${pdep}${NC} ${RED}✗${NC} [required]" && ! pacstall "$cmd" "${pdep}${repo}"; then
-            fancy_message error $"Failed to install dependency (${pdep} from ${PACKAGE})"
+        elif fancy_message sub $"%b [required]" "${PURPLE}${pdep}${NC} ${RED}✗${NC}" && ! pacstall "$cmd" "${pdep}${repo}"; then
+            fancy_message error $"Failed to install dependency (%s from %s)" "${pdep}" "${PACKAGE}"
             error_log 8 "install ${pacname}"
             clean_fail_down
         fi
@@ -234,7 +234,7 @@ for i in "${!source[@]}"; do
     parse_source_entry "${source[$i]}"
     dest="${dest%.git}"
     if [[ -n ${dest_list[$dest]} && ${dest_list[$dest]} != "${source_url}" ]]; then
-        fancy_message error $"${dest} is associated with multiple source entries"
+        fancy_message error $"%s is associated with multiple source entries" "${dest}"
         clean_fail_down
     else
         dest_list["${dest}"]="${source_url}"
@@ -353,7 +353,7 @@ if [[ -n ${pac_functions[*]} ]]; then
         if ! bwrap_function "${function}"; then
             error_log 5 "${function} ${pacname}"
             echo -ne "\t"
-            fancy_message error $"Could not ${function} ${pacname} properly"
+            fancy_message error $"Could not %s %s properly" "${function}" "${pacname}"
             clean_fail_down
         fi
     done
@@ -361,7 +361,7 @@ fi
 
 cd "$HOME" 2> /dev/null || (
     error_log 1 "install ${pacname}"
-    fancy_message warn $"Could not enter into ${HOME}"
+    fancy_message warn $"Could not enter into %s" "${HOME}"
 )
 
 # shellcheck source=/dev/null
@@ -376,7 +376,7 @@ fancy_message sub $"Storing pacscript"
 sudo mkdir -p "/var/cache/pacstall/${pacname}/${full_version}"
 if ! cd "$DIR" 2> /dev/null; then
     error_log 1 "install ${pacname}"
-    fancy_message error $"Could not enter into ${DIR}"
+    fancy_message error $"Could not enter into %s" "${DIR}"
     sudo dpkg -r "${gives:-$pacname}" 2> /dev/null
     clean_fail_down
 fi
@@ -386,7 +386,7 @@ sudo chmod o+r "/var/cache/pacstall/${pacname}/${full_version}/${PACKAGE}.pacscr
 sudo cp -r "${srcinfile}" "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
 sudo chmod o+r "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
 
-fancy_message info $"Done installing ${BPurple}${pacname}${NC}"
+fancy_message info $"Done installing %b" "${BPurple}${pacname}${NC}"
 return 0
 
 # vim:set ft=sh ts=4 sw=4 et:

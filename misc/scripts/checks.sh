@@ -30,25 +30,25 @@ function lint_pacname() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local ret=0
     if [[ -z $pacname ]]; then
-        fancy_message error $"Package does not contain 'pacname'"
+        fancy_message error $"Package does not contain '%s'" "pacname"
         { ignore_stack=true; return 1; }
     fi
     # https://www.debian.org/doc/debian-policy/ch-controlfields.html#source
     if ((${#pacname} < 2)); then
-        fancy_message error $"pacname: '${pacname}' must be at least two characters long"
+        fancy_message error $"%s: '%s' must be at least two characters long" "pacname" "${pacname}"
         ret=1
     fi
     # shellcheck disable=SC1001
     if [[ ${pacname:0:1} == [.\-+] ]]; then
-        fancy_message error $"pacname: '${pacname}' must start with an alphanumeric character"
+        fancy_message error $"%s: '%s' must start with an alphanumeric character" "pacname" "${pacname}"
         ret=1
     fi
     if [[ $pacname =~ [[:upper:]] ]]; then
-        fancy_message error $"pacname: '${pacname}' contains uppercase characters"
+        fancy_message error $"%s: '%s' contains uppercase characters" "pacname" "${pacname}"
         ret=1
     fi
     if [[ $pacname == *[^[:alnum:]+.-]* ]]; then
-        fancy_message error $"pacname: '${pacname}' contains characters that are not lowercase, digits, minus, or periods"
+        fancy_message error $"%s: '%s' contains characters that are not lowercase, digits, minus, or periods" "pacname" "${pacname}"
         ret=1
     fi
     { ignore_stack=true; return "${ret}"; }
@@ -64,20 +64,20 @@ function lint_gives() {
     if [[ -n $gives ]]; then
         # https://www.debian.org/doc/debian-policy/ch-controlfields.html#source
         if ((${#gives} < 2)); then
-            fancy_message error $"'gives' must be at least two characters long"
+            fancy_message error $"'%s' must be at least two characters long" "gives"
             ret=1
         fi
         # shellcheck disable=SC1001
         if [[ ${gives:0:1} == [.\-+] ]]; then
-            fancy_message error $"'gives' must start with an alphanumeric character"
+            fancy_message error $"'%s' must start with an alphanumeric character" "gives"
             ret=1
         fi
         if [[ $gives =~ [[:upper:]] ]]; then
-            fancy_message error $"'gives' contains uppercase characters"
+            fancy_message error $"'%s' contains uppercase characters" "gives"
             ret=1
         fi
         if [[ $gives == *[^[:alnum:]+.-]* ]]; then
-            fancy_message error $"'gives' contains characters that are not lowercase, digits, minus, or periods"
+            fancy_message error $"'%s' contains characters that are not lowercase, digits, minus, or periods" "gives"
             ret=1
         fi
     fi
@@ -89,10 +89,10 @@ function lint_pkgrel() {
     local ret=0
     if [[ -v pkgrel ]]; then
         if [[ -z ${pkgrel} ]]; then
-            fancy_message error $"'pkgrel' is empty"
+            fancy_message error $"'%s' is empty" "pkgrel"
             ret=1
         elif [[ ! ${pkgrel} =~ ^[0-9]+$ ]]; then
-            fancy_message error $"'pkgrel' must be an unsigned integer"
+            fancy_message error $"'%s' must be an unsigned integer" "pkgrel"
             ret=1
         fi
     fi
@@ -104,10 +104,10 @@ function lint_epoch() {
     local ret=0
     if [[ -v epoch ]]; then
         if [[ -z ${epoch} ]]; then
-            fancy_message error $"'epoch' is empty"
+            fancy_message error $"'%s' is empty" "epoch"
             ret=1
         elif [[ ! ${epoch} =~ ^[0-9]+$ ]]; then
-            fancy_message error $"'epoch' must be an unsigned integer"
+            fancy_message error $"'%s' must be an unsigned integer" "epoch"
             ret=1
         fi
     fi
@@ -120,11 +120,11 @@ function lint_version() {
     if [[ -n $pkgver ]]; then
         # https://www.debian.org/doc/debian-policy/ch-controlfields.html#version
         if [[ ! $pkgver =~ ^[0-9][a-zA-Z0-9.+-~]+$ ]]; then
-            fancy_message error $"'pkgver' must contain only alphanumerics and the characters . + - ~ and should start with a digit"
+            fancy_message error $"'%s' must contain only alphanumerics and the characters . + - ~ and should start with a digit" "pkgver"
             ret=1
         fi
     elif [[ -z $pkgver ]]; then
-        fancy_message error $"Package does not contain 'pkgver'"
+        fancy_message error $"Package does not contain '%s'" "pkgver"
         ret=1
     fi
     { ignore_stack=true; return "${ret}"; }
@@ -141,7 +141,7 @@ function lint_source_deb_test() {
             file_name="${file_name%%\?*}"
         fi
         if [[ ${file_name} == *.deb ]]; then
-            fancy_message error $".deb files can only be provided as a singular 'source'"
+            fancy_message error $".deb files can only be provided as a singular '%s'" "source"
             ret=1
             break
         fi
@@ -172,7 +172,7 @@ function lint_source() {
         has_source=0
     fi
     if ((has_source == 0)); then
-        fancy_message error $"Package does not contain 'source'"
+        fancy_message error $"Package does not contain '%s'" "source"
         ret=1
     else
         for sarch in "${PACSTALL_KNOWN_ARCH[@]}" "${PACSTALL_KNOWN_DISTROS[@]}" "${source_distro_archs[@]}"; do
@@ -225,7 +225,7 @@ function lint_pkgdesc() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local ret=0
     if [[ -z $pkgdesc ]]; then
-        fancy_message error $"Package does not contain 'pkgdesc'"
+        fancy_message error $"Package does not contain '%s'" "pkgdesc"
         ret=1
     fi
     { ignore_stack=true; return "${ret}"; }
@@ -279,15 +279,15 @@ function lint_deps() {
         if [[ -n ${dep_array[*]} ]]; then
             for dep in "${dep_array[@]}"; do
                 if [[ -z ${dep} ]]; then
-                    fancy_message error $"'${dep_type}' index '${idx}' cannot be empty"
+                    fancy_message error $"'%s' index '%s' cannot be empty" "${dep_type}" "${idx}"
                     ret=1
                 elif [[ ${dep} == *"|"* ]]; then
                     if [[ ${dep_type} == "pacdeps" ]] || ! lint_pipe_check "${dep}"; then
-                        fancy_message error $"'${dep_type}' index '${idx}' is not formatted correctly"
+                        fancy_message error $"'%s' index '%s' is not formatted correctly" "${dep_type}" "${idx}"
                         ret=1
                     fi
                 elif [[ ${dep_type} == "optdepends" ]] && [[ ${dep} != *": "* ]]; then
-                    fancy_message error $"'${dep_type}' index '${idx}' is not formatted correctly"
+                    fancy_message error $"'%s' index '%s' is not formatted correctly" "${dep_type}" "${idx}"
                     ret=1
                 fi
                 { ignore_stack=true; ((idx++)); }
@@ -306,7 +306,7 @@ function lint_ppa() {
     if [[ -n ${ppa[*]} ]]; then
         for el_ppa in "${ppa[@]}"; do
             if [[ -z ${el_ppa} ]]; then
-                fancy_message error $"'ppa' index '${idx}' cannot be empty"
+                fancy_message error $"'%s' index '%s' cannot be empty" "ppa" "${idx}"
                 ret=1
             fi
             { ignore_stack=true; ((idx++)); }
@@ -317,7 +317,7 @@ function lint_ppa() {
         idx=0
         for el_ppa in "${ppa[@]}"; do
             if [[ $el_ppa =~ ^ppa: ]]; then
-                fancy_message error $"'ppa' index '${idx}' cannot start with 'ppa:'"
+                fancy_message error $"'%s' index '%s' cannot start with %s" "ppa" "${idx}" "'ppa:'"
                 ret=1
             fi
             { ignore_stack=true; ((idx++)); }
@@ -325,7 +325,7 @@ function lint_ppa() {
         idx=0
         for el_ppa in "${ppa[@]}"; do
             if [[ ! $el_ppa =~ ^[a-zA-Z0-9]+\/[a-zA-Z0-9]+ ]]; then
-                fancy_message error $"'ppa' index '${idx}' is improperly formatted"
+                fancy_message error $"%s index '%s' is improperly formatted" "'ppa'" "${idx}"
                 ret=1
             fi
             { ignore_stack=true; ((idx++)); }
@@ -356,7 +356,7 @@ function lint_relations() {
         if [[ -n ${rel_array[*]} ]]; then
             for rela in "${rel_array[@]}"; do
                 if [[ -z ${rela} ]]; then
-                    fancy_message error $"'${rel_type}' index '${idx}' cannot be empty"
+                    fancy_message error $"'%s' index '%s' cannot be empty" "${rel_type}" "${idx}"
                     ret=1
                 fi
                 { ignore_stack=true; ((idx++)); }
@@ -422,30 +422,30 @@ function lint_fields() {
     if [[ -n ${custom_fields[*]} ]]; then
         for tfield in "${custom_fields[@]}"; do
             if [[ -z ${tfield} ]]; then
-                fancy_message error $"'custom_fields' index '${idx}' cannot be empty"
+                fancy_message error $"'%s' index '%s' cannot be empty" "custom_fields" "${idx}"
                 ret=1
             fi
             tlogvar="${tfield%:*}"
             if array.contains deblog_used "${tlogvar}"; then
-                fancy_message error $"'${tlogvar}' is already used as a field in pacstall"
+                fancy_message error $"'%s' is already used as a field in pacstall" "${tlogvar}"
                 ret=1
             else
                 lint_field_fmt "${tlogvar}"
                 case "$?" in
                     1)
-                        fancy_message error $"'${tlogvar}' custom field cannot contain a space in field name"
+                        fancy_message error $"'%s' custom field cannot contain a space in field name" "${tlogvar}"
                         ret=1
                         ;;
                     2)
-                        fancy_message error $"'${tlogvar}' custom field cannot contain a number in field name"
+                        fancy_message error $"'%s' custom field cannot contain a number in field name" "${tlogvar}"
                         ret=1
                         ;;
                     3 | 4)
-                        fancy_message error $"'${tlogvar}' custom field must capitalize only the first letter of each word in field name"
+                        fancy_message error $"'%s' custom field must capitalize only the first letter of each word in field name" "${tlogvar}"
                         ret=1
                         ;;
                     5)
-                        fancy_message error $"'${tlogvar}' custom field cannot start or end with a hyphen"
+                        fancy_message error $"'%s' custom field cannot start or end with a hyphen" "${tlogvar}"
                         ret=1
                         ;;
                 esac
@@ -533,7 +533,7 @@ function lint_hash() {
                 ret=0
 
             elif ((${#test_hash[i]} != test_hashsum_value)) || [[ ! ${test_hash[i]} =~ ^[a-fA-F0-9]+$ ]]; then
-                fancy_message error $"'hash' is improperly formatted"
+                fancy_message error $"'%s' is improperly formatted" "hash"
                 ret=1
                 break
             fi
@@ -548,14 +548,14 @@ function lint_incompatible() {
     if [[ -n ${compatible[*]} ]]; then
         if [[ -n ${incompatible[*]} ]]; then
             if [[ ${comp_err} != 1 ]]; then
-                fancy_message error $"'compatible' and 'incompatible' indices cannot both be provided"
+                fancy_message error $"'%s' and '%s' indices cannot both be provided" "compatible" "incompatible"
                 comp_err=1
             fi
             ret=1
         fi
         for compat in "${compatible[@]}"; do
             if [[ -z ${compat} ]]; then
-                fancy_message error $"'compatible' index '${idx}' cannot be empty"
+                fancy_message error $"'%s' index '%s' cannot be empty" "compatible" "${idx}"
                 ret=1
             fi
             { ignore_stack=true; ((idx++)); }
@@ -563,7 +563,7 @@ function lint_incompatible() {
         idx=0
         for compat in "${compatible[@]}"; do
             if [[ $compat != *:* ]] || [[ $compat == "*:*" ]]; then
-                fancy_message error $"'compatible' index '${idx}' is improperly formatted"
+                fancy_message error $"'%s' index '%s' is improperly formatted" "compatible" "${idx}"
                 ret=1
             fi
             { ignore_stack=true; ((idx++)); }
@@ -571,14 +571,14 @@ function lint_incompatible() {
     elif [[ -n ${incompatible[*]} ]]; then
         if [[ -n ${compatible[*]} ]]; then
             if [[ ${comp_err} != 1 ]]; then
-                fancy_message error $"'compatible' and 'incompatible' indices cannot both be provided"
+                fancy_message error $"'%s' and '%s' indices cannot both be provided" "compatible" "incompatible"
                 comp_err=1
             fi
             ret=1
         fi
         for incompat in "${incompatible[@]}"; do
             if [[ -z ${incompat} ]]; then
-                fancy_message error $"'incompatible' index '${idx}' cannot be empty"
+                fancy_message error $"'%s' index '%s' cannot be empty" "incompatible" "${idx}"
                 ret=1
             fi
             { ignore_stack=true; ((idx++)); }
@@ -586,7 +586,7 @@ function lint_incompatible() {
         idx=0
         for incompat in "${incompatible[@]}"; do
             if [[ $incompat != *:* ]] || [[ $incompat == "*:*" ]]; then
-                fancy_message error $"'incompatible' index '${idx}' is improperly formatted"
+                fancy_message error $"'%s' index '%s' is improperly formatted" "incompatible" "${idx}"
                 ret=1
             fi
             { ignore_stack=true; ((idx++)); }
@@ -609,7 +609,7 @@ function lint_arch() {
     if [[ -n ${arch[*]} ]]; then
         for el_arch in "${arch[@]}"; do
             if [[ -z ${el_arch} ]]; then
-                fancy_message error $"'arch' index '${idx}' cannot be empty"
+                fancy_message error $"'%s' index '%s' cannot be empty" "arch" "${idx}"
                 ret=1
             fi
             { ignore_stack=true; ((idx++)); }
@@ -620,7 +620,7 @@ function lint_arch() {
         fi
         for el_arch in "${arch[@]}"; do
             if ! array.contains known_archs "${el_arch}"; then
-                fancy_message error $"'${el_arch}' is not a valid architecture"
+                fancy_message error $"'%s' is not a valid architecture" "${el_arch}"
                 ret=1
             else
                 for key in "${!AARCHS_MAP[@]}"; do
@@ -633,7 +633,7 @@ function lint_arch() {
             fi
         done
         if ${has_carch} && ${has_aarch}; then
-            fancy_message error $"cannot use both Debian and Arch style naming in 'arch' array"
+            fancy_message error $"cannot use both Debian and Arch style naming in '%s' array" "arch"
             ret=1
         fi
     fi
@@ -646,7 +646,7 @@ function lint_mask() {
     if [[ -n ${mask[*]} ]]; then
         for masked in "${mask[@]}"; do
             if [[ -z ${masked} ]]; then
-                fancy_message error $"'mask' index '${idx}' cannot be empty"
+                fancy_message error $"'%s' index '%s' cannot be empty" "mask" "${idx}"
                 ret=1
             fi
             { ignore_stack=true; ((idx++)); }
@@ -660,7 +660,7 @@ function lint_bugs() {
     local ret=0
     if [[ -n ${bugs} ]]; then
 		if [[ ${bugs} != *"://"* ]]; then
-			fancy_message error $"'bugs' is improperly formatted"
+			fancy_message error $"'%s' is improperly formatted" "bugs"
 			ret=1
 		fi
     fi
@@ -673,10 +673,10 @@ function lint_priority() {
     local ret=0
     if [[ -v priority ]]; then
         if [[ -z ${priority} ]]; then
-            fancy_message error $"'priority' is empty"
+            fancy_message error $"'%s' is empty" "priority"
             ret=1
         elif [[ ${priority} != @(essential|required|important|standard|optional) ]]; then
-            fancy_message error $"'priority' must be either: 'essential', 'required', 'important', 'standard', or 'optional'"
+            fancy_message error $"'%s' must be either: '%s', '%s', '%s', '%s', or '%s'" "priority" "essential" "required" "important" "standard" "optional"
             ret=1
         fi
     fi
@@ -691,13 +691,13 @@ function lint_license() {
     if [[ -n ${license[*]} ]]; then
         for linlicense in "${license[@]}"; do
             if [[ -z ${linlicense} ]]; then
-                fancy_message error $"'license' index '${idx}' cannot be empty"
+                fancy_message error $"'%s' index '%s' cannot be empty" "license" "${idx}"
                 ret=1
             fi
             { ignore_stack=true; ((idx++)); }
             if ! array.contains license_list "${linlicense}"; then
                 if [[ ${linlicense} != "custom:"* ]]; then
-                    fancy_message error $"'${linlicense}' is not a valid license"
+                    fancy_message error $"'%s' is not a valid license" "${linlicense}"
                     ret=1
                 fi
             fi

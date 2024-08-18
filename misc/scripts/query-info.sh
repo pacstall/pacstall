@@ -96,7 +96,7 @@ fi
 if [[ -n ${QUERY} ]]; then
     query="${!QUERY}"
     if [[ -z ${query} ]]; then
-        fancy_message error $"Key '${QUERY}' does not exist"
+        fancy_message error $"Key '%s' does not exist" "${QUERY}"
         exit 1
     else
         echo "${query}"

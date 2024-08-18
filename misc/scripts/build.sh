@@ -72,7 +72,7 @@ function check_apt_dep() {
         if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]%:*})?architecture(${just_arch})" -F "%p")" ]]; then
             if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_name[0]%:*}$)?architecture(${just_arch})" -F "%p")" ]]; then
                 echo "${real_dep}" >> "${PACDIR}-missing-deps-${pacname}"
-                fancy_message sub $"${BLUE}${real_dep}${NC} ${RED}✗${NC} [required]"
+                fancy_message sub $"%b [required]" "${BLUE}${real_dep}${NC} ${RED}✗${NC}"
                 return 0
             fi
         fi
@@ -81,7 +81,7 @@ function check_apt_dep() {
             if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]})?architecture(${just_arch})" -F "%p")" ]]; then
                 if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_name[0]}$)?architecture(${just_arch})" -F "%p")" ]]; then
                     echo "${real_dep}" >> "${PACDIR}-missing-deps-${pacname}"
-                    fancy_message sub $"${BLUE}${real_dep}${NC} ${RED}✗${NC} [required]"
+                    fancy_message sub $"%b [required]" "${BLUE}${real_dep}${NC} ${RED}✗${NC}"
                     return 0
                 fi
             fi
@@ -92,9 +92,9 @@ function check_apt_dep() {
     # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
     echo "${real_dep}" >> "${PACDIR}-deps-${pacname}"
     if ! is_apt_package_installed "${just_name[0]}"; then
-        fancy_message sub $"${BLUE}${just_name[0]} ${GREEN}↑${YELLOW}↓${NC} [remote]"
+        fancy_message sub $"%b [remote]" "${BLUE}${just_name[0]} ${GREEN}↑${YELLOW}↓${NC}"
     else
-        fancy_message sub $"${BLUE}${just_name[0]} ${GREEN}✓${NC} [installed]"
+        fancy_message sub $"%b [installed]" "${BLUE}${just_name[0]} ${GREEN}✓${NC}"
     fi
 }
 
@@ -153,11 +153,11 @@ function prompt_aptdepends() {
     # 8 hours later the versions specified in `depends` aren't available.
     if [[ -n ${missing_deps[*]} ]]; then
         echo -ne "\t"
-        fancy_message error $"${BLUE}$(printf "${BLUE}%s${NC}, " "${missing_deps[@]}" | sed 's/, $/\n/')${NC} does not exist in apt repositories"
+        fancy_message error $"%b does not exist in apt repositories" "${BLUE}$(printf "${BLUE}%s${NC}, " "${missing_deps[@]}" | sed 's/, $/\n/')${NC}"
     fi
     if [[ -n ${not_satisfied_deps[*]} ]]; then
         echo -ne "\t"
-        fancy_message error $"${BLUE}$(printf "${BLUE}%s${NC}, " "${not_satisfied_deps[@]}" | sed 's/, $/\n/')${NC} version(s) cannot be satisfied"
+        fancy_message error $"%b version(s) cannot be satisfied" "${BLUE}$(printf "${BLUE}%s${NC}, " "${not_satisfied_deps[@]}" | sed 's/, $/\n/')${NC}"
     fi
     if [[ -n ${missing_deps[*]} || -n ${not_satisfied_deps[*]} ]]; then
         fancy_message info $"Cleaning up"
@@ -173,11 +173,11 @@ function prompt_optdepends() {
     fi
     if [[ -n ${missing_optdeps[*]} ]]; then
         echo -ne "\t"
-        fancy_message warn $"${BLUE}$(printf "${BLUE}%s${NC}, " "${missing_optdeps[@]}" | sed 's/, $/\n/')${NC} does not exist in apt repositories"
+        fancy_message warn $"%b does not exist in apt repositories" "${BLUE}$(printf "${BLUE}%s${NC}, " "${missing_optdeps[@]}" | sed 's/, $/\n/')${NC}"
     fi
     if [[ -n ${not_satisfied_optdeps[*]} ]]; then
         echo -ne "\t"
-        fancy_message warn $"${BLUE}$(printf "${BLUE}%s${NC}, " "${not_satisfied_optdeps[@]}" | sed 's/, $/\n/')${NC} version(s) cannot be satisfied"
+        fancy_message warn $"%b version(s) cannot be satisfied" "${BLUE}$(printf "${BLUE}%s${NC}, " "${not_satisfied_optdeps[@]}" | sed 's/, $/\n/')${NC}"
     fi
     if ((${#suggested_optdeps[@]} != 0)); then
         if ((PACSTALL_INSTALL != 0)); then
@@ -204,7 +204,7 @@ function prompt_optdepends() {
                 { ignore_stack=true; ((choice_inc++)); }
             done
             if [[ -n ${skip_opt[*]} ]]; then
-                fancy_message warn $"${BGreen}${skip_opt[*]}${NC} has exceeded the maximum number of optional dependencies. Skipping"
+                fancy_message warn $"%b has exceeded the maximum number of optional dependencies. Skipping" "${BGreen}${skip_opt[*]}${NC}"
             fi
 
             # Did we get actual answers?
@@ -214,7 +214,7 @@ function prompt_optdepends() {
                     not_installed_yet_optdeps+=("${suggested_optdeps[$((i - 1))]}")
                 done
                 if [[ -n ${not_installed_yet_optdeps[*]} ]]; then
-                    fancy_message info $"Selecting packages ${BCyan}${not_installed_yet_optdeps[*]%%:\ *}${NC}"
+                    fancy_message info $"Selecting packages %b" "${BCyan}${not_installed_yet_optdeps[*]%%:\ *}${NC}"
                 fi
             fi
         fi
@@ -362,9 +362,9 @@ function makedeb() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # It looks weird for it to say: `Packaging foo as foo`
     if [[ -n $gives && $pacname != "$gives" ]]; then
-        fancy_message info $"Packaging ${BGreen}$pacname${NC} as ${BBlue}$gives${NC}"
+        fancy_message info $"Packaging %b as %b" "${BGreen}$pacname${NC}" "${BBlue}$gives${NC}"
     else
-        fancy_message info $"Packaging ${BGreen}$pacname${NC}"
+        fancy_message info $"Packaging %b" "${BGreen}$pacname${NC}"
     fi
     deblog "Package" "${gives:-$pacname}"
 
@@ -599,19 +599,19 @@ function makedeb() {
             if [[ ${file:0:2} == "r:" ]]; then
                 # `r:`
                 if [[ -z ${file:2} ]]; then
-                    fancy_message warn $"'${file}' cannot contain empty path... Skipping" && continue
+                    fancy_message warn $"'%s' cannot contain empty path... Skipping" "${file}" && continue
                 fi
                 # `r:/usr/share/pac.conf`
                 if [[ ${file:2:1} == "/" ]]; then
-                    fancy_message warn $"'${file}' cannot contain path starting with '/'... Skipping" && continue
+                    fancy_message warn $"'%s' cannot contain path starting with '/'... Skipping" "${file}" && continue
                 fi
                 if [[ -f "$STAGEDIR/$pacname/${file:2}" ]]; then
-                    fancy_message warn $"'${file}' is inside the package... Skipping" && continue
+                    fancy_message warn $"'%s' is inside the package... Skipping" "${file}" && continue
                 fi
                 echo "remove-on-upgrade /${file:2}" | sudo tee -a "$STAGEDIR/$pacname/DEBIAN/conffiles" > /dev/null
             else
                 if [[ ${file:0:1} == "/" ]]; then
-                    fancy_message warn $"'${file}' cannot contain path starting with '/'... Skipping" && continue
+                    fancy_message warn $"'%s' cannot contain path starting with '/'... Skipping" "${file}" && continue
                 fi
                 echo "/${file}" | sudo tee -a "$STAGEDIR/$pacname/DEBIAN/conffiles" > /dev/null
             fi
@@ -685,7 +685,7 @@ function install_deb() {
         # --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
         if ! sudo -E apt-get install --reinstall "$STAGEDIR/$debname.deb" -y --allow-downgrades 2> /dev/null; then
             echo -ne "\t"
-            fancy_message error $"Failed to install $pacname deb"
+            fancy_message error $"Failed to install %s deb" "$pacname"
             error_log 8 "install $pacname"
             sudo dpkg -r --force-all "${gives:-$pacname}" 2> /dev/null
             fancy_message info $"Cleaning up"
@@ -709,9 +709,9 @@ function install_deb() {
     else
         sudo mv "$STAGEDIR/$debname.deb" "$PACDEB_DIR"
         sudo chown "$PACSTALL_USER":"$PACSTALL_USER" "$PACDEB_DIR/$debname.deb"
-        fancy_message info $"Package built at ${BGreen}$PACDEB_DIR/$debname.deb${NC}"
+        fancy_message info $"Package built at %b" "${BGreen}$PACDEB_DIR/$debname.deb${NC}"
         if [[ $KEEP ]]; then
-            fancy_message info $"Moving ${BGreen}$STAGEDIR/$pacname${NC} to ${BGreen}${PACDIR}-no-build/$pacname${NC}"
+            fancy_message info $"Moving %b to %b" "${BGreen}$STAGEDIR/$pacname${NC}" "${BGreen}${PACDIR}-no-build/$pacname${NC}"
             sudo rm -rf "${PACDIR}-no-build/${pacname:?}"
             mkdir -p "${PACDIR}-no-build/$pacname"
             sudo mv "$STAGEDIR/$pacname" "${PACDIR}-no-build/$pacname"
@@ -728,7 +728,7 @@ function repacstall() {
     upcontrol="${unpackdir}/DEBIAN/control"
     sudo mkdir -p "${unpackdir}"
     sudo rm -rf "${unpackdir:?}"/*
-    fancy_message sub $"Repacking ${CYAN}${pacname/\-deb/}.deb${NC}"
+    fancy_message sub $"Repacking %b" "${CYAN}${pacname/\-deb/}.deb${NC}"
     sudo dpkg-deb -R "${input_dest}" "${unpackdir}"
     depends_line=$(awk '/^Depends:/ {print; exit}' "${upcontrol}")
     if [[ -n ${depends_line} ]]; then

@@ -70,7 +70,7 @@ else
     REPO="https://raw.githubusercontent.com/${USERNAME}/pacstall/${BRANCH}"
     if ! curl -s --fail "${REPO}/pacstall" > /dev/null; then
         fancy_message error $"Invalid URL"
-        suggested_solution "Confirm that '${UCyan}${REPO}/pacstall${NC}' is valid"
+        suggested_solution $"Confirm that '${UCyan}${REPO}/pacstall${NC}' is valid"
         exit 1
     fi
 fi
