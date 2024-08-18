@@ -1,49 +1,54 @@
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2024-08-18 13:23+0000\n"
+"Last-Translator: vbrabandt <vbrabandt@proton.me>\n"
+"Language-Team: Thai <https://hosted.weblate.org/projects/pacstall/pacstall/"
+"th/>\n"
 "Language: th\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 5.7\n"
 
 #: pacstall:270 misc/scripts/build.sh:163 misc/scripts/build.sh:691
 #: misc/scripts/fetch-sources.sh:158 misc/scripts/fetch-sources.sh:720
 #: misc/scripts/fetch-sources.sh:750 misc/scripts/package-base.sh:157
 #: misc/scripts/package-base.sh:176
 msgid "Cleaning up"
-msgstr ""
+msgstr "กำลังทำความสะอาด"
 
 #: pacstall:383
 msgid "Packagelist not found"
-msgstr ""
+msgstr "ไม่พบ Packagelist"
 
 #: pacstall:386
 msgid "Failed to download file, check your connection"
-msgstr ""
+msgstr "ไม่สามารถดาวน์โหลดไฟล์ได้ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ตของคุณ"
 
 #: pacstall:392
 msgid "The URL cannot be found"
-msgstr ""
+msgstr "ไม่สามารถเชื่อมต่อ URL ได้"
 
 #: pacstall:400
 msgid "Failed with http code ${http_code}"
-msgstr ""
+msgstr "ล้มเหลวด้วยรหัส http ${http_code}"
 
 #: pacstall:622
 msgid "Reading input from pipe"
-msgstr ""
+msgstr "การอ่านอินพุตจาก pipe"
 
 #: pacstall:681
 msgid "Only one command flag can be used at a time"
-msgstr ""
+msgstr "สามารถใช้แฟล็กคำสั่งได้ครั้งละหนึ่งคำสั่งเท่านั้น"
 
 #: pacstall:719
 msgid "Pacstall is already running another instance"
-msgstr ""
+msgstr "Pacstall กำลังทำงานบนอินสแตนซ์อื่น"
 
 #: pacstall:725
 msgid "The other instance has finished running, unlocking"
-msgstr ""
+msgstr "อินสแตนซ์อื่นได้ดำเนินการเสร็จสิ้นแล้ว กำลังปลดล็อค"
 
 #: pacstall:734
 msgid "Prompts are disabled"
@@ -51,16 +56,16 @@ msgstr ""
 
 #: pacstall:741
 msgid "Package will be built and not installed"
-msgstr ""
+msgstr "แพ็คเกจจะถูกสร้างขึ้นแต่ไม่ได้ติดตั้ง"
 
 #: pacstall:811 pacstall:884 pacstall:946 pacstall:987 pacstall:1005
 #: pacstall:1173 pacstall:1229 misc/scripts/query-info.sh:28
 msgid "You failed to specify a package"
-msgstr ""
+msgstr "คุณไม่ได้ระบุแพ็คเกจ"
 
 #: pacstall:816
 msgid "The installation of ${PACKAGE:-package} was interrupted, removing files"
-msgstr ""
+msgstr "การติดตั้ง ${PACKAGE:-package} ถูกขัดจังหวะ ไฟล์จะถูกลบออก"
 
 #: pacstall:853
 msgid "$2 does not exist"
@@ -73,11 +78,11 @@ msgstr ""
 #: pacstall:904 pacstall:951 pacstall:991 pacstall:1111 pacstall:1183
 #: pacstall:1216
 msgid "Could not connect to the internet"
-msgstr ""
+msgstr "ไม่สามารถเชื่อมต่ออินเตอร์เน็ตได้"
 
 #: pacstall:921 pacstall:1198 misc/scripts/upgrade.sh:276
 msgid "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
-msgstr ""
+msgstr "ไม่สามารถดาวน์โหลด pacscript ${GREEN}${PACKAGE}${NC} ได้"
 
 #: pacstall:928
 msgid "Failed to install ${GREEN}${PACKAGE}${NC}"
