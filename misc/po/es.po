@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-08-18 13:23+0000\n"
+"PO-Revision-Date: 2024-08-18 16:20+0000\n"
 "Last-Translator: Elsie <hwengerstickel@protonmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/es/>\n"
@@ -204,6 +204,8 @@ msgid ""
 "Do you want to add ${CYAN}${REPO}${NC}${ALIAS:+ ${BLUE}@${ALIAS}${NC}} to "
 "the repo list?"
 msgstr ""
+"¿Quieres añadir ${CYAN}${REPO}${NC}${ALIAS:+ ${BLUE}@${ALIAS}${NC}} a la "
+"lista de repositorios?"
 
 #: misc/scripts/add-repo.sh:112
 msgid ""
@@ -222,6 +224,8 @@ msgid ""
 "Do you want to remove ${CYAN}${REPO}${NC}${ALIAS:+ ${BLUE}@${ALIAS}${NC}} "
 "from the repo list?"
 msgstr ""
+"¿Quieres eliminar ${CYAN}${REPO}${NC}${ALIAS:+ ${BLUE}@${ALIAS}${NC}} de la "
+"lista de repositorios?"
 
 #: misc/scripts/add-repo.sh:154
 msgid "The repo list has been updated"
@@ -879,7 +883,7 @@ msgstr ""
 
 #: misc/scripts/package-base.sh:200
 msgid "(${BPurple}$PACKAGE${NC}) Do you want to view/edit the pacscript?"
-msgstr ""
+msgstr "(${BPurple}$PACKAGE${NC}) ¿Quieres ver/editar el pacscript?"
 
 #: misc/scripts/package-base.sh:213
 msgid "Editor not found, falling back to 'sensible-editor'"
@@ -933,10 +937,12 @@ msgid ""
 "This package has 'priority=essential', meaning once this is installed, it "
 "should be assumed to be uninstallable. Do you want to continue?"
 msgstr ""
+"Este paquete tiene 'priority=essential', lo que significa que una vez "
+"instalado, se debe suponer que es desinstalable. ¿Quieres continuar?"
 
 #: misc/scripts/package.sh:129
 msgid "This script replaces ${pkg}. Do you want to proceed?"
-msgstr ""
+msgstr "Este script sustituye a ${pkg}. ¿Quieres continuar?"
 
 #: misc/scripts/package.sh:145
 msgid ""
@@ -1130,12 +1136,16 @@ msgid ""
 "\\e[1A\\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the "
 "official repo?"
 msgstr ""
+"\\e[1A\\e[K¿Quieres a $type $GREEN${PACKAGELIST[$IDX]}$NC del repositorio "
+"oficial?"
 
 #: misc/scripts/search.sh:517
 msgid ""
 "\\e[1A\\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the repo "
 "$CYAN${searchedrepo}$NC?"
 msgstr ""
+"\\e[1A\\e[K¿Quieres a $type $GREEN${PACKAGELIST[$IDX]}$NC del repositorio "
+"$CYAN${searchedrepo}$NC?"
 
 #: misc/scripts/update.sh:72
 msgid "Invalid URL"
