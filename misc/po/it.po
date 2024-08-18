@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-08-18 12:37+0000\n"
-"Last-Translator: Pietro Inglese <pietroinglese2016@gmail.com>\n"
+"PO-Revision-Date: 2024-08-18 16:11+0000\n"
+"Last-Translator: Elsie <hwengerstickel@protonmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/it/>\n"
 "Language: it\n"
@@ -16,29 +16,27 @@ msgstr ""
 #: misc/scripts/fetch-sources.sh:750 misc/scripts/package-base.sh:157
 #: misc/scripts/package-base.sh:176
 msgid "Cleaning up"
-msgstr "pulendo"
+msgstr "Pulendo"
 
 #: pacstall:383
 msgid "Packagelist not found"
-msgstr "lista di pacchetti non trovata"
+msgstr "Lista di pacchetti non trovata"
 
 #: pacstall:386
 msgid "Failed to download file, check your connection"
-msgstr "impossibile scaricare file,controlla da connesione internet"
+msgstr "Impossibile scaricare file, controlla da connesione internet"
 
 #: pacstall:392
 msgid "The URL cannot be found"
-msgstr "la URLnon è stata trovata"
+msgstr "La URL non è stata trovata"
 
 #: pacstall:400
 msgid "Failed with http code ${http_code}"
-msgstr ""
-"il codice http code \n"
-" ${http_code}"
+msgstr "Il codice http code ${http_code}"
 
 #: pacstall:622
 msgid "Reading input from pipe"
-msgstr "leggendo input da pipe"
+msgstr "Leggendo input da pipe"
 
 #: pacstall:681
 msgid "Only one command flag can be used at a time"
@@ -50,7 +48,7 @@ msgstr "Pacstall sta già operto in un altra istanza"
 
 #: pacstall:725
 msgid "The other instance has finished running, unlocking"
-msgstr "l'altra istanza ha finito di operare,sbloccata"
+msgstr "L'altra istanza ha finito di operare, sbloccata"
 
 #: pacstall:734
 msgid "Prompts are disabled"
@@ -92,7 +90,7 @@ msgstr ""
 
 #: pacstall:1014
 msgid "Failed to remove ${GREEN}${PACKAGE}${NC}"
-msgstr "remozione fallita ${GREEN}${PACKAGE}${NC}"
+msgstr "Remozione fallita ${GREEN}${PACKAGE}${NC}"
 
 #: pacstall:1035
 msgid "You failed to specify a repo to add"
