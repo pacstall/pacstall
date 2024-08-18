@@ -28,7 +28,6 @@ version_name="Telemagenta"
 declare -A version_color=([r]="207" [g]="52" [b]="118")
 
 # Configuration
-export LC_ALL=C
 export METADIR="/var/lib/pacstall/metadata"
 export LOGDIR="/var/log/pacstall/error_log"
 printf -v LOGFILE "${LOGDIR}/%(%F_%T)T.log"
