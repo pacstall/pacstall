@@ -1,37 +1,44 @@
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2024-08-18 12:37+0000\n"
+"Last-Translator: Pietro Inglese <pietroinglese2016@gmail.com>\n"
+"Language-Team: Italian <https://hosted.weblate.org/projects/pacstall/"
+"pacstall/it/>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.7\n"
 
 #: pacstall:270 misc/scripts/build.sh:163 misc/scripts/build.sh:691
 #: misc/scripts/fetch-sources.sh:158 misc/scripts/fetch-sources.sh:720
 #: misc/scripts/fetch-sources.sh:750 misc/scripts/package-base.sh:157
 #: misc/scripts/package-base.sh:176
 msgid "Cleaning up"
-msgstr ""
+msgstr "pulendo"
 
 #: pacstall:383
 msgid "Packagelist not found"
-msgstr ""
+msgstr "lista di pacchetti non trovata"
 
 #: pacstall:386
 msgid "Failed to download file, check your connection"
-msgstr ""
+msgstr "impossibile scaricare file,controlla da connesione internet"
 
 #: pacstall:392
 msgid "The URL cannot be found"
-msgstr ""
+msgstr "la URLnon è stata trovata"
 
 #: pacstall:400
 msgid "Failed with http code ${http_code}"
 msgstr ""
+"il codice http code \n"
+" ${http_code}"
 
 #: pacstall:622
 msgid "Reading input from pipe"
-msgstr ""
+msgstr "leggendo input da pipe"
 
 #: pacstall:681
 msgid "Only one command flag can be used at a time"
@@ -39,11 +46,11 @@ msgstr ""
 
 #: pacstall:719
 msgid "Pacstall is already running another instance"
-msgstr ""
+msgstr "Pacstall sta già operto in un altra istanza"
 
 #: pacstall:725
 msgid "The other instance has finished running, unlocking"
-msgstr ""
+msgstr "l'altra istanza ha finito di operare,sbloccata"
 
 #: pacstall:734
 msgid "Prompts are disabled"
@@ -85,7 +92,7 @@ msgstr ""
 
 #: pacstall:1014
 msgid "Failed to remove ${GREEN}${PACKAGE}${NC}"
-msgstr ""
+msgstr "remozione fallita ${GREEN}${PACKAGE}${NC}"
 
 #: pacstall:1035
 msgid "You failed to specify a repo to add"
