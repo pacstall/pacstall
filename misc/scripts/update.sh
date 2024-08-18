@@ -76,7 +76,7 @@ else
 fi
 
 fancy_message sub $"Fetching translation list"
-read -r -a linguas < <(curl -fsSL "${REPO}/misc/po/LINGUAS")
+mapfile -t linguas < <(curl -fsSL "${REPO}/misc/po/LINGUAS")
 
 fancy_message sub $"Updating directories"
 for i in "${METADIR}" "${LOGDIR}" "${MAN8DIR}" "${MAN5DIR}" "${PODIR}" "${BASH_COMPLETION_DIR}" "${FISH_COMPLETION_DIR}"; do

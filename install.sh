@@ -130,7 +130,7 @@ REPO="https://raw.githubusercontent.com/pacstall/pacstall/master"
 PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER:-$(whoami)}}")
 
 fancy_message info "Fetching translation list"
-read -r -a linguas < <(wget -qO- "${REPO}/misc/po/LINGUAS")
+mapfile -t linguas < <(wget -qO- "${REPO}/misc/po/LINGUAS")
 
 fancy_message info "Making directories"
 mkdir -p "${SCRIPTDIR}/scripts" "${SCRIPTDIR}/repo" "${PACDIR}" "${METADIR}" "${LOGDIR}" "${MAN8DIR}" "${MAN5DIR}" "${PODIR}" "${BASH_COMPLETION_DIR}" "${FISH_COMPLETION_DIR}"
