@@ -26,7 +26,7 @@
 
 # shellcheck source=./misc/scripts/build.sh
 source "${SCRIPTDIR}/scripts/build.sh" || {
-    fancy_message error "Could not find build.sh"
+    fancy_message error $"Could not find build.sh"
     { ignore_stack=true; return 1; }
 }
 
@@ -155,7 +155,7 @@ function genextr_declare() {
 
 function clean_fail_down() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    fancy_message info "Cleaning up"
+    fancy_message info $"Cleaning up"
     cleanup
     exit 1
 }
@@ -170,9 +170,9 @@ function hashcheck() {
     # Check if the input hash is the same as of the downloaded file.
     # Skip this test if the hash variable doesn't exist in the pacscript.
     if [[ -n ${inputHash} && ${inputHash} != "${fileHash}" ]]; then
-        fancy_message error "Hashes do not match (with method ${hashMethod})"
-        fancy_message sub "Got:      ${BRed}${fileHash}${NC}"
-        fancy_message sub "Expected: ${BGreen}${inputHash}${NC}"
+        fancy_message error $"Hashes do not match (with method ${hashMethod})"
+        fancy_message sub $"Got:      ${BRed}${fileHash}${NC}"
+        fancy_message sub $"Expected: ${BGreen}${inputHash}${NC}"
         error_log 16 "install ${pacname}"
         clean_fail_down
     fi
@@ -181,7 +181,7 @@ function hashcheck() {
 function fail_down() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     error_log 1 "download ${pacname}"
-    fancy_message error "Failed to download package"
+    fancy_message error $"Failed to download package"
     clean_fail_down
 }
 
@@ -191,7 +191,7 @@ function gather_down() {
     mkdir -p "${srcdir}"
     cd "${srcdir}" || {
         error_log 1 "gather-main ${pacname}"
-        fancy_message error "Could not enter into the main directory ${YELLOW}${srcdir}${NC}"
+        fancy_message error $"Could not enter into the main directory ${YELLOW}${srcdir}${NC}"
         clean_fail_down
     }
 }
@@ -204,18 +204,18 @@ function git_down() {
     if [[ -n ${git_branch} || -n ${git_tag} ]]; then
         if [[ -n ${git_branch} ]]; then
             revision="${git_branch}"
-            fancy_message info "Cloning ${BPurple}${dest}${NC} from branch ${CYAN}${git_branch}${NC}"
+            fancy_message info $"Cloning ${BPurple}${dest}${NC} from branch ${CYAN}${git_branch}${NC}"
         elif [[ -n ${git_tag} ]]; then
             revision="${git_tag}"
-            fancy_message info "Cloning ${BPurple}${dest}${NC} from tag ${CYAN}${git_tag}${NC}"
+            fancy_message info $"Cloning ${BPurple}${dest}${NC} from tag ${CYAN}${git_tag}${NC}"
         fi
         gitopts="-b ${revision}"
     elif [[ -n ${git_commit} ]]; then
         gitopts=("--no-checkout" "--filter=blob:none")
-        fancy_message info "Cloning ${BPurple}${dest}${NC} with no blobs"
+        fancy_message info $"Cloning ${BPurple}${dest}${NC} with no blobs"
     else
         unset gitopts
-        fancy_message info "Cloning ${BPurple}${dest}${NC} from ${CYAN}HEAD${NC}"
+        fancy_message info $"Cloning ${BPurple}${dest}${NC} from ${CYAN}HEAD${NC}"
     fi
     # git clone quietly, with no history, and if submodules are there, download with 10 jobs
     # shellcheck disable=SC2086,SC2031
@@ -223,11 +223,11 @@ function git_down() {
     # cd into the directory
     cd "./${dest}" 2> /dev/null || {
         error_log 1 "install ${pacname}"
-        fancy_message error "Could not enter into the cloned git repository"
+        fancy_message error $"Could not enter into the cloned git repository"
         clean_fail_down
     }
     if [[ -n ${git_commit} ]]; then
-        fancy_message sub "Fetching commit ${CYAN}${git_commit:0:8}${NC}"
+        fancy_message sub $"Fetching commit ${CYAN}${git_commit:0:8}${NC}"
         eval "git fetch ${quiet} origin \"${git_commit}\" ${silence[*]}" || fail_down
         eval "git checkout ${quiet} --force \"${git_commit}\" ${silence[*]}" || fail_down
     fi
@@ -241,16 +241,16 @@ function git_down() {
         # don't send this one to /dev/null like the others
         git submodule update "${quiet[@]}" --init --recursive --depth=1 || fail_down
     else
-        fancy_message sub "Not cloning submodules for ${PURPLE}${dest}${NC}"
+        fancy_message sub $"Not cloning submodules for ${PURPLE}${dest}${NC}"
     fi
     # Check the integrity
     calc_git_pkgver
     local cloned_git_hash
     cloned_git_hash="$(git rev-parse HEAD)"
-    fancy_message sub "Checking integrity of ${YELLOW}${cloned_git_hash:0:8}${NC}"
-    git fsck --full --no-progress --no-verbose || fancy_message warn "Could not check integrity of cloned git repository"
+    fancy_message sub $"Checking integrity of ${YELLOW}${cloned_git_hash:0:8}${NC}"
+    git fsck --full --no-progress --no-verbose || fancy_message warn $"Could not check integrity of cloned git repository"
     if [[ ${cloned_git_hash:0:8} != "${comp_git_pkgver}" ]]; then
-        fancy_message error "Cloned git repository does not match upstream hash"
+        fancy_message error $"Cloned git repository does not match upstream hash"
         clean_fail_down
     fi
     # if first source entry & archive is not set, this becomes archive
@@ -263,7 +263,7 @@ function git_down() {
 
 function net_down() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    fancy_message info "Downloading ${BPurple}${dest}${NC}"
+    fancy_message info $"Downloading ${BPurple}${dest}${NC}"
     # shellcheck disable=SC2031
     download "$source_url" "$dest" || fail_down
 }
@@ -271,7 +271,7 @@ function net_down() {
 function hashcheck_down() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if [[ -n ${expectedHash} && ${expectedHash} != "SKIP" ]]; then
-        fancy_message sub "Checking hash ${YELLOW}${expectedHash:0:8}${NC}[${YELLOW}...${NC}]"
+        fancy_message sub $"Checking hash ${YELLOW}${expectedHash:0:8}${NC}[${YELLOW}...${NC}]"
         hashcheck "${dest}" "${expectedHash}" "${hashsum_method}" || { ignore_stack=true; return 1; }
     fi
 }
@@ -287,7 +287,7 @@ function genextr_down() {
         fi
     done
     if ${extract}; then
-        fancy_message sub "Extracting ${CYAN}${dest}${NC}"
+        fancy_message sub $"Extracting ${CYAN}${dest}${NC}"
         ${ext_method} "${dest}" 1>&1 2> /dev/null
         if [[ -f ${dest} ]]; then
             rm -f "${dest:?}"
@@ -298,7 +298,7 @@ function genextr_down() {
         # cd in
         cd ./*/ 2> /dev/null || {
             error_log 1 "install ${pacname}"
-            fancy_message warn "Could not enter into the extracted archive"
+            fancy_message warn $"Could not enter into the extracted archive"
         }
         # if archive is not set and we entered something, this becomes archive
         if [[ -z ${_archive} && ${PWD} != "${srcdir}" ]]; then
@@ -315,17 +315,17 @@ function deb_down() {
     local upgrade=false
     if is_package_installed "${pacname}" && type -t pre_upgrade &> /dev/null; then
         upgrade=true
-        fancy_message sub "Running pre_upgrade hook"
+        fancy_message sub $"Running pre_upgrade hook"
         if ! pre_upgrade; then
             error_log 5 "pre_upgrade hook"
-            fancy_message error "Could not run preinst hook successfully"
+            fancy_message error $"Could not run preinst hook successfully"
             exit 1
         fi
     elif type -t pre_install &> /dev/null; then
-        fancy_message sub "Running pre_install hook"
+        fancy_message sub $"Running pre_install hook"
         if ! pre_install; then
             error_log 5 "pre_install hook"
-            fancy_message error "Could not run preinst hook successfully"
+            fancy_message error $"Could not run preinst hook successfully"
             exit 1
         fi
     fi
@@ -334,38 +334,38 @@ function deb_down() {
         if [[ -f "${PACDIR}-pacdeps-$pacname" ]]; then
             sudo apt-mark auto "${gives:-$pacname}" 2> /dev/null
         fi
-        fancy_message info "Performing post install operations"
+        fancy_message info $"Performing post install operations"
         if type -t post_upgrade &> /dev/null && ${upgrade}; then
-            fancy_message sub "Running post_upgrade hook"
+            fancy_message sub $"Running post_upgrade hook"
             if ! post_upgrade; then
                 error_log 5 "post_upgrade hook"
-                fancy_message error "Could not run postinst hook successfully"
+                fancy_message error $"Could not run postinst hook successfully"
                 exit 1
             fi
         elif type -t post_install &> /dev/null; then
-            fancy_message sub "Running post_install hook"
+            fancy_message sub $"Running post_install hook"
             if ! post_install; then
                 error_log 5 "post_install hook"
-                fancy_message error "Could not run postinst hook successfully"
+                fancy_message error $"Could not run postinst hook successfully"
                 exit 1
             fi
         fi
-        fancy_message sub "Storing pacscript"
+        fancy_message sub $"Storing pacscript"
         sudo mkdir -p "/var/cache/pacstall/${pacname}/${full_version}"
         if ! cd "$DIR" 2> /dev/null; then
             error_log 1 "install ${pacname}"
-            fancy_message error "Could not enter into ${DIR}"
+            fancy_message error $"Could not enter into ${DIR}"
             exit 1
         fi
         sudo cp -r "${pacfile}" "/var/cache/pacstall/${pacname}/${full_version}"
         sudo chmod o+r "/var/cache/pacstall/${pacname}/${full_version}/${PACKAGE}.pacscript"
         sudo cp -r "${srcinfile}" "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
         sudo chmod o+r "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
-        fancy_message info "Done installing ${BPurple}${pacname}${NC}"
+        fancy_message info $"Done installing ${BPurple}${pacname}${NC}"
         unset expectedHash dest source_url git_branch git_tag git_commit ext_deps ext_method hashsum_method payload_arr
         return 0
     else
-        fancy_message error "Failed to install the package"
+        fancy_message error $"Failed to install the package"
         error_log 14 "install ${pacname}"
         sudo apt purge "${gives:-$pacname}" -y > /dev/null
         clean_fail_down
@@ -374,7 +374,7 @@ function deb_down() {
 
 function file_down() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    fancy_message info "Copying local archive ${BPurple}${dest}${NC}"
+    fancy_message info $"Copying local archive ${BPurple}${dest}${NC}"
     # shellcheck disable=SC2031
     cp -r "${source_url}" "${dest}" || fail_down
     genextr_declare
@@ -390,7 +390,7 @@ function file_down() {
         # cd in
         cd "./${dest}" 2> /dev/null || {
             error_log 1 "install ${pacname}"
-            fancy_message warn "Could not enter into the copied archive"
+            fancy_message warn $"Could not enter into the copied archive"
         }
         # if archive not exist and we entered, its here
         if [[ -z ${_archive} && ${PWD} != "${srcdir}" ]]; then
@@ -564,7 +564,7 @@ function get_compatible_releases() {
         fi
     done
     if [[ ${is_compat} == "false" || ${is_compat} != "true" ]]; then
-        fancy_message error "This Pacscript does not work on ${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${distro_name}:${distro_version_number}${NC}"
+        fancy_message error $"This Pacscript does not work on ${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${distro_name}:${distro_version_number}${NC}"
         { ignore_stack=true; return 1; }
     fi
     return 0
@@ -598,20 +598,20 @@ function get_incompatible_releases() {
         if [[ $key == "*:"* ]]; then
             # check for `22.04` or `jammy`
             if [[ ${key#*:} == "${distro_version_number}" || ${key#*:} == "${distro_version_name}" ]]; then
-                fancy_message error "This Pacscript does not work on ${BBlue}${distro_version_name}${NC}/${BBlue}${distro_version_number}${NC}"
+                fancy_message error $"This Pacscript does not work on ${BBlue}${distro_version_name}${NC}/${BBlue}${distro_version_number}${NC}"
                 { ignore_stack=true; return 1; }
             fi
         # check for `ubuntu:*`
         elif [[ $key == *":*" ]]; then
             # check for `ubuntu`
             if [[ ${key%%:*} == "${distro_name}" ]]; then
-                fancy_message error "This Pacscript does not work on ${BBlue}${distro_name}${NC}"
+                fancy_message error $"This Pacscript does not work on ${BBlue}${distro_name}${NC}"
                 { ignore_stack=true; return 1; }
             fi
         else
             # check for `ubuntu:jammy` or `ubuntu:22.04`
             if [[ $key == "${distro_name}:${distro_version_name}" || $key == "${distro_name}:${distro_version_number}" ]]; then
-                fancy_message error "This Pacscript does not work on ${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${distro_name}:${distro_version_number}${NC}"
+                fancy_message error $"This Pacscript does not work on ${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${distro_name}:${distro_version_number}${NC}"
                 { ignore_stack=true; return 1; }
             fi
         fi
@@ -631,7 +631,7 @@ function is_compatible_arch() {
         for pacarch in "${inarch[@]}"; do
             for farch in "${FARCH[@]}"; do
                 if [[ ${pacarch} == "${farch}" ]]; then
-                    fancy_message warn "This package is for ${BBlue}${farch}${NC}, which is a foreign architecture"
+                    fancy_message warn $"This package is for ${BBlue}${farch}${NC}, which is a foreign architecture"
                     # ideally we want to `export CARCH="${farch}"`, but this won't fundamentally work until we utilize .SRCINFO properly
                     ret=0
                     break
@@ -643,7 +643,7 @@ function is_compatible_arch() {
         done
     fi
     if ((ret == 1)); then
-        fancy_message error "This Pacscript does not work on ${BBlue}${CARCH}/${AARCH}${NC}"
+        fancy_message error $"This Pacscript does not work on ${BBlue}${CARCH}/${AARCH}${NC}"
     fi
     { ignore_stack=true; return "${ret}"; }
 }
@@ -660,7 +660,7 @@ function check_builddepends() {
     if [[ ${just_build[0]} == *":${just_arch}" ]]; then
         if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_build[0]%:*})?architecture(${just_arch})" -F "%p")" ]]; then
             if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_build[0]%:*}$)?architecture(${just_arch})" -F "%p")" ]]; then
-                fancy_message sub "${CYAN}${realbuild}${NC} ${RED}✗${NC} [required]"
+                fancy_message sub $"${CYAN}${realbuild}${NC} ${RED}✗${NC} [required]"
                 echo "${realbuild}" >> "${PACDIR}-missing-${type}-${pacname}"
                 return 0
             fi
@@ -669,7 +669,7 @@ function check_builddepends() {
         if [[ -z "$(apt-cache search --no-generate --names-only "^${just_build[0]}\$" 2> /dev/null || apt-cache search --names-only "^${just_build[0]}\$")" ]]; then
             if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_build[0]})?architecture(${just_arch})" -F "%p")" ]]; then
                 if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_build[0]}$)?architecture(${just_arch})" -F "%p")" ]]; then
-                    fancy_message sub "${CYAN}${realbuild}${NC} ${RED}✗${NC} [required]"
+                    fancy_message sub $"${CYAN}${realbuild}${NC} ${RED}✗${NC} [required]"
                     echo "${realbuild}" >> "${PACDIR}-missing-${type}-${pacname}"
                     return 0
                 fi
@@ -680,13 +680,13 @@ function check_builddepends() {
         if ! is_apt_package_installed "${just_build[0]}"; then
             echo "${realbuild}" >> "${PACDIR}-needed-${type}-${pacname}"
             just_arch="$(dep_const.get_arch "${just_build[0]}")"
-            fancy_message sub "${CYAN}${just_build[0]}${NC} ${GREEN}↑${YELLOW}↓${NC} [remote]"
+            fancy_message sub $"${CYAN}${just_build[0]}${NC} ${GREEN}↑${YELLOW}↓${NC} [remote]"
         else
-            fancy_message sub "${CYAN}${just_build[0]}${NC} ${GREEN}✓${NC} [installed]"
+            fancy_message sub $"${CYAN}${just_build[0]}${NC} ${GREEN}✓${NC} [installed]"
         fi
     else
         echo "${realbuild}" >> "${PACDIR}-unsatisifed-${type}-${pacname}"
-        fancy_message sub "${CYAN}${realbuild}${NC} ${RED}✗${NC} [required]"
+        fancy_message sub $"${CYAN}${realbuild}${NC} ${RED}✗${NC} [required]"
     fi
 }
 
@@ -695,7 +695,7 @@ function install_builddepends() {
     # shellcheck disable=SC2034
     local c m needed_builddepends missing_builddepends unsatisfied_builddepends needed_checkdepends missing_checkdepends unsatisfied_checkdepends bdeps_array bdeps_str cdeps_array bcons_array bcons_str
     if [[ -n ${makedepends[*]} ]]; then
-        fancy_message info "Checking build dependencies"
+        fancy_message info $"Checking build dependencies"
         for i in "needed-builddepends" "missing-builddepends" "unsatisfied-builddepends"; do
             sudo rm -rf "${PACDIR}-${i}-${pacname}"
             touch "${PACDIR}-${i}-${pacname}"
@@ -710,14 +710,14 @@ function install_builddepends() {
         done
         if [[ -n ${missing_builddepends[*]} ]]; then
             echo -ne "\t"
-            fancy_message error "${CYAN}$(printf "${CYAN}%s${NC}, " "${missing_builddepends[@]}" | sed 's/, $/\n/')${NC} does not exist in apt repositories"
+            fancy_message error $"${CYAN}$(printf "${CYAN}%s${NC}, " "${missing_builddepends[@]}" | sed 's/, $/\n/')${NC} does not exist in apt repositories"
         fi
         if [[ -n ${unsatisfied_builddepends[*]} ]]; then
             echo -ne "\t"
-            fancy_message error "${CYAN}$(printf "${CYAN}%s${NC}, " "${unsatisfied_builddepends[@]}" | sed 's/, $/\n/')${NC} version(s) cannot be satisfied"
+            fancy_message error $"${CYAN}$(printf "${CYAN}%s${NC}, " "${unsatisfied_builddepends[@]}" | sed 's/, $/\n/')${NC} version(s) cannot be satisfied"
         fi
         if [[ -n ${missing_builddepends[*]} || -n ${unsatisfied_builddepends[*]} ]]; then
-            fancy_message info "Cleaning up"
+            fancy_message info $"Cleaning up"
             cleanup
             exit 1
         fi
@@ -725,7 +725,7 @@ function install_builddepends() {
         dep_const.format_control needed_builddepends bdeps_array
     fi
     if [[ -n ${checkdepends[*]} ]]; then
-        fancy_message info "Checking check dependencies"
+        fancy_message info $"Checking check dependencies"
         for i in "needed-checkdepends" "missing-checkdepends" "unsatisfied-checkdepends"; do
             sudo rm -rf "${PACDIR}-${i}-${pacname}"
             touch "${PACDIR}-${i}-${pacname}"
@@ -740,14 +740,14 @@ function install_builddepends() {
         done
         if [[ -n ${missing_checkdepends[*]} ]]; then
             echo -ne "\t"
-            fancy_message error "${CYAN}$(printf "${CYAN}%s${NC}, " "${missing_checkdepends[@]}" | sed 's/, $/\n/')${NC} does not exist in apt repositories"
+            fancy_message error $"${CYAN}$(printf "${CYAN}%s${NC}, " "${missing_checkdepends[@]}" | sed 's/, $/\n/')${NC} does not exist in apt repositories"
         fi
         if [[ -n ${unsatisfied_checkdepends[*]} ]]; then
             echo -ne "\t"
-            fancy_message error "${CYAN}$(printf "${CYAN}%s${NC}, " "${unsatisfied_checkdepends[@]}" | sed 's/, $/\n/')${NC} version(s) cannot be satisfied"
+            fancy_message error $"${CYAN}$(printf "${CYAN}%s${NC}, " "${unsatisfied_checkdepends[@]}" | sed 's/, $/\n/')${NC} version(s) cannot be satisfied"
         fi
         if [[ -n ${missing_checkdepends[*]} || -n ${unsatisfied_checkdepends[*]} ]]; then
-            fancy_message info "Cleaning up"
+            fancy_message info $"Cleaning up"
             cleanup
             exit 1
         fi
@@ -766,7 +766,7 @@ function install_builddepends() {
         dep_const.comma_array bdeps_array bdeps_str
     fi
     if ((${#needed_builddepends[@]} != 0 || ${#needed_checkdepends[@]} != 0 || ${#makeconflicts[@]} != 0 || ${#checkconflicts[@]} != 0)); then
-        fancy_message sub "Creating build dependency/conflicts dummy package"
+        fancy_message sub $"Creating build dependency/conflicts dummy package"
         (
             unset pre_{upgrade,install,remove} post_{upgrade,install,remove} priority provides conflicts replaces breaks gives enhances recommends suggests custom_fields
             # shellcheck disable=SC2030
@@ -781,7 +781,7 @@ function install_builddepends() {
             deblog "Conflicts" "${bcons_str}"
             makedeb
         ) || {
-            fancy_message error "Failed to install build or check dependencies"
+            fancy_message error $"Failed to install build or check dependencies"
             # shellcheck disable=SC2031
             error_log 8 "install ${pacname}"
             clean_fail_down

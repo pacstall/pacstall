@@ -26,12 +26,12 @@
 { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
 
 source "$METADIR/$PACKAGE" 2> /dev/null || {
-    fancy_message error "$PACKAGE is not installed"
+    fancy_message error $"$PACKAGE is not installed"
     exit 1
 }
 
 if ! dpkg -l "${_gives:-$_name}" &> /dev/null; then
-    fancy_message error "$PACKAGE is not installed"
+    fancy_message error $"$PACKAGE is not installed"
     exit 1
 fi
 
@@ -42,7 +42,7 @@ sudo apt-get remove "${_gives:-$_name}" -y || {
 
 if [[ -n ${_ppa[*]} ]]; then
     for ppa in "${_ppa[@]}"; do
-        fancy_message warn "You may have dangling PPAs on your system. You can remove them using '${UCyan}sudo add-apt-repository --remove ppa:$ppa${NC}'"
+        fancy_message warn $"You may have dangling PPAs on your system. You can remove them using '${UCyan}sudo add-apt-repository --remove ppa:$ppa${NC}'"
     done
 fi
 
