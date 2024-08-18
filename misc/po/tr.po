@@ -1,109 +1,116 @@
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2024-08-18 12:37+0000\n"
+"Last-Translator: TCr3 <tcreeper.earth@gmail.com>\n"
+"Language-Team: Turkish <https://hosted.weblate.org/projects/pacstall/"
+"pacstall/tr/>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.7\n"
 
 #: pacstall:270 misc/scripts/build.sh:163 misc/scripts/build.sh:691
 #: misc/scripts/fetch-sources.sh:158 misc/scripts/fetch-sources.sh:720
 #: misc/scripts/fetch-sources.sh:750 misc/scripts/package-base.sh:157
 #: misc/scripts/package-base.sh:176
 msgid "Cleaning up"
-msgstr ""
+msgstr "Temizleniyor"
 
 #: pacstall:383
 msgid "Packagelist not found"
-msgstr ""
+msgstr "Packagelist bulunamadı"
 
 #: pacstall:386
 msgid "Failed to download file, check your connection"
-msgstr ""
+msgstr "Dosya indirmesi başarısız, bağlantınızı kontrol edin"
 
 #: pacstall:392
 msgid "The URL cannot be found"
-msgstr ""
+msgstr "URL bulunamadı"
 
 #: pacstall:400
 msgid "Failed with http code ${http_code}"
-msgstr ""
+msgstr "${http_code} http kodu ile başarısız oldu"
 
 #: pacstall:622
 msgid "Reading input from pipe"
-msgstr ""
+msgstr "Pipe'tan girdi okunuyor"
 
 #: pacstall:681
 msgid "Only one command flag can be used at a time"
-msgstr ""
+msgstr "Aynı anda yalnız bir komut flag'i kullanılabilir"
 
 #: pacstall:719
 msgid "Pacstall is already running another instance"
-msgstr ""
+msgstr "Pacstall başka bir işlemde çalışıyor"
 
 #: pacstall:725
 msgid "The other instance has finished running, unlocking"
-msgstr ""
+msgstr "Diğer işlem çalışmayı bitirdi, kilit açılıyor"
 
 #: pacstall:734
 msgid "Prompts are disabled"
-msgstr ""
+msgstr "İstemler devre dışı"
 
 #: pacstall:741
 msgid "Package will be built and not installed"
-msgstr ""
+msgstr "Paket inşa edilecek ve kurulmayacak"
 
 #: pacstall:811 pacstall:884 pacstall:946 pacstall:987 pacstall:1005
 #: pacstall:1173 pacstall:1229 misc/scripts/query-info.sh:28
 msgid "You failed to specify a package"
-msgstr ""
+msgstr "Bir paket belirtemediniz"
 
 #: pacstall:816
 msgid "The installation of ${PACKAGE:-package} was interrupted, removing files"
-msgstr ""
+msgstr "${PACKAGE:-package} paketinin kurulumu kesildi, dosyalar kaldırılıyor"
 
 #: pacstall:853
 msgid "$2 does not exist"
-msgstr ""
+msgstr "$2 yok"
 
 #: pacstall:891
 msgid "Payload not found"
-msgstr ""
+msgstr "Yük bulunamadı"
 
 #: pacstall:904 pacstall:951 pacstall:991 pacstall:1111 pacstall:1183
 #: pacstall:1216
 msgid "Could not connect to the internet"
-msgstr ""
+msgstr "Genel ağa bağlanılamadı"
 
 #: pacstall:921 pacstall:1198 misc/scripts/upgrade.sh:276
 msgid "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
-msgstr ""
+msgstr "${GREEN}${PACKAGE}${NC} pacscript'inin indirmesi başarısız"
 
 #: pacstall:928
 msgid "Failed to install ${GREEN}${PACKAGE}${NC}"
-msgstr ""
+msgstr "${GREEN}${PACKAGE}${NC} paketinin kurulumu başarısız"
 
 #: pacstall:1014
 msgid "Failed to remove ${GREEN}${PACKAGE}${NC}"
-msgstr ""
+msgstr "${GREEN}${PACKAGE}${NC} paketinin kaldırması başarısız"
 
 #: pacstall:1035
 msgid "You failed to specify a repo to add"
-msgstr ""
+msgstr "Eklenilecek bir depo belirtemediniz"
 
 #: pacstall:1056
 msgid "You failed to specify a repo to remove"
-msgstr ""
+msgstr "Kaldırılacak bir depo belirtemediniz"
 
 #: pacstall:1080
 msgid "$PWD is not a git repository"
-msgstr ""
+msgstr "$PWD bir git deposu değil"
 
 #: pacstall:1117
 msgid ""
 "The repository you are trying to upgrade to contains a version of pacstall "
 "that cannot be updated from $(pacstall -V)"
 msgstr ""
+"Yükseltme için belirttiğiniz depo $(pacstall -V) ile güncellenemeyecek bir "
+"pacstall sürümü içeriyor"
 
 #: pacstall:1118
 msgid ""
@@ -111,545 +118,578 @@ msgid ""
 "information on how to reinstall. Most packages will also need to be "
 "reinstalled"
 msgstr ""
+"Yeniden kurulum yönergeleri için https://github.com/$USERNAME/pacstall/tree/$"
+"BRANCH sitesine uğrayın. Çoğu paket de yeniden kuruluma gereksinim duyacaktır"
 
 #: pacstall:1130 pacstall:1211
 msgid "Invalid argument '$*'"
-msgstr ""
+msgstr "Geçersiz argüman '$*'"
 
 #: pacstall:1142
 msgid "Nothing installed yet"
-msgstr ""
+msgstr "Şu an herhangi bir paket kurulu değil"
 
 #: pacstall:1203
 msgid ""
 "${GREEN}${PACKAGE}${NC}'s pacscript is downloaded to ${GREEN}${PWD}/$PACKAGE."
 "pacscript${NC}"
 msgstr ""
+"${GREEN}${PACKAGE}${NC} paketinin pacscript'i ${GREEN}${PWD}/$PACKAGE."
+"pacscript${NC}'e indirildi"
 
 #: pacstall:1233 misc/scripts/query-info.sh:33
 msgid "Package is not installed"
-msgstr ""
+msgstr "Paket kurulu değil"
 
 #: pacstall:1267
 msgid "Keeping build files"
-msgstr ""
+msgstr "İnşa dosyaları tutuluyor"
 
 #: pacstall:1272
 msgid "Skipping check() if present"
-msgstr ""
+msgstr "Eğer varsa check() atlanıyor"
 
 #: pacstall:1277
 msgid "Downloading package entries quietly"
-msgstr ""
+msgstr "Paket girişleri sessizce indiriliyor"
 
 #: pacstall:1282
 msgid "Building package without bwrap sandbox"
-msgstr ""
+msgstr "Paket bwrap sandbox olmadan inşa ediliyor"
 
 #: pacstall:1283
 msgid "Be cautious, this exposes your system to potential harm"
-msgstr ""
+msgstr "Dikkat edin, bu sisteminizi olası tehditlere maruz bırakır"
 
 #: misc/scripts/add-repo.sh:29 misc/scripts/build.sh:41
 #: misc/scripts/search.sh:31 misc/scripts/upgrade.sh:47
 msgid "Could not find manage-repo.sh"
-msgstr ""
+msgstr "manage-repo.sh bulunamadı"
 
 #: misc/scripts/add-repo.sh:39 misc/scripts/add-repo.sh:47
 #: misc/scripts/add-repo.sh:55 misc/scripts/add-repo.sh:63
 #: misc/scripts/add-repo.sh:70
 msgid "Assuming that git branch is ${GREEN}master${NC}"
-msgstr ""
+msgstr "Git dalının ${GREEN}master${NC} olduğu varsayılıyor"
 
 #: misc/scripts/add-repo.sh:90
 msgid "Repository alias cannot be 'none'"
-msgstr ""
+msgstr "Deponun öteki adı 'none' olamaz"
 
 #: misc/scripts/add-repo.sh:93
 msgid "Repository alias cannot be a hyperlink"
-msgstr ""
+msgstr "Deponun öteki adı bir hyperlink olamaz"
 
 #: misc/scripts/add-repo.sh:96
 msgid "Repository alias cannot start with '/', '~', or '.'"
-msgstr ""
+msgstr "Deponun öteki adı '/', '~' veya '.' ile başlayamaz"
 
 #: misc/scripts/add-repo.sh:99
 msgid ""
 "The alias ${RED}@${ALIAS}${NC} is already in use by ${CYAN}$(repo.get_where "
 "alias \"${ALIAS}\")${NC}"
 msgstr ""
+"Öteki ad ${RED}@${ALIAS}${NC} zaten ${CYAN}$(repo.get_where alias \"${ALIAS}"
+"\")${NC} tarafından kullanılmakta"
 
 #: misc/scripts/add-repo.sh:104
 msgid "${CYAN}${REPO}${NC} is already in the repo list, doing nothing${NC}"
-msgstr ""
+msgstr "${CYAN}${REPO}${NC} zaten depo listesinde, hiçbir şey yapılmayacak${NC}"
 
 #: misc/scripts/add-repo.sh:112
 msgid ""
 "If the URL is a private repo, edit ${CYAN}\\e]8;;file://$SCRIPTDIR/repo/"
 "pacstallrepo\\a$SCRIPTDIR/repo/pacstallrepo\\e]8;;\\a${NC}"
 msgstr ""
+"Eğer URL bir gizli depo ise ${CYAN}\\e]8;;file://$SCRIPTDIR/repo/"
+"pacstallrepo\\a$SCRIPTDIR/repo/pacstallrepo\\e]8;;\\a${NC} dosyasını "
+"düzenleyin"
 
 #: misc/scripts/add-repo.sh:113
 msgid "packagelist file not found"
-msgstr ""
+msgstr "packagelist dosyası bulunamadı"
 
 #: misc/scripts/add-repo.sh:154
 msgid "The repo list has been updated"
-msgstr ""
+msgstr "Depo listesi güncellendi"
 
 #: misc/scripts/build.sh:29
 msgid "Could not find version-constraints"
-msgstr ""
+msgstr "version-constraints bulunamadı"
 
 #: misc/scripts/build.sh:35 misc/scripts/upgrade.sh:41
 msgid "Could not find srcinfo.sh"
-msgstr ""
+msgstr "srcinfo.sh bulunamadı"
 
 #: misc/scripts/build.sh:75 misc/scripts/build.sh:84
 msgid "${BLUE}${real_dep}${NC} ${RED}✗${NC} [required]"
-msgstr ""
+msgstr "${BLUE}${real_dep}${NC} ${RED}✗${NC} [zorunlu]"
 
 #: misc/scripts/build.sh:95
 msgid "${BLUE}${just_name[0]} ${GREEN}↑${YELLOW}↓${NC} [remote]"
-msgstr ""
+msgstr "${BLUE}${just_name[0]} ${GREEN}↑${YELLOW}↓${NC} [uzak]"
 
 #: misc/scripts/build.sh:97
 msgid "${BLUE}${just_name[0]} ${GREEN}✓${NC} [installed]"
-msgstr ""
+msgstr "${BLUE}${just_name[0]} ${GREEN}✓${NC} [kurulu]"
 
 #: misc/scripts/build.sh:156
 msgid ""
 "${BLUE}$(printf \"${BLUE}%s${NC}, \" \"${missing_deps[@]}\" | sed 's/, $/"
 "\\n/')${NC} does not exist in apt repositories"
 msgstr ""
+"${BLUE}$(printf \"${BLUE}%s${NC}, \" \"${missing_deps[@]}\" | sed 's/, $/\\n"
+"/')${NC} apt depolarında yok"
 
 #: misc/scripts/build.sh:160
 msgid ""
 "${BLUE}$(printf \"${BLUE}%s${NC}, \" \"${not_satisfied_deps[@]}\" | sed 's/, "
 "$/\\n/')${NC} version(s) cannot be satisfied"
 msgstr ""
+"${BLUE}$(printf \"${BLUE}%s${NC}, \" \"${not_satisfied_deps[@]}\" | sed 's/, "
+"$/\\n"
+"/')${NC} sürümü/sürümleri karşılanamıyor"
 
 #: misc/scripts/build.sh:172
 msgid "Optional dependencies"
-msgstr ""
+msgstr "İsteğe bağlı bağımlılıklar"
 
 #: misc/scripts/build.sh:176
 msgid ""
 "${BLUE}$(printf \"${BLUE}%s${NC}, \" \"${missing_optdeps[@]}\" | sed 's/, $/"
 "\\n/')${NC} does not exist in apt repositories"
 msgstr ""
+"${BLUE}$(printf \"${BLUE}%s${NC}, \" \"${missing_optdeps[@]}\" | sed 's/, $/"
+"\\n"
+"/')${NC} apt depolarında yok"
 
 #: misc/scripts/build.sh:180
 msgid ""
 "${BLUE}$(printf \"${BLUE}%s${NC}, \" \"${not_satisfied_optdeps[@]}\" | sed "
 "'s/, $/\\n/')${NC} version(s) cannot be satisfied"
 msgstr ""
+"${BLUE}$(printf \"${BLUE}%s${NC}, \" \"${not_satisfied_optdeps[@]}\" | sed '"
+"s/, $/\\n"
+"/')${NC} sürümü/sürümleri karşılanamıyor"
 
 #: misc/scripts/build.sh:207
 msgid ""
 "${BGreen}${skip_opt[*]}${NC} has exceeded the maximum number of optional "
 "dependencies. Skipping"
 msgstr ""
+"${BGreen}${skip_opt[*]}${NC} maksimum isteğe bağlı bağımlılıklar sayısını "
+"aştı. Atlanıyor"
 
 #: misc/scripts/build.sh:217
 msgid "Selecting packages ${BCyan}${not_installed_yet_optdeps[*]%%:\\ *}${NC}"
-msgstr ""
+msgstr "${BCyan}${not_installed_yet_optdeps[*]%%:\\ *}${NC} paketleri seçiliyor"
 
 #: misc/scripts/build.sh:236
 msgid "Checking apt dependencies"
-msgstr ""
+msgstr "Apt bağımlılıkları kontrol ediliyor"
 
 #: misc/scripts/build.sh:327
 msgid "Packing control.tar"
-msgstr ""
+msgstr "control.tar paketleniyor"
 
 #: misc/scripts/build.sh:337
 msgid "Packing data.tar"
-msgstr ""
+msgstr "data.tar paketleniyor"
 
 #: misc/scripts/build.sh:340
 msgid "Compressing"
-msgstr ""
+msgstr "Sıkıştırılıyor"
 
 #: misc/scripts/build.sh:365
 msgid "Packaging ${BGreen}$pacname${NC} as ${BBlue}$gives${NC}"
-msgstr ""
+msgstr "${BGreen}$pacname${NC} ${BBlue}$gives${NC} olarak paketleniyor"
 
 #: misc/scripts/build.sh:367
 msgid "Packaging ${BGreen}$pacname${NC}"
-msgstr ""
+msgstr "${BGreen}$pacname${NC} paketleniyor"
 
 #: misc/scripts/build.sh:596
 msgid "Empty key... Skipping"
-msgstr ""
+msgstr "Boş anahtar... Atlanıyor"
 
 #: misc/scripts/build.sh:602
 msgid "'${file}' cannot contain empty path... Skipping"
-msgstr ""
+msgstr "'${file}' boş bir yol içeremez... Atlanıyor"
 
 #: misc/scripts/build.sh:606 misc/scripts/build.sh:614
 msgid "'${file}' cannot contain path starting with '/'... Skipping"
-msgstr ""
+msgstr "'${file}' '/' ile başlayan bir yol içeremez... Atlanıyor"
 
 #: misc/scripts/build.sh:609
 msgid "'${file}' is inside the package... Skipping"
-msgstr ""
+msgstr "'${file}' paketin içerisinde... Atlanıyor"
 
 #: misc/scripts/build.sh:688
 msgid "Failed to install $pacname deb"
-msgstr ""
+msgstr "$pacname deb'inin kurulumu başarısız"
 
 #: misc/scripts/build.sh:712
 msgid "Package built at ${BGreen}$PACDEB_DIR/$debname.deb${NC}"
-msgstr ""
+msgstr "Paket ${BGreen}$PACDEB_DIR/$debname.deb${NC} konumunda inşa edildi"
 
 #: misc/scripts/build.sh:714
 msgid ""
 "Moving ${BGreen}$STAGEDIR/$pacname${NC} to ${BGreen}${PACDIR}-no-build/"
 "$pacname${NC}"
 msgstr ""
+"${BGreen}$STAGEDIR/$pacname${NC} ${BGreen}${PACDIR}-no-build/$pacname${NC} "
+"dizinine taşınıyor"
 
 #: misc/scripts/build.sh:731
 msgid "Repacking ${CYAN}${pacname/\\-deb/}.deb${NC}"
-msgstr ""
+msgstr "${CYAN}${pacname/\\-deb/}.deb${NC} yeniden paketleniyor"
 
 #: misc/scripts/bwrap.sh:113
 msgid "Running $func"
-msgstr ""
+msgstr "$func çalıştırılıyor"
 
 #: misc/scripts/checks.sh:33
 msgid "Package does not contain 'pacname'"
-msgstr ""
+msgstr "Paket 'pacname' içermiyor"
 
 #: misc/scripts/checks.sh:38
 msgid "pacname: '${pacname}' must be at least two characters long"
-msgstr ""
+msgstr "pacname: '${pacname}' en az iki karakter uzunluğunda olmalıdır"
 
 #: misc/scripts/checks.sh:43
 msgid "pacname: '${pacname}' must start with an alphanumeric character"
-msgstr ""
+msgstr "pacname: '${pacname}' alfanümerik bir karakterle başlamalıdır"
 
 #: misc/scripts/checks.sh:47
 msgid "pacname: '${pacname}' contains uppercase characters"
-msgstr ""
+msgstr "pacname: '${pacname}' büyük harf içeriyor"
 
 #: misc/scripts/checks.sh:51
 msgid ""
 "pacname: '${pacname}' contains characters that are not lowercase, digits, "
 "minus, or periods"
 msgstr ""
+"pacname: '${pacname}' küçük harf, rakam, eksi veya nokta dışında karakterler "
+"içeriyor"
 
 #: misc/scripts/checks.sh:61
 msgid "Deb package does not contain gives"
-msgstr ""
+msgstr "Deb paketi 'gives' içermiyor"
 
 #: misc/scripts/checks.sh:67
 msgid "'gives' must be at least two characters long"
-msgstr ""
+msgstr "'gives' en az iki karakter uzunluğunda olmalıdır"
 
 #: misc/scripts/checks.sh:72
 msgid "'gives' must start with an alphanumeric character"
-msgstr ""
+msgstr "'gives' alfanümerik bir karakterle başlamalıdır"
 
 #: misc/scripts/checks.sh:76
 msgid "'gives' contains uppercase characters"
-msgstr ""
+msgstr "'gives' büyük harf içeriyor"
 
 #: misc/scripts/checks.sh:80
 msgid ""
 "'gives' contains characters that are not lowercase, digits, minus, or periods"
-msgstr ""
+msgstr "'gives' küçük harf, rakam, eksi veya nokta dışında karakterler içeriyor"
 
 #: misc/scripts/checks.sh:92
 msgid "'pkgrel' is empty"
-msgstr ""
+msgstr "'pkgrel' boş"
 
 #: misc/scripts/checks.sh:95
 msgid "'pkgrel' must be an unsigned integer"
-msgstr ""
+msgstr "'pkgrel' işaretsiz bir tam sayı olmalıdır"
 
 #: misc/scripts/checks.sh:107
 msgid "'epoch' is empty"
-msgstr ""
+msgstr "'epoch' boş"
 
 #: misc/scripts/checks.sh:110
 msgid "'epoch' must be an unsigned integer"
-msgstr ""
+msgstr "'epoch' işaretsiz bir tam sayı olmalıdır"
 
 #: misc/scripts/checks.sh:123
 msgid ""
 "'pkgver' must contain only alphanumerics and the characters . + - ~ and "
 "should start with a digit"
 msgstr ""
+"'pkgver' yalnız alfanümerik ve . + - ~ karakterlerinden oluşmalı ve bir "
+"rakam ile başlamalıdır"
 
 #: misc/scripts/checks.sh:127
 msgid "Package does not contain 'pkgver'"
-msgstr ""
+msgstr "Paket 'pkgver' içermiyor"
 
 #: misc/scripts/checks.sh:144
 msgid ".deb files can only be provided as a singular 'source'"
-msgstr ""
+msgstr ".deb dosyaları yalnız tek bir 'source' ile sağlanabilir"
 
 #: misc/scripts/checks.sh:175
 msgid "Package does not contain 'source'"
-msgstr ""
+msgstr "Paket 'source' içermiyor"
 
 #: misc/scripts/checks.sh:228
 msgid "Package does not contain 'pkgdesc'"
-msgstr ""
+msgstr "Paket 'pkgdesc' içermiyor"
 
 #: misc/scripts/checks.sh:237
 msgid "Package does not have a maintainer. Please be advised"
-msgstr ""
+msgstr "Paket bir bakımcıya sahip değil. Dikkat edin"
 
 #: misc/scripts/checks.sh:282
 msgid "'${dep_type}' index '${idx}' cannot be empty"
-msgstr ""
+msgstr "'${dep_type}' index '${idx}' boş olamaz"
 
 #: misc/scripts/checks.sh:286 misc/scripts/checks.sh:290
 msgid "'${dep_type}' index '${idx}' is not formatted correctly"
-msgstr ""
+msgstr "'${dep_type}' index '${idx}' düzgün biçimlendirilmemiş"
 
 #: misc/scripts/checks.sh:309
 msgid "'ppa' index '${idx}' cannot be empty"
-msgstr ""
+msgstr "'ppa' index '${idx}' boş olamaz"
 
 #: misc/scripts/checks.sh:320
 msgid "'ppa' index '${idx}' cannot start with 'ppa:'"
-msgstr ""
+msgstr "'ppa' index '${idx}' 'ppa:' ile başlayamaz"
 
 #: misc/scripts/checks.sh:328
 msgid "'ppa' index '${idx}' is improperly formatted"
-msgstr ""
+msgstr "'ppa' index '${idx}' yanlış biçimlendirilmiş"
 
 #: misc/scripts/checks.sh:359
 msgid "'${rel_type}' index '${idx}' cannot be empty"
-msgstr ""
+msgstr "'${rel_type}' index '${idx}' boş olamaz"
 
 #: misc/scripts/checks.sh:425
 msgid "'custom_fields' index '${idx}' cannot be empty"
-msgstr ""
+msgstr "'custom_fields' index '${idx}' boş olamaz"
 
 #: misc/scripts/checks.sh:430
 msgid "'${tlogvar}' is already used as a field in pacstall"
-msgstr ""
+msgstr "'${tlogvar}' zaten pacstall'da bir alan olarak kullanılıyor"
 
 #: misc/scripts/checks.sh:436
 msgid "'${tlogvar}' custom field cannot contain a space in field name"
-msgstr ""
+msgstr "'${tlogvar}' özel alanı adında bir boşluk içeremez"
 
 #: misc/scripts/checks.sh:440
 msgid "'${tlogvar}' custom field cannot contain a number in field name"
-msgstr ""
+msgstr "'${tlogvar}' özel alanı alan adında sayı içeremez"
 
 #: misc/scripts/checks.sh:444
 msgid ""
 "'${tlogvar}' custom field must capitalize only the first letter of each word "
 "in field name"
 msgstr ""
+"'${tlogvar}' özel alanının adında her sözcüğün yalnızca ilk harfinin büyük "
+"olması gerekir"
 
 #: misc/scripts/checks.sh:448
 msgid "'${tlogvar}' custom field cannot start or end with a hyphen"
-msgstr ""
+msgstr "'${tlogvar}' özel alanı tire ile başlayamaz veya bitemez"
 
 #: misc/scripts/checks.sh:475 misc/scripts/checks.sh:500
 #: misc/scripts/checks.sh:508
 msgid "Only one checksum method can be provided for hashes"
-msgstr ""
+msgstr "Hash'ler için yalnızca bir checksum yöntemi belirtilebilir"
 
 #: misc/scripts/checks.sh:536
 msgid "'hash' is improperly formatted"
-msgstr ""
+msgstr "'hash' yanlış biçimlendirilmiş"
 
 #: misc/scripts/checks.sh:551 misc/scripts/checks.sh:574
 msgid "'compatible' and 'incompatible' indices cannot both be provided"
-msgstr ""
+msgstr "'compatible' ve 'incompatible' dizinlerinin ikisi de belirtilemez"
 
 #: misc/scripts/checks.sh:558
 msgid "'compatible' index '${idx}' cannot be empty"
-msgstr ""
+msgstr "'compatible' dizini ${idx}' boş olamaz"
 
 #: misc/scripts/checks.sh:566
 msgid "'compatible' index '${idx}' is improperly formatted"
-msgstr ""
+msgstr "'compatible' dizini '${idx}' yanlış biçimlendirilmiş"
 
 #: misc/scripts/checks.sh:581
 msgid "'incompatible' index '${idx}' cannot be empty"
-msgstr ""
+msgstr "'incompatible' dizini '${idx}' boş olamaz"
 
 #: misc/scripts/checks.sh:589
 msgid "'incompatible' index '${idx}' is improperly formatted"
-msgstr ""
+msgstr "'incompatible' dizini '${idx}' yanlış biçimlendirilmiş"
 
 #: misc/scripts/checks.sh:612
 msgid "'arch' index '${idx}' cannot be empty"
-msgstr ""
+msgstr "'arch' dizini '${idx}' boş olamaz"
 
 #: misc/scripts/checks.sh:623
 msgid "'${el_arch}' is not a valid architecture"
-msgstr ""
+msgstr "'${el_arch}' geçerli bir mimari değil"
 
 #: misc/scripts/checks.sh:636
 msgid "cannot use both Debian and Arch style naming in 'arch' array"
-msgstr ""
+msgstr "'arch' kümesinde Debian ve Arch stili adlandırma beraber kullanılamaz"
 
 #: misc/scripts/checks.sh:649
 msgid "'mask' index '${idx}' cannot be empty"
-msgstr ""
+msgstr "'mask' dizini '${idx}' boş olamaz"
 
 #: misc/scripts/checks.sh:663
 msgid "'bugs' is improperly formatted"
-msgstr ""
+msgstr "'bugs' yanlış biçimlendirilmiş"
 
 #: misc/scripts/checks.sh:676
 msgid "'priority' is empty"
-msgstr ""
+msgstr "'priority' boş"
 
 #: misc/scripts/checks.sh:679
 msgid ""
 "'priority' must be either: 'essential', 'required', 'important', 'standard', "
 "or 'optional'"
 msgstr ""
+"'priority': 'essential', 'required', 'important', 'standard', veya "
+"'optional'dan biri olmalıdır"
 
 #: misc/scripts/checks.sh:694
 msgid "'license' index '${idx}' cannot be empty"
-msgstr ""
+msgstr "'license' dizini '${idx}' boş olamaz"
 
 #: misc/scripts/checks.sh:700
 msgid "'${linlicense}' is not a valid license"
-msgstr ""
+msgstr "'${linlicense}' geçerli bir lisans değil"
 
 #: misc/scripts/fetch-sources.sh:29
 msgid "Could not find build.sh"
-msgstr ""
+msgstr "build.sh bulunamadı"
 
 #: misc/scripts/fetch-sources.sh:173
 msgid "Hashes do not match (with method ${hashMethod})"
-msgstr ""
+msgstr "Hash'ler uyuşmuyor (${hashMethod} yöntemi ile)"
 
 #: misc/scripts/fetch-sources.sh:174
 msgid "Got:      ${BRed}${fileHash}${NC}"
-msgstr ""
+msgstr "Alınan:      ${BRed}${fileHash}${NC}"
 
 #: misc/scripts/fetch-sources.sh:175
 msgid "Expected: ${BGreen}${inputHash}${NC}"
-msgstr ""
+msgstr "Beklenen: ${BGreen}${inputHash}${NC}"
 
 #: misc/scripts/fetch-sources.sh:184
 msgid "Failed to download package"
-msgstr ""
+msgstr "Paket indirmesi başarısız"
 
 #: misc/scripts/fetch-sources.sh:194
 msgid "Could not enter into the main directory ${YELLOW}${srcdir}${NC}"
-msgstr ""
+msgstr "Ana dizine girilemedi ${YELLOW}${srcdir}${NC}"
 
 #: misc/scripts/fetch-sources.sh:207
 msgid "Cloning ${BPurple}${dest}${NC} from branch ${CYAN}${git_branch}${NC}"
-msgstr ""
+msgstr "${CYAN}${git_branch}${NC} dalından ${BPurple}${dest}${NC} klonlanıyor"
 
 #: misc/scripts/fetch-sources.sh:210
 msgid "Cloning ${BPurple}${dest}${NC} from tag ${CYAN}${git_tag}${NC}"
-msgstr ""
+msgstr "${CYAN}${git_tag}${NC} tag'ından ${BPurple}${dest}${NC} klonlanıyor"
 
 #: misc/scripts/fetch-sources.sh:215
 msgid "Cloning ${BPurple}${dest}${NC} with no blobs"
-msgstr ""
+msgstr "Blob'lar olmadan ${BPurple}${dest}${NC} klonlanıyor"
 
 #: misc/scripts/fetch-sources.sh:218
 msgid "Cloning ${BPurple}${dest}${NC} from ${CYAN}HEAD${NC}"
-msgstr ""
+msgstr "${CYAN}HEAD${NC}'dan ${BPurple}${dest}${NC} klonlanıyor"
 
 #: misc/scripts/fetch-sources.sh:226
 msgid "Could not enter into the cloned git repository"
-msgstr ""
+msgstr "Klonlanan git deposuna girilemedi"
 
 #: misc/scripts/fetch-sources.sh:230
 msgid "Fetching commit ${CYAN}${git_commit:0:8}${NC}"
-msgstr ""
+msgstr "Commit ${CYAN}${git_commit:0:8}${NC} alınıyor"
 
 #: misc/scripts/fetch-sources.sh:244
 msgid "Not cloning submodules for ${PURPLE}${dest}${NC}"
-msgstr ""
+msgstr "${PURPLE}${dest}${NC} için alt modüller klonlanmıyor"
 
 #: misc/scripts/fetch-sources.sh:250
 msgid "Checking integrity of ${YELLOW}${cloned_git_hash:0:8}${NC}"
-msgstr ""
+msgstr "${YELLOW}${cloned_git_hash:0:8}${NC}'in bütünlüğü kontrol ediliyor"
 
 #: misc/scripts/fetch-sources.sh:251
 msgid "Could not check integrity of cloned git repository"
-msgstr ""
+msgstr "Klonlanan git deposunun bütünlüğü kontrol edilemedi"
 
 #: misc/scripts/fetch-sources.sh:253
 msgid "Cloned git repository does not match upstream hash"
-msgstr ""
+msgstr "Klonlanan git deposu güncel hash ile eşleşmiyor"
 
 #: misc/scripts/fetch-sources.sh:266
 msgid "Downloading ${BPurple}${dest}${NC}"
-msgstr ""
+msgstr "${BPurple}${dest}${NC} indiriliyor"
 
 #: misc/scripts/fetch-sources.sh:274
 msgid "Checking hash ${YELLOW}${expectedHash:0:8}${NC}[${YELLOW}...${NC}]"
 msgstr ""
+"${YELLOW}${expectedHash:0:8}${NC}[${YELLOW}...${NC}] hash'i kontrol ediliyor"
 
 #: misc/scripts/fetch-sources.sh:290
 msgid "Extracting ${CYAN}${dest}${NC}"
-msgstr ""
+msgstr "${CYAN}${dest}${NC} ayıklanıyor"
 
 #: misc/scripts/fetch-sources.sh:301
 msgid "Could not enter into the extracted archive"
-msgstr ""
+msgstr "Ayıklanan arşive girilemedi"
 
 #: misc/scripts/fetch-sources.sh:318
 msgid "Running pre_upgrade hook"
-msgstr ""
+msgstr "pre_upgrade hook'u çalıştırılıyor"
 
 #: misc/scripts/fetch-sources.sh:321 misc/scripts/fetch-sources.sh:328
 msgid "Could not run preinst hook successfully"
-msgstr ""
+msgstr "preinst hook'u başarılı bir şekilde çalıştırılamadı"
 
 #: misc/scripts/fetch-sources.sh:325
 msgid "Running pre_install hook"
-msgstr ""
+msgstr "pre_install hook'u çalıştırılıyor"
 
 #: misc/scripts/fetch-sources.sh:337 misc/scripts/package.sh:374
 msgid "Performing post install operations"
-msgstr ""
+msgstr "Kurulum sonrası işlemler yapılıyor"
 
 #: misc/scripts/fetch-sources.sh:339
 msgid "Running post_upgrade hook"
-msgstr ""
+msgstr "post_upgrade hook'u çalıştırılıyor"
 
 #: misc/scripts/fetch-sources.sh:342 misc/scripts/fetch-sources.sh:349
 msgid "Could not run postinst hook successfully"
-msgstr ""
+msgstr "postinst hook'u başarılı bir şekilde çalıştırılamadı"
 
 #: misc/scripts/fetch-sources.sh:346
 msgid "Running post_install hook"
-msgstr ""
+msgstr "post_install hook'u çalıştırılıyor"
 
 #: misc/scripts/fetch-sources.sh:353 misc/scripts/package.sh:375
 msgid "Storing pacscript"
-msgstr ""
+msgstr "pacscript depolanıyor"
 
 #: misc/scripts/fetch-sources.sh:357 misc/scripts/package.sh:379
 msgid "Could not enter into ${DIR}"
-msgstr ""
+msgstr "${DIR} dizinine girilemedi"
 
 #: misc/scripts/fetch-sources.sh:364 misc/scripts/package.sh:389
 msgid "Done installing ${BPurple}${pacname}${NC}"
-msgstr ""
+msgstr "${BPurple}${pacname}${NC} kurulumu bitti"
 
 #: misc/scripts/fetch-sources.sh:368
 msgid "Failed to install the package"
-msgstr ""
+msgstr "Paket kurulumu başarısız oldu"
 
 #: misc/scripts/fetch-sources.sh:377
 msgid "Copying local archive ${BPurple}${dest}${NC}"
-msgstr ""
+msgstr "Yerel arşiv ${BPurple}${dest}${NC} kopyalanıyor"
 
 #: misc/scripts/fetch-sources.sh:393
 msgid "Could not enter into the copied archive"
-msgstr ""
+msgstr "Kopyalanan arşive girilemedi"
 
 #: misc/scripts/fetch-sources.sh:567 misc/scripts/fetch-sources.sh:614
 msgid ""
@@ -657,163 +697,189 @@ msgid ""
 "${distro_version_name}${NC}/${BBlue}${distro_name}:"
 "${distro_version_number}${NC}"
 msgstr ""
+"Bu Pacscript ${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${dis"
+"tro_name}:${distro_version_number}${NC} sisteminde çalışmaz"
 
 #: misc/scripts/fetch-sources.sh:601
 msgid ""
 "This Pacscript does not work on ${BBlue}${distro_version_name}${NC}/"
 "${BBlue}${distro_version_number}${NC}"
 msgstr ""
+"Bu Pacscript "
+"${BBlue}${distro_version_name}${NC}/${BBlue}${distro_version_number}${NC} "
+"sisteminde çalışmaz"
 
 #: misc/scripts/fetch-sources.sh:608
 msgid "This Pacscript does not work on ${BBlue}${distro_name}${NC}"
-msgstr ""
+msgstr "Bu Pacscript ${BBlue}${distro_name}${NC} sisteminde çalışmaz"
 
 #: misc/scripts/fetch-sources.sh:634
 msgid ""
 "This package is for ${BBlue}${farch}${NC}, which is a foreign architecture"
-msgstr ""
+msgstr "Bu paket ${BBlue}${farch}${NC} içindir ki bu da yabancı bir mimaridir"
 
 #: misc/scripts/fetch-sources.sh:646
 msgid "This Pacscript does not work on ${BBlue}${CARCH}/${AARCH}${NC}"
-msgstr ""
+msgstr "Bu Pacscript ${BBlue}${CARCH}/${AARCH}${NC} mimaride çalışmaz"
 
 #: misc/scripts/fetch-sources.sh:663 misc/scripts/fetch-sources.sh:672
 #: misc/scripts/fetch-sources.sh:689
 msgid "${CYAN}${realbuild}${NC} ${RED}✗${NC} [required]"
-msgstr ""
+msgstr "${CYAN}${realbuild}${NC} ${RED}✗${NC} [zorunlu]"
 
 #: misc/scripts/fetch-sources.sh:683
 msgid "${CYAN}${just_build[0]}${NC} ${GREEN}↑${YELLOW}↓${NC} [remote]"
-msgstr ""
+msgstr "${CYAN}${just_build[0]}${NC} ${GREEN}↑${YELLOW}↓${NC} [uzak]"
 
 #: misc/scripts/fetch-sources.sh:685
 msgid "${CYAN}${just_build[0]}${NC} ${GREEN}✓${NC} [installed]"
-msgstr ""
+msgstr "${CYAN}${just_build[0]}${NC} ${GREEN}✓${NC} [kurulu]"
 
 #: misc/scripts/fetch-sources.sh:698
 msgid "Checking build dependencies"
-msgstr ""
+msgstr "İnşa bağımlılıkları kontrol ediliyor"
 
 #: misc/scripts/fetch-sources.sh:713
 msgid ""
 "${CYAN}$(printf \"${CYAN}%s${NC}, \" \"${missing_builddepends[@]}\" | sed "
 "'s/, $/\\n/')${NC} does not exist in apt repositories"
 msgstr ""
+"${CYAN}$(printf \"${CYAN}%s${NC}, \" \"${missing_builddepends[@]}\" | sed 's/"
+", $/\\n"
+"/')${NC} apt depolarında yok"
 
 #: misc/scripts/fetch-sources.sh:717
 msgid ""
 "${CYAN}$(printf \"${CYAN}%s${NC}, \" \"${unsatisfied_builddepends[@]}\" | "
 "sed 's/, $/\\n/')${NC} version(s) cannot be satisfied"
 msgstr ""
+"${CYAN}$(printf \"${CYAN}%s${NC}, \" \"${unsatisfied_builddepends[@]}\" | "
+"sed 's/, $/\\n"
+"/')${NC} sürümü/sürümleri karşılanamadı"
 
 #: misc/scripts/fetch-sources.sh:728
 msgid "Checking check dependencies"
-msgstr ""
+msgstr "Kontrol bağımlılıkları kontrol ediliyor"
 
 #: misc/scripts/fetch-sources.sh:743
 msgid ""
 "${CYAN}$(printf \"${CYAN}%s${NC}, \" \"${missing_checkdepends[@]}\" | sed "
 "'s/, $/\\n/')${NC} does not exist in apt repositories"
 msgstr ""
+"${CYAN}$(printf \"${CYAN}%s${NC}, \" \"${missing_checkdepends[@]}\" | sed 's/"
+", $/\\n"
+"/')${NC} apt depolarında yok"
 
 #: misc/scripts/fetch-sources.sh:747
 msgid ""
 "${CYAN}$(printf \"${CYAN}%s${NC}, \" \"${unsatisfied_checkdepends[@]}\" | "
 "sed 's/, $/\\n/')${NC} version(s) cannot be satisfied"
 msgstr ""
+"${CYAN}$(printf \"${CYAN}%s${NC}, \" \"${unsatisfied_checkdepends[@]}\" | "
+"sed 's/, $/\\n"
+"/')${NC} sürümü/sürümleri karşılanamadı"
 
 #: misc/scripts/fetch-sources.sh:769
 msgid "Creating build dependency/conflicts dummy package"
-msgstr ""
+msgstr "İnşa bağımlılığı/çakışmaları sahte paketi oluşturuluyor"
 
 #: misc/scripts/fetch-sources.sh:784
 msgid "Failed to install build or check dependencies"
-msgstr ""
+msgstr "İnşa veya kontrol bağımlılıkları kurulumu başarısız oldu"
 
 #: misc/scripts/get-pacscript.sh:38 misc/scripts/upgrade.sh:257
 msgid "Could not enter ${PACDIR}"
-msgstr ""
+msgstr "${PACDIR} dizinine girilemedi"
 
 #: misc/scripts/get-pacscript.sh:49 misc/scripts/get-pacscript.sh:57
 msgid "Could not download ${URL}"
-msgstr ""
+msgstr "${URL} indirilemedi"
 
 #: misc/scripts/manage-repo.sh:169
 msgid "'repo.get_where' valid types are: 'alias', 'metalink'"
-msgstr ""
+msgstr "'repo.get_where' geçerli türleri: 'alias', 'metalink'"
 
 #: misc/scripts/manage-repo.sh:185
 msgid "'repo.get_all_type' valid types are: 'url', 'alias', 'metalink'"
-msgstr ""
+msgstr "'repo.get_all_type' geçerli türleri: 'url', 'alias', 'metalink'"
 
 #: misc/scripts/package-base.sh:29
 msgid "Could not find checks.sh"
-msgstr ""
+msgstr "checks.sh bulunamadı"
 
 #: misc/scripts/package-base.sh:35 misc/scripts/upgrade.sh:35
 msgid "Could not find fetch-sources.sh"
-msgstr ""
+msgstr "fetch-sources.sh bulunamadı"
 
 #: misc/scripts/package-base.sh:41
 msgid "\\nInterrupted, cleaning up"
 msgstr ""
+"\\n"
+"Kesildi, temizleniyor"
 
 #: misc/scripts/package-base.sh:92
 msgid "Found pkgbase: ${PURPLE}${pkgbase}${NC}"
-msgstr ""
+msgstr "pkgbase bulundu: ${PURPLE}${pkgbase}${NC}"
 
 #: misc/scripts/package-base.sh:118
 msgid ""
 "${BGreen}${skip_pkg[*]}${NC} has exceeded the maximum number of packages to "
 "build. Skipping"
 msgstr ""
+"${BGreen}${skip_pkg[*]}${NC} inşa edilebilecek maksimum paket sayısını aştı. "
+"Atlanıyor"
 
 #: misc/scripts/package-base.sh:128
 msgid ""
 "${PKGPATH:+${PKGPATH}/}${PACKAGE}${PKGPATH:+.pacscript}:${CHILD} does not "
 "exist"
-msgstr ""
+msgstr "${PKGPATH:+${PKGPATH}/}${PACKAGE}${PKGPATH:+.pacscript}:${CHILD} yok"
 
 #: misc/scripts/package-base.sh:139
 msgid "Selecting packages ${BCyan}${pacnames[*]%%:\\ *}${NC}"
 msgstr ""
+"${PKGPATH:+${PKGPATH}/}${PACKAGE}${PKGPATH:+.pacscript}:${CHILD} paketleri "
+"seçiliyor"
 
 #: misc/scripts/package-base.sh:143
 msgid "Packaging ${GREEN}${pacname}${NC}"
-msgstr ""
+msgstr "${GREEN}${pacname}${NC} paketleniyor"
 
 #: misc/scripts/package-base.sh:147 misc/scripts/package-base.sh:169
 msgid "Failed to install ${GREEN}${pacname}${NC}"
-msgstr ""
+msgstr "${GREEN}${pacname}${NC} kurulumu başarısız oldu"
 
 #: misc/scripts/package-base.sh:191
 msgid "${UCyan}PACSTALL_BUILD_CORES${NC} is not an integer. Falling back to 1"
 msgstr ""
+"${UCyan}PACSTALL_BUILD_CORES${NC} bir tam sayı değil. 1'e geri dönülüyor"
 
 #: misc/scripts/package-base.sh:213
 msgid "Editor not found, falling back to 'sensible-editor'"
-msgstr ""
+msgstr "Düzenleyici bulunamadı, 'sensible-editor'e dönülüyor"
 
 #: misc/scripts/package-base.sh:218
 msgid "Sourcing pacscript"
-msgstr ""
+msgstr "pacscript kaynaktan alınıyor"
 
 #: misc/scripts/package-base.sh:241
 msgid "Could not source pacscript"
-msgstr ""
+msgstr "pacscript kaynaktan alınamadı"
 
 #: misc/scripts/package.sh:28
 msgid "This package will connect to the internet during its build process."
-msgstr ""
+msgstr "Bu paket inşa sürecinde genel ağa bağlanacak."
 
 #: misc/scripts/package.sh:47
 msgid "Failed to download '${source[0]}'"
-msgstr ""
+msgstr "'${source[0]}' indirmesi başarısız oldu"
 
 #: misc/scripts/package.sh:50
 msgid ""
 "Moving ${BGreen}${PACDIR}/${dest}${NC} to ${BGreen}${PACDEB_DIR}/${dest}${NC}"
 msgstr ""
+"${BGreen}${PACDIR}/${dest}${NC} ${BGreen}${PACDEB_DIR}/${dest}${NC} dizinine "
+"taşınıyor"
 
 #: misc/scripts/package.sh:63
 msgid ""
@@ -821,232 +887,255 @@ msgid ""
 "${PACKAGE}}${NC}. By installing the masked package, you may cause damage to "
 "your operating system"
 msgstr ""
+"Paket ${BBlue}${offending_pkg}${NC} ${BBlue}${pacname:-${PACKAGE}}${NC "
+"paketini maskeliyor. Maskelenmiş paketi kurarak işletim sisteminize zarar "
+"verebilirsiniz"
 
 #: misc/scripts/package.sh:66
 msgid ""
 "Somehow, 'getMasks' found masked packages that match the package you want to "
 "install, but 'getMasks_offending_pkg' could not find it. Report this upstream"
 msgstr ""
+"Nasılsa, 'getMasks' kurmak istediğiniz paketle uyuşan maskelenmiş paketler "
+"buldu ancak 'getMasks_offending_pkg' bulamadı. Bunu upstream'e bildirin"
 
 #: misc/scripts/package.sh:145
 msgid ""
 "${RED}$pacname${NC} conflicts with $pkg, which is currently installed by apt"
-msgstr ""
+msgstr "apt ile kurulu ${RED}$pacname${NC}, $pkg ile çakışıyor"
 
 #: misc/scripts/package.sh:153
 msgid ""
 "${RED}$pacname${NC} conflicts with $pkg, which is currently installed by "
 "pacstall"
-msgstr ""
+msgstr "Pacstall ile kurulu ${RED}$pacname${NC}, $pkg ile çakışıyor"
 
 #: misc/scripts/package.sh:167
 msgid "${RED}$pacname${NC} breaks $pkg, which is currently installed by apt"
-msgstr ""
+msgstr "apt ile kurulu ${RED}$pacname${NC}, $pkg paketini bozuyor"
 
 #: misc/scripts/package.sh:174
 msgid ""
 "${RED}$pacname${NC} breaks $pkg, which is currently installed by pacstall"
-msgstr ""
+msgstr "Pacstall ile kurulu ${RED}$pacname${NC}, $pkg paketini bozuyor"
 
 #: misc/scripts/package.sh:192
 msgid "Checking pacstall dependencies"
-msgstr ""
+msgstr "Pacstall bağımlılıkları kontrol ediliyor"
 
 #: misc/scripts/package.sh:209
 msgid "${PURPLE}${pdep}${NC} ${GREEN}↑${YELLOW}↓${NC} [update]"
-msgstr ""
+msgstr "${PURPLE}${pdep}${NC} ${GREEN}↑${YELLOW}↓${NC} [güncelleme]"
 
 #: misc/scripts/package.sh:211 misc/scripts/package.sh:222
 msgid "Failed to install dependency (${pdep} from ${PACKAGE})"
-msgstr ""
+msgstr "Bağımlılık kurulumu başarısız oldu (${PACKAGE}'den ${pdep})"
 
 #: misc/scripts/package.sh:216
 msgid "${PURPLE}${pdep}${NC} ${GREEN}✓${NC} [installed]"
-msgstr ""
+msgstr "${PURPLE}${pdep}${NC} ${GREEN}✓${NC} [kurulu]"
 
 #: misc/scripts/package.sh:221
 msgid "${PURPLE}${pdep}${NC} ${RED}✗${NC} [required]"
-msgstr ""
+msgstr "${PURPLE}${pdep}${NC} ${RED}✗${NC} [zorunlu]"
 
 #: misc/scripts/package.sh:237
 msgid "${dest} is associated with multiple source entries"
-msgstr ""
+msgstr "${dest} birden fazla kaynak girişleriyle ilişkilendirilmiş"
 
 #: misc/scripts/package.sh:264
 msgid "Retrieving packages"
-msgstr ""
+msgstr "Paketler alınıyor"
 
 #: misc/scripts/package.sh:351
 msgid "Running functions"
-msgstr ""
+msgstr "Fonksiyonlar çalıştırılıyor"
 
 #: misc/scripts/package.sh:356
 msgid "Could not ${function} ${pacname} properly"
-msgstr ""
+msgstr "${pacname} düzgünce ${function} edilemedi"
 
 #: misc/scripts/package.sh:364
 msgid "Could not enter into ${HOME}"
-msgstr ""
+msgstr "${HOME} dizinine girilemedi"
 
 #: misc/scripts/quality-assurance.sh:49
 msgid "${CYAN}$provider${NC} is not a valid provider!"
-msgstr ""
+msgstr "${CYAN}$provider${NC} geçerli bir sağlayıcı değil!"
 
 #: misc/scripts/quality-assurance.sh:50
 msgid "available providers are: 'github'"
-msgstr ""
+msgstr "geçerli sağlayıcılar: 'github'"
 
 #: misc/scripts/quality-assurance.sh:59
 msgid "Returning ${CYAN}$SCRIPTDIR/repo/pacstallrepo${NC} backup"
-msgstr ""
+msgstr "${CYAN}$SCRIPTDIR/repo/pacstallrepo${NC} yedeği dönülüyor"
 
 #: misc/scripts/quality-assurance.sh:68
 msgid "'number' and 'package' cannot be empty!"
-msgstr ""
+msgstr "'number' ve 'package' boş olamaz!"
 
 #: misc/scripts/quality-assurance.sh:69
 msgid ""
 "use the syntax: -Qa ${GREEN}package${BYellow}#${YELLOW}NUM${NC}(${BPurple}"
 "@${PURPLE}metalink${NC})"
 msgstr ""
+"bu sözdizimini kullanın: -Qa ${GREEN}package${BYellow}#${YELLOW}NUM${NC}(${BP"
+"urple}@${PURPLE}metalink${NC})"
 
 #: misc/scripts/quality-assurance.sh:74
 msgid "Backing up ${CYAN}$SCRIPTDIR/repo/pacstallrepo${NC}"
-msgstr ""
+msgstr "${CYAN}$SCRIPTDIR/repo/pacstallrepo${NC} yedekleniyor"
 
 #: misc/scripts/quality-assurance.sh:77
 msgid "Installing ${GREEN}$inst${NC}(${PURPLE}$login${NC}:${RED}$pr${NC})"
-msgstr ""
+msgstr "${GREEN}$inst${NC}(${PURPLE}$login${NC}:${RED}$pr${NC}) kuruluyor"
 
 #: misc/scripts/query-info.sh:99
 msgid "Key '${QUERY}' does not exist"
-msgstr ""
+msgstr "Anahtar '${QUERY}' yok"
 
 #: misc/scripts/remove.sh:29 misc/scripts/remove.sh:34
 msgid "$PACKAGE is not installed"
-msgstr ""
+msgstr "$PACKAGE kurulu değil"
 
 #: misc/scripts/remove.sh:45
 msgid ""
 "You may have dangling PPAs on your system. You can remove them using "
 "'${UCyan}sudo add-apt-repository --remove ppa:$ppa${NC}'"
 msgstr ""
+"Sisteminizde askıda olan PPA'lar olabilir. Onları '${UCyan}sudo add-apt-"
+"repository --remove ppa:$ppa${NC}' komutu ile kaldırabilirsiniz"
 
 #: misc/scripts/search.sh:252
 msgid ""
 "There is no package with the name $IRed${SEARCH%%@*}$NC in the repo "
 "$CYAN$REPONAME$NC"
 msgstr ""
+"$CYAN$REPONAME$NC deposunda $IRed${SEARCH%%@*}$NC adında bir paket bulunmuyor"
 
 #: misc/scripts/search.sh:254
 msgid ""
 "There is no package with the name $IRed${PACKAGE%%@*}$NC in the repo "
 "$CYAN$REPONAME$NC"
 msgstr ""
+"$CYAN$REPONAME$NC deposunda $IRed${PACKAGE%%@*}$NC adında bir paket "
+"bulunmuyor"
 
 #: misc/scripts/search.sh:286
 msgid ""
 "There is no package with the name $IRed${INFOQUERY%%@*}$NC in the repo "
 "$CYAN$REPONAME$NC"
 msgstr ""
+"$CYAN$REPONAME$NC deposunda $IRed${INFOQUERY%%@*}$NC adında bir paket "
+"bulunmuyor"
 
 #: misc/scripts/search.sh:302
 msgid "$IRed$REPONAME$NC is not on your repo list or does not exist"
-msgstr ""
+msgstr "$IRed$REPONAME$NC depo listenizde değil ya da mevcut değil"
 
 #: misc/scripts/search.sh:357
 msgid "There is no package with the name $IRed${SEARCH%%@*}$NC"
-msgstr ""
+msgstr "$IRed${SEARCH%%@*}$NC adında bir paket yok"
 
 #: misc/scripts/search.sh:375
 msgid ""
 "Add \\\"file://\\\" to the local repo absolute path on \\e]8;;file://"
 "$SCRIPTDIR/repo/pacstallrepo\\a$CYAN$SCRIPTDIR/repo/pacstallrepo$NC\\e]8;;\\a"
 msgstr ""
+"\\e]8;;file://$SCRIPTDIR/repo/pacstallrepo\\a$CYAN$SCRIPTDIR/repo/"
+"pacstallrepo$NC\\e]8;;\\a dosyasında mutlak yerel depo yoluna \\\"file://\\\""
+" ekleyin"
 
 #: misc/scripts/search.sh:379
 msgid ""
 "Replace '~' with the full home path on \\e]8;;file://$SCRIPTDIR/repo/"
 "pacstallrepo\\a$CYAN$SCRIPTDIR/repo/pacstallrepo$NC\\e]8;;\\a"
 msgstr ""
+"\\e]8;;file://$SCRIPTDIR/repo/pacstallrepo\\a$CYAN$SCRIPTDIR/repo/"
+"pacstallrepo$NC\\e]8;;\\a dosyasında '~'ı home dizinin tam yolu ile "
+"değiştirin"
 
 #: misc/scripts/search.sh:385
 msgid "Pacstall repo line improperly formatted: ${CYAN}${URL}${NC}"
-msgstr ""
+msgstr "Pacstall depo satırı yanlış biçimlendirilmiş: ${CYAN}${URL}${NC}"
 
 #: misc/scripts/search.sh:386 misc/scripts/search.sh:391
 msgid ""
 "You can remove or fix the URL by editing $CYAN$SCRIPTDIR/repo/pacstallrepo$NC"
 msgstr ""
+"$CYAN$SCRIPTDIR/repo/pacstallrepo$NC dosyasını düzenleyerek URL'i "
+"kaldırabilir veya düzeltebilirsiniz"
 
 #: misc/scripts/search.sh:390
 msgid "Cannot connect to Pacstall repo: ${CYAN}${URL}${NC}"
-msgstr ""
+msgstr "Pacstall deposuna bağlanılamadı: ${CYAN}${URL}${NC}"
 
 #: misc/scripts/search.sh:438
 msgid "There is no package with the name $IRed$PACKAGE$NC"
-msgstr ""
+msgstr "$IRed$PACKAGE$NC adında bir paket yok"
 
 #: misc/scripts/search.sh:469
 msgid "There is no package with the name $IRed$INFOQUERY$NC"
-msgstr ""
+msgstr "$IRed$INFOQUERY$NC adında bir paket yok"
 
 #: misc/scripts/update.sh:72
 msgid "Invalid URL"
-msgstr ""
+msgstr "Geçersiz URL"
 
 #: misc/scripts/update.sh:78
 msgid "Fetching translation list"
-msgstr ""
+msgstr "Çeviri listesi alınıyor"
 
 #: misc/scripts/update.sh:81
 msgid "Updating directories"
-msgstr ""
+msgstr "Dizinler güncelleniyor"
 
 #: misc/scripts/update.sh:89
 msgid "Checking dependencies"
-msgstr ""
+msgstr "Bağımlılıklar kontrol ediliyor"
 
 #: misc/scripts/update.sh:116
 msgid "Pulling scripts from GitHub"
-msgstr ""
+msgstr "GitHub'dan betikler alınıyor"
 
 #: misc/scripts/update.sh:140
 msgid "Rebuilding translations"
-msgstr ""
+msgstr "Çeviriler yeniden inşa ediliyor"
 
 #: misc/scripts/update.sh:145
 msgid "Rebuilding manpages"
-msgstr ""
+msgstr "man sayfaları yeniden inşa ediliyor"
 
 #: misc/scripts/update.sh:149
 msgid "Making scripts executable"
-msgstr ""
+msgstr "Betikler çalıştırılabilir yapılıyor"
 
 #: misc/scripts/upgrade.sh:29
 msgid "Could not load dep-tree.sh"
-msgstr ""
+msgstr "dep-tree.sh yüklenemedi"
 
 #: misc/scripts/upgrade.sh:104
 msgid "Checking for updates"
-msgstr ""
+msgstr "Güncellemeler kontrol ediliyor"
 
 #: misc/scripts/upgrade.sh:109 misc/scripts/upgrade.sh:235
 msgid "Nothing to upgrade"
-msgstr ""
+msgstr "Yükseltecek bir şey yok"
 
 #: misc/scripts/upgrade.sh:112
 msgid "Building dependency tree"
-msgstr ""
+msgstr "Bağımlılık ağacı inşa ediliyor"
 
 #: misc/scripts/upgrade.sh:123
 msgid "Checking versions"
-msgstr ""
+msgstr "Sürümler kontrol ediliyor"
 
 #: misc/scripts/upgrade.sh:175
 msgid "Package ${GREEN}${i}${NC} is not on ${CYAN}${parsedrepo}${NC} anymore"
 msgstr ""
+"Paket ${GREEN}${i}${NC} artık ${CYAN}${parsedrepo}${NC} deposunda bulunmuyor"
 
 #: misc/scripts/upgrade.sh:238
 msgid "Packages can be upgraded"
-msgstr ""
+msgstr "Paketler yükseltilebilir"
