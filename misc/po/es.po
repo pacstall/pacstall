@@ -1,11 +1,15 @@
-#, fuzzy
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2024-08-18 02:34+0000\n"
+"Last-Translator: Elsie <hwengerstickel@protonmail.com>\n"
+"Language-Team: Spanish <https://hosted.weblate.org/projects/pacstall/"
+"pacstall/es/>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: ENCODING\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.7\n"
 
 #: pacstall:270 misc/scripts/build.sh:163 misc/scripts/build.sh:691
 #: misc/scripts/fetch-sources.sh:158 misc/scripts/fetch-sources.sh:720
@@ -57,7 +61,7 @@ msgstr ""
 #: pacstall:811 pacstall:884 pacstall:946 pacstall:987 pacstall:1005
 #: pacstall:1173 pacstall:1229 misc/scripts/query-info.sh:28
 msgid "You failed to specify a package"
-msgstr "No ha especificado un paquete"
+msgstr "No has especificado un paquete"
 
 #: pacstall:816
 msgid "The installation of ${PACKAGE:-package} was interrupted, removing files"
@@ -65,7 +69,7 @@ msgstr ""
 
 #: pacstall:853
 msgid "$2 does not exist"
-msgstr ""
+msgstr "$2 no existe"
 
 #: pacstall:891
 msgid "Payload not found"
@@ -119,7 +123,7 @@ msgstr ""
 
 #: pacstall:1142
 msgid "Nothing installed yet"
-msgstr ""
+msgstr "Aún no hay nada instalado"
 
 #: pacstall:1203
 msgid ""
