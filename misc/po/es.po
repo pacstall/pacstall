@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-08-18 16:20+0000\n"
+"PO-Revision-Date: 2024-08-18 16:29+0000\n"
 "Last-Translator: Elsie <hwengerstickel@protonmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/es/>\n"
@@ -1208,7 +1208,5 @@ msgid "Packages can be upgraded"
 msgstr "Los paquetes pueden actualizarse"
 
 #: misc/scripts/upgrade.sh:262
-#, fuzzy
-#| msgid "Failed to remove ${GREEN}${PACKAGE}${NC}"
 msgid "Do you want to upgrade ${GREEN}${PACKAGE}${NC}?"
-msgstr "Error al eliminar ${GREEN}${PACKAGE}${NC}"
+msgstr "¿Quieres actualizar ${GREEN}${PACKAGE}${NC}?"
