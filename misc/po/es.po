@@ -11,101 +11,101 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.7\n"
 
-#: pacstall:270 misc/scripts/build.sh:163 misc/scripts/build.sh:691
+#: pacstall:269 misc/scripts/build.sh:163 misc/scripts/build.sh:691
 #: misc/scripts/fetch-sources.sh:158 misc/scripts/fetch-sources.sh:720
 #: misc/scripts/fetch-sources.sh:750 misc/scripts/package-base.sh:157
 #: misc/scripts/package-base.sh:176
 msgid "Cleaning up"
 msgstr "Limpiando"
 
-#: pacstall:383
+#: pacstall:382
 msgid "Packagelist not found"
 msgstr "Packagelist no encontrada"
 
-#: pacstall:386
+#: pacstall:385
 msgid "Failed to download file, check your connection"
 msgstr "No se ha podido descargar el archivo, compruebe su conexión"
 
-#: pacstall:392
+#: pacstall:391
 msgid "The URL cannot be found"
 msgstr "No se encuentra la URL"
 
-#: pacstall:400
+#: pacstall:399
 msgid "Failed with http code ${http_code}"
 msgstr "Fallo con código http ${http_code}"
 
-#: pacstall:622
+#: pacstall:621
 msgid "Reading input from pipe"
 msgstr "Lectura de la entrada de la tubería"
 
-#: pacstall:681
+#: pacstall:680
 msgid "Only one command flag can be used at a time"
 msgstr "Sólo se puede utilizar una bandera de comando a la vez"
 
-#: pacstall:719
+#: pacstall:718
 msgid "Pacstall is already running another instance"
 msgstr "Pacstall ya se está utilizando en otra instancia"
 
-#: pacstall:725
+#: pacstall:724
 msgid "The other instance has finished running, unlocking"
 msgstr "La otra instancia ha terminado su trabajo, desbloqueando"
 
-#: pacstall:734
+#: pacstall:733
 msgid "Prompts are disabled"
 msgstr "Preguntas desactivadas"
 
-#: pacstall:741
+#: pacstall:740
 msgid "Package will be built and not installed"
 msgstr "El paquete se creará pero no se instalará"
 
-#: pacstall:811 pacstall:884 pacstall:946 pacstall:987 pacstall:1005
-#: pacstall:1173 pacstall:1229 misc/scripts/query-info.sh:28
+#: pacstall:810 pacstall:883 pacstall:945 pacstall:986 pacstall:1004
+#: pacstall:1172 pacstall:1228 misc/scripts/query-info.sh:28
 msgid "You failed to specify a package"
 msgstr "No has especificado un paquete"
 
-#: pacstall:816
+#: pacstall:815
 msgid "The installation of ${PACKAGE:-package} was interrupted, removing files"
 msgstr ""
 "La instalación de ${PACKAGE:-package} se ha interrumpido, eliminando archivos"
 
-#: pacstall:853
+#: pacstall:852
 msgid "$2 does not exist"
 msgstr "$2 no existe"
 
-#: pacstall:891
+#: pacstall:890
 msgid "Payload not found"
 msgstr "Carga no encontrada"
 
-#: pacstall:904 pacstall:951 pacstall:991 pacstall:1111 pacstall:1183
-#: pacstall:1216
+#: pacstall:903 pacstall:950 pacstall:990 pacstall:1110 pacstall:1182
+#: pacstall:1215
 msgid "Could not connect to the internet"
 msgstr "No se puede conectar a Internet"
 
-#: pacstall:921 pacstall:1198 misc/scripts/upgrade.sh:276
+#: pacstall:920 pacstall:1197 misc/scripts/upgrade.sh:276
 msgid "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
 msgstr "Error al descargar ${GREEN}${PACKAGE}${NC} pacscript"
 
-#: pacstall:928
+#: pacstall:927
 msgid "Failed to install ${GREEN}${PACKAGE}${NC}"
 msgstr "Error al instalar ${GREEN}${PACKAGE}${NC}"
 
-#: pacstall:1014
+#: pacstall:1013
 msgid "Failed to remove ${GREEN}${PACKAGE}${NC}"
 msgstr "Error al eliminar ${GREEN}${PACKAGE}${NC}"
 
-#: pacstall:1035
+#: pacstall:1034
 msgid "You failed to specify a repo to add"
 msgstr "No ha especificado un repositorio para añadir"
 
-#: pacstall:1056
+#: pacstall:1055
 msgid "You failed to specify a repo to remove"
 msgstr "No ha especificado un repositorio para eliminar"
 
-#: pacstall:1080
+#: pacstall:1079
 msgid "$PWD is not a git repository"
 msgstr "$PWD no es un repositorio git"
 
-#: pacstall:1117
+#: pacstall:1116
 msgid ""
 "The repository you are trying to upgrade to contains a version of pacstall "
 "that cannot be updated from $(pacstall -V)"
@@ -113,7 +113,7 @@ msgstr ""
 "El repositorio al que intenta actualizar contiene una versión de pacstall "
 "que no puede actualizarse desde $(pacstall -V)"
 
-#: pacstall:1118
+#: pacstall:1117
 msgid ""
 "Visit https://github.com/$USERNAME/pacstall/tree/$BRANCH for more "
 "information on how to reinstall. Most packages will also need to be "
@@ -123,43 +123,43 @@ msgstr ""
 "información sobre cómo reinstalar. También será necesario reinstalar la "
 "mayoría de los paquetes"
 
-#: pacstall:1130 pacstall:1211
+#: pacstall:1129 pacstall:1210
 msgid "Invalid argument '$*'"
 msgstr "Argumento no válido '$*'"
 
-#: pacstall:1142
+#: pacstall:1141
 msgid "Nothing installed yet"
 msgstr "Aún no hay nada instalado"
 
-#: pacstall:1203
+#: pacstall:1202
 msgid ""
 "${GREEN}${PACKAGE}${NC}'s pacscript is downloaded to ${GREEN}${PWD}/$PACKAGE."
 "pacscript${NC}"
 msgstr ""
-"El pacscript de ${GREEN}${PACKAGE}${NC} se descarga en "
-"${GREEN}${PWD}/$PACKAGE.pacscript${NC}"
+"El pacscript de ${GREEN}${PACKAGE}${NC} se descarga en ${GREEN}${PWD}/"
+"$PACKAGE.pacscript${NC}"
 
-#: pacstall:1233 misc/scripts/query-info.sh:33
+#: pacstall:1232 misc/scripts/query-info.sh:33
 msgid "Package is not installed"
 msgstr "El paquete no está instalado"
 
-#: pacstall:1267
+#: pacstall:1266
 msgid "Keeping build files"
 msgstr "Mantener los archivos de construcción"
 
-#: pacstall:1272
+#: pacstall:1271
 msgid "Skipping check() if present"
 msgstr "Saltarse check() si está presente"
 
-#: pacstall:1277
+#: pacstall:1276
 msgid "Downloading package entries quietly"
 msgstr "Descarga de entradas de paquetes en silencio"
 
-#: pacstall:1282
+#: pacstall:1281
 msgid "Building package without bwrap sandbox"
 msgstr "Construyendo paquete sin bwrap sandbox"
 
-#: pacstall:1283
+#: pacstall:1282
 msgid "Be cautious, this exposes your system to potential harm"
 msgstr "Ten cuidado, esto expone tu sistema a posibles daños"
 
@@ -199,6 +199,12 @@ msgid "${CYAN}${REPO}${NC} is already in the repo list, doing nothing${NC}"
 msgstr ""
 "${CYAN}${REPO}${NC} ya está en la lista de repositorios, sin hacer nada${NC}"
 
+#: misc/scripts/add-repo.sh:107
+msgid ""
+"Do you want to add ${CYAN}${REPO}${NC}${ALIAS:+ ${BLUE}@${ALIAS}${NC}} to "
+"the repo list?"
+msgstr ""
+
 #: misc/scripts/add-repo.sh:112
 msgid ""
 "If the URL is a private repo, edit ${CYAN}\\e]8;;file://$SCRIPTDIR/repo/"
@@ -210,6 +216,12 @@ msgstr ""
 #: misc/scripts/add-repo.sh:113
 msgid "packagelist file not found"
 msgstr "archivo packagelist no encontrada"
+
+#: misc/scripts/add-repo.sh:142
+msgid ""
+"Do you want to remove ${CYAN}${REPO}${NC}${ALIAS:+ ${BLUE}@${ALIAS}${NC}} "
+"from the repo list?"
+msgstr ""
 
 #: misc/scripts/add-repo.sh:154
 msgid "The repo list has been updated"
@@ -240,17 +252,17 @@ msgid ""
 "${BLUE}$(printf \"${BLUE}%s${NC}, \" \"${missing_deps[@]}\" | sed 's/, $/"
 "\\n/')${NC} does not exist in apt repositories"
 msgstr ""
-"${BLUE}$(printf \"${BLUE}%s${NC}, \" \"${missing_deps[@]}\" | sed 's/, $/\\n"
-"/')${NC} no existe en los repositorios apt"
+"${BLUE}$(printf \"${BLUE}%s${NC}, \" \"${missing_deps[@]}\" | sed 's/, $/"
+"\\n/')${NC} no existe en los repositorios apt"
 
 #: misc/scripts/build.sh:160
 msgid ""
 "${BLUE}$(printf \"${BLUE}%s${NC}, \" \"${not_satisfied_deps[@]}\" | sed 's/, "
 "$/\\n/')${NC} version(s) cannot be satisfied"
 msgstr ""
-"La(s) versión(es) ${BLUE}$(printf \"${BLUE}%s${NC}, \" \""
-"${not_satisfied_deps[@]}\" | sed 's/, $/\\n"
-"/')${NC} no puede(n) ser satisfecha(s)"
+"La(s) versión(es) ${BLUE}$(printf \"${BLUE}%s${NC}, \" "
+"\"${not_satisfied_deps[@]}\" | sed 's/, $/\\n/')${NC} no puede(n) ser "
+"satisfecha(s)"
 
 #: misc/scripts/build.sh:172
 msgid "Optional dependencies"
@@ -262,17 +274,16 @@ msgid ""
 "\\n/')${NC} does not exist in apt repositories"
 msgstr ""
 "${BLUE}$(printf \"${BLUE}%s${NC}, \" \"${missing_optdeps[@]}\" | sed 's/, $/"
-"\\n"
-"/')${NC} no existe en los repositorios"
+"\\n/')${NC} no existe en los repositorios"
 
 #: misc/scripts/build.sh:180
 msgid ""
 "${BLUE}$(printf \"${BLUE}%s${NC}, \" \"${not_satisfied_optdeps[@]}\" | sed "
 "'s/, $/\\n/')${NC} version(s) cannot be satisfied"
 msgstr ""
-"La(s) versión(es) ${BLUE}$(printf \"${BLUE}%s${NC}, \" \""
-"${not_satisfied_optdeps[@]}\" | sed 's/, $/\\n"
-"/')${NC} no puede(n) ser satisfecha(s)"
+"La(s) versión(es) ${BLUE}$(printf \"${BLUE}%s${NC}, \" "
+"\"${not_satisfied_optdeps[@]}\" | sed 's/, $/\\n/')${NC} no puede(n) ser "
+"satisfecha(s)"
 
 #: misc/scripts/build.sh:207
 msgid ""
@@ -418,8 +429,8 @@ msgid ""
 "'pkgver' must contain only alphanumerics and the characters . + - ~ and "
 "should start with a digit"
 msgstr ""
-"'pkgver' debe contener sólo caracteres alfanuméricos y los caracteres . + - ~"
-" y debe empezar por un dígito"
+"'pkgver' debe contener sólo caracteres alfanuméricos y los caracteres . + - "
+"~ y debe empezar por un dígito"
 
 #: misc/scripts/checks.sh:127
 msgid "Package does not contain 'pkgver'"
@@ -598,7 +609,8 @@ msgstr ""
 
 #: misc/scripts/fetch-sources.sh:207
 msgid "Cloning ${BPurple}${dest}${NC} from branch ${CYAN}${git_branch}${NC}"
-msgstr "Clonando ${BPurple}${dest}${NC} desde la rama ${CYAN}${git_branch}${NC}"
+msgstr ""
+"Clonando ${BPurple}${dest}${NC} desde la rama ${CYAN}${git_branch}${NC}"
 
 #: misc/scripts/fetch-sources.sh:210
 msgid "Cloning ${BPurple}${dest}${NC} from tag ${CYAN}${git_tag}${NC}"
@@ -710,16 +722,17 @@ msgid ""
 "${distro_version_name}${NC}/${BBlue}${distro_name}:"
 "${distro_version_number}${NC}"
 msgstr ""
-"Este Pacscript no funciona en ${BBlue}${distro_name}:${distro_version_name}${"
-"NC}/${BBlue}${distro_name}:${distro_version_number}${NC}"
+"Este Pacscript no funciona en ${BBlue}${distro_name}:"
+"${distro_version_name}${NC}/${BBlue}${distro_name}:"
+"${distro_version_number}${NC}"
 
 #: misc/scripts/fetch-sources.sh:601
 msgid ""
 "This Pacscript does not work on ${BBlue}${distro_version_name}${NC}/"
 "${BBlue}${distro_version_number}${NC}"
 msgstr ""
-"Este Pacscript no funciona en "
-"${BBlue}${distro_version_name}${NC}/${BBlue}${distro_version_number}${NC}"
+"Este Pacscript no funciona en ${BBlue}${distro_version_name}${NC}/"
+"${BBlue}${distro_version_number}${NC}"
 
 #: misc/scripts/fetch-sources.sh:608
 msgid "This Pacscript does not work on ${BBlue}${distro_name}${NC}"
@@ -758,18 +771,17 @@ msgid ""
 "${CYAN}$(printf \"${CYAN}%s${NC}, \" \"${missing_builddepends[@]}\" | sed "
 "'s/, $/\\n/')${NC} does not exist in apt repositories"
 msgstr ""
-"${CYAN}$(printf \"${CYAN}%s${NC}, \" \"${missing_builddepends[@]}\" | sed 's/"
-", $/\\n"
-"/')${NC} no existe(n) en los repositorios apt"
+"${CYAN}$(printf \"${CYAN}%s${NC}, \" \"${missing_builddepends[@]}\" | sed "
+"'s/, $/\\n/')${NC} no existe(n) en los repositorios apt"
 
 #: misc/scripts/fetch-sources.sh:717
 msgid ""
 "${CYAN}$(printf \"${CYAN}%s${NC}, \" \"${unsatisfied_builddepends[@]}\" | "
 "sed 's/, $/\\n/')${NC} version(s) cannot be satisfied"
 msgstr ""
-"La(s) versión(es) ${CYAN}$(printf \"${CYAN}%s${NC}, \" \""
-"${unsatisfied_builddepends[@]}\" | sed 's/, $/\\n"
-"/')${NC} no puede(n) cumplirse"
+"La(s) versión(es) ${CYAN}$(printf \"${CYAN}%s${NC}, \" "
+"\"${unsatisfied_builddepends[@]}\" | sed 's/, $/\\n/')${NC} no puede(n) "
+"cumplirse"
 
 #: misc/scripts/fetch-sources.sh:728
 msgid "Checking check dependencies"
@@ -780,18 +792,17 @@ msgid ""
 "${CYAN}$(printf \"${CYAN}%s${NC}, \" \"${missing_checkdepends[@]}\" | sed "
 "'s/, $/\\n/')${NC} does not exist in apt repositories"
 msgstr ""
-"${CYAN}$(printf \"${CYAN}%s${NC}, \" \"${missing_checkdepends[@]}\" | sed 's/"
-", $/\\n"
-"/')${NC} no existe(n) en los repositorios apt"
+"${CYAN}$(printf \"${CYAN}%s${NC}, \" \"${missing_checkdepends[@]}\" | sed "
+"'s/, $/\\n/')${NC} no existe(n) en los repositorios apt"
 
 #: misc/scripts/fetch-sources.sh:747
 msgid ""
 "${CYAN}$(printf \"${CYAN}%s${NC}, \" \"${unsatisfied_checkdepends[@]}\" | "
 "sed 's/, $/\\n/')${NC} version(s) cannot be satisfied"
 msgstr ""
-"La(s) versión(es) ${CYAN}$(printf \"${CYAN}%s${NC}, \" \""
-"${unsatisfied_checkdepends[@]}\" | sed 's/, $/\\n"
-"/')${NC} no puede(n) cumplirse"
+"La(s) versión(es) ${CYAN}$(printf \"${CYAN}%s${NC}, \" "
+"\"${unsatisfied_checkdepends[@]}\" | sed 's/, $/\\n/')${NC} no puede(n) "
+"cumplirse"
 
 #: misc/scripts/fetch-sources.sh:769
 msgid "Creating build dependency/conflicts dummy package"
@@ -828,9 +839,7 @@ msgstr "No se encuentra fetch-sources.sh"
 
 #: misc/scripts/package-base.sh:41
 msgid "\\nInterrupted, cleaning up"
-msgstr ""
-"\\n"
-"Interrumpido, limpieza"
+msgstr "\\nInterrumpido, limpieza"
 
 #: misc/scripts/package-base.sh:92
 msgid "Found pkgbase: ${PURPLE}${pkgbase}${NC}"
@@ -865,7 +874,12 @@ msgstr "Error al instalar ${GREEN}${pacname}${NC}"
 
 #: misc/scripts/package-base.sh:191
 msgid "${UCyan}PACSTALL_BUILD_CORES${NC} is not an integer. Falling back to 1"
-msgstr "${UCyan}PACSTALL_BUILD_CORES${NC} no es un número entero. Retroceso a 1"
+msgstr ""
+"${UCyan}PACSTALL_BUILD_CORES${NC} no es un número entero. Retroceso a 1"
+
+#: misc/scripts/package-base.sh:200
+msgid "(${BPurple}$PACKAGE${NC}) Do you want to view/edit the pacscript?"
+msgstr ""
 
 #: misc/scripts/package-base.sh:213
 msgid "Editor not found, falling back to 'sensible-editor'"
@@ -892,8 +906,8 @@ msgstr "Error al descargar '${source[0]}'"
 msgid ""
 "Moving ${BGreen}${PACDIR}/${dest}${NC} to ${BGreen}${PACDEB_DIR}/${dest}${NC}"
 msgstr ""
-"Moviendo ${BGreen}${PACDIR}/${dest}${NC} a "
-"${BGreen}${PACDEB_DIR}/${dest}${NC}"
+"Moviendo ${BGreen}${PACDIR}/${dest}${NC} a ${BGreen}${PACDEB_DIR}/"
+"${dest}${NC}"
 
 #: misc/scripts/package.sh:63
 msgid ""
@@ -913,6 +927,16 @@ msgstr ""
 "De alguna manera, 'getMasks' encontró paquetes enmascarados que coinciden "
 "con el paquete que desea instalar, pero 'getMasks_offending_pkg' no pudo "
 "encontrarlo. Informe de esto a upstream"
+
+#: misc/scripts/package.sh:103
+msgid ""
+"This package has 'priority=essential', meaning once this is installed, it "
+"should be assumed to be uninstallable. Do you want to continue?"
+msgstr ""
+
+#: misc/scripts/package.sh:129
+msgid "This script replaces ${pkg}. Do you want to proceed?"
+msgstr ""
 
 #: misc/scripts/package.sh:145
 msgid ""
@@ -989,7 +1013,8 @@ msgstr "los proveedores disponibles son: 'github'"
 
 #: misc/scripts/quality-assurance.sh:59
 msgid "Returning ${CYAN}$SCRIPTDIR/repo/pacstallrepo${NC} backup"
-msgstr "Devolviendo ${CYAN}$SCRIPTDIR/repo/pacstallrepo${NC} copia de seguridad"
+msgstr ""
+"Devolviendo ${CYAN}$SCRIPTDIR/repo/pacstallrepo${NC} copia de seguridad"
 
 #: misc/scripts/quality-assurance.sh:68
 msgid "'number' and 'package' cannot be empty!"
@@ -1000,8 +1025,8 @@ msgid ""
 "use the syntax: -Qa ${GREEN}package${BYellow}#${YELLOW}NUM${NC}(${BPurple}"
 "@${PURPLE}metalink${NC})"
 msgstr ""
-"utilice la sintaxis: -Qa ${GREEN}paquete${BYellow}#${YELLOW}NÚM${NC}(${BPurpl"
-"e}@${PURPLE}metaenlace${NC})"
+"utilice la sintaxis: -Qa ${GREEN}paquete${BYellow}#${YELLOW}NÚM${NC}"
+"(${BPurple}@${PURPLE}metaenlace${NC})"
 
 #: misc/scripts/quality-assurance.sh:74
 msgid "Backing up ${CYAN}$SCRIPTDIR/repo/pacstallrepo${NC}"
@@ -1065,9 +1090,9 @@ msgid ""
 "Add \\\"file://\\\" to the local repo absolute path on \\e]8;;file://"
 "$SCRIPTDIR/repo/pacstallrepo\\a$CYAN$SCRIPTDIR/repo/pacstallrepo$NC\\e]8;;\\a"
 msgstr ""
-"Añadir \\\"file://\\\" a la ruta absoluta del repositorio local en \\e"
-"]8;;file://$SCRIPTDIR/repo/pacstallrepo\\a$CYAN$SCRIPTDIR/repo/pacstallrepo$"
-"NC\\e]8;;\\a"
+"Añadir \\\"file://\\\" a la ruta absoluta del repositorio local en \\e]8;;"
+"file://$SCRIPTDIR/repo/pacstallrepo\\a$CYAN$SCRIPTDIR/repo/"
+"pacstallrepo$NC\\e]8;;\\a"
 
 #: misc/scripts/search.sh:379
 msgid ""
@@ -1099,6 +1124,18 @@ msgstr "No hay paquete con el nombre $IRed$PACKAGE$NC"
 #: misc/scripts/search.sh:469
 msgid "There is no package with the name $IRed$INFOQUERY$NC"
 msgstr "No hay paquete con el nombre $IRed$INFOQUERY$NC"
+
+#: misc/scripts/search.sh:499
+msgid ""
+"\\e[1A\\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the "
+"official repo?"
+msgstr ""
+
+#: misc/scripts/search.sh:517
+msgid ""
+"\\e[1A\\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the repo "
+"$CYAN${searchedrepo}$NC?"
+msgstr ""
 
 #: misc/scripts/update.sh:72
 msgid "Invalid URL"
@@ -1159,3 +1196,9 @@ msgstr "El paquete ${GREEN}${i}${NC} ya no está en ${CYAN}${parsedrepo}${NC}"
 #: misc/scripts/upgrade.sh:238
 msgid "Packages can be upgraded"
 msgstr "Los paquetes pueden actualizarse"
+
+#: misc/scripts/upgrade.sh:262
+#, fuzzy
+#| msgid "Failed to remove ${GREEN}${PACKAGE}${NC}"
+msgid "Do you want to upgrade ${GREEN}${PACKAGE}${NC}?"
+msgstr "Error al eliminar ${GREEN}${PACKAGE}${NC}"
