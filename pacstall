@@ -310,11 +310,13 @@ function stacktrace() {
 function ask() {
     # stacktrace can't handle whatever sorcery happens with 'echo N | pacstall'
     local prompt default reply
+    local yn="${@: -1}"
+    local rest=("${@:1:$(($# - 1))}")
 
-    if [[ ${2-} == 'Y' ]]; then
+    if [[ ${yn} == 'Y' ]]; then
         prompt="${BIGreen}Y${NC}/${RED}n${NC}"
         default='Y'
-    elif [[ ${2-} == 'N' ]]; then
+    elif [[ ${yn} == 'N' ]]; then
         prompt="${GREEN}y${NC}/${BIRed}N${NC}"
         default='N'
     else
@@ -322,7 +324,8 @@ function ask() {
     fi
 
     # Ask the question (not using "read -p" as it uses stderr not stdout)
-    echo -ne "$1 [$prompt] "
+    printf "${rest[@]}"
+    printf " [$prompt] "
 
     if [[ ${DISABLE_PROMPTS:-z} == "z" ]]; then
         export DISABLE_PROMPTS="no"
@@ -360,7 +363,8 @@ function ask() {
                 break
                 ;;
             *)
-                echo -ne "$1 [$prompt] "
+                printf "${rest[@]}"
+                printf " [$prompt] "
                 read -r reply < /dev/tty
                 ;;
         esac
