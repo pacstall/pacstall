@@ -171,31 +171,11 @@ function fancy_message() {
     local MESSAGE=("${@}")
 
     case ${MESSAGE_TYPE} in
-        info)
-            echo -ne "[${BGreen}+${NC}] ${BOLD}INFO${NC}: "
-            printf "${MESSAGE[@]}"
-            printf '\n'
-        ;;
-        warn)
-            echo -ne "[${BYellow}*${NC}] ${BOLD}WARNING${NC}: " >&2
-            printf "${MESSAGE[@]}" >&2
-            printf '\n'
-        ;;
-        error)
-            echo -ne "[${BRed}!${NC}] ${BOLD}ERROR${NC}: " >&2
-            printf "${MESSAGE[@]}" >&2
-            printf '\n'
-        ;;
-        sub)
-            echo -ne "\t[${BBlue}>${NC}] "
-            printf "${MESSAGE[@]}"
-            printf '\n'
-        ;;
-        *)
-            echo -ne "[${BOLD}?${NC}] ${BOLD}UNKNOWN${NC}: " >&2
-            printf "${MESSAGE[@]}"
-            printf '\n'
-        ;;
+        info) printf "%b: %b\n" "[${BGreen}+${NC}] ${BOLD}INFO${NC}" "${MESSAGE[*]}" ;;
+        warn) printf "%b: %b\n" "[${BYellow}*${NC}] ${BOLD}WARNING${NC}" "${MESSAGE[*]}" >&2 ;;
+        error) printf "%b: %b\n" "[${BRed}!${NC}] ${BOLD}ERROR${NC}" "${MESSAGE[*]}" >&2 ;;
+        sub) printf "\t%b %b\n" "[${BBlue}>${NC}]" "${MESSAGE[*]}" ;;
+        *) printf "%b: %b\n" "[${BOLD}?${NC}] ${BOLD}UNKNOWN${NC}" "${MESSAGE[*]}" >&2 ;;
     esac
 }
 
@@ -310,11 +290,14 @@ function stacktrace() {
 function ask() {
     # stacktrace can't handle whatever sorcery happens with 'echo N | pacstall'
     local prompt default reply
+    # shellcheck ignore=SC2124
+    local yn="${@: -1}"
+    local rest=("${@:1:$(($# - 1))}")
 
-    if [[ ${2-} == 'Y' ]]; then
+    if [[ ${yn} == 'Y' ]]; then
         prompt="${BIGreen}Y${NC}/${RED}n${NC}"
         default='Y'
-    elif [[ ${2-} == 'N' ]]; then
+    elif [[ ${yn} == 'N' ]]; then
         prompt="${GREEN}y${NC}/${BIRed}N${NC}"
         default='N'
     else
@@ -322,7 +305,7 @@ function ask() {
     fi
 
     # Ask the question (not using "read -p" as it uses stderr not stdout)
-    echo -ne "$1 [$prompt] "
+    printf "%b [$prompt] " "${rest[*]}"
 
     if [[ ${DISABLE_PROMPTS:-z} == "z" ]]; then
         export DISABLE_PROMPTS="no"
@@ -360,7 +343,7 @@ function ask() {
                 break
                 ;;
             *)
-                echo -ne "$1 [$prompt] "
+                printf "%b [$prompt] " "${rest[*]}"
                 read -r reply < /dev/tty
                 ;;
         esac

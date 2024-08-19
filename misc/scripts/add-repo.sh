@@ -104,7 +104,7 @@ case ${REPOCMD} in
             fancy_message warn $"%b is already in the repo list, doing nothing" "$CYAN$REPO$NC"
             exit 0
         fi
-        ask $"Do you want to add ${CYAN}${REPO}${NC}${ALIAS:+ ${BLUE}@${ALIAS}${NC}} to the repo list?" Y
+        ask $"Do you want to add %b to the repo list?" "${CYAN}${REPO}${NC}${ALIAS:+ ${BLUE}@${ALIAS}${NC}}" Y
         if ((answer == 0)); then
             exit 3
         fi
@@ -139,7 +139,7 @@ case ${REPOCMD} in
                 done
             fi
         fi
-        ask $"Do you want to remove ${CYAN}${REPO}${NC}${ALIAS:+ ${BLUE}@${ALIAS}${NC}} from the repo list?" Y
+        ask $"Do you want to remove %b from the repo list?" "${CYAN}${REPO}${NC}${ALIAS:+ ${BLUE}@${ALIAS}${NC}}" Y
         if ((answer == 0)); then
             exit 3
         fi
