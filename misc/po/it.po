@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-08-19 13:00+0000\n"
-"Last-Translator: Pietro Inglese <pietroinglese2016@gmail.com>\n"
+"PO-Revision-Date: 2024-08-19 13:05+0000\n"
+"Last-Translator: Elsie <hwengerstickel@protonmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/it/>\n"
 "Language: it\n"
@@ -36,7 +36,7 @@ msgstr "La URL non è stata trovata"
 
 #: pacstall:420
 msgid "Failed with http code %s"
-msgstr "fallito con codice http %s"
+msgstr "Fallito con codice http %s"
 
 #: pacstall:421
 msgid "Confirm that '${UGreen}$1${NC}' is accessible"
@@ -60,20 +60,20 @@ msgstr "L'altra istanza ha finito di operare, sbloccata"
 
 #: pacstall:754
 msgid "Prompts are disabled"
-msgstr "i prompt sono diasbilitati"
+msgstr "I prompt sono diasbilitati"
 
 #: pacstall:761
 msgid "Package will be built and not installed"
-msgstr "il pacchetto sara costruito ma non istallato"
+msgstr "Il pacchetto sara costruito ma non istallato"
 
 #: pacstall:831 pacstall:904 pacstall:966 pacstall:1007 pacstall:1025
 #: pacstall:1193 pacstall:1249 misc/scripts/query-info.sh:28
 msgid "You failed to specify a package"
-msgstr "hai fallito nello specificre il pachetto"
+msgstr "Hai fallito nello specificre il pachetto"
 
 #: pacstall:836
 msgid "The installation of %s was interrupted, removing files"
-msgstr "la installazione di %s fu interrota,flilw rimossi"
+msgstr "La installazione di %s fu interrota,flilw rimossi"
 
 #: pacstall:873 misc/scripts/package-base.sh:129
 msgid "%s does not exist"
@@ -86,7 +86,7 @@ msgstr "Payload non trovato"
 #: pacstall:924 pacstall:971 pacstall:1011 pacstall:1131 pacstall:1203
 #: pacstall:1236
 msgid "Could not connect to the internet"
-msgstr "impossibile connetersi a internet"
+msgstr "Impossibile connetersi a internet"
 
 #: pacstall:925 pacstall:972 pacstall:1012 pacstall:1132 pacstall:1204
 #: pacstall:1237
@@ -97,7 +97,7 @@ msgstr ""
 
 #: pacstall:941 pacstall:1218 misc/scripts/upgrade.sh:276
 msgid "Failed to download the %b pacscript"
-msgstr "scaricare il file %b pacscript ha fallito"
+msgstr "Scaricare il file %b pacscript ha fallito"
 
 #: pacstall:942 pacstall:1219
 msgid ""
@@ -107,24 +107,24 @@ msgstr ""
 
 #: pacstall:942 pacstall:1219
 msgid "Check your internet connection"
-msgstr "controlla da tua connesione internet"
+msgstr "Controlla da tua connesione internet"
 
 #: pacstall:948 misc/scripts/package-base.sh:148
 #: misc/scripts/package-base.sh:170
 msgid "Failed to install %b"
-msgstr "installazione di %b fallita"
+msgstr "Installazione di %b fallita"
 
 #: pacstall:1034
 msgid "Failed to remove %b"
-msgstr "remozione di %b fallita"
+msgstr "Remozione di %b fallita"
 
 #: pacstall:1055
 msgid "You failed to specify a repo to add"
-msgstr "hai fallito nello specificare la repo da aggiungere"
+msgstr "Hai fallito nello specificare la repo da aggiungere"
 
 #: pacstall:1056
 msgid "Add a repository in the following format:"
-msgstr "aggiungi la repo nel seguente formato"
+msgstr "Aggiungi la repo nel seguente formato:"
 
 #: pacstall:1056
 msgid ""
@@ -134,7 +134,7 @@ msgstr ""
 
 #: pacstall:1076
 msgid "You failed to specify a repo to remove"
-msgstr "hai fallito nello specificare la repo da rimuovere"
+msgstr "Hai fallito nello specificare la repo da rimuovere"
 
 #: pacstall:1077
 msgid "Remove a repository in the following format:"
