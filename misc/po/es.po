@@ -11,146 +11,146 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.7\n"
 
-#: pacstall:290 misc/scripts/build.sh:163 misc/scripts/build.sh:691
+#: pacstall:270 misc/scripts/build.sh:163 misc/scripts/build.sh:691
 #: misc/scripts/fetch-sources.sh:158 misc/scripts/fetch-sources.sh:720
 #: misc/scripts/fetch-sources.sh:750 misc/scripts/package-base.sh:158
 #: misc/scripts/package-base.sh:177
 msgid "Cleaning up"
 msgstr "Limpiando"
 
-#: pacstall:403
+#: pacstall:386
 msgid "Packagelist not found"
 msgstr "Packagelist no encontrada"
 
-#: pacstall:404 pacstall:413
+#: pacstall:387 pacstall:396
 msgid "Confirm that '${UGreen}$1${NC}' exists"
 msgstr ""
 
-#: pacstall:406
+#: pacstall:389
 msgid "Failed to download file, check your connection"
 msgstr "No se ha podido descargar el archivo, compruebe su conexión"
 
-#: pacstall:412
+#: pacstall:395
 msgid "The URL cannot be found"
 msgstr "No se encuentra la URL"
 
-#: pacstall:420
+#: pacstall:403
 msgid "Failed with http code %s"
 msgstr "Fallo con código http %s"
 
-#: pacstall:421
+#: pacstall:404
 msgid "Confirm that '${UGreen}$1${NC}' is accessible"
 msgstr ""
 
-#: pacstall:642
+#: pacstall:625
 msgid "Reading input from pipe"
 msgstr "Lectura de la entrada de la tubería"
 
-#: pacstall:701
+#: pacstall:684
 msgid "Only one command flag can be used at a time"
 msgstr "Sólo se puede utilizar una bandera de comando a la vez"
 
-#: pacstall:739
+#: pacstall:722
 msgid "Pacstall is already running another instance"
 msgstr "Pacstall ya se está utilizando en otra instancia"
 
-#: pacstall:745
+#: pacstall:728
 msgid "The other instance has finished running, unlocking"
 msgstr "La otra instancia ha terminado su trabajo, desbloqueando"
 
-#: pacstall:754
+#: pacstall:737
 msgid "Prompts are disabled"
 msgstr "Preguntas desactivadas"
 
-#: pacstall:761
+#: pacstall:744
 msgid "Package will be built and not installed"
 msgstr "El paquete se creará pero no se instalará"
 
-#: pacstall:831 pacstall:904 pacstall:966 pacstall:1007 pacstall:1025
-#: pacstall:1193 pacstall:1249 misc/scripts/query-info.sh:28
+#: pacstall:814 pacstall:887 pacstall:949 pacstall:990 pacstall:1008
+#: pacstall:1176 pacstall:1232 misc/scripts/query-info.sh:28
 msgid "You failed to specify a package"
 msgstr "No has especificado un paquete"
 
-#: pacstall:836
+#: pacstall:819
 msgid "The installation of %s was interrupted, removing files"
 msgstr "La instalación de %s se ha interrumpido, eliminando archivos"
 
-#: pacstall:873 misc/scripts/package-base.sh:129
+#: pacstall:856 misc/scripts/package-base.sh:129
 msgid "%s does not exist"
 msgstr "%s no existe"
 
-#: pacstall:911
+#: pacstall:894
 msgid "Payload not found"
 msgstr "Carga no encontrada"
 
-#: pacstall:924 pacstall:971 pacstall:1011 pacstall:1131 pacstall:1203
-#: pacstall:1236
+#: pacstall:907 pacstall:954 pacstall:994 pacstall:1114 pacstall:1186
+#: pacstall:1219
 msgid "Could not connect to the internet"
 msgstr "No se puede conectar a Internet"
 
-#: pacstall:925 pacstall:972 pacstall:1012 pacstall:1132 pacstall:1204
-#: pacstall:1237
+#: pacstall:908 pacstall:955 pacstall:995 pacstall:1115 pacstall:1187
+#: pacstall:1220
 msgid ""
 "Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}"
 "https://gitlab.com${NC}' are accessible"
 msgstr ""
 
-#: pacstall:941 pacstall:1218 misc/scripts/upgrade.sh:276
+#: pacstall:924 pacstall:1201 misc/scripts/upgrade.sh:276
 msgid "Failed to download the %b pacscript"
 msgstr "Error al descargar %b pacscript"
 
-#: pacstall:942 pacstall:1219
+#: pacstall:925 pacstall:1202
 msgid ""
 "Confirm that the package exists by running '${UCyan}pacstall -S "
 "$PACKAGE${NC}'"
 msgstr ""
 
-#: pacstall:942 pacstall:1219
+#: pacstall:925 pacstall:1202
 msgid "Check your internet connection"
 msgstr ""
 
-#: pacstall:948 misc/scripts/package-base.sh:148
+#: pacstall:931 misc/scripts/package-base.sh:148
 #: misc/scripts/package-base.sh:170
 msgid "Failed to install %b"
 msgstr "Fallo al instalar %b deb"
 
-#: pacstall:1034
+#: pacstall:1017
 msgid "Failed to remove %b"
 msgstr "Error al eliminar %b"
 
-#: pacstall:1055
+#: pacstall:1038
 msgid "You failed to specify a repo to add"
 msgstr "No ha especificado un repositorio para añadir"
 
-#: pacstall:1056
+#: pacstall:1039
 msgid "Add a repository in the following format:"
 msgstr ""
 
-#: pacstall:1056
+#: pacstall:1039
 msgid ""
 "Consult the pacstall man page by running '${UCyan}man pacstall${NC}', and "
 "searching for the term '${UPurple}-A${NC}'"
 msgstr ""
 
-#: pacstall:1076
+#: pacstall:1059
 msgid "You failed to specify a repo to remove"
 msgstr "No ha especificado un repositorio para eliminar"
 
-#: pacstall:1077
+#: pacstall:1060
 msgid "Remove a repository in the following format:"
 msgstr ""
 
-#: pacstall:1077
+#: pacstall:1060
 msgid ""
 "Consult the pacstall man page by running '${UCyan}man pacstall${NC}', and "
 "searching for the term '${UPurple}-Rr${NC}'"
 msgstr ""
 
-#: pacstall:1100
+#: pacstall:1083
 msgid "%s is not a git repository"
 msgstr "%s no es un repositorio git"
 
-#: pacstall:1137
+#: pacstall:1120
 msgid ""
 "The repository you are trying to upgrade to contains a version of pacstall "
 "that cannot be updated from %b"
@@ -158,7 +158,7 @@ msgstr ""
 "El repositorio al que intenta actualizar contiene una versión de pacstall "
 "que no puede actualizarse desde %b"
 
-#: pacstall:1138
+#: pacstall:1121
 msgid ""
 "Visit %s for more information on how to reinstall. Most packages will also "
 "need to be reinstalled"
@@ -166,37 +166,41 @@ msgstr ""
 "Visite %s para obtener más información sobre cómo reinstalar. También será "
 "necesario reinstalar la mayoría de los paquetes"
 
-#: pacstall:1150 pacstall:1231
+#: pacstall:1133 pacstall:1214
 msgid "Invalid argument '%s'"
 msgstr "Argumento no válido '%s'"
 
-#: pacstall:1162
+#: pacstall:1145
 msgid "Nothing installed yet"
 msgstr "Aún no hay nada instalado"
 
-#: pacstall:1223
+#: pacstall:1206
 msgid "%b pacscript is downloaded to %b"
 msgstr "%b pacscript se descarga en %b"
 
-#: pacstall:1253 misc/scripts/query-info.sh:33
+#: pacstall:1236 misc/scripts/query-info.sh:33
 msgid "Package is not installed"
 msgstr "El paquete no está instalado"
 
-#: pacstall:1287
+#: pacstall:1270
 msgid "Keeping build files"
 msgstr "Mantener los archivos de construcción"
 
-#: pacstall:1292
+#: pacstall:1275
 msgid "Skipping check() if present"
 msgstr "Saltarse check() si está presente"
 
-#: pacstall:1297
+#: pacstall:1280
 msgid "Downloading package entries quietly"
 msgstr "Descarga de entradas de paquetes en silencio"
 
-#: pacstall:1302
+#: pacstall:1285
 msgid "Building package without bwrap sandbox"
 msgstr "Construyendo paquete sin bwrap sandbox"
+
+#: pacstall:1286
+msgid "Be cautious, this exposes your system to potential harm"
+msgstr "Ten cuidado, esto expone tu sistema a posibles daños"
 
 #: misc/scripts/add-repo.sh:29 misc/scripts/build.sh:41
 #: misc/scripts/search.sh:31 misc/scripts/upgrade.sh:47
@@ -230,12 +234,8 @@ msgid "%b is already in the repo list, doing nothing"
 msgstr "%b ya está en la lista de repositorios, sin hacer nada"
 
 #: misc/scripts/add-repo.sh:107
-msgid ""
-"Do you want to add ${CYAN}${REPO}${NC}${ALIAS:+ ${BLUE}@${ALIAS}${NC}} to "
-"the repo list?"
+msgid "Do you want to add %b to the repo list?"
 msgstr ""
-"¿Quieres añadir ${CYAN}${REPO}${NC}${ALIAS:+ ${BLUE}@${ALIAS}${NC}} a la "
-"lista de repositorios?"
 
 #: misc/scripts/add-repo.sh:112
 msgid "If the URL is a private repo, edit %b"
@@ -246,9 +246,11 @@ msgid "packagelist file not found"
 msgstr "archivo packagelist no encontrada"
 
 #: misc/scripts/add-repo.sh:142
-msgid ""
-"Do you want to remove ${CYAN}${REPO}${NC}${ALIAS:+ ${BLUE}@${ALIAS}${NC}} "
-"from the repo list?"
+#, fuzzy
+#| msgid ""
+#| "Do you want to remove ${CYAN}${REPO}${NC}${ALIAS:+ ${BLUE}@${ALIAS}${NC}} "
+#| "from the repo list?"
+msgid "Do you want to remove %b from the repo list?"
 msgstr ""
 "¿Quieres eliminar ${CYAN}${REPO}${NC}${ALIAS:+ ${BLUE}@${ALIAS}${NC}} de la "
 "lista de repositorios?"
@@ -405,7 +407,8 @@ msgstr "'%s' contiene caracteres en mayúsculas"
 #: misc/scripts/checks.sh:80
 msgid ""
 "'%s' contains characters that are not lowercase, digits, minus, or periods"
-msgstr "'%s' contiene caracteres que no son minúsculas, dígitos, menos o puntos"
+msgstr ""
+"'%s' contiene caracteres que no son minúsculas, dígitos, menos o puntos"
 
 #: misc/scripts/checks.sh:92 misc/scripts/checks.sh:107
 #: misc/scripts/checks.sh:676
@@ -705,7 +708,9 @@ msgid "%b is not an integer. Falling back to 1"
 msgstr "%b no es un número entero. Retroceso a 1"
 
 #: misc/scripts/package-base.sh:201
-msgid "(${BPurple}$PACKAGE${NC}) Do you want to view/edit the pacscript?"
+#, fuzzy
+#| msgid "(${BPurple}$PACKAGE${NC}) Do you want to view/edit the pacscript?"
+msgid "(%b) Do you want to view/edit the pacscript?"
 msgstr "(${BPurple}$PACKAGE${NC}) ¿Quieres ver/editar el pacscript?"
 
 #: misc/scripts/package-base.sh:214
@@ -747,15 +752,21 @@ msgstr ""
 "upstream"
 
 #: misc/scripts/package.sh:103
+#, fuzzy
+#| msgid ""
+#| "This package has 'priority=essential', meaning once this is installed, it "
+#| "should be assumed to be uninstallable. Do you want to continue?"
 msgid ""
-"This package has 'priority=essential', meaning once this is installed, it "
-"should be assumed to be uninstallable. Do you want to continue?"
+"This package has '%s', meaning once this is installed, it should be assumed "
+"to be uninstallable. Do you want to continue?"
 msgstr ""
 "Este paquete tiene 'priority=essential', lo que significa que una vez "
 "instalado, se debe suponer que es desinstalable. ¿Quieres continuar?"
 
 #: misc/scripts/package.sh:129
-msgid "This script replaces ${pkg}. Do you want to proceed?"
+#, fuzzy
+#| msgid "This script replaces ${pkg}. Do you want to proceed?"
+msgid "This script replaces %s. Do you want to proceed?"
 msgstr "Este script sustituye a ${pkg}. ¿Quieres continuar?"
 
 #: misc/scripts/package.sh:145
@@ -893,20 +904,18 @@ msgid "Cannot connect to Pacstall repo: %b"
 msgstr "No se puede conectar a Pacstall repo: %b"
 
 #: misc/scripts/search.sh:499
-msgid ""
-"\\e[1A\\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the "
-"official repo?"
+#, fuzzy
+#| msgid ""
+#| "\\e[1A\\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the "
+#| "official repo?"
+msgid "%bDo you want to %s %b from the official repo?"
 msgstr ""
 "\\e[1A\\e[K¿Quieres a $type $GREEN${PACKAGELIST[$IDX]}$NC del repositorio "
 "oficial?"
 
 #: misc/scripts/search.sh:517
-msgid ""
-"\\e[1A\\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the repo "
-"$CYAN${searchedrepo}$NC?"
+msgid "%bDo you want to %s %b from the repo %b?"
 msgstr ""
-"\\e[1A\\e[K¿Quieres a $type $GREEN${PACKAGELIST[$IDX]}$NC del repositorio "
-"$CYAN${searchedrepo}$NC?"
 
 #: misc/scripts/update.sh:72
 msgid "Invalid URL"
@@ -973,12 +982,24 @@ msgid "Packages can be upgraded"
 msgstr "Los paquetes pueden actualizarse"
 
 #: misc/scripts/upgrade.sh:262
-msgid "Do you want to upgrade ${GREEN}${PACKAGE}${NC}?"
+#, fuzzy
+#| msgid "Do you want to upgrade ${GREEN}${PACKAGE}${NC}?"
+msgid "Do you want to upgrade %b?"
 msgstr "¿Quieres actualizar ${GREEN}${PACKAGE}${NC}?"
 
-#: pacstall:1303
-msgid "Be cautious, this exposes your system to potential harm"
-msgstr "Ten cuidado, esto expone tu sistema a posibles daños"
+#~ msgid ""
+#~ "Do you want to add ${CYAN}${REPO}${NC}${ALIAS:+ ${BLUE}@${ALIAS}${NC}} to "
+#~ "the repo list?"
+#~ msgstr ""
+#~ "¿Quieres añadir ${CYAN}${REPO}${NC}${ALIAS:+ ${BLUE}@${ALIAS}${NC}} a la "
+#~ "lista de repositorios?"
+
+#~ msgid ""
+#~ "\\e[1A\\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the "
+#~ "repo $CYAN${searchedrepo}$NC?"
+#~ msgstr ""
+#~ "\\e[1A\\e[K¿Quieres a $type $GREEN${PACKAGELIST[$IDX]}$NC del repositorio "
+#~ "$CYAN${searchedrepo}$NC?"
 
 #~ msgid "Failed to install ${GREEN}${PACKAGE}${NC}"
 #~ msgstr "Error al instalar ${GREEN}${PACKAGE}${NC}"

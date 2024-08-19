@@ -11,159 +11,159 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.7\n"
 
-#: pacstall:290 misc/scripts/build.sh:163 misc/scripts/build.sh:691
+#: pacstall:270 misc/scripts/build.sh:163 misc/scripts/build.sh:691
 #: misc/scripts/fetch-sources.sh:158 misc/scripts/fetch-sources.sh:720
 #: misc/scripts/fetch-sources.sh:750 misc/scripts/package-base.sh:158
 #: misc/scripts/package-base.sh:177
 msgid "Cleaning up"
 msgstr "Temizleniyor"
 
-#: pacstall:403
+#: pacstall:386
 msgid "Packagelist not found"
 msgstr "Packagelist bulunamadı"
 
-#: pacstall:404 pacstall:413
+#: pacstall:387 pacstall:396
 msgid "Confirm that '${UGreen}$1${NC}' exists"
 msgstr ""
 
-#: pacstall:406
+#: pacstall:389
 msgid "Failed to download file, check your connection"
 msgstr "Dosya indirmesi başarısız, bağlantınızı kontrol edin"
 
-#: pacstall:412
+#: pacstall:395
 msgid "The URL cannot be found"
 msgstr "URL bulunamadı"
 
-#: pacstall:420
+#: pacstall:403
 #, fuzzy
 #| msgid "Failed with http code ${http_code}"
 msgid "Failed with http code %s"
 msgstr "${http_code} http kodu ile başarısız oldu"
 
-#: pacstall:421
+#: pacstall:404
 msgid "Confirm that '${UGreen}$1${NC}' is accessible"
 msgstr ""
 
-#: pacstall:642
+#: pacstall:625
 msgid "Reading input from pipe"
 msgstr "Pipe'tan girdi okunuyor"
 
-#: pacstall:701
+#: pacstall:684
 msgid "Only one command flag can be used at a time"
 msgstr "Aynı anda yalnız bir komut flag'i kullanılabilir"
 
-#: pacstall:739
+#: pacstall:722
 msgid "Pacstall is already running another instance"
 msgstr "Pacstall başka bir işlemde çalışıyor"
 
-#: pacstall:745
+#: pacstall:728
 msgid "The other instance has finished running, unlocking"
 msgstr "Diğer işlem çalışmayı bitirdi, kilit açılıyor"
 
-#: pacstall:754
+#: pacstall:737
 msgid "Prompts are disabled"
 msgstr "İstemler devre dışı"
 
-#: pacstall:761
+#: pacstall:744
 msgid "Package will be built and not installed"
 msgstr "Paket inşa edilecek ve kurulmayacak"
 
-#: pacstall:831 pacstall:904 pacstall:966 pacstall:1007 pacstall:1025
-#: pacstall:1193 pacstall:1249 misc/scripts/query-info.sh:28
+#: pacstall:814 pacstall:887 pacstall:949 pacstall:990 pacstall:1008
+#: pacstall:1176 pacstall:1232 misc/scripts/query-info.sh:28
 msgid "You failed to specify a package"
 msgstr "Bir paket belirtemediniz"
 
-#: pacstall:836
+#: pacstall:819
 #, fuzzy
 #| msgid ""
 #| "The installation of ${PACKAGE:-package} was interrupted, removing files"
 msgid "The installation of %s was interrupted, removing files"
 msgstr "${PACKAGE:-package} paketinin kurulumu kesildi, dosyalar kaldırılıyor"
 
-#: pacstall:873 misc/scripts/package-base.sh:129
+#: pacstall:856 misc/scripts/package-base.sh:129
 #, fuzzy
 #| msgid "$2 does not exist"
 msgid "%s does not exist"
 msgstr "$2 yok"
 
-#: pacstall:911
+#: pacstall:894
 msgid "Payload not found"
 msgstr "Yük bulunamadı"
 
-#: pacstall:924 pacstall:971 pacstall:1011 pacstall:1131 pacstall:1203
-#: pacstall:1236
+#: pacstall:907 pacstall:954 pacstall:994 pacstall:1114 pacstall:1186
+#: pacstall:1219
 msgid "Could not connect to the internet"
 msgstr "Genel ağa bağlanılamadı"
 
-#: pacstall:925 pacstall:972 pacstall:1012 pacstall:1132 pacstall:1204
-#: pacstall:1237
+#: pacstall:908 pacstall:955 pacstall:995 pacstall:1115 pacstall:1187
+#: pacstall:1220
 msgid ""
 "Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}"
 "https://gitlab.com${NC}' are accessible"
 msgstr ""
 
-#: pacstall:941 pacstall:1218 misc/scripts/upgrade.sh:276
+#: pacstall:924 pacstall:1201 misc/scripts/upgrade.sh:276
 #, fuzzy
 #| msgid "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
 msgid "Failed to download the %b pacscript"
 msgstr "${GREEN}${PACKAGE}${NC} pacscript'inin indirmesi başarısız"
 
-#: pacstall:942 pacstall:1219
+#: pacstall:925 pacstall:1202
 msgid ""
 "Confirm that the package exists by running '${UCyan}pacstall -S "
 "$PACKAGE${NC}'"
 msgstr ""
 
-#: pacstall:942 pacstall:1219
+#: pacstall:925 pacstall:1202
 msgid "Check your internet connection"
 msgstr ""
 
-#: pacstall:948 misc/scripts/package-base.sh:148
+#: pacstall:931 misc/scripts/package-base.sh:148
 #: misc/scripts/package-base.sh:170
 #, fuzzy
 #| msgid "Failed to install $pacname deb"
 msgid "Failed to install %b"
 msgstr "$pacname deb'inin kurulumu başarısız"
 
-#: pacstall:1034
+#: pacstall:1017
 msgid "Failed to remove %b"
 msgstr ""
 
-#: pacstall:1055
+#: pacstall:1038
 msgid "You failed to specify a repo to add"
 msgstr "Eklenilecek bir depo belirtemediniz"
 
-#: pacstall:1056
+#: pacstall:1039
 msgid "Add a repository in the following format:"
 msgstr ""
 
-#: pacstall:1056
+#: pacstall:1039
 msgid ""
 "Consult the pacstall man page by running '${UCyan}man pacstall${NC}', and "
 "searching for the term '${UPurple}-A${NC}'"
 msgstr ""
 
-#: pacstall:1076
+#: pacstall:1059
 msgid "You failed to specify a repo to remove"
 msgstr "Kaldırılacak bir depo belirtemediniz"
 
-#: pacstall:1077
+#: pacstall:1060
 msgid "Remove a repository in the following format:"
 msgstr ""
 
-#: pacstall:1077
+#: pacstall:1060
 msgid ""
 "Consult the pacstall man page by running '${UCyan}man pacstall${NC}', and "
 "searching for the term '${UPurple}-Rr${NC}'"
 msgstr ""
 
-#: pacstall:1100
+#: pacstall:1083
 #, fuzzy
 #| msgid "$PWD is not a git repository"
 msgid "%s is not a git repository"
 msgstr "$PWD bir git deposu değil"
 
-#: pacstall:1137
+#: pacstall:1120
 #, fuzzy
 #| msgid ""
 #| "The repository you are trying to upgrade to contains a version of "
@@ -175,7 +175,7 @@ msgstr ""
 "Yükseltme için belirttiğiniz depo $(pacstall -V) ile güncellenemeyecek bir "
 "pacstall sürümü içeriyor"
 
-#: pacstall:1138
+#: pacstall:1121
 #, fuzzy
 #| msgid ""
 #| "Visit https://github.com/$USERNAME/pacstall/tree/$BRANCH for more "
@@ -189,39 +189,43 @@ msgstr ""
 "$BRANCH sitesine uğrayın. Çoğu paket de yeniden kuruluma gereksinim "
 "duyacaktır"
 
-#: pacstall:1150 pacstall:1231
+#: pacstall:1133 pacstall:1214
 #, fuzzy
 #| msgid "Invalid argument '$*'"
 msgid "Invalid argument '%s'"
 msgstr "Geçersiz argüman '$*'"
 
-#: pacstall:1162
+#: pacstall:1145
 msgid "Nothing installed yet"
 msgstr "Şu an herhangi bir paket kurulu değil"
 
-#: pacstall:1223
+#: pacstall:1206
 msgid "%b pacscript is downloaded to %b"
 msgstr ""
 
-#: pacstall:1253 misc/scripts/query-info.sh:33
+#: pacstall:1236 misc/scripts/query-info.sh:33
 msgid "Package is not installed"
 msgstr "Paket kurulu değil"
 
-#: pacstall:1287
+#: pacstall:1270
 msgid "Keeping build files"
 msgstr "İnşa dosyaları tutuluyor"
 
-#: pacstall:1292
+#: pacstall:1275
 msgid "Skipping check() if present"
 msgstr "Eğer varsa check() atlanıyor"
 
-#: pacstall:1297
+#: pacstall:1280
 msgid "Downloading package entries quietly"
 msgstr "Paket girişleri sessizce indiriliyor"
 
-#: pacstall:1302
+#: pacstall:1285
 msgid "Building package without bwrap sandbox"
 msgstr "Paket bwrap sandbox olmadan inşa ediliyor"
+
+#: pacstall:1286
+msgid "Be cautious, this exposes your system to potential harm"
+msgstr "Dikkat edin, bu sisteminizi olası tehditlere maruz bırakır"
 
 #: misc/scripts/add-repo.sh:29 misc/scripts/build.sh:41
 #: misc/scripts/search.sh:31 misc/scripts/upgrade.sh:47
@@ -264,9 +268,7 @@ msgstr ""
 "${CYAN}${REPO}${NC} zaten depo listesinde, hiçbir şey yapılmayacak${NC}"
 
 #: misc/scripts/add-repo.sh:107
-msgid ""
-"Do you want to add ${CYAN}${REPO}${NC}${ALIAS:+ ${BLUE}@${ALIAS}${NC}} to "
-"the repo list?"
+msgid "Do you want to add %b to the repo list?"
 msgstr ""
 
 #: misc/scripts/add-repo.sh:112
@@ -278,9 +280,7 @@ msgid "packagelist file not found"
 msgstr "packagelist dosyası bulunamadı"
 
 #: misc/scripts/add-repo.sh:142
-msgid ""
-"Do you want to remove ${CYAN}${REPO}${NC}${ALIAS:+ ${BLUE}@${ALIAS}${NC}} "
-"from the repo list?"
+msgid "Do you want to remove %b from the repo list?"
 msgstr ""
 
 #: misc/scripts/add-repo.sh:154
@@ -858,7 +858,7 @@ msgstr ""
 "${UCyan}PACSTALL_BUILD_CORES${NC} bir tam sayı değil. 1'e geri dönülüyor"
 
 #: misc/scripts/package-base.sh:201
-msgid "(${BPurple}$PACKAGE${NC}) Do you want to view/edit the pacscript?"
+msgid "(%b) Do you want to view/edit the pacscript?"
 msgstr ""
 
 #: misc/scripts/package-base.sh:214
@@ -914,12 +914,12 @@ msgstr ""
 
 #: misc/scripts/package.sh:103
 msgid ""
-"This package has 'priority=essential', meaning once this is installed, it "
-"should be assumed to be uninstallable. Do you want to continue?"
+"This package has '%s', meaning once this is installed, it should be assumed "
+"to be uninstallable. Do you want to continue?"
 msgstr ""
 
 #: misc/scripts/package.sh:129
-msgid "This script replaces ${pkg}. Do you want to proceed?"
+msgid "This script replaces %s. Do you want to proceed?"
 msgstr ""
 
 #: misc/scripts/package.sh:145
@@ -1110,15 +1110,11 @@ msgid "Cannot connect to Pacstall repo: %b"
 msgstr "Pacstall deposuna bağlanılamadı: ${CYAN}${URL}${NC}"
 
 #: misc/scripts/search.sh:499
-msgid ""
-"\\e[1A\\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the "
-"official repo?"
+msgid "%bDo you want to %s %b from the official repo?"
 msgstr ""
 
 #: misc/scripts/search.sh:517
-msgid ""
-"\\e[1A\\e[KDo you want to $type $GREEN${PACKAGELIST[$IDX]}$NC from the repo "
-"$CYAN${searchedrepo}$NC?"
+msgid "%bDo you want to %s %b from the repo %b?"
 msgstr ""
 
 #: misc/scripts/update.sh:72
@@ -1190,12 +1186,8 @@ msgstr "Paketler yükseltilebilir"
 #: misc/scripts/upgrade.sh:262
 #, fuzzy
 #| msgid "Failed to remove ${GREEN}${PACKAGE}${NC}"
-msgid "Do you want to upgrade ${GREEN}${PACKAGE}${NC}?"
+msgid "Do you want to upgrade %b?"
 msgstr "${GREEN}${PACKAGE}${NC} paketinin kaldırması başarısız"
-
-#: pacstall:1303
-msgid "Be cautious, this exposes your system to potential harm"
-msgstr "Dikkat edin, bu sisteminizi olası tehditlere maruz bırakır"
 
 #~ msgid "Failed to install ${GREEN}${PACKAGE}${NC}"
 #~ msgstr "${GREEN}${PACKAGE}${NC} paketinin kurulumu başarısız"
