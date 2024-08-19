@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-08-18 22:21+0000\n"
+"PO-Revision-Date: 2024-08-20 01:51+0000\n"
 "Last-Translator: Elsie <hwengerstickel@protonmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/es/>\n"
@@ -24,7 +24,7 @@ msgstr "Packagelist no encontrada"
 
 #: pacstall:387 pacstall:396
 msgid "Confirm that '${UGreen}$1${NC}' exists"
-msgstr ""
+msgstr "Confirme que '${UGreen}$1${NC}' existe"
 
 #: pacstall:389
 msgid "Failed to download file, check your connection"
@@ -40,7 +40,7 @@ msgstr "Fallo con código http %s"
 
 #: pacstall:404
 msgid "Confirm that '${UGreen}$1${NC}' is accessible"
-msgstr ""
+msgstr "Confirme que '${UGreen}$1${NC}' es accesible"
 
 #: pacstall:625
 msgid "Reading input from pipe"
