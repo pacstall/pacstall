@@ -30,7 +30,7 @@ if check_url "${URL}"; then
     if [[ $type == "install" ]]; then
         mkdir -p "$PACDIR" || {
             if ! [[ -w $PACDIR ]]; then
-                suggested_solution $"Run '${UCyan}sudo chown -R $PACSTALL_USER:$PACSTALL_USER $PACDIR'${NC}"
+                suggested_solution $"Run '%b'" "${UCyan}sudo chown -R $PACSTALL_USER:$PACSTALL_USER $PACDIR${NC}"
             fi
         }
         if ! cd "$PACDIR"; then
