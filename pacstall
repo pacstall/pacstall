@@ -290,7 +290,7 @@ function stacktrace() {
 function ask() {
     # stacktrace can't handle whatever sorcery happens with 'echo N | pacstall'
     local prompt default reply
-    # shellcheck ignore=SC2124
+    # shellcheck disable=SC2124
     local yn="${@: -1}"
     local rest=("${@:1:$(($# - 1))}")
 
