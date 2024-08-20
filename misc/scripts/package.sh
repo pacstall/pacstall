@@ -143,7 +143,7 @@ if ! is_package_installed "${pacname}"; then
                     # Check if anything in conflicts variable is installed already
                     # shellcheck disable=SC2031
                     fancy_message error $"%b conflicts with %s, which is currently installed by apt" "${RED}$pacname${NC}" "$pkg"
-                    suggested_solution $"Remove the apt package by running '${UCyan}sudo apt purge $pkg${NC}'"
+                    suggested_solution $"Remove the apt package by running '%b'" "${UCyan}sudo apt purge $pkg${NC}"
                     error_log 13 "install ${pacname}"
                     clean_fail_down
                 fi
@@ -151,7 +151,7 @@ if ! is_package_installed "${pacname}"; then
                     # Same thing, but check if anything is installed with pacstall
                     # shellcheck disable=SC2031
                     fancy_message error $"%b conflicts with %s, which is currently installed by pacstall" "${RED}$pacname${NC}" "$pkg"
-                    suggested_solution $"Remove the pacstall package by running '${UCyan}pacstall -R $pkg${NC}'"
+                    suggested_solution $"Remove the pacstall package by running '%b'" "${UCyan}pacstall -R $pkg${NC}"
                     error_log 13 "install ${pacname}"
                     clean_fail_down
                 fi
@@ -165,14 +165,14 @@ if ! is_package_installed "${pacname}"; then
                 if is_apt_package_installed "${pkg}" && ! is_package_installed "${pkg}"; then
                     # Check if anything in breaks variable is installed already
                     fancy_message error $"%b breaks %s, which is currently installed by apt" "${RED}$pacname${NC}" "$pkg"
-                    suggested_solution $"Remove the apt package by running '${UCyan}sudo apt purge $pkg${NC}'"
+                    suggested_solution $"Remove the apt package by running '%b'" "${UCyan}sudo apt purge $pkg${NC}"
                     error_log 13 "install ${pacname}"
                     clean_fail_down
                 fi
                 if [[ ${pkg} != "${pacname}" ]] && is_package_installed "${pkg}"; then
                     # Same thing, but check if anything is installed with pacstall
                     fancy_message error $"%b breaks %s, which is currently installed by pacstall" "${RED}$pacname${NC}" "$pkg"
-                    suggested_solution $"Remove the pacstall package by running '${UCyan}pacstall -R $pkg${NC}'"
+                    suggested_solution $"Remove the pacstall package by running '%b'" "${UCyan}pacstall -R $pkg${NC}"
                     error_log 13 "install ${pacname}"
                     clean_fail_down
                 fi

@@ -47,21 +47,6 @@ pacstall_deps=(
     "jq" "distro-info-data" "spdx-licenses" "gettext"
 )
 
-function suggested_solution() {
-    if [[ -z $PACSTALL_SUPPRESS_SOLUTIONS ]]; then
-        local inputs=("${@}")
-        if ((${#inputs[@]} > 1)); then
-            local text="Suggested solutions are:"
-        else
-            local text="Suggested solution is:"
-        fi
-        echo -e "[${BOLD}${BPurple}⠿${NC}] ${text}"
-        for i in "${inputs[@]}"; do
-            echo -e "    ${BOLD}|${NC} $i"
-        done
-    fi
-}
-
 echo -e "[${BGreen}+${NC}] INFO: Updating..."
 
 if [[ -n $GIT_USER ]]; then
@@ -70,7 +55,7 @@ else
     REPO="https://raw.githubusercontent.com/${USERNAME}/pacstall/${BRANCH}"
     if ! curl -s --fail "${REPO}/pacstall" > /dev/null; then
         fancy_message error $"Invalid URL"
-        suggested_solution $"Confirm that '${UCyan}${REPO}/pacstall${NC}' is valid"
+        suggested_solution $"Confirm that '%b' is valid" "${UCyan}${REPO}/pacstall${NC}"
         exit 1
     fi
 fi
