@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-08-18 12:37+0000\n"
+"PO-Revision-Date: 2024-08-21 11:09+0000\n"
 "Last-Translator: TCr3 <tcreeper.earth@gmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/tr/>\n"
@@ -20,7 +20,7 @@ msgstr "Temizleniyor"
 
 #: pacstall:363
 msgid "Suggested solution(s)"
-msgstr ""
+msgstr "Önerilen çözüm(ler)"
 
 #: pacstall:397
 msgid "Packagelist not found"
@@ -28,7 +28,7 @@ msgstr "Packagelist bulunamadı"
 
 #: pacstall:398 pacstall:407
 msgid "Confirm that '%b' exists"
-msgstr ""
+msgstr "'%b'in var olduğunu doğrulayın"
 
 #: pacstall:400
 msgid "Failed to download file, check your connection"
@@ -39,14 +39,12 @@ msgid "The URL cannot be found"
 msgstr "URL bulunamadı"
 
 #: pacstall:414
-#, fuzzy
-#| msgid "Failed with http code ${http_code}"
 msgid "Failed with http code %s"
-msgstr "${http_code} http kodu ile başarısız oldu"
+msgstr "%s http kodu ile başarısız oldu"
 
 #: pacstall:415
 msgid "Confirm that '%b' is accessible"
-msgstr ""
+msgstr "'%b'in erişilebilir olduğunu doğrulayın"
 
 #: pacstall:636
 msgid "Reading input from pipe"
@@ -78,17 +76,12 @@ msgid "You failed to specify a package"
 msgstr "Bir paket belirtemediniz"
 
 #: pacstall:830
-#, fuzzy
-#| msgid ""
-#| "The installation of ${PACKAGE:-package} was interrupted, removing files"
 msgid "The installation of %s was interrupted, removing files"
-msgstr "${PACKAGE:-package} paketinin kurulumu kesildi, dosyalar kaldırılıyor"
+msgstr "%s paketinin kurulumu kesildi, dosyalar kaldırılıyor"
 
 #: pacstall:867 misc/scripts/package-base.sh:129
-#, fuzzy
-#| msgid "$2 does not exist"
 msgid "%s does not exist"
-msgstr "$2 yok"
+msgstr "%s yok"
 
 #: pacstall:905
 msgid "Payload not found"
@@ -102,32 +95,28 @@ msgstr "Genel ağa bağlanılamadı"
 #: pacstall:919 pacstall:966 pacstall:1006 pacstall:1126 pacstall:1198
 #: pacstall:1231
 msgid "Confirm that the URLs '%b' or '%b' are accessible"
-msgstr ""
+msgstr "'%b' veya '%b' URL'lerinin erişilebilir olduğunu doğrulayın"
 
 #: pacstall:935 pacstall:1212 misc/scripts/upgrade.sh:276
-#, fuzzy
-#| msgid "Failed to download the ${GREEN}${PACKAGE}${NC} pacscript"
 msgid "Failed to download the %b pacscript"
-msgstr "${GREEN}${PACKAGE}${NC} pacscript'inin indirmesi başarısız"
+msgstr "%b pacscript'inin indirmesi başarısız"
 
 #: pacstall:936 pacstall:1213
 msgid "Confirm that the package exists by running '%b'"
-msgstr ""
+msgstr "Paketin var olduğunu '%b' komutunu çalıştırarak doğrulayın"
 
 #: pacstall:936 pacstall:1213
 msgid "Check your internet connection"
-msgstr ""
+msgstr "Genel ağ bağlantınızı kontrol edin"
 
 #: pacstall:942 misc/scripts/package-base.sh:148
 #: misc/scripts/package-base.sh:170
-#, fuzzy
-#| msgid "Failed to install $pacname deb"
 msgid "Failed to install %b"
-msgstr "$pacname deb'inin kurulumu başarısız"
+msgstr "%b deb'inin kurulumu başarısız"
 
 #: pacstall:1028
 msgid "Failed to remove %b"
-msgstr ""
+msgstr "%b paketinin kaldırması başarısız oldu"
 
 #: pacstall:1049
 msgid "You failed to specify a repo to add"
@@ -135,13 +124,15 @@ msgstr "Eklenilecek bir depo belirtemediniz"
 
 #: pacstall:1050
 msgid "Add a repository in the following format:"
-msgstr ""
+msgstr "Şu biçimde bir depo ekleyin:"
 
 #: pacstall:1050 pacstall:1071
 msgid ""
 "Consult the pacstall man page by running '%b', and searching for the term "
 "'%b'"
 msgstr ""
+"'%b' komutunu çalıştırarak pacstall man sayfasına başvurun ve '%b' terimini "
+"arayın"
 
 #: pacstall:1070
 msgid "You failed to specify a repo to remove"
@@ -149,45 +140,31 @@ msgstr "Kaldırılacak bir depo belirtemediniz"
 
 #: pacstall:1071
 msgid "Remove a repository in the following format:"
-msgstr ""
+msgstr "Şu biçimde bir depoyu kaldırın:"
 
 #: pacstall:1094
-#, fuzzy
-#| msgid "$PWD is not a git repository"
 msgid "%s is not a git repository"
-msgstr "$PWD bir git deposu değil"
+msgstr "%s bir git deposu değil"
 
 #: pacstall:1131
-#, fuzzy
-#| msgid ""
-#| "The repository you are trying to upgrade to contains a version of "
-#| "pacstall that cannot be updated from $(pacstall -V)"
 msgid ""
 "The repository you are trying to upgrade to contains a version of pacstall "
 "that cannot be updated from %b"
 msgstr ""
-"Yükseltme için belirttiğiniz depo $(pacstall -V) ile güncellenemeyecek bir "
-"pacstall sürümü içeriyor"
+"Yükseltme için belirttiğiniz depo %b ile güncellenemeyecek bir pacstall "
+"sürümü içeriyor"
 
 #: pacstall:1132
-#, fuzzy
-#| msgid ""
-#| "Visit https://github.com/$USERNAME/pacstall/tree/$BRANCH for more "
-#| "information on how to reinstall. Most packages will also need to be "
-#| "reinstalled"
 msgid ""
 "Visit %s for more information on how to reinstall. Most packages will also "
 "need to be reinstalled"
 msgstr ""
-"Yeniden kurulum yönergeleri için https://github.com/$USERNAME/pacstall/tree/"
-"$BRANCH sitesine uğrayın. Çoğu paket de yeniden kuruluma gereksinim "
-"duyacaktır"
+"Yeniden kurulum yönergeleri için %s sitesine uğrayın. Çoğu paket de yeniden "
+"kuruluma gereksinim duyacaktır"
 
 #: pacstall:1144 pacstall:1225
-#, fuzzy
-#| msgid "Invalid argument '$*'"
 msgid "Invalid argument '%s'"
-msgstr "Geçersiz argüman '$*'"
+msgstr "Geçersiz argüman '%s'"
 
 #: pacstall:1156
 msgid "Nothing installed yet"
@@ -195,7 +172,7 @@ msgstr "Şu an herhangi bir paket kurulu değil"
 
 #: pacstall:1217
 msgid "%b pacscript is downloaded to %b"
-msgstr ""
+msgstr "%b pacscript'i %b dizinine indirildi"
 
 #: pacstall:1247 misc/scripts/query-info.sh:33
 msgid "Package is not installed"
@@ -229,45 +206,36 @@ msgstr "manage-repo.sh bulunamadı"
 #: misc/scripts/add-repo.sh:39 misc/scripts/add-repo.sh:47
 #: misc/scripts/add-repo.sh:55 misc/scripts/add-repo.sh:63
 #: misc/scripts/add-repo.sh:70
-#, fuzzy
-#| msgid "Assuming that git branch is ${GREEN}master${NC}"
 msgid "Assuming that git branch is %b"
-msgstr "Git dalının ${GREEN}master${NC} olduğu varsayılıyor"
+msgstr "Git dalının %b olduğu varsayılıyor"
 
 #: misc/scripts/add-repo.sh:90
-#, fuzzy
-#| msgid "Repository alias cannot be 'none'"
 msgid "Repository alias cannot be '%s'"
-msgstr "Deponun öteki adı 'none' olamaz"
+msgstr "Deponun öteki adı '%s' olamaz"
 
 #: misc/scripts/add-repo.sh:93
 msgid "Repository alias cannot be a hyperlink"
 msgstr "Deponun öteki adı bir hyperlink olamaz"
 
 #: misc/scripts/add-repo.sh:96
-#, fuzzy
-#| msgid "Repository alias cannot start with '/', '~', or '.'"
 msgid "Repository alias cannot start with '%s', '%s', or '%s'"
-msgstr "Deponun öteki adı '/', '~' veya '.' ile başlayamaz"
+msgstr "Deponun öteki adı '%s', '%s' veya '%s' ile başlayamaz"
 
 #: misc/scripts/add-repo.sh:99
 msgid "The alias %b is already in use by %b"
-msgstr ""
+msgstr "%b öteki adı zaten %b tarafından kullanılıyor"
 
 #: misc/scripts/add-repo.sh:104
-#, fuzzy
-#| msgid "${CYAN}${REPO}${NC} is already in the repo list, doing nothing${NC}"
 msgid "%b is already in the repo list, doing nothing"
-msgstr ""
-"${CYAN}${REPO}${NC} zaten depo listesinde, hiçbir şey yapılmayacak${NC}"
+msgstr "%b zaten depo listesinde, hiçbir şey yapılmayacak"
 
 #: misc/scripts/add-repo.sh:107
 msgid "Do you want to add %b to the repo list?"
-msgstr ""
+msgstr "%b deposunu depo listesine eklemek ister misiniz?"
 
 #: misc/scripts/add-repo.sh:112
 msgid "If the URL is a private repo, edit %b"
-msgstr ""
+msgstr "Eğer URL bir özel depoysa %b dosyasını düzenleyin"
 
 #: misc/scripts/add-repo.sh:113
 msgid "packagelist file not found"
@@ -275,7 +243,7 @@ msgstr "packagelist dosyası bulunamadı"
 
 #: misc/scripts/add-repo.sh:142
 msgid "Do you want to remove %b from the repo list?"
-msgstr ""
+msgstr "%b deposunu depo listesinden kaldırmak ister misiniz?"
 
 #: misc/scripts/add-repo.sh:154
 msgid "The repo list has been updated"
@@ -293,48 +261,38 @@ msgstr "srcinfo.sh bulunamadı"
 #: misc/scripts/fetch-sources.sh:663 misc/scripts/fetch-sources.sh:672
 #: misc/scripts/fetch-sources.sh:689 misc/scripts/package.sh:221
 msgid "%b [required]"
-msgstr ""
+msgstr "%b [zorunlu]"
 
 #: misc/scripts/build.sh:95 misc/scripts/fetch-sources.sh:683
 msgid "%b [remote]"
-msgstr ""
+msgstr "%b [uzak]"
 
 #: misc/scripts/build.sh:97 misc/scripts/fetch-sources.sh:685
 #: misc/scripts/package.sh:216
 msgid "%b [installed]"
-msgstr ""
+msgstr "%b [kurulu]"
 
 #: misc/scripts/build.sh:156 misc/scripts/build.sh:176
 #: misc/scripts/fetch-sources.sh:713 misc/scripts/fetch-sources.sh:743
-#, fuzzy
-#| msgid "$PWD is not a git repository"
 msgid "%b does not exist in apt repositories"
-msgstr "$PWD bir git deposu değil"
+msgstr "%b apt depolarında yok"
 
 #: misc/scripts/build.sh:160 misc/scripts/build.sh:180
 #: misc/scripts/fetch-sources.sh:717 misc/scripts/fetch-sources.sh:747
 msgid "%b version(s) cannot be satisfied"
-msgstr ""
+msgstr "%b sürümü karşılanamadı"
 
 #: misc/scripts/build.sh:172
 msgid "Optional dependencies"
 msgstr "İsteğe bağlı bağımlılıklar"
 
 #: misc/scripts/build.sh:207
-#, fuzzy
-#| msgid ""
-#| "${BGreen}${skip_opt[*]}${NC} has exceeded the maximum number of optional "
-#| "dependencies. Skipping"
 msgid "%b has exceeded the maximum number of optional dependencies. Skipping"
-msgstr ""
-"${BGreen}${skip_opt[*]}${NC} maksimum isteğe bağlı bağımlılıklar sayısını "
-"aştı. Atlanıyor"
+msgstr "%b maksimum isteğe bağlı bağımlılıklar sayısını aştı. Atlanıyor"
 
 #: misc/scripts/build.sh:217 misc/scripts/package-base.sh:140
-#, fuzzy
-#| msgid "Retrieving packages"
 msgid "Selecting packages %b"
-msgstr "Paketler alınıyor"
+msgstr "%b paketleri seçiliyor"
 
 #: misc/scripts/build.sh:236
 msgid "Checking apt dependencies"
@@ -354,158 +312,113 @@ msgstr "Sıkıştırılıyor"
 
 #: misc/scripts/build.sh:365
 msgid "Packaging %b as %b"
-msgstr ""
+msgstr "%b %b olarak paketleniyor"
 
 #: misc/scripts/build.sh:367 misc/scripts/package-base.sh:144
 msgid "Packaging %b"
-msgstr ""
+msgstr "%b paketleniyor"
 
 #: misc/scripts/build.sh:596
 msgid "Empty key... Skipping"
 msgstr "Boş anahtar... Atlanıyor"
 
 #: misc/scripts/build.sh:602
-#, fuzzy
-#| msgid "'${file}' cannot contain empty path... Skipping"
 msgid "'%s' cannot contain empty path... Skipping"
-msgstr "'${file}' boş bir yol içeremez... Atlanıyor"
+msgstr "'%s' boş bir yol içeremez... Atlanıyor"
 
 #: misc/scripts/build.sh:606 misc/scripts/build.sh:614
-#, fuzzy
-#| msgid "'${file}' cannot contain path starting with '/'... Skipping"
 msgid "'%s' cannot contain path starting with '/'... Skipping"
-msgstr "'${file}' '/' ile başlayan bir yol içeremez... Atlanıyor"
+msgstr "'%s' '/' ile başlayan bir yol içeremez... Atlanıyor"
 
 #: misc/scripts/build.sh:609
-#, fuzzy
-#| msgid "'${file}' is inside the package... Skipping"
 msgid "'%s' is inside the package... Skipping"
-msgstr "'${file}' paketin içerisinde... Atlanıyor"
+msgstr "'%s' paketin içerisinde... Atlanıyor"
 
 #: misc/scripts/build.sh:688
-#, fuzzy
-#| msgid "Failed to install $pacname deb"
 msgid "Failed to install %s deb"
-msgstr "$pacname deb'inin kurulumu başarısız"
+msgstr "%s deb'inin kurulumu başarısız"
 
 #: misc/scripts/build.sh:712
-#, fuzzy
-#| msgid "Packagelist not found"
 msgid "Package built at %b"
-msgstr "Packagelist bulunamadı"
+msgstr "Paket %b dizine inşa edildi"
 
 #: misc/scripts/build.sh:714 misc/scripts/package.sh:50
 msgid "Moving %b to %b"
-msgstr ""
+msgstr "%b %b dizinine taşınıyor"
 
 #: misc/scripts/build.sh:731
 msgid "Repacking %b"
-msgstr ""
+msgstr "%b yeniden paketleniyor"
 
 #: misc/scripts/bwrap.sh:113
-#, fuzzy
-#| msgid "Running $func"
 msgid "Running %s"
-msgstr "$func çalıştırılıyor"
+msgstr "%s çalıştırılıyor"
 
 #: misc/scripts/checks.sh:33 misc/scripts/checks.sh:127
 #: misc/scripts/checks.sh:175 misc/scripts/checks.sh:228
-#, fuzzy
-#| msgid "Package does not contain 'source'"
 msgid "Package does not contain '%s'"
-msgstr "Paket 'source' içermiyor"
+msgstr "Paket '%s' içermiyor"
 
 #: misc/scripts/checks.sh:38
-#, fuzzy
-#| msgid "'gives' must be at least two characters long"
 msgid "%s: '%s' must be at least two characters long"
-msgstr "'gives' en az iki karakter uzunluğunda olmalıdır"
+msgstr "%s: '%s' en az iki karakter uzunluğunda olmalıdır"
 
 #: misc/scripts/checks.sh:43
-#, fuzzy
-#| msgid "'gives' must start with an alphanumeric character"
 msgid "%s: '%s' must start with an alphanumeric character"
-msgstr "'gives' alfanümerik bir karakterle başlamalıdır"
+msgstr "%s: '%s' alfanümerik bir karakterle başlamalıdır"
 
 #: misc/scripts/checks.sh:47
-#, fuzzy
-#| msgid "'gives' contains uppercase characters"
 msgid "%s: '%s' contains uppercase characters"
-msgstr "'gives' büyük harf içeriyor"
+msgstr "%s: '%s' büyük harf içeriyor"
 
 #: misc/scripts/checks.sh:51
-#, fuzzy
-#| msgid ""
-#| "'gives' contains characters that are not lowercase, digits, minus, or "
-#| "periods"
 msgid ""
 "%s: '%s' contains characters that are not lowercase, digits, minus, or "
 "periods"
 msgstr ""
-"'gives' küçük harf, rakam, eksi veya nokta dışında karakterler içeriyor"
+"%s: '%s' küçük harf, rakam, eksi veya nokta dışında karakterler içeriyor"
 
 #: misc/scripts/checks.sh:61
 msgid "Deb package does not contain gives"
 msgstr "Deb paketi 'gives' içermiyor"
 
 #: misc/scripts/checks.sh:67
-#, fuzzy
-#| msgid "'gives' must be at least two characters long"
 msgid "'%s' must be at least two characters long"
-msgstr "'gives' en az iki karakter uzunluğunda olmalıdır"
+msgstr "'%s' en az iki karakter uzunluğunda olmalıdır"
 
 #: misc/scripts/checks.sh:72
-#, fuzzy
-#| msgid "'gives' must start with an alphanumeric character"
 msgid "'%s' must start with an alphanumeric character"
-msgstr "'gives' alfanümerik bir karakterle başlamalıdır"
+msgstr "'%s' alfanümerik bir karakterle başlamalıdır"
 
 #: misc/scripts/checks.sh:76
-#, fuzzy
-#| msgid "'gives' contains uppercase characters"
 msgid "'%s' contains uppercase characters"
-msgstr "'gives' büyük harf içeriyor"
+msgstr "'%s' büyük harf içeriyor"
 
 #: misc/scripts/checks.sh:80
-#, fuzzy
-#| msgid ""
-#| "'gives' contains characters that are not lowercase, digits, minus, or "
-#| "periods"
 msgid ""
 "'%s' contains characters that are not lowercase, digits, minus, or periods"
-msgstr ""
-"'gives' küçük harf, rakam, eksi veya nokta dışında karakterler içeriyor"
+msgstr "'%s' küçük harf, rakam, eksi veya nokta dışında karakterler içeriyor"
 
 #: misc/scripts/checks.sh:92 misc/scripts/checks.sh:107
 #: misc/scripts/checks.sh:676
-#, fuzzy
-#| msgid "'epoch' is empty"
 msgid "'%s' is empty"
-msgstr "'epoch' boş"
+msgstr "'%s' boş"
 
 #: misc/scripts/checks.sh:95 misc/scripts/checks.sh:110
-#, fuzzy
-#| msgid "'epoch' must be an unsigned integer"
 msgid "'%s' must be an unsigned integer"
-msgstr "'epoch' işaretsiz bir tam sayı olmalıdır"
+msgstr "'%s' işaretsiz bir tam sayı olmalıdır"
 
 #: misc/scripts/checks.sh:123
-#, fuzzy
-#| msgid ""
-#| "'pkgver' must contain only alphanumerics and the characters . + - ~ and "
-#| "should start with a digit"
 msgid ""
 "'%s' must contain only alphanumerics and the characters . + - ~ and should "
 "start with a digit"
 msgstr ""
-"'pkgver' yalnız alfanümerik ve . + - ~ karakterlerinden oluşmalı ve bir "
-"rakam ile başlamalıdır"
+"'%s' yalnız alfanümerik ve . + - ~ karakterlerinden oluşmalı ve bir rakam "
+"ile başlamalıdır"
 
 #: misc/scripts/checks.sh:144
-#, fuzzy
-#| msgid ".deb files can only be provided as a singular 'source'"
 msgid ".deb files can only be provided as a singular '%s'"
-msgstr ".deb dosyaları yalnız tek bir 'source' ile sağlanabilir"
+msgstr ".deb dosyaları yalnız tek bir '%s' ile sağlanabilir"
 
 #: misc/scripts/checks.sh:237
 msgid "Package does not have a maintainer. Please be advised"
@@ -516,64 +429,44 @@ msgstr "Paket bir bakımcıya sahip değil. Dikkat edin"
 #: misc/scripts/checks.sh:558 misc/scripts/checks.sh:581
 #: misc/scripts/checks.sh:612 misc/scripts/checks.sh:649
 #: misc/scripts/checks.sh:694
-#, fuzzy
-#| msgid "'mask' index '${idx}' cannot be empty"
 msgid "'%s' index '%s' cannot be empty"
-msgstr "'mask' dizini '${idx}' boş olamaz"
+msgstr "'%s' indeksi '%s' boş olamaz"
 
 #: misc/scripts/checks.sh:286 misc/scripts/checks.sh:290
-#, fuzzy
-#| msgid "'${dep_type}' index '${idx}' is not formatted correctly"
 msgid "'%s' index '%s' is not formatted correctly"
-msgstr "'${dep_type}' index '${idx}' düzgün biçimlendirilmemiş"
+msgstr "'%s' indeksi '%s' düzgün biçimlendirilmemiş"
 
 #: misc/scripts/checks.sh:320
-#, fuzzy
-#| msgid "'ppa' index '${idx}' cannot start with 'ppa:'"
 msgid "'%s' index '%s' cannot start with %s"
-msgstr "'ppa' index '${idx}' 'ppa:' ile başlayamaz"
+msgstr "'%s' indeksi '%s' %s ile başlayamaz"
 
 #: misc/scripts/checks.sh:328
-#, fuzzy
-#| msgid "'ppa' index '${idx}' is improperly formatted"
 msgid "%s index '%s' is improperly formatted"
-msgstr "'ppa' index '${idx}' yanlış biçimlendirilmiş"
+msgstr "'%s' indeksi '%s' yanlış biçimlendirilmiş"
 
 #: misc/scripts/checks.sh:430
-#, fuzzy
-#| msgid "'${tlogvar}' is already used as a field in pacstall"
 msgid "'%s' is already used as a field in pacstall"
-msgstr "'${tlogvar}' zaten pacstall'da bir alan olarak kullanılıyor"
+msgstr "'%s' Pacstall'da zaten bir alan olarak kullanılıyor"
 
 #: misc/scripts/checks.sh:436
-#, fuzzy
-#| msgid "'${tlogvar}' custom field cannot contain a space in field name"
 msgid "'%s' custom field cannot contain a space in field name"
-msgstr "'${tlogvar}' özel alanı adında bir boşluk içeremez"
+msgstr "'%s' özel alanı alan adında bir boşluk içeremez"
 
 #: misc/scripts/checks.sh:440
-#, fuzzy
-#| msgid "'${tlogvar}' custom field cannot contain a number in field name"
 msgid "'%s' custom field cannot contain a number in field name"
-msgstr "'${tlogvar}' özel alanı alan adında sayı içeremez"
+msgstr "'%s' özel alanı alan adında sayı içeremez"
 
 #: misc/scripts/checks.sh:444
-#, fuzzy
-#| msgid ""
-#| "'${tlogvar}' custom field must capitalize only the first letter of each "
-#| "word in field name"
 msgid ""
 "'%s' custom field must capitalize only the first letter of each word in "
 "field name"
 msgstr ""
-"'${tlogvar}' özel alanının adında her sözcüğün yalnızca ilk harfinin büyük "
-"olması gerekir"
+"'%s' özel alanının adında her sözcüğün yalnızca ilk harfinin büyük olması "
+"gerekir"
 
 #: misc/scripts/checks.sh:448
-#, fuzzy
-#| msgid "'${tlogvar}' custom field cannot start or end with a hyphen"
 msgid "'%s' custom field cannot start or end with a hyphen"
-msgstr "'${tlogvar}' özel alanı tire ile başlayamaz veya bitemez"
+msgstr "'%s' özel alanı tire ile başlayamaz veya bitemez"
 
 #: misc/scripts/checks.sh:475 misc/scripts/checks.sh:500
 #: misc/scripts/checks.sh:508
@@ -581,10 +474,8 @@ msgid "Only one checksum method can be provided for hashes"
 msgstr "Hash'ler için yalnızca bir checksum yöntemi belirtilebilir"
 
 #: misc/scripts/checks.sh:536 misc/scripts/checks.sh:663
-#, fuzzy
-#| msgid "'bugs' is improperly formatted"
 msgid "'%s' is improperly formatted"
-msgstr "'bugs' yanlış biçimlendirilmiş"
+msgstr "'%s' yanlış biçimlendirilmiş"
 
 #: misc/scripts/checks.sh:551 misc/scripts/checks.sh:574
 #, fuzzy
