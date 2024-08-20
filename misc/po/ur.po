@@ -13,183 +13,177 @@ msgstr ""
 msgid "Cleaning up"
 msgstr ""
 
-#: pacstall:386
+#: pacstall:363
+msgid "Suggested solution(s)"
+msgstr ""
+
+#: pacstall:397
 msgid "Packagelist not found"
 msgstr ""
 
-#: pacstall:387 pacstall:396
-msgid "Confirm that '${UGreen}$1${NC}' exists"
+#: pacstall:398 pacstall:407
+msgid "Confirm that '%b' exists"
 msgstr ""
 
-#: pacstall:389
+#: pacstall:400
 msgid "Failed to download file, check your connection"
 msgstr ""
 
-#: pacstall:395
+#: pacstall:406
 msgid "The URL cannot be found"
 msgstr ""
 
-#: pacstall:403
+#: pacstall:414
 msgid "Failed with http code %s"
 msgstr ""
 
-#: pacstall:404
-msgid "Confirm that '${UGreen}$1${NC}' is accessible"
+#: pacstall:415
+msgid "Confirm that '%b' is accessible"
 msgstr ""
 
-#: pacstall:625
+#: pacstall:636
 msgid "Reading input from pipe"
 msgstr ""
 
-#: pacstall:684
+#: pacstall:695
 msgid "Only one command flag can be used at a time"
 msgstr ""
 
-#: pacstall:722
+#: pacstall:733
 msgid "Pacstall is already running another instance"
 msgstr ""
 
-#: pacstall:728
+#: pacstall:739
 msgid "The other instance has finished running, unlocking"
 msgstr ""
 
-#: pacstall:737
+#: pacstall:748
 msgid "Prompts are disabled"
 msgstr ""
 
-#: pacstall:744
+#: pacstall:755
 msgid "Package will be built and not installed"
 msgstr ""
 
-#: pacstall:814 pacstall:887 pacstall:949 pacstall:990 pacstall:1008
-#: pacstall:1176 pacstall:1232 misc/scripts/query-info.sh:28
+#: pacstall:825 pacstall:898 pacstall:960 pacstall:1001 pacstall:1019
+#: pacstall:1187 pacstall:1243 misc/scripts/query-info.sh:28
 msgid "You failed to specify a package"
 msgstr ""
 
-#: pacstall:819
+#: pacstall:830
 msgid "The installation of %s was interrupted, removing files"
 msgstr ""
 
-#: pacstall:856 misc/scripts/package-base.sh:129
+#: pacstall:867 misc/scripts/package-base.sh:129
 msgid "%s does not exist"
 msgstr ""
 
-#: pacstall:894
+#: pacstall:905
 msgid "Payload not found"
 msgstr ""
 
-#: pacstall:907 pacstall:954 pacstall:994 pacstall:1114 pacstall:1186
-#: pacstall:1219
+#: pacstall:918 pacstall:965 pacstall:1005 pacstall:1125 pacstall:1197
+#: pacstall:1230
 msgid "Could not connect to the internet"
 msgstr ""
 
-#: pacstall:908 pacstall:955 pacstall:995 pacstall:1115 pacstall:1187
-#: pacstall:1220
-msgid ""
-"Confirm that the URLs '${UGreen}https://github.com${NC}' or '${UGreen}"
-"https://gitlab.com${NC}' are accessible"
+#: pacstall:919 pacstall:966 pacstall:1006 pacstall:1126 pacstall:1198
+#: pacstall:1231
+msgid "Confirm that the URLs '%b' or '%b' are accessible"
 msgstr ""
 
-#: pacstall:924 pacstall:1201 misc/scripts/upgrade.sh:276
+#: pacstall:935 pacstall:1212 misc/scripts/upgrade.sh:276
 msgid "Failed to download the %b pacscript"
 msgstr ""
 
-#: pacstall:925 pacstall:1202
-msgid ""
-"Confirm that the package exists by running '${UCyan}pacstall -S "
-"$PACKAGE${NC}'"
+#: pacstall:936 pacstall:1213
+msgid "Confirm that the package exists by running '%b'"
 msgstr ""
 
-#: pacstall:925 pacstall:1202
+#: pacstall:936 pacstall:1213
 msgid "Check your internet connection"
 msgstr ""
 
-#: pacstall:931 misc/scripts/package-base.sh:148
+#: pacstall:942 misc/scripts/package-base.sh:148
 #: misc/scripts/package-base.sh:170
 msgid "Failed to install %b"
 msgstr ""
 
-#: pacstall:1017
+#: pacstall:1028
 msgid "Failed to remove %b"
 msgstr ""
 
-#: pacstall:1038
+#: pacstall:1049
 msgid "You failed to specify a repo to add"
 msgstr ""
 
-#: pacstall:1039
+#: pacstall:1050
 msgid "Add a repository in the following format:"
 msgstr ""
 
-#: pacstall:1039
+#: pacstall:1050 pacstall:1071
 msgid ""
-"Consult the pacstall man page by running '${UCyan}man pacstall${NC}', and "
-"searching for the term '${UPurple}-A${NC}'"
+"Consult the pacstall man page by running '%b', and searching for the term "
+"'%b'"
 msgstr ""
 
-#: pacstall:1059
+#: pacstall:1070
 msgid "You failed to specify a repo to remove"
 msgstr ""
 
-#: pacstall:1060
+#: pacstall:1071
 msgid "Remove a repository in the following format:"
 msgstr ""
 
-#: pacstall:1060
-msgid ""
-"Consult the pacstall man page by running '${UCyan}man pacstall${NC}', and "
-"searching for the term '${UPurple}-Rr${NC}'"
-msgstr ""
-
-#: pacstall:1083
+#: pacstall:1094
 msgid "%s is not a git repository"
 msgstr ""
 
-#: pacstall:1120
+#: pacstall:1131
 msgid ""
 "The repository you are trying to upgrade to contains a version of pacstall "
 "that cannot be updated from %b"
 msgstr ""
 
-#: pacstall:1121
+#: pacstall:1132
 msgid ""
 "Visit %s for more information on how to reinstall. Most packages will also "
 "need to be reinstalled"
 msgstr ""
 
-#: pacstall:1133 pacstall:1214
+#: pacstall:1144 pacstall:1225
 msgid "Invalid argument '%s'"
 msgstr ""
 
-#: pacstall:1145
+#: pacstall:1156
 msgid "Nothing installed yet"
 msgstr ""
 
-#: pacstall:1206
+#: pacstall:1217
 msgid "%b pacscript is downloaded to %b"
 msgstr ""
 
-#: pacstall:1236 misc/scripts/query-info.sh:33
+#: pacstall:1247 misc/scripts/query-info.sh:33
 msgid "Package is not installed"
 msgstr ""
 
-#: pacstall:1270
+#: pacstall:1281
 msgid "Keeping build files"
 msgstr ""
 
-#: pacstall:1275
+#: pacstall:1286
 msgid "Skipping check() if present"
 msgstr ""
 
-#: pacstall:1280
+#: pacstall:1291
 msgid "Downloading package entries quietly"
 msgstr ""
 
-#: pacstall:1285
+#: pacstall:1296
 msgid "Building package without bwrap sandbox"
 msgstr ""
 
-#: pacstall:1286
+#: pacstall:1297
 msgid "Be cautious, this exposes your system to potential harm"
 msgstr ""
 
@@ -636,7 +630,7 @@ msgid "Failed to install build or check dependencies"
 msgstr ""
 
 #: misc/scripts/get-pacscript.sh:33
-msgid "Run '${UCyan}sudo chown -R $PACSTALL_USER:$PACSTALL_USER $PACDIR'${NC}"
+msgid "Run '%b'"
 msgstr ""
 
 #: misc/scripts/get-pacscript.sh:38 misc/scripts/upgrade.sh:257
@@ -730,7 +724,7 @@ msgid "%b conflicts with %s, which is currently installed by apt"
 msgstr ""
 
 #: misc/scripts/package.sh:146 misc/scripts/package.sh:168
-msgid "Remove the apt package by running '${UCyan}sudo apt purge $pkg${NC}'"
+msgid "Remove the apt package by running '%b'"
 msgstr ""
 
 #: misc/scripts/package.sh:153
@@ -738,7 +732,7 @@ msgid "%b conflicts with %s, which is currently installed by pacstall"
 msgstr ""
 
 #: misc/scripts/package.sh:154 misc/scripts/package.sh:175
-msgid "Remove the pacstall package by running '${UCyan}pacstall -R $pkg${NC}'"
+msgid "Remove the pacstall package by running '%b'"
 msgstr ""
 
 #: misc/scripts/package.sh:167
@@ -864,39 +858,39 @@ msgstr ""
 msgid "%bDo you want to %s %b from the repo %b?"
 msgstr ""
 
-#: misc/scripts/update.sh:72
+#: misc/scripts/update.sh:57
 msgid "Invalid URL"
 msgstr ""
 
-#: misc/scripts/update.sh:73
-msgid "Confirm that '${UCyan}${REPO}/pacstall${NC}' is valid"
+#: misc/scripts/update.sh:58
+msgid "Confirm that '%b' is valid"
 msgstr ""
 
-#: misc/scripts/update.sh:78
+#: misc/scripts/update.sh:63
 msgid "Fetching translation list"
 msgstr ""
 
-#: misc/scripts/update.sh:81
+#: misc/scripts/update.sh:66
 msgid "Updating directories"
 msgstr ""
 
-#: misc/scripts/update.sh:89
+#: misc/scripts/update.sh:74
 msgid "Checking dependencies"
 msgstr ""
 
-#: misc/scripts/update.sh:116
+#: misc/scripts/update.sh:101
 msgid "Pulling scripts from GitHub"
 msgstr ""
 
-#: misc/scripts/update.sh:140
+#: misc/scripts/update.sh:125
 msgid "Rebuilding translations"
 msgstr ""
 
-#: misc/scripts/update.sh:145
+#: misc/scripts/update.sh:130
 msgid "Rebuilding manpages"
 msgstr ""
 
-#: misc/scripts/update.sh:149
+#: misc/scripts/update.sh:134
 msgid "Making scripts executable"
 msgstr ""
 
