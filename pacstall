@@ -166,16 +166,19 @@ pac_body="
 #
 # `fancy_message {info,warn,error,sub} "What you want to say"`
 function fancy_message() {
-    local MESSAGE_TYPE="${1}"
-    shift
-    local MESSAGE=("${@}")
-
+    local MESSAGE_TYPE="${1}" MESSAGE="${2}" FANCYTEXT
+    shift 2
+    local PRINTARGS=("${@}")
     case ${MESSAGE_TYPE} in
-        info) printf "%b: %b\n" "[${BGreen}+${NC}] ${BOLD}INFO${NC}" "${MESSAGE[*]}" ;;
-        warn) printf "%b: %b\n" "[${BYellow}*${NC}] ${BOLD}WARNING${NC}" "${MESSAGE[*]}" >&2 ;;
-        error) printf "%b: %b\n" "[${BRed}!${NC}] ${BOLD}ERROR${NC}" "${MESSAGE[*]}" >&2 ;;
-        sub) printf "\t%b %b\n" "[${BBlue}>${NC}]" "${MESSAGE[*]}" ;;
-        *) printf "%b: %b\n" "[${BOLD}?${NC}] ${BOLD}UNKNOWN${NC}" "${MESSAGE[*]}" >&2 ;;
+        info) FANCYTEXT="[${BGreen}+${NC}] ${BOLD}INFO${NC}:" ;;
+        warn) FANCYTEXT="[${BYellow}*${NC}] ${BOLD}WARNING${NC}:" ;;
+        error) FANCYTEXT="[${BRed}!${NC}] ${BOLD}ERROR${NC}:" ;;
+        sub) FANCYTEXT="\t[${BBlue}>${NC}]" ;;
+        *) FANCYTEXT="[${BOLD}?${NC}] ${BOLD}UNKNOWN${NC}:" ;;
+    esac
+    case ${MESSAGE_TYPE} in
+        info|sub) printf "${FANCYTEXT} ${MESSAGE}\n" "${PRINTARGS[@]}" ;;
+        *) printf "${FANCYTEXT} ${MESSAGE}\n" "${PRINTARGS[@]}" >&2 ;;
     esac
 }
 
@@ -289,7 +292,8 @@ function stacktrace() {
 # You can specify {Y,N} or leave it out to prevent entering the default but this is not allowed in pacstall because of the -P flag which gives unattended install
 function ask() {
     # stacktrace can't handle whatever sorcery happens with 'echo N | pacstall'
-    local prompt default reply
+    local prompt default reply template="${1}"
+    shift 1
     # shellcheck disable=SC2124
     local yn="${@: -1}"
     local rest=("${@:1:$(($# - 1))}")
@@ -305,7 +309,7 @@ function ask() {
     fi
 
     # Ask the question (not using "read -p" as it uses stderr not stdout)
-    printf "%b [$prompt] " "${rest[*]}"
+    printf "${template} [$prompt] " "${rest[@]}"
 
     if [[ ${DISABLE_PROMPTS:-z} == "z" ]]; then
         export DISABLE_PROMPTS="no"
@@ -343,7 +347,7 @@ function ask() {
                 break
                 ;;
             *)
-                printf "%b [$prompt] " "${rest[*]}"
+                printf "${template} [$prompt] " "${rest[@]}"
                 read -r reply < /dev/tty
                 ;;
         esac
