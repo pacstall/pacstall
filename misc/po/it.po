@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-08-19 13:05+0000\n"
-"Last-Translator: Elsie <hwengerstickel@protonmail.com>\n"
+"PO-Revision-Date: 2024-08-22 19:09+0000\n"
+"Last-Translator: Pietro Inglese <pietroinglese2016@gmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/it/>\n"
 "Language: it\n"
@@ -20,7 +20,7 @@ msgstr "Pulendo"
 
 #: pacstall:363
 msgid "Suggested solution(s)"
-msgstr ""
+msgstr "cosigli per la solizione/soluzioni"
 
 #: pacstall:397
 msgid "Packagelist not found"
@@ -28,7 +28,7 @@ msgstr "Lista di pacchetti non trovata"
 
 #: pacstall:398 pacstall:407
 msgid "Confirm that '%b' exists"
-msgstr ""
+msgstr "conferma che '%b' esiste"
 
 #: pacstall:400
 msgid "Failed to download file, check your connection"
@@ -44,7 +44,7 @@ msgstr "Fallito con codice http %s"
 
 #: pacstall:415
 msgid "Confirm that '%b' is accessible"
-msgstr ""
+msgstr "conferrma che '%b' è accessibile"
 
 #: pacstall:636
 msgid "Reading input from pipe"
@@ -95,7 +95,7 @@ msgstr "Impossibile connetersi a internet"
 #: pacstall:919 pacstall:966 pacstall:1006 pacstall:1126 pacstall:1198
 #: pacstall:1231
 msgid "Confirm that the URLs '%b' or '%b' are accessible"
-msgstr ""
+msgstr "conferma che le URL '%b' o '%b' è accessibile"
 
 #: pacstall:935 pacstall:1212 misc/scripts/upgrade.sh:276
 msgid "Failed to download the %b pacscript"
@@ -103,7 +103,7 @@ msgstr "Scaricare il file %b pacscript ha fallito"
 
 #: pacstall:936 pacstall:1213
 msgid "Confirm that the package exists by running '%b'"
-msgstr ""
+msgstr "conferma che il pacchtto è esistente eseguendo '%b'"
 
 #: pacstall:936 pacstall:1213
 msgid "Check your internet connection"
@@ -131,6 +131,7 @@ msgid ""
 "Consult the pacstall man page by running '%b', and searching for the term "
 "'%b'"
 msgstr ""
+"controlla la pagina pacstall man eseguendo '%b' e cercando il termine '%b'"
 
 #: pacstall:1070
 msgid "You failed to specify a repo to remove"
@@ -138,31 +139,35 @@ msgstr "Hai fallito nello specificare la repo da rimuovere"
 
 #: pacstall:1071
 msgid "Remove a repository in the following format:"
-msgstr ""
+msgstr "rimuovi la repo nel seguente formato:"
 
 #: pacstall:1094
 msgid "%s is not a git repository"
-msgstr ""
+msgstr "%s non è una git repo"
 
 #: pacstall:1131
 msgid ""
 "The repository you are trying to upgrade to contains a version of pacstall "
 "that cannot be updated from %b"
 msgstr ""
+"La repo che stai cercando di aggiornate contiene una versione di pacstall "
+"che no che non puo essere aggiornata da %b"
 
 #: pacstall:1132
 msgid ""
 "Visit %s for more information on how to reinstall. Most packages will also "
 "need to be reinstalled"
 msgstr ""
+"visita %s per piu informazioni su come reinstallare. La maggior parte dei "
+"pacchetti dovrà essere reinstallata"
 
 #: pacstall:1144 pacstall:1225
 msgid "Invalid argument '%s'"
-msgstr ""
+msgstr "argomento invalido '%s'"
 
 #: pacstall:1156
 msgid "Nothing installed yet"
-msgstr ""
+msgstr "nulla è stato ancora installato"
 
 #: pacstall:1217
 msgid "%b pacscript is downloaded to %b"
@@ -333,10 +338,8 @@ msgid "Failed to install %s deb"
 msgstr ""
 
 #: misc/scripts/build.sh:712
-#, fuzzy
-#| msgid "Packagelist not found"
 msgid "Package built at %b"
-msgstr "Lista di pacchetti non trovata"
+msgstr "Lista di pacchetti non trovata costruita a %b"
 
 #: misc/scripts/build.sh:714 misc/scripts/package.sh:50
 msgid "Moving %b to %b"
@@ -352,10 +355,8 @@ msgstr ""
 
 #: misc/scripts/checks.sh:33 misc/scripts/checks.sh:127
 #: misc/scripts/checks.sh:175 misc/scripts/checks.sh:228
-#, fuzzy
-#| msgid "Packagelist not found"
 msgid "Package does not contain '%s'"
-msgstr "Lista di pacchetti non trovata"
+msgstr "il pacchetto non contine '%s'"
 
 #: misc/scripts/checks.sh:38
 msgid "%s: '%s' must be at least two characters long"
@@ -417,7 +418,7 @@ msgstr ""
 
 #: misc/scripts/checks.sh:237
 msgid "Package does not have a maintainer. Please be advised"
-msgstr ""
+msgstr "il pacchetto non ha un mantenitore. Attenzione"
 
 #: misc/scripts/checks.sh:282 misc/scripts/checks.sh:309
 #: misc/scripts/checks.sh:359 misc/scripts/checks.sh:425
@@ -464,7 +465,7 @@ msgstr ""
 #: misc/scripts/checks.sh:475 misc/scripts/checks.sh:500
 #: misc/scripts/checks.sh:508
 msgid "Only one checksum method can be provided for hashes"
-msgstr ""
+msgstr "Solo un metodo di checksum può essere fornito per gli hash"
 
 #: misc/scripts/checks.sh:536 misc/scripts/checks.sh:663
 msgid "'%s' is improperly formatted"
@@ -496,7 +497,7 @@ msgstr ""
 
 #: misc/scripts/fetch-sources.sh:29
 msgid "Could not find build.sh"
-msgstr ""
+msgstr "Impossibile trovare build.sh"
 
 #: misc/scripts/fetch-sources.sh:173
 msgid "Hashes do not match (with method %s)"
@@ -512,7 +513,7 @@ msgstr ""
 
 #: misc/scripts/fetch-sources.sh:184
 msgid "Failed to download package"
-msgstr ""
+msgstr "scaricare il pacchetto ha fallito"
 
 #: misc/scripts/fetch-sources.sh:194
 msgid "Could not enter into the main directory %b"
@@ -536,7 +537,7 @@ msgstr ""
 
 #: misc/scripts/fetch-sources.sh:226
 msgid "Could not enter into the cloned git repository"
-msgstr ""
+msgstr "Impossibile entrare nel repository git clonato"
 
 #: misc/scripts/fetch-sources.sh:230
 msgid "Fetching commit %b"
@@ -552,11 +553,11 @@ msgstr ""
 
 #: misc/scripts/fetch-sources.sh:251
 msgid "Could not check integrity of cloned git repository"
-msgstr ""
+msgstr "Impossibile verificare l'integrità del repo git clonato"
 
 #: misc/scripts/fetch-sources.sh:253
 msgid "Cloned git repository does not match upstream hash"
-msgstr ""
+msgstr "Il repo git clonato non corrisponde all'hash upstream"
 
 #: misc/scripts/fetch-sources.sh:266
 msgid "Downloading %b"
@@ -572,7 +573,7 @@ msgstr ""
 
 #: misc/scripts/fetch-sources.sh:301
 msgid "Could not enter into the extracted archive"
-msgstr ""
+msgstr "Impossibile entrare nell'archivio estratto"
 
 #: misc/scripts/fetch-sources.sh:318 misc/scripts/fetch-sources.sh:325
 #: misc/scripts/fetch-sources.sh:339 misc/scripts/fetch-sources.sh:346
@@ -586,11 +587,11 @@ msgstr ""
 
 #: misc/scripts/fetch-sources.sh:337 misc/scripts/package.sh:374
 msgid "Performing post install operations"
-msgstr ""
+msgstr "eseguendo operazioni post installazione"
 
 #: misc/scripts/fetch-sources.sh:353 misc/scripts/package.sh:375
 msgid "Storing pacscript"
-msgstr ""
+msgstr "salvando il pacscript"
 
 #: misc/scripts/fetch-sources.sh:357
 msgid "Could not enter into %b"
@@ -602,7 +603,7 @@ msgstr ""
 
 #: misc/scripts/fetch-sources.sh:368
 msgid "Failed to install the package"
-msgstr ""
+msgstr "Installazione del pacchetto fallita"
 
 #: misc/scripts/fetch-sources.sh:377
 msgid "Copying local archive %b"
@@ -610,7 +611,7 @@ msgstr ""
 
 #: misc/scripts/fetch-sources.sh:393
 msgid "Could not enter into the copied archive"
-msgstr ""
+msgstr "Impossibile entrare nell'archivio copiato"
 
 #: misc/scripts/fetch-sources.sh:567 misc/scripts/fetch-sources.sh:601
 #: misc/scripts/fetch-sources.sh:608 misc/scripts/fetch-sources.sh:614
@@ -624,19 +625,19 @@ msgstr ""
 
 #: misc/scripts/fetch-sources.sh:698
 msgid "Checking build dependencies"
-msgstr ""
+msgstr "controllando dipendenze delks build"
 
 #: misc/scripts/fetch-sources.sh:728
 msgid "Checking check dependencies"
-msgstr ""
+msgstr "Verifica delle dipendenze di controllo"
 
 #: misc/scripts/fetch-sources.sh:769
 msgid "Creating build dependency/conflicts dummy package"
-msgstr ""
+msgstr "Creazione del pacchetto fittizio per dipendenze/conflitti di build"
 
 #: misc/scripts/fetch-sources.sh:784
 msgid "Failed to install build or check dependencies"
-msgstr ""
+msgstr "Installazione delle dipendenze di build o di controllo fallita"
 
 #: misc/scripts/get-pacscript.sh:33
 msgid "Run '%b'"
@@ -660,11 +661,11 @@ msgstr ""
 
 #: misc/scripts/package-base.sh:29
 msgid "Could not find checks.sh"
-msgstr ""
+msgstr "Impossibile trovare checks.sh"
 
 #: misc/scripts/package-base.sh:35 misc/scripts/upgrade.sh:35
 msgid "Could not find fetch-sources.sh"
-msgstr ""
+msgstr "Impossibile trovare fetch-sources.sh"
 
 #: misc/scripts/package-base.sh:42
 msgid "Interrupted, cleaning up"
@@ -692,15 +693,15 @@ msgstr ""
 
 #: misc/scripts/package-base.sh:219
 msgid "Sourcing pacscript"
-msgstr ""
+msgstr "Importazione del pacscript"
 
 #: misc/scripts/package-base.sh:242
 msgid "Could not source pacscript"
-msgstr ""
+msgstr "Impossibile importare il pacscript"
 
 #: misc/scripts/package.sh:28
 msgid "This package will connect to the internet during its build process."
-msgstr ""
+msgstr "Questo pacchetto si connetterà a Internet durante il processo di build."
 
 #: misc/scripts/package.sh:47
 msgid "Failed to download '%s'"
@@ -754,7 +755,7 @@ msgstr ""
 
 #: misc/scripts/package.sh:192
 msgid "Checking pacstall dependencies"
-msgstr ""
+msgstr "Verifica delle dipendenze di pacstall"
 
 #: misc/scripts/package.sh:209
 msgid "%b [update]"
@@ -770,11 +771,11 @@ msgstr ""
 
 #: misc/scripts/package.sh:264
 msgid "Retrieving packages"
-msgstr ""
+msgstr "Recupero dei pacchetti"
 
 #: misc/scripts/package.sh:351
 msgid "Running functions"
-msgstr ""
+msgstr "Esecuzione delle funzioni"
 
 #: misc/scripts/package.sh:356
 msgid "Could not %s %s properly"
@@ -869,7 +870,7 @@ msgstr ""
 
 #: misc/scripts/update.sh:57
 msgid "Invalid URL"
-msgstr ""
+msgstr "URL non valido"
 
 #: misc/scripts/update.sh:58
 msgid "Confirm that '%b' is valid"
@@ -877,7 +878,7 @@ msgstr ""
 
 #: misc/scripts/update.sh:63
 msgid "Fetching translation list"
-msgstr ""
+msgstr "Recupero dell'elenco delle traduzioni"
 
 #: misc/scripts/update.sh:66
 msgid "Updating directories"
