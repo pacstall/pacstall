@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-08-22 19:09+0000\n"
+"PO-Revision-Date: 2024-08-22 22:07+0000\n"
 "Last-Translator: Pietro Inglese <pietroinglese2016@gmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/it/>\n"
@@ -171,7 +171,7 @@ msgstr "nulla è stato ancora installato"
 
 #: pacstall:1217
 msgid "%b pacscript is downloaded to %b"
-msgstr ""
+msgstr "Il pacscript %b è stato scaricato su %b"
 
 #: pacstall:1247 misc/scripts/query-info.sh:33
 msgid "Package is not installed"
