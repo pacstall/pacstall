@@ -685,7 +685,7 @@ function check_builddepends() {
             fancy_message sub $"%b [installed]" "${CYAN}${just_build[0]}${NC} ${GREEN}✓${NC}"
         fi
     else
-        echo "${realbuild}" >> "${PACDIR}-unsatisifed-${type}-${pacname}"
+        echo "${realbuild}" >> "${PACDIR}-unsatisfied-${type}-${pacname}"
         fancy_message sub $"%b [required]" "${CYAN}${realbuild}${NC} ${RED}✗${NC}"
     fi
 }
