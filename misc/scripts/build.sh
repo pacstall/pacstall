@@ -56,6 +56,30 @@ function clean_builddir() {
     sudo rm -f "${STAGEDIR:?}/${pacname}.deb"
 }
 
+function check_gen_dep() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+    local onlyname="${1}" onlyarch="${2}" onlyreal="${3}" onlywhere="${4}"
+    if [[ ${onlyname} == *":${onlyarch}" ]]; then
+        if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${onlyname%:*})?architecture(${onlyarch})" -F "%p")" ]]; then
+            if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${onlyname%:*}$)?architecture(${onlyarch})" -F "%p")" ]]; then
+                fancy_message sub $"%b [required]" "${CYAN}${onlyreal}${NC} ${RED}✗${NC}"
+                echo "${onlyreal}" >> "${onlywhere}"
+                return 0
+            fi
+        fi
+    else
+        if [[ -z "$(apt-cache search --no-generate --names-only "^${onlyname}\$" 2> /dev/null || apt-cache search --names-only "^${onlyname}\$")" ]]; then
+            if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${onlyname})?architecture(${onlyarch})" -F "%p")" ]]; then
+                if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${onlyname}$)?architecture(${onlyarch})" -F "%p")" ]]; then
+                    fancy_message sub $"%b [required]" "${CYAN}${onlyreal}${NC} ${RED}✗${NC}"
+                    echo "${onlyreal}" >> "${onlywhere}"
+                    return 0
+                fi
+            fi
+        fi
+    fi
+}
+
 function check_apt_dep() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local dep="${1}" just_name just_arch real_dep
@@ -68,25 +92,7 @@ function check_apt_dep() {
     dep_const.split_name_and_version "${dep}" just_name
     just_arch="$(dep_const.get_arch "${just_name[0]}")"
     # Check if package exists in the repos, and if not, go to the next program
-    if [[ ${just_name[0]} == *":${just_arch}" ]]; then
-        if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]%:*})?architecture(${just_arch})" -F "%p")" ]]; then
-            if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_name[0]%:*}$)?architecture(${just_arch})" -F "%p")" ]]; then
-                echo "${real_dep}" >> "${PACDIR}-missing-deps-${pacname}"
-                fancy_message sub $"%b [required]" "${BLUE}${real_dep}${NC} ${RED}✗${NC}"
-                return 0
-            fi
-        fi
-    else
-        if [[ -z "$(apt-cache search --no-generate --names-only "^${just_name[0]}\$" 2> /dev/null || apt-cache search --names-only "^${just_name[0]}\$")" ]]; then
-            if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]})?architecture(${just_arch})" -F "%p")" ]]; then
-                if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_name[0]}$)?architecture(${just_arch})" -F "%p")" ]]; then
-                    echo "${real_dep}" >> "${PACDIR}-missing-deps-${pacname}"
-                    fancy_message sub $"%b [required]" "${BLUE}${real_dep}${NC} ${RED}✗${NC}"
-                    return 0
-                fi
-            fi
-        fi
-    fi
+    check_gen_dep "${just_name[0]}" "${just_arch}" "${real_dep}" "${PACDIR}-missing-deps-${pacname}"
     # Next let's check if the version (if available) is in the repos
     dep_const.apt_compare_to_constraints "${dep}" || { echo "${real_dep}" >> "${PACDIR}-not-satisfied-deps-${pacname}"; return 0; }
     # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
@@ -117,23 +123,7 @@ function check_opt_dep() {
     dep_const.split_name_and_version "${opt}" just_name
     just_arch="$(dep_const.get_arch "${just_name[0]}")"
     # Check if package exists in the repos, and if not, go to the next program
-    if [[ ${just_name[0]} == *":${just_arch}" ]]; then
-        if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]%:*})?architecture(${just_arch})" -F "%p")" ]]; then
-            if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_name[0]%:*}$)?architecture(${just_arch})" -F "%p")" ]]; then
-                echo "${realopt}" >> "${PACDIR}-missing-optdeps-${pacname}"
-                return 0
-            fi
-        fi
-    else
-        if [[ -z "$(apt-cache search --no-generate --names-only "^${just_name[0]}\$" 2> /dev/null || apt-cache search --names-only "^${just_name[0]}\$")" ]]; then
-            if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_name[0]})?architecture(${just_arch})" -F "%p")" ]]; then
-                if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_name[0]}$)?architecture(${just_arch})" -F "%p")" ]]; then
-                    echo "${realopt}" >> "${PACDIR}-missing-optdeps-${pacname}"
-                    return 0
-                fi
-            fi
-        fi
-    fi
+    check_gen_dep "${just_name[0]}" "${just_arch}" "${realopt}" "${PACDIR}-missing-optdeps-${pacname}"
     # Next let's check if the version (if available) is in the repos
     dep_const.apt_compare_to_constraints "${opt}" || { echo "${realopt}" >> "${PACDIR}-not-satisfied-optdeps-${pacname}"; return 0; }
 

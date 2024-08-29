@@ -657,25 +657,7 @@ function check_builddepends() {
     fi
     dep_const.split_name_and_version "${build_dep}" just_build
     just_arch="$(dep_const.get_arch "${just_build[0]}")"
-    if [[ ${just_build[0]} == *":${just_arch}" ]]; then
-        if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_build[0]%:*})?architecture(${just_arch})" -F "%p")" ]]; then
-            if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_build[0]%:*}$)?architecture(${just_arch})" -F "%p")" ]]; then
-                fancy_message sub $"%b [required]" "${CYAN}${realbuild}${NC} ${RED}✗${NC}"
-                echo "${realbuild}" >> "${PACDIR}-missing-${type}-${pacname}"
-                return 0
-            fi
-        fi
-    else
-        if [[ -z "$(apt-cache search --no-generate --names-only "^${just_build[0]}\$" 2> /dev/null || apt-cache search --names-only "^${just_build[0]}\$")" ]]; then
-            if [[ -z "$(aptitude search --quiet --disable-columns "?exact-name(${just_build[0]})?architecture(${just_arch})" -F "%p")" ]]; then
-                if [[ -z "$(aptitude search --quiet --disable-columns "?provides(^${just_build[0]}$)?architecture(${just_arch})" -F "%p")" ]]; then
-                    fancy_message sub $"%b [required]" "${CYAN}${realbuild}${NC} ${RED}✗${NC}"
-                    echo "${realbuild}" >> "${PACDIR}-missing-${type}-${pacname}"
-                    return 0
-                fi
-            fi
-        fi
-    fi
+    check_gen_dep "${just_build[0]}" "${just_arch}" "${realbuild}" "${PACDIR}-missing-${type}-${pacname}"
     if dep_const.apt_compare_to_constraints "${build_dep}"; then
         if ! is_apt_package_installed "${just_build[0]}"; then
             echo "${realbuild}" >> "${PACDIR}-needed-${type}-${pacname}"
