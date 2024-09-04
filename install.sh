@@ -75,7 +75,9 @@ fi
 echo -e "${PACYELLOW}┌────────────────────────┐\n│   ${PACCYAN}Pacstall Installer${PACYELLOW}   │\n└────────────────────────┘${NC}"
 
 echo
-if [[ -z "$(find -H /var/lib/apt/lists -maxdepth 0 -mtime -7)" ]]; then
+eval "$(apt-config shell Cache Dir::Cache)"
+eval "$(apt-config shell List Dir::State::Lists)"
+if [[ -z "$(find -H "/${Cache}/${List}" -maxdepth 0 -mtime -7)" ]]; then
     fancy_message info "Updating"
     case "${GITHUB_ACTIONS}" in
         true) apt-get update -qq ;;
