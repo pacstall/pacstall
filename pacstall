@@ -628,10 +628,10 @@ function getMasks_offending_pkg() {
 }
 
 # run sudo apt update if it's been more than a week
-eval "$(apt-config shell Cache Dir::Cache)"
+eval "$(apt-config shell State Dir::State)"
 eval "$(apt-config shell List Dir::State::Lists)"
-[[ -z "$(find -H "/${Cache}/${List}" -maxdepth 0 -mtime -7)" ]] && sudo apt-get update -qq --allow-releaseinfo-change
-unset Cache List
+[[ -z "$(find -H "/${State}/${List}" -maxdepth 0 -mtime -7)" ]] && sudo apt-get update -qq --allow-releaseinfo-change
+unset State List
 
 # shellcheck source=./misc/scripts/error-log.sh
 source "$SCRIPTDIR/scripts/error-log.sh"
