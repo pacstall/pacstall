@@ -61,10 +61,14 @@ function check_gen_dep() {
     local onlyname="${1}" onlyarch="${2}" onlyreal="${3}" onlywhere="${4}"
     if [[ ${onlyname} == *":${onlyarch}" \
         && -z "$(aptitude search --quiet --disable-columns "?exact-name(${onlyname%:*})?architecture(${onlyarch})" -F "%p")" \
-        && -z "$(aptitude search --quiet --disable-columns "?provides(^${onlyname%:*}$)?architecture(${onlyarch})" -F "%p")" ]] \
+        && -z "$(aptitude search --quiet --disable-columns "?exact-name(${onlyname%:*})?architecture(all)" -F "%p")" \
+        && -z "$(aptitude search --quiet --disable-columns "?provides(^${onlyname%:*}$)?architecture(${onlyarch})" -F "%p")" \
+        && -z "$(aptitude search --quiet --disable-columns "?provides(^${onlyname%:*}$)?architecture(all)" -F "%p")" ]] \
         || [[ -z "$(apt-cache search --no-generate --names-only "^${onlyname}\$" 2> /dev/null || apt-cache search --names-only "^${onlyname}\$")" \
             && -z "$(aptitude search --quiet --disable-columns "?exact-name(${onlyname})?architecture(${onlyarch})" -F "%p")" \
-            && -z "$(aptitude search --quiet --disable-columns "?provides(^${onlyname}$)?architecture(${onlyarch})" -F "%p")" ]]; then
+            && -z "$(aptitude search --quiet --disable-columns "?exact-name(${onlyname})?architecture(all)" -F "%p")" \
+            && -z "$(aptitude search --quiet --disable-columns "?provides(^${onlyname}$)?architecture(${onlyarch})" -F "%p")" \
+            && -z "$(aptitude search --quiet --disable-columns "?provides(^${onlyname}$)?architecture(all)" -F "%p")" ]]; then
         fancy_message sub $"%b [required]" "${CYAN}${onlyreal}${NC} ${RED}✗${NC}"
         echo "${onlyreal}" >> "${onlywhere}"
         return 0
