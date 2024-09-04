@@ -33,18 +33,25 @@
 # @arg $1 string A versioned string.
 function dep_const.apt_compare_to_constraints() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local compare_pkg="${1}" split_up=() pkg_version stripped ret
+    local compare_pkg="${1}" split_up=() pkg_version stripped ret const_arch
     dep_const.strip_description "${compare_pkg}" stripped
     dep_const.split_name_and_version "${stripped}" split_up
     if ((${#split_up[@]} == 1)); then
         return 0
     fi
+    const_arch="$(dep_const.get_arch "${split_up[0]}")"
     if is_apt_package_installed "${split_up[0]}"; then
         pkg_version="$(dpkg-query --showformat='${Version}' --show "${split_up[0]}")"
     else
-        pkg_version="$(aptitude search --quiet --disable-columns "?exact-name(${split_up[0]%:*})?architecture($(dep_const.get_arch "${split_up[0]}"))" -F "%V")"
+        pkg_version="$(aptitude search --quiet --disable-columns "?exact-name(${split_up[0]%:*})?architecture(${const_arch})" -F "%V")"
         if [[ -z ${pkg_version} ]]; then
-            pkg_version="$(aptitude search --quiet --disable-columns "?provides(^${split_up[0]%:*}$)?architecture($(dep_const.get_arch "${split_up[0]}"))" -F "%V")"
+            pkg_version="$(aptitude search --quiet --disable-columns "?exact-name(${split_up[0]%:*})?architecture(all)" -F "%V")"
+            if [[ -z ${pkg_version} ]]; then
+                pkg_version="$(aptitude search --quiet --disable-columns "?provides(^${split_up[0]%:*}$)?architecture(${const_arch})" -F "%V")"
+                if [[ -z ${pkg_version} ]]; then
+                    pkg_version="$(aptitude search --quiet --disable-columns "?provides(^${split_up[0]%:*}$)?architecture(all)" -F "%V")"
+                fi
+            fi
         fi
     fi
     case "${compare_pkg}" in
@@ -145,17 +152,20 @@ function dep_const.split_name_and_version() {
 # we use that, if not, we go to the next one, and repeat. If no package is installed, we choose list[0].
 function dep_const.get_pipe() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local string="${1}" pkg the_array=() viable_packages=() check_name=()
+    local string="${1}" pkg the_array=() viable_packages=() check_name=() pipe_arch
     dep_const.pipe_split "${string}" the_array
     for pkg in "${the_array[@]}"; do
         if dep_const.apt_compare_to_constraints "${pkg}"; then
             dep_const.split_name_and_version "${pkg}" check_name
+            pipe_arch="$(dep_const.get_arch "${check_name[0]}")"
             if is_package_installed "${check_name[0]}" || is_apt_package_installed "${check_name[0]}"; then
                 echo "${pkg}"
                 return 0
             else
-                if [[ -n "$(aptitude search --quiet --disable-columns "?exact-name(${check_name[0]%:*})?architecture($(dep_const.get_arch "${check_name[0]}"))" -F "%p")" || \
-                    -n "$(aptitude search --quiet --disable-columns "?provides(^${check_name[0]%:*}$)?architecture($(dep_const.get_arch "${check_name[0]}"))" -F "%p")" ]]; then
+                if [[ -n "$(aptitude search --quiet --disable-columns "?exact-name(${check_name[0]%:*})?architecture(${pipe_arch})" -F "%p")" || \
+                    -n "$(aptitude search --quiet --disable-columns "?exact-name(${check_name[0]%:*})?architecture(all)" -F "%p")" || \
+                    -n "$(aptitude search --quiet --disable-columns "?provides(^${check_name[0]%:*}$)?architecture(${pipe_arch})" -F "%p")" || \
+                    -n "$(aptitude search --quiet --disable-columns "?provides(^${check_name[0]%:*}$)?architecture(all)" -F "%p")" ]]; then
                     viable_packages+=("${pkg}")
                 fi
             fi
