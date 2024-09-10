@@ -24,7 +24,12 @@
 _pacstall_get_repo_urls() {
     local part split
     while read -r part; do
-        mapfile -t split <<< "${part// /$'\n'}"
+        if [[ -n $ZSH_NAME ]]; then
+            # shellcheck disable=SC2296,SC2116
+            split=(${(@f)"$(echo "${part// /$'\n'}")"})
+        else
+            mapfile -t split <<< "${part// /$'\n'}"
+        fi
         if ((${#split[@]} == 1)); then
             echo "${split[0]}"
         elif ((${#split[@]} == 2)); then
