@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-09-15 20:51+0000\n"
+"PO-Revision-Date: 2024-09-15 20:59+0000\n"
 "Last-Translator: Tanz Musikus <tanzmusikus@posteo.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/pacstall/pacstall/"
 "de/>\n"
@@ -266,7 +266,7 @@ msgstr "%b [erforderlich]"
 #: misc/scripts/build.sh:95 misc/scripts/fetch-sources.sh:683
 #, fuzzy
 msgid "%b [remote]"
-msgstr "%b [unzugänglich]"
+msgstr "%b [Fernzugang | or: unzugänglich | or just: remote]"
 
 #: misc/scripts/build.sh:97 misc/scripts/fetch-sources.sh:685
 #: misc/scripts/package.sh:216
