@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-09-15 20:41+0000\n"
+"PO-Revision-Date: 2024-09-15 20:51+0000\n"
 "Last-Translator: Tanz Musikus <tanzmusikus@posteo.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/pacstall/pacstall/"
 "de/>\n"
@@ -99,7 +99,7 @@ msgstr "Bestätige, dass die URLs '%b' oder '%b' erreichbar sind"
 
 #: pacstall:935 pacstall:1212 misc/scripts/upgrade.sh:276
 msgid "Failed to download the %b pacscript"
-msgstr "Das Herunterladen von pacscript %b ist fehlgeschlagen"
+msgstr "Das Herunterladen von Pacscript %b ist fehlgeschlagen"
 
 #: pacstall:936 pacstall:1213
 msgid "Confirm that the package exists by running '%b'"
@@ -180,7 +180,7 @@ msgstr "Paket ist nicht installiert"
 
 #: pacstall:1281
 msgid "Keeping build files"
-msgstr "Erstell-Dateien behalten"
+msgstr "Build-Dateien behalten"
 
 #: pacstall:1286
 msgid "Skipping check() if present"
@@ -609,7 +609,7 @@ msgstr "Durchführen von Nachinstallationsvorgängen"
 
 #: misc/scripts/fetch-sources.sh:353 misc/scripts/package.sh:375
 msgid "Storing pacscript"
-msgstr "Speichere pacscript"
+msgstr "Speichere Pacscript"
 
 #: misc/scripts/fetch-sources.sh:357
 msgid "Could not enter into %b"
@@ -643,7 +643,7 @@ msgstr "Dieses Paket ist für %b, welches eine fremde Architektur ist"
 
 #: misc/scripts/fetch-sources.sh:698
 msgid "Checking build dependencies"
-msgstr "Prüfe Erstell-Abhängigkeiten"
+msgstr "Prüfe Build-Abhängigkeiten"
 
 #: misc/scripts/fetch-sources.sh:728
 msgid "Checking check dependencies"
