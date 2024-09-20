@@ -38,14 +38,14 @@
 You can run the command below to install Pacstall.
 You can also grab the deb file [here](https://github.com/pacstall/pacstall/releases/latest) but it may be a bit older.
 ```bash
-sudo bash -c "$(curl -fsSL https://pacstall.dev/q/install || wget -q https://pacstall.dev/q/install -O -)"
+bash -c "sudo bash -c \"\$(curl -fsSL https://pacstall.dev/q/install || wget -q https://pacstall.dev/q/install -O -)\""
 ```
 
 ### Uninstalling
 
 You can run the command below to uninstall Pacstall.
 ```bash
-bash -c "$(curl -fsSL https://pacstall.dev/q/uninstall || wget -q https://pacstall.dev/q/uninstall -O -)"
+bash -c "sudo bash -c \"\$(curl -fsSL https://pacstall.dev/q/uninstall || wget -q https://pacstall.dev/q/uninstall -O -)\""
 ```
 ---
 
