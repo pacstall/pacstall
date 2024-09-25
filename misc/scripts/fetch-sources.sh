@@ -250,8 +250,16 @@ function git_down() {
     fancy_message sub $"Checking integrity of %b" "${YELLOW}${cloned_git_hash:0:8}${NC}"
     git fsck --full --no-progress --no-verbose || fancy_message warn $"Could not check integrity of cloned git repository"
     if [[ ${cloned_git_hash:0:8} != "${comp_git_pkgver}" ]]; then
-        fancy_message error $"Cloned git repository does not match upstream hash"
-        clean_fail_down
+        if [[ -n ${revision} ]]; then
+            annotated_commit="$(git ls-remote "${source_url}" "${revision}^{}")"
+            if [[ -z ${annotated_commit} ]] || [[ ${cloned_git_hash:0:8} != "${annotated_commit:0:8}" ]]; then
+                fancy_message error $"Cloned git repository does not match upstream hash"
+                clean_fail_down
+            fi
+        else
+            fancy_message error $"Cloned git repository does not match upstream hash"
+            clean_fail_down
+        fi
     fi
     # if first source entry & archive is not set, this becomes archive
     if [[ ${source[i]} == "${source[0]}" && -z ${_archive} ]]; then
