@@ -100,7 +100,7 @@ fi
 
 # If priority exists and is required, and also that this package has not been installed before (first time)
 if [[ -n ${priority} && ${priority} == 'essential' ]] && ! is_package_installed "${pacname}"; then
-    ask $"This package has '%s', meaning once this is installed, it should be assumed to be uninstallable. Do you want to continue?" "priority=essential" Y
+    ask $"This package has '%s', meaning once this is installed, it should be assumed to be unremovable. Do you want to continue?" "priority=essential" Y
     if ((answer == 0)); then
         cleanup
         exit 1
