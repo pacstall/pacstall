@@ -11,141 +11,141 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 5.8-dev\n"
 
-#: pacstall:270 misc/scripts/build.sh:163 misc/scripts/build.sh:691
-#: misc/scripts/fetch-sources.sh:158 misc/scripts/fetch-sources.sh:720
-#: misc/scripts/fetch-sources.sh:750 misc/scripts/package-base.sh:158
+#: pacstall:273 misc/scripts/build.sh:154 misc/scripts/build.sh:682
+#: misc/scripts/fetch-sources.sh:158 misc/scripts/fetch-sources.sh:710
+#: misc/scripts/fetch-sources.sh:740 misc/scripts/package-base.sh:158
 #: misc/scripts/package-base.sh:177
 msgid "Cleaning up"
 msgstr "Membersihkan"
 
-#: pacstall:363
+#: pacstall:367
 msgid "Suggested solution(s)"
 msgstr "Solusi yang disarankan"
 
-#: pacstall:397
+#: pacstall:401
 msgid "Packagelist not found"
 msgstr "Packagelist tidak ditemukan"
 
-#: pacstall:398 pacstall:407
+#: pacstall:402 pacstall:411
 msgid "Confirm that '%b' exists"
 msgstr "Pastikan bahwa '%b' ada"
 
-#: pacstall:400
+#: pacstall:404
 msgid "Failed to download file, check your connection"
 msgstr "Gagal mengunduh file, mohon periksa koneksi internet anda"
 
-#: pacstall:406
+#: pacstall:410
 msgid "The URL cannot be found"
 msgstr "URL tidak ditemukan"
 
-#: pacstall:414
+#: pacstall:418
 msgid "Failed with http code %s"
 msgstr "Gagal dengan kode http %s"
 
-#: pacstall:415
+#: pacstall:419
 msgid "Confirm that '%b' is accessible"
 msgstr "Pastikan bahwa '%b' dapat diakses"
 
-#: pacstall:636
+#: pacstall:643
 msgid "Reading input from pipe"
 msgstr "Membaca input dari pipa"
 
-#: pacstall:695
+#: pacstall:702
 msgid "Only one command flag can be used at a time"
 msgstr "Hanya satu argumen perintah yang dapat digunakan dalam satu waktu"
 
-#: pacstall:733
+#: pacstall:740
 msgid "Pacstall is already running another instance"
 msgstr "Pacstall sudah berjalan pada instance lain"
 
-#: pacstall:739
+#: pacstall:746
 msgid "The other instance has finished running, unlocking"
 msgstr "Instance lain telah selesai berjalan, membuka kunci"
 
-#: pacstall:748
+#: pacstall:755
 msgid "Prompts are disabled"
 msgstr "Prompt dinonaktifkan"
 
-#: pacstall:755
+#: pacstall:762
 msgid "Package will be built and not installed"
 msgstr "Paket akan dibuat dan tidak diinstal"
 
-#: pacstall:825 pacstall:898 pacstall:960 pacstall:1001 pacstall:1019
-#: pacstall:1187 pacstall:1243 misc/scripts/query-info.sh:28
+#: pacstall:832 pacstall:905 pacstall:967 pacstall:1008 pacstall:1026
+#: pacstall:1194 pacstall:1250 misc/scripts/query-info.sh:28
 msgid "You failed to specify a package"
 msgstr "Anda gagal menentukan paket"
 
-#: pacstall:830
+#: pacstall:837
 msgid "The installation of %s was interrupted, removing files"
 msgstr "Instalasi %s terganggu, menghapus file"
 
-#: pacstall:867 misc/scripts/package-base.sh:129
+#: pacstall:874 misc/scripts/package-base.sh:129
 msgid "%s does not exist"
 msgstr "%s tidak ditemukan"
 
-#: pacstall:905
+#: pacstall:912
 msgid "Payload not found"
 msgstr "Payload tidak ditemukan"
 
-#: pacstall:918 pacstall:965 pacstall:1005 pacstall:1125 pacstall:1197
-#: pacstall:1230
+#: pacstall:925 pacstall:972 pacstall:1012 pacstall:1132 pacstall:1204
+#: pacstall:1237
 msgid "Could not connect to the internet"
 msgstr "Tidak dapat tersambung ke internet"
 
-#: pacstall:919 pacstall:966 pacstall:1006 pacstall:1126 pacstall:1198
-#: pacstall:1231
+#: pacstall:926 pacstall:973 pacstall:1013 pacstall:1133 pacstall:1205
+#: pacstall:1238
 msgid "Confirm that the URLs '%b' or '%b' are accessible"
 msgstr "Pastikan bahwa URL '%b' atau '%b' dapat diakses"
 
-#: pacstall:935 pacstall:1212 misc/scripts/upgrade.sh:276
+#: pacstall:942 pacstall:1219 misc/scripts/upgrade.sh:276
 msgid "Failed to download the %b pacscript"
 msgstr "Gagal mengunduh file pacscript %b"
 
-#: pacstall:936 pacstall:1213
+#: pacstall:943 pacstall:1220
 msgid "Confirm that the package exists by running '%b'"
 msgstr "Pastikan bahwa paket terinstal dengan menjalankan '%b'"
 
-#: pacstall:936 pacstall:1213
+#: pacstall:943 pacstall:1220
 msgid "Check your internet connection"
 msgstr "Periksa koneksi internet anda"
 
-#: pacstall:942 misc/scripts/package-base.sh:148
+#: pacstall:949 misc/scripts/package-base.sh:148
 #: misc/scripts/package-base.sh:170
 msgid "Failed to install %b"
 msgstr "Gagal menginstal %b"
 
-#: pacstall:1028
+#: pacstall:1035
 msgid "Failed to remove %b"
 msgstr "Gagal menghapus %b"
 
-#: pacstall:1049
+#: pacstall:1056
 msgid "You failed to specify a repo to add"
 msgstr "Anda gagal menentukan repo yang akan ditambahkan"
 
-#: pacstall:1050
+#: pacstall:1057
 msgid "Add a repository in the following format:"
 msgstr "Tambahkan repositori dalam format berikut:"
 
-#: pacstall:1050 pacstall:1071
+#: pacstall:1057 pacstall:1078
 msgid ""
 "Consult the pacstall man page by running '%b', and searching for the term "
 "'%b'"
 msgstr ""
 "Lihat halaman man pacstall dengan menjalankan '%b', dan cari istilah '%b'"
 
-#: pacstall:1070
+#: pacstall:1077
 msgid "You failed to specify a repo to remove"
 msgstr "Anda gagal menentukan repo yang akan dihapus"
 
-#: pacstall:1071
+#: pacstall:1078
 msgid "Remove a repository in the following format:"
 msgstr "Hapus repositori dalam format berikut:"
 
-#: pacstall:1094
+#: pacstall:1101
 msgid "%s is not a git repository"
 msgstr "%s bukan merupakan repositori git"
 
-#: pacstall:1131
+#: pacstall:1138
 msgid ""
 "The repository you are trying to upgrade to contains a version of pacstall "
 "that cannot be updated from %b"
@@ -153,7 +153,7 @@ msgstr ""
 "Repositori yang ingin anda tingkatkan berisi versi pacstall yang tidak dapat "
 "diperbarui dari %b"
 
-#: pacstall:1132
+#: pacstall:1139
 msgid ""
 "Visit %s for more information on how to reinstall. Most packages will also "
 "need to be reinstalled"
@@ -161,39 +161,39 @@ msgstr ""
 "Kunjungi %s untuk informasi lebih lanjut tentang cara menginstal ulang. "
 "Sebagian besar paket juga perlu diinstal ulang"
 
-#: pacstall:1144 pacstall:1225
+#: pacstall:1151 pacstall:1232
 msgid "Invalid argument '%s'"
 msgstr "Argumen tidak valid '%s'"
 
-#: pacstall:1156
+#: pacstall:1163
 msgid "Nothing installed yet"
 msgstr "Belum ada yang terinstal"
 
-#: pacstall:1217
+#: pacstall:1224
 msgid "%b pacscript is downloaded to %b"
 msgstr "Pacscript %b diunduh ke %b"
 
-#: pacstall:1247 misc/scripts/query-info.sh:33
+#: pacstall:1254 misc/scripts/query-info.sh:33
 msgid "Package is not installed"
 msgstr "Paket tidak terinstal"
 
-#: pacstall:1281
+#: pacstall:1288
 msgid "Keeping build files"
 msgstr "Menyimpan berkas build"
 
-#: pacstall:1286
+#: pacstall:1293
 msgid "Skipping check() if present"
 msgstr "Melewati check() jika ada"
 
-#: pacstall:1291
+#: pacstall:1298
 msgid "Downloading package entries quietly"
 msgstr "Mengunduh entri paket secara diam-diam"
 
-#: pacstall:1296
+#: pacstall:1303
 msgid "Building package without bwrap sandbox"
 msgstr "Membuat paket tanpa sandbox bwrap"
 
-#: pacstall:1297
+#: pacstall:1304
 msgid "Be cautious, this exposes your system to potential harm"
 msgstr ""
 "Berhati-hatilah, hal ini menyebabkan sistem anda terekspos pada potensi "
@@ -258,96 +258,95 @@ msgstr "Tidak dapat menemukan version-constraints"
 msgid "Could not find srcinfo.sh"
 msgstr "Tidak dapat menemukan srcinfo.sh"
 
-#: misc/scripts/build.sh:75 misc/scripts/build.sh:84
-#: misc/scripts/fetch-sources.sh:663 misc/scripts/fetch-sources.sh:672
-#: misc/scripts/fetch-sources.sh:689 misc/scripts/package.sh:221
+#: misc/scripts/build.sh:67 misc/scripts/build.sh:77
+#: misc/scripts/fetch-sources.sh:679 misc/scripts/package.sh:221
 msgid "%b [required]"
 msgstr "%b [diperlukan]"
 
-#: misc/scripts/build.sh:95 misc/scripts/fetch-sources.sh:683
+#: misc/scripts/build.sh:102 misc/scripts/fetch-sources.sh:673
 msgid "%b [remote]"
 msgstr "%b [remot]"
 
-#: misc/scripts/build.sh:97 misc/scripts/fetch-sources.sh:685
+#: misc/scripts/build.sh:104 misc/scripts/fetch-sources.sh:675
 #: misc/scripts/package.sh:216
 msgid "%b [installed]"
 msgstr "%b [terinstal]"
 
-#: misc/scripts/build.sh:156 misc/scripts/build.sh:176
-#: misc/scripts/fetch-sources.sh:713 misc/scripts/fetch-sources.sh:743
+#: misc/scripts/build.sh:147 misc/scripts/build.sh:167
+#: misc/scripts/fetch-sources.sh:703 misc/scripts/fetch-sources.sh:733
 msgid "%b does not exist in apt repositories"
 msgstr "%b tidak dapat ditemukan di repositori apt"
 
-#: misc/scripts/build.sh:160 misc/scripts/build.sh:180
-#: misc/scripts/fetch-sources.sh:717 misc/scripts/fetch-sources.sh:747
+#: misc/scripts/build.sh:151 misc/scripts/build.sh:171
+#: misc/scripts/fetch-sources.sh:707 misc/scripts/fetch-sources.sh:737
 msgid "%b version(s) cannot be satisfied"
 msgstr "Versi %b tidak dapat dipenuhi"
 
-#: misc/scripts/build.sh:172
+#: misc/scripts/build.sh:163
 msgid "Optional dependencies"
 msgstr "Dependensi opsional"
 
-#: misc/scripts/build.sh:207
+#: misc/scripts/build.sh:198
 msgid "%b has exceeded the maximum number of optional dependencies. Skipping"
 msgstr "%b telah melewati batas maksimal dependensi opsional. Melewati"
 
-#: misc/scripts/build.sh:217 misc/scripts/package-base.sh:140
+#: misc/scripts/build.sh:208 misc/scripts/package-base.sh:140
 msgid "Selecting packages %b"
 msgstr "Memilih paket %b"
 
-#: misc/scripts/build.sh:236
+#: misc/scripts/build.sh:227
 msgid "Checking apt dependencies"
 msgstr "Memeriksa dependensi apt"
 
-#: misc/scripts/build.sh:327
+#: misc/scripts/build.sh:318
 msgid "Packing control.tar"
 msgstr "Mengemas control.tar"
 
-#: misc/scripts/build.sh:337
+#: misc/scripts/build.sh:328
 msgid "Packing data.tar"
 msgstr "Mengemas data.tar"
 
-#: misc/scripts/build.sh:340
+#: misc/scripts/build.sh:331
 msgid "Compressing"
 msgstr "Mengkompres"
 
-#: misc/scripts/build.sh:365
+#: misc/scripts/build.sh:356
 msgid "Packaging %b as %b"
 msgstr "Mengemas %b sebagai %b"
 
-#: misc/scripts/build.sh:367 misc/scripts/package-base.sh:144
+#: misc/scripts/build.sh:358 misc/scripts/package-base.sh:144
 msgid "Packaging %b"
 msgstr "Mengemas %b"
 
-#: misc/scripts/build.sh:596
+#: misc/scripts/build.sh:587
 msgid "Empty key... Skipping"
 msgstr "Kunci kosong... Melewati"
 
-#: misc/scripts/build.sh:602
+#: misc/scripts/build.sh:593
 msgid "'%s' cannot contain empty path... Skipping"
 msgstr "'%s' tidak boleh memiliki jalur kosong... Melewati"
 
-#: misc/scripts/build.sh:606 misc/scripts/build.sh:614
+#: misc/scripts/build.sh:597 misc/scripts/build.sh:605
 msgid "'%s' cannot contain path starting with '/'... Skipping"
 msgstr "'%s' tidak boleh memiliki jalur yang berawalan '/'... Melewati"
 
-#: misc/scripts/build.sh:609
+#: misc/scripts/build.sh:600
 msgid "'%s' is inside the package... Skipping"
 msgstr "'%s' berada didalam paket... Melewati"
 
-#: misc/scripts/build.sh:688
+#: misc/scripts/build.sh:679
 msgid "Failed to install %s deb"
 msgstr "Gagal menginstal deb %s"
 
-#: misc/scripts/build.sh:712
+#: misc/scripts/build.sh:703
 msgid "Package built at %b"
 msgstr "Paket dibuat di %b"
 
-#: misc/scripts/build.sh:714 misc/scripts/package.sh:50
+#: misc/scripts/build.sh:705 misc/scripts/package.sh:50
 msgid "Moving %b to %b"
 msgstr "Memindahkan %b ke %b"
 
-#: misc/scripts/build.sh:731
+#: misc/scripts/build.sh:722
 msgid "Repacking %b"
 msgstr "Mengemas ulang %b"
 
@@ -563,87 +562,87 @@ msgstr "Memeriksa integritas %b"
 msgid "Could not check integrity of cloned git repository"
 msgstr "Tidak dapat memeriksa integritas repositori git yang dikloning"
 
-#: misc/scripts/fetch-sources.sh:253
+#: misc/scripts/fetch-sources.sh:256 misc/scripts/fetch-sources.sh:260
 msgid "Cloned git repository does not match upstream hash"
 msgstr "Repositori git yang dikloning tidak cocok dengan hash upstream"
 
-#: misc/scripts/fetch-sources.sh:266
+#: misc/scripts/fetch-sources.sh:274
 msgid "Downloading %b"
 msgstr "Mengunduh %b"
 
-#: misc/scripts/fetch-sources.sh:274
+#: misc/scripts/fetch-sources.sh:282
 msgid "Checking hash %b[%b...%b]"
 msgstr "Memeriksa hash %b[%b...%b]"
 
-#: misc/scripts/fetch-sources.sh:290
+#: misc/scripts/fetch-sources.sh:298
 msgid "Extracting %b"
 msgstr "Mengekstrak %b"
 
-#: misc/scripts/fetch-sources.sh:301
+#: misc/scripts/fetch-sources.sh:309
 msgid "Could not enter into the extracted archive"
 msgstr "Tidak dapat memasuki arsip yang diekstrak"
 
-#: misc/scripts/fetch-sources.sh:318 misc/scripts/fetch-sources.sh:325
-#: misc/scripts/fetch-sources.sh:339 misc/scripts/fetch-sources.sh:346
+#: misc/scripts/fetch-sources.sh:326 misc/scripts/fetch-sources.sh:333
+#: misc/scripts/fetch-sources.sh:347 misc/scripts/fetch-sources.sh:354
 msgid "Running %s hook"
 msgstr "Menjalankan kait %s"
 
-#: misc/scripts/fetch-sources.sh:321 misc/scripts/fetch-sources.sh:328
-#: misc/scripts/fetch-sources.sh:342 misc/scripts/fetch-sources.sh:349
+#: misc/scripts/fetch-sources.sh:329 misc/scripts/fetch-sources.sh:336
+#: misc/scripts/fetch-sources.sh:350 misc/scripts/fetch-sources.sh:357
 msgid "Could not run %s hook successfully"
 msgstr "Tidak dapat menjalankan kait %s dengan sukses"
 
-#: misc/scripts/fetch-sources.sh:337 misc/scripts/package.sh:374
+#: misc/scripts/fetch-sources.sh:345 misc/scripts/package.sh:374
 msgid "Performing post install operations"
 msgstr "Menjalankan operasi pasca penginstalan"
 
-#: misc/scripts/fetch-sources.sh:353 misc/scripts/package.sh:375
+#: misc/scripts/fetch-sources.sh:361 misc/scripts/package.sh:375
 msgid "Storing pacscript"
 msgstr "Menyimpan pacscript"
 
-#: misc/scripts/fetch-sources.sh:357
+#: misc/scripts/fetch-sources.sh:365
 msgid "Could not enter into %b"
 msgstr "Tidak dapat memasuki %b"
 
-#: misc/scripts/fetch-sources.sh:364 misc/scripts/package.sh:389
+#: misc/scripts/fetch-sources.sh:372 misc/scripts/package.sh:389
 msgid "Done installing %b"
 msgstr "Selesai menginstal %b"
 
-#: misc/scripts/fetch-sources.sh:368
+#: misc/scripts/fetch-sources.sh:376
 msgid "Failed to install the package"
 msgstr "Gagal menginstal paket"
 
-#: misc/scripts/fetch-sources.sh:377
+#: misc/scripts/fetch-sources.sh:385
 msgid "Copying local archive %b"
 msgstr "Menyalin arsip lokal %b"
 
-#: misc/scripts/fetch-sources.sh:393
+#: misc/scripts/fetch-sources.sh:401
 msgid "Could not enter into the copied archive"
 msgstr "Tidak dapat memasuki arsip yang disalin"
 
-#: misc/scripts/fetch-sources.sh:567 misc/scripts/fetch-sources.sh:601
-#: misc/scripts/fetch-sources.sh:608 misc/scripts/fetch-sources.sh:614
-#: misc/scripts/fetch-sources.sh:646
+#: misc/scripts/fetch-sources.sh:575 misc/scripts/fetch-sources.sh:609
+#: misc/scripts/fetch-sources.sh:616 misc/scripts/fetch-sources.sh:622
+#: misc/scripts/fetch-sources.sh:654
 msgid "This Pacscript does not work on %b"
 msgstr "Pacscript ini tidak dapat digunakan pada %b"
 
-#: misc/scripts/fetch-sources.sh:634
+#: misc/scripts/fetch-sources.sh:642
 msgid "This package is for %b, which is a foreign architecture"
 msgstr "Paket ini untuk %b, yang merupakan arsitektur asing"
 
-#: misc/scripts/fetch-sources.sh:698
+#: misc/scripts/fetch-sources.sh:688
 msgid "Checking build dependencies"
 msgstr "Memeriksa dependensi build"
 
-#: misc/scripts/fetch-sources.sh:728
+#: misc/scripts/fetch-sources.sh:718
 msgid "Checking check dependencies"
 msgstr "Memeriksa dependensi check"
 
-#: misc/scripts/fetch-sources.sh:769
+#: misc/scripts/fetch-sources.sh:759
 msgid "Creating build dependency/conflicts dummy package"
 msgstr "Membuat paket dummy dependensi build/konfilk"
 
-#: misc/scripts/fetch-sources.sh:784
+#: misc/scripts/fetch-sources.sh:774
 msgid "Failed to install build or check dependencies"
 msgstr "Gagal menginstal dependensi build atau check"
 
@@ -733,9 +732,13 @@ msgstr ""
 "ini"
 
 #: misc/scripts/package.sh:103
+#, fuzzy
+#| msgid ""
+#| "This package has '%s', meaning once this is installed, it should be "
+#| "assumed to be uninstallable. Do you want to continue?"
 msgid ""
 "This package has '%s', meaning once this is installed, it should be assumed "
-"to be uninstallable. Do you want to continue?"
+"to be unremovable. Do you want to continue?"
 msgstr ""
 "Paket ini memiliki '%s', yang berarti setelah terinstal, paket ini harus "
 "diasumsikan tidak dapat dihapus. Apakah anda ingin melanjutkan?"
