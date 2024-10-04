@@ -33,35 +33,57 @@
 # @arg $1 string A versioned string.
 function dep_const.apt_compare_to_constraints() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local compare_pkg="${1}" split_up=() pkg_version stripped ret const_arch
+    local compare_pkg="${1}" split_up=() pkg_version pkg_versions stripped ret const_arch compare_type
     dep_const.strip_description "${compare_pkg}" stripped
     dep_const.split_name_and_version "${stripped}" split_up
     if ((${#split_up[@]} == 1)); then
         return 0
     fi
+    case "${compare_pkg}" in
+        *"<="*) compare_type="le" ;;
+        *">="*) compare_type="ge" ;;
+        *"="*) compare_type="eq" ;;
+        *"<"*) compare_type="lt" ;;
+        *">"*) compare_type="gt" ;;
+    esac
     const_arch="$(dep_const.get_arch "${split_up[0]}")"
     if is_apt_package_installed "${split_up[0]}"; then
         pkg_version="$(dpkg-query --showformat='${Version}' --show "${split_up[0]}")"
     else
         pkg_version="$(aptitude search --quiet --disable-columns "?exact-name(${split_up[0]%:*})?architecture(${const_arch})" -F "%V")"
-        if [[ -z ${pkg_version} ]]; then
+        if [[ -n ${pkg_version} ]]; then
+            # Example: foo@1.2.4 where foo<=1.2.5 should return true (0), because 1.2.4 is less than 1.2.5
+            { dpkg --compare-versions "${pkg_version}" "${compare_type}" "${split_up[1]}"; ret=$?; }
+        else
             pkg_version="$(aptitude search --quiet --disable-columns "?exact-name(${split_up[0]%:*})?architecture(all)" -F "%V")"
-            if [[ -z ${pkg_version} ]]; then
-                pkg_version="$(aptitude search --quiet --disable-columns "?provides(^${split_up[0]%:*}$)?architecture(${const_arch})" -F "%V")"
-                if [[ -z ${pkg_version} ]]; then
-                    pkg_version="$(aptitude search --quiet --disable-columns "?provides(^${split_up[0]%:*}$)?architecture(all)" -F "%V")"
+            if [[ -n ${pkg_version} ]]; then
+                { dpkg --compare-versions "${pkg_version}" "${compare_type}" "${split_up[1]}"; ret=$?; }
+            else
+                mapfile -t pkg_versions < <(aptitude search --quiet --disable-columns "?provides(^${split_up[0]%:*}$)?architecture(${const_arch})" -F "%V" \
+                    | while read -r line; do
+                        if dpkg --compare-versions "${line}" "${compare_type}" "${split_up[1]}"; then
+                            echo "${line}"
+                        fi
+                    done)
+                if [[ -n ${pkg_versions[*]} ]]; then
+                    # let apt pick which one, we don't care, as long as the constraint was satisfied
+                    ret=0
+                else
+                    mapfile -t pkg_versions < <(aptitude search --quiet --disable-columns "?provides(^${split_up[0]%:*}$)?architecture(all)" -F "%V" \
+                        | while read -r line; do
+                            if dpkg --compare-versions "${line}" "${compare_type}" "${split_up[1]}"; then
+                                echo "${line}"
+                            fi
+                        done)
+                    if [[ -n ${pkg_versions[*]} ]]; then
+                        ret=0
+                    else
+                        ret=1
+                    fi
                 fi
             fi
         fi
     fi
-    case "${compare_pkg}" in
-        # Example: foo@1.2.4 where foo<=1.2.5 should return true, because 1.2.4 is less than 1.2.5
-        *"<="*) dpkg --compare-versions "${pkg_version}" le "${split_up[1]}"; ret=$? ;;
-        *">="*) dpkg --compare-versions "${pkg_version}" ge "${split_up[1]}"; ret=$? ;;
-        *"="*) dpkg --compare-versions "${pkg_version}" eq "${split_up[1]}"; ret=$? ;;
-        *"<"*) dpkg --compare-versions "${pkg_version}" lt "${split_up[1]}"; ret=$? ;;
-        *">"*) dpkg --compare-versions "${pkg_version}" gt "${split_up[1]}"; ret=$? ;;
-    esac
     { ignore_stack=true; return "${ret}"; }
 }
 
