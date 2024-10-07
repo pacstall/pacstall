@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-09-15 20:59+0000\n"
+"PO-Revision-Date: 2024-10-08 16:16+0000\n"
 "Last-Translator: Tanz Musikus <tanzmusikus@posteo.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/pacstall/pacstall/"
 "de/>\n"
@@ -201,7 +201,7 @@ msgstr "Vorsicht, das System wird einem potenziellen Schaden ausgesetzt"
 #: misc/scripts/add-repo.sh:29 misc/scripts/build.sh:41
 #: misc/scripts/search.sh:31 misc/scripts/upgrade.sh:47
 msgid "Could not find manage-repo.sh"
-msgstr "Die manage-repo.sh wurde nicht gefunden"
+msgstr "Konnte die manage-repo.sh nicht finden"
 
 #: misc/scripts/add-repo.sh:39 misc/scripts/add-repo.sh:47
 #: misc/scripts/add-repo.sh:55 misc/scripts/add-repo.sh:63
@@ -747,16 +747,12 @@ msgstr ""
 "finden. Melde dies im Upstream"
 
 #: misc/scripts/package.sh:103
-#, fuzzy
-#| msgid ""
-#| "This package has '%s', meaning once this is installed, it should be "
-#| "assumed to be uninstallable. Do you want to continue?"
 msgid ""
 "This package has '%s', meaning once this is installed, it should be assumed "
 "to be unremovable. Do you want to continue?"
 msgstr ""
 "Dieses Paket hat '%s', was bedeutet, dass nach der Installation davon "
-"ausgegangen werden sollte, dass es deinstallierbar ist. Fortfahren?"
+"ausgegangen werden sollte, dass es nicht mehr entfernbar ist. Fortfahren?"
 
 #: misc/scripts/package.sh:129
 msgid "This script replaces %s. Do you want to proceed?"
