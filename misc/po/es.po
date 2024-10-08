@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-08-22 19:09+0000\n"
+"PO-Revision-Date: 2024-10-05 08:15+0000\n"
 "Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/es/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7\n"
+"X-Generator: Weblate 5.8-dev\n"
 
 #: pacstall:273 misc/scripts/build.sh:154 misc/scripts/build.sh:682
 #: misc/scripts/fetch-sources.sh:158 misc/scripts/fetch-sources.sh:710
@@ -739,16 +739,12 @@ msgstr ""
 "upstream"
 
 #: misc/scripts/package.sh:103
-#, fuzzy
-#| msgid ""
-#| "This package has '%s', meaning once this is installed, it should be "
-#| "assumed to be uninstallable. Do you want to continue?"
 msgid ""
 "This package has '%s', meaning once this is installed, it should be assumed "
 "to be unremovable. Do you want to continue?"
 msgstr ""
 "Este paquete tiene '%s', lo que significa que una vez instalado, se debe "
-"suponer que es desinstalable. ¿Quieres continuar?"
+"suponer que no se puede quitar. ¿Desea continuar?"
 
 #: misc/scripts/package.sh:129
 msgid "This script replaces %s. Do you want to proceed?"
