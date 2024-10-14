@@ -64,9 +64,8 @@ function check_gen_dep() {
             && -z "$(aptitude search --quiet --disable-columns "?exact-name(${onlyname%:*})?architecture(all)" -F "%p")" \
             && -z "$(aptitude search --quiet --disable-columns "?provides(^${onlyname%:*}$)?architecture(${onlyarch})" -F "%p")" \
             && -z "$(aptitude search --quiet --disable-columns "?provides(^${onlyname%:*}$)?architecture(all)" -F "%p")" ]]; then
-            fancy_message sub $"%b [required]" "${CYAN}${onlyreal}${NC} ${RED}✗${NC}"
             echo "${onlyreal}" >> "${onlywhere}"
-            return 0
+            return 1
         fi
     else
         if [[ -z "$(apt-cache search --no-generate --names-only "^${onlyname}\$" 2> /dev/null || apt-cache search --names-only "^${onlyname}\$")" \
@@ -74,9 +73,8 @@ function check_gen_dep() {
             && -z "$(aptitude search --quiet --disable-columns "?exact-name(${onlyname})?architecture(all)" -F "%p")" \
             && -z "$(aptitude search --quiet --disable-columns "?provides(^${onlyname}$)?architecture(${onlyarch})" -F "%p")" \
             && -z "$(aptitude search --quiet --disable-columns "?provides(^${onlyname}$)?architecture(all)" -F "%p")" ]]; then
-            fancy_message sub $"%b [required]" "${CYAN}${onlyreal}${NC} ${RED}✗${NC}"
             echo "${onlyreal}" >> "${onlywhere}"
-            return 0
+            return 1
         fi
     fi
 }
@@ -93,9 +91,16 @@ function check_apt_dep() {
     dep_const.split_name_and_version "${dep}" just_name
     just_arch="$(dep_const.get_arch "${just_name[0]}")"
     # Check if package exists in the repos, and if not, go to the next program
-    check_gen_dep "${just_name[0]}" "${just_arch}" "${real_dep}" "${PACDIR}-missing-deps-${pacname}"
+    if ! check_gen_dep "${just_name[0]}" "${just_arch}" "${real_dep}" "${PACDIR}-missing-deps-${pacname}"; then
+        fancy_message sub $"%b [required]" "${BLUE}${real_dep}${NC} ${RED}✗${NC}"
+        return 0
+    fi
     # Next let's check if the version (if available) is in the repos
-    dep_const.apt_compare_to_constraints "${dep}" || { echo "${real_dep}" >> "${PACDIR}-not-satisfied-deps-${pacname}"; return 0; }
+    if ! dep_const.apt_compare_to_constraints "${dep}"; then
+        fancy_message sub $"%b [required]" "${BLUE}${real_dep}${NC} ${RED}✗${NC}"
+        echo "${real_dep}" >> "${PACDIR}-not-satisfied-deps-${pacname}"
+        return 0
+    fi
     # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
     echo "${real_dep}" >> "${PACDIR}-deps-${pacname}"
     if ! is_apt_package_installed "${just_name[0]}"; then
@@ -124,10 +129,14 @@ function check_opt_dep() {
     dep_const.split_name_and_version "${opt}" just_name
     just_arch="$(dep_const.get_arch "${just_name[0]}")"
     # Check if package exists in the repos, and if not, go to the next program
-    check_gen_dep "${just_name[0]}" "${just_arch}" "${realopt}" "${PACDIR}-missing-optdeps-${pacname}"
+    if ! check_gen_dep "${just_name[0]}" "${just_arch}" "${realopt}" "${PACDIR}-missing-optdeps-${pacname}"; then
+        return 0
+    fi
     # Next let's check if the version (if available) is in the repos
-    dep_const.apt_compare_to_constraints "${opt}" || { echo "${realopt}" >> "${PACDIR}-not-satisfied-optdeps-${pacname}"; return 0; }
-
+    if ! dep_const.apt_compare_to_constraints "${opt}"; then
+        echo "${realopt}" >> "${PACDIR}-not-satisfied-optdeps-${pacname}"
+        return 0
+    fi
     # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
     # If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of it's status
     if ! is_apt_package_installed "${just_name[0]}"; then
