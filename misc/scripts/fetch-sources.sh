@@ -665,7 +665,10 @@ function check_builddepends() {
     fi
     dep_const.split_name_and_version "${build_dep}" just_build
     just_arch="$(dep_const.get_arch "${just_build[0]}")"
-    check_gen_dep "${just_build[0]}" "${just_arch}" "${realbuild}" "${PACDIR}-missing-${type}-${pacname}"
+    if ! check_gen_dep "${just_build[0]}" "${just_arch}" "${realbuild}" "${PACDIR}-missing-${type}-${pacname}"; then
+        fancy_message sub $"%b [required]" "${CYAN}${realbuild}${NC} ${RED}✗${NC}"
+        return 0
+    fi
     if dep_const.apt_compare_to_constraints "${build_dep}"; then
         if ! is_apt_package_installed "${just_build[0]}"; then
             echo "${realbuild}" >> "${PACDIR}-needed-${type}-${pacname}"
