@@ -23,9 +23,9 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 # Pacstall version
-version_number="5.4.1"
-version_name="Telemagenta"
-declare -A version_color=([r]="207" [g]="52" [b]="118")
+version_number="5.5.0"
+version_name="Rust"
+declare -A version_color=([r]="183" [g]="65" [b]="14")
 
 # Configuration
 export METADIR="/var/lib/pacstall/metadata"
