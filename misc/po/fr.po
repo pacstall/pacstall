@@ -1,33 +1,38 @@
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2024-10-23 11:15+0000\n"
+"Last-Translator: Aroun Olorin <zahrun@murena.io>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/pacstall/pacstall/"
+"fr/>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 5.8.2-dev\n"
 
 #: pacstall:273 misc/scripts/build.sh:154 misc/scripts/build.sh:682
 #: misc/scripts/fetch-sources.sh:158 misc/scripts/fetch-sources.sh:710
 #: misc/scripts/fetch-sources.sh:740 misc/scripts/package-base.sh:158
 #: misc/scripts/package-base.sh:177
 msgid "Cleaning up"
-msgstr ""
+msgstr "Nettoyage"
 
 #: pacstall:367
 msgid "Suggested solution(s)"
-msgstr ""
+msgstr "Solution(s) suggérées"
 
 #: pacstall:401
 msgid "Packagelist not found"
-msgstr ""
+msgstr "Packagelist n’a pas été trouvé"
 
 #: pacstall:402 pacstall:411
 msgid "Confirm that '%b' exists"
-msgstr ""
+msgstr "Confirmez que '%b' existe"
 
 #: pacstall:404
 msgid "Failed to download file, check your connection"
-msgstr ""
+msgstr "Erreur lors du téléchargement du fichier, vérifiez votre connexion"
 
 #: pacstall:410
 msgid "The URL cannot be found"
