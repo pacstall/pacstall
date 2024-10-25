@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-09-06 16:09+0000\n"
+"PO-Revision-Date: 2024-10-23 11:15+0000\n"
 "Last-Translator: Aozora <AozoraDev@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/id/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.8.2-dev\n"
 
 #: pacstall:273 misc/scripts/build.sh:154 misc/scripts/build.sh:682
 #: misc/scripts/fetch-sources.sh:158 misc/scripts/fetch-sources.sh:710
@@ -732,16 +732,12 @@ msgstr ""
 "ini"
 
 #: misc/scripts/package.sh:103
-#, fuzzy
-#| msgid ""
-#| "This package has '%s', meaning once this is installed, it should be "
-#| "assumed to be uninstallable. Do you want to continue?"
 msgid ""
 "This package has '%s', meaning once this is installed, it should be assumed "
 "to be unremovable. Do you want to continue?"
 msgstr ""
 "Paket ini memiliki '%s', yang berarti setelah terinstal, paket ini harus "
-"diasumsikan tidak dapat dihapus. Apakah anda ingin melanjutkan?"
+"diasumsikan untuk tidak dapat dihapus. Apakah anda ingin melanjutkan?"
 
 #: misc/scripts/package.sh:129
 msgid "This script replaces %s. Do you want to proceed?"
