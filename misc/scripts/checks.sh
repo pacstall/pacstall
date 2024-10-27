@@ -606,7 +606,10 @@ function lint_arch() {
         ["armhf"]="armv7h"
         ["i386"]="i686"
     )
-    if [[ -n ${arch[*]} ]]; then
+    if [[ -z ${arch[*]} ]]; then
+        fancy_message error $"Package does not contain '%s'" "arch"
+        ret=1
+    else
         for el_arch in "${arch[@]}"; do
             if [[ -z ${el_arch} ]]; then
                 fancy_message error $"'%s' index '%s' cannot be empty" "arch" "${idx}"
