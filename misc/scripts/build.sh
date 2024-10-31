@@ -53,7 +53,7 @@ function deblog() {
 function clean_builddir() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     sudo rm -rf "${STAGEDIR:?}/${pacname:?}"
-    sudo rm -f "${STAGEDIR:?}/${pacname}.deb"
+    sudo rm -f "${STAGEDIR:?}/${pacname}_*.deb"
 }
 
 function check_gen_dep() {
@@ -376,16 +376,11 @@ function makedeb() {
         export version="0${full_version}"
     fi
 
-    if [[ -n ${arch[*]} ]]; then
-        # If we have any or all in the arch, then the package works everywhere
-        if array.contains arch "any" || array.contains arch "all"; then
-            deblog "Architecture" "all"
-        else # If it doesn't but arch[@] exists we should log the current arch as the build arch
-            deblog "Architecture" "$(dpkg --print-architecture)"
-        fi
-    else # If arch[@] does not exist, we log it as all according to
-        # https://github.com/pacstall/pacstall/wiki/Pacscript-101#arch
+    # If we have all in the arch, then the package works everywhere
+    if array.contains arch "all"; then
         deblog "Architecture" "all"
+    else # If it doesn't but arch[@] exists we should log the current arch as the build arch
+        deblog "Architecture" "${CARCH}"
     fi
     deblog "Section" "Pacstall"
 
@@ -660,10 +655,10 @@ function makedeb() {
     generate_changelog | sudo tee -a "$STAGEDIR/$pacname/DEBIAN/changelog" > /dev/null
 
     cd "$STAGEDIR" || { ignore_stack=true; return 1; }
-    if array.contains arch "${CARCH}" || array.contains arch "${AARCH}"; then
-        local deb_arch="${CARCH}"
-    else
+    if array.contains arch "all"; then
         local deb_arch="all"
+    else
+        local deb_arch="${CARCH}"
     fi
     createdeb "${pacname}" "${full_version}" "${deb_arch}"
     install_deb "${pacname}" "${full_version}" "${deb_arch}"
