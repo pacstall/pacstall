@@ -11,9 +11,9 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.8-dev\n"
 
-#: pacstall:273 misc/scripts/build.sh:154 misc/scripts/build.sh:682
-#: misc/scripts/fetch-sources.sh:158 misc/scripts/fetch-sources.sh:710
-#: misc/scripts/fetch-sources.sh:740 misc/scripts/package-base.sh:158
+#: pacstall:273 misc/scripts/build.sh:163 misc/scripts/build.sh:686
+#: misc/scripts/fetch-sources.sh:158 misc/scripts/fetch-sources.sh:713
+#: misc/scripts/fetch-sources.sh:743 misc/scripts/package-base.sh:158
 #: misc/scripts/package-base.sh:177
 msgid "Cleaning up"
 msgstr "Limpiando"
@@ -257,95 +257,96 @@ msgstr "No se ha encontrado version-constraints"
 msgid "Could not find srcinfo.sh"
 msgstr "No se encuentra srcinfo.sh"
 
-#: misc/scripts/build.sh:67 misc/scripts/build.sh:77
-#: misc/scripts/fetch-sources.sh:679 misc/scripts/package.sh:221
+#: misc/scripts/build.sh:95 misc/scripts/build.sh:100
+#: misc/scripts/fetch-sources.sh:669 misc/scripts/fetch-sources.sh:682
+#: misc/scripts/package.sh:221
 msgid "%b [required]"
 msgstr "%b [requerido]"
 
-#: misc/scripts/build.sh:102 misc/scripts/fetch-sources.sh:673
+#: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:676
 msgid "%b [remote]"
 msgstr "%b [remoto]"
 
-#: misc/scripts/build.sh:104 misc/scripts/fetch-sources.sh:675
+#: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:678
 #: misc/scripts/package.sh:216
 msgid "%b [installed]"
 msgstr "%b [instalado]"
 
-#: misc/scripts/build.sh:147 misc/scripts/build.sh:167
-#: misc/scripts/fetch-sources.sh:703 misc/scripts/fetch-sources.sh:733
+#: misc/scripts/build.sh:156 misc/scripts/build.sh:176
+#: misc/scripts/fetch-sources.sh:706 misc/scripts/fetch-sources.sh:736
 msgid "%b does not exist in apt repositories"
 msgstr "%b no es un repositorio git"
 
-#: misc/scripts/build.sh:151 misc/scripts/build.sh:171
-#: misc/scripts/fetch-sources.sh:707 misc/scripts/fetch-sources.sh:737
+#: misc/scripts/build.sh:160 misc/scripts/build.sh:180
+#: misc/scripts/fetch-sources.sh:710 misc/scripts/fetch-sources.sh:740
 msgid "%b version(s) cannot be satisfied"
 msgstr "La(s) versión(es) %b no puede(n) cumplirse"
 
-#: misc/scripts/build.sh:163
+#: misc/scripts/build.sh:172
 msgid "Optional dependencies"
 msgstr "Dependencias opcionales"
 
-#: misc/scripts/build.sh:198
+#: misc/scripts/build.sh:207
 msgid "%b has exceeded the maximum number of optional dependencies. Skipping"
 msgstr "%b ha superado el número máximo de dependencias opcionales. Saltar"
 
-#: misc/scripts/build.sh:208 misc/scripts/package-base.sh:140
+#: misc/scripts/build.sh:217 misc/scripts/package-base.sh:140
 msgid "Selecting packages %b"
 msgstr "Recuperando paquetes %b"
 
-#: misc/scripts/build.sh:227
+#: misc/scripts/build.sh:236
 msgid "Checking apt dependencies"
 msgstr "Comprobando las dependencias de apt"
 
-#: misc/scripts/build.sh:318
+#: misc/scripts/build.sh:327
 msgid "Packing control.tar"
 msgstr "Empaquetando control.tar"
 
-#: misc/scripts/build.sh:328
+#: misc/scripts/build.sh:337
 msgid "Packing data.tar"
 msgstr "Empaquetando data.tar"
 
-#: misc/scripts/build.sh:331
+#: misc/scripts/build.sh:340
 msgid "Compressing"
 msgstr "Comprimiendo"
 
-#: misc/scripts/build.sh:356
+#: misc/scripts/build.sh:365
 msgid "Packaging %b as %b"
 msgstr "Empaquetado %b como %b"
 
-#: misc/scripts/build.sh:358 misc/scripts/package-base.sh:144
+#: misc/scripts/build.sh:367 misc/scripts/package-base.sh:144
 msgid "Packaging %b"
 msgstr "Empaquetado %b"
 
-#: misc/scripts/build.sh:587
+#: misc/scripts/build.sh:591
 msgid "Empty key... Skipping"
 msgstr "Tecla vacía... Saltar"
 
-#: misc/scripts/build.sh:593
+#: misc/scripts/build.sh:597
 msgid "'%s' cannot contain empty path... Skipping"
 msgstr "'%s' no puede contener una ruta vacía... Saltar"
 
-#: misc/scripts/build.sh:597 misc/scripts/build.sh:605
+#: misc/scripts/build.sh:601 misc/scripts/build.sh:609
 msgid "'%s' cannot contain path starting with '/'... Skipping"
 msgstr "'%s' no puede contener una ruta que empiece por '/'... Saltar"
 
-#: misc/scripts/build.sh:600
+#: misc/scripts/build.sh:604
 msgid "'%s' is inside the package... Skipping"
 msgstr "'%s' está dentro del paquete... Saltar"
 
-#: misc/scripts/build.sh:679
+#: misc/scripts/build.sh:683
 msgid "Failed to install %s deb"
 msgstr "Fallo al instalar %s deb"
 
-#: misc/scripts/build.sh:703
+#: misc/scripts/build.sh:707
 msgid "Package built at %b"
 msgstr "Paquete construido en %b"
 
-#: misc/scripts/build.sh:705 misc/scripts/package.sh:50
+#: misc/scripts/build.sh:709 misc/scripts/package.sh:50
 msgid "Moving %b to %b"
 msgstr "Moviendo %b a %b"
 
-#: misc/scripts/build.sh:722
+#: misc/scripts/build.sh:726
 msgid "Repacking %b"
 msgstr "Reempaquetado %b"
 
@@ -355,6 +356,7 @@ msgstr "Ejecutando %s"
 
 #: misc/scripts/checks.sh:33 misc/scripts/checks.sh:127
 #: misc/scripts/checks.sh:175 misc/scripts/checks.sh:228
+#: misc/scripts/checks.sh:610
 msgid "Package does not contain '%s'"
 msgstr "El paquete no contiene '%s'"
 
@@ -400,7 +402,7 @@ msgstr ""
 "'%s' contiene caracteres que no son minúsculas, dígitos, menos o puntos"
 
 #: misc/scripts/checks.sh:92 misc/scripts/checks.sh:107
-#: misc/scripts/checks.sh:676
+#: misc/scripts/checks.sh:679
 msgid "'%s' is empty"
 msgstr "'%s' está vacío"
 
@@ -427,8 +429,8 @@ msgstr "El paquete no tiene responsable. Tenga en cuenta"
 #: misc/scripts/checks.sh:282 misc/scripts/checks.sh:309
 #: misc/scripts/checks.sh:359 misc/scripts/checks.sh:425
 #: misc/scripts/checks.sh:558 misc/scripts/checks.sh:581
-#: misc/scripts/checks.sh:612 misc/scripts/checks.sh:649
-#: misc/scripts/checks.sh:694
+#: misc/scripts/checks.sh:615 misc/scripts/checks.sh:652
+#: misc/scripts/checks.sh:697
 msgid "'%s' index '%s' cannot be empty"
 msgstr "'%s' índice '%s' no puede estar vacío"
 
@@ -478,7 +480,7 @@ msgid "Only one checksum method can be provided for hashes"
 msgstr ""
 "Sólo se puede proporcionar un método de suma de comprobación para los hashes"
 
-#: misc/scripts/checks.sh:536 misc/scripts/checks.sh:663
+#: misc/scripts/checks.sh:536 misc/scripts/checks.sh:666
 msgid "'%s' is improperly formatted"
 msgstr "'%s' tiene un formato incorrecto"
 
@@ -490,21 +492,21 @@ msgstr "Los índices '%s' e '%s' no se pueden proporcionar a la vez"
 msgid "'%s' index '%s' is improperly formatted"
 msgstr "'%s' índice '%s' tiene un formato incorrecto"
 
-#: misc/scripts/checks.sh:623
+#: misc/scripts/checks.sh:626
 msgid "'%s' is not a valid architecture"
 msgstr "'%s' no es una arquitectura válida"
 
-#: misc/scripts/checks.sh:636
+#: misc/scripts/checks.sh:639
 msgid "cannot use both Debian and Arch style naming in '%s' array"
 msgstr ""
 "no se puede usar tanto el estilo de nomenclatura de Debian como el de Arch "
 "en la matriz '%s'"
 
-#: misc/scripts/checks.sh:679
+#: misc/scripts/checks.sh:682
 msgid "'%s' must be either: '%s', '%s', '%s', '%s', or '%s'"
 msgstr "%s debe ser: '%s', '%s', '%s', '%s', o '%s'"
 
-#: misc/scripts/checks.sh:700
+#: misc/scripts/checks.sh:703
 msgid "'%s' is not a valid license"
 msgstr "'%s' no es una licencia válida"
 
@@ -636,19 +638,19 @@ msgstr "Este Pacscript no funciona en %b"
 msgid "This package is for %b, which is a foreign architecture"
 msgstr "Este paquete es para %b, que es una arquitectura extranjera"
 
-#: misc/scripts/fetch-sources.sh:688
+#: misc/scripts/fetch-sources.sh:691
 msgid "Checking build dependencies"
 msgstr "Comprobando las dependencias de compilación"
 
-#: misc/scripts/fetch-sources.sh:718
+#: misc/scripts/fetch-sources.sh:721
 msgid "Checking check dependencies"
 msgstr "Comprobando las dependencias de verificación"
 
-#: misc/scripts/fetch-sources.sh:759
+#: misc/scripts/fetch-sources.sh:762
 msgid "Creating build dependency/conflicts dummy package"
 msgstr "Creando paquete ficticio de dependencias/conflictos de compilación"
 
-#: misc/scripts/fetch-sources.sh:774
+#: misc/scripts/fetch-sources.sh:777
 msgid "Failed to install build or check dependencies"
 msgstr "No se ha podido instalar la compilación o comprobar las dependencias"
 

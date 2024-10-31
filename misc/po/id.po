@@ -11,9 +11,9 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 5.8.2-dev\n"
 
-#: pacstall:273 misc/scripts/build.sh:154 misc/scripts/build.sh:682
-#: misc/scripts/fetch-sources.sh:158 misc/scripts/fetch-sources.sh:710
-#: misc/scripts/fetch-sources.sh:740 misc/scripts/package-base.sh:158
+#: pacstall:273 misc/scripts/build.sh:163 misc/scripts/build.sh:686
+#: misc/scripts/fetch-sources.sh:158 misc/scripts/fetch-sources.sh:713
+#: misc/scripts/fetch-sources.sh:743 misc/scripts/package-base.sh:158
 #: misc/scripts/package-base.sh:177
 msgid "Cleaning up"
 msgstr "Membersihkan"
@@ -258,95 +258,96 @@ msgstr "Tidak dapat menemukan version-constraints"
 msgid "Could not find srcinfo.sh"
 msgstr "Tidak dapat menemukan srcinfo.sh"
 
-#: misc/scripts/build.sh:67 misc/scripts/build.sh:77
-#: misc/scripts/fetch-sources.sh:679 misc/scripts/package.sh:221
+#: misc/scripts/build.sh:95 misc/scripts/build.sh:100
+#: misc/scripts/fetch-sources.sh:669 misc/scripts/fetch-sources.sh:682
+#: misc/scripts/package.sh:221
 msgid "%b [required]"
 msgstr "%b [diperlukan]"
 
-#: misc/scripts/build.sh:102 misc/scripts/fetch-sources.sh:673
+#: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:676
 msgid "%b [remote]"
 msgstr "%b [remot]"
 
-#: misc/scripts/build.sh:104 misc/scripts/fetch-sources.sh:675
+#: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:678
 #: misc/scripts/package.sh:216
 msgid "%b [installed]"
 msgstr "%b [terinstal]"
 
-#: misc/scripts/build.sh:147 misc/scripts/build.sh:167
-#: misc/scripts/fetch-sources.sh:703 misc/scripts/fetch-sources.sh:733
+#: misc/scripts/build.sh:156 misc/scripts/build.sh:176
+#: misc/scripts/fetch-sources.sh:706 misc/scripts/fetch-sources.sh:736
 msgid "%b does not exist in apt repositories"
 msgstr "%b tidak dapat ditemukan di repositori apt"
 
-#: misc/scripts/build.sh:151 misc/scripts/build.sh:171
-#: misc/scripts/fetch-sources.sh:707 misc/scripts/fetch-sources.sh:737
+#: misc/scripts/build.sh:160 misc/scripts/build.sh:180
+#: misc/scripts/fetch-sources.sh:710 misc/scripts/fetch-sources.sh:740
 msgid "%b version(s) cannot be satisfied"
 msgstr "Versi %b tidak dapat dipenuhi"
 
-#: misc/scripts/build.sh:163
+#: misc/scripts/build.sh:172
 msgid "Optional dependencies"
 msgstr "Dependensi opsional"
 
-#: misc/scripts/build.sh:198
+#: misc/scripts/build.sh:207
 msgid "%b has exceeded the maximum number of optional dependencies. Skipping"
 msgstr "%b telah melewati batas maksimal dependensi opsional. Melewati"
 
-#: misc/scripts/build.sh:208 misc/scripts/package-base.sh:140
+#: misc/scripts/build.sh:217 misc/scripts/package-base.sh:140
 msgid "Selecting packages %b"
 msgstr "Memilih paket %b"
 
-#: misc/scripts/build.sh:227
+#: misc/scripts/build.sh:236
 msgid "Checking apt dependencies"
 msgstr "Memeriksa dependensi apt"
 
-#: misc/scripts/build.sh:318
+#: misc/scripts/build.sh:327
 msgid "Packing control.tar"
 msgstr "Mengemas control.tar"
 
-#: misc/scripts/build.sh:328
+#: misc/scripts/build.sh:337
 msgid "Packing data.tar"
 msgstr "Mengemas data.tar"
 
-#: misc/scripts/build.sh:331
+#: misc/scripts/build.sh:340
 msgid "Compressing"
 msgstr "Mengkompres"
 
-#: misc/scripts/build.sh:356
+#: misc/scripts/build.sh:365
 msgid "Packaging %b as %b"
 msgstr "Mengemas %b sebagai %b"
 
-#: misc/scripts/build.sh:358 misc/scripts/package-base.sh:144
+#: misc/scripts/build.sh:367 misc/scripts/package-base.sh:144
 msgid "Packaging %b"
 msgstr "Mengemas %b"
 
-#: misc/scripts/build.sh:587
+#: misc/scripts/build.sh:591
 msgid "Empty key... Skipping"
 msgstr "Kunci kosong... Melewati"
 
-#: misc/scripts/build.sh:593
+#: misc/scripts/build.sh:597
 msgid "'%s' cannot contain empty path... Skipping"
 msgstr "'%s' tidak boleh memiliki jalur kosong... Melewati"
 
-#: misc/scripts/build.sh:597 misc/scripts/build.sh:605
+#: misc/scripts/build.sh:601 misc/scripts/build.sh:609
 msgid "'%s' cannot contain path starting with '/'... Skipping"
 msgstr "'%s' tidak boleh memiliki jalur yang berawalan '/'... Melewati"
 
-#: misc/scripts/build.sh:600
+#: misc/scripts/build.sh:604
 msgid "'%s' is inside the package... Skipping"
 msgstr "'%s' berada didalam paket... Melewati"
 
-#: misc/scripts/build.sh:679
+#: misc/scripts/build.sh:683
 msgid "Failed to install %s deb"
 msgstr "Gagal menginstal deb %s"
 
-#: misc/scripts/build.sh:703
+#: misc/scripts/build.sh:707
 msgid "Package built at %b"
 msgstr "Paket dibuat di %b"
 
-#: misc/scripts/build.sh:705 misc/scripts/package.sh:50
+#: misc/scripts/build.sh:709 misc/scripts/package.sh:50
 msgid "Moving %b to %b"
 msgstr "Memindahkan %b ke %b"
 
-#: misc/scripts/build.sh:722
+#: misc/scripts/build.sh:726
 msgid "Repacking %b"
 msgstr "Mengemas ulang %b"
 
@@ -356,6 +357,7 @@ msgstr "Menjalankan %s"
 
 #: misc/scripts/checks.sh:33 misc/scripts/checks.sh:127
 #: misc/scripts/checks.sh:175 misc/scripts/checks.sh:228
+#: misc/scripts/checks.sh:610
 msgid "Package does not contain '%s'"
 msgstr "Paket tidak berisikan dengan '%s'"
 
@@ -400,7 +402,7 @@ msgid ""
 msgstr "'%s' berisi karakter yang bukan huruf kecil, angka, minus, atau titik"
 
 #: misc/scripts/checks.sh:92 misc/scripts/checks.sh:107
-#: misc/scripts/checks.sh:676
+#: misc/scripts/checks.sh:679
 msgid "'%s' is empty"
 msgstr "'%s' kosong"
 
@@ -427,8 +429,8 @@ msgstr "Paket tidak memiliki pengelola. Harap diperhatikan"
 #: misc/scripts/checks.sh:282 misc/scripts/checks.sh:309
 #: misc/scripts/checks.sh:359 misc/scripts/checks.sh:425
 #: misc/scripts/checks.sh:558 misc/scripts/checks.sh:581
-#: misc/scripts/checks.sh:612 misc/scripts/checks.sh:649
-#: misc/scripts/checks.sh:694
+#: misc/scripts/checks.sh:615 misc/scripts/checks.sh:652
+#: misc/scripts/checks.sh:697
 msgid "'%s' index '%s' cannot be empty"
 msgstr "'%s' index '%s' tidak boleh kosong"
 
@@ -474,7 +476,7 @@ msgstr ""
 msgid "Only one checksum method can be provided for hashes"
 msgstr "Hanya satu metode checksum yang dapat disediakan untuk hash"
 
-#: misc/scripts/checks.sh:536 misc/scripts/checks.sh:663
+#: misc/scripts/checks.sh:536 misc/scripts/checks.sh:666
 msgid "'%s' is improperly formatted"
 msgstr "'%s' tidak diformat dengan benar"
 
@@ -486,19 +488,19 @@ msgstr "Indeks '%s' dan '%s' tidak dapat diberikan"
 msgid "'%s' index '%s' is improperly formatted"
 msgstr "'%s' index '%s' tidak diformat dengan benar"
 
-#: misc/scripts/checks.sh:623
+#: misc/scripts/checks.sh:626
 msgid "'%s' is not a valid architecture"
 msgstr "'%s' bukan merupakan arsitektur yang valid"
 
-#: misc/scripts/checks.sh:636
+#: misc/scripts/checks.sh:639
 msgid "cannot use both Debian and Arch style naming in '%s' array"
 msgstr "tidak dapat menggunakan penamaan gaya Debian dan Arch dalam larik '%s'"
 
-#: misc/scripts/checks.sh:679
+#: misc/scripts/checks.sh:682
 msgid "'%s' must be either: '%s', '%s', '%s', '%s', or '%s'"
 msgstr "'%s' harus berupa: '%s', '%s', '%s', '%s', atau '%s'"
 
-#: misc/scripts/checks.sh:700
+#: misc/scripts/checks.sh:703
 msgid "'%s' is not a valid license"
 msgstr "'%s' bukan merupakan lisensi yang valid"
 
@@ -630,19 +632,19 @@ msgstr "Pacscript ini tidak dapat digunakan pada %b"
 msgid "This package is for %b, which is a foreign architecture"
 msgstr "Paket ini untuk %b, yang merupakan arsitektur asing"
 
-#: misc/scripts/fetch-sources.sh:688
+#: misc/scripts/fetch-sources.sh:691
 msgid "Checking build dependencies"
 msgstr "Memeriksa dependensi build"
 
-#: misc/scripts/fetch-sources.sh:718
+#: misc/scripts/fetch-sources.sh:721
 msgid "Checking check dependencies"
 msgstr "Memeriksa dependensi check"
 
-#: misc/scripts/fetch-sources.sh:759
+#: misc/scripts/fetch-sources.sh:762
 msgid "Creating build dependency/conflicts dummy package"
 msgstr "Membuat paket dummy dependensi build/konfilk"
 
-#: misc/scripts/fetch-sources.sh:774
+#: misc/scripts/fetch-sources.sh:777
 msgid "Failed to install build or check dependencies"
 msgstr "Gagal menginstal dependensi build atau check"
 

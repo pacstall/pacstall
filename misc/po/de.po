@@ -11,9 +11,9 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.8-dev\n"
 
-#: pacstall:273 misc/scripts/build.sh:154 misc/scripts/build.sh:682
-#: misc/scripts/fetch-sources.sh:158 misc/scripts/fetch-sources.sh:710
-#: misc/scripts/fetch-sources.sh:740 misc/scripts/package-base.sh:158
+#: pacstall:273 misc/scripts/build.sh:163 misc/scripts/build.sh:686
+#: misc/scripts/fetch-sources.sh:158 misc/scripts/fetch-sources.sh:713
+#: misc/scripts/fetch-sources.sh:743 misc/scripts/package-base.sh:158
 #: misc/scripts/package-base.sh:177
 msgid "Cleaning up"
 msgstr "Räume auf"
@@ -257,98 +257,99 @@ msgstr "Versionseinschränkungen wurden nicht gefunden"
 msgid "Could not find srcinfo.sh"
 msgstr "Konnte srcinfo.sh nicht finden"
 
-#: misc/scripts/build.sh:67 misc/scripts/build.sh:77
-#: misc/scripts/fetch-sources.sh:679 misc/scripts/package.sh:221
+#: misc/scripts/build.sh:95 misc/scripts/build.sh:100
+#: misc/scripts/fetch-sources.sh:669 misc/scripts/fetch-sources.sh:682
+#: misc/scripts/package.sh:221
 msgid "%b [required]"
 msgstr "%b [erforderlich]"
 
-#: misc/scripts/build.sh:102 misc/scripts/fetch-sources.sh:673
+#: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:676
 #, fuzzy
 msgid "%b [remote]"
 msgstr "%b [Fernzugang | or: unzugänglich | or just: remote]"
 
-#: misc/scripts/build.sh:104 misc/scripts/fetch-sources.sh:675
+#: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:678
 #: misc/scripts/package.sh:216
 msgid "%b [installed]"
 msgstr "%b [installiert]"
 
-#: misc/scripts/build.sh:147 misc/scripts/build.sh:167
-#: misc/scripts/fetch-sources.sh:703 misc/scripts/fetch-sources.sh:733
+#: misc/scripts/build.sh:156 misc/scripts/build.sh:176
+#: misc/scripts/fetch-sources.sh:706 misc/scripts/fetch-sources.sh:736
 msgid "%b does not exist in apt repositories"
 msgstr "%b existiert nicht in den apt-Repositorys"
 
-#: misc/scripts/build.sh:151 misc/scripts/build.sh:171
-#: misc/scripts/fetch-sources.sh:707 misc/scripts/fetch-sources.sh:737
+#: misc/scripts/build.sh:160 misc/scripts/build.sh:180
+#: misc/scripts/fetch-sources.sh:710 misc/scripts/fetch-sources.sh:740
 msgid "%b version(s) cannot be satisfied"
 msgstr "%b Version(en) kann(können) nicht erfüllt werden"
 
-#: misc/scripts/build.sh:163
+#: misc/scripts/build.sh:172
 msgid "Optional dependencies"
 msgstr "Optionale Abhängigkeiten"
 
-#: misc/scripts/build.sh:198
+#: misc/scripts/build.sh:207
 msgid "%b has exceeded the maximum number of optional dependencies. Skipping"
 msgstr ""
 "%b hat die maximale Anzahl optionaler Abhängigkeiten überschritten. "
 "Überspringe"
 
-#: misc/scripts/build.sh:208 misc/scripts/package-base.sh:140
+#: misc/scripts/build.sh:217 misc/scripts/package-base.sh:140
 msgid "Selecting packages %b"
 msgstr "Auswahl der Pakete %b"
 
-#: misc/scripts/build.sh:227
+#: misc/scripts/build.sh:236
 msgid "Checking apt dependencies"
 msgstr "Apt-Abhängigkeiten prüfen"
 
-#: misc/scripts/build.sh:318
+#: misc/scripts/build.sh:327
 msgid "Packing control.tar"
 msgstr "Packe control.tar"
 
-#: misc/scripts/build.sh:328
+#: misc/scripts/build.sh:337
 msgid "Packing data.tar"
 msgstr "Packe data.tar"
 
-#: misc/scripts/build.sh:331
+#: misc/scripts/build.sh:340
 msgid "Compressing"
 msgstr "Komprimiere"
 
-#: misc/scripts/build.sh:356
+#: misc/scripts/build.sh:365
 msgid "Packaging %b as %b"
 msgstr "Verpacken von %b als %b"
 
-#: misc/scripts/build.sh:358 misc/scripts/package-base.sh:144
+#: misc/scripts/build.sh:367 misc/scripts/package-base.sh:144
 msgid "Packaging %b"
 msgstr "Verpacke %b"
 
-#: misc/scripts/build.sh:587
+#: misc/scripts/build.sh:591
 msgid "Empty key... Skipping"
 msgstr "Leerer Schlüssel... Überspringe"
 
-#: misc/scripts/build.sh:593
+#: misc/scripts/build.sh:597
 msgid "'%s' cannot contain empty path... Skipping"
 msgstr "'%s' darf keinen leeren Pfad enthalten... Überspringe"
 
-#: misc/scripts/build.sh:597 misc/scripts/build.sh:605
+#: misc/scripts/build.sh:601 misc/scripts/build.sh:609
 msgid "'%s' cannot contain path starting with '/'... Skipping"
 msgstr "'%s' darf keinen Pfad enthalten, der mit '/' beginnt... Überspringe"
 
-#: misc/scripts/build.sh:600
+#: misc/scripts/build.sh:604
 msgid "'%s' is inside the package... Skipping"
 msgstr "'%s' befindet sich im Paket... Überspringe"
 
-#: misc/scripts/build.sh:679
+#: misc/scripts/build.sh:683
 msgid "Failed to install %s deb"
 msgstr "Konnte %s deb nicht installieren"
 
-#: misc/scripts/build.sh:703
+#: misc/scripts/build.sh:707
 msgid "Package built at %b"
 msgstr "Paket erstellt in %b"
 
-#: misc/scripts/build.sh:705 misc/scripts/package.sh:50
+#: misc/scripts/build.sh:709 misc/scripts/package.sh:50
 msgid "Moving %b to %b"
 msgstr "Verschiebe %b nach %b"
 
-#: misc/scripts/build.sh:722
+#: misc/scripts/build.sh:726
 msgid "Repacking %b"
 msgstr "%b wird neu verpackt"
 
@@ -358,6 +359,7 @@ msgstr "%s wird ausgeführt"
 
 #: misc/scripts/checks.sh:33 misc/scripts/checks.sh:127
 #: misc/scripts/checks.sh:175 misc/scripts/checks.sh:228
+#: misc/scripts/checks.sh:610
 msgid "Package does not contain '%s'"
 msgstr "Paket enthält nicht '%s'"
 
@@ -405,7 +407,7 @@ msgstr ""
 "Punkte sind"
 
 #: misc/scripts/checks.sh:92 misc/scripts/checks.sh:107
-#: misc/scripts/checks.sh:676
+#: misc/scripts/checks.sh:679
 msgid "'%s' is empty"
 msgstr "'%s' ist leer"
 
@@ -432,8 +434,8 @@ msgstr "Das Paket hat keinen Betreuer. Bitte beachten"
 #: misc/scripts/checks.sh:282 misc/scripts/checks.sh:309
 #: misc/scripts/checks.sh:359 misc/scripts/checks.sh:425
 #: misc/scripts/checks.sh:558 misc/scripts/checks.sh:581
-#: misc/scripts/checks.sh:612 misc/scripts/checks.sh:649
-#: misc/scripts/checks.sh:694
+#: misc/scripts/checks.sh:615 misc/scripts/checks.sh:652
+#: misc/scripts/checks.sh:697
 msgid "'%s' index '%s' cannot be empty"
 msgstr "'%s' index '%s' darf nicht leer sein"
 
@@ -482,7 +484,7 @@ msgstr ""
 msgid "Only one checksum method can be provided for hashes"
 msgstr "Für Hashes kann nur eine Prüfsummen-Methode bereitgestellt werden"
 
-#: misc/scripts/checks.sh:536 misc/scripts/checks.sh:663
+#: misc/scripts/checks.sh:536 misc/scripts/checks.sh:666
 msgid "'%s' is improperly formatted"
 msgstr "'%s' ist falsch formatiert"
 
@@ -495,21 +497,21 @@ msgstr ""
 msgid "'%s' index '%s' is improperly formatted"
 msgstr "'%s' index '%s' ist falsch formatiert"
 
-#: misc/scripts/checks.sh:623
+#: misc/scripts/checks.sh:626
 msgid "'%s' is not a valid architecture"
 msgstr "'%s' ist keine gültige Architektur"
 
-#: misc/scripts/checks.sh:636
+#: misc/scripts/checks.sh:639
 msgid "cannot use both Debian and Arch style naming in '%s' array"
 msgstr ""
 "dürfen sowohl Debian- als auch Arch-Namen nicht im Array '%s' verwendet "
 "werden"
 
-#: misc/scripts/checks.sh:679
+#: misc/scripts/checks.sh:682
 msgid "'%s' must be either: '%s', '%s', '%s', '%s', or '%s'"
 msgstr "'%s' muss entweder: '%s', '%s', '%s', '%s', oder '%s' sein"
 
-#: misc/scripts/checks.sh:700
+#: misc/scripts/checks.sh:703
 msgid "'%s' is not a valid license"
 msgstr "'%s' ist keine gültige Lizenz"
 
@@ -641,19 +643,19 @@ msgstr "Dieses Pacscript funktioniert nicht auf %b"
 msgid "This package is for %b, which is a foreign architecture"
 msgstr "Dieses Paket ist für %b, welches eine fremde Architektur ist"
 
-#: misc/scripts/fetch-sources.sh:688
+#: misc/scripts/fetch-sources.sh:691
 msgid "Checking build dependencies"
 msgstr "Prüfe Build-Abhängigkeiten"
 
-#: misc/scripts/fetch-sources.sh:718
+#: misc/scripts/fetch-sources.sh:721
 msgid "Checking check dependencies"
 msgstr "Überprüfung von Abhängigkeiten"
 
-#: misc/scripts/fetch-sources.sh:759
+#: misc/scripts/fetch-sources.sh:762
 msgid "Creating build dependency/conflicts dummy package"
 msgstr "Erstelle Build-Abhängigkeiten/steht im Konflikt zum Dummy-Paket"
 
-#: misc/scripts/fetch-sources.sh:774
+#: misc/scripts/fetch-sources.sh:777
 msgid "Failed to install build or check dependencies"
 msgstr "Build konnte nicht installiert oder Abhängigkeiten überprüft werden"
 
