@@ -490,7 +490,7 @@ msgstr "'%s' L'index '%s' n'est pas correctement formaté"
 
 #: misc/scripts/checks.sh:626
 msgid "'%s' is not a valid architecture"
-msgstr "'%s' n\'est pas une architecture valide"
+msgstr "'%s' n'est pas une architecture valide"
 
 #: misc/scripts/checks.sh:639
 msgid "cannot use both Debian and Arch style naming in '%s' array"
