@@ -76,7 +76,7 @@ for pkg in "${pacstall_deps[@]}"; do
     if ! dpkg -s "${pkg}" > /dev/null 2>&1; then
         if [[ ${pkg} == "spdx-licenses" ]]; then
             if [[ -z $(apt-cache search --names-only "^${pkg}$") ]]; then
-                sudo curl -s "http://ftp.debian.org/debian/pool/main/s/${pkg}/${pkg}_3.8+dfsg-3_all.deb" -o "/tmp/${pkg}.deb" && \
+                sudo curl -s "https://ftp.debian.org/debian/pool/main/s/${pkg}/${pkg}_3.21-1_all.deb" -o "/tmp/${pkg}.deb" && \
                     sudo apt install "/tmp/${pkg}.deb" -y && sudo rm -f "/tmp/${pkg}.deb" && continue
             fi
         fi
