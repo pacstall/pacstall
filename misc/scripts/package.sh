@@ -318,7 +318,7 @@ for i in "${!source[@]}"; do
             gather_down
             ;;
     esac
-    unset expectedHash dest source_url git_branch git_tag git_commit ext_deps ext_method
+    unset expectedHash dest source_url to_location git_branch git_tag git_commit ext_deps ext_method ext_to_flag
 done
 unset hashsum_method payload_arr
 
