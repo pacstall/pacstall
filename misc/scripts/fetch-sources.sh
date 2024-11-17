@@ -187,7 +187,7 @@ function fail_down() {
 
 function gather_down() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    export srcdir="${PACDIR}/${pacname}~${pkgver}"
+    export srcdir="${PACDIR}/${pkgbase}~${pkgver}"
     mkdir -p "${srcdir}"
     cd "${srcdir}" || {
         error_log 1 "gather-main ${pacname}"
