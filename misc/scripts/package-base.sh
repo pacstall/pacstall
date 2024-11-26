@@ -139,6 +139,11 @@ function package_pkg() {
                 if [[ -n ${pacnames[*]} ]]; then
                     fancy_message info $"Selecting packages %b" "${BCyan}${pacnames[*]%%:\ *}${NC}"
                     for pacname in "${pacnames[@]}"; do
+                        if [[ ${pacname} == "${pacnames[0]}" ]]; then
+                            rm -rf "${PACDIR}-no-download-${pkgbase}"
+                        else
+                            touch "${PACDIR}-no-download-${pkgbase}"
+                        fi
                         package_override
                         # shellcheck disable=SC2031
                         fancy_message info $"Packaging %b" "${GREEN}${pacname}${NC}"
@@ -156,6 +161,7 @@ function package_pkg() {
                 fi
             fi
             fancy_message info $"Cleaning up"
+            rm -rf "${PACDIR}-no-download-${pkgbase}"
             if is_apt_package_installed "${PACKAGE}-dummy-builddeps"; then
                 sudo apt-get purge "${PACKAGE}-dummy-builddeps" -y > /dev/null
             fi
@@ -164,6 +170,7 @@ function package_pkg() {
         fi
     else
         pacname="${pkgname}"
+        rm -rf "${PACDIR}-no-download-${pkgbase}"
         # shellcheck source=./misc/scripts/package.sh
         if ! source "$SCRIPTDIR/scripts/package.sh"; then
             # shellcheck disable=SC2031

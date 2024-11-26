@@ -263,66 +263,69 @@ install_builddepends
 # shellcheck disable=SC2034
 prompt_depends || { ignore_stack=true; return 1; }
 
-fancy_message info $"Retrieving packages"
 mkdir -p "${PACDIR}"
 gather_down
 
-unset payload_arr
-if [[ -n $PACSTALL_PAYLOAD && ! -f "${PACDIR}-pacdeps-${pacname}" ]]; then
-    mapfile -t payload_arr < <(awk -v RS=';:' '{if (NF) print $0}' <<< "${PACSTALL_PAYLOAD}")
-fi
+if ! [[ -f "${PACDIR}-no-download-${pkgbase}" ]]; then
+    fancy_message info $"Retrieving packages"
 
-for i in "${!source[@]}"; do
-    parse_source_entry "${source[$i]}"
-    expectedHash="${hash[$i]}"
-    if [[ -n ${payload_arr[*]} ]]; then
-        for p in "${!payload_arr[@]}"; do
-            if [[ ${payload_arr[$p]##*/} == "${dest}" ]]; then
-                source_url="file://${payload_arr[$p]}"
-            fi
-        done
+    unset payload_arr
+    if [[ -n $PACSTALL_PAYLOAD && ! -f "${PACDIR}-pacdeps-${pacname}" ]]; then
+        mapfile -t payload_arr < <(awk -v RS=';:' '{if (NF) print $0}' <<< "${PACSTALL_PAYLOAD}")
     fi
-    if [[ $source_url != *://* ]]; then
-        if [[ -f "${PKGPATH}/${dest}" ]]; then
-            source_url="file://${PKGPATH}/${dest}"
-        else
-            if [[ -z ${REPO} ]]; then
-                REPO="$(head -n1 "${SCRIPTDIR}/repo/pacstallrepo")"
-            fi
-            # shellcheck disable=SC2031
-            source_url="${REPO}/packages/${pacname}/${source_url}"
+
+    for i in "${!source[@]}"; do
+        parse_source_entry "${source[$i]}"
+        expectedHash="${hash[$i]}"
+        if [[ -n ${payload_arr[*]} ]]; then
+            for p in "${!payload_arr[@]}"; do
+                if [[ ${payload_arr[$p]##*/} == "${dest}" ]]; then
+                    source_url="file://${payload_arr[$p]}"
+                fi
+            done
         fi
-    fi
-    case "${source_url}" in
-        *file://*)
-            source_url="${source_url#file://}"
-            source_url="${source_url#git+}"
-            file_down
-            ;;
-        *.git | git+*)
-            if [[ $source_url == git+* ]]; then
-                source_url="${source_url#git+}"
+        if [[ $source_url != *://* ]]; then
+            if [[ -f "${PKGPATH}/${dest}" ]]; then
+                source_url="file://${PKGPATH}/${dest}"
+            else
+                if [[ -z ${REPO} ]]; then
+                    REPO="$(head -n1 "${SCRIPTDIR}/repo/pacstallrepo")"
+                fi
+                # shellcheck disable=SC2031
+                source_url="${REPO}/packages/${pacname}/${source_url}"
             fi
-            git_down
-            ;;
-        *.deb)
-            net_down
-            deb_down && return 0
-            ;;
-        *.zip | *.tar.gz | *.tgz | *.tar.bz2 | *.tbz2 | *.tar.bz | *.tbz | *.tar.xz | *.txz | *.tar.zst | *.tzst | *.gz | *.bz2 | *.xz | *.lz | *.lzma | *.zst | *.7z | *.rar | *.lz4 | *.tar)
-            net_down
-            genextr_declare
-            genextr_down
-            ;;
-        *)
-            net_down
-            hashcheck_down
-            gather_down
-            ;;
-    esac
-    unset expectedHash dest source_url to_location git_branch git_tag git_commit ext_deps ext_method ext_to_flag
-done
-unset hashsum_method payload_arr
+        fi
+        case "${source_url}" in
+            *file://*)
+                source_url="${source_url#file://}"
+                source_url="${source_url#git+}"
+                file_down
+                ;;
+            *.git | git+*)
+                if [[ $source_url == git+* ]]; then
+                    source_url="${source_url#git+}"
+                fi
+                git_down
+                ;;
+            *.deb)
+                net_down
+                deb_down && return 0
+                ;;
+            *.zip | *.tar.gz | *.tgz | *.tar.bz2 | *.tbz2 | *.tar.bz | *.tbz | *.tar.xz | *.txz | *.tar.zst | *.tzst | *.gz | *.bz2 | *.xz | *.lz | *.lzma | *.zst | *.7z | *.rar | *.lz4 | *.tar)
+                net_down
+                genextr_declare
+                genextr_down
+                ;;
+            *)
+                net_down
+                hashcheck_down
+                gather_down
+                ;;
+        esac
+        unset expectedHash dest source_url to_location git_branch git_tag git_commit ext_deps ext_method ext_to_flag
+    done
+    unset hashsum_method payload_arr
+fi
 
 if [[ -z ${_archive} ]]; then
     export _archive="${srcdir}"
@@ -335,20 +338,26 @@ export -f ask fancy_message select_options
 
 clean_logdir
 
-unset pac_functions
-if [[ $NOCHECK == true ]]; then
-    for i in "prepare" "build" "package${pkgbase:+_$pacname}"; do
-        if is_function "$i"; then
-            pac_functions+=("$i")
-        fi
-    done
+unset pac_functions pac_func_arr
+if ! [[ -f "${PACDIR}-no-download-${pkgbase}" ]]; then
+    if [[ $NOCHECK == true ]]; then
+        pac_func_arr=("prepare" "build" "package${pkgbase:+_$pacname}")
+    else
+        pac_func_arr=("prepare" "build" "check" "package${pkgbase:+_$pacname}")
+    fi
 else
-    for i in "prepare" "build" "check" "package${pkgbase:+_$pacname}"; do
-        if is_function "$i"; then
-            pac_functions+=("$i")
-        fi
-    done
+    if [[ $NOCHECK == true ]]; then
+        pac_func_arr=("package${pkgbase:+_$pacname}")
+    else
+        pac_func_arr=("check" "package${pkgbase:+_$pacname}")
+    fi
 fi
+
+for i in "${pac_func_arr[@]}"; do
+    if is_function "${i}"; then
+        pac_functions+=("${i}")
+    fi
+done
 if [[ -n ${pac_functions[*]} ]]; then
     fancy_message info $"Running functions"
     for function in "${pac_functions[@]}"; do
