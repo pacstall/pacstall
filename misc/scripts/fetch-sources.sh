@@ -32,11 +32,15 @@ source "${SCRIPTDIR}/scripts/build.sh" || {
 
 function parse_source_entry() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    unset source_url dest git_branch git_tag git_commit
+    unset source_url dest git_branch git_tag git_commit to_location
     local entry="$1"
     source_url="${entry#*::}"
     dest="${entry%%::*}"
-    if [[ $entry != *::* && $entry == *#*=* ]]; then
+    if [[ ${dest} == *"@"* ]]; then
+        to_location="${dest#*@}"
+        dest="${dest%@*}"
+    fi
+    if [[ ${entry} != *::* && ${entry} == *#*=* ]] || [[ -z ${dest} ]]; then
         dest="${source_url%%#*}"
         dest="${dest##*/}"
     fi
@@ -55,10 +59,8 @@ function parse_source_entry() {
             ;;
     esac
     source_url="${source_url%%#*}"
-    if [[ $entry == *::* ]]; then
-        dest="${entry%%::*}"
-    elif [[ $entry != *#*=* ]]; then
-        source_url="$entry"
+    if [[ ${entry} != *::* && ${entry} != *#*=* ]]; then
+        source_url="${entry}"
         dest="${source_url##*/}"
     fi
     if [[ ${dest} == *"?"* ]]; then
@@ -87,68 +89,83 @@ function calc_git_pkgver() {
 
 function genextr_declare() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    unset ext_method ext_deps
+    unset ext_method ext_deps ext_to_flag
     # shellcheck disable=SC2031,SC2034
     case "${source_url,,}" in
         *.zip)
             ext_method="unzip -qo"
             ext_deps=("unzip")
+            ext_to_flag="-d"
             ;;
         *.tar.gz | *.tgz)
             ext_method="tar -xzf"
             ext_deps=("tar" "gzip")
+            ext_to_flag="-C"
             ;;
         *.tar.bz2 | *.tbz2 | *.tar.bz | *.tbz)
             ext_method="tar -xjf"
             ext_deps=("tar" "bzip2")
+            ext_to_flag="-C"
             ;;
         *.tar.xz | *.txz)
             ext_method="tar -xJf"
             ext_deps=("tar" "xz-utils")
+            ext_to_flag="-C"
             ;;
         *.tar.zst | *.tzst)
             ext_method="tar -xf"
             ext_deps=("tar" "zstd")
+            ext_to_flag="-C"
             ;;
         *.gz)
             ext_method="gunzip"
             ext_deps=("gzip")
+            ext_to_flag=">"
             ;;
         *.bz2)
             ext_method="bunzip2"
             ext_deps=("bzip2")
+            ext_to_flag=">"
             ;;
         *.xz)
             ext_method="unxz"
             ext_deps=("xz-utils")
+            ext_to_flag=">"
             ;;
         *.lz)
             ext_method="lzip -d"
             ext_deps=("lzip")
+            ext_to_flag=">"
             ;;
         *.lzma)
             ext_method="unlzma"
             ext_deps=("xz-utils")
+            ext_to_flag=">"
             ;;
         *.zst)
             ext_method="unzstd -q"
             ext_deps=("zstd")
+            ext_to_flag=">"
             ;;
         *.7z)
             ext_method="7za x"
             ext_deps=("p7zip-full")
+            ext_to_flag="-o"
             ;;
         *.rar)
             ext_method="unrar x -inul"
             ext_deps=("unrar")
+            ext_to_flag="none"
             ;;
         *.lz4)
             ext_method="lz4 -d"
             ext_deps=("liblz4-tool")
+            ext_to_flag=">"
             ;;
         *.tar)
             ext_method="tar -xf"
             ext_deps=("tar")
+            ext_to_flag="-C"
             ;;
     esac
 }
@@ -187,7 +204,7 @@ function fail_down() {
 
 function gather_down() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    export srcdir="${PACDIR}/${pkgbase}~${pkgver}"
+    export srcdir="${PACDIR}/${pkgbase:-${pacname}}~${pkgver}"
     mkdir -p "${srcdir}"
     cd "${srcdir}" || {
         error_log 1 "gather-main ${pacname}"
@@ -296,7 +313,17 @@ function genextr_down() {
     done
     if ${extract}; then
         fancy_message sub $"Extracting %b" "${CYAN}${dest}${NC}"
-        ${ext_method} "${dest}" 1>&1 2> /dev/null
+        if [[ -n ${to_location} ]]; then
+            mkdir -p "temp_ext"
+            case "${ext_to_flag}" in
+                ">") rm -rf "temp_ext"; ${ext_method} -c "${dest}" > "${to_location}" 1>&1 2> /dev/null ;;
+                "-o") ${ext_method} "${dest}" -o"temp_ext" 1>&1 2> /dev/null; mv temp_ext/* "${to_location}"; rm -rf "temp_ext" ;;
+                "none") ${ext_method} "${dest}" "temp_ext" 1>&1 2> /dev/null; mv temp_ext/* "${to_location}"; rm -rf "temp_ext" ;;
+                *) ${ext_method} "${dest}" "${ext_to_flag}" "temp_ext" 1>&1 2> /dev/null; mv temp_ext/* "${to_location}"; rm -rf "temp_ext" ;;
+            esac
+        else
+            ${ext_method} "${dest}" 1>&1 2> /dev/null
+        fi
         if [[ -f ${dest} ]]; then
             rm -f "${dest:?}"
         fi
@@ -370,7 +397,7 @@ function deb_down() {
         sudo cp -r "${srcinfile}" "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
         sudo chmod o+r "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
         fancy_message info $"Done installing %b" "${BPurple}${pacname}${NC}"
-        unset expectedHash dest source_url git_branch git_tag git_commit ext_deps ext_method hashsum_method payload_arr
+        unset expectedHash dest source_url git_branch git_tag git_commit to_location ext_deps ext_method ext_to_flag hashsum_method payload_arr
         return 0
     else
         fancy_message error $"Failed to install the package"

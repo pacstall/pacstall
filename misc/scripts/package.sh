@@ -229,15 +229,17 @@ if [[ -n ${pacdeps[*]} ]]; then
 fi
 
 unset dest_list
-declare -A dest_list
 for i in "${!source[@]}"; do
     parse_source_entry "${source[$i]}"
     dest="${dest%.git}"
-    if [[ -n ${dest_list[$dest]} && ${dest_list[$dest]} != "${source_url}" ]]; then
+    if array.contains dest_list "${dest}"; then
         fancy_message error $"%s is associated with multiple source entries" "${dest}"
         clean_fail_down
     else
-        dest_list["${dest}"]="${source_url}"
+        dest_list+=("${dest}")
+        if [[ -n ${to_location} ]]; then
+            dest_list+=("${to_location}")
+        fi
     fi
     genextr_declare
     unset ext_dep make_dep in_make_deps
@@ -320,7 +322,7 @@ if ! [[ -f "${PACDIR}-no-download-${pkgbase}" ]]; then
                 gather_down
                 ;;
         esac
-        unset expectedHash dest source_url git_branch git_tag git_commit ext_deps ext_method
+        unset expectedHash dest source_url to_location git_branch git_tag git_commit ext_deps ext_method ext_to_flag
     done
     unset hashsum_method payload_arr
 fi
