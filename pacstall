@@ -1094,7 +1094,7 @@ Helpful links:
             ;;
 
         -U | --update)
-            if [[ -f "${SCRIPTDIR}/scripts/update.sh" ]]; then
+            if ! is_apt_package_installed "pacstall"; then
                 # If the input is `.`, is a directory, and there is no other input
                 if [[ $2 == "." && -d $2 && -z $3 ]]; then
                     cd "${2}"
