@@ -366,7 +366,7 @@ function suggested_solution() {
         local inputs=("${@}") input text args first=true
         printf "%b %s:\n" "[${BOLD}${BPurple}⠿${NC}]" $"Suggested solution(s)"
         for input in "${inputs[@]}"; do
-            if [[ "${input}" == "ZZZZ" ]]; then
+            if [[ "${input}" == "--" ]]; then
                 if [[ -n "${text}" ]]; then
                     printf "%b ${text}\n" "    ${BOLD}|${NC}" "${args[@]}"
                 fi
@@ -940,7 +940,7 @@ Helpful links:
                     # shellcheck source=./misc/scripts/get-pacscript.sh
                     if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then
                         fancy_message error $"Failed to download the %b pacscript" "$GREEN$PACKAGE$NC"
-                        suggested_solution $"Confirm that the package exists by running '%b'" "${UCyan}pacstall -S $PACKAGE${NC}" "ZZZZ" $"Check your internet connection"
+                        suggested_solution $"Confirm that the package exists by running '%b'" "${UCyan}pacstall -S $PACKAGE${NC}" -- $"Check your internet connection"
                         continue
                     fi
                 fi
@@ -1054,7 +1054,7 @@ Helpful links:
                 exit 0
             else
                 fancy_message error $"You failed to specify a repo to add"
-                suggested_solution $"Add a repository in the following format:" "ZZZZ" "'${UCyan}pacstall -A https://github.com/username/repository-name${NC}'" "ZZZZ" $"Consult the pacstall man page by running '%b', and searching for the term '%b'" "${UCyan}man pacstall${NC}" "${UPurple}-A${NC}"
+                suggested_solution $"Add a repository in the following format:" -- "'${UCyan}pacstall -A https://github.com/username/repository-name${NC}'" -- $"Consult the pacstall man page by running '%b', and searching for the term '%b'" "${UCyan}man pacstall${NC}" "${UPurple}-A${NC}"
                 exit 1
             fi
             ;;
@@ -1075,7 +1075,7 @@ Helpful links:
                 exit 0
             else
                 fancy_message error $"You failed to specify a repo to remove"
-                suggested_solution $"Remove a repository in the following format:" "ZZZZ" "'${UCyan}pacstall -A https://github.com/username/repository-name${NC}'" "ZZZZ" $"Consult the pacstall man page by running '%b', and searching for the term '%b'" "${UCyan}man pacstall${NC}" "${UPurple}-Rr${NC}"
+                suggested_solution $"Remove a repository in the following format:" -- "'${UCyan}pacstall -A https://github.com/username/repository-name${NC}'" -- $"Consult the pacstall man page by running '%b', and searching for the term '%b'" "${UCyan}man pacstall${NC}" "${UPurple}-Rr${NC}"
                 exit 1
             fi
             ;;
@@ -1217,7 +1217,7 @@ Helpful links:
                 # shellcheck source=./misc/scripts/get-pacscript.sh
                 if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then
                     fancy_message error $"Failed to download the %b pacscript" "$GREEN$PACKAGE$NC"
-                    suggested_solution $"Confirm that the package exists by running '%b'" "${UCyan}pacstall -S $PACKAGE${NC}" "ZZZZ" $"Check your internet connection"
+                    suggested_solution $"Confirm that the package exists by running '%b'" "${UCyan}pacstall -S $PACKAGE${NC}" -- $"Check your internet connection"
                     continue
                 fi
 
