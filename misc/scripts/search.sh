@@ -387,7 +387,7 @@ while IFS= read -r URL; do
             REPOMSG=1
             continue
         elif ! check_url "${URL}/packagelist"; then
-            fancy_message error "%s\n" $"Cannot connect to Pacstall repo: %b" "${CYAN}${URL}${NC}"
+            fancy_message error $"Cannot connect to Pacstall repo: %b" "${CYAN}${URL}${NC}"
             fancy_message warn $"You can remove or fix the URL by editing %b" "$CYAN$SCRIPTDIR/repo/pacstallrepo$NC"
             REPOMSG=1
             continue
