@@ -1145,8 +1145,8 @@ Helpful links:
                 source "$SCRIPTDIR/scripts/update.sh"
                 exit 0
             else
-                fancy_message error $"Pacstall was installed from a '%s', and cannot be updated with this command" ".deb"
-                suggested_solution $"Install the latest '%b' from the '%b' repository" ".deb" "PPR" "ZZZZ" $"Install the latest '%b' with the command '%b'" "pacscript" "${GREEN}pacstall -I pacstall${NC}"
+                fancy_message error $"Pacstall was installed from a %s, and cannot be updated with this command" ".deb"
+                suggested_solution $"Install the latest %b from the %b repository" ".deb" "PPR" "ZZZZ" $"Install the latest %b with the command '%b'" "pacscript" "${GREEN}pacstall -I pacstall${NC}"
                 exit 1
             fi
             ;;

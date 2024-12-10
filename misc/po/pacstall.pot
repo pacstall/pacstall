@@ -153,15 +153,15 @@ msgstr ""
 
 #: pacstall:1148
 msgid ""
-"Pacstall was installed from a '%s', and cannot be updated with this command"
+"Pacstall was installed from a %s, and cannot be updated with this command"
 msgstr ""
 
 #: pacstall:1149
-msgid "Install the latest '%b' from the '%b' repository"
+msgid "Install the latest %b from the %b repository"
 msgstr ""
 
 #: pacstall:1149
-msgid "Install the latest '%b' with the command '%b'"
+msgid "Install the latest %b with the command '%b'"
 msgstr ""
 
 #: pacstall:1157 pacstall:1238
