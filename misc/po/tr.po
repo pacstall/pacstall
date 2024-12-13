@@ -12,9 +12,9 @@ msgstr ""
 "X-Generator: Weblate 5.7\n"
 
 #: pacstall:273 misc/scripts/build.sh:163 misc/scripts/build.sh:686
-#: misc/scripts/fetch-sources.sh:158 misc/scripts/fetch-sources.sh:713
-#: misc/scripts/fetch-sources.sh:743 misc/scripts/package-base.sh:158
-#: misc/scripts/package-base.sh:177
+#: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:740
+#: misc/scripts/fetch-sources.sh:770 misc/scripts/package-base.sh:163
+#: misc/scripts/package-base.sh:184
 msgid "Cleaning up"
 msgstr "Temizleniyor"
 
@@ -71,7 +71,7 @@ msgid "Package will be built and not installed"
 msgstr "Paket inşa edilecek ve kurulmayacak"
 
 #: pacstall:832 pacstall:905 pacstall:967 pacstall:1008 pacstall:1026
-#: pacstall:1194 pacstall:1250 misc/scripts/query-info.sh:28
+#: pacstall:1200 pacstall:1256 misc/scripts/query-info.sh:28
 msgid "You failed to specify a package"
 msgstr "Bir paket belirtemediniz"
 
@@ -87,30 +87,30 @@ msgstr "%s yok"
 msgid "Payload not found"
 msgstr "Yük bulunamadı"
 
-#: pacstall:925 pacstall:972 pacstall:1012 pacstall:1132 pacstall:1204
-#: pacstall:1237
+#: pacstall:925 pacstall:972 pacstall:1012 pacstall:1133 pacstall:1210
+#: pacstall:1243
 msgid "Could not connect to the internet"
 msgstr "Genel ağa bağlanılamadı"
 
-#: pacstall:926 pacstall:973 pacstall:1013 pacstall:1133 pacstall:1205
-#: pacstall:1238
+#: pacstall:926 pacstall:973 pacstall:1013 pacstall:1134 pacstall:1211
+#: pacstall:1244
 msgid "Confirm that the URLs '%b' or '%b' are accessible"
 msgstr "'%b' veya '%b' URL'lerinin erişilebilir olduğunu doğrulayın"
 
-#: pacstall:942 pacstall:1219 misc/scripts/upgrade.sh:276
+#: pacstall:942 pacstall:1225 misc/scripts/upgrade.sh:276
 msgid "Failed to download the %b pacscript"
 msgstr "%b pacscript'inin indirmesi başarısız"
 
-#: pacstall:943 pacstall:1220
+#: pacstall:943 pacstall:1226
 msgid "Confirm that the package exists by running '%b'"
 msgstr "Paketin var olduğunu '%b' komutunu çalıştırarak doğrulayın"
 
-#: pacstall:943 pacstall:1220
+#: pacstall:943 pacstall:1226
 msgid "Check your internet connection"
 msgstr "Genel ağ bağlantınızı kontrol edin"
 
-#: pacstall:949 misc/scripts/package-base.sh:148
-#: misc/scripts/package-base.sh:170
+#: pacstall:949 misc/scripts/package-base.sh:153
+#: misc/scripts/package-base.sh:177
 msgid "Failed to install %b"
 msgstr "%b deb'inin kurulumu başarısız"
 
@@ -142,11 +142,11 @@ msgstr "Kaldırılacak bir depo belirtemediniz"
 msgid "Remove a repository in the following format:"
 msgstr "Şu biçimde bir depoyu kaldırın:"
 
-#: pacstall:1101
+#: pacstall:1102
 msgid "%s is not a git repository"
 msgstr "%s bir git deposu değil"
 
-#: pacstall:1138
+#: pacstall:1139
 msgid ""
 "The repository you are trying to upgrade to contains a version of pacstall "
 "that cannot be updated from %b"
@@ -154,7 +154,7 @@ msgstr ""
 "Yükseltme için belirttiğiniz depo %b ile güncellenemeyecek bir pacstall "
 "sürümü içeriyor"
 
-#: pacstall:1139
+#: pacstall:1140
 msgid ""
 "Visit %s for more information on how to reinstall. Most packages will also "
 "need to be reinstalled"
@@ -162,39 +162,52 @@ msgstr ""
 "Yeniden kurulum yönergeleri için %s sitesine uğrayın. Çoğu paket de yeniden "
 "kuruluma gereksinim duyacaktır"
 
-#: pacstall:1151 pacstall:1232
+#: pacstall:1148
+msgid ""
+"Pacstall was installed from a %s, and cannot be updated with this command"
+msgstr ""
+
+#: pacstall:1149
+msgid "Install the latest %b from the %b repository"
+msgstr ""
+
+#: pacstall:1149
+msgid "Install the latest %b with the command '%b'"
+msgstr ""
+
+#: pacstall:1157 pacstall:1238
 msgid "Invalid argument '%s'"
 msgstr "Geçersiz argüman '%s'"
 
-#: pacstall:1163
+#: pacstall:1169
 msgid "Nothing installed yet"
 msgstr "Şu an herhangi bir paket kurulu değil"
 
-#: pacstall:1224
+#: pacstall:1230
 msgid "%b pacscript is downloaded to %b"
 msgstr "%b pacscript'i %b dizinine indirildi"
 
-#: pacstall:1254 misc/scripts/query-info.sh:33
+#: pacstall:1260 misc/scripts/query-info.sh:33
 msgid "Package is not installed"
 msgstr "Paket kurulu değil"
 
-#: pacstall:1288
+#: pacstall:1294
 msgid "Keeping build files"
 msgstr "İnşa dosyaları tutuluyor"
 
-#: pacstall:1293
+#: pacstall:1299
 msgid "Skipping check() if present"
 msgstr "Eğer varsa check() atlanıyor"
 
-#: pacstall:1298
+#: pacstall:1304
 msgid "Downloading package entries quietly"
 msgstr "Paket girişleri sessizce indiriliyor"
 
-#: pacstall:1303
+#: pacstall:1309
 msgid "Building package without bwrap sandbox"
 msgstr "Paket bwrap sandbox olmadan inşa ediliyor"
 
-#: pacstall:1304
+#: pacstall:1310
 msgid "Be cautious, this exposes your system to potential harm"
 msgstr "Dikkat edin, bu sisteminizi olası tehditlere maruz bırakır"
 
@@ -258,27 +271,27 @@ msgid "Could not find srcinfo.sh"
 msgstr "srcinfo.sh bulunamadı"
 
 #: misc/scripts/build.sh:95 misc/scripts/build.sh:100
-#: misc/scripts/fetch-sources.sh:669 misc/scripts/fetch-sources.sh:682
+#: misc/scripts/fetch-sources.sh:696 misc/scripts/fetch-sources.sh:709
 #: misc/scripts/package.sh:221
 msgid "%b [required]"
 msgstr "%b [zorunlu]"
 
-#: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:676
+#: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:703
 msgid "%b [remote]"
 msgstr "%b [uzak]"
 
-#: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:678
+#: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:705
 #: misc/scripts/package.sh:216
 msgid "%b [installed]"
 msgstr "%b [kurulu]"
 
 #: misc/scripts/build.sh:156 misc/scripts/build.sh:176
-#: misc/scripts/fetch-sources.sh:706 misc/scripts/fetch-sources.sh:736
+#: misc/scripts/fetch-sources.sh:733 misc/scripts/fetch-sources.sh:763
 msgid "%b does not exist in apt repositories"
 msgstr "%b apt depolarında yok"
 
 #: misc/scripts/build.sh:160 misc/scripts/build.sh:180
-#: misc/scripts/fetch-sources.sh:710 misc/scripts/fetch-sources.sh:740
+#: misc/scripts/fetch-sources.sh:737 misc/scripts/fetch-sources.sh:767
 msgid "%b version(s) cannot be satisfied"
 msgstr "%b sürümü karşılanamadı"
 
@@ -314,7 +327,7 @@ msgstr "Sıkıştırılıyor"
 msgid "Packaging %b as %b"
 msgstr "%b %b olarak paketleniyor"
 
-#: misc/scripts/build.sh:367 misc/scripts/package-base.sh:144
+#: misc/scripts/build.sh:367 misc/scripts/package-base.sh:149
 msgid "Packaging %b"
 msgstr "%b paketleniyor"
 
@@ -516,166 +529,166 @@ msgstr "'${linlicense}' geçerli bir lisans değil"
 msgid "Could not find build.sh"
 msgstr "build.sh bulunamadı"
 
-#: misc/scripts/fetch-sources.sh:173
+#: misc/scripts/fetch-sources.sh:190
 #, fuzzy
 #| msgid "Hashes do not match (with method ${hashMethod})"
 msgid "Hashes do not match (with method %s)"
 msgstr "Hash'ler uyuşmuyor (${hashMethod} yöntemi ile)"
 
-#: misc/scripts/fetch-sources.sh:174
+#: misc/scripts/fetch-sources.sh:191
 msgid "Got:      %b"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:175
+#: misc/scripts/fetch-sources.sh:192
 msgid "Expected: %b"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:184
+#: misc/scripts/fetch-sources.sh:201
 msgid "Failed to download package"
 msgstr "Paket indirmesi başarısız"
 
-#: misc/scripts/fetch-sources.sh:194
+#: misc/scripts/fetch-sources.sh:211
 #, fuzzy
 #| msgid "Could not enter into the cloned git repository"
 msgid "Could not enter into the main directory %b"
 msgstr "Klonlanan git deposuna girilemedi"
 
-#: misc/scripts/fetch-sources.sh:207
+#: misc/scripts/fetch-sources.sh:224
 msgid "Cloning %b from branch %b"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:210
+#: misc/scripts/fetch-sources.sh:227
 msgid "Cloning %b from tag %b"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:215
+#: misc/scripts/fetch-sources.sh:232
 #, fuzzy
 #| msgid "Cloning ${BPurple}${dest}${NC} with no blobs"
 msgid "Cloning %b with no blobs"
 msgstr "Blob'lar olmadan ${BPurple}${dest}${NC} klonlanıyor"
 
-#: misc/scripts/fetch-sources.sh:218
+#: misc/scripts/fetch-sources.sh:235
 msgid "Cloning %b from %b"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:226
+#: misc/scripts/fetch-sources.sh:243
 msgid "Could not enter into the cloned git repository"
 msgstr "Klonlanan git deposuna girilemedi"
 
-#: misc/scripts/fetch-sources.sh:230
+#: misc/scripts/fetch-sources.sh:247
 msgid "Fetching commit %b"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:244
+#: misc/scripts/fetch-sources.sh:261
 #, fuzzy
 #| msgid "Not cloning submodules for ${PURPLE}${dest}${NC}"
 msgid "Not cloning submodules for %b"
 msgstr "${PURPLE}${dest}${NC} için alt modüller klonlanmıyor"
 
-#: misc/scripts/fetch-sources.sh:250
+#: misc/scripts/fetch-sources.sh:267
 #, fuzzy
 #| msgid "Checking versions"
 msgid "Checking integrity of %b"
 msgstr "Sürümler kontrol ediliyor"
 
-#: misc/scripts/fetch-sources.sh:251
+#: misc/scripts/fetch-sources.sh:268
 msgid "Could not check integrity of cloned git repository"
 msgstr "Klonlanan git deposunun bütünlüğü kontrol edilemedi"
 
-#: misc/scripts/fetch-sources.sh:256 misc/scripts/fetch-sources.sh:260
+#: misc/scripts/fetch-sources.sh:273 misc/scripts/fetch-sources.sh:277
 msgid "Cloned git repository does not match upstream hash"
 msgstr "Klonlanan git deposu güncel hash ile eşleşmiyor"
 
-#: misc/scripts/fetch-sources.sh:274
+#: misc/scripts/fetch-sources.sh:291
 msgid "Downloading %b"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:282
+#: misc/scripts/fetch-sources.sh:299
 msgid "Checking hash %b[%b...%b]"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:298
+#: misc/scripts/fetch-sources.sh:315
 msgid "Extracting %b"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:309
+#: misc/scripts/fetch-sources.sh:336
 msgid "Could not enter into the extracted archive"
 msgstr "Ayıklanan arşive girilemedi"
 
-#: misc/scripts/fetch-sources.sh:326 misc/scripts/fetch-sources.sh:333
-#: misc/scripts/fetch-sources.sh:347 misc/scripts/fetch-sources.sh:354
+#: misc/scripts/fetch-sources.sh:353 misc/scripts/fetch-sources.sh:360
+#: misc/scripts/fetch-sources.sh:374 misc/scripts/fetch-sources.sh:381
 #, fuzzy
 #| msgid "Running pre_install hook"
 msgid "Running %s hook"
 msgstr "pre_install hook'u çalıştırılıyor"
 
-#: misc/scripts/fetch-sources.sh:329 misc/scripts/fetch-sources.sh:336
-#: misc/scripts/fetch-sources.sh:350 misc/scripts/fetch-sources.sh:357
+#: misc/scripts/fetch-sources.sh:356 misc/scripts/fetch-sources.sh:363
+#: misc/scripts/fetch-sources.sh:377 misc/scripts/fetch-sources.sh:384
 #, fuzzy
 #| msgid "Could not run preinst hook successfully"
 msgid "Could not run %s hook successfully"
 msgstr "preinst hook'u başarılı bir şekilde çalıştırılamadı"
 
-#: misc/scripts/fetch-sources.sh:345 misc/scripts/package.sh:374
+#: misc/scripts/fetch-sources.sh:372 misc/scripts/package.sh:385
 msgid "Performing post install operations"
 msgstr "Kurulum sonrası işlemler yapılıyor"
 
-#: misc/scripts/fetch-sources.sh:361 misc/scripts/package.sh:375
+#: misc/scripts/fetch-sources.sh:388 misc/scripts/package.sh:386
 msgid "Storing pacscript"
 msgstr "pacscript depolanıyor"
 
-#: misc/scripts/fetch-sources.sh:365
+#: misc/scripts/fetch-sources.sh:392
 #, fuzzy
 #| msgid "Could not enter into ${DIR}"
 msgid "Could not enter into %b"
 msgstr "${DIR} dizinine girilemedi"
 
-#: misc/scripts/fetch-sources.sh:372 misc/scripts/package.sh:389
+#: misc/scripts/fetch-sources.sh:399 misc/scripts/package.sh:400
 msgid "Done installing %b"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:376
+#: misc/scripts/fetch-sources.sh:403
 msgid "Failed to install the package"
 msgstr "Paket kurulumu başarısız oldu"
 
-#: misc/scripts/fetch-sources.sh:385
+#: misc/scripts/fetch-sources.sh:412
 #, fuzzy
 #| msgid "Copying local archive ${BPurple}${dest}${NC}"
 msgid "Copying local archive %b"
 msgstr "Yerel arşiv ${BPurple}${dest}${NC} kopyalanıyor"
 
-#: misc/scripts/fetch-sources.sh:401
+#: misc/scripts/fetch-sources.sh:428
 msgid "Could not enter into the copied archive"
 msgstr "Kopyalanan arşive girilemedi"
 
-#: misc/scripts/fetch-sources.sh:575 misc/scripts/fetch-sources.sh:609
-#: misc/scripts/fetch-sources.sh:616 misc/scripts/fetch-sources.sh:622
-#: misc/scripts/fetch-sources.sh:654
+#: misc/scripts/fetch-sources.sh:602 misc/scripts/fetch-sources.sh:636
+#: misc/scripts/fetch-sources.sh:643 misc/scripts/fetch-sources.sh:649
+#: misc/scripts/fetch-sources.sh:681
 #, fuzzy
 #| msgid "This Pacscript does not work on ${BBlue}${distro_name}${NC}"
 msgid "This Pacscript does not work on %b"
 msgstr "Bu Pacscript ${BBlue}${distro_name}${NC} sisteminde çalışmaz"
 
-#: misc/scripts/fetch-sources.sh:642
+#: misc/scripts/fetch-sources.sh:669
 #, fuzzy
 #| msgid ""
 #| "This package is for ${BBlue}${farch}${NC}, which is a foreign architecture"
 msgid "This package is for %b, which is a foreign architecture"
 msgstr "Bu paket ${BBlue}${farch}${NC} içindir ki bu da yabancı bir mimaridir"
 
-#: misc/scripts/fetch-sources.sh:691
+#: misc/scripts/fetch-sources.sh:718
 msgid "Checking build dependencies"
 msgstr "İnşa bağımlılıkları kontrol ediliyor"
 
-#: misc/scripts/fetch-sources.sh:721
+#: misc/scripts/fetch-sources.sh:748
 msgid "Checking check dependencies"
 msgstr "Kontrol bağımlılıkları kontrol ediliyor"
 
-#: misc/scripts/fetch-sources.sh:762
+#: misc/scripts/fetch-sources.sh:789
 msgid "Creating build dependency/conflicts dummy package"
 msgstr "İnşa bağımlılığı/çakışmaları sahte paketi oluşturuluyor"
 
-#: misc/scripts/fetch-sources.sh:777
+#: misc/scripts/fetch-sources.sh:804
 msgid "Failed to install build or check dependencies"
 msgstr "İnşa veya kontrol bağımlılıkları kurulumu başarısız oldu"
 
@@ -735,7 +748,7 @@ msgstr ""
 "${BGreen}${skip_pkg[*]}${NC} inşa edilebilecek maksimum paket sayısını aştı. "
 "Atlanıyor"
 
-#: misc/scripts/package-base.sh:192
+#: misc/scripts/package-base.sh:199
 #, fuzzy
 #| msgid ""
 #| "${UCyan}PACSTALL_BUILD_CORES${NC} is not an integer. Falling back to 1"
@@ -743,21 +756,21 @@ msgid "%b is not an integer. Falling back to 1"
 msgstr ""
 "${UCyan}PACSTALL_BUILD_CORES${NC} bir tam sayı değil. 1'e geri dönülüyor"
 
-#: misc/scripts/package-base.sh:201
+#: misc/scripts/package-base.sh:208
 msgid "(%b) Do you want to view/edit the pacscript?"
 msgstr ""
 
-#: misc/scripts/package-base.sh:214
+#: misc/scripts/package-base.sh:221
 #, fuzzy
 #| msgid "Editor not found, falling back to 'sensible-editor'"
 msgid "Editor not found, falling back to '%s'"
 msgstr "Düzenleyici bulunamadı, 'sensible-editor'e dönülüyor"
 
-#: misc/scripts/package-base.sh:219
+#: misc/scripts/package-base.sh:226
 msgid "Sourcing pacscript"
 msgstr "pacscript kaynaktan alınıyor"
 
-#: misc/scripts/package-base.sh:242
+#: misc/scripts/package-base.sh:249
 msgid "Could not source pacscript"
 msgstr "pacscript kaynaktan alınamadı"
 
@@ -859,27 +872,27 @@ msgstr ""
 msgid "Failed to install dependency (%s from %s)"
 msgstr "Bağımlılık kurulumu başarısız oldu (${PACKAGE}'den ${pdep})"
 
-#: misc/scripts/package.sh:237
+#: misc/scripts/package.sh:236
 #, fuzzy
 #| msgid "${dest} is associated with multiple source entries"
 msgid "%s is associated with multiple source entries"
 msgstr "${dest} birden fazla kaynak girişleriyle ilişkilendirilmiş"
 
-#: misc/scripts/package.sh:264
+#: misc/scripts/package.sh:270
 msgid "Retrieving packages"
 msgstr "Paketler alınıyor"
 
-#: misc/scripts/package.sh:351
+#: misc/scripts/package.sh:362
 msgid "Running functions"
 msgstr "Fonksiyonlar çalıştırılıyor"
 
-#: misc/scripts/package.sh:356
+#: misc/scripts/package.sh:367
 #, fuzzy
 #| msgid "Could not ${function} ${pacname} properly"
 msgid "Could not %s %s properly"
 msgstr "${pacname} düzgünce ${function} edilemedi"
 
-#: misc/scripts/package.sh:364 misc/scripts/package.sh:379
+#: misc/scripts/package.sh:375 misc/scripts/package.sh:390
 #, fuzzy
 #| msgid "Could not enter into ${DIR}"
 msgid "Could not enter into %s"
