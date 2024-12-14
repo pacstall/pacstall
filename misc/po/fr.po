@@ -12,9 +12,9 @@ msgstr ""
 "X-Generator: Weblate 5.8.2-dev\n"
 
 #: pacstall:273 misc/scripts/build.sh:163 misc/scripts/build.sh:686
-#: misc/scripts/fetch-sources.sh:158 misc/scripts/fetch-sources.sh:713
-#: misc/scripts/fetch-sources.sh:743 misc/scripts/package-base.sh:158
-#: misc/scripts/package-base.sh:177
+#: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:740
+#: misc/scripts/fetch-sources.sh:770 misc/scripts/package-base.sh:163
+#: misc/scripts/package-base.sh:184
 msgid "Cleaning up"
 msgstr "Nettoyage"
 
@@ -71,7 +71,7 @@ msgid "Package will be built and not installed"
 msgstr "Le paquet sera construit et non installé"
 
 #: pacstall:832 pacstall:905 pacstall:967 pacstall:1008 pacstall:1026
-#: pacstall:1194 pacstall:1250 misc/scripts/query-info.sh:28
+#: pacstall:1200 pacstall:1256 misc/scripts/query-info.sh:28
 msgid "You failed to specify a package"
 msgstr "Vous n'avez pas précisé un paquet"
 
@@ -87,30 +87,30 @@ msgstr "%s n'existe pas"
 msgid "Payload not found"
 msgstr "Payload introuvable"
 
-#: pacstall:925 pacstall:972 pacstall:1012 pacstall:1132 pacstall:1204
-#: pacstall:1237
+#: pacstall:925 pacstall:972 pacstall:1012 pacstall:1133 pacstall:1210
+#: pacstall:1243
 msgid "Could not connect to the internet"
 msgstr "La connexion Internet n'a pas pu être établie"
 
-#: pacstall:926 pacstall:973 pacstall:1013 pacstall:1133 pacstall:1205
-#: pacstall:1238
+#: pacstall:926 pacstall:973 pacstall:1013 pacstall:1134 pacstall:1211
+#: pacstall:1244
 msgid "Confirm that the URLs '%b' or '%b' are accessible"
 msgstr "Confirmez que les URLs '%b' ou '%b' sont accessibles"
 
-#: pacstall:942 pacstall:1219 misc/scripts/upgrade.sh:276
+#: pacstall:942 pacstall:1225 misc/scripts/upgrade.sh:276
 msgid "Failed to download the %b pacscript"
 msgstr "Pacstall a échoué à télécharger le pacscript %b"
 
-#: pacstall:943 pacstall:1220
+#: pacstall:943 pacstall:1226
 msgid "Confirm that the package exists by running '%b'"
 msgstr "Confirmez que le paquet existe en exécutant '%b'"
 
-#: pacstall:943 pacstall:1220
+#: pacstall:943 pacstall:1226
 msgid "Check your internet connection"
 msgstr "Vérifiez votre connexion Internet"
 
-#: pacstall:949 misc/scripts/package-base.sh:148
-#: misc/scripts/package-base.sh:170
+#: pacstall:949 misc/scripts/package-base.sh:153
+#: misc/scripts/package-base.sh:177
 msgid "Failed to install %b"
 msgstr "Pacstall a échoué à installer %b"
 
@@ -131,8 +131,8 @@ msgid ""
 "Consult the pacstall man page by running '%b', and searching for the term "
 "'%b'"
 msgstr ""
-"Consultez le man page de pacstall en exécutant '%b' et en cherchant par le terme "
-"'%b'"
+"Consultez le man page de pacstall en exécutant '%b' et en cherchant par le "
+"terme '%b'"
 
 #: pacstall:1077
 msgid "You failed to specify a repo to remove"
@@ -142,59 +142,73 @@ msgstr "Vous n'avez pas précisé le dépôt à supprimer"
 msgid "Remove a repository in the following format:"
 msgstr "Supprimez un dépôt dans le format suivant:"
 
-#: pacstall:1101
+#: pacstall:1102
 msgid "%s is not a git repository"
 msgstr "%s n'est pas un dépôt git"
 
-#: pacstall:1138
+#: pacstall:1139
 msgid ""
 "The repository you are trying to upgrade to contains a version of pacstall "
 "that cannot be updated from %b"
 msgstr ""
-"Le dépôt que vous essayez de mettre à jour contient une version de pacstall"
-"qui ne peut pas être mis à jour depuis %b"
+"Le dépôt que vous essayez de mettre à jour contient une version de "
+"pacstallqui ne peut pas être mis à jour depuis %b"
 
-#: pacstall:1139
+#: pacstall:1140
 msgid ""
 "Visit %s for more information on how to reinstall. Most packages will also "
 "need to be reinstalled"
 msgstr ""
-"Visitez %s pour plus d'informations sur comment réinstaller. La plupart des paquets auront aussi "
-"besoin d'être réinstallés"
+"Visitez %s pour plus d'informations sur comment réinstaller. La plupart des "
+"paquets auront aussi besoin d'être réinstallés"
 
-#: pacstall:1151 pacstall:1232
+#: pacstall:1148
+msgid ""
+"Pacstall was installed from a %s, and cannot be updated with this command"
+msgstr ""
+
+#: pacstall:1149
+msgid "Install the latest %b from the %b repository"
+msgstr ""
+
+#: pacstall:1149
+msgid "Install the latest %b with the command '%b'"
+msgstr ""
+
+#: pacstall:1157 pacstall:1238
 msgid "Invalid argument '%s'"
 msgstr "'%s' est un argument invalide"
 
-#: pacstall:1163
+#: pacstall:1169
 msgid "Nothing installed yet"
 msgstr "Rien n'a été encore installé"
 
-#: pacstall:1224
+#: pacstall:1230
 msgid "%b pacscript is downloaded to %b"
 msgstr "Le pacscript %b est téléchargé vers %b"
 
-#: pacstall:1254 misc/scripts/query-info.sh:33
+#: pacstall:1260 misc/scripts/query-info.sh:33
 msgid "Package is not installed"
 msgstr "Le paquet n'est pas installé"
 
-#: pacstall:1288
+#: pacstall:1294
 msgid "Keeping build files"
 msgstr "Conserve les fichiers de build"
 
-#: pacstall:1293
+#: pacstall:1299
 msgid "Skipping check() if present"
 msgstr "Saute check() s'il est présent"
 
-#: pacstall:1298
+#: pacstall:1304
 msgid "Downloading package entries quietly"
 msgstr "Téléchargement des entrées du paquet en silence"
 
-#: pacstall:1303
+#: pacstall:1309
 msgid "Building package without bwrap sandbox"
-msgstr "Construction du paquet sans l'isolation de bwrap (outil de bac à sable)"
+msgstr ""
+"Construction du paquet sans l'isolation de bwrap (outil de bac à sable)"
 
-#: pacstall:1304
+#: pacstall:1310
 msgid "Be cautious, this exposes your system to potential harm"
 msgstr "Soyez prudents, ceci expose votre système à de potentiels dommages"
 
@@ -258,27 +272,27 @@ msgid "Could not find srcinfo.sh"
 msgstr "srcinfo.sh n'a pas été trouvé"
 
 #: misc/scripts/build.sh:95 misc/scripts/build.sh:100
-#: misc/scripts/fetch-sources.sh:669 misc/scripts/fetch-sources.sh:682
+#: misc/scripts/fetch-sources.sh:696 misc/scripts/fetch-sources.sh:709
 #: misc/scripts/package.sh:221
 msgid "%b [required]"
 msgstr "%b [requis]"
 
-#: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:676
+#: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:703
 msgid "%b [remote]"
 msgstr "%b [distant]"
 
-#: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:678
+#: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:705
 #: misc/scripts/package.sh:216
 msgid "%b [installed]"
 msgstr "%b [installé]"
 
 #: misc/scripts/build.sh:156 misc/scripts/build.sh:176
-#: misc/scripts/fetch-sources.sh:706 misc/scripts/fetch-sources.sh:736
+#: misc/scripts/fetch-sources.sh:733 misc/scripts/fetch-sources.sh:763
 msgid "%b does not exist in apt repositories"
 msgstr "%b n'existe pas dans les dépôts apt"
 
 #: misc/scripts/build.sh:160 misc/scripts/build.sh:180
-#: misc/scripts/fetch-sources.sh:710 misc/scripts/fetch-sources.sh:740
+#: misc/scripts/fetch-sources.sh:737 misc/scripts/fetch-sources.sh:767
 msgid "%b version(s) cannot be satisfied"
 msgstr "Les versions de %b ne peuvent pas être satisfaites"
 
@@ -314,7 +328,7 @@ msgstr "Compression"
 msgid "Packaging %b as %b"
 msgstr "Empaquetage de %b en tant que %b"
 
-#: misc/scripts/build.sh:367 misc/scripts/package-base.sh:144
+#: misc/scripts/build.sh:367 misc/scripts/package-base.sh:149
 msgid "Packaging %b"
 msgstr "Empaquetage de %b"
 
@@ -377,8 +391,8 @@ msgid ""
 "%s: '%s' contains characters that are not lowercase, digits, minus, or "
 "periods"
 msgstr ""
-"%s: '%s' contients des caractères qui ne sont pas des minuscules, chiffes, traits d'union ou "
-"points"
+"%s: '%s' contients des caractères qui ne sont pas des minuscules, chiffes, "
+"traits d'union ou points"
 
 #: misc/scripts/checks.sh:61
 msgid "Deb package does not contain gives"
@@ -400,7 +414,8 @@ msgstr "'%s' contient des caractères majusucles"
 msgid ""
 "'%s' contains characters that are not lowercase, digits, minus, or periods"
 msgstr ""
-"'%s' contient des caractères qui ne sont pas des minuscules, chiffres, traits d'union ou points"
+"'%s' contient des caractères qui ne sont pas des minuscules, chiffres, "
+"traits d'union ou points"
 
 #: misc/scripts/checks.sh:92 misc/scripts/checks.sh:107
 #: misc/scripts/checks.sh:679
@@ -416,12 +431,13 @@ msgid ""
 "'%s' must contain only alphanumerics and the characters . + - ~ and should "
 "start with a digit"
 msgstr ""
-"'%s doit contenir seulement des caractères alphanumériques et des caractères . + - ~ et devrait "
-"commencer par un chiffre"
+"'%s doit contenir seulement des caractères alphanumériques et des "
+"caractères . + - ~ et devrait commencer par un chiffre"
 
 #: misc/scripts/checks.sh:144
 msgid ".deb files can only be provided as a singular '%s'"
-msgstr "Les fichiers .deb peuvent seulement être fournis en tant que '%s' unique"
+msgstr ""
+"Les fichiers .deb peuvent seulement être fournis en tant que '%s' unique"
 
 #: misc/scripts/checks.sh:237
 msgid "Package does not have a maintainer. Please be advised"
@@ -453,28 +469,35 @@ msgstr "'%s' est déjà utilisé en tant que champ dans pacstall"
 
 #: misc/scripts/checks.sh:436
 msgid "'%s' custom field cannot contain a space in field name"
-msgstr "Le champ personnalisé '%s' ne peut pas contenir un espace dans le nom du champ"
+msgstr ""
+"Le champ personnalisé '%s' ne peut pas contenir un espace dans le nom du "
+"champ"
 
 #: misc/scripts/checks.sh:440
 msgid "'%s' custom field cannot contain a number in field name"
-msgstr "Le champ personnalisé '%s' ne peut pas contenir un nombre dans le nom du champ"
+msgstr ""
+"Le champ personnalisé '%s' ne peut pas contenir un nombre dans le nom du "
+"champ"
 
 #: misc/scripts/checks.sh:444
 msgid ""
 "'%s' custom field must capitalize only the first letter of each word in "
 "field name"
 msgstr ""
-"Le champ personnalisé '%s' doit contenir seulement une lettre majuscule en première lettre de chaque mot dans "
-"le nom du champ"
+"Le champ personnalisé '%s' doit contenir seulement une lettre majuscule en "
+"première lettre de chaque mot dans le nom du champ"
 
 #: misc/scripts/checks.sh:448
 msgid "'%s' custom field cannot start or end with a hyphen"
-msgstr "Le champ personnalisé '%s' ne peut pas commencer ou finir par un trait d'union"
+msgstr ""
+"Le champ personnalisé '%s' ne peut pas commencer ou finir par un trait "
+"d'union"
 
 #: misc/scripts/checks.sh:475 misc/scripts/checks.sh:500
 #: misc/scripts/checks.sh:508
 msgid "Only one checksum method can be provided for hashes"
-msgstr "Seulement une méthode de somme de contrôle peut être fourni pour les hashages"
+msgstr ""
+"Seulement une méthode de somme de contrôle peut être fourni pour les hashages"
 
 #: misc/scripts/checks.sh:536 misc/scripts/checks.sh:666
 msgid "'%s' is improperly formatted"
@@ -494,7 +517,9 @@ msgstr "'%s' n'est pas une architecture valide"
 
 #: misc/scripts/checks.sh:639
 msgid "cannot use both Debian and Arch style naming in '%s' array"
-msgstr "Ne peut pas utiliser à la fois les conventions de nommage de Debian et Arch dans la tableau '%s'"
+msgstr ""
+"Ne peut pas utiliser à la fois les conventions de nommage de Debian et Arch "
+"dans la tableau '%s'"
 
 #: misc/scripts/checks.sh:682
 msgid "'%s' must be either: '%s', '%s', '%s', '%s', or '%s'"
@@ -508,145 +533,146 @@ msgstr "'%s' n'est pas une licence valide"
 msgid "Could not find build.sh"
 msgstr "build.sh n'a pas été trouvé"
 
-#: misc/scripts/fetch-sources.sh:173
+#: misc/scripts/fetch-sources.sh:190
 msgid "Hashes do not match (with method %s)"
 msgstr "Les hashages ne correspondent pas (avec la méthode %s)"
 
-#: misc/scripts/fetch-sources.sh:174
+#: misc/scripts/fetch-sources.sh:191
 msgid "Got:      %b"
 msgstr "Obtenu:  %b"
 
-#: misc/scripts/fetch-sources.sh:175
+#: misc/scripts/fetch-sources.sh:192
 msgid "Expected: %b"
 msgstr "Attendu: %b"
 
-#: misc/scripts/fetch-sources.sh:184
+#: misc/scripts/fetch-sources.sh:201
 msgid "Failed to download package"
 msgstr "Pacstall a échoué à télécharger le paquet"
 
-#: misc/scripts/fetch-sources.sh:194
+#: misc/scripts/fetch-sources.sh:211
 msgid "Could not enter into the main directory %b"
 msgstr "N'a pas pu entrer dans le répertoire principal %b"
 
-#: misc/scripts/fetch-sources.sh:207
+#: misc/scripts/fetch-sources.sh:224
 msgid "Cloning %b from branch %b"
 msgstr "Clonage de %b depuis la branche %b"
 
-#: misc/scripts/fetch-sources.sh:210
+#: misc/scripts/fetch-sources.sh:227
 msgid "Cloning %b from tag %b"
 msgstr "Clonage %b depuis le tag %b"
 
-#: misc/scripts/fetch-sources.sh:215
+#: misc/scripts/fetch-sources.sh:232
 msgid "Cloning %b with no blobs"
 msgstr "Clonage %b sans fichiers binaires"
 
-#: misc/scripts/fetch-sources.sh:218
+#: misc/scripts/fetch-sources.sh:235
 msgid "Cloning %b from %b"
 msgstr "Clonage %b depuis %b"
 
-#: misc/scripts/fetch-sources.sh:226
+#: misc/scripts/fetch-sources.sh:243
 msgid "Could not enter into the cloned git repository"
 msgstr "N'a pas pu entrer dans le dépôt git cloné"
 
-#: misc/scripts/fetch-sources.sh:230
+#: misc/scripts/fetch-sources.sh:247
 msgid "Fetching commit %b"
 msgstr "Récupération des changements du commit %b"
 
-#: misc/scripts/fetch-sources.sh:244
+#: misc/scripts/fetch-sources.sh:261
 msgid "Not cloning submodules for %b"
 msgstr "Aucun clonage des sous-modules pour %b"
 
-#: misc/scripts/fetch-sources.sh:250
+#: misc/scripts/fetch-sources.sh:267
 msgid "Checking integrity of %b"
 msgstr "Vérification de l'intégrité de %b"
 
-#: misc/scripts/fetch-sources.sh:251
+#: misc/scripts/fetch-sources.sh:268
 msgid "Could not check integrity of cloned git repository"
 msgstr "N'a pas pu vérifier l'intégrité du dépôt git cloné"
 
-#: misc/scripts/fetch-sources.sh:256 misc/scripts/fetch-sources.sh:260
+#: misc/scripts/fetch-sources.sh:273 misc/scripts/fetch-sources.sh:277
 msgid "Cloned git repository does not match upstream hash"
 msgstr "Le dépôt git cloné ne correspond pas au hash en amont"
 
-#: misc/scripts/fetch-sources.sh:274
+#: misc/scripts/fetch-sources.sh:291
 msgid "Downloading %b"
 msgstr "Téléchargement %b"
 
-#: misc/scripts/fetch-sources.sh:282
+#: misc/scripts/fetch-sources.sh:299
 msgid "Checking hash %b[%b...%b]"
 msgstr "Vérification du hash %b[%b...%b]"
 
-#: misc/scripts/fetch-sources.sh:298
+#: misc/scripts/fetch-sources.sh:315
 msgid "Extracting %b"
 msgstr "Extraction de %b"
 
-#: misc/scripts/fetch-sources.sh:309
+#: misc/scripts/fetch-sources.sh:336
 msgid "Could not enter into the extracted archive"
 msgstr "N'a pas pu entrer dans l'archive qui a été extrait"
 
-#: misc/scripts/fetch-sources.sh:326 misc/scripts/fetch-sources.sh:333
-#: misc/scripts/fetch-sources.sh:347 misc/scripts/fetch-sources.sh:354
+#: misc/scripts/fetch-sources.sh:353 misc/scripts/fetch-sources.sh:360
+#: misc/scripts/fetch-sources.sh:374 misc/scripts/fetch-sources.sh:381
 msgid "Running %s hook"
 msgstr "Exécution du hook %s"
 
-#: misc/scripts/fetch-sources.sh:329 misc/scripts/fetch-sources.sh:336
-#: misc/scripts/fetch-sources.sh:350 misc/scripts/fetch-sources.sh:357
+#: misc/scripts/fetch-sources.sh:356 misc/scripts/fetch-sources.sh:363
+#: misc/scripts/fetch-sources.sh:377 misc/scripts/fetch-sources.sh:384
 msgid "Could not run %s hook successfully"
 msgstr "N'a pas pu lancer le hook %s avec succès"
 
-#: misc/scripts/fetch-sources.sh:345 misc/scripts/package.sh:374
+#: misc/scripts/fetch-sources.sh:372 misc/scripts/package.sh:385
 msgid "Performing post install operations"
 msgstr "Performe des opérations de post-installation"
 
-#: misc/scripts/fetch-sources.sh:361 misc/scripts/package.sh:375
+#: misc/scripts/fetch-sources.sh:388 misc/scripts/package.sh:386
 msgid "Storing pacscript"
 msgstr "Stockage du pacscript"
 
-#: misc/scripts/fetch-sources.sh:365
+#: misc/scripts/fetch-sources.sh:392
 msgid "Could not enter into %b"
 msgstr "N'a pas pu entrer dans %b"
 
-#: misc/scripts/fetch-sources.sh:372 misc/scripts/package.sh:389
+#: misc/scripts/fetch-sources.sh:399 misc/scripts/package.sh:400
 msgid "Done installing %b"
 msgstr "L'installation de %b est terminée"
 
-#: misc/scripts/fetch-sources.sh:376
+#: misc/scripts/fetch-sources.sh:403
 msgid "Failed to install the package"
 msgstr "Le paquet n'a pas pu être installé"
 
-#: misc/scripts/fetch-sources.sh:385
+#: misc/scripts/fetch-sources.sh:412
 msgid "Copying local archive %b"
 msgstr "Copie de l'archive local %b"
 
-#: misc/scripts/fetch-sources.sh:401
+#: misc/scripts/fetch-sources.sh:428
 msgid "Could not enter into the copied archive"
 msgstr "N'a pas pu entrer dans l'archive copié"
 
-#: misc/scripts/fetch-sources.sh:575 misc/scripts/fetch-sources.sh:609
-#: misc/scripts/fetch-sources.sh:616 misc/scripts/fetch-sources.sh:622
-#: misc/scripts/fetch-sources.sh:654
+#: misc/scripts/fetch-sources.sh:602 misc/scripts/fetch-sources.sh:636
+#: misc/scripts/fetch-sources.sh:643 misc/scripts/fetch-sources.sh:649
+#: misc/scripts/fetch-sources.sh:681
 msgid "This Pacscript does not work on %b"
 msgstr "Ce Pacscript ne fonctionne pas sur %b"
 
-#: misc/scripts/fetch-sources.sh:642
+#: misc/scripts/fetch-sources.sh:669
 msgid "This package is for %b, which is a foreign architecture"
 msgstr "Ce paquet est pour %b, qui est une architecture étrangère"
 
-#: misc/scripts/fetch-sources.sh:691
+#: misc/scripts/fetch-sources.sh:718
 msgid "Checking build dependencies"
 msgstr "Vérification des dépendances de build"
 
-#: misc/scripts/fetch-sources.sh:721
+#: misc/scripts/fetch-sources.sh:748
 msgid "Checking check dependencies"
 msgstr "Vérification des dépendances de vérification"
 
-#: misc/scripts/fetch-sources.sh:762
+#: misc/scripts/fetch-sources.sh:789
 msgid "Creating build dependency/conflicts dummy package"
 msgstr "Création d'un paquet fictif de dépendances/conflits de build"
 
-#: misc/scripts/fetch-sources.sh:777
+#: misc/scripts/fetch-sources.sh:804
 msgid "Failed to install build or check dependencies"
-msgstr "Les dépendances de build ou de vérification n'ont pas pu être installés"
+msgstr ""
+"Les dépendances de build ou de vérification n'ont pas pu être installés"
 
 #: misc/scripts/get-pacscript.sh:33
 msgid "Run '%b'"
@@ -688,23 +714,23 @@ msgstr "pkgbase trouvé: %b"
 msgid "%b has exceeded the maximum number of packages to build. Skipping"
 msgstr "%b a depassé le nombre maximum de paquets à construire. Saute"
 
-#: misc/scripts/package-base.sh:192
+#: misc/scripts/package-base.sh:199
 msgid "%b is not an integer. Falling back to 1"
 msgstr "%b n'est pas un entier. Revenir à 1"
 
-#: misc/scripts/package-base.sh:201
+#: misc/scripts/package-base.sh:208
 msgid "(%b) Do you want to view/edit the pacscript?"
 msgstr "(%b) Voulez-vous lire/éditer le pacscript"
 
-#: misc/scripts/package-base.sh:214
+#: misc/scripts/package-base.sh:221
 msgid "Editor not found, falling back to '%s'"
 msgstr "L'éditeur est introuvable, revenir à '%s'"
 
-#: misc/scripts/package-base.sh:219
+#: misc/scripts/package-base.sh:226
 msgid "Sourcing pacscript"
 msgstr "Source le pacscript"
 
-#: misc/scripts/package-base.sh:242
+#: misc/scripts/package-base.sh:249
 msgid "Could not source pacscript"
 msgstr "N'a pas pu sourcer le pacscript"
 
@@ -721,24 +747,25 @@ msgid ""
 "The package %b is masking %b. By installing the masked package, you may "
 "cause damage to your operating system"
 msgstr ""
-"Le paquet %b masque %b. En installant le paquet masqué, vous pouvez "
-"causer des dommages sur votre système d'exploitation"
+"Le paquet %b masque %b. En installant le paquet masqué, vous pouvez causer "
+"des dommages sur votre système d'exploitation"
 
 #: misc/scripts/package.sh:66
 msgid ""
 "Somehow, '%s' found masked packages that match the package you want to "
 "install, but '%s' could not find it. Report this upstream"
 msgstr ""
-"'%s' a trouvé tant bien que mal des paquets masqués qui correspondent au paquet que vous voulez "
-"installer mais '%s' n'a pas pu trouver ce paquet. Reportez ceci en amont"
+"'%s' a trouvé tant bien que mal des paquets masqués qui correspondent au "
+"paquet que vous voulez installer mais '%s' n'a pas pu trouver ce paquet. "
+"Reportez ceci en amont"
 
 #: misc/scripts/package.sh:103
 msgid ""
 "This package has '%s', meaning once this is installed, it should be assumed "
 "to be unremovable. Do you want to continue?"
 msgstr ""
-"Ce paquet a '%s', cela signifie qu'une fois qu'il est installé, il devrait être consideré "
-"comme étant inamovible. Voulez-vous continuer?"
+"Ce paquet a '%s', cela signifie qu'une fois qu'il est installé, il devrait "
+"être consideré comme étant inamovible. Voulez-vous continuer?"
 
 #: misc/scripts/package.sh:129
 msgid "This script replaces %s. Do you want to proceed?"
@@ -754,7 +781,8 @@ msgstr "Supprimez le paquet apt en lançant '%b'"
 
 #: misc/scripts/package.sh:153
 msgid "%b conflicts with %s, which is currently installed by pacstall"
-msgstr "%b rentre en conflit avec %s qui est actuellement installé via pacstall"
+msgstr ""
+"%b rentre en conflit avec %s qui est actuellement installé via pacstall"
 
 #: misc/scripts/package.sh:154 misc/scripts/package.sh:175
 msgid "Remove the pacstall package by running '%b'"
@@ -780,23 +808,23 @@ msgstr "%b [mis à jour]"
 msgid "Failed to install dependency (%s from %s)"
 msgstr "N'a pas pu installer la dépendance (%s depuis %s)"
 
-#: misc/scripts/package.sh:237
+#: misc/scripts/package.sh:236
 msgid "%s is associated with multiple source entries"
 msgstr "%s est associé avec de multiples entrées source"
 
-#: misc/scripts/package.sh:264
+#: misc/scripts/package.sh:270
 msgid "Retrieving packages"
 msgstr "Récuperation des paquets"
 
-#: misc/scripts/package.sh:351
+#: misc/scripts/package.sh:362
 msgid "Running functions"
 msgstr "Lancement des fonctions"
 
-#: misc/scripts/package.sh:356
+#: misc/scripts/package.sh:367
 msgid "Could not %s %s properly"
 msgstr "N'a pas pu %s %s proprement"
 
-#: misc/scripts/package.sh:364 misc/scripts/package.sh:379
+#: misc/scripts/package.sh:375 misc/scripts/package.sh:390
 msgid "Could not enter into %s"
 msgstr "N'a pas pu entrer dans %s"
 
@@ -840,7 +868,8 @@ msgstr "%s n'est pas installé"
 msgid ""
 "You may have dangling PPAs on your system. You can remove them using '%b'"
 msgstr ""
-"Vous pouvez avoir des PPAs qui traînent sur votre système. Vous pouvez les supprimer en utilisant '%b'"
+"Vous pouvez avoir des PPAs qui traînent sur votre système. Vous pouvez les "
+"supprimer en utilisant '%b'"
 
 #: misc/scripts/search.sh:252 misc/scripts/search.sh:254
 #: misc/scripts/search.sh:286

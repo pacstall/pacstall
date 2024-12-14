@@ -1094,55 +1094,61 @@ Helpful links:
             ;;
 
         -U | --update)
-            # If the input is `.`, is a directory, and there is no other input
-            if [[ $2 == "." && -d $2 && -z $3 ]]; then
-                cd "${2}"
-                if ! git -C . rev-parse 2> /dev/null; then
-                    fancy_message error $"%s is not a git repository" "$PWD"
+            if ! is_apt_package_installed "pacstall"; then
+                # If the input is `.`, is a directory, and there is no other input
+                if [[ $2 == "." && -d $2 && -z $3 ]]; then
+                    cd "${2}"
+                    if ! git -C . rev-parse 2> /dev/null; then
+                        fancy_message error $"%s is not a git repository" "$PWD"
+                        exit 1
+                    fi
+                    mapfile -d":" GIT_USER < <(git remote get-url origin)
+                    USERNAME="${GIT_USER[1]%%/*}"
+                    BRANCH="$(git rev-parse --abbrev-ref HEAD 2> /dev/null)"
+                else
+                    USERNAME="$2"
+                    BRANCH="$3"
+                fi
+                # This stuff gives the ability for persistent updates
+                if [[ -z $BRANCH && -z $USERNAME ]]; then
+                    if [[ -f "$SCRIPTDIR/repo/update" ]]; then
+                        remote="$(< "$SCRIPTDIR/repo/update")"
+                        USERNAME="${remote%% *}"
+                        BRANCH="${remote##* }"
+                    else
+                        USERNAME="pacstall"
+                        BRANCH="master"
+                    fi
+                fi
+                if [[ -z $BRANCH ]]; then
+                    if [[ $USERNAME == *":"* ]]; then
+                        BRANCH="${USERNAME#*:}"
+                        USERNAME="${USERNAME%:*}"
+                    else
+                        BRANCH="master"
+                    fi
+                fi
+
+                check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
+                    fancy_message error $"Could not connect to the internet"
+                    suggested_solution $"Confirm that the URLs '%b' or '%b' are accessible" "${UGreen}https://github.com${NC}" "${UGreen}https://gitlab.com${NC}"
+                    exit 1
+                }
+
+                if curl --output /dev/null --silent --head --fail https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/pyproject.toml || curl --output /dev/null --silent --head --fail https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/Cargo.toml; then
+                    fancy_message error $"The repository you are trying to upgrade to contains a version of pacstall that cannot be updated from %b" "$(pacstall -V)"
+                    fancy_message error $"Visit %s for more information on how to reinstall. Most packages will also need to be reinstalled" "https://github.com/$USERNAME/pacstall/tree/$BRANCH"
                     exit 1
                 fi
-                mapfile -d":" GIT_USER < <(git remote get-url origin)
-                USERNAME="${GIT_USER[1]%%/*}"
-                BRANCH="$(git rev-parse --abbrev-ref HEAD 2> /dev/null)"
+                sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/update.sh -P "$SCRIPTDIR/scripts" 2> /dev/null
+                # shellcheck source=./misc/scripts/update.sh
+                source "$SCRIPTDIR/scripts/update.sh"
+                exit 0
             else
-                USERNAME="$2"
-                BRANCH="$3"
-            fi
-            # This stuff gives the ability for persistent updates
-            if [[ -z $BRANCH && -z $USERNAME ]]; then
-                if [[ -f "$SCRIPTDIR/repo/update" ]]; then
-                    remote="$(< "$SCRIPTDIR/repo/update")"
-                    USERNAME="${remote%% *}"
-                    BRANCH="${remote##* }"
-                else
-                    USERNAME="pacstall"
-                    BRANCH="master"
-                fi
-            fi
-            if [[ -z $BRANCH ]]; then
-                if [[ $USERNAME == *":"* ]]; then
-                    BRANCH="${USERNAME#*:}"
-                    USERNAME="${USERNAME%:*}"
-                else
-                    BRANCH="master"
-                fi
-            fi
-
-            check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
-                fancy_message error $"Could not connect to the internet"
-                suggested_solution $"Confirm that the URLs '%b' or '%b' are accessible" "${UGreen}https://github.com${NC}" "${UGreen}https://gitlab.com${NC}"
-                exit 1
-            }
-
-            if curl --output /dev/null --silent --head --fail https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/pyproject.toml || curl --output /dev/null --silent --head --fail https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/Cargo.toml; then
-                fancy_message error $"The repository you are trying to upgrade to contains a version of pacstall that cannot be updated from %b" "$(pacstall -V)"
-                fancy_message error $"Visit %s for more information on how to reinstall. Most packages will also need to be reinstalled" "https://github.com/$USERNAME/pacstall/tree/$BRANCH"
+                fancy_message error $"Pacstall was installed from a %s, and cannot be updated with this command" ".deb"
+                suggested_solution $"Install the latest %b from the %b repository" ".deb" "PPR" "ZZZZ" $"Install the latest %b with the command '%b'" "pacscript" "${GREEN}pacstall -I pacstall${NC}"
                 exit 1
             fi
-            sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/update.sh -P "$SCRIPTDIR/scripts" 2> /dev/null
-            # shellcheck source=./misc/scripts/update.sh
-            source "$SCRIPTDIR/scripts/update.sh"
-            exit 0
             ;;
 
         -L | --list)

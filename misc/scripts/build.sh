@@ -139,7 +139,7 @@ function check_opt_dep() {
     fi
     # Add to the dependency list if already installed so it doesn't get autoremoved on upgrade
     # If the package is not installed already, add it to the list. It's much easier for a user to choose from a list of uninstalled packages than every single one regardless of it's status
-    if ! is_apt_package_installed "${just_name[0]}"; then
+    if ((PACSTALL_INSTALL == 0)) || ! is_apt_package_installed "${just_name[0]}"; then
         echo "${realopt}: ${optdesc}" >> "${PACDIR}-suggested-optdeps-${pacname}"
     else
         echo "${realopt}" >> "${PACDIR}-already-installed-optdeps-${pacname}"
