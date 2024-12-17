@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-10-05 08:15+0000\n"
+"PO-Revision-Date: 2024-12-17 13:27+0000\n"
 "Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/es/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.9\n"
 
 #: pacstall:273 misc/scripts/build.sh:163 misc/scripts/build.sh:686
 #: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:740
@@ -166,14 +166,15 @@ msgstr ""
 msgid ""
 "Pacstall was installed from a %s, and cannot be updated with this command"
 msgstr ""
+"Pacstall se instaló desde un %s, y no puede actualizarse con este comando"
 
 #: pacstall:1149
 msgid "Install the latest %b from the %b repository"
-msgstr ""
+msgstr "Instalar el %b más reciente del repositorio %b"
 
 #: pacstall:1149
 msgid "Install the latest %b with the command '%b'"
-msgstr ""
+msgstr "Instalar el último %b con el comando '%b'"
 
 #: pacstall:1157 pacstall:1238
 msgid "Invalid argument '%s'"
