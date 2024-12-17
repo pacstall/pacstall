@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-11-26 09:00+0000\n"
-"Last-Translator: Brian Wang <wdl923@qq.com>\n"
+"PO-Revision-Date: 2024-12-15 10:00+0000\n"
+"Last-Translator: Freyedom <dai.wd@163.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "pacstall/pacstall/zh_SIMPLIFIED/>\n"
 "Language: zh_SIMPLIFIED\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.9-rc\n"
 
 #: pacstall:273 misc/scripts/build.sh:163 misc/scripts/build.sh:686
 #: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:740
@@ -159,15 +159,15 @@ msgstr "访问%s以获取更多关于如何重新安装的信息。大多数包�
 #: pacstall:1148
 msgid ""
 "Pacstall was installed from a %s, and cannot be updated with this command"
-msgstr ""
+msgstr "Pacstall 是从%s安装的，无法使用此命令进行更新"
 
 #: pacstall:1149
 msgid "Install the latest %b from the %b repository"
-msgstr ""
+msgstr "从 %b仓库中安装最新的 %b"
 
 #: pacstall:1149
 msgid "Install the latest %b with the command '%b'"
-msgstr ""
+msgstr "使用命令'%b'安装最新的%b"
 
 #: pacstall:1157 pacstall:1238
 msgid "Invalid argument '%s'"
