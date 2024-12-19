@@ -27,18 +27,18 @@
 { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
 
 function get_broken_package() {
-    local pkg="${1}" broken_iter broken_pkg broken_desc bluh broken_time
+    local pkg="${1}" broken_iter broken broken_pkg broken_desc broken_time
     local elapsed_seconds days hours minutes seconds
-    local broken="$(curl -s -- "${REPO}/broken-packages")"
+    broken="$(curl -s -- "${REPO}/broken-packages")"
     if [[ $? == 1 ]]; then
         return 0
     fi
     while IFS= read -r broken_iter; do
         broken_pkg="${broken_iter%% @*}"
-        if [[ ${broken_pkg} == "${PACKAGE}" ]]; then
-            broken_desc="${blah##*| }"
-            broken_time="${blah##* @}"
-            broken_time="${bluh%% |*}"
+        if [[ ${broken_pkg} == "${pkg}" ]]; then
+            broken_desc="${broken_iter##*| }"
+            broken_time="${broken_iter##* @}"
+            broken_time="${broken_time%% |*}"
 
             elapsed_seconds=$(($(date +%s) - broken_time))
 
@@ -51,7 +51,7 @@ function get_broken_package() {
             printf $"> %s days, %s hours, %s minutes, %s seconds ago\n" "$days" "$hours" "$minutes" "$seconds"
             printf $"Reason: %s\n" "$broken_desc"
             ask "Are you sure you want to install" N
-            return ((answer == 0 ? 1 : 0))
+            return $((answer == 0 ? 1 : 0))
         fi
     done < "${broken}"
 }
