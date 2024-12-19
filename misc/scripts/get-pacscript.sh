@@ -26,6 +26,36 @@
 
 { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
 
+function get_broken_package() {
+    local pkg="${1}" broken_iter broken_pkg broken_desc bluh broken_time
+    local elapsed_seconds days hours minutes seconds
+    local broken="$(curl -s -- "${REPO}/broken-packages")"
+    if [[ $? == 1 ]]; then
+        return 0
+    fi
+    while IFS= read -r broken_iter; do
+        broken_pkg="${broken_iter%% @*}"
+        if [[ ${broken_pkg} == "${PACKAGE}" ]]; then
+            broken_desc="${blah##*| }"
+            broken_time="${blah##* @}"
+            broken_time="${bluh%% |*}"
+
+            elapsed_seconds=$(($(date +%s) - broken_time))
+
+            days=$((elapsed_seconds / 86400))
+            hours=$(( (elapsed_seconds % 86400) / 3600 ))
+            minutes=$(( (elapsed_seconds % 3600) / 60 ))
+            seconds=$((elapsed_seconds % 60))
+
+            fancy_message warn $"'%s' has been marked as broken" "$PACKAGE"
+            printf $"> %s days, %s hours, %s minutes, %s seconds ago\n" "$days" "$hours" "$minutes" "$seconds"
+            printf $"Reason: %s\n" "$broken_desc"
+            ask "Are you sure you want to install" N
+            return ((answer == 0 ? 1 : 0))
+        fi
+    done < "${broken}"
+}
+
 if check_url "${URL}"; then
     if [[ $type == "install" ]]; then
         mkdir -p "$PACDIR" || {
@@ -44,6 +74,9 @@ if check_url "${URL}"; then
         *.pacscript | *packagelist | *.SRCINFO)
             FILE="${URL##*/}"
             [[ ${FILE} == ".SRCINFO" ]] && FILE="${PACKAGE}.SRCINFO"
+            if ! get_broken_package "${PACKAGE}"; then
+                exit 1
+            fi
             if ! curl --location -s -- "$URL" > "$FILE"; then
                 error_log 1 "download $PACKAGE"
                 fancy_message error $"Could not download %s" "$URL"
