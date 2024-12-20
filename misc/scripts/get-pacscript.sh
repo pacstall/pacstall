@@ -27,6 +27,7 @@
 { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
 
 function get_broken_package() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local pkg="${1}" broken_iter broken broken_pkg broken_desc broken_time
     local elapsed_seconds days hours minutes seconds
     broken="$(curl -s -- "${REPO}/broken-packages")"
