@@ -1,11 +1,16 @@
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2024-12-23 21:57+0000\n"
+"Last-Translator: XblateX <blate@users.noreply.hosted.weblate.org>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/pacstall/"
+"pacstall/uk/>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #: pacstall:273 misc/scripts/build.sh:163 misc/scripts/build.sh:686
 #: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:740
@@ -27,12 +32,13 @@ msgid "Confirm that '%b' exists"
 msgstr ""
 
 #: pacstall:404
+#, fuzzy
 msgid "Failed to download file, check your connection"
-msgstr ""
+msgstr "Не вдалося завантажити файл, перевірте з'єднання"
 
 #: pacstall:410
 msgid "The URL cannot be found"
-msgstr ""
+msgstr "URL-адресу не знайдено"
 
 #: pacstall:418
 msgid "Failed with http code %s"
@@ -86,7 +92,7 @@ msgstr ""
 #: pacstall:925 pacstall:972 pacstall:1012 pacstall:1133 pacstall:1210
 #: pacstall:1243
 msgid "Could not connect to the internet"
-msgstr ""
+msgstr "Не вдалося підключитися до мережі інтернет"
 
 #: pacstall:926 pacstall:973 pacstall:1013 pacstall:1134 pacstall:1211
 #: pacstall:1244
@@ -102,8 +108,9 @@ msgid "Confirm that the package exists by running '%b'"
 msgstr ""
 
 #: pacstall:943 pacstall:1226
+#, fuzzy
 msgid "Check your internet connection"
-msgstr ""
+msgstr "Перевірте підключення до інтернету"
 
 #: pacstall:949 misc/scripts/package-base.sh:153
 #: misc/scripts/package-base.sh:177
@@ -120,7 +127,7 @@ msgstr ""
 
 #: pacstall:1057
 msgid "Add a repository in the following format:"
-msgstr ""
+msgstr "Додайте репозиторій у наступному форматі:"
 
 #: pacstall:1057 pacstall:1078
 msgid ""
@@ -130,11 +137,11 @@ msgstr ""
 
 #: pacstall:1077
 msgid "You failed to specify a repo to remove"
-msgstr ""
+msgstr "Ви не вказали репозиторій для видалення"
 
 #: pacstall:1078
 msgid "Remove a repository in the following format:"
-msgstr ""
+msgstr "Видаліть репозиторій у наступному форматі:"
 
 #: pacstall:1102
 msgid "%s is not a git repository"
@@ -171,7 +178,7 @@ msgstr ""
 
 #: pacstall:1169
 msgid "Nothing installed yet"
-msgstr ""
+msgstr "Поки що нічого не встановлено"
 
 #: pacstall:1230
 msgid "%b pacscript is downloaded to %b"
@@ -199,7 +206,7 @@ msgstr ""
 
 #: pacstall:1310
 msgid "Be cautious, this exposes your system to potential harm"
-msgstr ""
+msgstr "Будьте обережні, це може завдати шкоди Вашій системі"
 
 #: misc/scripts/add-repo.sh:29 misc/scripts/build.sh:41
 #: misc/scripts/search.sh:31 misc/scripts/upgrade.sh:47
