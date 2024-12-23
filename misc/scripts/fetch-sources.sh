@@ -322,23 +322,19 @@ function genextr_down() {
                     ;;
                 "-o")
                     ${ext_method} "${dest}" -o"temp_ext" 1>&1 2> /dev/null
-                    (($(find temp_ext/ -mindepth 1 | wc -l)>1)) && mkdir -p "${to_location}"
-                    mv temp_ext/* "${to_location}"
-                    rm -rf "temp_ext"
                     ;;
                 "none")
                     ${ext_method} "${dest}" "temp_ext" 1>&1 2> /dev/null
-                    (($(find temp_ext/ -mindepth 1 | wc -l)>1)) && mkdir -p "${to_location}"
-                    mv temp_ext/* "${to_location}"
-                    rm -rf "temp_ext"
                     ;;
                 *)
                     ${ext_method} "${dest}" "${ext_to_flag}" "temp_ext" 1>&1 2> /dev/null
-                    (($(find temp_ext/ -mindepth 1 | wc -l)>1)) && mkdir -p "${to_location}"
-                    mv temp_ext/* "${to_location}"
-                    rm -rf "temp_ext"
                     ;;
             esac
+            if [[ "${ext_to_flag}" != ">" ]]; then
+                (($(find temp_ext/ -mindepth 1 -maxdepth 1 | wc -l)>1)) && mkdir -p "${to_location}"
+                mv temp_ext/* "${to_location}"
+                rm -rf "temp_ext"
+            fi
         else
             ${ext_method} "${dest}" 1>&1 2> /dev/null
         fi
