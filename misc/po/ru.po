@@ -1,11 +1,16 @@
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2024-12-23 21:57+0000\n"
+"Last-Translator: XblateX <blate@users.noreply.hosted.weblate.org>\n"
+"Language-Team: Russian <https://hosted.weblate.org/projects/pacstall/"
+"pacstall/ru/>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #: pacstall:273 misc/scripts/build.sh:163 misc/scripts/build.sh:686
 #: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:740
@@ -28,11 +33,11 @@ msgstr ""
 
 #: pacstall:404
 msgid "Failed to download file, check your connection"
-msgstr ""
+msgstr "Не удалось загрузить файл, проверьте подключение"
 
 #: pacstall:410
 msgid "The URL cannot be found"
-msgstr ""
+msgstr "Не удается найти URL-адрес"
 
 #: pacstall:418
 msgid "Failed with http code %s"
@@ -64,7 +69,7 @@ msgstr ""
 
 #: pacstall:762
 msgid "Package will be built and not installed"
-msgstr ""
+msgstr "Пакет будет собран и не установлен"
 
 #: pacstall:832 pacstall:905 pacstall:967 pacstall:1008 pacstall:1026
 #: pacstall:1200 pacstall:1256 misc/scripts/query-info.sh:28
@@ -86,7 +91,7 @@ msgstr ""
 #: pacstall:925 pacstall:972 pacstall:1012 pacstall:1133 pacstall:1210
 #: pacstall:1243
 msgid "Could not connect to the internet"
-msgstr ""
+msgstr "Не удалось подключиться к интернету"
 
 #: pacstall:926 pacstall:973 pacstall:1013 pacstall:1134 pacstall:1211
 #: pacstall:1244
@@ -102,8 +107,9 @@ msgid "Confirm that the package exists by running '%b'"
 msgstr ""
 
 #: pacstall:943 pacstall:1226
+#, fuzzy
 msgid "Check your internet connection"
-msgstr ""
+msgstr "Проверьте Ваше интернет-соединение"
 
 #: pacstall:949 misc/scripts/package-base.sh:153
 #: misc/scripts/package-base.sh:177
@@ -120,7 +126,7 @@ msgstr ""
 
 #: pacstall:1057
 msgid "Add a repository in the following format:"
-msgstr ""
+msgstr "Добавьте репозиторий в следующем формате:"
 
 #: pacstall:1057 pacstall:1078
 msgid ""
@@ -130,11 +136,11 @@ msgstr ""
 
 #: pacstall:1077
 msgid "You failed to specify a repo to remove"
-msgstr ""
+msgstr "Вы не указали репозиторий для удаления"
 
 #: pacstall:1078
 msgid "Remove a repository in the following format:"
-msgstr ""
+msgstr "Удалите репозиторий в следующем формате:"
 
 #: pacstall:1102
 msgid "%s is not a git repository"
@@ -166,12 +172,13 @@ msgid "Install the latest %b with the command '%b'"
 msgstr ""
 
 #: pacstall:1157 pacstall:1238
+#, fuzzy
 msgid "Invalid argument '%s'"
-msgstr ""
+msgstr "Недопустимый аргумент '%s'"
 
 #: pacstall:1169
 msgid "Nothing installed yet"
-msgstr ""
+msgstr "Пока еще ничего не установлено"
 
 #: pacstall:1230
 msgid "%b pacscript is downloaded to %b"
@@ -179,7 +186,7 @@ msgstr ""
 
 #: pacstall:1260 misc/scripts/query-info.sh:33
 msgid "Package is not installed"
-msgstr ""
+msgstr "Пакет не установлен"
 
 #: pacstall:1294
 msgid "Keeping build files"
@@ -195,11 +202,11 @@ msgstr ""
 
 #: pacstall:1309
 msgid "Building package without bwrap sandbox"
-msgstr ""
+msgstr "Сборка пакета без использования песочницы bwrap"
 
 #: pacstall:1310
 msgid "Be cautious, this exposes your system to potential harm"
-msgstr ""
+msgstr "Будьте осторожны, это подвергнет Вашу систему потенциальному риску"
 
 #: misc/scripts/add-repo.sh:29 misc/scripts/build.sh:41
 #: misc/scripts/search.sh:31 misc/scripts/upgrade.sh:47
