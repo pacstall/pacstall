@@ -271,7 +271,7 @@ if ! [[ -f "${PACDIR}-no-download-${pkgbase}" ]]; then
 
     unset payload_arr
     if [[ -n $PACSTALL_PAYLOAD && ! -f "${PACDIR}-pacdeps-${pacname}" ]]; then
-        mapfile -t payload_arr < <(awk -v RS=';:' '{if (NF) print $0}' <<< "${PACSTALL_PAYLOAD}")
+        mapfile -t payload_arr <<< "${PACSTALL_PAYLOAD//;:/$'\n'}"
     fi
 
     for i in "${!source[@]}"; do
