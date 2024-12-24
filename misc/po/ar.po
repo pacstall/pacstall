@@ -262,7 +262,7 @@ msgstr ""
 
 #: misc/scripts/build.sh:95 misc/scripts/build.sh:100
 #: misc/scripts/fetch-sources.sh:696 misc/scripts/fetch-sources.sh:709
-#: misc/scripts/package.sh:221
+#: misc/scripts/package.sh:225
 msgid "%b [required]"
 msgstr ""
 
@@ -271,7 +271,7 @@ msgid "%b [remote]"
 msgstr ""
 
 #: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:705
-#: misc/scripts/package.sh:216
+#: misc/scripts/package.sh:220
 msgid "%b [installed]"
 msgstr ""
 
@@ -590,11 +590,11 @@ msgstr ""
 msgid "Could not run %s hook successfully"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:372 misc/scripts/package.sh:385
+#: misc/scripts/fetch-sources.sh:372 misc/scripts/package.sh:389
 msgid "Performing post install operations"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:388 misc/scripts/package.sh:386
+#: misc/scripts/fetch-sources.sh:388 misc/scripts/package.sh:390
 msgid "Storing pacscript"
 msgstr ""
 
@@ -602,7 +602,7 @@ msgstr ""
 msgid "Could not enter into %b"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:399 misc/scripts/package.sh:400
+#: misc/scripts/fetch-sources.sh:399 misc/scripts/package.sh:404
 msgid "Done installing %b"
 msgstr ""
 
@@ -730,63 +730,67 @@ msgid ""
 "to be unremovable. Do you want to continue?"
 msgstr ""
 
-#: misc/scripts/package.sh:129
+#: misc/scripts/package.sh:122
+msgid "Reinstalling '%s'"
+msgstr ""
+
+#: misc/scripts/package.sh:133
 msgid "This script replaces %s. Do you want to proceed?"
 msgstr ""
 
-#: misc/scripts/package.sh:145
+#: misc/scripts/package.sh:149
 msgid "%b conflicts with %s, which is currently installed by apt"
 msgstr ""
 
-#: misc/scripts/package.sh:146 misc/scripts/package.sh:168
+#: misc/scripts/package.sh:150 misc/scripts/package.sh:172
 msgid "Remove the apt package by running '%b'"
 msgstr ""
 
-#: misc/scripts/package.sh:153
+#: misc/scripts/package.sh:157
 msgid "%b conflicts with %s, which is currently installed by pacstall"
 msgstr ""
 
-#: misc/scripts/package.sh:154 misc/scripts/package.sh:175
+#: misc/scripts/package.sh:158 misc/scripts/package.sh:179
 msgid "Remove the pacstall package by running '%b'"
 msgstr ""
 
-#: misc/scripts/package.sh:167
+#: misc/scripts/package.sh:171
 msgid "%b breaks %s, which is currently installed by apt"
 msgstr ""
 
-#: misc/scripts/package.sh:174
+#: misc/scripts/package.sh:178
 msgid "%b breaks %s, which is currently installed by pacstall"
 msgstr ""
 
-#: misc/scripts/package.sh:192
+#: misc/scripts/package.sh:196
 msgid "Checking pacstall dependencies"
 msgstr ""
 
-#: misc/scripts/package.sh:209
+#: misc/scripts/package.sh:213
 msgid "%b [update]"
 msgstr ""
 
-#: misc/scripts/package.sh:211 misc/scripts/package.sh:222
+#: misc/scripts/package.sh:215 misc/scripts/package.sh:226
 msgid "Failed to install dependency (%s from %s)"
 msgstr ""
 
-#: misc/scripts/package.sh:236
+#: misc/scripts/package.sh:240
 msgid "%s is associated with multiple source entries"
 msgstr ""
 
-#: misc/scripts/package.sh:270
+#: misc/scripts/package.sh:274
 msgid "Retrieving packages"
 msgstr ""
 
-#: misc/scripts/package.sh:362
+#: misc/scripts/package.sh:366
 msgid "Running functions"
 msgstr ""
 
-#: misc/scripts/package.sh:367
+#: misc/scripts/package.sh:371
 msgid "Could not %s %s properly"
 msgstr ""
 
-#: misc/scripts/package.sh:375 misc/scripts/package.sh:390
+#: misc/scripts/package.sh:379 misc/scripts/package.sh:394
 msgid "Could not enter into %s"
 msgstr ""
 
