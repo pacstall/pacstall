@@ -331,6 +331,9 @@ function genextr_down() {
                     ;;
             esac
             if [[ "${ext_to_flag}" != ">" ]]; then
+                # if more than one file/dir at the head of the extraction
+                # then create `to_location` as the head for the items
+                # instead of turning the single head file/dir into `to_location`
                 (($(find temp_ext/ -mindepth 1 -maxdepth 1 | wc -l)>1)) && mkdir -p "${to_location}"
                 mv temp_ext/* "${to_location}"
                 rm -rf "temp_ext"
