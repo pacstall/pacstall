@@ -711,26 +711,26 @@ msgstr ""
 msgid "Failed to download '%s'"
 msgstr ""
 
-#: misc/scripts/package.sh:57
-msgid "Reinstalling '%s'"
-msgstr ""
-
-#: misc/scripts/package.sh:67
+#: misc/scripts/package.sh:63
 msgid ""
 "The package %b is masking %b. By installing the masked package, you may "
 "cause damage to your operating system"
 msgstr ""
 
-#: misc/scripts/package.sh:70
+#: misc/scripts/package.sh:66
 msgid ""
 "Somehow, '%s' found masked packages that match the package you want to "
 "install, but '%s' could not find it. Report this upstream"
 msgstr ""
 
-#: misc/scripts/package.sh:107
+#: misc/scripts/package.sh:103
 msgid ""
 "This package has '%s', meaning once this is installed, it should be assumed "
 "to be unremovable. Do you want to continue?"
+msgstr ""
+
+#: misc/scripts/package.sh:122
+msgid "Reinstalling '%s'"
 msgstr ""
 
 #: misc/scripts/package.sh:133

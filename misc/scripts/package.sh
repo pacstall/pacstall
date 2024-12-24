@@ -53,10 +53,6 @@ if ((PACSTALL_INSTALL == 0)) && [[ ${pacname} == *-deb ]]; then
     return 0
 fi
 
-if is_package_installed "${gives:-${pacname}}" && dpkg --compare-versions "${pkgver}" eq "$(dpkg-query --showformat='${Version}' --show "${gives:-${pacname}}")"; then
-    fancy_message warn $"Reinstalling '%s'" "${gives:-${pacname}}"
-fi
-
 masked_packages=()
 getMasks masked_packages
 if ((${#masked_packages[@]} != 0)); then
@@ -120,6 +116,10 @@ if [[ ${pacname} == *-git ]]; then
     export git_pkgver
 else
     full_version="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
+fi
+
+if is_package_installed "${gives:-${pacname}}" && dpkg --compare-versions "${full_version}" eq "$(dpkg-query --showformat='${Version}' --show "${gives:-${pacname}}")"; then
+    fancy_message warn $"Reinstalling '%s'" "${gives:-${pacname}}"
 fi
 
 # Trap Crtl+C just before the point cleanup is first needed
