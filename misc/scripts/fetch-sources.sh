@@ -316,11 +316,28 @@ function genextr_down() {
         if [[ -n ${to_location} ]]; then
             mkdir -p "temp_ext"
             case "${ext_to_flag}" in
-                ">") rm -rf "temp_ext"; ${ext_method} -c "${dest}" > "${to_location}" 1>&1 2> /dev/null ;;
-                "-o") ${ext_method} "${dest}" -o"temp_ext" 1>&1 2> /dev/null; mv temp_ext/* "${to_location}"; rm -rf "temp_ext" ;;
-                "none") ${ext_method} "${dest}" "temp_ext" 1>&1 2> /dev/null; mv temp_ext/* "${to_location}"; rm -rf "temp_ext" ;;
-                *) ${ext_method} "${dest}" "${ext_to_flag}" "temp_ext" 1>&1 2> /dev/null; mv temp_ext/* "${to_location}"; rm -rf "temp_ext" ;;
+                ">")
+                    rm -rf "temp_ext"
+                    ${ext_method} -c "${dest}" > "${to_location}" 1>&1 2> /dev/null
+                    ;;
+                "-o")
+                    ${ext_method} "${dest}" -o"temp_ext" 1>&1 2> /dev/null
+                    ;;
+                "none")
+                    ${ext_method} "${dest}" "temp_ext" 1>&1 2> /dev/null
+                    ;;
+                *)
+                    ${ext_method} "${dest}" "${ext_to_flag}" "temp_ext" 1>&1 2> /dev/null
+                    ;;
             esac
+            if [[ "${ext_to_flag}" != ">" ]]; then
+                # if more than one file/dir at the head of the extraction
+                # then create `to_location` as the head for the items
+                # instead of turning the single head file/dir into `to_location`
+                (($(find temp_ext/ -mindepth 1 -maxdepth 1 | wc -l)>1)) && mkdir -p "${to_location}"
+                mv temp_ext/* "${to_location}"
+                rm -rf "temp_ext"
+            fi
         else
             ${ext_method} "${dest}" 1>&1 2> /dev/null
         fi
