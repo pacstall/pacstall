@@ -331,9 +331,6 @@ if ! [[ -f "${PACDIR}-no-download-${pkgbase}" ]]; then
     unset hashsum_method payload_arr
 fi
 
-if [[ -z ${_archive} ]]; then
-    export _archive="${srcdir}"
-fi
 export pacdir="$PWD"
 sudo chown -R root:root . 2> /dev/null
 

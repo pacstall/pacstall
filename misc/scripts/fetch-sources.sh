@@ -278,10 +278,6 @@ function git_down() {
             clean_fail_down
         fi
     fi
-    # if first source entry & archive is not set, this becomes archive
-    if [[ ${source[i]} == "${source[0]}" && -z ${_archive} ]]; then
-        export _archive="${PWD}"
-    fi
     # cd back to srcdir
     gather_down
 }
@@ -343,18 +339,6 @@ function genextr_down() {
         fi
         if [[ -f ${dest} ]]; then
             rm -f "${dest:?}"
-        fi
-    fi
-    # if first source and extract is true, enter it for archive check
-    if [[ ${source[i]} == "${source[0]}" && ${extract} == "true" ]]; then
-        # cd in
-        cd ./*/ 2> /dev/null || {
-            error_log 1 "install ${pacname}"
-            fancy_message warn $"Could not enter into the extracted archive"
-        }
-        # if archive is not set and we entered something, this becomes archive
-        if [[ -z ${_archive} && ${PWD} != "${srcdir}" ]]; then
-            export _archive="${PWD}"
         fi
     fi
     # cd back to srcdir
@@ -438,16 +422,6 @@ function file_down() {
         fi
     elif [[ -n ${ext_method} ]]; then
         genextr_down
-    elif [[ ${source[i]} == "${source[0]}" && -d ${dest} ]]; then
-        # cd in
-        cd "./${dest}" 2> /dev/null || {
-            error_log 1 "install ${pacname}"
-            fancy_message warn $"Could not enter into the copied archive"
-        }
-        # if archive not exist and we entered, its here
-        if [[ -z ${_archive} && ${PWD} != "${srcdir}" ]]; then
-            export _archive="${PWD}"
-        fi
     else
         hashcheck_down
     fi
