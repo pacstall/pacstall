@@ -446,10 +446,6 @@ function makedeb() {
     fi
     deblog_depends provides "Provides"
 
-    if [[ -n ${conflicts[*]} ]]; then
-        deblog_depends conflicts "Conflicts"
-    fi
-
     if [[ -n ${breaks[*]} ]]; then
         deblog_depends breaks "Breaks"
     fi
@@ -469,7 +465,15 @@ function makedeb() {
     fi
 
     if [[ -n ${replaces[*]} ]]; then
+        for i in "${replaces[@]}"; do
+            if ! array.contains breaks "${i}" && ! array.contains conflicts "${i}"; then
+                conflicts+=("${i}")
+            fi
         deblog_depends replaces "Replaces"
+    fi
+
+    if [[ -n ${conflicts[*]} ]]; then
+        deblog_depends conflicts "Conflicts"
     fi
 
     if [[ -n ${url} ]]; then
@@ -670,10 +674,9 @@ function install_deb() {
     if ((PACSTALL_INSTALL != 0)); then
         for pkg in "${replaces[@]}"; do
             if is_apt_package_installed "${pkg}"; then
+                # this is only required for essential packages. Otherwise use 'conflicts' with 'replaces'.
                 if [[ ${priority} == "essential" ]]; then
                     sudo apt-get remove -y "${pkg}" --allow-remove-essential
-                else
-                    sudo apt-get remove -y "${pkg}"
                 fi
             fi
         done
