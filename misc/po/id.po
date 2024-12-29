@@ -12,8 +12,8 @@ msgstr ""
 "X-Generator: Weblate 5.8.2-dev\n"
 
 #: pacstall:273 misc/scripts/build.sh:163 misc/scripts/build.sh:686
-#: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:740
-#: misc/scripts/fetch-sources.sh:770 misc/scripts/package-base.sh:163
+#: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:757
+#: misc/scripts/fetch-sources.sh:787 misc/scripts/package-base.sh:163
 #: misc/scripts/package-base.sh:184
 msgid "Cleaning up"
 msgstr "Membersihkan"
@@ -272,27 +272,27 @@ msgid "Could not find srcinfo.sh"
 msgstr "Tidak dapat menemukan srcinfo.sh"
 
 #: misc/scripts/build.sh:95 misc/scripts/build.sh:100
-#: misc/scripts/fetch-sources.sh:696 misc/scripts/fetch-sources.sh:709
+#: misc/scripts/fetch-sources.sh:713 misc/scripts/fetch-sources.sh:726
 #: misc/scripts/package.sh:225
 msgid "%b [required]"
 msgstr "%b [diperlukan]"
 
-#: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:703
+#: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:720
 msgid "%b [remote]"
 msgstr "%b [remot]"
 
-#: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:705
+#: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:722
 #: misc/scripts/package.sh:220
 msgid "%b [installed]"
 msgstr "%b [terinstal]"
 
 #: misc/scripts/build.sh:156 misc/scripts/build.sh:176
-#: misc/scripts/fetch-sources.sh:733 misc/scripts/fetch-sources.sh:763
+#: misc/scripts/fetch-sources.sh:750 misc/scripts/fetch-sources.sh:780
 msgid "%b does not exist in apt repositories"
 msgstr "%b tidak dapat ditemukan di repositori apt"
 
 #: misc/scripts/build.sh:160 misc/scripts/build.sh:180
-#: misc/scripts/fetch-sources.sh:737 misc/scripts/fetch-sources.sh:767
+#: misc/scripts/fetch-sources.sh:754 misc/scripts/fetch-sources.sh:784
 msgid "%b version(s) cannot be satisfied"
 msgstr "Versi %b tidak dapat dipenuhi"
 
@@ -593,71 +593,71 @@ msgstr "Memeriksa hash %b[%b...%b]"
 msgid "Extracting %b"
 msgstr "Mengekstrak %b"
 
-#: misc/scripts/fetch-sources.sh:336
+#: misc/scripts/fetch-sources.sh:353
 msgid "Could not enter into the extracted archive"
 msgstr "Tidak dapat memasuki arsip yang diekstrak"
 
-#: misc/scripts/fetch-sources.sh:353 misc/scripts/fetch-sources.sh:360
-#: misc/scripts/fetch-sources.sh:374 misc/scripts/fetch-sources.sh:381
+#: misc/scripts/fetch-sources.sh:370 misc/scripts/fetch-sources.sh:377
+#: misc/scripts/fetch-sources.sh:391 misc/scripts/fetch-sources.sh:398
 msgid "Running %s hook"
 msgstr "Menjalankan kait %s"
 
-#: misc/scripts/fetch-sources.sh:356 misc/scripts/fetch-sources.sh:363
-#: misc/scripts/fetch-sources.sh:377 misc/scripts/fetch-sources.sh:384
+#: misc/scripts/fetch-sources.sh:373 misc/scripts/fetch-sources.sh:380
+#: misc/scripts/fetch-sources.sh:394 misc/scripts/fetch-sources.sh:401
 msgid "Could not run %s hook successfully"
 msgstr "Tidak dapat menjalankan kait %s dengan sukses"
 
-#: misc/scripts/fetch-sources.sh:372 misc/scripts/package.sh:389
+#: misc/scripts/fetch-sources.sh:389 misc/scripts/package.sh:389
 msgid "Performing post install operations"
 msgstr "Menjalankan operasi pasca penginstalan"
 
-#: misc/scripts/fetch-sources.sh:388 misc/scripts/package.sh:390
+#: misc/scripts/fetch-sources.sh:405 misc/scripts/package.sh:390
 msgid "Storing pacscript"
 msgstr "Menyimpan pacscript"
 
-#: misc/scripts/fetch-sources.sh:392
+#: misc/scripts/fetch-sources.sh:409
 msgid "Could not enter into %b"
 msgstr "Tidak dapat memasuki %b"
 
-#: misc/scripts/fetch-sources.sh:399 misc/scripts/package.sh:404
+#: misc/scripts/fetch-sources.sh:416 misc/scripts/package.sh:404
 msgid "Done installing %b"
 msgstr "Selesai menginstal %b"
 
-#: misc/scripts/fetch-sources.sh:403
+#: misc/scripts/fetch-sources.sh:420
 msgid "Failed to install the package"
 msgstr "Gagal menginstal paket"
 
-#: misc/scripts/fetch-sources.sh:412
+#: misc/scripts/fetch-sources.sh:429
 msgid "Copying local archive %b"
 msgstr "Menyalin arsip lokal %b"
 
-#: misc/scripts/fetch-sources.sh:428
+#: misc/scripts/fetch-sources.sh:445
 msgid "Could not enter into the copied archive"
 msgstr "Tidak dapat memasuki arsip yang disalin"
 
-#: misc/scripts/fetch-sources.sh:602 misc/scripts/fetch-sources.sh:636
-#: misc/scripts/fetch-sources.sh:643 misc/scripts/fetch-sources.sh:649
-#: misc/scripts/fetch-sources.sh:681
+#: misc/scripts/fetch-sources.sh:619 misc/scripts/fetch-sources.sh:653
+#: misc/scripts/fetch-sources.sh:660 misc/scripts/fetch-sources.sh:666
+#: misc/scripts/fetch-sources.sh:698
 msgid "This Pacscript does not work on %b"
 msgstr "Pacscript ini tidak dapat digunakan pada %b"
 
-#: misc/scripts/fetch-sources.sh:669
+#: misc/scripts/fetch-sources.sh:686
 msgid "This package is for %b, which is a foreign architecture"
 msgstr "Paket ini untuk %b, yang merupakan arsitektur asing"
 
-#: misc/scripts/fetch-sources.sh:718
+#: misc/scripts/fetch-sources.sh:735
 msgid "Checking build dependencies"
 msgstr "Memeriksa dependensi build"
 
-#: misc/scripts/fetch-sources.sh:748
+#: misc/scripts/fetch-sources.sh:765
 msgid "Checking check dependencies"
 msgstr "Memeriksa dependensi check"
 
-#: misc/scripts/fetch-sources.sh:789
+#: misc/scripts/fetch-sources.sh:806
 msgid "Creating build dependency/conflicts dummy package"
 msgstr "Membuat paket dummy dependensi build/konfilk"
 
-#: misc/scripts/fetch-sources.sh:804
+#: misc/scripts/fetch-sources.sh:821
 msgid "Failed to install build or check dependencies"
 msgstr "Gagal menginstal dependensi build atau check"
 
