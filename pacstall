@@ -23,9 +23,9 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 # Pacstall version
-version_number="6.0.0"
-version_name="Phlox"
-declare -A version_color=([r]="223" [g]="00" [b]="255")
+version_number="6.0.1"
+version_name="RazzleDazzle"
+declare -A version_color=([r]="255" [g]="51" [b]="204")
 
 # Configuration
 export METADIR="/var/lib/pacstall/metadata"
