@@ -696,10 +696,8 @@ function install_deb() {
         if ! [[ -d /etc/apt/preferences.d/ ]]; then
             sudo mkdir -p /etc/apt/preferences.d
         fi
-        local combined_pinning=("${provides[@]}" "${gives:-${pacname}}")
-        echo "Package: ${combined_pinning[*]}" | sudo tee "/etc/apt/preferences.d/${pacname//./-}-pin" > /dev/null
-        echo "Pin: version *" | sudo tee -a "/etc/apt/preferences.d/${pacname//./-}-pin" > /dev/null
-        echo "Pin-Priority: -1" | sudo tee -a "/etc/apt/preferences.d/${pacname//./-}-pin" > /dev/null
+        echo -e "Package: ${provides[*]}\nPin: release o=*\nPin-Priority: -1\n" | sudo tee "/etc/apt/preferences.d/${pacname//./-}-pin" > /dev/null
+        echo -e "Package: ${provides[*]}\nPin: version ${full_version}\nPin-Priority: 100" | sudo tee -a "/etc/apt/preferences.d/${pacname//./-}-pin" > /dev/null
         return 0
     else
         sudo mv "$STAGEDIR/$debname.deb" "$PACDEB_DIR"
