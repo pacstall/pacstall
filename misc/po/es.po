@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-12-17 13:27+0000\n"
-"Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
+"PO-Revision-Date: 2024-12-28 19:00+0000\n"
+"Last-Translator: Elsie <hwengerstickel@protonmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/es/>\n"
 "Language: es\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #: pacstall:273 misc/scripts/build.sh:163 misc/scripts/build.sh:686
 #: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:740
@@ -763,10 +763,8 @@ msgstr ""
 "suponer que no se puede quitar. ¿Desea continuar?"
 
 #: misc/scripts/package.sh:122
-#, fuzzy
-#| msgid "Done installing %b"
 msgid "Reinstalling '%s'"
-msgstr "Finalizada la instalación de %b"
+msgstr "Reinstalando '%s'"
 
 #: misc/scripts/package.sh:133
 msgid "This script replaces %s. Do you want to proceed?"
