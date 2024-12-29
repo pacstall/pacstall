@@ -725,7 +725,11 @@ function install_builddepends() {
         fi
         if [[ -n ${unsatisfied_builddepends[*]} ]]; then
             echo -ne "\t"
-            fancy_message error $"%b version(s) cannot be satisfied" "${CYAN}$(printf "${CYAN}%s${NC}, " "${unsatisfied_builddepends[@]}" | sed 's/, $/\n/')${NC}"
+            if ((${#unsatisfied_builddepends[@]} > 1)); then
+                fancy_message error $"%b versions cannot be satisfied" "${CYAN}$(printf "${CYAN}%s${NC}, " "${unsatisfied_builddepends[@]}" | sed 's/, $/\n/')${NC}"
+            else
+                fancy_message error $"%b version cannot be satisfied" "${CYAN}$(printf "${CYAN}%s${NC}, " "${unsatisfied_builddepends[@]}" | sed 's/, $/\n/')${NC}"
+            fi
         fi
         if [[ -n ${missing_builddepends[*]} || -n ${unsatisfied_builddepends[*]} ]]; then
             fancy_message info $"Cleaning up"
