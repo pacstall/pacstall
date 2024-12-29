@@ -492,14 +492,12 @@ function makedeb() {
 
     if [[ -n ${maintainer[*]} ]]; then
         deblog "Maintainer" "${maintainer[0]}"
-        if ((${#maintainer[@]} > 1)); then
-            # Since https://www.debian.org/doc/debian-policy/ch-controlfields.html#uploaders says that Maintainer can only have one field, shove the rest in Uploaders
-            local uploaders
-            printf -v uploaders '%s, ' "${maintainer[@]:1}"
-            printf -v uploaders '%s' "${uploaders%, }"
-            deblog "Uploaders" "${uploaders}"
-            unset uploaders
-        fi
+        # Since https://www.debian.org/doc/debian-policy/ch-controlfields.html#uploaders says that Maintainer can only have one field, shove the rest in Uploaders
+        local uploaders
+        printf -v uploaders '%s, ' "${maintainer[@]}"
+        printf -v uploaders '%s' "${uploaders%, }"
+        deblog "Uploaders" "${uploaders}"
+        unset uploaders
     else
         deblog "Maintainer" "Pacstall <pacstall@pm.me>"
     fi
