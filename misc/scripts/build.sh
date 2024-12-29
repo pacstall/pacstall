@@ -469,6 +469,7 @@ function makedeb() {
             if ! array.contains breaks "${i}" && ! array.contains conflicts "${i}"; then
                 conflicts+=("${i}")
             fi
+        done
         deblog_depends replaces "Replaces"
     fi
 
