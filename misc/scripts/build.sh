@@ -698,6 +698,9 @@ function install_deb() {
         if ! [[ -d /etc/apt/preferences.d/ ]]; then
             sudo mkdir -p /etc/apt/preferences.d
         fi
+        if ! array.contains provides "${gives:-${pacname}}"; then
+            provides+=("${gives:-${pacname}}")
+        fi
         echo -e "Package: ${provides[*]}\nPin: release o=*\nPin-Priority: -1\n" | sudo tee "/etc/apt/preferences.d/${pacname//./-}-pin" > /dev/null
         echo -e "Package: ${provides[*]}\nPin: version ${full_version}\nPin-Priority: 100" | sudo tee -a "/etc/apt/preferences.d/${pacname//./-}-pin" > /dev/null
         return 0
