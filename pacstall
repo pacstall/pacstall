@@ -23,9 +23,9 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 # Pacstall version
-version_number="6.0.1"
-version_name="RazzleDazzle"
-declare -A version_color=([r]="255" [g]="51" [b]="204")
+version_number="6.0.2"
+version_name="Bonbon"
+declare -A version_color=([r]="249" [g]="66" [b]="158")
 
 # Configuration
 export METADIR="/var/lib/pacstall/metadata"
