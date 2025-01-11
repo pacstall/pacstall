@@ -43,6 +43,16 @@ export PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER:-$(whoa
 # (( )) doesn't like uninitialized vars
 export PACSTALL_INSTALL=1
 
+PACSTALL_DEBUG=0
+if [[ "${1}" == "-x" || "${1}" == "--debug" ]]; then
+  set -x
+  PACSTALL_DEBUG=1
+  shift 1
+else
+  set +x
+fi
+export PACSTALL_DEBUG
+
 # declare verbose debug output
 declare -gx PS4=$'\E[0;10m\E[1m\033[1;31m\033[1;37m[\033[1;35m${BASH_SOURCE[0]##*/}:\033[1;34m${FUNCNAME[0]:-NOFUNC}():\033[1;33m${LINENO}\033[1;37m] - \033[1;33mDEBUG: \E[0;10m'
 
@@ -764,7 +774,7 @@ while [[ $1 != "--" ]]; do
             ;;
 
         -h | --help)
-            echo -e "Usage: pacstall [-h] {-I,-S,-R,-D,-A,-Rr,-U,-L,-Up,-Qa,-Sd,-Si,-Ci,-T,-V} [-P] [-K] [-B] [-Nc] [-Q] [-Ns]
+            echo -e "Usage: pacstall [-x] [-h] {-I,-S,-R,-D,-A,-Rr,-U,-L,-Up,-Qa,-Sd,-Si,-Ci,-T,-V} [-P] [-K] [-B] [-Nc] [-Q] [-Ns]
 
 An AUR inspired package manager for Ubuntu.
 
@@ -803,6 +813,8 @@ Commands:
         Display this help message.
 
 Options:
+    ${BOLD}-x${NC}, ${BOLD}--debug${NC}
+        Enable debug output. Must be first argument.
     ${BOLD}-P${NC}, ${BOLD}--disable-prompts${NC}
         Disable prompts.
     ${BOLD}-K${NC}, ${BOLD}--keep${NC}

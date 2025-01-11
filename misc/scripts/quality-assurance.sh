@@ -75,9 +75,11 @@ fancy_message info $"Backing up %b" "${CYAN}$SCRIPTDIR/repo/pacstallrepo${NC}"
 sudo mv "$SCRIPTDIR/repo/pacstallrepo" "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak"
 echo "$provider_url" | sudo tee "$SCRIPTDIR/repo/pacstallrepo" > /dev/null
 fancy_message info $"Installing %b" "${GREEN}$inst${NC}(${PURPLE}$login${NC}:${RED}$pr${NC})"
+unset precmd
+((PACSTALL_DEBUG)) && precmd="-x"
 cmd="-I"
 [[ ${GITHUB_ACTIONS} == "true" ]] && cmd+="P"
 [[ $KEEP ]] && cmd+="K"
 ((PACSTALL_INSTALL == 0)) && cmd+="B"
 [[ $NOSANDBOX ]] && cmd+="Ns"
-pacstall $cmd "$inst" || exit 1
+pacstall ${precmd} "$cmd" "$inst" || exit 1
