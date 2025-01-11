@@ -289,12 +289,10 @@ function srcinfo._basic_check() {
 function srcinfo._contains() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local -n arr_name="${1}"
-    local key="${2}" z
-    for z in "${arr_name[@]}"; do
-        if [[ ${z} == "${key}" ]]; then
-            return 0
-        fi
-    done
+    local key="${2}"
+    if [[ " ${arr_name[*]} " == *" ${key} "* ]]; then
+        return 0
+    fi
     # shellcheck disable=SC2034
     { ignore_stack=true; return 1; }
 }
@@ -385,7 +383,7 @@ function srcinfo.parse() {
         temp_array="$(srcinfo._create_array "${locbase}" "${temp_line[key]}" "${var_prefix}")"
         declare -n ref="${temp_array}"
         ref+=("${temp_line[value]}")
-        if [[ ${locbase} == "pkgbase_"* ]] || ! srcinfo._contains total_list "${temp_array}"; then
+        if ! srcinfo._contains total_list "${temp_array}"; then
             total_list+=("${temp_array}")
         fi
     done < "${srcinfo_file}"
