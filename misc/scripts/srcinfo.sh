@@ -481,9 +481,8 @@ function srcinfo.reformat_assoc_arr() {
 # @arg $2 string Variable or Array to print
 function srcinfo.print_var() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local srcinfo_file="${1}" found="${2}" var_prefix="srcinfo" pkgbase output var name idx evil eviler e printed
-    local -n bases="${var_prefix}_access"
-    srcinfo.parse "${srcinfo_file}" "${var_prefix}"
+    local found="${1}" pkgbase output var name idx evil eviler e printed
+    local -n bases="srcinfo_access"
     if [[ ${found} == "pkgbase" ]]; then
         if [[ -n ${globase} && ${globase} != "temporary_pacstall_pkgbase" ]]; then
             pkgbase="${globase}"
@@ -500,33 +499,33 @@ function srcinfo.print_var() {
                 if ((${#bases[@]} > 1)); then
                     # shellcheck disable=SC2076
                     if [[ ${var} =~ "pkgbase_${globase//-/_}" ]]; then
-                        evil+=("$(printf "${var_prefix}_${found}_${globase//-/_}[\"${globase}-pkgbase-%d\"]=\"%s\"\n" "${idx}" "${output[${idx}]}")")
+                        evil+=("$(printf "srcinfo_${found}_${globase//-/_}[\"${globase}-pkgbase-%d\"]=\"%s\"\n" "${idx}" "${output[${idx}]}")")
                     else
-                        evil+=("$(printf "${var_prefix}_${found}_${globase//-/_}[\"${name}-%d\"]=\"%s\"\n" "${idx}" "${output[${idx}]}")")
+                        evil+=("$(printf "srcinfo_${found}_${globase//-/_}[\"${name}-%d\"]=\"%s\"\n" "${idx}" "${output[${idx}]}")")
                     fi
                 else
-                    evil+=("$(printf "${var_prefix}_${found}_${name//-/_}[\"${name}-%d\"]=\"%s\"\n" "${idx}" "${output[${idx}]}")")
+                    evil+=("$(printf "srcinfo_${found}_${name//-/_}[\"${name}-%d\"]=\"%s\"\n" "${idx}" "${output[${idx}]}")")
                 fi
             done
         fi
     done
     if [[ -n ${globase} && ${globase} != "temporary_pacstall_pkgbase" ]]; then
-        unset "${var_prefix}_${found}_${globase//-/_}"
-        declare -Ag "${var_prefix}_${found}_${globase//-/_}"
+        unset "srcinfo_${found}_${globase//-/_}"
+        declare -Ag "srcinfo_${found}_${globase//-/_}"
     else
-        unset "${var_prefix}_${found}_${name//-/_}"
-        declare -Ag "${var_prefix}_${found}_${name//-/_}"
+        unset "srcinfo_${found}_${name//-/_}"
+        declare -Ag "srcinfo_${found}_${name//-/_}"
     fi
     # shellcheck disable=SC2294
     eval "${evil[@]}"
     if [[ -n ${globase} && ${globase} != "temporary_pacstall_pkgbase" ]]; then
-        srcinfo.reformat_assoc_arr "${var_prefix}_${found}_${globase//-/_}" "eviler"
-        unset "${var_prefix}_${found}_${globase//-/_}"
+        srcinfo.reformat_assoc_arr "srcinfo_${found}_${globase//-/_}" "eviler"
+        unset "srcinfo_${found}_${globase//-/_}"
         # shellcheck disable=SC2294
         eval "${eviler[@]}"
     else
-        srcinfo.reformat_assoc_arr "${var_prefix}_${found}_${name//-/_}" "eviler"
-        unset "${var_prefix}_${found}_${name//-/_}"
+        srcinfo.reformat_assoc_arr "srcinfo_${found}_${name//-/_}" "eviler"
+        unset "srcinfo_${found}_${name//-/_}"
         # shellcheck disable=SC2294
         eval "${eviler[@]}"
     fi
@@ -558,9 +557,10 @@ function srcinfo.match_pkg() {
     else
         match="srcinfo_${search%%_*}_${pkg//-/_}"
     fi
-    mapfile -t declares < <(srcinfo.print_var "${srcfile}" "${search}" | awk '{sub(/^declare -a |^declare -- |^declare -x /, ""); print}')
+    srcinfo.parse "${srcfile}" srcinfo
+    mapfile -t declares < <(srcinfo.print_var "${search}" | awk '{sub(/^declare -a |^declare -- |^declare -x /, ""); print}')
     [[ ${search} == "pkgbase" && -z ${declares[*]} ]] \
-        && mapfile -t declares < <(srcinfo.print_var "${srcfile}" "pkgname" | awk '{sub(/^declare -a |^declare -- |^declare -x /, ""); print}')
+        && mapfile -t declares < <(srcinfo.print_var pkgname | awk '{sub(/^declare -a |^declare -- |^declare -x /, ""); print}')
     for d in "${declares[@]}"; do
         if [[ ${d%=\(*} =~ = ]]; then
             declare -- "${d}"
