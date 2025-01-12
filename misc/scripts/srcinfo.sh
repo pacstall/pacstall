@@ -485,7 +485,7 @@ function srcinfo.print_var() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local srcinfo_file="${1}" found="${2}" pkgbase output var name idx evil eviler e printed
     local -n bases="srcinfo_access"
-    srcinfo.parse "${srcinfo_file}" srcinfo
+    srcinfo.parse "${srcinfo_file}" "srcinfo"
     if [[ ${found} == "pkgbase" ]]; then
         if [[ -n ${globase} && ${globase} != "temporary_pacstall_pkgbase" ]]; then
             pkgbase="${globase}"
@@ -562,7 +562,7 @@ function srcinfo.match_pkg() {
     fi
     mapfile -t declares < <(srcinfo.print_var "${srcfile}" "${search}" | awk '{sub(/^declare -a |^declare -- |^declare -x /, ""); print}')
     [[ ${search} == "pkgbase" && -z ${declares[*]} ]] \
-        && mapfile -t declares < <(srcinfo.print_var "${srcfile}" pkgname | awk '{sub(/^declare -a |^declare -- |^declare -x /, ""); print}')
+        && mapfile -t declares < <(srcinfo.print_var "${srcfile}" "pkgname" | awk '{sub(/^declare -a |^declare -- |^declare -x /, ""); print}')
     for d in "${declares[@]}"; do
         if [[ ${d%=\(*} =~ = ]]; then
             declare -- "${d}"
