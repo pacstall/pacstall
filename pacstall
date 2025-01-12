@@ -228,6 +228,7 @@ decl_scriptvars
 
 function cleanup() {
     if [[ -n ${PACDIR} ]]; then
+        sudo rm -f "${PACDIR}-srcinfo-access"
         if [[ -n ${KEEP} && -n ${pacname} ]]; then
             sudo rm -rf "${PACDIR}-keep/${pacname}"
             mkdir -p "${PACDIR}-keep/${pacname}"
@@ -257,7 +258,9 @@ function cleanup() {
         [[ -n ${bwrapenv} ]] && sudo rm -f "${bwrapenv}"
         [[ -n ${safeenv} ]] && sudo rm -f "${safeenv}"
     fi
-    unset "${pacstallvars[@]}" 2> /dev/null
+    local compg
+    mapfile -t compg < <(compgen -v "srcinfo_")
+    unset "${pacstallvars[@]}" "${compg[@]}" srcinfo_access globase global 2> /dev/null
     unset -f pre_install pre_upgrade pre_remove post_install post_upgrade post_remove prepare build check package 2> /dev/null
 }
 
