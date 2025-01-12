@@ -72,7 +72,6 @@ function package_override() {
             fi
         else
             mapfile -t lbase < <(unset "${pacstallvars[@]}" && srcinfo.match_pkg "${srcinfile}" "${o}" "pkgbase:${obase}")
-            unset "${o}"
             if [[ -n ${lbase[*]} ]]; then
                 if array.contains ovars "${o}"; then
                     # shellcheck disable=SC2178,SC2034
@@ -83,7 +82,9 @@ function package_override() {
                 fi
             fi
         fi
-        if [[ -n "${look[*]}" || -n "${lbase[*]}" ]]; then
+        if [[ -z ${look[*]} && -z ${lbase[*]} ]]; then
+            echo "unset ${o}" | sudo tee -a "${safeenv}" > /dev/null
+        else
             declare -p "${o}" | sudo tee -a "${safeenv}" > /dev/null
         fi
     done
