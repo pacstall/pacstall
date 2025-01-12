@@ -57,12 +57,12 @@ function package_override() {
     # shellcheck disable=SC2031
     local o all_ovars look lbase opac="${pacname}" obase="${pkgbase}" ovars=("gives" "pkgdesc" "url" "priority")
     all_ovars=("${ovars[@]}" "arch" "license" "depends" "checkdepends" "optdepends" "pacdeps" "provides" "checkconflicts" "conflicts" "breaks" "replaces" "enhances" "recommends" "suggests" "backup" "repology")
-    srcinfo.parse "${srcinfile}"
+    srcinfo.parse "${srcinfile}" "${pacname}"
     for o in "${all_ovars[@]}"; do
         unset look lbase
         # shellcheck disable=SC2034
         local -n over="${o}"
-        srcinfo.match_pkg "look" "${o}" "${opac}"
+        srcinfo.match_pkg "look" "${pacname}" "${o}" "${opac}"
         if [[ -n ${look[*]} ]]; then
             if array.contains ovars "${o}"; then
                 # shellcheck disable=SC2178,SC2034
@@ -72,7 +72,7 @@ function package_override() {
                 over=("${look[@]}")
             fi
         else
-            srcinfo.match_pkg "lbase" "${o}" "pkgbase:${obase}"
+            srcinfo.match_pkg "lbase" "${pacname}" "${o}" "pkgbase:${obase}"
             if [[ -n ${lbase[*]} ]]; then
                 if array.contains ovars "${o}"; then
                     # shellcheck disable=SC2178,SC2034
@@ -89,7 +89,7 @@ function package_override() {
             declare -p "${o}" | sudo tee -a "${safeenv}" > /dev/null
         fi
     done
-    srcinfo.cleanup
+    srcinfo.cleanup "${pacname}"
 }
 
 function package_pkg() {

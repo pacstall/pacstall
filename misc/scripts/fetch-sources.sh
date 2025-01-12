@@ -838,12 +838,12 @@ function compare_remote_version() {
         # shellcheck disable=SC2034
         curl -fsSL "$remoterepo/packages/$crv_fetch/.SRCINFO" | sudo tee "${remote_safe}" > /dev/null || { ignore_stack=true; return 1; }
         sudo chown "${PACSTALL_USER}" "${remote_safe}"
-        srcinfo.parse "${remote_safe}"
-        srcinfo.match_pkg "crv_base" "pkgbase"
+        srcinfo.parse "${remote_safe}" "${crv_fetch}"
+        srcinfo.match_pkg "crv_base" "${crv_fetch}" "pkgbase"
         for remv in "pkgver" "pkgrel" "epoch"; do
-            srcinfo.match_pkg "crv_${remv}" "${remv}" "${crv_base}"
+            srcinfo.match_pkg "crv_${remv}" "${crv_fetch}" "${remv}" "${crv_base}"
         done
-        srcinfo.match_pkg "crv_source" "source" "${crv_base}"
+        srcinfo.match_pkg "crv_source" "${crv_fetch}" "source" "${crv_base}"
         if [[ ${crv_input} == *-git ]]; then
             parse_source_entry "${crv_source[0]}"
             calc_git_pkgver
@@ -851,7 +851,7 @@ function compare_remote_version() {
         else
             echo "${crv_epoch:+$crv_epoch:}${crv_pkgver}-pacstall${crv_pkgrel:-1}"
         fi
-        srcinfo.cleanup
+        srcinfo.cleanup "${crv_fetch}"
         sudo rm -rf "${remote_safe:?}"
     )" > /dev/null
     localver=$(source "${METADIR}/${crv_input}" && echo "${_version}")

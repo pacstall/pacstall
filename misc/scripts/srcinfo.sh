@@ -320,9 +320,10 @@ function srcinfo._create_array() {
 
 function srcinfo.parse() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    srcinfo.cleanup
-    local srcfile srcinfo_data locbase temp_array ref total_list loop part i suffix
+    local srcfile access srcinfo_data locbase temp_array ref total_list loop part i suffix
     srcfile="${1:?No .SRCINFO passed to srcinfo.parse}"
+    access="${2:?No output file given to srcinfo.parse}"
+    srcinfo.cleanup "${PACDIR}-srcinfo-access-${access}"
     [[ ! -s ${srcfile} ]] && return 5
     mapfile -t srcinfo_data < "${srcfile}"
     for line in "${srcinfo_data[@]}"; do
@@ -366,7 +367,6 @@ function srcinfo.parse() {
         fi
     done
     unset srcinfo_data
-    sudo rm -f "${PACDIR}-srcinfo-access"
     for loop in "${total_list[@]}"; do
         declare -n part="${loop}"
         # Are we at a new pkgname (pkgbase)?
@@ -381,7 +381,7 @@ function srcinfo.parse() {
             unset global
         fi
     done
-    declare -p "${total_list[@]}" | sudo tee -a "${PACDIR}-srcinfo-access" > /dev/null
+    declare -p "${total_list[@]}" | sudo tee -a "${PACDIR}-srcinfo-access-${access}" > /dev/null
 }
 
 function srcinfo.cleanup() {
@@ -389,7 +389,7 @@ function srcinfo.cleanup() {
     local compg
     mapfile -t compg < <(compgen -v "srcinfo_")
     unset "${compg[@]}" srcinfo_access globase global 2> /dev/null
-    sudo rm -f "${PACDIR}-srcinfo-access"
+    sudo rm -f "${PACDIR}-srcinfo-access-${1}"
 }
 
 # @description Output a specific variable from .SRCINFO
@@ -403,9 +403,9 @@ function srcinfo.cleanup() {
 # @arg $3 string Package name or base to get output for
 function srcinfo.match_pkg() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local search="${2}" pkg="${3}" output var bases d dec declares
+    local accessfile="${2}" search="${3}" pkg="${4}" output var bases d dec declares
     local -n srcref="${1}"
-    mapfile -t declares < "${PACDIR}-srcinfo-access"
+    mapfile -t declares < "${PACDIR}-srcinfo-access-${accessfile}"
     for d in "${declares[@]}"; do
         dec="${d##*declare -a }"
         bases+=("${dec%=\(*}")

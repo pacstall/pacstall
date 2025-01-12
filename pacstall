@@ -228,7 +228,7 @@ decl_scriptvars
 
 function cleanup() {
     if [[ -n ${PACDIR} ]]; then
-        sudo rm -f "${PACDIR}-srcinfo-access"
+        sudo rm -f "${PACDIR}-srcinfo-access-"*
         if [[ -n ${KEEP} && -n ${pacname} ]]; then
             sudo rm -rf "${PACDIR}-keep/${pacname}"
             mkdir -p "${PACDIR}-keep/${pacname}"

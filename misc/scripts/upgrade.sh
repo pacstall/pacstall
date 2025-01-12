@@ -73,12 +73,12 @@ function calc_repo_ver() {
     compare_safe="${compare_tmp}"
     curl -fsSL "$compare_repo/packages/$compare_package/.SRCINFO" | sudo tee "${compare_safe}" > /dev/null || { ignore_stack=true; return 1; }
     sudo chown "${PACSTALL_USER}" "${compare_safe}"
-    srcinfo.parse "${compare_safe}"
-    srcinfo.match_pkg "compare_base" "pkgbase"
+    srcinfo.parse "${compare_safe}" "${compare_package}"
+    srcinfo.match_pkg "compare_base" "${compare_package}" "pkgbase"
     for comp in "pkgver" "pkgrel" "epoch"; do
-        srcinfo.match_pkg "compare_${comp}" "${comp}" "${compare_base}"
+        srcinfo.match_pkg "compare_${comp}" "${compare_package}" "${comp}" "${compare_base}"
     done
-    srcinfo.match_pkg "compare_source" "source" "${compare_base}"
+    srcinfo.match_pkg "compare_source" "${compare_package}" "source" "${compare_base}"
     if [[ ${compare_package} == *-git ]]; then
         parse_source_entry "${compare_source[0]}"
         calc_git_pkgver
@@ -86,7 +86,7 @@ function calc_repo_ver() {
     else
         comp_repo_ver="${compare_epoch:+$compare_epoch:}${compare_pkgver}-pacstall${compare_pkgrel:-1}"
     fi
-    srcinfo.cleanup
+    srcinfo.cleanup "${compare_package}"
     sudo rm -rf "${compare_safe:?}"
 }
 
