@@ -302,28 +302,20 @@ function srcinfo._contains() {
 # @description Create array based on input
 #
 # @example
-#   srcinfo._create_array base var_name var_prefix
+#   srcinfo._create_array base var_name
 #
-# @arg $1 string (optional) The pkgbase of the section
+# @arg $1 string The pkgbase of the section
 # @arg $2 string The variable name
-# @arg $3 string (optional) The variable prefix
 #
 # @stdout Name of array created.
 function srcinfo._create_array() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local base="${1}" var_name="${2}"
-    if [[ -n ${base} ]]; then
-        base="${base//./_}" var_name="${var_name//./_}"
-        if ! [[ -v "srcinfo_${base}_array_${var_name}" ]]; then
-            declare -ag "srcinfo_${base}_array_${var_name}"
-        fi
-        echo "srcinfo_${base}_array_${var_name}"
-    else
-        if ! [[ -v "srcinfo_array_${var_name}" ]]; then
-            declare -ag "srcinfo_array_${var_name}"
-        fi
-        echo "srcinfo_array_${var_name}"
+    base="${base//./_}" var_name="${var_name//./_}"
+    if ! [[ -v "srcinfo_${base}_array_${var_name}" ]]; then
+        declare -ag "srcinfo_${base}_array_${var_name}"
     fi
+    echo "srcinfo_${base}_array_${var_name}"
 }
 
 function srcinfo.parse() {
