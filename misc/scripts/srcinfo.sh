@@ -289,10 +289,12 @@ function srcinfo._basic_check() {
 function srcinfo._contains() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local -n arr_name="${1}"
-    local key="${2}"
-    if [[ " ${arr_name[*]} " == *" ${key} "* ]]; then
-        return 0
-    fi
+    local key="${2}" z
+    for z in "${arr_name[@]}"; do
+        if [[ ${z} == "${key}" ]]; then
+            return 0
+        fi
+    done
     # shellcheck disable=SC2034
     { ignore_stack=true; return 1; }
 }
