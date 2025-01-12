@@ -321,7 +321,7 @@ function srcinfo._create_array() {
 function srcinfo.parse() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     srcinfo.cleanup
-    local srcfile srcinfo_data var_prefix locbase temp_array ref total_list loop part i suffix
+    local srcfile srcinfo_data locbase temp_array ref total_list loop part i suffix
     srcfile="${1:?No .SRCINFO passed to srcinfo.parse}"
     [[ ! -s ${srcfile} ]] && return 5
     mapfile -t srcinfo_data < "${srcfile}"
@@ -367,20 +367,16 @@ function srcinfo.parse() {
     done
     unset srcinfo_data
     sudo rm -f "${PACDIR}-srcinfo-access"
-    declare -Ag "srcinfo_access"
     for loop in "${total_list[@]}"; do
         declare -n part="${loop}"
         # Are we at a new pkgname (pkgbase)?
         if [[ ${loop} == *@(pkgname|pkgbase) ]]; then
-            declare -n var_name="srcinfo_access"
             [[ ${loop} == "srcinfo_pkgbase"* ]] && global="pkgbase_"
             for i in "${!part[@]}"; do
                 suffix="${global}${part[${i}]//-/_}"
                 suffix="${suffix//./_}"
                 # Create our inner part
                 declare -ga "srcinfo_${suffix}"
-                # Declare that relationship
-                var_name["srcinfo_${suffix}"]="srcinfo_${suffix}"
             done
             unset global
         fi
@@ -427,7 +423,7 @@ function srcinfo.match_pkg() {
                 srcref+=("${output[@]}")
             fi
         else
-            srcref=""
+            srcref=()
         fi
     done
 }
