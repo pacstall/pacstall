@@ -14,7 +14,7 @@
 . ftr VB CB
 . ftr VBI CBI
 .\}
-.TH "Pacstall" "8" "December 30, 2024" "Pacstall 6.0.2 Bonbon" "General Commands Manual"
+.TH "Pacstall" "8" "January 14, 2024" "Pacstall 6.1.0 Xanthous" "General Commands Manual"
 .hy
 .SH NAME
 .PP
@@ -23,8 +23,8 @@ Pacstall - The AUR for Ubuntu
 .PP
 \f[B]pacstall -V\f[R]
 .PP
-\f[B]pacstall\f[R] [\f[B]-P -K -B -Q -Nc -Ns\f[R]] \f[B]-I\f[R]
-\f[I]package\f[R] \&...
+\f[B]pacstall\f[R] [\f[B]-x\f[R]] [\f[B]-P -K -B -Q -Nc -Ns\f[R]]
+\f[B]-I\f[R] \f[I]package\f[R] \&...
 .PP
 \f[B]pacstall\f[R] [\f[B]-S -Sd\f[R]] \f[I]term\f[R]
 .PP
@@ -533,6 +533,26 @@ This flag should be used with caution, and can lead to potential
 unwanted harm on a system.
 It is intended for use in environments such as chroot which have other
 levels of isolation.
+.TP
+\f[B]-x\f[R], \f[B]--debug\f[R]
+Add this flag alongside other commands to produce a verbose debug output
+for Pacstall\[cq]s execution.
+Must be separate and used as the first argument.
+For example:
+.RS
+.RS
+.PP
+$ \f[B]pacstall -x -I\f[R] \f[I]foobar\f[R] # produce debug output
+directly to terminal
+.RE
+.RE
+.RS
+.RS
+.PP
+$ BASH_XTRACEFD=3 \f[B]pacstall -x -I\f[R] \f[I]foobar\f[R]
+3>\f[I]/tmp/pac-debug.log\f[R] # produce debug output to external file
+.RE
+.RE
 .SH ENVIRONMENT
 .TP
 \f[B]DISABLE_PROMPTS\f[R]

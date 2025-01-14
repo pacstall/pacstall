@@ -23,9 +23,9 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 # Pacstall version
-version_number="6.0.2"
-version_name="Bonbon"
-declare -A version_color=([r]="249" [g]="66" [b]="158")
+version_number="6.1.0"
+version_name="Xanthous"
+declare -A version_color=([r]="241" [g]="180" [b]="47")
 
 # Configuration
 export METADIR="/var/lib/pacstall/metadata"
