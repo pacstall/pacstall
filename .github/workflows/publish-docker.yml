@@ -21,10 +21,50 @@ jobs:
   build:
     strategy:
       matrix:
-        OS: ["ubuntu:latest", "ubuntu:devel", "ubuntu:rolling", "debian:stable", "debian:testing", "debian:unstable"]
-        platform: ["linux/amd64", "linux/arm64"]
+        include:
+          - OS: "ubuntu:latest"
+            platform: "linux/amd64"
+            runner: "ubuntu-latest"
+          - OS: "ubuntu:latest"
+            platform: "linux/arm64"
+            runner: "ubuntu-24.04-arm"
+
+          - OS: "ubuntu:devel"
+            platform: "linux/amd64"
+            runner: "ubuntu-latest"
+          - OS: "ubuntu:devel"
+            platform: "linux/arm64"
+            runner: "ubuntu-24.04-arm"
+
+          - OS: "ubuntu:rolling"
+            platform: "linux/amd64"
+            runner: "ubuntu-latest"
+          - OS: "ubuntu:rolling"
+            platform: "linux/arm64"
+            runner: "ubuntu-24.04-arm"
+
+          - OS: "debian:stable"
+            platform: "linux/amd64"
+            runner: "ubuntu-latest"
+          - OS: "debian:stable"
+            platform: "linux/arm64"
+            runner: "ubuntu-24.04-arm"
+
+          - OS: "debian:testing"
+            platform: "linux/amd64"
+            runner: "ubuntu-latest"
+          - OS: "debian:testing"
+            platform: "linux/arm64"
+            runner: "ubuntu-24.04-arm"
+
+          - OS: "debian:unstable"
+            platform: "linux/amd64"
+            runner: "ubuntu-latest"
+          - OS: "debian:unstable"
+            platform: "linux/arm64"
+            runner: "ubuntu-24.04-arm"
       fail-fast: true
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
     permissions:
       contents: read
       packages: write
