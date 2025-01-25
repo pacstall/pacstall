@@ -1,0 +1,956 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: ENCODING\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: pacstall:273 misc/scripts/build.sh:163 misc/scripts/build.sh:686
+#: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:735
+#: misc/scripts/fetch-sources.sh:765 misc/scripts/package-base.sh:163
+#: misc/scripts/package-base.sh:184
+msgid "Cleaning up"
+msgstr "சுத்தமாக்கப்படுகிறது"
+
+#: pacstall:367
+msgid "Suggested solution(s)"
+msgstr "பரிந்துரைக்கப்பட்ட தீர்வுகள்"
+
+#: pacstall:401
+msgid "Packagelist not found"
+msgstr "தொகுப்பு பட்டியல் காணப்படவில்லை"
+
+#: pacstall:402 pacstall:411
+msgid "Confirm that '%b' exists"
+msgstr "'%b' இருக்கிறதா என்பதை உறுதிப்படுத்தவும்"
+
+#: pacstall:404
+msgid "Failed to download file, check your connection"
+msgstr "கோப்பை பதிவிறக்கம் செய்ய முடியவில்லை, உங்கள் இணைப்பை சரிபார்க்கவும்"
+
+#: pacstall:410
+msgid "The URL cannot be found"
+msgstr "URL காணப்படவில்லை"
+
+#: pacstall:418
+msgid "Failed with http code %s"
+msgstr "HTTP குறியீடு %s உடன் தோல்வியடைந்தது"
+
+#: pacstall:419
+msgid "Confirm that '%b' is accessible"
+msgstr "'%b' அணுகக்கூடியது என்பதை உறுதிப்படுத்தவும்"
+
+#: pacstall:643
+msgid "Reading input from pipe"
+msgstr "குழாயிலிருந்து உள்ளீட்டை படிக்கிறது"
+
+#: pacstall:702
+msgid "Only one command flag can be used at a time"
+msgstr "ஒரே நேரத்தில் ஒரு கட்டளைக்கான கொடி மட்டுமே பயன்படுத்தலாம்"
+
+#: pacstall:740
+msgid "Pacstall is already running another instance"
+msgstr "Pacstall ஏற்கனவே மற்றொரு உதாரணத்தில் செயல்படுகிறது"
+
+#: pacstall:746
+msgid "The other instance has finished running, unlocking"
+msgstr "மற்ற உதாரணம் இயங்கிவிட்டது, பூட்டை திறக்கிறது"
+
+#: pacstall:755
+msgid "Prompts are disabled"
+msgstr "முன்னோட்டங்கள் முடக்கப்பட்டுள்ளன"
+
+#: pacstall:762
+msgid "Package will be built and not installed"
+msgstr "தொகுப்பு கட்டமைக்கப்படும், ஆனால் நிறுவப்படாது"
+
+#: pacstall:832 pacstall:905 pacstall:967 pacstall:1008 pacstall:1026
+#: pacstall:1200 pacstall:1256 misc/scripts/query-info.sh:28
+msgid "You failed to specify a package"
+msgstr "நீங்கள் ஒரு தொகுப்பை குறிப்பிட முடியவில்லை"
+
+#: pacstall:837
+msgid "The installation of %s was interrupted, removing files"
+msgstr "%s அமைப்பு தடைபட்டது, கோப்புகளை அகற்றுகிறது"
+
+#: pacstall:874 misc/scripts/package-base.sh:129
+msgid "%s does not exist"
+msgstr "%s இருக்கவில்லை"
+
+#: pacstall:912
+msgid "Payload not found"
+msgstr "சுமை காணப்படவில்லை"
+
+#: pacstall:925 pacstall:972 pacstall:1012 pacstall:1133 pacstall:1210
+#: pacstall:1243
+msgid "Could not connect to the internet"
+msgstr "இணையத்தில் இணைக்க முடியவில்லை"
+
+#: pacstall:926 pacstall:973 pacstall:1013 pacstall:1134 pacstall:1211
+#: pacstall:1244
+msgid "Confirm that the URLs '%b' or '%b' are accessible"
+msgstr "இணைப்பு-கள் '%b' அல்லது '%b' அணுகக்கூடியவை என்பதை உறுதிப்படுத்தவும்"
+
+#: pacstall:942 pacstall:1225 misc/scripts/upgrade.sh:276
+msgid "Failed to download the %b pacscript"
+msgstr "%b பேக்ஸ்ரிப்ட் ஐ பதிவிறக்கம் செய்ய முடியவில்லை"
+
+#: pacstall:943 pacstall:1226
+msgid "Confirm that the package exists by running '%b'"
+msgstr "பயன்பாட்டுத் தொகுப்பு உள்ளதா என்பதை '%b' ஐ இயக்கி உறுதிப்படுத்தவும்"
+
+#: pacstall:943 pacstall:1226
+msgid "Check your internet connection"
+msgstr "உங்கள் இணைய இணைப்பைச் சரிபார்க்கவும்"
+
+#: pacstall:949 misc/scripts/package-base.sh:153
+#: misc/scripts/package-base.sh:177
+msgid "Failed to install %b"
+msgstr "%b ஐ நிறுவ முடியவில்லை"
+
+#: pacstall:1035
+msgid "Failed to remove %b"
+msgstr "%b ஐ நீக்க முடியவில்லை"
+
+#: pacstall:1056
+msgid "You failed to specify a repo to add"
+msgstr "சேர்க்க ஒரு வைக்குமிடத்தைக் குறிப்பிடவில்லை"
+
+#: pacstall:1057
+msgid "Add a repository in the following format:"
+msgstr "வைக்குமிடத்தை பின்வரும் வடிவத்தில் சேர்க்கவும்:"
+
+#: pacstall:1057 pacstall:1078
+msgid ""
+"Consult the pacstall man page by running '%b', and searching for the term "
+"'%b'"
+msgstr ""
+"பேக்ஸ்டால்-ன் கையேட்டை '%b' ஐ இயக்கிப் பார்த்து, '%b' என்ற வார்த்தையைத் தேடவும்"
+
+#: pacstall:1077
+msgid "You failed to specify a repo to remove"
+msgstr "நீக்க ஒரு வைக்குமிடத்தைக் குறிப்பிடவில்லை"
+
+#: pacstall:1078
+msgid "Remove a repository in the following format:"
+msgstr "வைக்குமிடத்தை பின்வரும் வடிவத்தில் நீக்கவும்:"
+
+#: pacstall:1102
+msgid "%s is not a git repository"
+msgstr "%s ஒரு git வைக்குமிடம் அல்ல"
+
+#: pacstall:1139
+msgid ""
+"The repository you are trying to upgrade to contains a version of pacstall "
+"that cannot be updated from %b"
+msgstr ""
+"நீங்கள் மேம்படுத்த முயற்சிக்கும் வைக்குமிடத்தில் பேக்ஸ்டால்-ன் %b இலிருந்து மேம்படுத்த முடியாத பதிப்பு உள்ளது"
+
+#: pacstall:1140
+msgid ""
+"Visit %s for more information on how to reinstall. Most packages will also "
+"need to be reinstalled"
+msgstr ""
+"மீண்டும் நிறுவுவது பற்றிய கூடுதல் தகவலுக்கு %s ஐப் பார்வையிடவும். பெரும்பாலான தொகுப்புகளும் மீண்டும் நிறுவ வேண்டியிருக்கும்"
+
+#: pacstall:1148
+msgid ""
+"Pacstall was installed from a %s, and cannot be updated with this command"
+msgstr "பேக்ஸ்டால் %s இலிருந்து நிறுவப்பட்டது, இக்கட்டளையால் மேம்படுத்த முடியாது"
+
+#: pacstall:1149
+msgid "Install the latest %b from the %b repository"
+msgstr "சமீபத்திய %b ஐ %b வைக்குமிடத்திலிருந்து நிறுவவும்"
+
+#: pacstall:1149
+msgid "Install the latest %b with the command '%b'"
+msgstr "சமீபத்திய %b ஐ '%b' என்ற கட்டளையுடன் நிறுவவும்"
+
+#: pacstall:1157 pacstall:1238
+msgid "Invalid argument '%s'"
+msgstr "தவறான வாதம் '%s'"
+
+#: pacstall:1169
+msgid "Nothing installed yet"
+msgstr "இதுவரை எதுவும் நிறுவப்படவில்லை"
+
+#: pacstall:1230
+msgid "%b pacscript is downloaded to %b"
+msgstr "%b பேக்ஸ்ரிப்ட் %b இல் பதிவிறக்கம் செய்யப்பட்டது"
+
+#: pacstall:1260 misc/scripts/query-info.sh:33
+msgid "Package is not installed"
+msgstr "தொகுப்பு நிறுவப்படவில்லை"
+
+#: pacstall:1294
+msgid "Keeping build files"
+msgstr "கட்டமைப்பு கோப்புகளை வைத்திருத்தல்"
+
+#: pacstall:1299
+msgid "Skipping check() if present"
+msgstr "check() இருந்தால் தவிர்க்கப்படுகிறது"
+
+#: pacstall:1304
+msgid "Downloading package entries quietly"
+msgstr "தொகுப்பு உள்ளீடுகளை அமைதியாக பதிவிறக்கம் செய்கிறது"
+
+#: pacstall:1309
+msgid "Building package without bwrap sandbox"
+msgstr "bwrap sandbox இல்லாமல் தொகுப்பை உருவாக்குகிறது"
+
+#: pacstall:1310
+msgid "Be cautious, this exposes your system to potential harm"
+msgstr "கவனமாக இருங்கள், இது உங்கள் கணினியை சாத்தியமான தீங்குக்கு உட்படுத்தும்"
+
+#: misc/scripts/add-repo.sh:29 misc/scripts/build.sh:41
+#: misc/scripts/search.sh:31 misc/scripts/upgrade.sh:47
+msgid "Could not find manage-repo.sh"
+msgstr "manage-repo.sh கண்டுபிடிக்க முடியவில்லை"
+
+#: misc/scripts/add-repo.sh:39 misc/scripts/add-repo.sh:47
+#: misc/scripts/add-repo.sh:55 misc/scripts/add-repo.sh:63
+#: misc/scripts/add-repo.sh:70
+msgid "Assuming that git branch is %b"
+msgstr "git கிளை %b என்று கருதப்படுகிறது"
+
+#: misc/scripts/add-repo.sh:90
+msgid "Repository alias cannot be '%s'"
+msgstr "வைக்குமிடம் மாற்றுப்பெயர் '%s' ஆக இருக்க முடியாது"
+
+#: misc/scripts/add-repo.sh:93
+msgid "Repository alias cannot be a hyperlink"
+msgstr "வைக்குமிடம் மாற்றுப்பெயர் ஹைப்பர்லிங்காக இருக்க முடியாது"
+
+#: misc/scripts/add-repo.sh:96
+msgid "Repository alias cannot start with '%s', '%s', or '%s'"
+msgstr "வைக்குமிடம் மாற்றுப்பெயர் '%s', '%s', அல்லது '%s' உடன் தொடங்க முடியாது"
+
+#: misc/scripts/add-repo.sh:99
+msgid "The alias %b is already in use by %b"
+msgstr "%b மாற்றுப்பெயர் ஏற்கனவே %b இல் பயன்பாட்டில் உள்ளது"
+
+#: misc/scripts/add-repo.sh:104
+msgid "%b is already in the repo list, doing nothing"
+msgstr "%b ஏற்கனவே வைக்குமிடம் பட்டியலில் உள்ளது, எதுவும் செய்யப்படவில்லை"
+
+#: misc/scripts/add-repo.sh:107
+msgid "Do you want to add %b to the repo list?"
+msgstr "%b ஐ வைக்குமிடம் பட்டியலில் சேர்க்க விரும்புகிறீர்களா?"
+
+#: misc/scripts/add-repo.sh:112
+msgid "If the URL is a private repo, edit %b"
+msgstr "URL ஒரு தனியார் வைக்குமிடம்மாக இருந்தால், %b ஐத் திருத்தவும்"
+
+#: misc/scripts/add-repo.sh:113
+msgid "packagelist file not found"
+msgstr "packagelist கோப்பு கிடைக்கவில்லை"
+
+#: misc/scripts/add-repo.sh:142
+msgid "Do you want to remove %b from the repo list?"
+msgstr "%b ஐ வைக்குமிடம் பட்டியலில் இருந்து நீக்க விரும்புகிறீர்களா?"
+
+#: misc/scripts/add-repo.sh:154
+msgid "The repo list has been updated"
+msgstr "வைக்குமிடம் பட்டியல் புதுப்பிக்கப்பட்டது"
+
+#: misc/scripts/build.sh:29
+msgid "Could not find version-constraints"
+msgstr "பதிப்பு-கட்டுப்பாடுகள் கிடைக்கவில்லை"
+
+#: misc/scripts/build.sh:35 misc/scripts/upgrade.sh:41
+msgid "Could not find srcinfo.sh"
+msgstr "srcinfo.sh கண்டுபிடிக்க முடியவில்லை"
+
+#: misc/scripts/build.sh:95 misc/scripts/build.sh:100
+#: misc/scripts/fetch-sources.sh:687 misc/scripts/fetch-sources.sh:700
+#: misc/scripts/package.sh:225
+msgid "%b [required]"
+msgstr "%b [தேவை]"
+
+#: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:694
+msgid "%b [remote]"
+msgstr "%b [தொலைவு]"
+
+#: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:696
+#: misc/scripts/package.sh:220
+msgid "%b [installed]"
+msgstr "%b [நிறுவப்பட்டது]"
+
+#: misc/scripts/build.sh:156 misc/scripts/build.sh:176
+#: misc/scripts/fetch-sources.sh:724 misc/scripts/fetch-sources.sh:758
+msgid "%b does not exist in apt repositories"
+msgstr "%b ஆப்ட் வைக்குமிடம்ங்களில் இல்லை"
+
+#: misc/scripts/build.sh:160 misc/scripts/build.sh:180
+#: misc/scripts/fetch-sources.sh:762
+msgid "%b version(s) cannot be satisfied"
+msgstr "%b பதிப்பு(கள்) திருப்தி அடையவில்லை"
+
+#: misc/scripts/build.sh:172
+msgid "Optional dependencies"
+msgstr "விருப்ப சார்புகள்"
+
+#: misc/scripts/build.sh:207
+msgid "%b has exceeded the maximum number of optional dependencies. Skipping"
+msgstr "%b விருப்ப சார்புகளின் அதிகபட்ச எண்ணிக்கையை மீறியுள்ளது. தவிர்க்கப்படுகிறது"
+
+#: misc/scripts/build.sh:217 misc/scripts/package-base.sh:140
+msgid "Selecting packages %b"
+msgstr "தொகுப்புகளைத் தேர்ந்தெடுக்கிறது %b"
+
+#: misc/scripts/build.sh:236
+msgid "Checking apt dependencies"
+msgstr "ஆப்ட் சார்புகளைச் சரிபார்க்கிறது"
+
+#: misc/scripts/build.sh:327
+msgid "Packing control.tar"
+msgstr "control.tar ஐப் அடைக்கின்றது"
+
+#: misc/scripts/build.sh:337
+msgid "Packing data.tar"
+msgstr "data.tar ஐப் அடைக்கின்றது"
+
+#: misc/scripts/build.sh:340
+msgid "Compressing"
+msgstr "சுருக்குகிறது"
+
+#: misc/scripts/build.sh:365
+msgid "Packaging %b as %b"
+msgstr "%b ஐ %b ஆக தொகுப்பாக்குகிறது"
+
+#: misc/scripts/build.sh:367 misc/scripts/package-base.sh:149
+msgid "Packaging %b"
+msgstr "%b ஐ தொகுப்பாக்குகிறது"
+
+#: misc/scripts/build.sh:591
+msgid "Empty key... Skipping"
+msgstr "வெற்று விசை... தவிர்க்கப்படுகிறது"
+
+#: misc/scripts/build.sh:597
+msgid "'%s' cannot contain empty path... Skipping"
+msgstr "'%s' வெற்று பாதையைக் கொண்டிருக்க முடியாது... தவிர்க்கப்படுகிறது"
+
+#: misc/scripts/build.sh:601 misc/scripts/build.sh:609
+msgid "'%s' cannot contain path starting with '/'... Skipping"
+msgstr "'%s' '/' உடன் தொடங்கும் பாதையைக் கொண்டிருக்க முடியாது... தவிர்க்கப்படுகிறது"
+
+#: misc/scripts/build.sh:604
+msgid "'%s' is inside the package... Skipping"
+msgstr "'%s' தொகுப்பின் உள்ளே உள்ளது... தவிர்க்கப்படுகிறது"
+
+#: misc/scripts/build.sh:683
+msgid "Failed to install %s deb"
+msgstr "%s deb ஐ நிறுவுவதில் தோல்வி"
+
+#: misc/scripts/build.sh:707
+msgid "Package built at %b"
+msgstr "தொகுப்பு %b இல் கட்டமைக்கப்பட்டது"
+
+#: misc/scripts/build.sh:709 misc/scripts/package.sh:50
+msgid "Moving %b to %b"
+msgstr "%b ஐ %b க்கு நகர்த்துகிறது"
+
+#: misc/scripts/build.sh:726
+msgid "Repacking %b"
+msgstr "%b ஐ மீண்டும் அடைக்கின்றது"
+
+#: misc/scripts/bwrap.sh:113
+msgid "Running %s"
+msgstr "%s ஐ இயக்குகிறது"
+
+#: misc/scripts/checks.sh:33 misc/scripts/checks.sh:127
+#: misc/scripts/checks.sh:175 misc/scripts/checks.sh:228
+#: misc/scripts/checks.sh:610
+msgid "Package does not contain '%s'"
+msgstr "தொகுப்பில் '%s' இல்லை"
+
+#: misc/scripts/checks.sh:38
+msgid "%s: '%s' must be at least two characters long"
+msgstr "%s: '%s' குறைந்தது இரண்டு எழுத்துகள் நீளமாக இருக்க வேண்டும்"
+
+#: misc/scripts/checks.sh:43
+msgid "%s: '%s' must start with an alphanumeric character"
+msgstr "%s: '%s' எழுத்து அல்லது எண்ணுடன் தொடங்க வேண்டும்"
+
+#: misc/scripts/checks.sh:47
+msgid "%s: '%s' contains uppercase characters"
+msgstr "%s: '%s' பெரிய எழுத்துகளைக் கொண்டுள்ளது"
+
+#: misc/scripts/checks.sh:51
+msgid ""
+"%s: '%s' contains characters that are not lowercase, digits, minus, or "
+"periods"
+msgstr ""
+"%s: '%s' சிறிய எழுத்துகள், எண்கள், கழித்தல் அல்லது புள்ளிகள் அல்லாத எழுத்துகளைக் கொண்டுள்ளது"
+
+#: misc/scripts/checks.sh:61
+msgid "Deb package does not contain gives"
+msgstr "Deb தொகுப்பு gives ஐக் கொண்டிருக்கவில்லை"
+
+#: misc/scripts/checks.sh:67
+msgid "'%s' must be at least two characters long"
+msgstr "'%s' குறைந்தது இரண்டு எழுத்துகள் நீளமாக இருக்க வேண்டும்"
+
+#: misc/scripts/checks.sh:72
+msgid "'%s' must start with an alphanumeric character"
+msgstr "'%s' எழுத்து அல்லது எண்ணுடன் தொடங்க வேண்டும்"
+
+#: misc/scripts/checks.sh:76
+msgid "'%s' contains uppercase characters"
+msgstr "'%s' பெரிய எழுத்துகளைக் கொண்டுள்ளது"
+
+#: misc/scripts/checks.sh:80
+msgid ""
+"'%s' contains characters that are not lowercase, digits, minus, or periods"
+msgstr "'%s' சிறிய எழுத்துகள், எண்கள், கழித்தல் அல்லது புள்ளிகள் அல்லாத எழுத்துகளைக் கொண்டுள்ளது"
+
+#: misc/scripts/checks.sh:92 misc/scripts/checks.sh:107
+#: misc/scripts/checks.sh:679
+msgid "'%s' is empty"
+msgstr "'%s' காலியாக உள்ளது"
+
+#: misc/scripts/checks.sh:95 misc/scripts/checks.sh:110
+msgid "'%s' must be an unsigned integer"
+msgstr "'%s' கையொப்பமிடாத முழு எண்ணாக இருக்க வேண்டும்"
+
+#: misc/scripts/checks.sh:123
+msgid ""
+"'%s' must contain only alphanumerics and the characters . + - ~ and should "
+"start with a digit"
+msgstr ""
+"'%s' எழுத்துகள், எண்கள் மற்றும் . + - ~ எழுத்துகளை மட்டுமே கொண்டிருக்க வேண்டும், மேலும் ஒரு எண்ணுடன் தொடங்க வேண்டும்"
+
+#: misc/scripts/checks.sh:144
+msgid ".deb files can only be provided as a singular '%s'"
+msgstr ".deb கோப்புகளை ஒரு ஒற்றை '%s' ஆக மட்டுமே வழங்க முடியும்"
+
+#: misc/scripts/checks.sh:237
+msgid "Package does not have a maintainer. Please be advised"
+msgstr "தொகுப்புக்கு பராமரிப்பாளர் இல்லை. தயவுசெய்து கவனத்தில் கொள்ளவும்"
+
+#: misc/scripts/checks.sh:282 misc/scripts/checks.sh:309
+#: misc/scripts/checks.sh:359 misc/scripts/checks.sh:425
+#: misc/scripts/checks.sh:558 misc/scripts/checks.sh:581
+#: misc/scripts/checks.sh:615 misc/scripts/checks.sh:652
+#: misc/scripts/checks.sh:697
+msgid "'%s' index '%s' cannot be empty"
+msgstr "'%s' குறியீடு '%s' காலியாக இருக்க முடியாது"
+
+#: misc/scripts/checks.sh:286 misc/scripts/checks.sh:290
+msgid "'%s' index '%s' is not formatted correctly"
+msgstr "'%s' குறியீடு '%s' சரியான வடிவத்தில் இல்லை"
+
+#: misc/scripts/checks.sh:320
+msgid "'%s' index '%s' cannot start with %s"
+msgstr "'%s' குறியீடு '%s' %s உடன் தொடங்க முடியாது"
+
+#: misc/scripts/checks.sh:328
+msgid "%s index '%s' is improperly formatted"
+msgstr "%s குறியீடு '%s' தவறான வடிவத்தில் உள்ளது"
+
+#: misc/scripts/checks.sh:430
+msgid "'%s' is already used as a field in pacstall"
+msgstr "'%s' ஏற்கனவே பேக்ஸ்டால்-ல் ஒரு புலமாகப் பயன்படுத்தப்பட்டுள்ளது"
+
+#: misc/scripts/checks.sh:436
+msgid "'%s' custom field cannot contain a space in field name"
+msgstr "'%s' தனிபயன் புலத்தின் பெயரில் இடைவெளி இருக்க முடியாது"
+
+#: misc/scripts/checks.sh:440
+msgid "'%s' custom field cannot contain a number in field name"
+msgstr "'%s' தனிபயன் புலத்தின் பெயரில் எண் இருக்க முடியாது"
+
+#: misc/scripts/checks.sh:444
+msgid ""
+"'%s' custom field must capitalize only the first letter of each word in "
+"field name"
+msgstr ""
+"'%s' தனிபயன் புலத்தின் பெயரில் ஒவ்வொரு வார்த்தையின் முதல் எழுத்து மட்டும் பெரியதாக இருக்க வேண்டும்"
+
+#: misc/scripts/checks.sh:448
+msgid "'%s' custom field cannot start or end with a hyphen"
+msgstr "'%s' தனிபயன் புலம் ஹைபனுடன் தொடங்கவோ முடிக்கவோ முடியாது"
+
+#: misc/scripts/checks.sh:475 misc/scripts/checks.sh:500
+#: misc/scripts/checks.sh:508
+msgid "Only one checksum method can be provided for hashes"
+msgstr "ஹாஷ்களுக்கு ஒரே ஒரு சரிபார்ப்பு முறை மட்டுமே வழங்கப்பட முடியும்"
+
+#: misc/scripts/checks.sh:536 misc/scripts/checks.sh:666
+msgid "'%s' is improperly formatted"
+msgstr "'%s' தவறான வடிவத்தில் உள்ளது"
+
+#: misc/scripts/checks.sh:551 misc/scripts/checks.sh:574
+msgid "'%s' and '%s' indices cannot both be provided"
+msgstr "'%s' மற்றும் '%s' குறியீடுகள் இரண்டும் வழங்க முடியாது"
+
+#: misc/scripts/checks.sh:566 misc/scripts/checks.sh:589
+msgid "'%s' index '%s' is improperly formatted"
+msgstr "'%s' குறியீடு '%s' தவறான வடிவத்தில் உள்ளது"
+
+#: misc/scripts/checks.sh:626
+msgid "'%s' is not a valid architecture"
+msgstr "'%s' செல்லுபடியாகும் கட்டமைப்பு அல்ல"
+
+#: misc/scripts/checks.sh:639
+msgid "cannot use both Debian and Arch style naming in '%s' array"
+msgstr "'%s' வரிசையில் Debian மற்றும் Arch பாணி பெயர்களை ஒரே நேரத்தில் பயன்படுத்த முடியாது"
+
+#: misc/scripts/checks.sh:682
+msgid "'%s' must be either: '%s', '%s', '%s', '%s', or '%s'"
+msgstr "'%s' '%s', '%s', '%s', '%s', அல்லது '%s' ஆக இருக்க வேண்டும்"
+
+#: misc/scripts/checks.sh:703
+msgid "'%s' is not a valid license"
+msgstr "'%s' செல்லுபடியாகும் உரிமம் அல்ல"
+
+#: misc/scripts/fetch-sources.sh:29
+msgid "Could not find build.sh"
+msgstr "build.sh கண்டுபிடிக்க முடியவில்லை"
+
+#: misc/scripts/fetch-sources.sh:190
+msgid "Hashes do not match (with method %s)"
+msgstr "ஹாஷ்கள் பொருந்தவில்லை (முறை %s)"
+
+#: misc/scripts/fetch-sources.sh:191
+msgid "Got:      %b"
+msgstr "கிடைத்தது:      %b"
+
+#: misc/scripts/fetch-sources.sh:192
+msgid "Expected: %b"
+msgstr "எதிர்பார்த்தது: %b"
+
+#: misc/scripts/fetch-sources.sh:201
+msgid "Failed to download package"
+msgstr "தொகுப்பை பதிவிறக்கம் செய்ய முடியவில்லை"
+
+#: misc/scripts/fetch-sources.sh:211
+msgid "Could not enter into the main directory %b"
+msgstr "முதன்மை அடைவு %b இல் நுழைய முடியவில்லை"
+
+#: misc/scripts/fetch-sources.sh:224
+msgid "Cloning %b from branch %b"
+msgstr "%b கிளையிலிருந்து %b ஐ குளோன் செய்கிறது"
+
+#: misc/scripts/fetch-sources.sh:227
+msgid "Cloning %b from tag %b"
+msgstr "%b டேக்கிலிருந்து %b ஐ குளோன் செய்கிறது"
+
+#: misc/scripts/fetch-sources.sh:232
+msgid "Cloning %b with no blobs"
+msgstr "ப்ளாப்கள் இல்லாமல் %b ஐ குளோன் செய்கிறது"
+
+#: misc/scripts/fetch-sources.sh:235
+msgid "Cloning %b from %b"
+msgstr "%b இலிருந்து %b ஐ குளோன் செய்கிறது"
+
+#: misc/scripts/fetch-sources.sh:243
+msgid "Could not enter into the cloned git repository"
+msgstr "குளோன் செய்யப்பட்ட git வைக்குமிடத்தில் நுழைய முடியவில்லை"
+
+#: misc/scripts/fetch-sources.sh:247
+msgid "Fetching commit %b"
+msgstr "கமிட் %b ஐப் பெறுகிறது"
+
+#: misc/scripts/fetch-sources.sh:261
+msgid "Not cloning submodules for %b"
+msgstr "%b க்கான துணை தொகுதிகள் குளோன் செய்யப்படவில்லை"
+
+#: misc/scripts/fetch-sources.sh:267
+msgid "Checking integrity of %b"
+msgstr "%b இன் ஒருங்கிணைப்பைச் சரிபார்க்கிறது"
+
+#: misc/scripts/fetch-sources.sh:268
+msgid "Could not check integrity of cloned git repository"
+msgstr "குளோன் செய்யப்பட்ட git வைக்குமிடம்த்தின் ஒருங்கிணைப்பைச் சரிபார்க்க முடியவில்லை"
+
+#: misc/scripts/fetch-sources.sh:273 misc/scripts/fetch-sources.sh:277
+msgid "Cloned git repository does not match upstream hash"
+msgstr "குளோன் செய்யப்பட்ட git வைக்குமிடம் மேல்நிலை ஹாஷுடன் பொருந்தவில்லை"
+
+#: misc/scripts/fetch-sources.sh:287
+msgid "Downloading %b"
+msgstr "%b ஐப் பதிவிறக்கம் செய்கிறது"
+
+#: misc/scripts/fetch-sources.sh:295
+msgid "Checking hash %b[%b...%b]"
+msgstr "ஹாஷ் %b[%b...%b] ஐச் சரிபார்க்கிறது"
+
+#: misc/scripts/fetch-sources.sh:311
+msgid "Extracting %b"
+msgstr "%b ஐப் பிரித்தெடுக்கிறது"
+
+#: misc/scripts/fetch-sources.sh:354 misc/scripts/fetch-sources.sh:361
+#: misc/scripts/fetch-sources.sh:375 misc/scripts/fetch-sources.sh:382
+msgid "Running %s hook"
+msgstr "%s ஹூக் இயக்கப்படுகிறது"
+
+#: misc/scripts/fetch-sources.sh:357 misc/scripts/fetch-sources.sh:364
+#: misc/scripts/fetch-sources.sh:378 misc/scripts/fetch-sources.sh:385
+msgid "Could not run %s hook successfully"
+msgstr "%s ஹூக்கை வெற்றிகரமாக இயக்க முடியவில்லை"
+
+#: misc/scripts/fetch-sources.sh:373 misc/scripts/package.sh:386
+msgid "Performing post install operations"
+msgstr "நிறுவலுக்கு பின் செயல்பாடுகளைச் செய்கிறது"
+
+#: misc/scripts/fetch-sources.sh:389 misc/scripts/package.sh:387
+msgid "Storing pacscript"
+msgstr "பேக்ஸ்ரிப்ட் ஐ சேமிக்கிறது"
+
+#: misc/scripts/fetch-sources.sh:393
+msgid "Could not enter into %b"
+msgstr "%b இல் நுழைய முடியவில்லை"
+
+#: misc/scripts/fetch-sources.sh:400 misc/scripts/package.sh:401
+msgid "Done installing %b"
+msgstr "%b நிறுவல் முடிந்தது"
+
+#: misc/scripts/fetch-sources.sh:404
+msgid "Failed to install the package"
+msgstr "தொகுப்பை நிறுவுவதில் தோல்வி"
+
+#: misc/scripts/fetch-sources.sh:413
+msgid "Copying local archive %b"
+msgstr "உள்ளூர் காப்பகம் %b ஐ நகலெடுக்கிறது"
+
+#: misc/scripts/fetch-sources.sh:593 misc/scripts/fetch-sources.sh:627
+#: misc/scripts/fetch-sources.sh:634 misc/scripts/fetch-sources.sh:640
+#: misc/scripts/fetch-sources.sh:672
+msgid "This Pacscript does not work on %b"
+msgstr "இந்த பேக்ஸ்கிரிப்ட் %b இல் வேலை செய்ய முடியவில்லை"
+
+#: misc/scripts/fetch-sources.sh:660
+msgid "This package is for %b, which is a foreign architecture"
+msgstr "இந்த தொகுப்பு %b க்கானது, அது ஒரு அயலக வடிவம்"
+
+#: misc/scripts/fetch-sources.sh:709
+msgid "Checking build dependencies"
+msgstr "கட்டும் சார்புகளை சரிபார்க்கிறது"
+
+#: misc/scripts/fetch-sources.sh:729
+msgid "%b versions cannot be satisfied"
+msgstr "%b பதிப்பை திருப்திப்படுத்த முடியாது"
+
+#: misc/scripts/fetch-sources.sh:731
+msgid "%b version cannot be satisfied"
+msgstr "%b பதிப்பை திருப்திப்படுத்த முடியாது"
+
+#: misc/scripts/fetch-sources.sh:743
+msgid "Checking check dependencies"
+msgstr "சரிபார்ப்பு சார்புகளை சரிபார்க்கிறது"
+
+#: misc/scripts/fetch-sources.sh:784
+msgid "Creating build dependency/conflicts dummy package"
+msgstr "கட்டு சார்பு/மோதல் போலி தொகுப்பை உருவாக்குதல்"
+
+#: misc/scripts/fetch-sources.sh:799
+msgid "Failed to install build or check dependencies"
+msgstr "சார்புகளை சரிபார்க்கவோ அல்லது கட்டுதலை நிறுவவோ முடியவில்லை"
+
+#: misc/scripts/get-pacscript.sh:33
+msgid "Run '%b'"
+msgstr "'%b'ஐ இயக்கவும்"
+
+#: misc/scripts/get-pacscript.sh:38 misc/scripts/upgrade.sh:257
+msgid "Could not enter %s"
+msgstr "%s யில் நுழைய முடியவில்லை"
+
+#: misc/scripts/get-pacscript.sh:49 misc/scripts/get-pacscript.sh:57
+msgid "Could not download %s"
+msgstr "%s யை பதிவிறக்க முடியவில்லை"
+
+#: misc/scripts/manage-repo.sh:169
+msgid "'%s' valid types are: '%s', '%s'"
+msgstr "'%s' செல்லுபடியாகும் வகைகள்: '%s', '%s'"
+
+#: misc/scripts/manage-repo.sh:185
+msgid "'%s' valid types are: '%s', '%s', '%s'"
+msgstr "'%s' செல்லுபடியாகும் வகைகள்: '%s', '%s', '%s'"
+
+#: misc/scripts/package-base.sh:29
+msgid "Could not find checks.sh"
+msgstr "checks.sh யை காணவில்லை"
+
+#: misc/scripts/package-base.sh:35 misc/scripts/upgrade.sh:35
+msgid "Could not find fetch-sources.sh"
+msgstr "fetch-sources.sh யை காணவில்லை"
+
+#: misc/scripts/package-base.sh:42
+msgid "Interrupted, cleaning up"
+msgstr "குறுக்கிட்டு, சுத்தம் செய்கிறது"
+
+#: misc/scripts/package-base.sh:93
+msgid "Found pkgbase: %b"
+msgstr "pkgbase: %b காணப்பட்டது"
+
+#: misc/scripts/package-base.sh:119
+msgid "%b has exceeded the maximum number of packages to build. Skipping"
+msgstr "%b உருவாக்க வேண்டிய அதிகபட்ச தொகுப்புகளின் எண்ணிக்கையை மீறியுள்ளது. தவிர்க்கிறது"
+
+#: misc/scripts/package-base.sh:199
+msgid "%b is not an integer. Falling back to 1"
+msgstr "%b முழு எண் அல்ல. 1 க்கு தாவுகிறது"
+
+#: misc/scripts/package-base.sh:208
+msgid "(%b) Do you want to view/edit the pacscript?"
+msgstr "(%b) நீங்கள் பேக்ஸ்கிரிப்ட்டை பார்க்கவோ/திருத்தவோ வேண்டுமா?"
+
+#: misc/scripts/package-base.sh:221
+msgid "Editor not found, falling back to '%s'"
+msgstr "எடிட்டர் கிடைக்கவில்லை, '%s'க்கு தாவுகிறது"
+
+#: misc/scripts/package-base.sh:226
+msgid "Sourcing pacscript"
+msgstr "பேக்ஸ்கிரிப்ட் மூலம் source ஐ பெறுகிறது"
+
+#: misc/scripts/package-base.sh:249
+msgid "Could not source pacscript"
+msgstr "பேக்ஸ்கிரிப்ட் மூலம் source ஐ பெற முடியவில்லை"
+
+#: misc/scripts/package.sh:28
+msgid "This package will connect to the internet during its build process."
+msgstr "இந்த தொகுப்பு கட்டும் செயல்பாடுகளில் இணையத்துடன் இணைக்கப்படும்."
+
+#: misc/scripts/package.sh:47
+msgid "Failed to download '%s'"
+msgstr "'%s' ஐ பதிவிறக்க முடியவில்லை"
+
+#: misc/scripts/package.sh:63
+msgid ""
+"The package %b is masking %b. By installing the masked package, you may "
+"cause damage to your operating system"
+msgstr ""
+"%b தொகுப்பு %b ஐ மறைக்கிறது. முகமூடி செய்யப்பட்ட தொகுப்பை நிறுவுவதன் மூலம், "
+"உங்கள் இயக்க முறைமைக்கு நீங்கள் சேதத்தை ஏற்படுத்தலாம்"
+
+#: misc/scripts/package.sh:66
+msgid ""
+"Somehow, '%s' found masked packages that match the package you want to "
+"install, but '%s' could not find it. Report this upstream"
+msgstr ""
+"எப்படியோ, நீங்கள் நிறுவ விரும்பும் தொகுப்புடன் பொருந்தக்கூடிய முகமூடி தொகுப்புகளை '%s' கண்டறிந்தது, "
+"ஆனால் '%s' அதைக் கண்டுபிடிக்க முடியவில்லை. இதை அப்ஸ்ட்ரீமில் புகாரளி"
+
+#: misc/scripts/package.sh:103
+msgid ""
+"This package has '%s', meaning once this is installed, it should be assumed "
+"to be unremovable. Do you want to continue?"
+msgstr ""
+"இந்த தொகுப்பில் '%s' உள்ளது, அதாவது இதை நிறுவியவுடன், அதை நீக்க முடியாது என "
+"கருத வேண்டும். தொடர விரும்புகிறீர்களா?"
+
+#: misc/scripts/package.sh:122
+msgid "Reinstalling '%s'"
+msgstr "'%s' மீண்டும் நிறுவுகிறது"
+
+#: misc/scripts/package.sh:133
+msgid "This script replaces %s. Do you want to proceed?"
+msgstr "இந்த ஸ்கிரிப்ட் %s ஐ மாற்றும். நீங்கள் தொடர வேண்டுமா?"
+
+#: misc/scripts/package.sh:149
+msgid "%b conflicts with %s, which is currently installed by apt"
+msgstr "%s உடன் %b முரண்படுகிறது, இது தற்போது ஆப்ட் வழியாக நிறுவப்பட்டுள்ளது"
+
+#: misc/scripts/package.sh:150 misc/scripts/package.sh:172
+msgid "Remove the apt package by running '%b'"
+msgstr "ஆப்ட் தொகுப்பை நீக்க '%b' ஐ இயக்கவும்"
+
+#: misc/scripts/package.sh:157
+msgid "%b conflicts with %s, which is currently installed by pacstall"
+msgstr "%s உடன் %b முரண்படுகிறது, இது தற்போது பேக்ஸ்டால் வழியாக நிறுவப்பட்டுள்ளது"
+
+#: misc/scripts/package.sh:158 misc/scripts/package.sh:179
+msgid "Remove the pacstall package by running '%b'"
+msgstr "பேக்ஸ்டால் தொகுப்பை நீக்குவதற்கு '%b' ஐ இயக்கவும்"
+
+#: misc/scripts/package.sh:171
+msgid "%b breaks %s, which is currently installed by apt"
+msgstr "%b %s யை உடைகிறது, இது தற்போது ஆப்ட் வழியாக நிறுவப்பட்டுள்ளது"
+
+#: misc/scripts/package.sh:178
+msgid "%b breaks %s, which is currently installed by pacstall"
+msgstr "%b %s யை உடைகிறது, இது தற்போது பேக்ஸ்டால் வழியாக நிறுவப்பட்டுள்ளது"
+
+#: misc/scripts/package.sh:196
+msgid "Checking pacstall dependencies"
+msgstr "பேக்ஸ்டால் சாரபுகளை சரிபார்த்து கொண்டு இருக்கிறது"
+
+#: misc/scripts/package.sh:213
+msgid "%b [update]"
+msgstr "%b [மேம்படுத்து]"
+
+#: misc/scripts/package.sh:215 misc/scripts/package.sh:226
+msgid "Failed to install dependency (%s from %s)"
+msgstr "சாரபுகளை நிறுவ முடியவில்லை (%s இல் %s இலிருந்து)"
+
+#: misc/scripts/package.sh:240
+msgid "%s is associated with multiple source entries"
+msgstr "%s பல மூல உள்ளீடுகளுடன் தொடர்புடையது"
+
+#: misc/scripts/package.sh:274
+msgid "Retrieving packages"
+msgstr "தொகுப்புகளை மீட்டெடுக்கிறது."
+
+#: misc/scripts/package.sh:363
+msgid "Running functions"
+msgstr "இயங்கிக்கொண்டிருக்கும் செயல்பாடு"
+
+#: misc/scripts/package.sh:368
+msgid "Could not %s %s properly"
+msgstr ""
+
+#: misc/scripts/package.sh:376 misc/scripts/package.sh:391
+msgid "Could not enter into %s"
+msgstr "%s இல் நுழைய முடியவில்லை"
+
+#: misc/scripts/quality-assurance.sh:49
+msgid "%b is not a valid provider!"
+msgstr "%b செல்லுபடியாகாத வழங்குபவர்!"
+
+#: misc/scripts/quality-assurance.sh:50
+msgid "available providers are: '%s'"
+msgstr "கிடைக்கும் வழங்குபவர்கள்: '%s'"
+
+#: misc/scripts/quality-assurance.sh:59
+msgid "Returning %b backup"
+msgstr "காப்பு நகல் %b திரும்பி அளிக்கிறது"
+
+#: misc/scripts/quality-assurance.sh:68
+msgid "'%s' and '%s' cannot be empty!"
+msgstr "'%s' மற்றும் '%s' காலியாக இருக்க கூடாது!"
+
+#: misc/scripts/quality-assurance.sh:69
+msgid "use the syntax: %b"
+msgstr "%b: தொடரியலை பயன்படுத்தவும்"
+
+#: misc/scripts/quality-assurance.sh:74
+msgid "Backing up %b"
+msgstr "காப்பு நகல் எடுத்துக்கொண்டு இருக்கிறது %b"
+
+#: misc/scripts/quality-assurance.sh:77
+msgid "Installing %b"
+msgstr "%b நிறுவிக்கொண்டு இருக்கிறது"
+
+#: misc/scripts/query-info.sh:99
+msgid "Key '%s' does not exist"
+msgstr "%s இல்லை"
+
+#: misc/scripts/remove.sh:29 misc/scripts/remove.sh:34
+msgid "%s is not installed"
+msgstr "%s நிறுவபடவில்லை"
+
+#: misc/scripts/remove.sh:45
+msgid "You may have dangling PPAs on your system. You can remove them using '%b'"
+msgstr "உங்களிடம் தொங்கும் PPAகள் உள்ளன. நீங்கள் அவைகளை '%b' உபயோகிப்பதன் மூலம் நீக்கலாம்"
+
+#: misc/scripts/search.sh:252 misc/scripts/search.sh:254
+#: misc/scripts/search.sh:286
+msgid "There is no package with the name %b in the repo %b"
+msgstr "%b பெயருடன், வைக்குமிடம் %b இல் ஒரு தொகுப்பும் இல்லை"
+
+#: misc/scripts/search.sh:302
+msgid "%b is not on your repo list or does not exist"
+msgstr "%b வைக்குமிடம் பட்டியலில் இல்லை"
+
+#: misc/scripts/search.sh:357 misc/scripts/search.sh:438
+#: misc/scripts/search.sh:469
+msgid "There is no package with the name %b"
+msgstr "%b பெயருடன் ஒரு தொகுப்பும் இல்லை"
+
+#: misc/scripts/search.sh:375
+msgid "Add %s to the local repo absolute path on %b"
+msgstr "%s இல் உள்ள லோக்கல் ரெப்போ முழுமையான பாதையில் %b ஐ சேர்க்கவும்"
+
+#: misc/scripts/search.sh:379
+msgid "Replace '~' with the full home path on %b"
+msgstr "%bயில் முழு முகப்பு பாதையுடன் '~' ஐ மாற்றவும்"
+
+#: misc/scripts/search.sh:385
+msgid "Pacstall repo line improperly formatted: %b"
+msgstr "பேக்ஸ்டால் வைக்குமிடம், வரி தவறாக வடிவமைக்கப்பட்டுள்ளது: %b"
+
+#: misc/scripts/search.sh:386 misc/scripts/search.sh:391
+msgid "You can remove or fix the URL by editing %b"
+msgstr "நீங்கள் %b ஐ திருத்தி், இணைப்பை அகற்றலாம் அல்லது சரிசெய்யலாம்"
+
+#: misc/scripts/search.sh:390
+msgid "Cannot connect to Pacstall repo: %b"
+msgstr "பேக்ஸ்டால் வைக்குமிடத்தை இணையமுடியவில்லை: %b"
+
+#: misc/scripts/search.sh:499
+msgid "%bDo you want to %s %b from the official repo?"
+msgstr ""
+
+#: misc/scripts/search.sh:517
+msgid "%bDo you want to %s %b from the repo %b?"
+msgstr ""
+
+#: misc/scripts/update.sh:57
+msgid "Invalid URL"
+msgstr "செல்லாத இணைப்பு"
+
+#: misc/scripts/update.sh:58
+msgid "Confirm that '%b' is valid"
+msgstr "%b செல்லுபடியாகும் என்பதை உறுதிப்படுத்தவும்"
+
+#: misc/scripts/update.sh:63
+msgid "Fetching translation list"
+msgstr "மொழிபெயர்ப்பு பட்டியலை எடுத்துக்கொண்டு இருக்கிறது"
+
+#: misc/scripts/update.sh:66
+msgid "Updating directories"
+msgstr "கோப்புறைகள் மேம்படுத்துகிறது"
+
+#: misc/scripts/update.sh:74
+msgid "Checking dependencies"
+msgstr "சார்புகளை சரிபார்த்து கொண்டு இருக்கிறது"
+
+#: misc/scripts/update.sh:101
+msgid "Pulling scripts from GitHub"
+msgstr ""
+
+#: misc/scripts/update.sh:125
+msgid "Rebuilding translations"
+msgstr "மொழிபெயர்ப்புகளை மீண்டும் உருவாக்குகிறது"
+
+#: misc/scripts/update.sh:130
+msgid "Rebuilding manpages"
+msgstr "மேன் பக்கங்களை மீண்டும் உருவாக்குகிறது"
+
+#: misc/scripts/update.sh:134
+msgid "Making scripts executable"
+msgstr "ஸ்கிரிப்டுகளை இயக்கும்படியாக செய்தல்"
+
+#: misc/scripts/upgrade.sh:29
+msgid "Could not load dep-tree.sh"
+msgstr "dep-tree.sh கோப்பை ஏற்க முடியவில்லை"
+
+#: misc/scripts/upgrade.sh:104
+msgid "Checking for updates"
+msgstr "மேம்படுத்தலை சரிபார்த்து கொண்டிருக்கிறது"
+
+#: misc/scripts/upgrade.sh:109 misc/scripts/upgrade.sh:235
+msgid "Nothing to upgrade"
+msgstr "எந்த தொகுப்புகளையும் மேம்படுத்த வேண்டியது இல்லை"
+
+#: misc/scripts/upgrade.sh:112
+msgid "Building dependency tree"
+msgstr "சார்பு மரங்களை உருவாக்குகிறது"
+
+#: misc/scripts/upgrade.sh:123
+msgid "Checking versions"
+msgstr "பதிப்புகளை சரிபார்கிறது"
+
+#: misc/scripts/upgrade.sh:175
+msgid "Package %b is not on %b anymore"
+msgstr "தொகுப்பு %b இனி தொகுப்பு %b இல் இல்லை"
+
+#: misc/scripts/upgrade.sh:238
+msgid "Packages can be upgraded"
+msgstr "மேம்படுத்த கூடிய தொகுப்புகள்"
+
+#: misc/scripts/upgrade.sh:262
+msgid "Do you want to upgrade %b?"
+msgstr "நீங்கள் %b மேம்படுத்த போகிறீர்களா?"
