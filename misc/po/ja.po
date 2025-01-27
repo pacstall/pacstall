@@ -1,149 +1,155 @@
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2025-01-28 04:02+0000\n"
+"Last-Translator: Shuntia <shunta@koga.us>\n"
+"Language-Team: Japanese <https://hosted.weblate.org/projects/pacstall/"
+"pacstall/ja/>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #: pacstall:273 misc/scripts/build.sh:163 misc/scripts/build.sh:686
 #: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:735
 #: misc/scripts/fetch-sources.sh:765 misc/scripts/package-base.sh:163
 #: misc/scripts/package-base.sh:184
 msgid "Cleaning up"
-msgstr ""
+msgstr "片づけ処理を行います"
 
 #: pacstall:367
 msgid "Suggested solution(s)"
-msgstr ""
+msgstr "解決される可能性がある方法"
 
 #: pacstall:401
 msgid "Packagelist not found"
-msgstr ""
+msgstr "パッケージリストが見つかりませんでした"
 
 #: pacstall:402 pacstall:411
 msgid "Confirm that '%b' exists"
-msgstr ""
+msgstr "'%b'が存在することを確認してください"
 
 #: pacstall:404
 msgid "Failed to download file, check your connection"
-msgstr ""
+msgstr "ダウンロードに失敗しました。接続を確認してください"
 
 #: pacstall:410
 msgid "The URL cannot be found"
-msgstr ""
+msgstr "URLが見つかりませんでした"
 
 #: pacstall:418
 msgid "Failed with http code %s"
-msgstr ""
+msgstr "失敗:HTTPコード%s"
 
 #: pacstall:419
 msgid "Confirm that '%b' is accessible"
-msgstr ""
+msgstr "'%b'が利用可能であることを再確認してください"
 
 #: pacstall:643
 msgid "Reading input from pipe"
-msgstr ""
+msgstr "パイプから情報を取得しています"
 
 #: pacstall:702
 msgid "Only one command flag can be used at a time"
-msgstr ""
+msgstr "フラグは同時に一つしか使用できません"
 
 #: pacstall:740
 msgid "Pacstall is already running another instance"
-msgstr ""
+msgstr "Pacstallは既に別のインスタンスが起動されています"
 
 #: pacstall:746
 msgid "The other instance has finished running, unlocking"
-msgstr ""
+msgstr "他のインスタンスが終了しました。続行します"
 
 #: pacstall:755
 msgid "Prompts are disabled"
-msgstr ""
+msgstr "プロンプトは無効化されています"
 
 #: pacstall:762
 msgid "Package will be built and not installed"
-msgstr ""
+msgstr "パッケージはビルドされますがインストールされません"
 
 #: pacstall:832 pacstall:905 pacstall:967 pacstall:1008 pacstall:1026
 #: pacstall:1200 pacstall:1256 misc/scripts/query-info.sh:28
 msgid "You failed to specify a package"
-msgstr ""
+msgstr "パッケージの指定をしていません"
 
 #: pacstall:837
 msgid "The installation of %s was interrupted, removing files"
-msgstr ""
+msgstr "%sのインストールが中断されました。ファイルを削除しています"
 
 #: pacstall:874 misc/scripts/package-base.sh:129
 msgid "%s does not exist"
-msgstr ""
+msgstr "%sは存在しません"
 
 #: pacstall:912
 msgid "Payload not found"
-msgstr ""
+msgstr "実行の標的が見つかりませんでした"
 
 #: pacstall:925 pacstall:972 pacstall:1012 pacstall:1133 pacstall:1210
 #: pacstall:1243
 msgid "Could not connect to the internet"
-msgstr ""
+msgstr "インターネット接続できませんでした"
 
 #: pacstall:926 pacstall:973 pacstall:1013 pacstall:1134 pacstall:1211
 #: pacstall:1244
 msgid "Confirm that the URLs '%b' or '%b' are accessible"
-msgstr ""
+msgstr "'%b'と'%b'のURLが利用可能であることを確認してください"
 
 #: pacstall:942 pacstall:1225 misc/scripts/upgrade.sh:276
 msgid "Failed to download the %b pacscript"
-msgstr ""
+msgstr "%bのpacscriptのダウンロードに失敗しました"
 
 #: pacstall:943 pacstall:1226
 msgid "Confirm that the package exists by running '%b'"
-msgstr ""
+msgstr "'%b'を実行してパッケージが存在することを確認してください"
 
 #: pacstall:943 pacstall:1226
 msgid "Check your internet connection"
-msgstr ""
+msgstr "インターネット接続を確認してください"
 
 #: pacstall:949 misc/scripts/package-base.sh:153
 #: misc/scripts/package-base.sh:177
 msgid "Failed to install %b"
-msgstr ""
+msgstr "%bのインストールに失敗しました"
 
 #: pacstall:1035
 msgid "Failed to remove %b"
-msgstr ""
+msgstr "%bの削除に失敗しました"
 
 #: pacstall:1056
 msgid "You failed to specify a repo to add"
-msgstr ""
+msgstr "追加するレポジトリを指定されませんでした"
 
 #: pacstall:1057
 msgid "Add a repository in the following format:"
-msgstr ""
+msgstr "このような形式でレポジトリを追加してください:"
 
 #: pacstall:1057 pacstall:1078
 msgid ""
 "Consult the pacstall man page by running '%b', and searching for the term "
 "'%b'"
-msgstr ""
+msgstr "'%b'を実行して'%b'を検索することでpacstallのマニュアルページを確認してくださ"
+"い"
 
 #: pacstall:1077
 msgid "You failed to specify a repo to remove"
-msgstr ""
+msgstr "削除するレポジトリを指定されませんでした"
 
 #: pacstall:1078
 msgid "Remove a repository in the following format:"
-msgstr ""
+msgstr "このような形式でレポジトリを削除してください:"
 
 #: pacstall:1102
 msgid "%s is not a git repository"
-msgstr ""
+msgstr "%sはgitレポジトリではありません"
 
 #: pacstall:1139
 msgid ""
 "The repository you are trying to upgrade to contains a version of pacstall "
 "that cannot be updated from %b"
-msgstr ""
+msgstr "更新先のレポジトリは%bから更新できないバージョンのpacstallを含んでいます"
 
 #: pacstall:1140
 msgid ""
