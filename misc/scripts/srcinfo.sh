@@ -145,7 +145,7 @@ function srcinfo.write_details() {
 function srcinfo.vars() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local _distros _vars _archs _sums distros \
-        vars="depends makedepends optdepends pacdeps checkdepends provides conflicts breaks replaces enhances recommends suggests makeconflicts checkconflicts source" \
+        vars="gives depends makedepends optdepends pacdeps checkdepends provides conflicts breaks replaces enhances recommends suggests makeconflicts checkconflicts source" \
         sums="b2 sha512 sha384 sha256 sha224 sha1 md5"
     allvars=(pkgname gives pkgver pkgrel epoch pkgdesc url priority)
     allars=(arch depends makedepends checkdepends optdepends pacdeps conflicts makeconflicts checkconflicts breaks replaces provides enhances recommends suggests incompatible compatible backup mask noextract nosubmodules license maintainer repology custom_fields source)
