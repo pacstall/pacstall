@@ -728,11 +728,19 @@ function repacstall() {
     sudo rm -rf "${unpackdir:?}"/*
     fancy_message sub $"Repacking %b" "${CYAN}${pacname/\-deb/}.deb${NC}"
     sudo dpkg-deb -R "${input_dest}" "${unpackdir}"
-    depends_line=$(awk '/^Depends:/ {print; exit}' "${upcontrol}")
+    depends_line=$(awk '/^Depends:/ {gsub(/^Depends: /, ""); print; exit}' "${upcontrol}")
     if [[ -n ${depends_line} ]]; then
-        readarray -t depends_array <<< "$(echo "${depends_line#Depends: }" | tr ',' '\n')"
-        depends_array=("${depends_array[@]/# /}")
-        depends_array=("${depends_array[@]/% /}")
+        IFS=',' read -r -a depends_array <<< "${depends_line}"
+        for i in "${!depends_array[@]}"; do
+            # decompile constraints
+            depends_array[i]="${depends_array[i]// (= /=}"
+            depends_array[i]="${depends_array[i]// (<= /<=}"
+            depends_array[i]="${depends_array[i]// (>= />=}"
+            depends_array[i]="${depends_array[i]// (<< /<}"
+            depends_array[i]="${depends_array[i]// (>> />}"
+            depends_array[i]="${depends_array[i]//)/}"
+            depends_array[i]="${depends_array[i]# }"
+        done
     fi
     if [[ -n ${makedepends[*]} ]]; then
         # shellcheck disable=SC2076
@@ -774,6 +782,7 @@ function repacstall() {
             fi
         done
     fi
+    # recompile constraints
     dep_const.format_control depends_array depends_array_form
     dep_const.comma_array depends_array_form repac_depends_str
     sudo sed -i '/^Depends:/d' "${upcontrol}"
