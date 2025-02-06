@@ -132,7 +132,7 @@ function srcinfo.write_details() {
         srcinfo.extract "$1" "${attr}" 1
     done
 
-    srcinfo.get_attr "$1" 'arch' 1 'package_arch' || package_arch=("all")
+    srcinfo.get_attr '' 'arch' 1 'package_arch' || package_arch=("all")
     for a in "${package_arch[@]}"; do
         [[ ${a} == any || ${a} == all ]] && continue
 

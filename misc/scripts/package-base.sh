@@ -55,8 +55,11 @@ function trap_ctrlc() {
 function package_override() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # shellcheck disable=SC2031
-    local o all_ovars look lbase opac="${pacname}" obase="${pkgbase}" ovars=("gives" "pkgdesc" "url" "priority")
+    local o all_ovars ext_ovars ext_types look lbase opac="${pacname}" obase="${pkgbase}" ovars=("gives" "pkgdesc" "url" "priority")
+    ext_ovars=("gives" "depends" "checkdepends" "optdepends" "pacdeps" "provides" "checkconflicts" "conflicts" "breaks" "replaces" "enhances" "recommends" "suggests")
+    ext_types=("${CARCH}" "${AARCH}" "${DISTRO%:*}" "${DISTRO#*:}" "${DISTRO%:*}_${CARCH}" "${DISTRO#*:}_${CARCH}" "${DISTRO%:*}_${AARCH}" "${DISTRO#*:}_${AARCH}")
     all_ovars=("${ovars[@]}" "arch" "license" "depends" "checkdepends" "optdepends" "pacdeps" "provides" "checkconflicts" "conflicts" "breaks" "replaces" "enhances" "recommends" "suggests" "backup" "repology")
+    mapfile -t -O "${#all_ovars[@]}" all_ovars < <(for i in "${ext_ovars[@]}"; do printf "${i}_%s\n" "${ext_types[@]}"; done)
     srcinfo.parse "${srcinfile}" "${pacname}"
     for o in "${all_ovars[@]}"; do
         unset look lbase
