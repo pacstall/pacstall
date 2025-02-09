@@ -23,9 +23,9 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 # Pacstall version
-version_number="6.1.0"
-version_name="Xanthous"
-declare -A version_color=([r]="241" [g]="180" [b]="47")
+version_number="6.1.1"
+version_name="Butterscotch"
+declare -A version_color=([r]="224" [g]="149" [b]="64")
 
 # Configuration
 export METADIR="/var/lib/pacstall/metadata"
