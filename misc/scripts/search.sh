@@ -420,6 +420,7 @@ if ((${#any_masks[@]} != 0)); then
         { ignore_stack=true; ((mask_itr++)); }
     done
     PACKAGELIST=("${PACKAGELIST[@]}")
+    URLLIST=("${URLLIST[@]}")
     unset mask_itr
 fi
 
