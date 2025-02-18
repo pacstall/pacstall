@@ -415,6 +415,7 @@ if ((${#any_masks[@]} != 0)); then
     for pkg in "${PACKAGELIST[@]}"; do
         if array.contains any_masks "${pkg}"; then
             unset "PACKAGELIST[$mask_itr]"
+            unset "URLLIST[$mask_itr]"
         fi
         { ignore_stack=true; ((mask_itr++)); }
     done
