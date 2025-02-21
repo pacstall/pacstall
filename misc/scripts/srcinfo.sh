@@ -405,7 +405,7 @@ function srcinfo.match_pkg() {
         var="${var//./_}"
         declare -n output="${var}"
         if [[ -n ${output[*]} ]]; then
-            if [[ ${search} == "pkgbase" ]]; then
+            if [[ ${search} == "pkgbase" && ${var} == *"_array_pkgbase" ]]; then
                 srcref="pkgbase:${output[0]}"
             elif [[ ${search} == "pkgname" || ${var} == "srcinfo_${pkg}_array_${search}" ]]; then
                 srcref+=("${output[@]}")
