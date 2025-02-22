@@ -91,7 +91,7 @@ function genextr_declare() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     unset ext_method ext_deps ext_to_flag
     # shellcheck disable=SC2031,SC2034
-    case "${source_url,,}" in
+    case "${1}" in
         *.zip)
             ext_method="unzip -qo"
             ext_deps=("unzip")

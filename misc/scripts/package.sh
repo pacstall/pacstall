@@ -247,7 +247,7 @@ for i in "${!source[@]}"; do
             dest_list+=("${to_location}")
         fi
     fi
-    genextr_declare
+    genextr_declare "${source_url,,}"
     unset ext_dep make_dep in_make_deps
     for ext_dep in "${ext_deps[@]}"; do
         in_make_deps=false
@@ -301,7 +301,7 @@ if ! [[ -f "${PACDIR}-no-download-${pkgbase}" ]]; then
                 source_url="${REPO}/packages/${pacname}/${source_url}"
             fi
         fi
-        case "${source_url}" in
+        case "${source_url,,}" in
             *file://*)
                 source_url="${source_url#file://}"
                 source_url="${source_url#git+}"
@@ -319,13 +319,22 @@ if ! [[ -f "${PACDIR}-no-download-${pkgbase}" ]]; then
                 ;;
             *.zip | *.tar.gz | *.tgz | *.tar.bz2 | *.tbz2 | *.tar.bz | *.tbz | *.tar.xz | *.txz | *.tar.zst | *.tzst | *.gz | *.bz2 | *.xz | *.lz | *.lzma | *.zst | *.7z | *.rar | *.lz4 | *.tar)
                 net_down
-                genextr_declare
+                genextr_declare "${source_url,,}"
                 genextr_down
                 ;;
             *)
-                net_down
-                hashcheck_down
-                gather_down
+                case "${dest,,}" in
+                    *.zip | *.tar.gz | *.tgz | *.tar.bz2 | *.tbz2 | *.tar.bz | *.tbz | *.tar.xz | *.txz | *.tar.zst | *.tzst | *.gz | *.bz2 | *.xz | *.lz | *.lzma | *.zst | *.7z | *.rar | *.lz4 | *.tar)
+                        net_down
+                        genextr_declare "${dest,,}"
+                        genextr_down
+                        ;;
+                    *)
+                        net_down
+                        hashcheck_down
+                        gather_down
+                        ;;
+                esac
                 ;;
         esac
         unset expectedHash dest source_url to_location git_branch git_tag git_commit ext_deps ext_method ext_to_flag
