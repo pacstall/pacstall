@@ -32,7 +32,7 @@ export METADIR="/var/lib/pacstall/metadata"
 export LOGDIR="/var/log/pacstall/error_log"
 printf -v LOGFILE "${LOGDIR}/%(%F_%T)T.log"
 export LOGFILE
-export PACDIR="/tmp/pacstall"
+export PACDIR="${PACSTALL_TMPDIR:-/tmp}/pacstall"
 export SCRIPTDIR="/usr/share/pacstall"
 export STAGEDIR="/usr/src/pacstall"
 export TEXTDOMAIN="pacstall"
