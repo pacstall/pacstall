@@ -134,7 +134,7 @@ N="$(nproc)"
             if [[ -n ${_pkgbase} ]]; then
                 localbase="${_pkgbase}"
             else
-                localbase="${i}"
+                unset localbase
             fi
 
             # localver is the current version of the package
@@ -162,7 +162,7 @@ N="$(nproc)"
             IDXMATCH=$(printf "%s\n" "${REPOS[@]}" | awk "\$1 ~ /^${remoterepo//\//\\/}$/ {print NR-1}")
 
             if [[ -n $IDXMATCH ]]; then
-                calc_repo_ver "$remoterepo" "$localbase" \
+                calc_repo_ver "$remoterepo" "${localbase:-${i}}" \
                     && remotever="${comp_repo_ver}"
                 unset comp_repo_ver
                 remoteurl="${REPOS[$IDXMATCH]}"
@@ -185,7 +185,7 @@ N="$(nproc)"
                     if [[ -n $IDXMATCH ]] && ((IDX == IDXMATCH)); then
                         continue
                     else
-                        calc_repo_ver "${REPOS[$IDX]}" "$localbase" \
+                        calc_repo_ver "${REPOS[$IDX]}" "${localbase:-${i}}" \
                             && ver="${comp_repo_ver}"
                         unset comp_repo_ver
                         if ver_compare "$alterver" "$ver"; then
@@ -211,8 +211,8 @@ N="$(nproc)"
 
             if [[ -n $remotever ]]; then
                 if ver_compare "$localver" "$remotever"; then
-                    if [[ -n ${_pkgbase} ]]; then
-                        echo "${_pkgbase}:${i}" | tee -a "${up_list}" > /dev/null
+                    if [[ -n ${localbase} ]]; then
+                        echo "${localbase}:${i}" | tee -a "${up_list}" > /dev/null
                     else
                         echo "$i" | tee -a "${up_list}" > /dev/null
                     fi

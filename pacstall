@@ -1233,7 +1233,7 @@ Helpful links:
                 fi
 
                 repo.specify "$REPO"
-                export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
+                export URL="$REPO/packages/${PACKAGE%:*}/${PACKAGE%:*}.pacscript"
 
                 # shellcheck source=./misc/scripts/get-pacscript.sh
                 if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then
@@ -1242,7 +1242,7 @@ Helpful links:
                     continue
                 fi
 
-                fancy_message info $"%b pacscript is downloaded to %b" "$GREEN$PACKAGE$NC" "$GREEN$PWD/$PACKAGE.pacscript$NC"
+                fancy_message info $"%b pacscript is downloaded to %b" "$GREEN$PACKAGE$NC" "$GREEN$PWD/${PACKAGE%:*}.pacscript$NC"
             done
             exit 0
             ;;
