@@ -688,8 +688,8 @@ done
 # Remove duplicates
 declare -A arg_map=(
     ["--install"]="-I" ["--search"]="-S" ["--remove"]="-R" ["--download"]="-D"
-    ["--add-repo"]="-A" ["--remove-repo"]="-Rr" ["--update"]="-U" ["--list"]="-L" ["--upgrade"]="-Up"
-    ["--search-description"]="-Sd" ["--search-info"]="-Si" ["--cache-info"]="-Ci"
+    ["--add-repo"]="-A" ["--remove-repo"]="-Rr" ["--update"]="-U" ["--list"]="-L" ["--list-upgrades"]="-Lu"
+    ["--upgrade"]="-Up" ["--search-description"]="-Sd" ["--search-info"]="-Si" ["--cache-info"]="-Ci"
     ["--quality-assurance"]="-Qa" ["--tree"]="-T" ["--version"]="-V" ["--help"]="-h" ["--build"]="-B"
     ["--keep"]="-K" ["--disable-prompts"]="-P" ["--nocheck"]="-Nc" ["--quiet"]="-Q" ["--nosandbox"]="-Ns"
 )
@@ -704,8 +704,8 @@ for arg in "${argument_list[@]}"; do
 done
 
 # Check if only one command flag is being used
-short_commands=("-I" "-S" "-R" "-D" "-A" "-Rr" "-U" "-L" "-Up" "-Qa" "-Sd" "-Si" "-Ci" "-T" "-V" "-h")
-long_commands=("--install" "--search" "--remove" "--download" "--add-repo" "--remove-repo" "--update" "--list" "--upgrade" "--quality-assurance" "--search-description" "--search-info" "--cache-info" "--tree" "--version" "--help")
+short_commands=("-I" "-S" "-R" "-D" "-A" "-Rr" "-U" "-L" "-Lu" "-Up" "-Qa" "-Sd" "-Si" "-Ci" "-T" "-V" "-h")
+long_commands=("--install" "--search" "--remove" "--download" "--add-repo" "--remove-repo" "--update" "--list" "--list-upgrades" "--upgrade" "--quality-assurance" "--search-description" "--search-info" "--cache-info" "--tree" "--version" "--help")
 commands=("${short_commands[@]}" "${long_commands[@]}")
 matches=($(comm -12 <(sort <(printf "%s\n" "${unique_argument_list[@]}")) <(sort <(printf "%s\n" "${commands[@]}"))))
 if ((${#matches[@]} <= 1)); then
@@ -777,7 +777,7 @@ while [[ $1 != "--" ]]; do
             ;;
 
         -h | --help)
-            echo -e "Usage: pacstall [-x] [-h] {-I,-S,-R,-D,-A,-Rr,-U,-L,-Up,-Qa,-Sd,-Si,-Ci,-T,-V} [-P] [-K] [-B] [-Nc] [-Q] [-Ns]
+            echo -e "Usage: pacstall [-x] [-h] {-I,-S,-R,-D,-A,-Rr,-U,-L,-Lu,-Up,-Qa,-Sd,-Si,-Ci,-T,-V} [-P] [-K] [-B] [-Nc] [-Q] [-Ns]
 
 An AUR inspired package manager for Ubuntu.
 
@@ -798,6 +798,8 @@ Commands:
         Update Pacstall.
     ${BOLD}-L${NC}, ${BOLD}--list${NC}
         List all installed packages.
+    ${BOLD}-Lu${NC}, ${BOLD}--list-upgrades${NC}
+        List upgrades for installed packages.
     ${BOLD}-Up${NC}, ${BOLD}--upgrade${NC}
         Upgrade all installed packages.
     ${BOLD}-Qa${NC}, ${BOLD}--quality-assurance${NC} <package>#<number>
@@ -1247,7 +1249,8 @@ Helpful links:
             exit 0
             ;;
 
-        -Up | --upgrade)
+        -Up | --upgrade | -Lu | --list-upgrades)
+            [[ ${1} == "-Lu" || ${1} == "--list-upgrades" ]] && LIST_ONLY=true
             shift
             if [[ -n $* ]]; then
                 fancy_message error $"Invalid argument '%s'" "$*"

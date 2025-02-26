@@ -239,46 +239,48 @@ else
     echo -e "Upgradable: $(wc -l < "${up_print}")
 ${BOLD}$(cat "${up_print}")${NC}\n"
 
-    declare -A remotes=()
-    declare -A bases=()
-    while read -r pkg && read -r remote <&3; do
-        upgrade+=("${pkg#*:}")
-        remotes[${pkg#*:}]="${remote}"
-        [[ ${pkg} =~ ':' ]] && bases[${pkg#*:}]="${pkg%:*}"
-    done < "${up_list}" 3< "${up_urls}"
+    if [[ ! ${LIST_ONLY} ]]; then
+        declare -A remotes=()
+        declare -A bases=()
+        while read -r pkg && read -r remote <&3; do
+            upgrade+=("${pkg#*:}")
+            remotes[${pkg#*:}]="${remote}"
+            [[ ${pkg} =~ ':' ]] && bases[${pkg#*:}]="${pkg%:*}"
+        done < "${up_list}" 3< "${up_urls}"
 
-    dep_tree.loop_traits update_order "${upgrade[@]}"
-    dep_tree.trim_pacdeps update_order
-    upgrade=("${update_order[@]}")
+        dep_tree.loop_traits update_order "${upgrade[@]}"
+        dep_tree.trim_pacdeps update_order
+        upgrade=("${update_order[@]}")
 
-    export local='no'
-    if ! cd "$PACDIR" 2> /dev/null; then
-        error_log 1 "upgrade"
-        fancy_message error $"Could not enter %s" "${PACDIR}"
-        exit 1
+        export local='no'
+        if ! cd "$PACDIR" 2> /dev/null; then
+            error_log 1 "upgrade"
+            fancy_message error $"Could not enter %s" "${PACDIR}"
+            exit 1
+        fi
+        for to_upgrade in "${upgrade[@]}"; do
+            PACKAGE="${to_upgrade}"
+            ask $"Do you want to upgrade %b?" "${GREEN}${PACKAGE}${NC}" Y
+            if ((answer == 0)); then
+                continue
+            fi
+
+            export REPO="${remotes[${PACKAGE}]}"
+            if [[ -n ${bases[$PACKAGE]} ]]; then
+                CHILD="${PACKAGE}"
+                PACKAGE="${bases[$PACKAGE]}"
+                export CHILD PACKAGE
+            fi
+            export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
+            # shellcheck source=./misc/scripts/get-pacscript.sh
+            if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then
+                fancy_message error $"Failed to download the %b pacscript" "${GREEN}${PACKAGE}${NC}"
+                continue
+            fi
+            # shellcheck source=./misc/scripts/package-base.sh
+            source "$SCRIPTDIR/scripts/package-base.sh"
+        done
     fi
-    for to_upgrade in "${upgrade[@]}"; do
-        PACKAGE="${to_upgrade}"
-        ask $"Do you want to upgrade %b?" "${GREEN}${PACKAGE}${NC}" Y
-        if ((answer == 0)); then
-            continue
-        fi
-
-        export REPO="${remotes[${PACKAGE}]}"
-        if [[ -n ${bases[$PACKAGE]} ]]; then
-            CHILD="${PACKAGE}"
-            PACKAGE="${bases[$PACKAGE]}"
-            export CHILD PACKAGE
-        fi
-        export URL="$REPO/packages/$PACKAGE/$PACKAGE.pacscript"
-        # shellcheck source=./misc/scripts/get-pacscript.sh
-        if ! source "$SCRIPTDIR/scripts/get-pacscript.sh"; then
-            fancy_message error $"Failed to download the %b pacscript" "${GREEN}${PACKAGE}${NC}"
-            continue
-        fi
-        # shellcheck source=./misc/scripts/package-base.sh
-        source "$SCRIPTDIR/scripts/package-base.sh"
-    done
 fi
 
 rm -f "${up_list:?}" "${up_print:?}" "${up_urls:?}"
