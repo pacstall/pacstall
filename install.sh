@@ -187,7 +187,7 @@ chmod +x "${SCRIPTDIR}/scripts/"*
 xdg-mime install --novendor "${MIMEDIR}/packages/pacscript.xml"
 update-mime-database "${MIMEDIR}" 2>/dev/null
 update-desktop-database "${APPDIR}"
-if $(command -v update-icon-caches > /dev/null); then
+if command -v update-icon-caches > /dev/null; then
     update-icon-caches "${ICONDIR}"
 fi
 xdg-mime default pacscript.desktop application/x-pacscript
