@@ -28,7 +28,8 @@
 release artifacts, and `.deb` packages.
 * Create high quality prebuilt `.deb` packages for distribution to users.
 * During upgrades, you always get the latest build off of the latest commit
-from the developer for `-git` packages. No need to wait for the pacscript maintainer to update the script!
+from the developer for `-git` packages. No need to wait for the pacscript
+maintainer to update the script!
 * Ability to install programs from multiple repositories instead of a sole
 centralized repository.
 * Powerful and expressive package recipe format.
@@ -38,14 +39,19 @@ centralized repository.
 ### Installing
 
 We offer 3 ways to install Pacstall:
+
 1. From a bash script:
+
 ```bash
 sudo bash -c "$(curl -fsSL https://pacstall.dev/q/install || wget -q https://pacstall.dev/q/install -O -)"
 ```
+
 2. From [the PPR](https://ppr.pacstall.dev):
+
 ```bash
 sudo apt install pacstall
 ```
+
 3. From a `.deb` in our [release assets](https://github.com/pacstall/pacstall/releases/latest).
 
 ### Uninstalling
