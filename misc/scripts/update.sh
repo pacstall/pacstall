@@ -34,9 +34,14 @@ METADIR="/var/lib/pacstall/metadata"
 LOGDIR="/var/log/pacstall/error_log"
 SCRIPTDIR="/usr/share/pacstall"
 PACDIR="/tmp/pacstall"
+BINDIR="/usr/bin"
 MAN8DIR="/usr/share/man/man8"
 MAN5DIR="/usr/share/man/man5"
+LOCALEDIR="/usr/share/locale"
 PODIR="${SCRIPTDIR}/po"
+MIMEDIR="/usr/share/mime"
+APPDIR="/usr/share/applications"
+ICONDIR="/usr/share/icons/hicolor"
 BASH_COMPLETION_DIR="/usr/share/bash-completion/completions"
 FISH_COMPLETION_DIR="/usr/share/fish/vendor_completions.d"
 PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER:-$(whoami)}}")
@@ -45,6 +50,7 @@ pacstall_deps=(
     "sudo" "wget" "build-essential" "unzip" "git"
     "zstd" "iputils-ping" "aptitude" "bubblewrap"
     "jq" "distro-info-data" "spdx-licenses" "gettext"
+    "xdg-utils" "desktop-file-utils" "shared-mime-info"
 )
 
 echo -e "[${BGreen}+${NC}] INFO: Updating..."
@@ -68,7 +74,7 @@ for i in "${METADIR}" "${LOGDIR}" "${MAN8DIR}" "${MAN5DIR}" "${PODIR}" "${BASH_C
     sudo mkdir -p "${i}"
 done
 for lang in "${linguas[@]}"; do
-    sudo mkdir -p "/usr/share/locale/${lang}/LC_MESSAGES/"
+    sudo mkdir -p "${LOCALEDIR}/${lang}/LC_MESSAGES/"
 done
 
 fancy_message sub $"Checking dependencies"
@@ -115,16 +121,19 @@ done
 for i in {error_log,download,download-local,install-local,build-local}.sh; do
     sudo rm -f "${SCRIPTDIR:?}/scripts/$i"
 done
-sudo curl -s -o "/usr/bin/pacstall" "${REPO}/pacstall" &
+sudo curl -s -o "${BINDIR}/pacstall" "${REPO}/pacstall" &
 sudo curl -s -o "${MAN8DIR}/pacstall.8" "${REPO}/misc/man/pacstall.8" &
 sudo curl -s -o "${MAN5DIR}/pacstall.5" "${REPO}/misc/man/pacstall.5" &
 sudo curl -s -o "${BASH_COMPLETION_DIR}/pacstall" "${REPO}/misc/completion/bash" &
 sudo curl -s -o "${FISH_COMPLETION_DIR}/pacstall.fish" "${REPO}/misc/completion/fish" &
+sudo curl -s -o "${APPDIR}/pacscript.desktop" "${REPO}/misc/mime/pacscript.desktop" &
+sudo curl -s -o "${MIMEDIR}/packages/pacscript.xml" "${REPO}/misc/mime/pacscript.xml" &
+sudo curl -s -o "${ICONDIR}/scalable/mimetypes/application-x-pacscript.svg" "${REPO}/misc/mime/pacscript.svg" &
 wait && stty "${tty_settings}"
 
 fancy_message sub $"Rebuilding translations"
 for lang in "${linguas[@]}"; do
-    sudo msgfmt -o "/usr/share/locale/${lang}/LC_MESSAGES/pacstall.mo" "${PODIR}/${lang}.po"
+    sudo msgfmt -o "${LOCALEDIR}/${lang}/LC_MESSAGES/pacstall.mo" "${PODIR}/${lang}.po"
 done
 
 fancy_message sub $"Rebuilding manpages"
@@ -132,8 +141,15 @@ sudo gzip --force -9n "${MAN8DIR}/pacstall.8"
 sudo gzip --force -9n "${MAN5DIR}/pacstall.5"
 
 fancy_message sub $"Making scripts executable"
-sudo chmod +x "/usr/bin/pacstall"
+sudo chmod +x "${BINDIR}/pacstall"
 sudo chmod +x "${SCRIPTDIR}/scripts/"*
+sudo xdg-mime install --novendor "${MIMEDIR}/packages/pacscript.xml"
+sudo update-mime-database "${MIMEDIR}" 2>/dev/null
+sudo update-desktop-database "${APPDIR}"
+if $(command -v update-icon-caches > /dev/null); then
+    sudo update-icon-caches "${ICONDIR}"
+fi
+sudo xdg-mime default pacscript.desktop application/x-pacscript
 
 if [[ -n $GIT_USER ]]; then
     echo "pacstall master" | sudo tee "${SCRIPTDIR}/repo/update" > /dev/null

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Pacstall Package Script
+Exec=x-terminal-emulator -e bash -i -c 'for f in %U; do pacstall -I "${f}"; done; exec bash'
+Type=Application
+Icon=application-x-pacscript
+Terminal=false
+MimeType=application/x-pacscript
+NoDisplay=false
+Categories=System;

@@ -90,6 +90,7 @@ pacstall_deps=(
     "sudo" "wget" "build-essential" "unzip" "git"
     "zstd" "iputils-ping" "aptitude" "bubblewrap"
     "jq" "distro-info-data" "spdx-licenses" "gettext"
+    "xdg-utils" "desktop-file-utils" "shared-mime-info"
 )
 echo -ne "Do you want to install axel (faster downloads)? [${BGreen}Y${NC}/${RED}n${NC}] "
 read -r reply <&0
@@ -123,9 +124,14 @@ METADIR="/var/lib/pacstall/metadata"
 LOGDIR="/var/log/pacstall/error_log"
 SCRIPTDIR="/usr/share/pacstall"
 PACDIR="/tmp/pacstall"
+BINDIR="/usr/bin"
 MAN8DIR="/usr/share/man/man8"
 MAN5DIR="/usr/share/man/man5"
+LOCALEDIR="/usr/share/locale"
 PODIR="${SCRIPTDIR}/po"
+MIMEDIR="/usr/share/mime"
+APPDIR="/usr/share/applications"
+ICONDIR="/usr/share/icons/hicolor"
 BASH_COMPLETION_DIR="/usr/share/bash-completion/completions"
 FISH_COMPLETION_DIR="/usr/share/fish/vendor_completions.d"
 REPO="https://raw.githubusercontent.com/pacstall/pacstall/master"
@@ -138,7 +144,7 @@ fancy_message info "Making directories"
 mkdir -p "${SCRIPTDIR}/scripts" "${SCRIPTDIR}/repo" "${PACDIR}" "${METADIR}" "${LOGDIR}" "${MAN8DIR}" "${MAN5DIR}" "${PODIR}" "${BASH_COMPLETION_DIR}" "${FISH_COMPLETION_DIR}"
 chown "${PACSTALL_USER}" -cR "${PACDIR}" "${LOGDIR}"
 for lang in "${linguas[@]}"; do
-    mkdir -p "/usr/share/locale/${lang}/LC_MESSAGES/"
+    mkdir -p "${LOCALEDIR}/${lang}/LC_MESSAGES/"
 done
 
 fancy_message info "Pulling scripts from GitHub"
@@ -156,16 +162,19 @@ done
 for lang in "${linguas[@]}"; do
     wget -q --show-progress -N "${REPO}/misc/po/${lang}.po" -P "${PODIR}" &
 done
-wget -q --show-progress --progress=bar:force -O "/usr/bin/pacstall" "${REPO}/pacstall" &
+wget -q --show-progress --progress=bar:force -O "${BINDIR}/pacstall" "${REPO}/pacstall" &
 wget -q --show-progress --progress=bar:force -O "${MAN8DIR}/pacstall.8" "${REPO}/misc/man/pacstall.8" &
 wget -q --show-progress --progress=bar:force -O "${MAN5DIR}/pacstall.5" "${REPO}/misc/man/pacstall.5" &
 wget -q --show-progress --progress=bar:force -O "${BASH_COMPLETION_DIR}/pacstall" "${REPO}/misc/completion/bash" &
 wget -q --show-progress --progress=bar:force -O "${FISH_COMPLETION_DIR}/pacstall.fish" "${REPO}/misc/completion/fish" &
+wget -q --show-progress --progress=bar:force -O "${APPDIR}/pacscript.desktop" "${REPO}/misc/mime/pacscript.desktop" &
+wget -q --show-progress --progress=bar:force -O "${MIMEDIR}/packages/pacscript.xml" "${REPO}/misc/mime/pacscript.xml" &
+wget -q --show-progress --progress=bar:force -O "${ICONDIR}/scalable/mimetypes/application-x-pacscript.svg" "${REPO}/misc/mime/pacscript.svg" &
 wait
 
 fancy_message info "Building translations"
 for lang in "${linguas[@]}"; do
-    msgfmt -o "/usr/share/locale/${lang}/LC_MESSAGES/pacstall.mo" "${PODIR}/${lang}.po"
+    msgfmt -o "${LOCALEDIR}/${lang}/LC_MESSAGES/pacstall.mo" "${PODIR}/${lang}.po"
 done
 
 fancy_message info "Building manpages"
@@ -173,8 +182,15 @@ gzip --force -9n "${MAN8DIR}/pacstall.8"
 gzip --force -9n "${MAN5DIR}/pacstall.5"
 
 fancy_message info "Making scripts executable"
-chmod +x "/usr/bin/pacstall"
+chmod +x "${BINDIR}/pacstall"
 chmod +x "${SCRIPTDIR}/scripts/"*
+xdg-mime install --novendor "${MIMEDIR}/packages/pacscript.xml"
+update-mime-database "${MIMEDIR}" 2>/dev/null
+update-desktop-database "${APPDIR}"
+if $(command -v update-icon-caches > /dev/null); then
+    update-icon-caches "${ICONDIR}"
+fi
+xdg-mime default pacscript.desktop application/x-pacscript
 
 fancy_message info "Installation complete"
 # vim:set ft=sh ts=4 sw=4 et:
