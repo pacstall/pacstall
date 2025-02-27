@@ -24,10 +24,13 @@
 
 ### Features
 
-* Supports creating native packages from binaries, git repositories, appimages, release artifacts, and `.deb` packages.
+* Supports creating native packages from binaries, git repositories, appimages,
+release artifacts, and `.deb` packages.
 * Create high quality prebuilt `.deb` packages for distribution to users.
-* During upgrades, you always get the latest build off of the latest commit from the developer for `-git` packages. No need to wait for the pacscript maintainer to update the script!
-* Ability to install programs from multiple repositories instead of a sole centralized repository.
+* During upgrades, you always get the latest build off of the latest commit
+from the developer for `-git` packages. No need to wait for the pacscript maintainer to update the script!
+* Ability to install programs from multiple repositories instead of a sole
+centralized repository.
 * Powerful and expressive package recipe format.
 
 ---
