@@ -58,7 +58,7 @@ If you installed Pacstall from the bash script, you can run the command below. I
 bash -c "$(curl -fsSL https://pacstall.dev/q/uninstall || wget -q https://pacstall.dev/q/uninstall -O -)"
 ```
 
-#### Apt
+#### APT
 ```bash
 sudo apt remove pacstall
 ```
