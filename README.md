@@ -35,18 +35,38 @@
 
 ### Installing
 
-You can run the command below to install Pacstall.
-You can also grab the deb file [here](https://github.com/pacstall/pacstall/releases/latest).
+We offer 3 ways to install Pacstall: from a bash script, from [the PPR](https://ppr.pacstall.dev), and from a deb:
+
+#### Bash Script
 ```bash
 sudo bash -c "$(curl -fsSL https://pacstall.dev/q/install || wget -q https://pacstall.dev/q/install -O -)"
 ```
 
+#### PPR
+```bash
+sudo apt install pacstall
+```
+
+#### Manual Download
+You can grab the deb file [here](https://github.com/pacstall/pacstall/releases/latest).
+
 ### Uninstalling
 
-You can run the command below to uninstall Pacstall.
+If you installed Pacstall from the bash script, you can run the command below. If you are unsure how you installed Pacstall, please run `pacstall -U`. If it displays an error message, you have installed it with apt.
+
+> [!IMPORTANT]
+> If you installed Pacstall with apt, please make sure to uninstall any packages you may have installed before uninstalling Pacstall.
+
+#### Bash
 ```bash
 bash -c "$(curl -fsSL https://pacstall.dev/q/uninstall || wget -q https://pacstall.dev/q/uninstall -O -)"
 ```
+
+#### Apt
+```bash
+sudo apt remove pacstall
+```
+
 ---
 
 ### Basic Commands
