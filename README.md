@@ -36,7 +36,7 @@
 ### Installing
 
 You can run the command below to install Pacstall.
-You can also grab the deb file [here](https://github.com/pacstall/pacstall/releases/latest) but it may be a bit older.
+You can also grab the deb file [here](https://github.com/pacstall/pacstall/releases/latest).
 ```bash
 sudo bash -c "$(curl -fsSL https://pacstall.dev/q/install || wget -q https://pacstall.dev/q/install -O -)"
 ```
