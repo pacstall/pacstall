@@ -24,12 +24,11 @@
 
 ### Features
 
-*  Supports binary, git, appimage, building and `.deb` packages
-*  Accelerated package download using [axel](https://github.com/axel-download-accelerator/axel) (optional)
-*  During upgrades, you always get the latest build off of the latest commit from the developer for `-git` packages. No need to wait for the pacscript maintainer to update the script!
-*  Ability to install programs from multiple repositories
-*  Ability to track Pacstall updates from any fork/branch easily
-*  Completions available for `bash` (`ZSH`), and `fish`
+* Supports creating native packages from binaries, git repositories, appimages, release artifacts, and `.deb` packages.
+* Create high quality prebuilt `.deb` packages for distribution to users.
+* During upgrades, you always get the latest build off of the latest commit from the developer for `-git` packages. No need to wait for the pacscript maintainer to update the script!
+* Ability to install programs from multiple repositories instead of a sole centralized repository.
+* Powerful and expressive package recipe format.
 
 ---
 
