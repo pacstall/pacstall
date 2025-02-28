@@ -59,7 +59,7 @@ sudo apt install pacstall
 If you installed Pacstall from the bash script, you can run the command below. If you are unsure how you installed Pacstall, please run `pacstall -U`. If it displays an error message, you have installed it with APT.
 
 > [!IMPORTANT]
-> If you installed Pacstall with APT, please make sure to remove any unwanted packages with `pacstall -R foo` before uninstalling. You can run `pacstall -L` to list the currently installed packages.
+> If you installed Pacstall with APT, please make sure to remove any unwanted packages with `pacstall -R pkgname` before uninstalling. You can run `pacstall -L` to list the packages currently installed through Pacstall.
 
 #### Bash
 ```bash
