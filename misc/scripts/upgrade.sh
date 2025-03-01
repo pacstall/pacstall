@@ -129,7 +129,7 @@ N="$(nproc)"
         ((n = n % N))
         ((n++ == 0)) && wait && stty "$tty_settings"
         (
-            unset _pkgbase
+            unset _pkgbase _remoterepo
             source "$METADIR/$i"
             if [[ -n ${_pkgbase} ]]; then
                 localbase="${_pkgbase}"
@@ -142,6 +142,11 @@ N="$(nproc)"
             # if localver does not end with the correct pacstall version format, append it
             [[ ! $localver =~ -pacstall[0-9]+$ && ! $localver =~ -pacstall[0-9]+~git[a-zA-Z0-9_-]{8}$ ]] && localver="${localver}-pacstall1"
 
+            if [[ -z "${_remoterepo}" ]]; then
+                _remoterepo="orphan"
+                sudo sed -i '/_remotebranch=/d' "$METADIR/$i"
+                echo '_remoterepo="orphan"' | sudo tee -a "$METADIR/$i" > /dev/null
+            fi
             case "${_remoterepo}" in
                 *"github.com"*)
                     remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}" ;;
