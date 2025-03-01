@@ -79,12 +79,12 @@ fi
 if [[ -n ${compatible[*]} ]]; then
     if ! get_compatible_releases "${compatible[@]}"; then
         cleanup
-        [[ ${GITHUB_ACTIONS} == "true" ]] && exit 0 || exit 1
+        exit 1
     fi
 elif [[ -n ${incompatible[*]} ]]; then
     if ! get_incompatible_releases "${incompatible[@]}"; then
         cleanup
-        [[ ${GITHUB_ACTIONS} == "true" ]] && exit 0 || exit 1
+        exit 1
     fi
 fi
 
