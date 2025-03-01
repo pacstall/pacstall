@@ -79,12 +79,7 @@ fi
 if [[ -n ${compatible[*]} ]]; then
     if ! get_compatible_releases "${compatible[@]}"; then
         cleanup
-        if [[ ${GITHUB_ACTIONS} == "true" ]]; then
-            fancy_message warn "Exiting with exit code '0' on CI"
-            exit 0
-        else
-            exit 1
-        fi
+        exit 1
     fi
 elif [[ -n ${incompatible[*]} ]]; then
     if ! get_incompatible_releases "${incompatible[@]}"; then
