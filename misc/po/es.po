@@ -11,122 +11,122 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.10-dev\n"
 
-#: pacstall:273 misc/scripts/build.sh:163 misc/scripts/build.sh:686
+#: pacstall:286 misc/scripts/build.sh:163 misc/scripts/build.sh:688
 #: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:735
-#: misc/scripts/fetch-sources.sh:765 misc/scripts/package-base.sh:163
-#: misc/scripts/package-base.sh:184
+#: misc/scripts/fetch-sources.sh:765 misc/scripts/package-base.sh:173
+#: misc/scripts/package-base.sh:194
 msgid "Cleaning up"
 msgstr "Limpiando"
 
-#: pacstall:367
+#: pacstall:380
 msgid "Suggested solution(s)"
 msgstr "Solución(es) sugeridas"
 
-#: pacstall:401
+#: pacstall:414
 msgid "Packagelist not found"
 msgstr "Packagelist no encontrada"
 
-#: pacstall:402 pacstall:411
+#: pacstall:415 pacstall:424
 msgid "Confirm that '%b' exists"
 msgstr "Confirmar que '%b' existe"
 
-#: pacstall:404
+#: pacstall:417
 msgid "Failed to download file, check your connection"
 msgstr "No se ha podido descargar el archivo, compruebe su conexión"
 
-#: pacstall:410
+#: pacstall:423
 msgid "The URL cannot be found"
 msgstr "No se encuentra la URL"
 
-#: pacstall:418
+#: pacstall:431
 msgid "Failed with http code %s"
 msgstr "Fallo con código http %s"
 
-#: pacstall:419
+#: pacstall:432
 msgid "Confirm that '%b' is accessible"
 msgstr "Confirmar que '%b' es accesible"
 
-#: pacstall:643
+#: pacstall:656
 msgid "Reading input from pipe"
 msgstr "Lectura de la entrada de la tubería"
 
-#: pacstall:702
+#: pacstall:715
 msgid "Only one command flag can be used at a time"
 msgstr "Sólo se puede utilizar una bandera de comando a la vez"
 
-#: pacstall:740
+#: pacstall:753
 msgid "Pacstall is already running another instance"
 msgstr "Pacstall ya se está utilizando en otra instancia"
 
-#: pacstall:746
+#: pacstall:759
 msgid "The other instance has finished running, unlocking"
 msgstr "La otra instancia ha terminado su trabajo, desbloqueando"
 
-#: pacstall:755
+#: pacstall:768
 msgid "Prompts are disabled"
 msgstr "Preguntas desactivadas"
 
-#: pacstall:762
+#: pacstall:775
 msgid "Package will be built and not installed"
 msgstr "El paquete se creará pero no se instalará"
 
-#: pacstall:832 pacstall:905 pacstall:967 pacstall:1008 pacstall:1026
-#: pacstall:1200 pacstall:1256 misc/scripts/query-info.sh:28
+#: pacstall:851 pacstall:924 pacstall:986 pacstall:1027 pacstall:1045
+#: pacstall:1219 pacstall:1276 pacstall:1302 misc/scripts/query-info.sh:28
 msgid "You failed to specify a package"
 msgstr "No has especificado un paquete"
 
-#: pacstall:837
+#: pacstall:856
 msgid "The installation of %s was interrupted, removing files"
 msgstr "La instalación de %s se ha interrumpido, eliminando archivos"
 
-#: pacstall:874 misc/scripts/package-base.sh:129
+#: pacstall:893 misc/scripts/package-base.sh:139
 msgid "%s does not exist"
 msgstr "%s no existe"
 
-#: pacstall:912
+#: pacstall:931
 msgid "Payload not found"
 msgstr "Carga no encontrada"
 
-#: pacstall:925 pacstall:972 pacstall:1012 pacstall:1133 pacstall:1210
-#: pacstall:1243
+#: pacstall:944 pacstall:991 pacstall:1031 pacstall:1152 pacstall:1229
+#: pacstall:1263
 msgid "Could not connect to the internet"
 msgstr "No se puede conectar a Internet"
 
-#: pacstall:926 pacstall:973 pacstall:1013 pacstall:1134 pacstall:1211
-#: pacstall:1244
+#: pacstall:945 pacstall:992 pacstall:1032 pacstall:1153 pacstall:1230
+#: pacstall:1264
 msgid "Confirm that the URLs '%b' or '%b' are accessible"
 msgstr "Confirmar que las URL '%b' o '%b' sean accesibles"
 
-#: pacstall:942 pacstall:1225 misc/scripts/upgrade.sh:276
+#: pacstall:961 pacstall:1244 misc/scripts/upgrade.sh:282
 msgid "Failed to download the %b pacscript"
 msgstr "Error al descargar %b pacscript"
 
-#: pacstall:943 pacstall:1226
+#: pacstall:962 pacstall:1245
 msgid "Confirm that the package exists by running '%b'"
 msgstr "Confirmar que el paquete existe y se está ejecutando '%b'"
 
-#: pacstall:943 pacstall:1226
+#: pacstall:962 pacstall:1245
 msgid "Check your internet connection"
 msgstr "Comprueba tu conexión a Internet"
 
-#: pacstall:949 misc/scripts/package-base.sh:153
-#: misc/scripts/package-base.sh:177
+#: pacstall:968 misc/scripts/package-base.sh:163
+#: misc/scripts/package-base.sh:187
 msgid "Failed to install %b"
 msgstr "Fallo al instalar %b deb"
 
-#: pacstall:1035
+#: pacstall:1054
 msgid "Failed to remove %b"
 msgstr "Error al eliminar %b"
 
-#: pacstall:1056
+#: pacstall:1075
 msgid "You failed to specify a repo to add"
 msgstr "No ha especificado un repositorio para añadir"
 
-#: pacstall:1057
+#: pacstall:1076
 msgid "Add a repository in the following format:"
 msgstr "Agregar un repositorio en el siguiente formato:"
 
-#: pacstall:1057 pacstall:1078
+#: pacstall:1076 pacstall:1097
 msgid ""
 "Consult the pacstall man page by running '%b', and searching for the term "
 "'%b'"
@@ -134,19 +134,19 @@ msgstr ""
 "Consultar la página del manual de pacstall ejecutando '%b' y buscando el "
 "término '%b'"
 
-#: pacstall:1077
+#: pacstall:1096
 msgid "You failed to specify a repo to remove"
 msgstr "No ha especificado un repositorio para eliminar"
 
-#: pacstall:1078
+#: pacstall:1097
 msgid "Remove a repository in the following format:"
 msgstr "Eliminar un repositorio en el siguiente formato:"
 
-#: pacstall:1102
+#: pacstall:1121
 msgid "%s is not a git repository"
 msgstr "%s no es un repositorio git"
 
-#: pacstall:1139
+#: pacstall:1158
 msgid ""
 "The repository you are trying to upgrade to contains a version of pacstall "
 "that cannot be updated from %b"
@@ -154,7 +154,7 @@ msgstr ""
 "El repositorio al que intenta actualizar contiene una versión de pacstall "
 "que no puede actualizarse desde %b"
 
-#: pacstall:1140
+#: pacstall:1159
 msgid ""
 "Visit %s for more information on how to reinstall. Most packages will also "
 "need to be reinstalled"
@@ -162,53 +162,59 @@ msgstr ""
 "Visite %s para obtener más información sobre cómo reinstalar. También será "
 "necesario reinstalar la mayoría de los paquetes"
 
-#: pacstall:1148
+#: pacstall:1167
 msgid ""
 "Pacstall was installed from a %s, and cannot be updated with this command"
 msgstr ""
 "Pacstall se instaló desde un %s, y no puede actualizarse con este comando"
 
-#: pacstall:1149
+#: pacstall:1168
 msgid "Install the latest %b from the %b repository"
 msgstr "Instalar el %b más reciente del repositorio %b"
 
-#: pacstall:1149
+#: pacstall:1168
 msgid "Install the latest %b with the command '%b'"
 msgstr "Instalar el último %b con el comando '%b'"
 
-#: pacstall:1157 pacstall:1238
+#: pacstall:1176 pacstall:1258
 msgid "Invalid argument '%s'"
 msgstr "Argumento no válido '%s'"
 
-#: pacstall:1169
+#: pacstall:1188
 msgid "Nothing installed yet"
 msgstr "Aún no hay nada instalado"
 
-#: pacstall:1230
+#: pacstall:1249
 msgid "%b pacscript is downloaded to %b"
 msgstr "%b pacscript se descarga en %b"
 
-#: pacstall:1260 misc/scripts/query-info.sh:33
+#: pacstall:1280 pacstall:1307 misc/scripts/query-info.sh:33
 msgid "Package is not installed"
 msgstr "El paquete no está instalado"
 
-#: pacstall:1294
+#: pacstall:1319
+#, fuzzy
+#| msgid "'%s' is not a valid license"
+msgid "'%b' is not a valid option, use '%b' or '%b'"
+msgstr "'%s' no es una licencia válida"
+
+#: pacstall:1342
 msgid "Keeping build files"
 msgstr "Mantener los archivos de construcción"
 
-#: pacstall:1299
+#: pacstall:1347
 msgid "Skipping check() if present"
 msgstr "Saltarse check() si está presente"
 
-#: pacstall:1304
+#: pacstall:1352
 msgid "Downloading package entries quietly"
 msgstr "Descarga de entradas de paquetes en silencio"
 
-#: pacstall:1309
+#: pacstall:1357
 msgid "Building package without bwrap sandbox"
 msgstr "Construyendo paquete sin bwrap sandbox"
 
-#: pacstall:1310
+#: pacstall:1358
 msgid "Be cautious, this exposes your system to potential harm"
 msgstr "Ten cuidado, esto expone tu sistema a posibles daños"
 
@@ -273,7 +279,7 @@ msgstr "No se encuentra srcinfo.sh"
 
 #: misc/scripts/build.sh:95 misc/scripts/build.sh:100
 #: misc/scripts/fetch-sources.sh:687 misc/scripts/fetch-sources.sh:700
-#: misc/scripts/package.sh:225
+#: misc/scripts/package.sh:227
 msgid "%b [required]"
 msgstr "%b [requerido]"
 
@@ -282,7 +288,7 @@ msgid "%b [remote]"
 msgstr "%b [remoto]"
 
 #: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:696
-#: misc/scripts/package.sh:220
+#: misc/scripts/package.sh:222
 msgid "%b [installed]"
 msgstr "%b [instalado]"
 
@@ -304,7 +310,7 @@ msgstr "Dependencias opcionales"
 msgid "%b has exceeded the maximum number of optional dependencies. Skipping"
 msgstr "%b ha superado el número máximo de dependencias opcionales. Saltar"
 
-#: misc/scripts/build.sh:217 misc/scripts/package-base.sh:140
+#: misc/scripts/build.sh:217 misc/scripts/package-base.sh:150
 msgid "Selecting packages %b"
 msgstr "Recuperando paquetes %b"
 
@@ -328,39 +334,39 @@ msgstr "Comprimiendo"
 msgid "Packaging %b as %b"
 msgstr "Empaquetado %b como %b"
 
-#: misc/scripts/build.sh:367 misc/scripts/package-base.sh:149
+#: misc/scripts/build.sh:367 misc/scripts/package-base.sh:159
 msgid "Packaging %b"
 msgstr "Empaquetado %b"
 
-#: misc/scripts/build.sh:591
+#: misc/scripts/build.sh:594
 msgid "Empty key... Skipping"
 msgstr "Tecla vacía... Saltar"
 
-#: misc/scripts/build.sh:597
+#: misc/scripts/build.sh:600
 msgid "'%s' cannot contain empty path... Skipping"
 msgstr "'%s' no puede contener una ruta vacía... Saltar"
 
-#: misc/scripts/build.sh:601 misc/scripts/build.sh:609
+#: misc/scripts/build.sh:604 misc/scripts/build.sh:612
 msgid "'%s' cannot contain path starting with '/'... Skipping"
 msgstr "'%s' no puede contener una ruta que empiece por '/'... Saltar"
 
-#: misc/scripts/build.sh:604
+#: misc/scripts/build.sh:607
 msgid "'%s' is inside the package... Skipping"
 msgstr "'%s' está dentro del paquete... Saltar"
 
-#: misc/scripts/build.sh:683
+#: misc/scripts/build.sh:685
 msgid "Failed to install %s deb"
 msgstr "Fallo al instalar %s deb"
 
-#: misc/scripts/build.sh:707
+#: misc/scripts/build.sh:710
 msgid "Package built at %b"
 msgstr "Paquete construido en %b"
 
-#: misc/scripts/build.sh:709 misc/scripts/package.sh:50
+#: misc/scripts/build.sh:712 misc/scripts/package.sh:50
 msgid "Moving %b to %b"
 msgstr "Moviendo %b a %b"
 
-#: misc/scripts/build.sh:726
+#: misc/scripts/build.sh:729
 msgid "Repacking %b"
 msgstr "Reempaquetado %b"
 
@@ -610,11 +616,11 @@ msgstr "Ejecutando el gancho %s"
 msgid "Could not run %s hook successfully"
 msgstr "No se ha podido ejecutar correctamente el gancho de %s"
 
-#: misc/scripts/fetch-sources.sh:373 misc/scripts/package.sh:386
+#: misc/scripts/fetch-sources.sh:373 misc/scripts/package.sh:397
 msgid "Performing post install operations"
 msgstr "Realizando operaciones posteriores a la instalación"
 
-#: misc/scripts/fetch-sources.sh:389 misc/scripts/package.sh:387
+#: misc/scripts/fetch-sources.sh:389 misc/scripts/package.sh:398
 msgid "Storing pacscript"
 msgstr "Almacenando pacscript"
 
@@ -622,7 +628,7 @@ msgstr "Almacenando pacscript"
 msgid "Could not enter into %b"
 msgstr "No se ha podido entrar en %b"
 
-#: misc/scripts/fetch-sources.sh:400 misc/scripts/package.sh:401
+#: misc/scripts/fetch-sources.sh:400 misc/scripts/package.sh:412
 msgid "Done installing %b"
 msgstr "Finalizada la instalación de %b"
 
@@ -676,7 +682,7 @@ msgstr "No se ha podido instalar la compilación o comprobar las dependencias"
 msgid "Run '%b'"
 msgstr "Ejecutar '%b'"
 
-#: misc/scripts/get-pacscript.sh:38 misc/scripts/upgrade.sh:257
+#: misc/scripts/get-pacscript.sh:38 misc/scripts/upgrade.sh:263
 msgid "Could not enter %s"
 msgstr "No se pudo acceder al directorio %s"
 
@@ -704,31 +710,31 @@ msgstr "No se encuentra fetch-sources.sh"
 msgid "Interrupted, cleaning up"
 msgstr "Interrumpido, limpieza"
 
-#: misc/scripts/package-base.sh:93
+#: misc/scripts/package-base.sh:103
 msgid "Found pkgbase: %b"
 msgstr "Encontrado pkgbase: %b"
 
-#: misc/scripts/package-base.sh:119
+#: misc/scripts/package-base.sh:129
 msgid "%b has exceeded the maximum number of packages to build. Skipping"
 msgstr "%b ha excedido el número máximo de paquetes a construir. Saltar"
 
-#: misc/scripts/package-base.sh:199
+#: misc/scripts/package-base.sh:209
 msgid "%b is not an integer. Falling back to 1"
 msgstr "%b no es un número entero. Retroceso a 1"
 
-#: misc/scripts/package-base.sh:208
+#: misc/scripts/package-base.sh:218
 msgid "(%b) Do you want to view/edit the pacscript?"
 msgstr "(%b) ¿Quieres ver/editar el pacscript?"
 
-#: misc/scripts/package-base.sh:221
+#: misc/scripts/package-base.sh:231
 msgid "Editor not found, falling back to '%s'"
 msgstr "Editor no encontrado, volviendo a '%s'"
 
-#: misc/scripts/package-base.sh:226
+#: misc/scripts/package-base.sh:236
 msgid "Sourcing pacscript"
 msgstr "Evaluando pacscript"
 
-#: misc/scripts/package-base.sh:249
+#: misc/scripts/package-base.sh:259
 msgid "Could not source pacscript"
 msgstr "No se ha podido evaluar pacscript"
 
@@ -803,31 +809,31 @@ msgstr "%b rompe %s, que actualmente está instalado por pacstall"
 msgid "Checking pacstall dependencies"
 msgstr "Comprobando las dependencias de pacstall"
 
-#: misc/scripts/package.sh:213
+#: misc/scripts/package.sh:215
 msgid "%b [update]"
 msgstr "%b [actualización]"
 
-#: misc/scripts/package.sh:215 misc/scripts/package.sh:226
+#: misc/scripts/package.sh:217 misc/scripts/package.sh:228
 msgid "Failed to install dependency (%s from %s)"
 msgstr "Error al instalar la dependencia (%s de %s)"
 
-#: misc/scripts/package.sh:240
+#: misc/scripts/package.sh:242
 msgid "%s is associated with multiple source entries"
 msgstr "%s está asociado a varias entradas de 'source'"
 
-#: misc/scripts/package.sh:274
+#: misc/scripts/package.sh:276
 msgid "Retrieving packages"
 msgstr "Recuperando paquetes"
 
-#: misc/scripts/package.sh:363
+#: misc/scripts/package.sh:374
 msgid "Running functions"
 msgstr "Ejecutando funciones"
 
-#: misc/scripts/package.sh:368
+#: misc/scripts/package.sh:379
 msgid "Could not %s %s properly"
 msgstr "No se ha podido %s a %s correctamente"
 
-#: misc/scripts/package.sh:376 misc/scripts/package.sh:391
+#: misc/scripts/package.sh:387 misc/scripts/package.sh:402
 msgid "Could not enter into %s"
 msgstr "No se ha podido entrar en %s"
 
@@ -859,7 +865,7 @@ msgstr "Haciendo copia de seguridad %b"
 msgid "Installing %b"
 msgstr "Instalando %b"
 
-#: misc/scripts/query-info.sh:99
+#: misc/scripts/query-info.sh:101
 msgid "Key '%s' does not exist"
 msgstr "La tecla '%s' no existe"
 
@@ -874,45 +880,45 @@ msgstr ""
 "Es posible que tengas PPAs sobrantes en tu sistema. Puedes eliminarlos con "
 "'%b'"
 
-#: misc/scripts/search.sh:252 misc/scripts/search.sh:254
-#: misc/scripts/search.sh:286
+#: misc/scripts/search.sh:256 misc/scripts/search.sh:258
+#: misc/scripts/search.sh:290
 msgid "There is no package with the name %b in the repo %b"
 msgstr "No hay ningún paquete con el nombre %b en el repo %b"
 
-#: misc/scripts/search.sh:302
+#: misc/scripts/search.sh:306
 msgid "%b is not on your repo list or does not exist"
 msgstr "%b no está en tu lista de repositorios o no existe"
 
-#: misc/scripts/search.sh:357 misc/scripts/search.sh:438
-#: misc/scripts/search.sh:469
+#: misc/scripts/search.sh:361 misc/scripts/search.sh:444
+#: misc/scripts/search.sh:475
 msgid "There is no package with the name %b"
 msgstr "No hay paquete con el nombre %b"
 
-#: misc/scripts/search.sh:375
+#: misc/scripts/search.sh:379
 msgid "Add %s to the local repo absolute path on %b"
 msgstr "Añadir %s a la ruta principal del repositorio local en %b"
 
-#: misc/scripts/search.sh:379
+#: misc/scripts/search.sh:383
 msgid "Replace '~' with the full home path on %b"
 msgstr "Reemplaza '~' con la ruta de inicio completa en %b"
 
-#: misc/scripts/search.sh:385
+#: misc/scripts/search.sh:389
 msgid "Pacstall repo line improperly formatted: %b"
 msgstr "Pacstall línea repo formato incorrecto: %b"
 
-#: misc/scripts/search.sh:386 misc/scripts/search.sh:391
+#: misc/scripts/search.sh:390 misc/scripts/search.sh:395
 msgid "You can remove or fix the URL by editing %b"
 msgstr "Puedes eliminar o corregir la URL editando %b"
 
-#: misc/scripts/search.sh:390
+#: misc/scripts/search.sh:394
 msgid "Cannot connect to Pacstall repo: %b"
 msgstr "No se puede conectar a Pacstall repo: %b"
 
-#: misc/scripts/search.sh:499
+#: misc/scripts/search.sh:505
 msgid "%bDo you want to %s %b from the official repo?"
 msgstr "%b ¿Quieres %s %b del repositorio oficial?"
 
-#: misc/scripts/search.sh:517
+#: misc/scripts/search.sh:523
 msgid "%bDo you want to %s %b from the repo %b?"
 msgstr "%b ¿Quieres %s %b del repositorio %b?"
 
@@ -960,7 +966,7 @@ msgstr "No se ha podido cargar dep-tree.sh"
 msgid "Checking for updates"
 msgstr "Comprobando las actualizaciones"
 
-#: misc/scripts/upgrade.sh:109 misc/scripts/upgrade.sh:235
+#: misc/scripts/upgrade.sh:109 misc/scripts/upgrade.sh:240
 msgid "Nothing to upgrade"
 msgstr "No hay nada que actualizar"
 
@@ -972,15 +978,15 @@ msgstr "Construyendo árbol de dependencias"
 msgid "Checking versions"
 msgstr "Comprobando versiones"
 
-#: misc/scripts/upgrade.sh:175
+#: misc/scripts/upgrade.sh:180
 msgid "Package %b is not on %b anymore"
 msgstr "El paquete %b ya no está en %b"
 
-#: misc/scripts/upgrade.sh:238
+#: misc/scripts/upgrade.sh:243
 msgid "Packages can be upgraded"
 msgstr "Los paquetes pueden actualizarse"
 
-#: misc/scripts/upgrade.sh:262
+#: misc/scripts/upgrade.sh:268
 msgid "Do you want to upgrade %b?"
 msgstr "¿Quieres actualizar %b?"
 
