@@ -32,7 +32,8 @@ export METADIR="/var/lib/pacstall/metadata"
 export LOGDIR="/var/log/pacstall/error_log"
 printf -v LOGFILE "${LOGDIR}/%(%F_%T)T.log"
 export LOGFILE
-export PACDIR="${PACSTALL_TMPDIR:-/tmp}/pacstall"
+export PACTMP="${PACSTALL_TMPDIR:-/tmp}"
+export PACDIR="${PACTMP}/pacstall"
 export SCRIPTDIR="/usr/share/pacstall"
 export STAGEDIR="/usr/src/pacstall"
 export TEXTDOMAIN="pacstall"
@@ -650,6 +651,12 @@ unset State List
 source "$SCRIPTDIR/scripts/error-log.sh"
 # shellcheck source=./misc/scripts/bwrap.sh
 source "$SCRIPTDIR/scripts/bwrap.sh"
+
+if ! $(cd "${PACTMP}" 2> /dev/null); then
+    error_log 1 "init main"
+    fancy_message error $"Could not enter into %s" "${PACTMP}"
+    exit 1
+fi
 
 if [[ ! -t 0 ]]; then
     NON_INTERACTIVE=true

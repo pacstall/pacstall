@@ -33,13 +33,20 @@ export BPurple='\033[1;35m'
 METADIR="/var/lib/pacstall/metadata"
 LOGDIR="/var/log/pacstall/error_log"
 SCRIPTDIR="/usr/share/pacstall"
-PACDIR="/tmp/pacstall"
+PACTMP="${PACSTALL_TMPDIR:-/tmp}"
+PACDIR="${PACTMP}/pacstall"
 MAN8DIR="/usr/share/man/man8"
 MAN5DIR="/usr/share/man/man5"
 PODIR="${SCRIPTDIR}/po"
 BASH_COMPLETION_DIR="/usr/share/bash-completion/completions"
 FISH_COMPLETION_DIR="/usr/share/fish/vendor_completions.d"
 PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER:-$(whoami)}}")
+
+if ! $(cd "${PACTMP}" 2> /dev/null); then
+    error_log 1 "init update"
+    fancy_message error $"Could not enter into %s" "${PACTMP}"
+    exit 1
+fi
 
 pacstall_deps=(
     "sudo" "wget" "build-essential" "unzip" "git"
@@ -76,8 +83,8 @@ for pkg in "${pacstall_deps[@]}"; do
     if ! dpkg -s "${pkg}" > /dev/null 2>&1; then
         if [[ ${pkg} == "spdx-licenses" ]]; then
             if [[ -z $(apt-cache search --names-only "^${pkg}$") ]]; then
-                sudo curl -s "https://ftp.debian.org/debian/pool/main/s/${pkg}/${pkg}_3.21-1_all.deb" -o "/tmp/${pkg}.deb" && \
-                    sudo apt install "/tmp/${pkg}.deb" -y && sudo rm -f "/tmp/${pkg}.deb" && continue
+                sudo curl -s "https://ftp.debian.org/debian/pool/main/s/${pkg}/${pkg}_3.21-1_all.deb" -o "${PACTMP}/${pkg}.deb" && \
+                    sudo apt install "${PACTMP}/${pkg}.deb" -y && sudo rm -f "${PACTMP}/${pkg}.deb" && continue
             fi
         fi
         to_install+=("${pkg}")

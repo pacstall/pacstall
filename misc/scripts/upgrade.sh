@@ -116,9 +116,9 @@ tput cnorm # Show cursor again
 list=("${update_order[@]}")
 
 mkdir -p "${PACDIR}"
-up_list="$(mktemp /tmp/XXXXXX-pacstall-up-list)"
-up_print="$(mktemp /tmp/XXXXXX-pacstall-up-print)"
-up_urls="$(mktemp /tmp/XXXXXX-pacstall-up-urls)"
+up_list="$(mktemp ${PACTMP}/XXXXXX-pacstall-up-list)"
+up_print="$(mktemp ${PACTMP}/XXXXXX-pacstall-up-print)"
+up_urls="$(mktemp ${PACTMP}/XXXXXX-pacstall-up-urls)"
 
 fancy_message sub $"Checking versions"
 
