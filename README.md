@@ -24,29 +24,53 @@
 
 ### Features
 
-*  Supports binary, git, appimage, building and `.deb` packages
-*  Accelerated package download using [axel](https://github.com/axel-download-accelerator/axel) (optional)
-*  During upgrades, you always get the latest build off of the latest commit from the developer for `-git` packages. No need to wait for the pacscript maintainer to update the script!
-*  Ability to install programs from multiple repositories
-*  Ability to track Pacstall updates from any fork/branch easily
-*  Completions available for `bash` (`ZSH`), and `fish`
+* Supports creating native packages from binaries, git repositories, appimages,
+release artifacts, and `.deb` packages.
+* Create high quality prebuilt `.deb` packages for distribution to users.
+* During upgrades, you always get the latest build off of the latest commit
+from the developer for `-git` packages. No need to wait for the pacscript
+maintainer to update the script!
+* Ability to install programs from multiple repositories instead of a sole
+centralized repository.
+* Powerful and expressive package recipe format.
 
 ---
 
 ### Installing
 
-You can run the command below to install Pacstall.
-You can also grab the deb file [here](https://github.com/pacstall/pacstall/releases/latest) but it may be a bit older.
+We offer 3 ways to install Pacstall:
+
+1. From a bash script:
+
 ```bash
 sudo bash -c "$(curl -fsSL https://pacstall.dev/q/install || wget -q https://pacstall.dev/q/install -O -)"
 ```
 
+2. From [the PPR](https://ppr.pacstall.dev):
+
+```bash
+sudo apt install pacstall
+```
+
+3. From a `.deb` in our [release assets](https://github.com/pacstall/pacstall/releases/latest).
+
 ### Uninstalling
 
-You can run the command below to uninstall Pacstall.
+If you installed Pacstall from the bash script, you can run the command below. If you are unsure how you installed Pacstall, please run `pacstall -U`. If it displays an error message, you have installed it with APT.
+
+> [!IMPORTANT]
+> If you installed Pacstall with APT, please make sure to remove any unwanted packages with `pacstall -R pkgname` before uninstalling. You can run `pacstall -L` to list the packages currently installed through Pacstall.
+
+#### Bash
 ```bash
 bash -c "$(curl -fsSL https://pacstall.dev/q/uninstall || wget -q https://pacstall.dev/q/uninstall -O -)"
 ```
+
+#### APT
+```bash
+sudo apt remove pacstall
+```
+
 ---
 
 ### Basic Commands
