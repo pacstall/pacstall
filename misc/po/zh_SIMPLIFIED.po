@@ -11,202 +11,207 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 5.10-dev\n"
 
-#: pacstall:286 misc/scripts/build.sh:163 misc/scripts/build.sh:688
+#: pacstall:287 misc/scripts/build.sh:163 misc/scripts/build.sh:688
 #: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:735
 #: misc/scripts/fetch-sources.sh:765 misc/scripts/package-base.sh:173
 #: misc/scripts/package-base.sh:194
 msgid "Cleaning up"
 msgstr "正在清理"
 
-#: pacstall:380
+#: pacstall:381
 msgid "Suggested solution(s)"
 msgstr "建议的解决方案"
 
-#: pacstall:414
+#: pacstall:415
 msgid "Packagelist not found"
 msgstr "未找到包列表"
 
-#: pacstall:415 pacstall:424
+#: pacstall:416 pacstall:425
 msgid "Confirm that '%b' exists"
 msgstr "确认'%b'存在"
 
-#: pacstall:417
+#: pacstall:418
 msgid "Failed to download file, check your connection"
 msgstr "下载文件失败，请检查您的连接"
 
-#: pacstall:423
+#: pacstall:424
 msgid "The URL cannot be found"
 msgstr "找不到链接"
 
-#: pacstall:431
+#: pacstall:432
 msgid "Failed with http code %s"
 msgstr "http代码%s失败"
 
-#: pacstall:432
+#: pacstall:433
 msgid "Confirm that '%b' is accessible"
 msgstr "确认'%b'可访问"
 
-#: pacstall:656
+#: pacstall:657 misc/scripts/package.sh:387 misc/scripts/package.sh:402
+#: misc/scripts/update.sh:47
+msgid "Could not enter into %s"
+msgstr "无法进入此 %s"
+
+#: pacstall:663
 msgid "Reading input from pipe"
 msgstr "从队列读取输入"
 
-#: pacstall:715
+#: pacstall:722
 msgid "Only one command flag can be used at a time"
 msgstr "一次只能使用一个命令标志"
 
-#: pacstall:753
+#: pacstall:760
 msgid "Pacstall is already running another instance"
 msgstr "Pacstall已在运行另一个实例"
 
-#: pacstall:759
+#: pacstall:766
 msgid "The other instance has finished running, unlocking"
 msgstr "另一个实例已运行完毕，正在解锁"
 
-#: pacstall:768
+#: pacstall:775
 msgid "Prompts are disabled"
 msgstr "提示已禁用"
 
-#: pacstall:775
+#: pacstall:782
 msgid "Package will be built and not installed"
 msgstr "包将被构建且不安装"
 
-#: pacstall:851 pacstall:924 pacstall:986 pacstall:1027 pacstall:1045
-#: pacstall:1219 pacstall:1276 pacstall:1302 misc/scripts/query-info.sh:28
+#: pacstall:858 pacstall:931 pacstall:993 pacstall:1034 pacstall:1052
+#: pacstall:1226 pacstall:1283 pacstall:1309 misc/scripts/query-info.sh:28
 msgid "You failed to specify a package"
 msgstr "您未能指定一个包"
 
-#: pacstall:856
+#: pacstall:863
 msgid "The installation of %s was interrupted, removing files"
 msgstr "%s的安装被中断，正在移除文件"
 
-#: pacstall:893 misc/scripts/package-base.sh:139
+#: pacstall:900 misc/scripts/package-base.sh:139
 msgid "%s does not exist"
 msgstr "%s不存在"
 
-#: pacstall:931
+#: pacstall:938
 msgid "Payload not found"
 msgstr "未找到有效HTTP数据"
 
-#: pacstall:944 pacstall:991 pacstall:1031 pacstall:1152 pacstall:1229
-#: pacstall:1263
+#: pacstall:951 pacstall:998 pacstall:1038 pacstall:1159 pacstall:1236
+#: pacstall:1270
 msgid "Could not connect to the internet"
 msgstr "无法连接到互联网"
 
-#: pacstall:945 pacstall:992 pacstall:1032 pacstall:1153 pacstall:1230
-#: pacstall:1264
+#: pacstall:952 pacstall:999 pacstall:1039 pacstall:1160 pacstall:1237
+#: pacstall:1271
 msgid "Confirm that the URLs '%b' or '%b' are accessible"
 msgstr "确认链接 '%b' 或 '%b' 可访问"
 
-#: pacstall:961 pacstall:1244 misc/scripts/upgrade.sh:282
+#: pacstall:968 pacstall:1251 misc/scripts/upgrade.sh:282
 msgid "Failed to download the %b pacscript"
 msgstr "下载%b pacscript失败"
 
-#: pacstall:962 pacstall:1245
+#: pacstall:969 pacstall:1252
 msgid "Confirm that the package exists by running '%b'"
 msgstr "通过运行'%b'确认包存在"
 
-#: pacstall:962 pacstall:1245
+#: pacstall:969 pacstall:1252
 msgid "Check your internet connection"
 msgstr "检查您的互联网连接"
 
-#: pacstall:968 misc/scripts/package-base.sh:163
+#: pacstall:975 misc/scripts/package-base.sh:163
 #: misc/scripts/package-base.sh:187
 msgid "Failed to install %b"
 msgstr "安装%b失败"
 
-#: pacstall:1054
+#: pacstall:1061
 msgid "Failed to remove %b"
 msgstr "移除%b失败"
 
-#: pacstall:1075
+#: pacstall:1082
 msgid "You failed to specify a repo to add"
 msgstr "您未能指定要添加的仓库"
 
-#: pacstall:1076
+#: pacstall:1083
 msgid "Add a repository in the following format:"
 msgstr "按照以下格式添加仓库："
 
-#: pacstall:1076 pacstall:1097
+#: pacstall:1083 pacstall:1104
 msgid ""
 "Consult the pacstall man page by running '%b', and searching for the term "
 "'%b'"
 msgstr "通过运行'%b'并搜索'%b'来查阅pacstall手册页"
 
-#: pacstall:1096
+#: pacstall:1103
 msgid "You failed to specify a repo to remove"
 msgstr "您未能指定要移除的仓库"
 
-#: pacstall:1097
+#: pacstall:1104
 msgid "Remove a repository in the following format:"
 msgstr "按照以下格式移除仓库："
 
-#: pacstall:1121
+#: pacstall:1128
 msgid "%s is not a git repository"
 msgstr "%s不是一个git仓库"
 
-#: pacstall:1158
+#: pacstall:1165
 msgid ""
 "The repository you are trying to upgrade to contains a version of pacstall "
 "that cannot be updated from %b"
 msgstr "您尝试升级的仓库包含一个无法从%b更新的pacstall版本"
 
-#: pacstall:1159
+#: pacstall:1166
 msgid ""
 "Visit %s for more information on how to reinstall. Most packages will also "
 "need to be reinstalled"
 msgstr "访问%s以获取更多关于如何重新安装的信息。大多数包也需要重新安装"
 
-#: pacstall:1167
+#: pacstall:1174
 msgid ""
 "Pacstall was installed from a %s, and cannot be updated with this command"
 msgstr "Pacstall 是从%s安装的，无法使用此命令进行更新"
 
-#: pacstall:1168
+#: pacstall:1175
 msgid "Install the latest %b from the %b repository"
 msgstr "从 %b仓库中安装最新的 %b"
 
-#: pacstall:1168
+#: pacstall:1175
 msgid "Install the latest %b with the command '%b'"
 msgstr "使用命令'%b'安装最新的%b"
 
-#: pacstall:1176 pacstall:1258
+#: pacstall:1183 pacstall:1265
 msgid "Invalid argument '%s'"
 msgstr "无效参数'%s'"
 
-#: pacstall:1188
+#: pacstall:1195
 msgid "Nothing installed yet"
 msgstr "尚未安装任何内容"
 
-#: pacstall:1249
+#: pacstall:1256
 msgid "%b pacscript is downloaded to %b"
 msgstr "%b pacscript已下载到%b"
 
-#: pacstall:1280 pacstall:1307 misc/scripts/query-info.sh:33
+#: pacstall:1287 pacstall:1314 misc/scripts/query-info.sh:33
 msgid "Package is not installed"
 msgstr "包未安装"
 
-#: pacstall:1319
+#: pacstall:1326
 #, fuzzy
 msgid "'%b' is not a valid option, use '%b' or '%b'"
 msgstr "此 '%s' 不是个有效的许可证"
 
-#: pacstall:1342
+#: pacstall:1349
 msgid "Keeping build files"
 msgstr "保留构建文件"
 
-#: pacstall:1347
+#: pacstall:1354
 msgid "Skipping check() if present"
 msgstr "如果存在，跳过check()"
 
-#: pacstall:1352
+#: pacstall:1359
 msgid "Downloading package entries quietly"
 msgstr "静默下载包条目"
 
-#: pacstall:1357
+#: pacstall:1364
 msgid "Building package without bwrap sandbox"
 msgstr "在没有bwrap沙箱的情况下构建包"
 
-#: pacstall:1358
+#: pacstall:1365
 msgid "Be cautious, this exposes your system to potential harm"
 msgstr "请小心，这会使您的系统面临潜在风险"
 
@@ -825,10 +830,6 @@ msgstr "运行该函数中"
 msgid "Could not %s %s properly"
 msgstr ""
 
-#: misc/scripts/package.sh:387 misc/scripts/package.sh:402
-msgid "Could not enter into %s"
-msgstr "无法进入此 %s"
-
 #: misc/scripts/quality-assurance.sh:49
 msgid "%b is not a valid provider!"
 msgstr "此 %b 不是个有效的提供者!"
@@ -920,41 +921,41 @@ msgstr "%b您要 %s %b 从官方仓库吗?"
 msgid "%bDo you want to %s %b from the repo %b?"
 msgstr "%b您要 %s %b 从仓库吗?"
 
-#: misc/scripts/update.sh:57
+#: misc/scripts/update.sh:64
 #, fuzzy
 msgid "Invalid URL"
 msgstr "无效网址"
 
-#: misc/scripts/update.sh:58
+#: misc/scripts/update.sh:65
 #, fuzzy
 msgid "Confirm that '%b' is valid"
 msgstr "确认 '%b' 是有效的"
 
-#: misc/scripts/update.sh:63
+#: misc/scripts/update.sh:70
 msgid "Fetching translation list"
 msgstr "正在获取翻译列表"
 
-#: misc/scripts/update.sh:66
+#: misc/scripts/update.sh:73
 msgid "Updating directories"
 msgstr "正在更新目录"
 
-#: misc/scripts/update.sh:74
+#: misc/scripts/update.sh:81
 msgid "Checking dependencies"
 msgstr "检查依赖中"
 
-#: misc/scripts/update.sh:101
+#: misc/scripts/update.sh:108
 msgid "Pulling scripts from GitHub"
 msgstr "正在从GitHub获取脚本"
 
-#: misc/scripts/update.sh:125
+#: misc/scripts/update.sh:132
 msgid "Rebuilding translations"
 msgstr "正在重新构建翻译"
 
-#: misc/scripts/update.sh:130
+#: misc/scripts/update.sh:137
 msgid "Rebuilding manpages"
 msgstr "正在重新构建manpages"
 
-#: misc/scripts/update.sh:134
+#: misc/scripts/update.sh:141
 msgid "Making scripts executable"
 msgstr "正在构建可执行脚本中"
 
