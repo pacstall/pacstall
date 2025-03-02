@@ -92,7 +92,9 @@ fi
 if [[ -n ${_mask[*]} ]]; then
     mask="${_mask[*]}"
 fi
-
+if ! ${_upgrade}; then
+    upg="hold"
+fi
 if [[ -n ${QUERY} ]]; then
     query="${!QUERY}"
     if [[ -z ${query} ]]; then
@@ -138,6 +140,9 @@ if [[ -v dependencies ]]; then
     echo -e "${BGreen}dependencies${NC}: ${dependencies}"
 fi
 echo -e "${BGreen}install type${NC}: ${install_type}"
+if [[ -v upg ]]; then
+    echo -e "${BGreen}upgrade${NC}: ${upg}"
+fi
 if [[ ${PACKAGE} == *"-deb" ]]; then
     echo -e "${BGreen}modified by pacstall${NC}: ${mbp}"
 fi

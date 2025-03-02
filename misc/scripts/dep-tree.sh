@@ -58,11 +58,11 @@ function dep_tree.load_traits() {
     local -n out_arr
     pkg="${1:?No pkg given to dep_tree.load_traits}"
     out_arr="${2:?No arr given to dep_tree.load_traits}"
-    unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch _mask 2> /dev/null
+    unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch _mask _upgrade 2> /dev/null
     # shellcheck disable=SC1090
     source "${METADIR}/${pkg}"
 
-    if [[ -z ${_remoterepo} ]]; then
+    if ! ${_upgrade}; then
         out_arr['upgrade']=false
     else
         out_arr['upgrade']=true
@@ -158,7 +158,7 @@ function dep_tree.trim_pacdeps() {
     local -n merged_array="${1:?Pass array to dep_tree.trim_pacdeps}"
     local i z
     for i in "${merged_array[@]}"; do
-        unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch _mask 2> /dev/null
+        unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch _mask _upgrade 2> /dev/null
         # shellcheck disable=SC1090
         source "${METADIR}/${i}"
         if [[ -n ${_pacdeps[*]} ]]; then

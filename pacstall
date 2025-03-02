@@ -616,7 +616,7 @@ function getMasks() {
         if [[ -n ${_mask[*]} ]]; then
             masks+=("${_mask[@]}")
         fi
-        unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch _mask 2> /dev/null
+        unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch _mask _upgrade 2> /dev/null
     done
 }
 
@@ -635,7 +635,7 @@ function getMasks_offending_pkg() {
                 return 0
             fi
         fi
-        unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch _mask 2> /dev/null
+        unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch _mask _upgrade 2> /dev/null
     done
     { ignore_stack=true; return 1; }
 }
@@ -687,7 +687,7 @@ done
 
 # Remove duplicates
 declare -A arg_map=(
-    ["--install"]="-I" ["--search"]="-S" ["--remove"]="-R" ["--download"]="-D"
+    ["--install"]="-I" ["--search"]="-S" ["--remove"]="-R" ["--download"]="-D" ["--mark"]="-M"
     ["--add-repo"]="-A" ["--remove-repo"]="-Rr" ["--update"]="-U" ["--list"]="-L" ["--list-upgrades"]="-Lu"
     ["--upgrade"]="-Up" ["--search-description"]="-Sd" ["--search-info"]="-Si" ["--cache-info"]="-Ci"
     ["--quality-assurance"]="-Qa" ["--tree"]="-T" ["--version"]="-V" ["--help"]="-h" ["--build"]="-B"
@@ -704,8 +704,8 @@ for arg in "${argument_list[@]}"; do
 done
 
 # Check if only one command flag is being used
-short_commands=("-I" "-S" "-R" "-D" "-A" "-Rr" "-U" "-L" "-Lu" "-Up" "-Qa" "-Sd" "-Si" "-Ci" "-T" "-V" "-h")
-long_commands=("--install" "--search" "--remove" "--download" "--add-repo" "--remove-repo" "--update" "--list" "--list-upgrades" "--upgrade" "--quality-assurance" "--search-description" "--search-info" "--cache-info" "--tree" "--version" "--help")
+short_commands=("-I" "-S" "-R" "-D" "-A" "-Rr" "-U" "-L" "-Lu" "-Up" "-Qa" "-Sd" "-Si" "-Ci" "-M" "-T" "-V" "-h")
+long_commands=("--install" "--search" "--remove" "--download" "--add-repo" "--remove-repo" "--update" "--list" "--list-upgrades" "--upgrade" "--quality-assurance" "--search-description" "--search-info" "--cache-info" "--mark" "--tree" "--version" "--help")
 commands=("${short_commands[@]}" "${long_commands[@]}")
 matches=($(comm -12 <(sort <(printf "%s\n" "${unique_argument_list[@]}")) <(sort <(printf "%s\n" "${commands[@]}"))))
 if ((${#matches[@]} <= 1)); then
@@ -777,7 +777,7 @@ while [[ $1 != "--" ]]; do
             ;;
 
         -h | --help)
-            echo -e "Usage: pacstall [-x] [-h] {-I,-S,-R,-D,-A,-Rr,-U,-L,-Lu,-Up,-Qa,-Sd,-Si,-Ci,-T,-V} [-P] [-K] [-B] [-Nc] [-Q] [-Ns]
+            echo -e "Usage: pacstall [-x] [-h] {-I,-S,-R,-D,-A,-Rr,-U,-L,-Lu,-Up,-Qa,-Sd,-Si,-Ci,-M,-T,-V} [-P] [-K] [-B] [-Nc] [-Q] [-Ns]
 
 An AUR inspired package manager for Ubuntu.
 
@@ -810,6 +810,8 @@ Commands:
         Query information about a remote package.
     ${BOLD}-Ci${NC}, ${BOLD}--cache-info${NC} <package>
         Query information about an installed package.
+    ${BOLD}-M${NC}, ${BOLD}--mark${NC} <package> {hold|unhold}
+        Toggle upgrade checking of an installed package.
     ${BOLD}-T${NC}, ${BOLD}--tree${NC} <package>
         Display a tree graph of an installed package.
     ${BOLD}-V${NC}, ${BOLD}--version${NC}
@@ -1191,7 +1193,7 @@ Helpful links:
 
             if [[ -t 1 ]]; then
                 for pkg in "${packages_installed[@]}"; do
-                    unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch _maintainer _mask 2> /dev/null
+                    unset _pacstall_depends _pacdeps _name _version _install_date _date _ppa _homepage _gives _remoterepo _remotebranch _maintainer _mask _upgrade 2> /dev/null
                     source ./"${pkg}"
                     echo -e "${BYellow}~${NC} ${BGreen}${_name}${BPurple}@${BCyan}${_version}${NC}"
                     if [[ -n ${_gives} ]]; then
@@ -1199,7 +1201,7 @@ Helpful links:
                     fi
                     echo -e "   ${BBlue}maintainer${NC}   : ${BOLD}${_maintainer:-$(dpkg-query '--showformat=${Maintainer}\n' --show "${_gives:-$_name}")}${NC}"
                     echo -e "   ${BBlue}size${NC}         : ${BOLD}${_install_size:-unknown}${NC}"
-                    echo -e "   ${BBlue}repository${NC}   : ${BOLD}${_remoterepo:-local}${NC}"
+                    echo -e "   ${BBlue}repository${NC}   : ${BOLD}${_remoterepo:-orphan}${NC}"
                     echo -e "   ${BBlue}install date${NC} : ${BOLD}${_date:-unknown}${NC}"
                     if [[ ${pkg} != "${packages_installed[-1]}" ]]; then
                         echo
@@ -1290,6 +1292,34 @@ Helpful links:
             QUERY=$3
             # shellcheck source=./misc/scripts/query-info.sh
             source "$SCRIPTDIR/scripts/query-info.sh"
+            exit 0
+            ;;
+
+        -M | --mark)
+            PACKAGE=$2
+            STATE=$3
+            if [[ -z $PACKAGE ]]; then
+                fancy_message error $"You failed to specify a package"
+                exit 1
+            fi
+
+            if [[ ! -f "$METADIR/$PACKAGE" ]]; then
+                fancy_message error $"Package is not installed"
+                exit 1
+            fi
+            case "${STATE}" in
+                hold)
+                    sudo sed -i '/_upgrade=/d' "$METADIR/$PACKAGE"
+                    echo "_upgrade=false" | sudo tee -a "$METADIR/$PACKAGE" > /dev/null
+                    ;;
+                unhold)
+                    sudo sed -i '/_upgrade=/d' "$METADIR/$PACKAGE"
+                    ;;
+                *)
+                    fancy_message error $"'%b' is not a valid option, use '%b' or '%b'" "${STATE}" "hold" "unhold"
+                    exit 1
+                    ;;
+            esac
             exit 0
             ;;
 

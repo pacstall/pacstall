@@ -846,6 +846,8 @@ function write_meta() {
         if [[ -n ${pBRANCH} ]]; then
             echo "_remotebranch=\"$pBRANCH\""
         fi
+    else
+        echo '_remoterepo="orphan"'
     fi
     if [[ -n ${pacdeps[*]} ]]; then
         _pacdeps=("${pacdeps[@]}")
