@@ -14,7 +14,7 @@
 . ftr VB CB
 . ftr VBI CBI
 .\}
-.TH "Pacstall" "8" "February 9, 2025" "Pacstall 6.1.1 Butterscotch" "General Commands Manual"
+.TH "Pacstall" "8" "March 6, 2025" "Pacstall 6.2.0 Picton" "General Commands Manual"
 .hy
 .SH NAME
 .PP
@@ -40,9 +40,11 @@ Pacstall - The AUR for Ubuntu
 .PP
 \f[B]pacstall -U\f[R] [\f[I]username branch\f[R]]
 .PP
-\f[B]pacstall -L\f[R]
+\f[B]pacstall\f[R] [\f[B]-L -Lu\f[R]]
 .PP
 \f[B]pacstall\f[R] [\f[B]-P -K\f[R]] \f[B]-Up\f[R]
+.PP
+\f[B]pacstall -M\f[R] \f[I]package\f[R] [\f[B]hold unhold\f[R]]
 .PP
 \f[B]pacstall -Ci\f[R] \f[I]package\f[R] [\f[I]key\f[R]]
 .PP
@@ -439,6 +441,9 @@ Upgrade packages that have a newer version.
 \f[B]-L\f[R], \f[B]--list\f[R]
 List installed packages.
 .TP
+\f[B]-Lu\f[R], \f[B]--list-upgrades\f[R]
+List available upgrades for packages.
+.TP
 \f[B]-T\f[R], \f[B]--tree\f[R]
 Display a tree graph of a package.
 .TP
@@ -454,6 +459,26 @@ You can specify an arbitrary repository like so:
 $ \f[B]pacstall -D neofetch\f[R]\[at]\f[I]user\f[R]/\f[I]reponame\f[R] #
 This downloads the neofetch pacscript from
 <\f[B]https://github.com/user/reponame\f[R]>
+.RE
+.RE
+.TP
+\f[B]-M\f[R], \f[B]--mark\f[R]
+Prevent an installed package from being checked for upgrades.
+The hold will then remain until this command is used on the package, or
+if the package is manually reinstalled or upgraded.
+Used like so:
+.RS
+.RS
+.PP
+$ \f[B]pacstall -M\f[R] \f[I]neofetch\f[R] \f[I]hold\f[R] # marks
+neofetch to be held from upgrades
+.RE
+.RE
+.RS
+.RS
+.PP
+$ \f[B]pacstall -M\f[R] \f[I]neofetch\f[R] \f[I]unhold\f[R] # marks
+neofetch to check for upgrades again
 .RE
 .RE
 .TP
@@ -482,9 +507,19 @@ Used like:
 .RS
 .RS
 .PP
-$ \f[B]pacstall -Qa\f[R] \f[I]firefox-bin\f[R]#\f[I]5853\f[R] $
-\f[B]pacstall -Qa\f[R]
+$ \f[B]pacstall -Qa\f[R] \f[I]firefox-bin\f[R]#\f[I]5853\f[R]
+.RE
+.RE
+.RS
+.RS
+.PP
+$ \f[B]pacstall -Qa\f[R]
 \f[I]firefox-bin\f[R]#\f[I]5853\f[R]\[at]\f[I]github:pacstall/pacstall-programs\f[R]
+.RE
+.RE
+.RS
+.RS
+.PP
 $ \f[B]pacstall -Qa\f[R]
 \f[I]firefox-bin\f[R]\[at]\f[I]github:pacstall/pacstall-programs\f[R]#\f[I]5853\f[R]
 .RE
@@ -574,7 +609,15 @@ Can be set to \f[V]axel\f[R], \f[V]wget\f[R], \f[V]quiet-wget\f[R], or
 \f[V]curl\f[R].
 .TP
 \f[B]PACSTALL_PAYLOAD\f[R]
-Sets the path to a pre-downloaded package archive.
+Sets the path to a pre-downloaded package archive or archives to be used
+in place of \f[V]source\f[R] downloads.
+Multiple files should be listed in a single string, using \f[V];:\f[R]
+as the separator.
+.TP
+\f[B]PACSTALL_TMPDIR\f[R]
+Sets the path to perform downloads, extractions, and builds.
+Should always be defined \f[B]without\f[R] a trailing (ending) slash.
+Defaults to \f[V]/tmp\f[R] if not specified.
 .TP
 \f[B]NO_COLOR\f[R]
 Turns off all colors.
