@@ -118,7 +118,7 @@ else
     full_version="${epoch+$epoch:}${pkgver}-pacstall${pkgrel:-1}"
 fi
 
-if ((PACSTALL_INSTALL)) && is_package_installed "${pacname}" && dpkg --compare-versions "${full_version}" eq "$(pacstall -Ci ${pacname} pacversion)"; then
+if ((PACSTALL_INSTALL)) && is_package_installed "${pacname}" && dpkg --compare-versions "${full_version}" eq "$(pacstall -Ci "${pacname}" pacversion)"; then
     fancy_message warn $"Reinstalling '%s'" "${pacname}"
 fi
 
