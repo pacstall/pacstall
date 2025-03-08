@@ -55,6 +55,7 @@ if [[ -n ${_pkgbase} ]]; then
     base="${_pkgbase}"
 fi
 get_field "$PACKAGE" Version version
+pacversion="${_version}"
 if [[ -n ${_install_size} ]]; then
     size="${_install_size}"
 fi
@@ -111,6 +112,9 @@ if [[ -v base ]]; then
     echo -e "${BGreen}base${NC}: ${base}"
 fi
 echo -e "${BGreen}version${NC}: ${version}"
+if [[ ${pacversion} != "${version}" ]]; then
+    echo -e "${BGreen}pacstall version${NC}: ${pacversion}"
+fi
 if [[ -v size ]]; then
     echo -e "${BGreen}size${NC}: ${size}"
 fi
