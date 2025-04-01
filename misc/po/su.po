@@ -1,224 +1,239 @@
 msgid ""
 msgstr ""
+"PO-Revision-Date: 2025-04-01 13:38+0000\n"
+"Last-Translator: \"James \\\"Jim\\\" Ed Randson\" "
+"<053476233@ecampus.ut.ac.id>\n"
+"Language-Team: Sundanese <https://hosted.weblate.org/projects/pacstall/"
+"pacstall/su/>\n"
 "Language: su\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #: pacstall:287 misc/scripts/build.sh:163 misc/scripts/build.sh:688
 #: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:735
 #: misc/scripts/fetch-sources.sh:765 misc/scripts/package-base.sh:173
 #: misc/scripts/package-base.sh:194
 msgid "Cleaning up"
-msgstr ""
+msgstr "Ngaberesihkeun"
 
 #: pacstall:381
 msgid "Suggested solution(s)"
-msgstr ""
+msgstr "Solusi anu disarankeun"
 
 #: pacstall:415
 msgid "Packagelist not found"
-msgstr ""
+msgstr "Packagelist teu kapendak"
 
 #: pacstall:416 pacstall:425
 msgid "Confirm that '%b' exists"
-msgstr ""
+msgstr "Pastikeun yén '%b' aya"
 
 #: pacstall:418
 msgid "Failed to download file, check your connection"
-msgstr ""
+msgstr "Gagal ngunduh file, pariksa sambungan anjeun"
 
 #: pacstall:424
 msgid "The URL cannot be found"
-msgstr ""
+msgstr "URL teu tiasa dipendakan"
 
 #: pacstall:432
 msgid "Failed with http code %s"
-msgstr ""
+msgstr "Gagal tina http code %s"
 
 #: pacstall:433
 msgid "Confirm that '%b' is accessible"
-msgstr ""
+msgstr "Pastikeun yén '%b' tiasa diaksés"
 
 #: pacstall:657 misc/scripts/package.sh:387 misc/scripts/package.sh:402
 #: misc/scripts/update.sh:47
 msgid "Could not enter into %s"
-msgstr ""
+msgstr "Teu tiasa asup kana %s"
 
 #: pacstall:663
 msgid "Reading input from pipe"
-msgstr ""
+msgstr "Aksit maca ti pipa"
 
 #: pacstall:722
 msgid "Only one command flag can be used at a time"
-msgstr ""
+msgstr "Ngan hiji bandéra paréntah tiasa dianggo dina hiji waktos"
 
 #: pacstall:760
 msgid "Pacstall is already running another instance"
-msgstr ""
+msgstr "Pacstall parantos ngajalankeun dinu sanés"
 
 #: pacstall:766
 msgid "The other instance has finished running, unlocking"
-msgstr ""
+msgstr "Conto anu sanésna parantos dijalankeun, muka konci"
 
 #: pacstall:775
 msgid "Prompts are disabled"
-msgstr ""
+msgstr "Parentah ditumpurkeun"
 
 #: pacstall:782
 msgid "Package will be built and not installed"
-msgstr ""
+msgstr "Paket bakal diwangun sareng henteu dipasang"
 
 #: pacstall:858 pacstall:931 pacstall:993 pacstall:1034 pacstall:1052
 #: pacstall:1226 pacstall:1283 pacstall:1309 misc/scripts/query-info.sh:28
 msgid "You failed to specify a package"
-msgstr ""
+msgstr "Anjeun gagal pikeun nunjukkeun pakét"
 
 #: pacstall:863
 msgid "The installation of %s was interrupted, removing files"
-msgstr ""
+msgstr "Pamasangan tina %s kaganggu, ngaleupaskeun file"
 
 #: pacstall:900 misc/scripts/package-base.sh:139
 msgid "%s does not exist"
-msgstr ""
+msgstr "%s henteu aya"
 
 #: pacstall:938
 msgid "Payload not found"
-msgstr ""
+msgstr "Beban teu kapendak"
 
 #: pacstall:951 pacstall:998 pacstall:1038 pacstall:1159 pacstall:1236
 #: pacstall:1270
 msgid "Could not connect to the internet"
-msgstr ""
+msgstr "Teu tiasa nyambung kana internét"
 
 #: pacstall:952 pacstall:999 pacstall:1039 pacstall:1160 pacstall:1237
 #: pacstall:1271
 msgid "Confirm that the URLs '%b' or '%b' are accessible"
-msgstr ""
+msgstr "Pastikeun yén URL '%b' atanapi '%b' tiasa diaksés"
 
 #: pacstall:968 pacstall:1251 misc/scripts/upgrade.sh:282
 msgid "Failed to download the %b pacscript"
-msgstr ""
+msgstr "Gagal ngundeur pacscript %b"
 
 #: pacstall:969 pacstall:1252
 msgid "Confirm that the package exists by running '%b'"
-msgstr ""
+msgstr "Pastikeun yén paketna aya ku ngajalankeun '%b'"
 
 #: pacstall:969 pacstall:1252
 msgid "Check your internet connection"
-msgstr ""
+msgstr "Pariksa sambungan internét anjeun"
 
 #: pacstall:975 misc/scripts/package-base.sh:163
 #: misc/scripts/package-base.sh:187
 msgid "Failed to install %b"
-msgstr ""
+msgstr "Gagal masang %b"
 
 #: pacstall:1061
 msgid "Failed to remove %b"
-msgstr ""
+msgstr "Gagal ngahapus %b"
 
 #: pacstall:1082
 msgid "You failed to specify a repo to add"
-msgstr ""
+msgstr "Anjeun gagal pikeun netepkeun repo kanggo ditambihan"
 
 #: pacstall:1083
 msgid "Add a repository in the following format:"
-msgstr ""
+msgstr "Tambihkeun repositori dina format ieu:"
 
 #: pacstall:1083 pacstall:1104
 msgid ""
 "Consult the pacstall man page by running '%b', and searching for the term "
 "'%b'"
 msgstr ""
+"Konsulkeun tina halaman manual pacstall ku ngajalankeun '%b', jeung milarian "
+"istilah '%b'"
 
 #: pacstall:1103
 msgid "You failed to specify a repo to remove"
-msgstr ""
+msgstr "Anjeun gagal pikeun netepkeun repo anu bade dipiceun"
 
 #: pacstall:1104
 msgid "Remove a repository in the following format:"
-msgstr ""
+msgstr "Cabut repositori dina format ieu:"
 
 #: pacstall:1128
 msgid "%s is not a git repository"
-msgstr ""
+msgstr "%s sanes repositori git"
 
 #: pacstall:1165
 msgid ""
 "The repository you are trying to upgrade to contains a version of pacstall "
 "that cannot be updated from %b"
 msgstr ""
+"Repositori anjeun anu dicobian keur ngaronjatkeun pikeun ngandung versi "
+"Pacstall anu henteu tiasa diénggalan tina %b"
 
 #: pacstall:1166
 msgid ""
 "Visit %s for more information on how to reinstall. Most packages will also "
 "need to be reinstalled"
 msgstr ""
+"Cobi cek %s kanggo inpo langkung seueur ngeunaan kumaha carana re-install. "
+"Kaseueuran paket ogé kedah dipasang"
 
 #: pacstall:1174
 msgid ""
 "Pacstall was installed from a %s, and cannot be updated with this command"
 msgstr ""
+"Pacstall atos dipasang tina %s, sareng henteu tiasa diénggalkeun ku paréntah "
+"ieu"
 
 #: pacstall:1175
 msgid "Install the latest %b from the %b repository"
-msgstr ""
+msgstr "Pasang paket ter-anyar anu %b tina repositori %b"
 
 #: pacstall:1175
 msgid "Install the latest %b with the command '%b'"
-msgstr ""
+msgstr "Pasang paket ter-anyar anu %b tina parentah %b"
 
 #: pacstall:1183 pacstall:1265
 msgid "Invalid argument '%s'"
-msgstr ""
+msgstr "Argumen anu teu valid tina '%s'"
 
 #: pacstall:1195
 msgid "Nothing installed yet"
-msgstr ""
+msgstr "Teu aya anu dipasang"
 
 #: pacstall:1256
 msgid "%b pacscript is downloaded to %b"
-msgstr ""
+msgstr "Pacscript anu %b eta kaundeurkeun kana %b"
 
 #: pacstall:1287 pacstall:1314 misc/scripts/query-info.sh:33
 msgid "Package is not installed"
-msgstr ""
+msgstr "Paketna teu dipasangkeun"
 
 #: pacstall:1326
 msgid "'%b' is not a valid option, use '%b' or '%b'"
-msgstr ""
+msgstr "Pilihan anu '%b' nyaeta teu valid, angge anu '%b\" atawa anu '%b'"
 
 #: pacstall:1349
 msgid "Keeping build files"
-msgstr ""
+msgstr "Ngajaga file wangun"
 
 #: pacstall:1354
 msgid "Skipping check() if present"
-msgstr ""
+msgstr "Ngalewatkeun check() lamun aya"
 
 #: pacstall:1359
 msgid "Downloading package entries quietly"
-msgstr ""
+msgstr "Ngundeurkeun paket-paket sacara teu ka-tampak"
 
 #: pacstall:1364
 msgid "Building package without bwrap sandbox"
-msgstr ""
+msgstr "Ngawangun paket tanpa bwrap sandbox"
 
 #: pacstall:1365
 msgid "Be cautious, this exposes your system to potential harm"
 msgstr ""
+"Janten ati-ati, ieu ngalaan sistem anjeun pikeun poténsial anu ngarugikeun"
 
 #: misc/scripts/add-repo.sh:29 misc/scripts/build.sh:41
 #: misc/scripts/search.sh:31 misc/scripts/upgrade.sh:47
 msgid "Could not find manage-repo.sh"
-msgstr ""
+msgstr "manage-repo.sh teu kapendak"
 
 #: misc/scripts/add-repo.sh:39 misc/scripts/add-repo.sh:47
 #: misc/scripts/add-repo.sh:55 misc/scripts/add-repo.sh:63
 #: misc/scripts/add-repo.sh:70
 msgid "Assuming that git branch is %b"
-msgstr ""
+msgstr "Anggap yén cabang git nyaéta %b"
 
 #: misc/scripts/add-repo.sh:90
 msgid "Repository alias cannot be '%s'"
