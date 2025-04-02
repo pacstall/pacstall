@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-08-21 11:09+0000\n"
-"Last-Translator: TCr3 <tcreeper.earth@gmail.com>\n"
+"PO-Revision-Date: 2025-04-03 01:05+0000\n"
+"Last-Translator: Bahar KURT <kurtbahartr@gmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/tr/>\n"
 "Language: tr\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #: pacstall:287 misc/scripts/build.sh:163 misc/scripts/build.sh:688
 #: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:735
@@ -48,10 +48,8 @@ msgstr "'%b'in erişilebilir olduğunu doğrulayın"
 
 #: pacstall:657 misc/scripts/package.sh:387 misc/scripts/package.sh:402
 #: misc/scripts/update.sh:47
-#, fuzzy
-#| msgid "Could not enter into ${DIR}"
 msgid "Could not enter into %s"
-msgstr "${DIR} dizinine girilemedi"
+msgstr "%s içine girilemedi"
 
 #: pacstall:663
 msgid "Reading input from pipe"
@@ -172,15 +170,15 @@ msgstr ""
 #: pacstall:1174
 msgid ""
 "Pacstall was installed from a %s, and cannot be updated with this command"
-msgstr ""
+msgstr "Pacstall %s kaynağından yüklendi, ve bu komutla güncellenemez"
 
 #: pacstall:1175
 msgid "Install the latest %b from the %b repository"
-msgstr ""
+msgstr "%b paketinin en son sürümünü %b deposundan kurun"
 
 #: pacstall:1175
 msgid "Install the latest %b with the command '%b'"
-msgstr ""
+msgstr "%b paketinin en son sürümünü %b komutuyla kurun"
 
 #: pacstall:1183 pacstall:1265
 msgid "Invalid argument '%s'"
@@ -199,10 +197,8 @@ msgid "Package is not installed"
 msgstr "Paket kurulu değil"
 
 #: pacstall:1326
-#, fuzzy
-#| msgid "'${linlicense}' is not a valid license"
 msgid "'%b' is not a valid option, use '%b' or '%b'"
-msgstr "'${linlicense}' geçerli bir lisans değil"
+msgstr "'%s' geçerli bir seçenek değil, '%b' veya '%b' kullanın"
 
 #: pacstall:1349
 msgid "Keeping build files"
@@ -306,7 +302,7 @@ msgstr "%b apt depolarında yok"
 #: misc/scripts/build.sh:160 misc/scripts/build.sh:180
 #: misc/scripts/fetch-sources.sh:762
 msgid "%b version(s) cannot be satisfied"
-msgstr "%b sürümü karşılanamadı"
+msgstr "%b sürümü/sürümleri karşılanamadı"
 
 #: misc/scripts/build.sh:172
 msgid "Optional dependencies"
@@ -505,84 +501,68 @@ msgid "'%s' is improperly formatted"
 msgstr "'%s' yanlış biçimlendirilmiş"
 
 #: misc/scripts/checks.sh:551 misc/scripts/checks.sh:574
-#, fuzzy
-#| msgid "'compatible' and 'incompatible' indices cannot both be provided"
 msgid "'%s' and '%s' indices cannot both be provided"
-msgstr "'compatible' ve 'incompatible' dizinlerinin ikisi de belirtilemez"
+msgstr "'%s' ve '%s' dizinlerinin ikisi de belirtilemez"
 
 #: misc/scripts/checks.sh:566 misc/scripts/checks.sh:589
-#, fuzzy
-#| msgid "'ppa' index '${idx}' is improperly formatted"
 msgid "'%s' index '%s' is improperly formatted"
-msgstr "'ppa' index '${idx}' yanlış biçimlendirilmiş"
+msgstr "'%s' index '%s' yanlış biçimlendirilmiş"
 
 #: misc/scripts/checks.sh:626
-#, fuzzy
-#| msgid "'${el_arch}' is not a valid architecture"
 msgid "'%s' is not a valid architecture"
-msgstr "'${el_arch}' geçerli bir mimari değil"
+msgstr "'%s' geçerli bir mimari değil"
 
 #: misc/scripts/checks.sh:639
-#, fuzzy
-#| msgid "cannot use both Debian and Arch style naming in 'arch' array"
 msgid "cannot use both Debian and Arch style naming in '%s' array"
-msgstr "'arch' kümesinde Debian ve Arch stili adlandırma beraber kullanılamaz"
+msgstr "'%s' kümesinde Debian ve Arch tarzında adlandırma beraber kullanılamaz"
 
 #: misc/scripts/checks.sh:682
 msgid "'%s' must be either: '%s', '%s', '%s', '%s', or '%s'"
-msgstr ""
+msgstr "'%s' şöyle olmalıdır: '%s', '%s', '%s', '%s' ya da '%s'"
 
 #: misc/scripts/checks.sh:703
-#, fuzzy
-#| msgid "'${linlicense}' is not a valid license"
 msgid "'%s' is not a valid license"
-msgstr "'${linlicense}' geçerli bir lisans değil"
+msgstr "'%s' geçerli bir lisans değil"
 
 #: misc/scripts/fetch-sources.sh:29
 msgid "Could not find build.sh"
 msgstr "build.sh bulunamadı"
 
 #: misc/scripts/fetch-sources.sh:190
-#, fuzzy
-#| msgid "Hashes do not match (with method ${hashMethod})"
 msgid "Hashes do not match (with method %s)"
-msgstr "Hash'ler uyuşmuyor (${hashMethod} yöntemi ile)"
+msgstr "Hash'ler uyuşmuyor (%s yöntemi ile)"
 
 #: misc/scripts/fetch-sources.sh:191
 msgid "Got:      %b"
-msgstr ""
+msgstr "Alınan:   %b"
 
 #: misc/scripts/fetch-sources.sh:192
 msgid "Expected: %b"
-msgstr ""
+msgstr "Beklenen: %b"
 
 #: misc/scripts/fetch-sources.sh:201
 msgid "Failed to download package"
 msgstr "Paket indirmesi başarısız"
 
 #: misc/scripts/fetch-sources.sh:211
-#, fuzzy
-#| msgid "Could not enter into the cloned git repository"
 msgid "Could not enter into the main directory %b"
-msgstr "Klonlanan git deposuna girilemedi"
+msgstr "Ana dizin %b içine girilemedi"
 
 #: misc/scripts/fetch-sources.sh:224
 msgid "Cloning %b from branch %b"
-msgstr ""
+msgstr "%b deposundan %b dalı klonlanıyor"
 
 #: misc/scripts/fetch-sources.sh:227
 msgid "Cloning %b from tag %b"
-msgstr ""
+msgstr "%b deposundan %b tagı klonlanıyor"
 
 #: misc/scripts/fetch-sources.sh:232
-#, fuzzy
-#| msgid "Cloning ${BPurple}${dest}${NC} with no blobs"
 msgid "Cloning %b with no blobs"
-msgstr "Blob'lar olmadan ${BPurple}${dest}${NC} klonlanıyor"
+msgstr "Blob'lar olmadan %b klonlanıyor"
 
 #: misc/scripts/fetch-sources.sh:235
 msgid "Cloning %b from %b"
-msgstr ""
+msgstr "%b deposundan %b klonlanıyor"
 
 #: misc/scripts/fetch-sources.sh:243
 msgid "Could not enter into the cloned git repository"
@@ -590,19 +570,15 @@ msgstr "Klonlanan git deposuna girilemedi"
 
 #: misc/scripts/fetch-sources.sh:247
 msgid "Fetching commit %b"
-msgstr ""
+msgstr "%b commit'i çekiliyor"
 
 #: misc/scripts/fetch-sources.sh:261
-#, fuzzy
-#| msgid "Not cloning submodules for ${PURPLE}${dest}${NC}"
 msgid "Not cloning submodules for %b"
-msgstr "${PURPLE}${dest}${NC} için alt modüller klonlanmıyor"
+msgstr "%b için alt modüller klonlanmıyor"
 
 #: misc/scripts/fetch-sources.sh:267
-#, fuzzy
-#| msgid "Checking versions"
 msgid "Checking integrity of %b"
-msgstr "Sürümler kontrol ediliyor"
+msgstr "%b dosyasının bütünlüğü kontrol ediliyor"
 
 #: misc/scripts/fetch-sources.sh:268
 msgid "Could not check integrity of cloned git repository"
@@ -614,29 +590,25 @@ msgstr "Klonlanan git deposu güncel hash ile eşleşmiyor"
 
 #: misc/scripts/fetch-sources.sh:287
 msgid "Downloading %b"
-msgstr ""
+msgstr "%b indiriliyor"
 
 #: misc/scripts/fetch-sources.sh:295
 msgid "Checking hash %b[%b...%b]"
-msgstr ""
+msgstr "Hash kontrol ediliyor %b[%b...%b]"
 
 #: misc/scripts/fetch-sources.sh:311
 msgid "Extracting %b"
-msgstr ""
+msgstr "%b çıkarılıyor"
 
 #: misc/scripts/fetch-sources.sh:354 misc/scripts/fetch-sources.sh:361
 #: misc/scripts/fetch-sources.sh:375 misc/scripts/fetch-sources.sh:382
-#, fuzzy
-#| msgid "Running pre_install hook"
 msgid "Running %s hook"
-msgstr "pre_install hook'u çalıştırılıyor"
+msgstr "%s hook'u çalıştırılıyor"
 
 #: misc/scripts/fetch-sources.sh:357 misc/scripts/fetch-sources.sh:364
 #: misc/scripts/fetch-sources.sh:378 misc/scripts/fetch-sources.sh:385
-#, fuzzy
-#| msgid "Could not run preinst hook successfully"
 msgid "Could not run %s hook successfully"
-msgstr "preinst hook'u başarılı bir şekilde çalıştırılamadı"
+msgstr "%s hook'u başarılı bir şekilde çalıştırılamadı"
 
 #: misc/scripts/fetch-sources.sh:373 misc/scripts/package.sh:397
 msgid "Performing post install operations"
@@ -647,53 +619,40 @@ msgid "Storing pacscript"
 msgstr "pacscript depolanıyor"
 
 #: misc/scripts/fetch-sources.sh:393
-#, fuzzy
-#| msgid "Could not enter into ${DIR}"
 msgid "Could not enter into %b"
-msgstr "${DIR} dizinine girilemedi"
+msgstr "%b içine girilemedi"
 
 #: misc/scripts/fetch-sources.sh:400 misc/scripts/package.sh:412
 msgid "Done installing %b"
-msgstr ""
+msgstr "%b yüklemesi bitti"
 
 #: misc/scripts/fetch-sources.sh:404
 msgid "Failed to install the package"
 msgstr "Paket kurulumu başarısız oldu"
 
 #: misc/scripts/fetch-sources.sh:413
-#, fuzzy
-#| msgid "Copying local archive ${BPurple}${dest}${NC}"
 msgid "Copying local archive %b"
-msgstr "Yerel arşiv ${BPurple}${dest}${NC} kopyalanıyor"
+msgstr "Yerel arşiv %b kopyalanıyor"
 
 #: misc/scripts/fetch-sources.sh:593 misc/scripts/fetch-sources.sh:627
 #: misc/scripts/fetch-sources.sh:634 misc/scripts/fetch-sources.sh:640
 #: misc/scripts/fetch-sources.sh:672
-#, fuzzy
-#| msgid "This Pacscript does not work on ${BBlue}${distro_name}${NC}"
 msgid "This Pacscript does not work on %b"
-msgstr "Bu Pacscript ${BBlue}${distro_name}${NC} sisteminde çalışmaz"
+msgstr "Bu Pacscript %b sisteminde çalışmaz"
 
 #: misc/scripts/fetch-sources.sh:660
-#, fuzzy
-#| msgid ""
-#| "This package is for ${BBlue}${farch}${NC}, which is a foreign architecture"
 msgid "This package is for %b, which is a foreign architecture"
-msgstr "Bu paket ${BBlue}${farch}${NC} içindir ki bu da yabancı bir mimaridir"
+msgstr "Bu paket %b mimarisi içindir ki bu da yabancı bir mimaridir"
 
 #: misc/scripts/fetch-sources.sh:709
 msgid "Checking build dependencies"
 msgstr "İnşa bağımlılıkları kontrol ediliyor"
 
 #: misc/scripts/fetch-sources.sh:729
-#, fuzzy
-#| msgid "%b version(s) cannot be satisfied"
 msgid "%b versions cannot be satisfied"
-msgstr "%b sürümü karşılanamadı"
+msgstr "%b sürümleri karşılanamadı"
 
 #: misc/scripts/fetch-sources.sh:731
-#, fuzzy
-#| msgid "%b version(s) cannot be satisfied"
 msgid "%b version cannot be satisfied"
 msgstr "%b sürümü karşılanamadı"
 
@@ -711,31 +670,23 @@ msgstr "İnşa veya kontrol bağımlılıkları kurulumu başarısız oldu"
 
 #: misc/scripts/get-pacscript.sh:33
 msgid "Run '%b'"
-msgstr ""
+msgstr "'%b' çalıştır"
 
 #: misc/scripts/get-pacscript.sh:38 misc/scripts/upgrade.sh:263
-#, fuzzy
-#| msgid "Could not enter ${PACDIR}"
 msgid "Could not enter %s"
-msgstr "${PACDIR} dizinine girilemedi"
+msgstr "%s dizinine girilemedi"
 
 #: misc/scripts/get-pacscript.sh:49 misc/scripts/get-pacscript.sh:57
-#, fuzzy
-#| msgid "Could not download ${URL}"
 msgid "Could not download %s"
-msgstr "${URL} indirilemedi"
+msgstr "%s indirilemedi"
 
 #: misc/scripts/manage-repo.sh:169
-#, fuzzy
-#| msgid "'repo.get_where' valid types are: 'alias', 'metalink'"
 msgid "'%s' valid types are: '%s', '%s'"
-msgstr "'repo.get_where' geçerli türleri: 'alias', 'metalink'"
+msgstr "'%s' geçerli türleri: '%s', '%s'"
 
 #: misc/scripts/manage-repo.sh:185
-#, fuzzy
-#| msgid "'repo.get_all_type' valid types are: 'url', 'alias', 'metalink'"
 msgid "'%s' valid types are: '%s', '%s', '%s'"
-msgstr "'repo.get_all_type' geçerli türleri: 'url', 'alias', 'metalink'"
+msgstr "'%s' geçerli türleri: '%s', '%s', '%s'"
 
 #: misc/scripts/package-base.sh:29
 msgid "Could not find checks.sh"
@@ -746,42 +697,28 @@ msgid "Could not find fetch-sources.sh"
 msgstr "fetch-sources.sh bulunamadı"
 
 #: misc/scripts/package-base.sh:42
-#, fuzzy
-#| msgid "\\nInterrupted, cleaning up"
 msgid "Interrupted, cleaning up"
-msgstr "\\nKesildi, temizleniyor"
+msgstr "İptal edildi, temizleniyor"
 
 #: misc/scripts/package-base.sh:103
 msgid "Found pkgbase: %b"
-msgstr ""
+msgstr "pkgbase bulundu: %b"
 
 #: misc/scripts/package-base.sh:129
-#, fuzzy
-#| msgid ""
-#| "${BGreen}${skip_pkg[*]}${NC} has exceeded the maximum number of packages "
-#| "to build. Skipping"
 msgid "%b has exceeded the maximum number of packages to build. Skipping"
-msgstr ""
-"${BGreen}${skip_pkg[*]}${NC} inşa edilebilecek maksimum paket sayısını aştı. "
-"Atlanıyor"
+msgstr "%b derlenebilecek maksimum paket sayısını aştı. Atlanıyor"
 
 #: misc/scripts/package-base.sh:209
-#, fuzzy
-#| msgid ""
-#| "${UCyan}PACSTALL_BUILD_CORES${NC} is not an integer. Falling back to 1"
 msgid "%b is not an integer. Falling back to 1"
-msgstr ""
-"${UCyan}PACSTALL_BUILD_CORES${NC} bir tam sayı değil. 1'e geri dönülüyor"
+msgstr "%b bir tam sayı değil. 1'e ayarlanıyor"
 
 #: misc/scripts/package-base.sh:218
 msgid "(%b) Do you want to view/edit the pacscript?"
-msgstr ""
+msgstr "(%b) pacscript'i görmek/düzenlemek ister misiniz?"
 
 #: misc/scripts/package-base.sh:231
-#, fuzzy
-#| msgid "Editor not found, falling back to 'sensible-editor'"
 msgid "Editor not found, falling back to '%s'"
-msgstr "Düzenleyici bulunamadı, 'sensible-editor'e dönülüyor"
+msgstr "Düzenleyici bulunamadı, '%s' uygulamasına dönülüyor"
 
 #: misc/scripts/package-base.sh:236
 msgid "Sourcing pacscript"
@@ -796,88 +733,64 @@ msgid "This package will connect to the internet during its build process."
 msgstr "Bu paket inşa sürecinde genel ağa bağlanacak."
 
 #: misc/scripts/package.sh:47
-#, fuzzy
-#| msgid "Failed to download '${source[0]}'"
 msgid "Failed to download '%s'"
-msgstr "'${source[0]}' indirmesi başarısız oldu"
+msgstr "'%s' indirmesi başarısız oldu"
 
 #: misc/scripts/package.sh:63
-#, fuzzy
-#| msgid ""
-#| "The package ${BBlue}${offending_pkg}${NC} is masking ${BBlue}${pacname:-"
-#| "${PACKAGE}}${NC}. By installing the masked package, you may cause damage "
-#| "to your operating system"
 msgid ""
 "The package %b is masking %b. By installing the masked package, you may "
 "cause damage to your operating system"
 msgstr ""
-"Paket ${BBlue}${offending_pkg}${NC} ${BBlue}${pacname:-${PACKAGE}}${NC "
-"paketini maskeliyor. Maskelenmiş paketi kurarak işletim sisteminize zarar "
-"verebilirsiniz"
+"%b paketi, %b paketini maskeliyor. Maskelenmiş paketi kurarak işletim "
+"sisteminize zarar verebilirsiniz"
 
 #: misc/scripts/package.sh:66
-#, fuzzy
-#| msgid ""
-#| "Somehow, 'getMasks' found masked packages that match the package you want "
-#| "to install, but 'getMasks_offending_pkg' could not find it. Report this "
-#| "upstream"
 msgid ""
 "Somehow, '%s' found masked packages that match the package you want to "
 "install, but '%s' could not find it. Report this upstream"
 msgstr ""
-"Nasılsa, 'getMasks' kurmak istediğiniz paketle uyuşan maskelenmiş paketler "
-"buldu ancak 'getMasks_offending_pkg' bulamadı. Bunu upstream'e bildirin"
+"Nasıl olduysa, '%s' kurmak istediğiniz paketle uyuşan maskelenmiş paketler "
+"buldu ancak '%s' bulamadı. Bunu upstream'e bildirin"
 
 #: misc/scripts/package.sh:103
 msgid ""
 "This package has '%s', meaning once this is installed, it should be assumed "
 "to be unremovable. Do you want to continue?"
 msgstr ""
+"Bu pakette '%s' var, yani kurulduğunda kaldırılamaz sayılmalı. Devam etmek "
+"ister misiniz?"
 
 #: misc/scripts/package.sh:122
 msgid "Reinstalling '%s'"
-msgstr ""
+msgstr "'%s' yeniden kuruluyor"
 
 #: misc/scripts/package.sh:133
 msgid "This script replaces %s. Do you want to proceed?"
-msgstr ""
+msgstr "Bu betik %s paketinin yerini alıyor. Devam etmek ister misiniz?"
 
 #: misc/scripts/package.sh:149
-#, fuzzy
-#| msgid ""
-#| "${RED}$pacname${NC} conflicts with $pkg, which is currently installed by "
-#| "apt"
 msgid "%b conflicts with %s, which is currently installed by apt"
-msgstr "apt ile kurulu ${RED}$pacname${NC}, $pkg ile çakışıyor"
+msgstr "apt ile kurulu %b, %b ile çakışıyor"
 
 #: misc/scripts/package.sh:150 misc/scripts/package.sh:172
 msgid "Remove the apt package by running '%b'"
-msgstr ""
+msgstr "apt paketini '%b' kullanarak kaldırın"
 
 #: misc/scripts/package.sh:157
-#, fuzzy
-#| msgid ""
-#| "${RED}$pacname${NC} conflicts with $pkg, which is currently installed by "
-#| "pacstall"
 msgid "%b conflicts with %s, which is currently installed by pacstall"
-msgstr "Pacstall ile kurulu ${RED}$pacname${NC}, $pkg ile çakışıyor"
+msgstr "%b, pacstall tarafından kurulmuş %b paketiyle çakışıyor"
 
 #: misc/scripts/package.sh:158 misc/scripts/package.sh:179
 msgid "Remove the pacstall package by running '%b'"
-msgstr ""
+msgstr "pacstall paketini '%b' kullanarak kaldırın"
 
 #: misc/scripts/package.sh:171
-#, fuzzy
-#| msgid "${RED}$pacname${NC} breaks $pkg, which is currently installed by apt"
 msgid "%b breaks %s, which is currently installed by apt"
-msgstr "apt ile kurulu ${RED}$pacname${NC}, $pkg paketini bozuyor"
+msgstr "%s, şu anda apt ile kurulu %s paketini bozuyor"
 
 #: misc/scripts/package.sh:178
-#, fuzzy
-#| msgid ""
-#| "${RED}$pacname${NC} breaks $pkg, which is currently installed by pacstall"
 msgid "%b breaks %s, which is currently installed by pacstall"
-msgstr "Pacstall ile kurulu ${RED}$pacname${NC}, $pkg paketini bozuyor"
+msgstr "%s, şu anda pacstall ile kurulu %s paketini bozuyor"
 
 #: misc/scripts/package.sh:196
 msgid "Checking pacstall dependencies"
@@ -885,19 +798,15 @@ msgstr "Pacstall bağımlılıkları kontrol ediliyor"
 
 #: misc/scripts/package.sh:215
 msgid "%b [update]"
-msgstr ""
+msgstr "%b [güncelleme]"
 
 #: misc/scripts/package.sh:217 misc/scripts/package.sh:228
-#, fuzzy
-#| msgid "Failed to install dependency (${pdep} from ${PACKAGE})"
 msgid "Failed to install dependency (%s from %s)"
-msgstr "Bağımlılık kurulumu başarısız oldu (${PACKAGE}'den ${pdep})"
+msgstr "Bağımlılık kurulumu başarısız oldu (%s <- %s)"
 
 #: misc/scripts/package.sh:242
-#, fuzzy
-#| msgid "${dest} is associated with multiple source entries"
 msgid "%s is associated with multiple source entries"
-msgstr "${dest} birden fazla kaynak girişleriyle ilişkilendirilmiş"
+msgstr "%s birden fazla kaynak girişleriyle ilişkilendirilmiş"
 
 #: misc/scripts/package.sh:276
 msgid "Retrieving packages"
@@ -908,128 +817,93 @@ msgid "Running functions"
 msgstr "Fonksiyonlar çalıştırılıyor"
 
 #: misc/scripts/package.sh:379
-#, fuzzy
-#| msgid "Could not ${function} ${pacname} properly"
 msgid "Could not %s %s properly"
-msgstr "${pacname} düzgünce ${function} edilemedi"
+msgstr "Düzgünce yapılamadı: %s <- %s"
 
 #: misc/scripts/quality-assurance.sh:49
-#, fuzzy
-#| msgid "${CYAN}$provider${NC} is not a valid provider!"
 msgid "%b is not a valid provider!"
-msgstr "${CYAN}$provider${NC} geçerli bir sağlayıcı değil!"
+msgstr "%b geçerli bir sağlayıcı değil!"
 
 #: misc/scripts/quality-assurance.sh:50
-#, fuzzy
-#| msgid "available providers are: 'github'"
 msgid "available providers are: '%s'"
-msgstr "geçerli sağlayıcılar: 'github'"
+msgstr "geçerli sağlayıcılar: '%s'"
 
 #: misc/scripts/quality-assurance.sh:59
 msgid "Returning %b backup"
-msgstr ""
+msgstr "%b yedeği geri getiriliyor"
 
 #: misc/scripts/quality-assurance.sh:68
-#, fuzzy
-#| msgid "'number' and 'package' cannot be empty!"
 msgid "'%s' and '%s' cannot be empty!"
-msgstr "'number' ve 'package' boş olamaz!"
+msgstr "'%s' ve '%s' boş olamaz!"
 
 #: misc/scripts/quality-assurance.sh:69
 msgid "use the syntax: %b"
-msgstr ""
+msgstr "şu syntax'ı kullanın: %b"
 
 #: misc/scripts/quality-assurance.sh:74
 msgid "Backing up %b"
-msgstr ""
+msgstr "%b yedekleniyor"
 
 #: misc/scripts/quality-assurance.sh:77
 msgid "Installing %b"
-msgstr ""
+msgstr "%b kuruluyor"
 
 #: misc/scripts/query-info.sh:101
-#, fuzzy
-#| msgid "Key '${QUERY}' does not exist"
 msgid "Key '%s' does not exist"
-msgstr "Anahtar '${QUERY}' yok"
+msgstr "Anahtar '%s' yok"
 
 #: misc/scripts/remove.sh:29 misc/scripts/remove.sh:34
-#, fuzzy
-#| msgid "Package is not installed"
 msgid "%s is not installed"
-msgstr "Paket kurulu değil"
+msgstr "%s kurulu değil"
 
 #: misc/scripts/remove.sh:45
-#, fuzzy
-#| msgid ""
-#| "You may have dangling PPAs on your system. You can remove them using "
-#| "'${UCyan}sudo add-apt-repository --remove ppa:$ppa${NC}'"
 msgid ""
 "You may have dangling PPAs on your system. You can remove them using '%b'"
 msgstr ""
-"Sisteminizde askıda olan PPA'lar olabilir. Onları '${UCyan}sudo add-apt-"
-"repository --remove ppa:$ppa${NC}' komutu ile kaldırabilirsiniz"
+"Sisteminizde askıda olan PPA'lar olabilir. Onları '%b' kullanarak "
+"kaldırabilirsiniz"
 
 #: misc/scripts/search.sh:256 misc/scripts/search.sh:258
 #: misc/scripts/search.sh:290
-#, fuzzy
-#| msgid ""
-#| "There is no package with the name $IRed${SEARCH%%@*}$NC in the repo "
-#| "$CYAN$REPONAME$NC"
 msgid "There is no package with the name %b in the repo %b"
-msgstr ""
-"$CYAN$REPONAME$NC deposunda $IRed${SEARCH%%@*}$NC adında bir paket bulunmuyor"
+msgstr "Paket yok: %b <- %b"
 
 #: misc/scripts/search.sh:306
-#, fuzzy
-#| msgid "$IRed$REPONAME$NC is not on your repo list or does not exist"
 msgid "%b is not on your repo list or does not exist"
-msgstr "$IRed$REPONAME$NC depo listenizde değil ya da mevcut değil"
+msgstr "%b depo listenizde değil ya da yok"
 
 #: misc/scripts/search.sh:361 misc/scripts/search.sh:444
 #: misc/scripts/search.sh:475
-#, fuzzy
-#| msgid "There is no package with the name $IRed$PACKAGE$NC"
 msgid "There is no package with the name %b"
-msgstr "$IRed$PACKAGE$NC adında bir paket yok"
+msgstr "%b adında bir paket yok"
 
 #: misc/scripts/search.sh:379
 msgid "Add %s to the local repo absolute path on %b"
-msgstr ""
+msgstr "%b içinde yer alan yerel depo kesin yoluna %s dosyasını ekleyin"
 
 #: misc/scripts/search.sh:383
 msgid "Replace '~' with the full home path on %b"
-msgstr ""
+msgstr "Tilde'nin (~) yerine tüm ev yolunuz olan %b dizinini koyun"
 
 #: misc/scripts/search.sh:389
-#, fuzzy
-#| msgid "Pacstall repo line improperly formatted: ${CYAN}${URL}${NC}"
 msgid "Pacstall repo line improperly formatted: %b"
-msgstr "Pacstall depo satırı yanlış biçimlendirilmiş: ${CYAN}${URL}${NC}"
+msgstr "Pacstall depo satırı yanlış biçimlendirilmiş: %b"
 
 #: misc/scripts/search.sh:390 misc/scripts/search.sh:395
-#, fuzzy
-#| msgid ""
-#| "You can remove or fix the URL by editing $CYAN$SCRIPTDIR/repo/"
-#| "pacstallrepo$NC"
 msgid "You can remove or fix the URL by editing %b"
-msgstr ""
-"$CYAN$SCRIPTDIR/repo/pacstallrepo$NC dosyasını düzenleyerek URL'i "
-"kaldırabilir veya düzeltebilirsiniz"
+msgstr "%b dosyasını düzenleyerek URL'i kaldırabilir veya düzeltebilirsiniz"
 
 #: misc/scripts/search.sh:394
-#, fuzzy
-#| msgid "Cannot connect to Pacstall repo: ${CYAN}${URL}${NC}"
 msgid "Cannot connect to Pacstall repo: %b"
-msgstr "Pacstall deposuna bağlanılamadı: ${CYAN}${URL}${NC}"
+msgstr "Pacstall deposuna bağlanılamadı: %b"
 
 #: misc/scripts/search.sh:505
 msgid "%bDo you want to %s %b from the official repo?"
-msgstr ""
+msgstr "%bResmi depodan %s %b yapmak ister misiniz?"
 
 #: misc/scripts/search.sh:523
 msgid "%bDo you want to %s %b from the repo %b?"
-msgstr ""
+msgstr "%bŞu depodan %s %b yapmak ister misiniz: %b?"
 
 #: misc/scripts/update.sh:64
 msgid "Invalid URL"
@@ -1037,7 +911,7 @@ msgstr "Geçersiz URL"
 
 #: misc/scripts/update.sh:65
 msgid "Confirm that '%b' is valid"
-msgstr ""
+msgstr "Geçerli olduğunu doğrulayın: %b"
 
 #: misc/scripts/update.sh:70
 msgid "Fetching translation list"
@@ -1088,20 +962,16 @@ msgid "Checking versions"
 msgstr "Sürümler kontrol ediliyor"
 
 #: misc/scripts/upgrade.sh:180
-#, fuzzy
-#| msgid "Package does not contain 'source'"
 msgid "Package %b is not on %b anymore"
-msgstr "Paket 'source' içermiyor"
+msgstr "%b paketi artık %b kaynağında değil"
 
 #: misc/scripts/upgrade.sh:243
 msgid "Packages can be upgraded"
 msgstr "Paketler yükseltilebilir"
 
 #: misc/scripts/upgrade.sh:268
-#, fuzzy
-#| msgid "Failed to remove ${GREEN}${PACKAGE}${NC}"
 msgid "Do you want to upgrade %b?"
-msgstr "${GREEN}${PACKAGE}${NC} paketinin kaldırması başarısız"
+msgstr "%b paketini güncellemek ister misiniz?"
 
 #~ msgid "Could not enter into the extracted archive"
 #~ msgstr "Ayıklanan arşive girilemedi"
