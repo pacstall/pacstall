@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-04-02 01:05+0000\n"
+"PO-Revision-Date: 2025-04-03 01:05+0000\n"
 "Last-Translator: \"James \\\"Jim\\\" Ed Randson\" "
 "<053476233@ecampus.ut.ac.id>\n"
 "Language-Team: Sundanese <https://hosted.weblate.org/projects/pacstall/"
@@ -237,7 +237,7 @@ msgstr "Anggap yén cabang git nyaéta %b"
 
 #: misc/scripts/add-repo.sh:90
 msgid "Repository alias cannot be '%s'"
-msgstr "Alias repositori te tiasa jadi '%s'"
+msgstr "Alias repositori teu tiasa jadi '%s'"
 
 #: misc/scripts/add-repo.sh:93
 msgid "Repository alias cannot be a hyperlink"
