@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-04-01 10:58+0000\n"
+"PO-Revision-Date: 2025-04-02 01:05+0000\n"
 "Last-Translator: \"James \\\"Jim\\\" Ed Randson\" "
 "<053476233@ecampus.ut.ac.id>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/pacstall/"
@@ -168,19 +168,16 @@ msgstr ""
 "Sebagian besar paket juga perlu diinstal ulang"
 
 #: pacstall:1174
-#, fuzzy
 msgid ""
 "Pacstall was installed from a %s, and cannot be updated with this command"
 msgstr ""
 "Pacstall terinstal dari %s, dan tidak dapat diperbarui melalui perintah ini"
 
 #: pacstall:1175
-#, fuzzy
 msgid "Install the latest %b from the %b repository"
 msgstr "Pasang %b yang terbaru dari repositori %b"
 
 #: pacstall:1175
-#, fuzzy
 msgid "Install the latest %b with the command '%b'"
 msgstr "Pasang %b yang terbaru dengan perintah '%b'"
 
@@ -201,8 +198,6 @@ msgid "Package is not installed"
 msgstr "Paket tidak terinstal"
 
 #: pacstall:1326
-#, fuzzy
-#| msgid "'%s' is not a valid license"
 msgid "'%b' is not a valid option, use '%b' or '%b'"
 msgstr "'%s' bukan merupakan opsi yang valid, gunakan '%b' atau '%b'"
 
@@ -658,14 +653,10 @@ msgid "Checking build dependencies"
 msgstr "Memeriksa dependensi build"
 
 #: misc/scripts/fetch-sources.sh:729
-#, fuzzy
-#| msgid "%b version(s) cannot be satisfied"
 msgid "%b versions cannot be satisfied"
 msgstr "Versi %b tidak dapat dipenuhi"
 
 #: misc/scripts/fetch-sources.sh:731
-#, fuzzy
-#| msgid "%b version(s) cannot be satisfied"
 msgid "%b version cannot be satisfied"
 msgstr "Versi %b tidak dapat dipenuhi"
 
@@ -775,8 +766,6 @@ msgstr ""
 "diasumsikan untuk tidak dapat dihapus. Apakah anda ingin melanjutkan?"
 
 #: misc/scripts/package.sh:122
-#, fuzzy
-#| msgid "Done installing %b"
 msgid "Reinstalling '%s'"
 msgstr "Memasang ulang %b"
 

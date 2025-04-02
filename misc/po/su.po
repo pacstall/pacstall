@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-04-01 13:38+0000\n"
+"PO-Revision-Date: 2025-04-02 01:05+0000\n"
 "Last-Translator: \"James \\\"Jim\\\" Ed Randson\" "
 "<053476233@ecampus.ut.ac.id>\n"
 "Language-Team: Sundanese <https://hosted.weblate.org/projects/pacstall/"
@@ -237,216 +237,224 @@ msgstr "Anggap yén cabang git nyaéta %b"
 
 #: misc/scripts/add-repo.sh:90
 msgid "Repository alias cannot be '%s'"
-msgstr ""
+msgstr "Alias repositori te tiasa jadi '%s'"
 
 #: misc/scripts/add-repo.sh:93
 msgid "Repository alias cannot be a hyperlink"
-msgstr ""
+msgstr "Alias repositori teu tiasa jadi hyperlink"
 
 #: misc/scripts/add-repo.sh:96
 msgid "Repository alias cannot start with '%s', '%s', or '%s'"
-msgstr ""
+msgstr "Alias repositori teu tiasa ngamimitian tina '%s', '%s', atawa '%s'"
 
 #: misc/scripts/add-repo.sh:99
 msgid "The alias %b is already in use by %b"
-msgstr ""
+msgstr "Alias anu %b atos dianggo ku %b"
 
 #: misc/scripts/add-repo.sh:104
 msgid "%b is already in the repo list, doing nothing"
-msgstr ""
+msgstr "%b parantos aya dina daptar repo, teu janteun ngalakukeun nanaon"
 
 #: misc/scripts/add-repo.sh:107
 msgid "Do you want to add %b to the repo list?"
-msgstr ""
+msgstr "Ari anjeun hoyong nambihan %b kana daptar repo?"
 
 #: misc/scripts/add-repo.sh:112
 msgid "If the URL is a private repo, edit %b"
-msgstr ""
+msgstr "Upami lamun URL-na mangrupikeun repo pribadi, édit %b"
 
 #: misc/scripts/add-repo.sh:113
 msgid "packagelist file not found"
-msgstr ""
+msgstr "File packagelist teu aya"
 
 #: misc/scripts/add-repo.sh:142
 msgid "Do you want to remove %b from the repo list?"
-msgstr ""
+msgstr "Ari anjeun hoyong ngaleungitkeun %b kana daptar repo?"
 
 #: misc/scripts/add-repo.sh:154
 msgid "The repo list has been updated"
-msgstr ""
+msgstr "Daptar repo parantos diropéa"
 
 #: misc/scripts/build.sh:29
 msgid "Could not find version-constraints"
-msgstr ""
+msgstr "Teu tiasa mendakan version-constraints"
 
 #: misc/scripts/build.sh:35 misc/scripts/upgrade.sh:41
 msgid "Could not find srcinfo.sh"
-msgstr ""
+msgstr "Teu tiasa mendakan srcinfo.sh"
 
 #: misc/scripts/build.sh:95 misc/scripts/build.sh:100
 #: misc/scripts/fetch-sources.sh:687 misc/scripts/fetch-sources.sh:700
 #: misc/scripts/package.sh:227
 msgid "%b [required]"
-msgstr ""
+msgstr "%b [diperyogikeun]"
 
 #: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:694
 msgid "%b [remote]"
-msgstr ""
+msgstr "%b [kapencil]"
 
 #: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:696
 #: misc/scripts/package.sh:222
 msgid "%b [installed]"
-msgstr ""
+msgstr "%b [atos dipasang]"
 
 #: misc/scripts/build.sh:156 misc/scripts/build.sh:176
 #: misc/scripts/fetch-sources.sh:724 misc/scripts/fetch-sources.sh:758
 msgid "%b does not exist in apt repositories"
-msgstr ""
+msgstr "%b teu aya dina repo apt"
 
 #: misc/scripts/build.sh:160 misc/scripts/build.sh:180
 #: misc/scripts/fetch-sources.sh:762
 msgid "%b version(s) cannot be satisfied"
-msgstr ""
+msgstr "%b versi-na teu tiasa nge-pas"
 
 #: misc/scripts/build.sh:172
 msgid "Optional dependencies"
-msgstr ""
+msgstr "Dependensi opsional"
 
 #: misc/scripts/build.sh:207
 msgid "%b has exceeded the maximum number of optional dependencies. Skipping"
 msgstr ""
+"%b parantos ngaleuwihan jumlah maksimum opsional dependensi anu diperlukeun. "
+"Dilewatkeun"
 
 #: misc/scripts/build.sh:217 misc/scripts/package-base.sh:150
 msgid "Selecting packages %b"
-msgstr ""
+msgstr "Milihan paket-na anu %b"
 
 #: misc/scripts/build.sh:236
 msgid "Checking apt dependencies"
-msgstr ""
+msgstr "Mariksakeun heula dependensi apt"
 
 #: misc/scripts/build.sh:327
 msgid "Packing control.tar"
-msgstr ""
+msgstr "Maketkeun control.tar"
 
 #: misc/scripts/build.sh:337
 msgid "Packing data.tar"
-msgstr ""
+msgstr "Maketkeun data.tar"
 
 #: misc/scripts/build.sh:340
 msgid "Compressing"
-msgstr ""
+msgstr "Ngompresskeun data"
 
 #: misc/scripts/build.sh:365
 msgid "Packaging %b as %b"
-msgstr ""
+msgstr "Maketkeun %b salaku %b"
 
 #: misc/scripts/build.sh:367 misc/scripts/package-base.sh:159
 msgid "Packaging %b"
-msgstr ""
+msgstr "Maketkeun %b"
 
 #: misc/scripts/build.sh:594
 msgid "Empty key... Skipping"
-msgstr ""
+msgstr "Koncina teu aya... Dilewatkeun"
 
 #: misc/scripts/build.sh:600
 msgid "'%s' cannot contain empty path... Skipping"
-msgstr ""
+msgstr "'%s' teu tiasa janten path anu kosong... Dilewatkeun"
 
 #: misc/scripts/build.sh:604 misc/scripts/build.sh:612
 msgid "'%s' cannot contain path starting with '/'... Skipping"
-msgstr ""
+msgstr "'%s' teu tiasa ngandung path ngawalan jeung '/'... Dilewatkeun"
 
 #: misc/scripts/build.sh:607
 msgid "'%s' is inside the package... Skipping"
-msgstr ""
+msgstr "'%s' dina jero paket... Dilewatkeun"
 
 #: misc/scripts/build.sh:685
 msgid "Failed to install %s deb"
-msgstr ""
+msgstr "Gagal kanggo masang %s deb"
 
 #: misc/scripts/build.sh:710
 msgid "Package built at %b"
-msgstr ""
+msgstr "Paket diwangun tina %b"
 
 #: misc/scripts/build.sh:712 misc/scripts/package.sh:50
 msgid "Moving %b to %b"
-msgstr ""
+msgstr "Mindahkeun %b kana %b"
 
 #: misc/scripts/build.sh:729
 msgid "Repacking %b"
-msgstr ""
+msgstr "Maketkeun deui %b"
 
 #: misc/scripts/bwrap.sh:113
 msgid "Running %s"
-msgstr ""
+msgstr "Ngajalankeun %s"
 
 #: misc/scripts/checks.sh:33 misc/scripts/checks.sh:127
 #: misc/scripts/checks.sh:175 misc/scripts/checks.sh:228
 #: misc/scripts/checks.sh:610
 msgid "Package does not contain '%s'"
-msgstr ""
+msgstr "Paket henteu ngandung '%s'"
 
 #: misc/scripts/checks.sh:38
 msgid "%s: '%s' must be at least two characters long"
-msgstr ""
+msgstr "%s: '%s' kedah sahenteuna dua karakter leuwih"
 
 #: misc/scripts/checks.sh:43
 msgid "%s: '%s' must start with an alphanumeric character"
-msgstr ""
+msgstr "%s: '%s' kedah ngamimitian sareng karakter alfanumeris"
 
 #: misc/scripts/checks.sh:47
 msgid "%s: '%s' contains uppercase characters"
-msgstr ""
+msgstr "%s: '%s' ngandung aksara ageung"
 
 #: misc/scripts/checks.sh:51
 msgid ""
 "%s: '%s' contains characters that are not lowercase, digits, minus, or "
 "periods"
 msgstr ""
+"%s: '%s' ngandung karakter anu henteu huruf leutik, angka, dikurangan, "
+"atanapi période"
 
 #: misc/scripts/checks.sh:61
 msgid "Deb package does not contain gives"
-msgstr ""
+msgstr "Paket Deb-na henteu ngandung pasihaneun"
 
 #: misc/scripts/checks.sh:67
 msgid "'%s' must be at least two characters long"
-msgstr ""
+msgstr "'%s' kedah sahenteuna dua karakter leuwih"
 
 #: misc/scripts/checks.sh:72
 msgid "'%s' must start with an alphanumeric character"
-msgstr ""
+msgstr "'%s' kedah ngamimitian sareng karakter alfanumeris"
 
 #: misc/scripts/checks.sh:76
 msgid "'%s' contains uppercase characters"
-msgstr ""
+msgstr "'%s' ngandung aksara ageung"
 
 #: misc/scripts/checks.sh:80
 msgid ""
 "'%s' contains characters that are not lowercase, digits, minus, or periods"
 msgstr ""
+"'%s' ngandung karakter anu henteu huruf leutik, angka, dikurangan, atanapi "
+"période"
 
 #: misc/scripts/checks.sh:92 misc/scripts/checks.sh:107
 #: misc/scripts/checks.sh:679
 msgid "'%s' is empty"
-msgstr ""
+msgstr "'%s' kosong"
 
 #: misc/scripts/checks.sh:95 misc/scripts/checks.sh:110
 msgid "'%s' must be an unsigned integer"
-msgstr ""
+msgstr "'%s' kedah janten nomer buleud henteu ditandaan"
 
 #: misc/scripts/checks.sh:123
 msgid ""
 "'%s' must contain only alphanumerics and the characters . + - ~ and should "
 "start with a digit"
 msgstr ""
+"'%s' kedah ngan ukur ngandung alfanumerics sareng karakter . + - ~ sareng "
+"kedah ngamimitian sareng angka"
 
 #: misc/scripts/checks.sh:144
 msgid ".deb files can only be provided as a singular '%s'"
-msgstr ""
+msgstr "File .deb ngan tiasa disayogikeun salaku anu tunggal '%s'"
 
 #: misc/scripts/checks.sh:237
 msgid "Package does not have a maintainer. Please be advised"
-msgstr ""
+msgstr "Paket henteu gaduh pangurusna. Punten perhatosanna"
 
 #: misc/scripts/checks.sh:282 misc/scripts/checks.sh:309
 #: misc/scripts/checks.sh:359 misc/scripts/checks.sh:425
@@ -454,512 +462,524 @@ msgstr ""
 #: misc/scripts/checks.sh:615 misc/scripts/checks.sh:652
 #: misc/scripts/checks.sh:697
 msgid "'%s' index '%s' cannot be empty"
-msgstr ""
+msgstr "'%s' index '%s' ulah nepi ka kosong"
 
 #: misc/scripts/checks.sh:286 misc/scripts/checks.sh:290
 msgid "'%s' index '%s' is not formatted correctly"
-msgstr ""
+msgstr "'%s' index '%s' henteu diformat leres"
 
 #: misc/scripts/checks.sh:320
 msgid "'%s' index '%s' cannot start with %s"
-msgstr ""
+msgstr "'%s' index '%s' henteu tiasa ngamimitian tina %s"
 
 #: misc/scripts/checks.sh:328
 msgid "%s index '%s' is improperly formatted"
-msgstr ""
+msgstr "%s index '%s' teu diformat anu bener"
 
 #: misc/scripts/checks.sh:430
 msgid "'%s' is already used as a field in pacstall"
-msgstr ""
+msgstr "'%s' parantos dianggo salaku bidang di pacstall"
 
 #: misc/scripts/checks.sh:436
 msgid "'%s' custom field cannot contain a space in field name"
-msgstr ""
+msgstr "Widang adat '%s' teu tiasa ngandung rohangan dina nami bidang"
 
 #: misc/scripts/checks.sh:440
 msgid "'%s' custom field cannot contain a number in field name"
-msgstr ""
+msgstr "Widang adat '%s' teu tiasa ngandung nomer dina nami widang"
 
 #: misc/scripts/checks.sh:444
 msgid ""
 "'%s' custom field must capitalize only the first letter of each word in "
 "field name"
 msgstr ""
+"Widang adat '%s' kedah ngatur ngan ukur hurup kahiji unggal kecap dina nami "
+"bidang"
 
 #: misc/scripts/checks.sh:448
 msgid "'%s' custom field cannot start or end with a hyphen"
-msgstr ""
+msgstr "Widang adat '%s' teu tiasa ngamimitian atanapi tungtung kalayan hyphen"
 
 #: misc/scripts/checks.sh:475 misc/scripts/checks.sh:500
 #: misc/scripts/checks.sh:508
 msgid "Only one checksum method can be provided for hashes"
-msgstr ""
+msgstr "Ngan ukur hiji metode cerpsum tiasa disayogikeun"
 
 #: misc/scripts/checks.sh:536 misc/scripts/checks.sh:666
 msgid "'%s' is improperly formatted"
-msgstr ""
+msgstr "'%s' teu diformat anu bener"
 
 #: misc/scripts/checks.sh:551 misc/scripts/checks.sh:574
 msgid "'%s' and '%s' indices cannot both be provided"
-msgstr ""
+msgstr "'%s' sareng '%s' indéksna henteu tiasa disayogikeun"
 
 #: misc/scripts/checks.sh:566 misc/scripts/checks.sh:589
 msgid "'%s' index '%s' is improperly formatted"
-msgstr ""
+msgstr "'%s' index '%s' teu diformat anu bener"
 
 #: misc/scripts/checks.sh:626
 msgid "'%s' is not a valid architecture"
-msgstr ""
+msgstr "'%s' sanes arsitektur anu valid"
 
 #: misc/scripts/checks.sh:639
 msgid "cannot use both Debian and Arch style naming in '%s' array"
-msgstr ""
+msgstr "moal tiasa nganggo nami gaya Debian sareng Arch dina susunan '%s'"
 
 #: misc/scripts/checks.sh:682
 msgid "'%s' must be either: '%s', '%s', '%s', '%s', or '%s'"
-msgstr ""
+msgstr "'%s' kedah dina bentuk: '%s', '%s', '%s', '%s', atawa '%s'"
 
 #: misc/scripts/checks.sh:703
 msgid "'%s' is not a valid license"
-msgstr ""
+msgstr "'%s' sanes lisensi anu valid"
 
 #: misc/scripts/fetch-sources.sh:29
 msgid "Could not find build.sh"
-msgstr ""
+msgstr "Henteu tiasa mendakan build.sh"
 
 #: misc/scripts/fetch-sources.sh:190
 msgid "Hashes do not match (with method %s)"
-msgstr ""
+msgstr "Hash-na henteu cocok (tina metode %s)"
 
 #: misc/scripts/fetch-sources.sh:191
 msgid "Got:      %b"
-msgstr ""
+msgstr "Anu didapet:      %b"
 
 #: misc/scripts/fetch-sources.sh:192
 msgid "Expected: %b"
-msgstr ""
+msgstr "Anu diharapkeun: %b"
 
 #: misc/scripts/fetch-sources.sh:201
 msgid "Failed to download package"
-msgstr ""
+msgstr "Gagal ngundeur pakét"
 
 #: misc/scripts/fetch-sources.sh:211
 msgid "Could not enter into the main directory %b"
-msgstr ""
+msgstr "Teu tiasa asup kana diréktori utama %b"
 
 #: misc/scripts/fetch-sources.sh:224
 msgid "Cloning %b from branch %b"
-msgstr ""
+msgstr "Nga-klon %b tina cabang anu %b"
 
 #: misc/scripts/fetch-sources.sh:227
 msgid "Cloning %b from tag %b"
-msgstr ""
+msgstr "Nga-klon %b tina tag anu %b"
 
 #: misc/scripts/fetch-sources.sh:232
 msgid "Cloning %b with no blobs"
-msgstr ""
+msgstr "Nga-klon %b sareng teu aya blobs"
 
 #: misc/scripts/fetch-sources.sh:235
 msgid "Cloning %b from %b"
-msgstr ""
+msgstr "Nga-klon %b tina anu %b"
 
 #: misc/scripts/fetch-sources.sh:243
 msgid "Could not enter into the cloned git repository"
-msgstr ""
+msgstr "Teu tiasa asup kana repositori git anu atos di-klon"
 
 #: misc/scripts/fetch-sources.sh:247
 msgid "Fetching commit %b"
-msgstr ""
+msgstr "Nyandak commit tina %b"
 
 #: misc/scripts/fetch-sources.sh:261
 msgid "Not cloning submodules for %b"
-msgstr ""
+msgstr "Henteu cloning keur submodul anu %b"
 
 #: misc/scripts/fetch-sources.sh:267
 msgid "Checking integrity of %b"
-msgstr ""
+msgstr "Nga-cek heula integritas tina %b"
 
 #: misc/scripts/fetch-sources.sh:268
 msgid "Could not check integrity of cloned git repository"
-msgstr ""
+msgstr "Teu tiasa nga-cek integritas tina repositori git anu atos di-klon"
 
 #: misc/scripts/fetch-sources.sh:273 misc/scripts/fetch-sources.sh:277
 msgid "Cloned git repository does not match upstream hash"
-msgstr ""
+msgstr "Repositori git anu atos di-klon henteu cocok sareng hash upstream"
 
 #: misc/scripts/fetch-sources.sh:287
 msgid "Downloading %b"
-msgstr ""
+msgstr "Ngundeur %b"
 
 #: misc/scripts/fetch-sources.sh:295
 msgid "Checking hash %b[%b...%b]"
-msgstr ""
+msgstr "Nga-cek heula hash %b[%b...%b]"
 
 #: misc/scripts/fetch-sources.sh:311
 msgid "Extracting %b"
-msgstr ""
+msgstr "Nga-ekstrak %b"
 
 #: misc/scripts/fetch-sources.sh:354 misc/scripts/fetch-sources.sh:361
 #: misc/scripts/fetch-sources.sh:375 misc/scripts/fetch-sources.sh:382
 msgid "Running %s hook"
-msgstr ""
+msgstr "Ngajalankeun kait %s"
 
 #: misc/scripts/fetch-sources.sh:357 misc/scripts/fetch-sources.sh:364
 #: misc/scripts/fetch-sources.sh:378 misc/scripts/fetch-sources.sh:385
 msgid "Could not run %s hook successfully"
-msgstr ""
+msgstr "Teu tiasa ngajalankeun kait anu %s"
 
 #: misc/scripts/fetch-sources.sh:373 misc/scripts/package.sh:397
 msgid "Performing post install operations"
-msgstr ""
+msgstr "Ngalakukeun operasi pasca masang"
 
 #: misc/scripts/fetch-sources.sh:389 misc/scripts/package.sh:398
 msgid "Storing pacscript"
-msgstr ""
+msgstr "Nyimpeun pacscript"
 
 #: misc/scripts/fetch-sources.sh:393
 msgid "Could not enter into %b"
-msgstr ""
+msgstr "Teu tiasa asup kana %b"
 
 #: misc/scripts/fetch-sources.sh:400 misc/scripts/package.sh:412
 msgid "Done installing %b"
-msgstr ""
+msgstr "Atos masang eta %b"
 
 #: misc/scripts/fetch-sources.sh:404
 msgid "Failed to install the package"
-msgstr ""
+msgstr "Gagal masang paket"
 
 #: misc/scripts/fetch-sources.sh:413
 msgid "Copying local archive %b"
-msgstr ""
+msgstr "Nyalin arsip lokal %b"
 
 #: misc/scripts/fetch-sources.sh:593 misc/scripts/fetch-sources.sh:627
 #: misc/scripts/fetch-sources.sh:634 misc/scripts/fetch-sources.sh:640
 #: misc/scripts/fetch-sources.sh:672
 msgid "This Pacscript does not work on %b"
-msgstr ""
+msgstr "Pacscript ieu teu tiasa dianggo tina %b"
 
 #: misc/scripts/fetch-sources.sh:660
 msgid "This package is for %b, which is a foreign architecture"
-msgstr ""
+msgstr "Paket ieu kanggo %b, anu dimana eta teh arsitektur asing"
 
 #: misc/scripts/fetch-sources.sh:709
 msgid "Checking build dependencies"
-msgstr ""
+msgstr "Mariksa heula dependensi kanggo ngawangun"
 
 #: misc/scripts/fetch-sources.sh:729
 msgid "%b versions cannot be satisfied"
-msgstr ""
+msgstr "Versi anu %b teu tiasa dipinuhan atawa teu pas"
 
 #: misc/scripts/fetch-sources.sh:731
 msgid "%b version cannot be satisfied"
-msgstr ""
+msgstr "Versi anu %b teu tiasa dipinuhan atawa teu pas"
 
 #: misc/scripts/fetch-sources.sh:743
 msgid "Checking check dependencies"
-msgstr ""
+msgstr "Mariksa heula dependensi check"
 
 #: misc/scripts/fetch-sources.sh:784
 msgid "Creating build dependency/conflicts dummy package"
-msgstr ""
+msgstr "Nyiptakeun paket dummy dependensi wangun/konflik"
 
 #: misc/scripts/fetch-sources.sh:799
 msgid "Failed to install build or check dependencies"
-msgstr ""
+msgstr "Gagal masang dependensi kanggo ngawangun atawa check"
 
 #: misc/scripts/get-pacscript.sh:33
 msgid "Run '%b'"
-msgstr ""
+msgstr "Jalankeun '%b'"
 
 #: misc/scripts/get-pacscript.sh:38 misc/scripts/upgrade.sh:263
 msgid "Could not enter %s"
-msgstr ""
+msgstr "Teu tiasa asup kana %s"
 
 #: misc/scripts/get-pacscript.sh:49 misc/scripts/get-pacscript.sh:57
 msgid "Could not download %s"
-msgstr ""
+msgstr "Teu tiasa ngundeur %s"
 
 #: misc/scripts/manage-repo.sh:169
 msgid "'%s' valid types are: '%s', '%s'"
-msgstr ""
+msgstr "Jenis '%s' anu valid nyaeta: '%s', '%s'"
 
 #: misc/scripts/manage-repo.sh:185
 msgid "'%s' valid types are: '%s', '%s', '%s'"
-msgstr ""
+msgstr "Jenis '%s' anu valid nyaeta: '%s', '%s', '%s'"
 
 #: misc/scripts/package-base.sh:29
 msgid "Could not find checks.sh"
-msgstr ""
+msgstr "Teu tiasa mendakan checks.sh"
 
 #: misc/scripts/package-base.sh:35 misc/scripts/upgrade.sh:35
 msgid "Could not find fetch-sources.sh"
-msgstr ""
+msgstr "Teu tiasa mendakan fetch-sources.sh"
 
 #: misc/scripts/package-base.sh:42
 msgid "Interrupted, cleaning up"
-msgstr ""
+msgstr "Kaganggu, ngabersihkeun"
 
 #: misc/scripts/package-base.sh:103
 msgid "Found pkgbase: %b"
-msgstr ""
+msgstr "pkgbase anu kapendak: %b"
 
 #: misc/scripts/package-base.sh:129
 msgid "%b has exceeded the maximum number of packages to build. Skipping"
 msgstr ""
+"%b parantos ngaleuwihan jumlah maksimum paket pikeun ngawangun. Dilewatkeun"
 
 #: misc/scripts/package-base.sh:209
 msgid "%b is not an integer. Falling back to 1"
-msgstr ""
+msgstr "%b sanes integer. Balik deui kana 1"
 
 #: misc/scripts/package-base.sh:218
 msgid "(%b) Do you want to view/edit the pacscript?"
-msgstr ""
+msgstr "(%b) Ari anjeun hoyong ningali/édit pacscript?"
 
 #: misc/scripts/package-base.sh:231
 msgid "Editor not found, falling back to '%s'"
-msgstr ""
+msgstr "Editor teu kapendak, balik deui kana '%s'"
 
 #: misc/scripts/package-base.sh:236
 msgid "Sourcing pacscript"
-msgstr ""
+msgstr "Mariksa heula pacscript"
 
 #: misc/scripts/package-base.sh:259
 msgid "Could not source pacscript"
-msgstr ""
+msgstr "Teu tiasa mariksa pacscript"
 
 #: misc/scripts/package.sh:28
 msgid "This package will connect to the internet during its build process."
-msgstr ""
+msgstr "Paket ieu bakal nyambung kana Internét salami prosés ngawangun."
 
 #: misc/scripts/package.sh:47
 msgid "Failed to download '%s'"
-msgstr ""
+msgstr "Gagal ngundeur '%s'"
 
 #: misc/scripts/package.sh:63
 msgid ""
 "The package %b is masking %b. By installing the masked package, you may "
 "cause damage to your operating system"
 msgstr ""
+"Paket %b nyaeta paket anu nutupan %b. Lamun masang paket masked atawa paket "
+"nutupan, ieu tiasa nyababkeun ruksakna sistem operasi anjeun"
 
 #: misc/scripts/package.sh:66
 msgid ""
 "Somehow, '%s' found masked packages that match the package you want to "
 "install, but '%s' could not find it. Report this upstream"
 msgstr ""
+"Teu apal kunaon, '%s' mendakan paket nutupan anu cocok sareng paket anu bade "
+"anjeun masang, tapi '%s' teu tiasa mendakan paketna. Hapunten bilih "
+"laporkeun kondisi kieu"
 
 #: misc/scripts/package.sh:103
 msgid ""
 "This package has '%s', meaning once this is installed, it should be assumed "
 "to be unremovable. Do you want to continue?"
 msgstr ""
+"Paket ieu ngagaduhan '%s', anu dimana eta atos dipasang, paket ieu teu tiasa "
+"dileupaskeun. Naha anjeun badé neraskeun?"
 
 #: misc/scripts/package.sh:122
 msgid "Reinstalling '%s'"
-msgstr ""
+msgstr "Masang deui '%s'"
 
 #: misc/scripts/package.sh:133
 msgid "This script replaces %s. Do you want to proceed?"
-msgstr ""
+msgstr "Skrip ieu ngagentos %s. Naha anjeun bade dilanjutkeun ?"
 
 #: misc/scripts/package.sh:149
 msgid "%b conflicts with %s, which is currently installed by apt"
-msgstr ""
+msgstr "%b konflik sareng %s, anu dimana paketna atos dipasang tina apt"
 
 #: misc/scripts/package.sh:150 misc/scripts/package.sh:172
 msgid "Remove the apt package by running '%b'"
-msgstr ""
+msgstr "Ngaleupas paket apt jeung ngajalankeun '%b'"
 
 #: misc/scripts/package.sh:157
 msgid "%b conflicts with %s, which is currently installed by pacstall"
-msgstr ""
+msgstr "%b konflik sareng %s, anu dimana paketna atos dipasang ku pacstall"
 
 #: misc/scripts/package.sh:158 misc/scripts/package.sh:179
 msgid "Remove the pacstall package by running '%b'"
-msgstr ""
+msgstr "Ngaleupas paket pacstall ku ngajalankeun '%b'"
 
 #: misc/scripts/package.sh:171
 msgid "%b breaks %s, which is currently installed by apt"
-msgstr ""
+msgstr "%b ngarusak %s, anu ayeuna terpasang dina apt"
 
 #: misc/scripts/package.sh:178
 msgid "%b breaks %s, which is currently installed by pacstall"
-msgstr ""
+msgstr "%b ngarusak %s, anu ayeuna terpasang dina pacstall"
 
 #: misc/scripts/package.sh:196
 msgid "Checking pacstall dependencies"
-msgstr ""
+msgstr "Mariksa heula dependensi pacstall"
 
 #: misc/scripts/package.sh:215
 msgid "%b [update]"
-msgstr ""
+msgstr "%b [panganyaran]"
 
 #: misc/scripts/package.sh:217 misc/scripts/package.sh:228
 msgid "Failed to install dependency (%s from %s)"
-msgstr ""
+msgstr "Gagal masang dependensi (%s tina %s)"
 
 #: misc/scripts/package.sh:242
 msgid "%s is associated with multiple source entries"
-msgstr ""
+msgstr "%s aya hubunganana sareng langkung seueur éntri sumber"
 
 #: misc/scripts/package.sh:276
 msgid "Retrieving packages"
-msgstr ""
+msgstr "Nyandak heula paketna"
 
 #: misc/scripts/package.sh:374
 msgid "Running functions"
-msgstr ""
+msgstr "Ngajalankeun fungsi"
 
 #: misc/scripts/package.sh:379
 msgid "Could not %s %s properly"
-msgstr ""
+msgstr "Teu tiasa %s %s anu bener"
 
 #: misc/scripts/quality-assurance.sh:49
 msgid "%b is not a valid provider!"
-msgstr ""
+msgstr "%b sanes panyadia anu valid!"
 
 #: misc/scripts/quality-assurance.sh:50
 msgid "available providers are: '%s'"
-msgstr ""
+msgstr "panyadia anu aya nyaeta: '%s\""
 
 #: misc/scripts/quality-assurance.sh:59
 msgid "Returning %b backup"
-msgstr ""
+msgstr "Ngabalikkeun cadangan %b"
 
 #: misc/scripts/quality-assurance.sh:68
 msgid "'%s' and '%s' cannot be empty!"
-msgstr ""
+msgstr "'%s' sareng '%s' ulah nepika kosong!"
 
 #: misc/scripts/quality-assurance.sh:69
 msgid "use the syntax: %b"
-msgstr ""
+msgstr "Anggo sintaksis: %b"
 
 #: misc/scripts/quality-assurance.sh:74
 msgid "Backing up %b"
-msgstr ""
+msgstr "Ngacadangkeun %b"
 
 #: misc/scripts/quality-assurance.sh:77
 msgid "Installing %b"
-msgstr ""
+msgstr "Masang heula %b"
 
 #: misc/scripts/query-info.sh:101
 msgid "Key '%s' does not exist"
-msgstr ""
+msgstr "Konci '%s' teu aya"
 
 #: misc/scripts/remove.sh:29 misc/scripts/remove.sh:34
 msgid "%s is not installed"
-msgstr ""
+msgstr "%s henteu dipasang"
 
 #: misc/scripts/remove.sh:45
 msgid ""
 "You may have dangling PPAs on your system. You can remove them using '%b'"
 msgstr ""
+"Anjeun mereun gaduh PPA anu ngait kana sistem anjeun. Anjeun tiasa "
+"ngahapusna tina nganggo '%b'"
 
 #: misc/scripts/search.sh:256 misc/scripts/search.sh:258
 #: misc/scripts/search.sh:290
 msgid "There is no package with the name %b in the repo %b"
-msgstr ""
+msgstr "Teu aya paket jeung namina %b di repo anu %b"
 
 #: misc/scripts/search.sh:306
 msgid "%b is not on your repo list or does not exist"
-msgstr ""
+msgstr "%b teu aya dina daptar repo atau teu aya pisan"
 
 #: misc/scripts/search.sh:361 misc/scripts/search.sh:444
 #: misc/scripts/search.sh:475
 msgid "There is no package with the name %b"
-msgstr ""
+msgstr "Teu aya paket anu namina %b"
 
 #: misc/scripts/search.sh:379
 msgid "Add %s to the local repo absolute path on %b"
-msgstr ""
+msgstr "Tambihan %s kana jalur absolut repo lokal tina %b"
 
 #: misc/scripts/search.sh:383
 msgid "Replace '~' with the full home path on %b"
-msgstr ""
+msgstr "Gentos '~' ku jalur home anu lengkap tina %b"
 
 #: misc/scripts/search.sh:389
 msgid "Pacstall repo line improperly formatted: %b"
-msgstr ""
+msgstr "Barisan repo pacstall teu diformat anu bener: %b"
 
 #: misc/scripts/search.sh:390 misc/scripts/search.sh:395
 msgid "You can remove or fix the URL by editing %b"
-msgstr ""
+msgstr "Anjeun tiasa ngaleupas atau ngomean URL ku ngedit %b"
 
 #: misc/scripts/search.sh:394
 msgid "Cannot connect to Pacstall repo: %b"
-msgstr ""
+msgstr "Teu tiasa nyambung kana repo Pacstall: %b"
 
 #: misc/scripts/search.sh:505
 msgid "%bDo you want to %s %b from the official repo?"
-msgstr ""
+msgstr "%bAri anjeun hoyong %s %b tina repo resmi?"
 
 #: misc/scripts/search.sh:523
 msgid "%bDo you want to %s %b from the repo %b?"
-msgstr ""
+msgstr "%bAri anjeun hoyong %s %b tina repo %b?"
 
 #: misc/scripts/update.sh:64
 msgid "Invalid URL"
-msgstr ""
+msgstr "URL teu bener"
 
 #: misc/scripts/update.sh:65
 msgid "Confirm that '%b' is valid"
-msgstr ""
+msgstr "Pastikeun eta '%b' valid"
 
 #: misc/scripts/update.sh:70
 msgid "Fetching translation list"
-msgstr ""
+msgstr "Nyandak daptar panajarmahan"
 
 #: misc/scripts/update.sh:73
 msgid "Updating directories"
-msgstr ""
+msgstr "Ngaropéa heula diréktori"
 
 #: misc/scripts/update.sh:81
 msgid "Checking dependencies"
-msgstr ""
+msgstr "Nga-cek heula dependensi"
 
 #: misc/scripts/update.sh:108
 msgid "Pulling scripts from GitHub"
-msgstr ""
+msgstr "Nyandak skrip tina GitHub"
 
 #: misc/scripts/update.sh:132
 msgid "Rebuilding translations"
-msgstr ""
+msgstr "Ngadamel deui panajarmahan"
 
 #: misc/scripts/update.sh:137
 msgid "Rebuilding manpages"
-msgstr ""
+msgstr "Ngadameul deui manpage"
 
 #: misc/scripts/update.sh:141
 msgid "Making scripts executable"
-msgstr ""
+msgstr "Nyieun skrip-na tiasa dijalankeun atawa dieksekusi"
 
 #: misc/scripts/upgrade.sh:29
 msgid "Could not load dep-tree.sh"
-msgstr ""
+msgstr "Teu tiasa ngamuat dep-tree.sh"
 
 #: misc/scripts/upgrade.sh:104
 msgid "Checking for updates"
-msgstr ""
+msgstr "Mariksa heula keur apdetan"
 
 #: misc/scripts/upgrade.sh:109 misc/scripts/upgrade.sh:240
 msgid "Nothing to upgrade"
-msgstr ""
+msgstr "Teu aya anu pikeun diningkatkeun"
 
 #: misc/scripts/upgrade.sh:112
 msgid "Building dependency tree"
-msgstr ""
+msgstr "Ngawangun tangkal dependensi"
 
 #: misc/scripts/upgrade.sh:123
 msgid "Checking versions"
-msgstr ""
+msgstr "Mariksa heula versina"
 
 #: misc/scripts/upgrade.sh:180
 msgid "Package %b is not on %b anymore"
-msgstr ""
+msgstr "Paket anu %b atos teu aya deui dina %b"
 
 #: misc/scripts/upgrade.sh:243
 msgid "Packages can be upgraded"
-msgstr ""
+msgstr "Paket anu tiasa ditingkatkeun"
 
 #: misc/scripts/upgrade.sh:268
 msgid "Do you want to upgrade %b?"
-msgstr ""
+msgstr "Ari anjeun hoyong ningkatkeun %b?"
