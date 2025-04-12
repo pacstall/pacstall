@@ -1,7 +1,8 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-12-17 05:20+0000\n"
-"Last-Translator: Tanz Musikus <tanzmusikus@posteo.de>\n"
+"PO-Revision-Date: 2025-04-11 19:05+0000\n"
+"Last-Translator: \"Christian F. Brinkmann\" <christian.brinkmann09@gmail.com>"
+"\n"
 "Language-Team: German <https://hosted.weblate.org/projects/pacstall/pacstall/"
 "de/>\n"
 "Language: de\n"
@@ -9,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #: pacstall:287 misc/scripts/build.sh:163 misc/scripts/build.sh:688
 #: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:735
@@ -199,10 +200,8 @@ msgid "Package is not installed"
 msgstr "Paket ist nicht installiert"
 
 #: pacstall:1326
-#, fuzzy
-#| msgid "'%s' is not a valid license"
 msgid "'%b' is not a valid option, use '%b' or '%b'"
-msgstr "'%s' ist keine gültige Lizenz"
+msgstr "'%b' ist keine gültige Option, nutze '%b' oder '%b'"
 
 #: pacstall:1349
 msgid "Keeping build files"
@@ -666,16 +665,12 @@ msgid "Checking build dependencies"
 msgstr "Prüfe Build-Abhängigkeiten"
 
 #: misc/scripts/fetch-sources.sh:729
-#, fuzzy
-#| msgid "%b version(s) cannot be satisfied"
 msgid "%b versions cannot be satisfied"
-msgstr "%b Version(en) kann(können) nicht erfüllt werden"
+msgstr "%b Versionen können nicht erfüllt werden"
 
 #: misc/scripts/fetch-sources.sh:731
-#, fuzzy
-#| msgid "%b version(s) cannot be satisfied"
 msgid "%b version cannot be satisfied"
-msgstr "%b Version(en) kann(können) nicht erfüllt werden"
+msgstr "%b Version kann nicht erfüllt werden"
 
 #: misc/scripts/fetch-sources.sh:743
 msgid "Checking check dependencies"
@@ -787,10 +782,8 @@ msgstr ""
 "ausgegangen werden sollte, dass es nicht mehr entfernbar ist. Fortfahren?"
 
 #: misc/scripts/package.sh:122
-#, fuzzy
-#| msgid "Done installing %b"
 msgid "Reinstalling '%s'"
-msgstr "Installation von %b abgeschlossen"
+msgstr "Installiere '%s' neu"
 
 #: misc/scripts/package.sh:133
 msgid "This script replaces %s. Do you want to proceed?"
