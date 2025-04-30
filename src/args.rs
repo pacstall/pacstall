@@ -11,11 +11,11 @@ pub struct Arguments {
 }
 
 impl Arguments {
-    pub fn version(version: &str) -> String {
+    pub fn version(version_name: &str) -> String {
         format!(
             "{} {} {}",
             env!("CARGO_PKG_VERSION"),
-            version,
+            version_name,
             fs::read_to_string("/usr/share/pacstall/repo/update")
                 .unwrap_or("pacstall master".to_string())
                 .trim()
