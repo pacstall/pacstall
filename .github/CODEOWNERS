@@ -1,0 +1,7 @@
+# Owners of the pacstall organization are the owners of all the code of the pacstall/pacstall repo
+
+# What is CODEOWNERS?
+# A: Code owners are automatically requested for review when someone opens a pull request that modifies code that they own. Code owners are not automatically requested to review draft pull requests.
+# More info on https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-on-github/about-code-owners
+
+* @Elsie19  @Wizard-28  @D-Brox

@@ -1,0 +1,36 @@
+ci:
+  skip: [shellcheck, shfmt]
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+  - repo: https://github.com/jumanjihouse/pre-commit-hooks
+    rev: 3.0.0
+    hooks:
+      - id: shellcheck
+        args: ["-o", "all", "-e", "SC2250"]
+      - id: shfmt
+        args: ["-bn", "-ci", "-sr", "-s", "-i", "4"]
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.2.6
+    hooks:
+      - id: codespell
+        args: [
+          --check-hidden,
+          --check-filenames,
+          --write-changes,
+          --builtin,
+          clear,
+          rare,
+          informal,
+          usage,
+          code
+        ]
+# vim:set ft=yaml ts=2 sw=2 et:

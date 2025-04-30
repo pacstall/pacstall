@@ -1,0 +1,9 @@
+*.zip
+*.tar.gz
+*.tar.xz
+*.gz
+
+
+# Added by cargo
+
+/target
