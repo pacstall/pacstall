@@ -3,7 +3,6 @@ on: [pull_request]
 
 env:
   LOGNAME: "pacstall"
-  RUNAS: "sudo -u pacstall"
   PACSTALL_SKIP_NETWORK_CHECK: 1
   TERM: "xterm"
 
@@ -19,38 +18,30 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install dependencies
         run: |
-          apt update -qq
-          apt install curl sudo git wget bc -y -qq
+          sudo apt update -qq
+          sudo apt install curl sudo git wget bc -y -qq
       - name: Setup pacstall
         run: |
           echo "N" | sudo bash -c "$(curl -fsSL https://git.io/JsADh || wget -q https://git.io/JsADh -O -)"
-          useradd -m -d /home/pacstall pacstall
-          usermod -a -G sudo pacstall
-          chown pacstall -R "$PACDIR"
-          chown pacstall -R "$METADIR"
-          chown pacstall -R "$LOGDIR"
-          echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-          $RUNAS pacstall -U . || exit 1
+          sudo pacstall -U . || exit 1
       - name: Run tests
         run: |
-          $RUNAS bash << _
           echo "Installing neofetch"
-          pacstall -PI neofetch
+          sudo pacstall -PI neofetch
           if [[ $? -ne 0 ]]; then
             echo "Something went wrong"
             exit 1
           fi
           echo "Installing deb package"
-          pacstall -PI brave-browser-beta-deb
+          sudo pacstall -PI brave-browser-beta-deb
           if [[ $? -ne 0 ]]; then
             echo "Something went wrong"
             exit 1
           fi
           echo "Testing removal"
-          pacstall -PR neofetch
+          sudo pacstall -PR neofetch
           if [[ $? -ne 0 ]]; then
             echo "Something went wrong"
             exit 1
           fi
-          _
 
