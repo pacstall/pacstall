@@ -22,23 +22,23 @@ jobs:
       - name: Setup pacstall
         run: |
           echo "N" | sudo bash -c "$(curl -fsSL https://git.io/JsADh || wget -q https://git.io/JsADh -O -)"
-          sudo pacstall -U ${{ github.actor }}:${{ github.base_ref }} || exit 1
+          sudo -E pacstall -U ${{ github.actor }}:${{ github.base_ref }} || exit 1
       - name: Run tests
         run: |
           echo "Installing neofetch"
-          sudo pacstall -PI neofetch
+          sudo -E pacstall -PI neofetch
           if [[ $? -ne 0 ]]; then
             echo "Something went wrong"
             exit 1
           fi
           echo "Installing deb package"
-          sudo pacstall -PI brave-browser-beta-deb
+          sudo -E pacstall -PI brave-browser-beta-deb
           if [[ $? -ne 0 ]]; then
             echo "Something went wrong"
             exit 1
           fi
           echo "Testing removal"
-          sudo pacstall -PR neofetch
+          sudo -E pacstall -PR neofetch
           if [[ $? -ne 0 ]]; then
             echo "Something went wrong"
             exit 1
