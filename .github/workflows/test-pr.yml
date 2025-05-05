@@ -23,7 +23,7 @@ jobs:
       - name: Setup pacstall
         run: |
           echo "N" | sudo bash -c "$(curl -fsSL https://git.io/JsADh || wget -q https://git.io/JsADh -O -)"
-          sudo pacstall -U . || exit 1
+          sudo pacstall -U "." || exit 1
       - name: Run tests
         run: |
           echo "Installing neofetch"
