@@ -40,4 +40,4 @@ jobs:
           echo "Installing deb package"
           pacstall -PI brave-browser-beta-deb
           echo "Testing removal"
-          sudo pacstall -PR neofetch
+          pacstall -PR neofetch
