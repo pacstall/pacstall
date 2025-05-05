@@ -1,0 +1,43 @@
+name: test install script
+on: [pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:latest
+      options: --privileged
+      env:
+        TERM: xterm
+        shell: bash
+        USER: pacstall
+        SUDO_USER: pacstall
+        LOGNAME: pacstall
+        DEBIAN_FRONTEND: noninteractive
+    steps:
+      - id: checkout
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          apt update -qq
+          apt install curl sudo git wget bc -y -qq
+      - name: Setup Test User
+        run: |
+          useradd -rm -d /home/$USER -s /bin/bash -g root -G sudo -u 1001 $USER
+          sudo sed -i "s/%sudo\tALL=(ALL:ALL) ALL/%sudo\tALL=(ALL) NOPASSWD:ALL/g" /etc/sudoers
+          chown -R $USER /tmp
+          chmod -R 777 /tmp
+      - name: Setup Pacstall
+        run: |
+          echo N | sudo ./install.sh
+          sudo sed -i 's/ignore_stack=false/ignore_stack=true/g' /usr/bin/pacstall
+          pacstall -U ${{ github.event.pull_request.user.login }}:${{ github.event.pull_request.head.sha }}
+          ls -lad /tmp/pacstall
+      - name: Run tests
+        run: |
+          echo "Installing neofetch"
+          pacstall -PI neofetch
+          echo "Installing deb package"
+          pacstall -PI brave-browser-beta-deb
+          echo "Testing removal"
+          pacstall -PR neofetch
