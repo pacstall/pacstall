@@ -43,4 +43,3 @@ jobs:
             echo "Something went wrong"
             exit 1
           fi
-
