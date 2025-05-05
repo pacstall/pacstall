@@ -30,7 +30,7 @@ jobs:
           chown pacstall -R "$METADIR"
           chown pacstall -R "$LOGDIR"
           echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-          sudo -u pacstall pacstall -U . || exit 1
+          $RUNAS pacstall -U . || exit 1
       - name: Run tests
         run: |
           $RUNAS bash << _
