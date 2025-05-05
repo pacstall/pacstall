@@ -1,45 +1,43 @@
 name: test install script
 on: [pull_request]
 
-env:
-  LOGNAME: "pacstall"
-  PACSTALL_SKIP_NETWORK_CHECK: 1
-  TERM: "xterm"
-
-  METADIR: "/var/log/pacstall/metadata"
-  LOGDIR: "/var/log/pacstall/error_log"
-  SCRIPTDIR: "/usr/share/pacstall"
-  PACDIR: "/tmp/pacstall"
-
 jobs:
   test:
     runs-on: ubuntu-latest
+    container:
+      image: ubuntu:latest
+      options: --privileged
+      env:
+        TERM: xterm
+        shell: bash
+        USER: pacstall
+        SUDO_USER: pacstall
+        LOGNAME: pacstall
+        DEBIAN_FRONTEND: noninteractive
     steps:
+      - id: checkout
+        uses: actions/checkout@v4
       - name: Install dependencies
         run: |
-          sudo apt update -qq
-          sudo apt install curl sudo git wget bc -y -qq
-      - name: Setup pacstall
+          apt update -qq
+          apt install curl sudo git wget bc -y -qq
+      - name: Setup Test User
         run: |
-          echo "N" | sudo bash -c "$(curl -fsSL https://git.io/JsADh || wget -q https://git.io/JsADh -O -)"
-          sudo -E pacstall -U ${{ github.actor }}:${{ github.base_ref }} || exit 1
+          useradd -rm -d /home/$USER -s /bin/bash -g root -G sudo -u 1001 $USER
+          sudo sed -i "s/%sudo\tALL=(ALL:ALL) ALL/%sudo\tALL=(ALL) NOPASSWD:ALL/g" /etc/sudoers
+          chown -R $USER /tmp
+          chmod -R 777 /tmp
+      - name: Setup Pacstall
+        run: |
+          echo N | sudo ./install.sh
+          sudo sed -i 's/ignore_stack=false/ignore_stack=true/g' /usr/bin/pacstall
+          pacstall -U ${{ github.event.pull_request.user.login }}:${{ github.event.pull_request.head.sha }}
+          ls -lad /tmp/pacstall
       - name: Run tests
         run: |
           echo "Installing neofetch"
-          sudo -E pacstall -PI neofetch
-          if [[ $? -ne 0 ]]; then
-            echo "Something went wrong"
-            exit 1
-          fi
+          pacstall -PI neofetch
           echo "Installing deb package"
-          sudo -E pacstall -PI brave-browser-beta-deb
-          if [[ $? -ne 0 ]]; then
-            echo "Something went wrong"
-            exit 1
-          fi
+          pacstall -PI brave-browser-beta-deb
           echo "Testing removal"
-          sudo -E pacstall -PR neofetch
-          if [[ $? -ne 0 ]]; then
-            echo "Something went wrong"
-            exit 1
-          fi
+          sudo pacstall -PR neofetch
