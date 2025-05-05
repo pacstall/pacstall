@@ -43,7 +43,7 @@ function safe_source() {
 
     safeenv="$(sudo mktemp -p "${PACDIR}")"
     sudo chmod +r "$safeenv"
-    bwrapenv="$(sudo mktemp -p "${PACDIR}" -t "bwrapenv.XXXXXXXXXX")"
+    bwrapenv="$(sudo mktemp -p "${PACDIR}" "bwrapenv.XXXXXXXXXX")"
     sudo chmod +r "$bwrapenv"
     export bwrapenv
     export safeenv
