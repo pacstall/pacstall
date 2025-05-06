@@ -833,7 +833,7 @@ function compare_remote_version() {
     fi
     remotever="$(
         unset pkgrel
-        remote_tmp="$(sudo mktemp -p "${PACDIR}" -t "compare-repo-ver-$crv_input.XXXXXX")"
+        remote_tmp="$(sudo mktemp -p "${PACDIR}" "compare-repo-ver-$crv_input.XXXXXX")"
         remote_safe="${remote_tmp}"
         # shellcheck disable=SC2034
         curl -fsSL "$remoterepo/packages/$crv_fetch/.SRCINFO" | sudo tee "${remote_safe}" > /dev/null || { ignore_stack=true; return 1; }
