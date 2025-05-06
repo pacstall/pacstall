@@ -2,12 +2,9 @@ mod args;
 mod cmds;
 mod utilities;
 
-use std::{fs::File, path::Path};
-
 use args::{Arguments, Commands};
 use clap::Parser;
 use cmds::search::Search;
-use libpacstall::local::repos::PacstallRepos;
 
 fn main() -> anyhow::Result<()> {
     match Arguments::parse().command {
@@ -18,17 +15,9 @@ fn main() -> anyhow::Result<()> {
         Commands::Tree { package } => todo!(),
         Commands::Build { package, args } => todo!(),
         Commands::Search { package } => {
-            let file = File::open(Path::new("/usr/share/pacstall/repo/pacstallrepo"))?;
-            let repos = match PacstallRepos::try_from(file) {
-                Ok(o) => o,
-                Err(e) => {
-                    eprintln!("{e}");
-                    std::process::exit(1);
-                }
-            };
-            let search = Search::new(repos);
-            let pkglist = search.pkglist()?;
-            println!("{:#?}", pkglist);
+            let pkglist =
+                Search::from_repo_path("/usr/share/pacstall/repo/pacstallrepo")?.pkglist()?;
+            println!("{}", pkglist.filter_pkg(&package));
         }
         Commands::Remove { package } => todo!(),
         Commands::Install { package, args } => todo!(),

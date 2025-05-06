@@ -1,9 +1,19 @@
-use std::fs;
+use std::{
+    fmt::Display,
+    fs::{self, File},
+    path::Path,
+};
 
 use anyhow::anyhow;
-use libpacstall::local::repos::{PacstallRepo, PacstallRepos};
+use libpacstall::local::{
+    metalink::metalink,
+    repos::{PacstallRepo, PacstallRepos},
+};
 
-pub type PkgList = Vec<PkgBase>;
+#[derive(Default)]
+pub struct PkgList {
+    pub contents: Vec<PkgBase>,
+}
 
 pub struct Search {
     repos: PacstallRepos,
@@ -11,19 +21,105 @@ pub struct Search {
 
 #[derive(Debug)]
 pub struct PkgBase {
-    pkgbase: String,
-    packages: Vec<Package>,
+    pub pkgbase: String,
+    pub packages: Vec<Package>,
 }
 
 #[derive(Debug)]
 pub struct Package {
-    name: String,
-    pacscript: url::Url,
+    pub name: String,
+    pub repo: url::Url,
+    pub pacscript: url::Url,
+}
+
+impl From<PkgBase> for Package {
+    fn from(value: PkgBase) -> Self {
+        Self {
+            name: value.packages[0].name.clone(),
+            repo: value.packages[0].repo.clone(),
+            pacscript: value.packages[0].pacscript.clone(),
+        }
+    }
+}
+
+impl IntoIterator for PkgBase {
+    type Item = Package;
+    type IntoIter = std::vec::IntoIter<Self::Item>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.packages.into_iter()
+    }
+}
+
+impl IntoIterator for PkgList {
+    type Item = PkgBase;
+    type IntoIter = std::vec::IntoIter<Self::Item>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.contents.into_iter()
+    }
+}
+
+impl Display for PkgList {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{}",
+            self.contents
+                .iter()
+                .map(|it| format!("{it}"))
+                .collect::<Vec<_>>()
+                .join("\n")
+        )
+    }
+}
+
+impl Display for PkgBase {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let mut it = self.packages.iter().peekable();
+        while let Some(pkg) = it.next() {
+            let pretty_url = match metalink(&pkg.repo) {
+                Some(o) => o.pretty(),
+                None => pkg.pacscript.to_string(),
+            };
+            // BUG: Does not print `pkg:pkgbase` ever.
+            write!(
+                f,
+                "{} @ {}",
+                if self.is_single() {
+                    pkg.name.clone()
+                } else {
+                    format!("{}:{}", self.pkgbase, pkg.name)
+                },
+                pretty_url
+            )?;
+            if it.peek().is_some() {
+                writeln!(f)?;
+            }
+        }
+        Ok(())
+    }
+}
+
+impl PkgList {
+    pub fn filter_pkg(self, search: &str) -> Self {
+        PkgList {
+            contents: self
+                .contents
+                .into_iter()
+                .filter(|pkgbase| pkgbase.contains(search))
+                .collect(),
+        }
+    }
 }
 
 impl PkgBase {
     pub fn is_single(&self) -> bool {
         self.packages.len() == 1 && self.pkgbase == self.packages[0].name
+    }
+
+    fn contains(&self, search: &str) -> bool {
+        self.pkgbase.contains(search) || self.packages.iter().any(|pkg| pkg.name.contains(search))
     }
 }
 
@@ -32,54 +128,59 @@ impl Search {
         Self { repos }
     }
 
+    pub fn from_repo_path<S: AsRef<Path>>(path: S) -> anyhow::Result<Self> {
+        Ok(Self {
+            repos: PacstallRepos::try_from(File::open(path)?)?,
+        })
+    }
+
     pub fn pkglist(&self) -> anyhow::Result<PkgList> {
-        let mut pkglist = vec![];
+        let mut pkglist = PkgList::default();
 
         for entry in self.repos.clone() {
-            let list = if entry.url().as_str().starts_with("file://") {
-                fs::read_to_string(match entry.url().to_file_path() {
-                    Ok(o) => format!("{}/packagelist", o.to_string_lossy()),
-                    Err(()) => return Err(anyhow!("Could not convert to pathbuf")),
-                })?
+            let url = entry.url();
+            let list = if let Ok(path) = url.to_file_path() {
+                let list_path = path.join("packagelist");
+                fs::read_to_string(list_path)?
             } else {
-                reqwest::blocking::get(format!("{}/packagelist", entry.url().to_owned()))?.text()?
+                let url = format!("{url}/packagelist");
+                reqwest::blocking::get(&url)?.text()?
             };
-            for pkg_entry in list.lines() {
-                if !pkg_entry.contains(':') {
-                    pkglist.push(PkgBase {
-                        pkgbase: pkg_entry.to_string(),
-                        packages: vec![Package {
-                            name: pkg_entry.to_string(),
-                            pacscript: entry
-                                .url()
-                                .clone()
-                                .join(&format!("packages/{pkg_entry}/{pkg_entry}.pacscript"))?,
-                        }],
-                    });
-                } else {
-                    match pkg_entry.split(':').collect::<Vec<_>>()[..] {
-                        [pkg, "pkgbase"] => {
-                            pkglist.push(PkgBase {
-                                pkgbase: pkg.to_string(),
-                                packages: vec![],
-                            });
-                        }
-                        [pkg, child] => {
-                            pkglist
-                                .iter_mut()
-                                .find(|parent| parent.pkgbase == pkg)
-                                .unwrap_or_else(|| panic!("Could not find {pkg}:pkgbase"))
-                                .packages
-                                .push(Package {
-                                    name: child.to_string(),
-                                    pacscript: entry
-                                        .url()
-                                        .clone()
-                                        .join(&format!("packages/{pkg}/{pkg}.pacscript"))?,
-                                });
-                        }
-                        _ => return Err(anyhow!("Invalid syntax for packagelist: {}", pkg_entry)),
+            for pkg_entry in list.trim().lines() {
+                let parts: Vec<_> = pkg_entry.split(':').collect();
+
+                match parts.as_slice() {
+                    [pkgbase] => {
+                        pkglist.contents.push(PkgBase {
+                            pkgbase: (*pkgbase).to_string(),
+                            packages: vec![Package {
+                                name: (*pkgbase).to_string(),
+                                repo: url.clone(),
+                                pacscript: format!("{url}/packages/{pkgbase}/{pkgbase}.pacscript")
+                                    .parse()?,
+                            }],
+                        });
                     }
+                    [pkg, "pkgbase"] => {
+                        pkglist.contents.push(PkgBase {
+                            pkgbase: (*pkg).to_string(),
+                            packages: vec![],
+                        });
+                    }
+                    [pkg, child] => {
+                        let parent = pkglist
+                            .contents
+                            .iter_mut()
+                            .find(|p| p.pkgbase == *pkg)
+                            .ok_or_else(|| anyhow!("Missing parent pkgbase for: {}", pkg))?;
+
+                        parent.packages.push(Package {
+                            name: (*child).to_string(),
+                            repo: url.clone(),
+                            pacscript: format!("{url}/packages/{pkg}/{pkg}.pacscript").parse()?,
+                        });
+                    }
+                    _ => return Err(anyhow!("Invalid line in packagelist: {pkg_entry}")),
                 }
             }
         }
