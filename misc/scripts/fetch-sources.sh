@@ -868,4 +868,20 @@ function compare_remote_version() {
     fi
 }
 
+function compare_kernel() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+    local compare_kver="${1}" ckver_split
+    case "${compare_kver}" in
+        "<="*) ckver_split=("le" "${compare_kver##*<=}") ;;
+        ">="*) ckver_split=("ge" "${compare_kver##*>=}") ;;
+        "="*) ckver_split=("eq" "${compare_kver##*=}") ;;
+        "<"*) ckver_split=("lt" "${compare_kver##*<}") ;;
+        ">"*) ckver_split=("gt" "${compare_kver##*>}") ;;
+    esac
+    if ! dpkg --compare-versions "${KVER}" "${ckver_split[0]}" "${ckver_split[1]}"; then
+        fancy_message error $"Kernel version constraint for this Pacscript not satisified: %b" "${BBlue}${compare_kver}${NC}"
+        { ignore_stack=true; return 1; }
+    fi
+}
+
 # vim:set ft=sh ts=4 sw=4 et:

@@ -99,7 +99,8 @@ case ${CARCH} in
 esac
 DISTRO="$(set_distro parent)"
 CDISTRO="$(set_distro)"
-export CARCH AARCH DISTRO CDISTRO
+KVER="$(uname -r)"
+export CARCH AARCH DISTRO CDISTRO KVER
 
 fancy_message info $"Checking for updates"
 

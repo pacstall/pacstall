@@ -251,7 +251,8 @@ case ${CARCH} in
 esac
 DISTRO="$(set_distro parent)"
 CDISTRO="$(set_distro)"
-export FARCH CARCH AARCH DISTRO CDISTRO
+KVER="$(uname -r)"
+export FARCH CARCH AARCH DISTRO CDISTRO KVER
 
 # Running source on an isolated env
 safe_source "${pacfile}"
