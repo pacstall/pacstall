@@ -5,18 +5,19 @@ use std::{
 };
 
 use anyhow::anyhow;
+use colored::Colorize;
 use libpacstall::local::{
     metalink::metalink,
     repos::{PacstallRepo, PacstallRepos},
 };
 
+pub struct Search {
+    repos: PacstallRepos,
+}
+
 #[derive(Default)]
 pub struct PkgList {
     pub contents: Vec<PkgBase>,
-}
-
-pub struct Search {
-    repos: PacstallRepos,
 }
 
 #[derive(Debug)]
@@ -85,13 +86,14 @@ impl Display for PkgBase {
             // BUG: Does not print `pkg:pkgbase` ever.
             write!(
                 f,
-                "{} @ {}",
+                "{} {} {}",
                 if self.is_single() {
-                    pkg.name.clone()
+                    pkg.name.clone().green()
                 } else {
-                    format!("{}:{}", self.pkgbase, pkg.name)
+                    format!("{}:{}", self.pkgbase, pkg.name).green()
                 },
-                pretty_url
+                "@".magenta(),
+                pretty_url.cyan()
             )?;
             if it.peek().is_some() {
                 writeln!(f)?;
@@ -102,6 +104,8 @@ impl Display for PkgBase {
 }
 
 impl PkgList {
+    /// Search for package and flatten pkglist into non-recursive list (child packages will become
+    /// "parent" packages).
     pub fn filter_pkg(self, search: &str) -> Self {
         PkgList {
             contents: self
@@ -120,6 +124,19 @@ impl PkgBase {
 
     fn contains(&self, search: &str) -> bool {
         self.pkgbase.contains(search) || self.packages.iter().any(|pkg| pkg.name.contains(search))
+    }
+
+    fn lift(self) -> Vec<Self> {
+        let mut pkgs = vec![];
+
+        for pkg in self.packages {
+            pkgs.push(PkgBase {
+                pkgbase: pkg.name.clone(),
+                packages: vec![pkg],
+            });
+        }
+
+        pkgs
     }
 }
 
