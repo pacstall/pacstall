@@ -713,7 +713,7 @@ function lint_kver() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local ret=0
     if [[ -n ${limit_kver} ]]; then
-        if ! [[ ${limit_kver} =~ ^[<>=] ]]; then
+        if ! [[ "${limit_kver}" =~ ^[<>=] ]]; then
             fancy_message error $"'%s' must be prefixed with a constraint (<=|>=|=|<|>)" "limit_kver"
             ret=1
         fi
