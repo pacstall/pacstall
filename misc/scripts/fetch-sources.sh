@@ -879,7 +879,7 @@ function compare_kernel() {
         ">"*) ckver_split=("gt" "${compare_kver##*>}") ;;
     esac
     if ! dpkg --compare-versions "${KVER}" "${ckver_split[0]}" "${ckver_split[1]}"; then
-        fancy_message error $"Kernel version constraint for this Pacscript not satisified: %b" "${BBlue}${compare_kver}${NC}"
+        fancy_message error $"Kernel version constraint for this Pacscript not satisfied: %b" "${BBlue}${compare_kver}${NC}"
         { ignore_stack=true; return 1; }
     fi
 }
