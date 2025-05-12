@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2025-05-13 12:01+0000\n"
-"Last-Translator: bai0012 <baicongrui@gmail.com>\n"
+"Last-Translator: Larm Kai Xian <lkaixian91@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "pacstall/pacstall/zh_SIMPLIFIED/>\n"
 "Language: zh_SIMPLIFIED\n"
@@ -521,9 +521,8 @@ msgid "Could not find build.sh"
 msgstr "找不到此 build.sh"
 
 #: misc/scripts/fetch-sources.sh:190
-#, fuzzy
 msgid "Hashes do not match (with method %s)"
-msgstr "此散列值不匹配 (以 %s 为方法)"
+msgstr "散列值不匹配 (使用方法 %s)"
 
 #: misc/scripts/fetch-sources.sh:191
 msgid "Got:      %b"
@@ -531,7 +530,7 @@ msgstr "有:      %b"
 
 #: misc/scripts/fetch-sources.sh:192
 msgid "Expected: %b"
-msgstr ""
+msgstr "预期值: %b"
 
 #: misc/scripts/fetch-sources.sh:201
 msgid "Failed to download package"
@@ -550,9 +549,8 @@ msgid "Cloning %b from tag %b"
 msgstr "正在从标签 %b 中克隆 %b"
 
 #: misc/scripts/fetch-sources.sh:232
-#, fuzzy
 msgid "Cloning %b with no blobs"
-msgstr "克隆 %b 中 (无 blobs)"
+msgstr "正在克隆 %b (无 blobs)"
 
 #: misc/scripts/fetch-sources.sh:235
 msgid "Cloning %b from %b"
