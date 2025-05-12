@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-02-13 08:02+0000\n"
-"Last-Translator: Larm Kai Xian <lkaixian91@gmail.com>\n"
+"PO-Revision-Date: 2025-05-13 12:01+0000\n"
+"Last-Translator: bai0012 <baicongrui@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "pacstall/pacstall/zh_SIMPLIFIED/>\n"
 "Language: zh_SIMPLIFIED\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: pacstall:287 misc/scripts/build.sh:163 misc/scripts/build.sh:688
 #: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:735
@@ -191,9 +191,8 @@ msgid "Package is not installed"
 msgstr "包未安装"
 
 #: pacstall:1326
-#, fuzzy
 msgid "'%b' is not a valid option, use '%b' or '%b'"
-msgstr "此 '%s' 不是个有效的许可证"
+msgstr "'%b'不是一个有效的选项，请使用 '%b'或'%b'"
 
 #: pacstall:1349
 msgid "Keeping build files"
@@ -483,18 +482,16 @@ msgstr "此 '%s' 中的自定义字段的名称不能以连字符作为开头或
 
 #: misc/scripts/checks.sh:475 misc/scripts/checks.sh:500
 #: misc/scripts/checks.sh:508
-#, fuzzy
 msgid "Only one checksum method can be provided for hashes"
-msgstr "只有一个校验和法可以被使用在散列上"
+msgstr "只能为哈希提供一种校验和方法"
 
 #: misc/scripts/checks.sh:536 misc/scripts/checks.sh:666
 msgid "'%s' is improperly formatted"
 msgstr "此 '%s' 格式错误"
 
 #: misc/scripts/checks.sh:551 misc/scripts/checks.sh:574
-#, fuzzy
 msgid "'%s' and '%s' indices cannot both be provided"
-msgstr "'%s' 和 '%s' 索引不能同一时间被提供"
+msgstr "'%s' 和 '%s' 索引不能同时被提供"
 
 #: misc/scripts/checks.sh:566 misc/scripts/checks.sh:589
 #, fuzzy
