@@ -40,6 +40,12 @@ export TARCH
 # FARCH will be useful here when pkgbase is implemented
 append_modifier_entries "${TARCH}" "${DISTRO}"
 
+# Run checks function
+if ! checks; then
+    error_log 6 "install ${pacname}"
+    clean_fail_down
+fi
+
 # Running `-B` on a deb package doesn't make sense, so let's download instead
 if ((PACSTALL_INSTALL == 0)) && [[ ${pacname} == *-deb ]]; then
     parse_source_entry "${source[0]}"
@@ -88,15 +94,16 @@ elif [[ -n ${incompatible[*]} ]]; then
     fi
 fi
 
+if [[ -n ${limit_kver} ]]; then
+    if ! compare_kernel "${limit_kver}"; then
+        cleanup
+        exit 1
+    fi
+fi
+
 clean_builddir
 sudo mkdir -p "$STAGEDIR/$pacname/DEBIAN"
 sudo chmod a+rx "$STAGEDIR" "$STAGEDIR/$pacname" "$STAGEDIR/$pacname/DEBIAN"
-
-# Run checks function
-if ! checks; then
-    error_log 6 "install ${pacname}"
-    clean_fail_down
-fi
 
 # If priority exists and is required, and also that this package has not been installed before (first time)
 if [[ -n ${priority} && ${priority} == 'essential' ]] && ! is_package_installed "${pacname}"; then
