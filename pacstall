@@ -23,9 +23,9 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 # Pacstall version
-version_number="6.2.1"
-version_name="Honolulu"
-declare -A version_color=([r]="0" [g]="118" [b]="182")
+version_number="6.3.0"
+version_name="Absinthe"
+declare -A version_color=([r]="204" [g]="255" [b]="102")
 
 # Configuration
 export METADIR="/var/lib/pacstall/metadata"
