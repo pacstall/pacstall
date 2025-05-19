@@ -47,7 +47,7 @@ function dep_const.apt_compare_to_constraints() {
         *">"*) compare_type="gt" ;;
     esac
     const_arch="$(dep_const.get_arch "${split_up[0]}")"
-    if is_apt_package_installed "${split_up[0]}"; then
+    if is_apt_package_installed "${compare_pkg}"; then
         pkg_version="$(dpkg-query --showformat='${Version}' --show "${split_up[0]}")"
     else
         pkg_version="$(aptitude search --quiet --disable-columns "?exact-name(${split_up[0]%:*})?architecture(${const_arch})" -F "%V")"
@@ -180,7 +180,7 @@ function dep_const.get_pipe() {
         if dep_const.apt_compare_to_constraints "${pkg}"; then
             dep_const.split_name_and_version "${pkg}" check_name
             pipe_arch="$(dep_const.get_arch "${check_name[0]}")"
-            if is_package_installed "${check_name[0]}" || is_apt_package_installed "${check_name[0]}"; then
+            if is_package_installed "${check_name[0]}" || is_apt_package_installed "${pkg}"; then
                 echo "${pkg}"
                 return 0
             else

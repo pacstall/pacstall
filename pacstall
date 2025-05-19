@@ -566,7 +566,24 @@ function is_package_installed() {
 # Returns 0 if exists, 1 if not
 function is_apt_package_installed() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    if [[ $(dpkg-query -W --showformat='${db:Status-Status}' "${1}" 2> /dev/null) == "installed" ]]; then
+    local precheck="${1}" status pkg_split
+    # break out into ([0]=name [1]=compare [2]=version) if constraints present
+    case "${precheck}" in
+        *"<="*) pkg_split=("${precheck%%<=*}" "le" "${precheck##*<=}") ;;
+        *">="*) pkg_split=("${precheck%%>=*}" "ge" "${precheck##*>=}") ;;
+        *"="*) pkg_split=("${precheck%%=*}" "eq" "${precheck##*=}") ;;
+        *"<"*) pkg_split=("${precheck%%<*}" "lt" "${precheck##*<}") ;;
+        *">"*) pkg_split=("${precheck%%>*}" "gt" "${precheck##*>}") ;;
+        *) pkg_split=("${precheck}") ;;
+    esac
+    # record ([0]=installed [1]=version) if present
+    mapfile -t status < <(dpkg-query -W --showformat='${db:Status-Status}\n${Version}' "${pkg_split[0]}" 2> /dev/null)
+    if [[ ${status[0]} == "installed" ]]; then
+        if [[ -n "${pkg_split[1]}" ]]; then
+            if ! dpkg --compare-versions "${status[1]}" "${pkg_split[1]}" "${pkg_split[2]}"; then
+                { ignore_stack=true; return 1; }
+            fi
+        fi
         return 0
     else
         { ignore_stack=true; return 1; }
