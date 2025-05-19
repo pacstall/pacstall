@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2025-04-02 01:05+0000\n"
-"Last-Translator: \"James \\\"Jim\\\" Ed Randson\" "
-"<053476233@ecampus.ut.ac.id>\n"
+"Last-Translator: \"James \\\"Jim\\\" Ed Randson\" <053476233@ecampus.ut.ac."
+"id>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/id/>\n"
 "Language: id\n"
@@ -47,7 +47,7 @@ msgstr "Gagal dengan kode http %s"
 msgid "Confirm that '%b' is accessible"
 msgstr "Pastikan bahwa '%b' dapat diakses"
 
-#: pacstall:657 misc/scripts/package.sh:387 misc/scripts/package.sh:402
+#: pacstall:657 misc/scripts/package.sh:394 misc/scripts/package.sh:409
 #: misc/scripts/update.sh:47
 msgid "Could not enter into %s"
 msgstr "Tidak dapat memasuki %s"
@@ -103,7 +103,7 @@ msgstr "Tidak dapat tersambung ke internet"
 msgid "Confirm that the URLs '%b' or '%b' are accessible"
 msgstr "Pastikan bahwa URL '%b' atau '%b' dapat diakses"
 
-#: pacstall:968 pacstall:1251 misc/scripts/upgrade.sh:282
+#: pacstall:968 pacstall:1251 misc/scripts/upgrade.sh:283
 msgid "Failed to download the %b pacscript"
 msgstr "Gagal mengunduh file pacscript %b"
 
@@ -284,7 +284,7 @@ msgstr "Tidak dapat menemukan srcinfo.sh"
 
 #: misc/scripts/build.sh:95 misc/scripts/build.sh:100
 #: misc/scripts/fetch-sources.sh:687 misc/scripts/fetch-sources.sh:700
-#: misc/scripts/package.sh:227
+#: misc/scripts/package.sh:234
 msgid "%b [required]"
 msgstr "%b [diperlukan]"
 
@@ -293,7 +293,7 @@ msgid "%b [remote]"
 msgstr "%b [remot]"
 
 #: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:696
-#: misc/scripts/package.sh:222
+#: misc/scripts/package.sh:229
 msgid "%b [installed]"
 msgstr "%b [terinstal]"
 
@@ -367,7 +367,7 @@ msgstr "Gagal menginstal deb %s"
 msgid "Package built at %b"
 msgstr "Paket dibuat di %b"
 
-#: misc/scripts/build.sh:712 misc/scripts/package.sh:50
+#: misc/scripts/build.sh:712 misc/scripts/package.sh:56
 msgid "Moving %b to %b"
 msgstr "Memindahkan %b ke %b"
 
@@ -528,6 +528,10 @@ msgstr "'%s' harus berupa: '%s', '%s', '%s', '%s', atau '%s'"
 msgid "'%s' is not a valid license"
 msgstr "'%s' bukan merupakan lisensi yang valid"
 
+#: misc/scripts/checks.sh:717
+msgid "'%s' must be prefixed with a constraint (<=|>=|=|<|>)"
+msgstr ""
+
 #: misc/scripts/fetch-sources.sh:29
 msgid "Could not find build.sh"
 msgstr "Tidak dapat menemukan build.sh"
@@ -614,11 +618,11 @@ msgstr "Menjalankan kait %s"
 msgid "Could not run %s hook successfully"
 msgstr "Tidak dapat menjalankan kait %s dengan sukses"
 
-#: misc/scripts/fetch-sources.sh:373 misc/scripts/package.sh:397
+#: misc/scripts/fetch-sources.sh:373 misc/scripts/package.sh:404
 msgid "Performing post install operations"
 msgstr "Menjalankan operasi pasca penginstalan"
 
-#: misc/scripts/fetch-sources.sh:389 misc/scripts/package.sh:398
+#: misc/scripts/fetch-sources.sh:389 misc/scripts/package.sh:405
 msgid "Storing pacscript"
 msgstr "Menyimpan pacscript"
 
@@ -626,7 +630,7 @@ msgstr "Menyimpan pacscript"
 msgid "Could not enter into %b"
 msgstr "Tidak dapat memasuki %b"
 
-#: misc/scripts/fetch-sources.sh:400 misc/scripts/package.sh:412
+#: misc/scripts/fetch-sources.sh:400 misc/scripts/package.sh:419
 msgid "Done installing %b"
 msgstr "Selesai menginstal %b"
 
@@ -672,11 +676,15 @@ msgstr "Membuat paket dummy dependensi build/konfilk"
 msgid "Failed to install build or check dependencies"
 msgstr "Gagal menginstal dependensi build atau check"
 
+#: misc/scripts/fetch-sources.sh:882
+msgid "Kernel version constraint for this Pacscript not satisfied: %b"
+msgstr ""
+
 #: misc/scripts/get-pacscript.sh:33
 msgid "Run '%b'"
 msgstr "Jalankan '%b'"
 
-#: misc/scripts/get-pacscript.sh:38 misc/scripts/upgrade.sh:263
+#: misc/scripts/get-pacscript.sh:38 misc/scripts/upgrade.sh:264
 msgid "Could not enter %s"
 msgstr "Tidak dapat memasuki %s"
 
@@ -728,7 +736,7 @@ msgstr "Editor tidak ditemukan, kembali ke '%s'"
 msgid "Sourcing pacscript"
 msgstr "Memeriksa pacscript"
 
-#: misc/scripts/package-base.sh:259
+#: misc/scripts/package-base.sh:260
 msgid "Could not source pacscript"
 msgstr "Tidak dapat memeriksa pacscript"
 
@@ -736,11 +744,11 @@ msgstr "Tidak dapat memeriksa pacscript"
 msgid "This package will connect to the internet during its build process."
 msgstr "Paket ini akan terhubung ke internet selama proses pembuatan."
 
-#: misc/scripts/package.sh:47
+#: misc/scripts/package.sh:53
 msgid "Failed to download '%s'"
 msgstr "Gagal mengunduh '%s'"
 
-#: misc/scripts/package.sh:63
+#: misc/scripts/package.sh:69
 msgid ""
 "The package %b is masking %b. By installing the masked package, you may "
 "cause damage to your operating system"
@@ -748,7 +756,7 @@ msgstr ""
 "Paket %b adalah paket yang menutupi %b. Dengan menginstal paket bertopeng, "
 "anda dapat menyebabkan kerusakan pada sistem operasi anda"
 
-#: misc/scripts/package.sh:66
+#: misc/scripts/package.sh:72
 msgid ""
 "Somehow, '%s' found masked packages that match the package you want to "
 "install, but '%s' could not find it. Report this upstream"
@@ -757,7 +765,7 @@ msgstr ""
 "ingin anda instal, tetapi '%s' tidak dapat menemukannya. Mohon laporkan hal "
 "ini"
 
-#: misc/scripts/package.sh:103
+#: misc/scripts/package.sh:110
 msgid ""
 "This package has '%s', meaning once this is installed, it should be assumed "
 "to be unremovable. Do you want to continue?"
@@ -765,63 +773,63 @@ msgstr ""
 "Paket ini memiliki '%s', yang berarti setelah terinstal, paket ini harus "
 "diasumsikan untuk tidak dapat dihapus. Apakah anda ingin melanjutkan?"
 
-#: misc/scripts/package.sh:122
+#: misc/scripts/package.sh:129
 msgid "Reinstalling '%s'"
 msgstr "Memasang ulang %b"
 
-#: misc/scripts/package.sh:133
+#: misc/scripts/package.sh:140
 msgid "This script replaces %s. Do you want to proceed?"
 msgstr "Skrip ini menggantikan %s. Apakah anda ingin melanjutkan?"
 
-#: misc/scripts/package.sh:149
+#: misc/scripts/package.sh:156
 msgid "%b conflicts with %s, which is currently installed by apt"
 msgstr "%b berkonflik dengan %s, yang saat ini terinstal oleh apt"
 
-#: misc/scripts/package.sh:150 misc/scripts/package.sh:172
+#: misc/scripts/package.sh:157 misc/scripts/package.sh:179
 msgid "Remove the apt package by running '%b'"
 msgstr "Hapus paket apt dengan menjalankan '%b'"
 
-#: misc/scripts/package.sh:157
+#: misc/scripts/package.sh:164
 msgid "%b conflicts with %s, which is currently installed by pacstall"
 msgstr "%b berkonflik dengan %s, yang saat ini terinstal oleh pacstall"
 
-#: misc/scripts/package.sh:158 misc/scripts/package.sh:179
+#: misc/scripts/package.sh:165 misc/scripts/package.sh:186
 msgid "Remove the pacstall package by running '%b'"
 msgstr "Hapus paket pacstall dengan menjalankan '%b'"
 
-#: misc/scripts/package.sh:171
+#: misc/scripts/package.sh:178
 msgid "%b breaks %s, which is currently installed by apt"
 msgstr "%b merusak %s, yang saat ini terinstal oleh apt"
 
-#: misc/scripts/package.sh:178
+#: misc/scripts/package.sh:185
 msgid "%b breaks %s, which is currently installed by pacstall"
 msgstr "%b merusak %s, yang saat ini terinstal oleh pacstall"
 
-#: misc/scripts/package.sh:196
+#: misc/scripts/package.sh:203
 msgid "Checking pacstall dependencies"
 msgstr "Memeriksa dependensi pacstall"
 
-#: misc/scripts/package.sh:215
+#: misc/scripts/package.sh:222
 msgid "%b [update]"
 msgstr "%b [pembaruan]"
 
-#: misc/scripts/package.sh:217 misc/scripts/package.sh:228
+#: misc/scripts/package.sh:224 misc/scripts/package.sh:235
 msgid "Failed to install dependency (%s from %s)"
 msgstr "Gagal menginstal dependensi (%s dari %s)"
 
-#: misc/scripts/package.sh:242
+#: misc/scripts/package.sh:249
 msgid "%s is associated with multiple source entries"
 msgstr "%s berkaitan dengan beberapa entri sumber"
 
-#: misc/scripts/package.sh:276
+#: misc/scripts/package.sh:283
 msgid "Retrieving packages"
 msgstr "Mengambil paket"
 
-#: misc/scripts/package.sh:374
+#: misc/scripts/package.sh:381
 msgid "Running functions"
 msgstr "Menjalankan fungsi"
 
-#: misc/scripts/package.sh:379
+#: misc/scripts/package.sh:386
 msgid "Could not %s %s properly"
 msgstr "Tidak dapat %s %s dengan benar"
 
@@ -853,7 +861,7 @@ msgstr "Mencadangkan %b"
 msgid "Installing %b"
 msgstr "Menginstal %b"
 
-#: misc/scripts/query-info.sh:101
+#: misc/scripts/query-info.sh:102
 msgid "Key '%s' does not exist"
 msgstr "Kunci '%s' tidak ada"
 
@@ -950,31 +958,31 @@ msgstr "Membuat skrip dapat dieksekusi"
 msgid "Could not load dep-tree.sh"
 msgstr "Tidak dapat memuat dep-tree.sh"
 
-#: misc/scripts/upgrade.sh:104
+#: misc/scripts/upgrade.sh:105
 msgid "Checking for updates"
 msgstr "Memeriksa pembaruan"
 
-#: misc/scripts/upgrade.sh:109 misc/scripts/upgrade.sh:240
+#: misc/scripts/upgrade.sh:110 misc/scripts/upgrade.sh:241
 msgid "Nothing to upgrade"
 msgstr "Tidak ada yang perlu diperbarui"
 
-#: misc/scripts/upgrade.sh:112
+#: misc/scripts/upgrade.sh:113
 msgid "Building dependency tree"
 msgstr "Membuat pohon dependensi"
 
-#: misc/scripts/upgrade.sh:123
+#: misc/scripts/upgrade.sh:124
 msgid "Checking versions"
 msgstr "Memeriksa versi"
 
-#: misc/scripts/upgrade.sh:180
+#: misc/scripts/upgrade.sh:181
 msgid "Package %b is not on %b anymore"
 msgstr "Paket %b sudah tidak ada di %b lagi"
 
-#: misc/scripts/upgrade.sh:243
+#: misc/scripts/upgrade.sh:244
 msgid "Packages can be upgraded"
 msgstr "Paket dapat diperbarui"
 
-#: misc/scripts/upgrade.sh:268
+#: misc/scripts/upgrade.sh:269
 msgid "Do you want to upgrade %b?"
 msgstr "Apakah anda ingin memperbarui %b?"
 

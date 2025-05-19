@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-02-13 08:02+0000\n"
+"PO-Revision-Date: 2025-05-13 12:01+0000\n"
 "Last-Translator: Larm Kai Xian <lkaixian91@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "pacstall/pacstall/zh_SIMPLIFIED/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: pacstall:287 misc/scripts/build.sh:163 misc/scripts/build.sh:688
 #: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:735
@@ -46,7 +46,7 @@ msgstr "http代码%s失败"
 msgid "Confirm that '%b' is accessible"
 msgstr "确认'%b'可访问"
 
-#: pacstall:657 misc/scripts/package.sh:387 misc/scripts/package.sh:402
+#: pacstall:657 misc/scripts/package.sh:394 misc/scripts/package.sh:409
 #: misc/scripts/update.sh:47
 msgid "Could not enter into %s"
 msgstr "无法进入此 %s"
@@ -102,7 +102,7 @@ msgstr "无法连接到互联网"
 msgid "Confirm that the URLs '%b' or '%b' are accessible"
 msgstr "确认链接 '%b' 或 '%b' 可访问"
 
-#: pacstall:968 pacstall:1251 misc/scripts/upgrade.sh:282
+#: pacstall:968 pacstall:1251 misc/scripts/upgrade.sh:283
 msgid "Failed to download the %b pacscript"
 msgstr "下载%b pacscript失败"
 
@@ -191,9 +191,8 @@ msgid "Package is not installed"
 msgstr "包未安装"
 
 #: pacstall:1326
-#, fuzzy
 msgid "'%b' is not a valid option, use '%b' or '%b'"
-msgstr "此 '%s' 不是个有效的许可证"
+msgstr "'%b'不是一个有效的选项，请使用 '%b'或'%b'"
 
 #: pacstall:1349
 msgid "Keeping build files"
@@ -276,7 +275,7 @@ msgstr "找不到srcinfo.sh"
 
 #: misc/scripts/build.sh:95 misc/scripts/build.sh:100
 #: misc/scripts/fetch-sources.sh:687 misc/scripts/fetch-sources.sh:700
-#: misc/scripts/package.sh:227
+#: misc/scripts/package.sh:234
 msgid "%b [required]"
 msgstr "%b [必需]"
 
@@ -285,7 +284,7 @@ msgid "%b [remote]"
 msgstr "%b [远程]"
 
 #: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:696
-#: misc/scripts/package.sh:222
+#: misc/scripts/package.sh:229
 msgid "%b [installed]"
 msgstr "%b [已安装]"
 
@@ -359,7 +358,7 @@ msgstr "安装%s deb失败"
 msgid "Package built at %b"
 msgstr "包已在%b构建"
 
-#: misc/scripts/build.sh:712 misc/scripts/package.sh:50
+#: misc/scripts/build.sh:712 misc/scripts/package.sh:56
 msgid "Moving %b to %b"
 msgstr "将%b移动到%b"
 
@@ -483,18 +482,16 @@ msgstr "此 '%s' 中的自定义字段的名称不能以连字符作为开头或
 
 #: misc/scripts/checks.sh:475 misc/scripts/checks.sh:500
 #: misc/scripts/checks.sh:508
-#, fuzzy
 msgid "Only one checksum method can be provided for hashes"
-msgstr "只有一个校验和法可以被使用在散列上"
+msgstr "只能为哈希提供一种校验和方法"
 
 #: misc/scripts/checks.sh:536 misc/scripts/checks.sh:666
 msgid "'%s' is improperly formatted"
 msgstr "此 '%s' 格式错误"
 
 #: misc/scripts/checks.sh:551 misc/scripts/checks.sh:574
-#, fuzzy
 msgid "'%s' and '%s' indices cannot both be provided"
-msgstr "'%s' 和 '%s' 索引不能同一时间被提供"
+msgstr "'%s' 和 '%s' 索引不能同时被提供"
 
 #: misc/scripts/checks.sh:566 misc/scripts/checks.sh:589
 #, fuzzy
@@ -519,14 +516,17 @@ msgstr "此 '%s' 只能是: '%s', '%s', '%s', '%s', 或 '%s'"
 msgid "'%s' is not a valid license"
 msgstr "此 '%s' 不是个有效的许可证"
 
+#: misc/scripts/checks.sh:717
+msgid "'%s' must be prefixed with a constraint (<=|>=|=|<|>)"
+msgstr ""
+
 #: misc/scripts/fetch-sources.sh:29
 msgid "Could not find build.sh"
 msgstr "找不到此 build.sh"
 
 #: misc/scripts/fetch-sources.sh:190
-#, fuzzy
 msgid "Hashes do not match (with method %s)"
-msgstr "此散列值不匹配 (以 %s 为方法)"
+msgstr "散列值不匹配 (使用方法 %s)"
 
 #: misc/scripts/fetch-sources.sh:191
 msgid "Got:      %b"
@@ -534,7 +534,7 @@ msgstr "有:      %b"
 
 #: misc/scripts/fetch-sources.sh:192
 msgid "Expected: %b"
-msgstr ""
+msgstr "预期值: %b"
 
 #: misc/scripts/fetch-sources.sh:201
 msgid "Failed to download package"
@@ -553,9 +553,8 @@ msgid "Cloning %b from tag %b"
 msgstr "正在从标签 %b 中克隆 %b"
 
 #: misc/scripts/fetch-sources.sh:232
-#, fuzzy
 msgid "Cloning %b with no blobs"
-msgstr "克隆 %b 中 (无 blobs)"
+msgstr "正在克隆 %b (无 blobs)"
 
 #: misc/scripts/fetch-sources.sh:235
 msgid "Cloning %b from %b"
@@ -607,11 +606,11 @@ msgstr "运行此钩子 %s 中"
 msgid "Could not run %s hook successfully"
 msgstr "此钩子 %s 无法正常运行"
 
-#: misc/scripts/fetch-sources.sh:373 misc/scripts/package.sh:397
+#: misc/scripts/fetch-sources.sh:373 misc/scripts/package.sh:404
 msgid "Performing post install operations"
 msgstr "执行善后安装过程中"
 
-#: misc/scripts/fetch-sources.sh:389 misc/scripts/package.sh:398
+#: misc/scripts/fetch-sources.sh:389 misc/scripts/package.sh:405
 #, fuzzy
 msgid "Storing pacscript"
 msgstr "储存此 pacscript 脚本"
@@ -620,7 +619,7 @@ msgstr "储存此 pacscript 脚本"
 msgid "Could not enter into %b"
 msgstr "无法进入此 %b"
 
-#: misc/scripts/fetch-sources.sh:400 misc/scripts/package.sh:412
+#: misc/scripts/fetch-sources.sh:400 misc/scripts/package.sh:419
 msgid "Done installing %b"
 msgstr "完成安装此 %b"
 
@@ -672,11 +671,15 @@ msgstr "创建此构建依赖中/冲突虚拟软件包"
 msgid "Failed to install build or check dependencies"
 msgstr "无法安装此构建或检查该依赖"
 
+#: misc/scripts/fetch-sources.sh:882
+msgid "Kernel version constraint for this Pacscript not satisfied: %b"
+msgstr ""
+
 #: misc/scripts/get-pacscript.sh:33
 msgid "Run '%b'"
 msgstr "运行此 '%b'"
 
-#: misc/scripts/get-pacscript.sh:38 misc/scripts/upgrade.sh:263
+#: misc/scripts/get-pacscript.sh:38 misc/scripts/upgrade.sh:264
 msgid "Could not enter %s"
 msgstr "无法进入此 %s"
 
@@ -731,7 +734,7 @@ msgstr "此编辑器不存在, 退回至 '%s'"
 msgid "Sourcing pacscript"
 msgstr "寻找pacscript脚本中"
 
-#: misc/scripts/package-base.sh:259
+#: misc/scripts/package-base.sh:260
 #, fuzzy
 msgid "Could not source pacscript"
 msgstr "无法采购pacscript脚本"
@@ -740,11 +743,11 @@ msgstr "无法采购pacscript脚本"
 msgid "This package will connect to the internet during its build process."
 msgstr "此软件包会通过链接至互联网来执行该构建过程."
 
-#: misc/scripts/package.sh:47
+#: misc/scripts/package.sh:53
 msgid "Failed to download '%s'"
 msgstr "'%s' 下载失败"
 
-#: misc/scripts/package.sh:63
+#: misc/scripts/package.sh:69
 msgid ""
 "The package %b is masking %b. By installing the masked package, you may "
 "cause damage to your operating system"
@@ -752,14 +755,14 @@ msgstr ""
 "该软件包 %b 正在屏蔽此软件包 %b. 如果您安装此已屏蔽软件包，系统将会收到相对应"
 "有的伤害"
 
-#: misc/scripts/package.sh:66
+#: misc/scripts/package.sh:72
 msgid ""
 "Somehow, '%s' found masked packages that match the package you want to "
 "install, but '%s' could not find it. Report this upstream"
 msgstr ""
 "'%s' 里有包含您想要安装的已屏蔽软件包, 但无法寻找此 '%s'. 请汇报此问题给上游"
 
-#: misc/scripts/package.sh:103
+#: misc/scripts/package.sh:110
 msgid ""
 "This package has '%s', meaning once this is installed, it should be assumed "
 "to be unremovable. Do you want to continue?"
@@ -767,66 +770,66 @@ msgstr ""
 "因为此软件包包含 '%s', 所以意味着如果安装此软件包, 系统将会默认为无法删除的软"
 "件包. 您确定要继续吗?"
 
-#: misc/scripts/package.sh:122
+#: misc/scripts/package.sh:129
 msgid "Reinstalling '%s'"
 msgstr "正在重新安装 '%s'"
 
-#: misc/scripts/package.sh:133
+#: misc/scripts/package.sh:140
 msgid "This script replaces %s. Do you want to proceed?"
 msgstr "该脚本代替 %s. 您确定要继续执行吗?"
 
-#: misc/scripts/package.sh:149
+#: misc/scripts/package.sh:156
 #, fuzzy
 msgid "%b conflicts with %s, which is currently installed by apt"
 msgstr "该 %b 与 %s 不兼容, 因正在被apt安装"
 
-#: misc/scripts/package.sh:150 misc/scripts/package.sh:172
+#: misc/scripts/package.sh:157 misc/scripts/package.sh:179
 msgid "Remove the apt package by running '%b'"
 msgstr "执行 '%b' 以移除该apt软件包"
 
-#: misc/scripts/package.sh:157
+#: misc/scripts/package.sh:164
 msgid "%b conflicts with %s, which is currently installed by pacstall"
 msgstr "该 %b 与 %s 起冲突, 因正在被pacstall安装"
 
-#: misc/scripts/package.sh:158 misc/scripts/package.sh:179
+#: misc/scripts/package.sh:165 misc/scripts/package.sh:186
 msgid "Remove the pacstall package by running '%b'"
 msgstr "执行 '%b' 以移除该pacstall软件包"
 
-#: misc/scripts/package.sh:171
+#: misc/scripts/package.sh:178
 #, fuzzy
 msgid "%b breaks %s, which is currently installed by apt"
 msgstr "该 %b 导致 %s 报错, 因正在被apt安装"
 
-#: misc/scripts/package.sh:178
+#: misc/scripts/package.sh:185
 #, fuzzy
 msgid "%b breaks %s, which is currently installed by pacstall"
 msgstr "该 %b 导致 %s 报错, 因正在被pacstall安装"
 
-#: misc/scripts/package.sh:196
+#: misc/scripts/package.sh:203
 msgid "Checking pacstall dependencies"
 msgstr "正在检查pacstall依赖"
 
-#: misc/scripts/package.sh:215
+#: misc/scripts/package.sh:222
 msgid "%b [update]"
 msgstr "%b [更新]"
 
-#: misc/scripts/package.sh:217 misc/scripts/package.sh:228
+#: misc/scripts/package.sh:224 misc/scripts/package.sh:235
 msgid "Failed to install dependency (%s from %s)"
 msgstr "此依赖无法安装 (%s 从 %s)"
 
-#: misc/scripts/package.sh:242
+#: misc/scripts/package.sh:249
 msgid "%s is associated with multiple source entries"
 msgstr "此 %s 与多个源条有关联"
 
-#: misc/scripts/package.sh:276
+#: misc/scripts/package.sh:283
 msgid "Retrieving packages"
 msgstr "取回软件包中"
 
-#: misc/scripts/package.sh:374
+#: misc/scripts/package.sh:381
 msgid "Running functions"
 msgstr "运行该函数中"
 
-#: misc/scripts/package.sh:379
+#: misc/scripts/package.sh:386
 msgid "Could not %s %s properly"
 msgstr ""
 
@@ -859,7 +862,7 @@ msgstr "正在备份 %b"
 msgid "Installing %b"
 msgstr "正在安装 %b"
 
-#: misc/scripts/query-info.sh:101
+#: misc/scripts/query-info.sh:102
 #, fuzzy
 msgid "Key '%s' does not exist"
 msgstr "该钥匙 '%s' 不存在"
@@ -963,30 +966,30 @@ msgstr "正在构建可执行脚本中"
 msgid "Could not load dep-tree.sh"
 msgstr "无法加载 dep-tree.sh"
 
-#: misc/scripts/upgrade.sh:104
+#: misc/scripts/upgrade.sh:105
 msgid "Checking for updates"
 msgstr "正在检查更新"
 
-#: misc/scripts/upgrade.sh:109 misc/scripts/upgrade.sh:240
+#: misc/scripts/upgrade.sh:110 misc/scripts/upgrade.sh:241
 msgid "Nothing to upgrade"
 msgstr "无软件包可以升级"
 
-#: misc/scripts/upgrade.sh:112
+#: misc/scripts/upgrade.sh:113
 msgid "Building dependency tree"
 msgstr "正在构建依赖树结构"
 
-#: misc/scripts/upgrade.sh:123
+#: misc/scripts/upgrade.sh:124
 msgid "Checking versions"
 msgstr "正在检查版本"
 
-#: misc/scripts/upgrade.sh:180
+#: misc/scripts/upgrade.sh:181
 msgid "Package %b is not on %b anymore"
 msgstr "此软件包 %b 已经不在 %b 了"
 
-#: misc/scripts/upgrade.sh:243
+#: misc/scripts/upgrade.sh:244
 msgid "Packages can be upgraded"
 msgstr "此软件包可以升级"
 
-#: misc/scripts/upgrade.sh:268
+#: misc/scripts/upgrade.sh:269
 msgid "Do you want to upgrade %b?"
 msgstr "您要升级该 %b 吗?"

@@ -41,7 +41,7 @@ msgstr ""
 msgid "Confirm that '%b' is accessible"
 msgstr ""
 
-#: pacstall:657 misc/scripts/package.sh:387 misc/scripts/package.sh:402
+#: pacstall:657 misc/scripts/package.sh:394 misc/scripts/package.sh:409
 #: misc/scripts/update.sh:47
 msgid "Could not enter into %s"
 msgstr ""
@@ -97,7 +97,7 @@ msgstr ""
 msgid "Confirm that the URLs '%b' or '%b' are accessible"
 msgstr ""
 
-#: pacstall:968 pacstall:1251 misc/scripts/upgrade.sh:282
+#: pacstall:968 pacstall:1251 misc/scripts/upgrade.sh:283
 msgid "Failed to download the %b pacscript"
 msgstr ""
 
@@ -270,7 +270,7 @@ msgstr ""
 
 #: misc/scripts/build.sh:95 misc/scripts/build.sh:100
 #: misc/scripts/fetch-sources.sh:687 misc/scripts/fetch-sources.sh:700
-#: misc/scripts/package.sh:227
+#: misc/scripts/package.sh:234
 msgid "%b [required]"
 msgstr ""
 
@@ -279,7 +279,7 @@ msgid "%b [remote]"
 msgstr ""
 
 #: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:696
-#: misc/scripts/package.sh:222
+#: misc/scripts/package.sh:229
 msgid "%b [installed]"
 msgstr ""
 
@@ -353,7 +353,7 @@ msgstr ""
 msgid "Package built at %b"
 msgstr ""
 
-#: misc/scripts/build.sh:712 misc/scripts/package.sh:50
+#: misc/scripts/build.sh:712 misc/scripts/package.sh:56
 msgid "Moving %b to %b"
 msgstr ""
 
@@ -508,6 +508,10 @@ msgstr ""
 msgid "'%s' is not a valid license"
 msgstr ""
 
+#: misc/scripts/checks.sh:717
+msgid "'%s' must be prefixed with a constraint (<=|>=|=|<|>)"
+msgstr ""
+
 #: misc/scripts/fetch-sources.sh:29
 msgid "Could not find build.sh"
 msgstr ""
@@ -594,11 +598,11 @@ msgstr ""
 msgid "Could not run %s hook successfully"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:373 misc/scripts/package.sh:397
+#: misc/scripts/fetch-sources.sh:373 misc/scripts/package.sh:404
 msgid "Performing post install operations"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:389 misc/scripts/package.sh:398
+#: misc/scripts/fetch-sources.sh:389 misc/scripts/package.sh:405
 msgid "Storing pacscript"
 msgstr ""
 
@@ -606,7 +610,7 @@ msgstr ""
 msgid "Could not enter into %b"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:400 misc/scripts/package.sh:412
+#: misc/scripts/fetch-sources.sh:400 misc/scripts/package.sh:419
 msgid "Done installing %b"
 msgstr ""
 
@@ -652,11 +656,15 @@ msgstr ""
 msgid "Failed to install build or check dependencies"
 msgstr ""
 
+#: misc/scripts/fetch-sources.sh:882
+msgid "Kernel version constraint for this Pacscript not satisfied: %b"
+msgstr ""
+
 #: misc/scripts/get-pacscript.sh:33
 msgid "Run '%b'"
 msgstr ""
 
-#: misc/scripts/get-pacscript.sh:38 misc/scripts/upgrade.sh:263
+#: misc/scripts/get-pacscript.sh:38 misc/scripts/upgrade.sh:264
 msgid "Could not enter %s"
 msgstr ""
 
@@ -708,7 +716,7 @@ msgstr ""
 msgid "Sourcing pacscript"
 msgstr ""
 
-#: misc/scripts/package-base.sh:259
+#: misc/scripts/package-base.sh:260
 msgid "Could not source pacscript"
 msgstr ""
 
@@ -716,85 +724,85 @@ msgstr ""
 msgid "This package will connect to the internet during its build process."
 msgstr ""
 
-#: misc/scripts/package.sh:47
+#: misc/scripts/package.sh:53
 msgid "Failed to download '%s'"
 msgstr ""
 
-#: misc/scripts/package.sh:63
+#: misc/scripts/package.sh:69
 msgid ""
 "The package %b is masking %b. By installing the masked package, you may "
 "cause damage to your operating system"
 msgstr ""
 
-#: misc/scripts/package.sh:66
+#: misc/scripts/package.sh:72
 msgid ""
 "Somehow, '%s' found masked packages that match the package you want to "
 "install, but '%s' could not find it. Report this upstream"
 msgstr ""
 
-#: misc/scripts/package.sh:103
+#: misc/scripts/package.sh:110
 msgid ""
 "This package has '%s', meaning once this is installed, it should be assumed "
 "to be unremovable. Do you want to continue?"
 msgstr ""
 
-#: misc/scripts/package.sh:122
+#: misc/scripts/package.sh:129
 msgid "Reinstalling '%s'"
 msgstr ""
 
-#: misc/scripts/package.sh:133
+#: misc/scripts/package.sh:140
 msgid "This script replaces %s. Do you want to proceed?"
 msgstr ""
 
-#: misc/scripts/package.sh:149
+#: misc/scripts/package.sh:156
 msgid "%b conflicts with %s, which is currently installed by apt"
 msgstr ""
 
-#: misc/scripts/package.sh:150 misc/scripts/package.sh:172
+#: misc/scripts/package.sh:157 misc/scripts/package.sh:179
 msgid "Remove the apt package by running '%b'"
 msgstr ""
 
-#: misc/scripts/package.sh:157
+#: misc/scripts/package.sh:164
 msgid "%b conflicts with %s, which is currently installed by pacstall"
 msgstr ""
 
-#: misc/scripts/package.sh:158 misc/scripts/package.sh:179
+#: misc/scripts/package.sh:165 misc/scripts/package.sh:186
 msgid "Remove the pacstall package by running '%b'"
 msgstr ""
 
-#: misc/scripts/package.sh:171
+#: misc/scripts/package.sh:178
 msgid "%b breaks %s, which is currently installed by apt"
 msgstr ""
 
-#: misc/scripts/package.sh:178
+#: misc/scripts/package.sh:185
 msgid "%b breaks %s, which is currently installed by pacstall"
 msgstr ""
 
-#: misc/scripts/package.sh:196
+#: misc/scripts/package.sh:203
 msgid "Checking pacstall dependencies"
 msgstr ""
 
-#: misc/scripts/package.sh:215
+#: misc/scripts/package.sh:222
 msgid "%b [update]"
 msgstr ""
 
-#: misc/scripts/package.sh:217 misc/scripts/package.sh:228
+#: misc/scripts/package.sh:224 misc/scripts/package.sh:235
 msgid "Failed to install dependency (%s from %s)"
 msgstr ""
 
-#: misc/scripts/package.sh:242
+#: misc/scripts/package.sh:249
 msgid "%s is associated with multiple source entries"
 msgstr ""
 
-#: misc/scripts/package.sh:276
+#: misc/scripts/package.sh:283
 msgid "Retrieving packages"
 msgstr ""
 
-#: misc/scripts/package.sh:374
+#: misc/scripts/package.sh:381
 msgid "Running functions"
 msgstr ""
 
-#: misc/scripts/package.sh:379
+#: misc/scripts/package.sh:386
 msgid "Could not %s %s properly"
 msgstr ""
 
@@ -826,7 +834,7 @@ msgstr ""
 msgid "Installing %b"
 msgstr ""
 
-#: misc/scripts/query-info.sh:101
+#: misc/scripts/query-info.sh:102
 msgid "Key '%s' does not exist"
 msgstr ""
 
@@ -921,30 +929,30 @@ msgstr ""
 msgid "Could not load dep-tree.sh"
 msgstr ""
 
-#: misc/scripts/upgrade.sh:104
+#: misc/scripts/upgrade.sh:105
 msgid "Checking for updates"
 msgstr ""
 
-#: misc/scripts/upgrade.sh:109 misc/scripts/upgrade.sh:240
+#: misc/scripts/upgrade.sh:110 misc/scripts/upgrade.sh:241
 msgid "Nothing to upgrade"
 msgstr ""
 
-#: misc/scripts/upgrade.sh:112
+#: misc/scripts/upgrade.sh:113
 msgid "Building dependency tree"
 msgstr ""
 
-#: misc/scripts/upgrade.sh:123
+#: misc/scripts/upgrade.sh:124
 msgid "Checking versions"
 msgstr ""
 
-#: misc/scripts/upgrade.sh:180
+#: misc/scripts/upgrade.sh:181
 msgid "Package %b is not on %b anymore"
 msgstr ""
 
-#: misc/scripts/upgrade.sh:243
+#: misc/scripts/upgrade.sh:244
 msgid "Packages can be upgraded"
 msgstr ""
 
-#: misc/scripts/upgrade.sh:268
+#: misc/scripts/upgrade.sh:269
 msgid "Do you want to upgrade %b?"
 msgstr ""

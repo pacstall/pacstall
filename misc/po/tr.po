@@ -46,7 +46,7 @@ msgstr "%s http kodu ile başarısız oldu"
 msgid "Confirm that '%b' is accessible"
 msgstr "'%b'in erişilebilir olduğunu doğrulayın"
 
-#: pacstall:657 misc/scripts/package.sh:387 misc/scripts/package.sh:402
+#: pacstall:657 misc/scripts/package.sh:394 misc/scripts/package.sh:409
 #: misc/scripts/update.sh:47
 msgid "Could not enter into %s"
 msgstr "%s içine girilemedi"
@@ -102,7 +102,7 @@ msgstr "Genel ağa bağlanılamadı"
 msgid "Confirm that the URLs '%b' or '%b' are accessible"
 msgstr "'%b' veya '%b' URL'lerinin erişilebilir olduğunu doğrulayın"
 
-#: pacstall:968 pacstall:1251 misc/scripts/upgrade.sh:282
+#: pacstall:968 pacstall:1251 misc/scripts/upgrade.sh:283
 msgid "Failed to download the %b pacscript"
 msgstr "%b pacscript'inin indirmesi başarısız"
 
@@ -281,7 +281,7 @@ msgstr "srcinfo.sh bulunamadı"
 
 #: misc/scripts/build.sh:95 misc/scripts/build.sh:100
 #: misc/scripts/fetch-sources.sh:687 misc/scripts/fetch-sources.sh:700
-#: misc/scripts/package.sh:227
+#: misc/scripts/package.sh:234
 msgid "%b [required]"
 msgstr "%b [zorunlu]"
 
@@ -290,7 +290,7 @@ msgid "%b [remote]"
 msgstr "%b [uzak]"
 
 #: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:696
-#: misc/scripts/package.sh:222
+#: misc/scripts/package.sh:229
 msgid "%b [installed]"
 msgstr "%b [kurulu]"
 
@@ -364,7 +364,7 @@ msgstr "%s deb'inin kurulumu başarısız"
 msgid "Package built at %b"
 msgstr "Paket %b dizine inşa edildi"
 
-#: misc/scripts/build.sh:712 misc/scripts/package.sh:50
+#: misc/scripts/build.sh:712 misc/scripts/package.sh:56
 msgid "Moving %b to %b"
 msgstr "%b %b dizinine taşınıyor"
 
@@ -524,6 +524,10 @@ msgstr "'%s' şöyle olmalıdır: '%s', '%s', '%s', '%s' ya da '%s'"
 msgid "'%s' is not a valid license"
 msgstr "'%s' geçerli bir lisans değil"
 
+#: misc/scripts/checks.sh:717
+msgid "'%s' must be prefixed with a constraint (<=|>=|=|<|>)"
+msgstr ""
+
 #: misc/scripts/fetch-sources.sh:29
 msgid "Could not find build.sh"
 msgstr "build.sh bulunamadı"
@@ -610,11 +614,11 @@ msgstr "%s hook'u çalıştırılıyor"
 msgid "Could not run %s hook successfully"
 msgstr "%s hook'u başarılı bir şekilde çalıştırılamadı"
 
-#: misc/scripts/fetch-sources.sh:373 misc/scripts/package.sh:397
+#: misc/scripts/fetch-sources.sh:373 misc/scripts/package.sh:404
 msgid "Performing post install operations"
 msgstr "Kurulum sonrası işlemler yapılıyor"
 
-#: misc/scripts/fetch-sources.sh:389 misc/scripts/package.sh:398
+#: misc/scripts/fetch-sources.sh:389 misc/scripts/package.sh:405
 msgid "Storing pacscript"
 msgstr "pacscript depolanıyor"
 
@@ -622,7 +626,7 @@ msgstr "pacscript depolanıyor"
 msgid "Could not enter into %b"
 msgstr "%b içine girilemedi"
 
-#: misc/scripts/fetch-sources.sh:400 misc/scripts/package.sh:412
+#: misc/scripts/fetch-sources.sh:400 misc/scripts/package.sh:419
 msgid "Done installing %b"
 msgstr "%b yüklemesi bitti"
 
@@ -668,11 +672,15 @@ msgstr "İnşa bağımlılığı/çakışmaları sahte paketi oluşturuluyor"
 msgid "Failed to install build or check dependencies"
 msgstr "İnşa veya kontrol bağımlılıkları kurulumu başarısız oldu"
 
+#: misc/scripts/fetch-sources.sh:882
+msgid "Kernel version constraint for this Pacscript not satisfied: %b"
+msgstr ""
+
 #: misc/scripts/get-pacscript.sh:33
 msgid "Run '%b'"
 msgstr "'%b' çalıştır"
 
-#: misc/scripts/get-pacscript.sh:38 misc/scripts/upgrade.sh:263
+#: misc/scripts/get-pacscript.sh:38 misc/scripts/upgrade.sh:264
 msgid "Could not enter %s"
 msgstr "%s dizinine girilemedi"
 
@@ -724,7 +732,7 @@ msgstr "Düzenleyici bulunamadı, '%s' uygulamasına dönülüyor"
 msgid "Sourcing pacscript"
 msgstr "pacscript kaynaktan alınıyor"
 
-#: misc/scripts/package-base.sh:259
+#: misc/scripts/package-base.sh:260
 msgid "Could not source pacscript"
 msgstr "pacscript kaynaktan alınamadı"
 
@@ -732,11 +740,11 @@ msgstr "pacscript kaynaktan alınamadı"
 msgid "This package will connect to the internet during its build process."
 msgstr "Bu paket inşa sürecinde genel ağa bağlanacak."
 
-#: misc/scripts/package.sh:47
+#: misc/scripts/package.sh:53
 msgid "Failed to download '%s'"
 msgstr "'%s' indirmesi başarısız oldu"
 
-#: misc/scripts/package.sh:63
+#: misc/scripts/package.sh:69
 msgid ""
 "The package %b is masking %b. By installing the masked package, you may "
 "cause damage to your operating system"
@@ -744,7 +752,7 @@ msgstr ""
 "%b paketi, %b paketini maskeliyor. Maskelenmiş paketi kurarak işletim "
 "sisteminize zarar verebilirsiniz"
 
-#: misc/scripts/package.sh:66
+#: misc/scripts/package.sh:72
 msgid ""
 "Somehow, '%s' found masked packages that match the package you want to "
 "install, but '%s' could not find it. Report this upstream"
@@ -752,7 +760,7 @@ msgstr ""
 "Nasıl olduysa, '%s' kurmak istediğiniz paketle uyuşan maskelenmiş paketler "
 "buldu ancak '%s' bulamadı. Bunu upstream'e bildirin"
 
-#: misc/scripts/package.sh:103
+#: misc/scripts/package.sh:110
 msgid ""
 "This package has '%s', meaning once this is installed, it should be assumed "
 "to be unremovable. Do you want to continue?"
@@ -760,63 +768,63 @@ msgstr ""
 "Bu pakette '%s' var, yani kurulduğunda kaldırılamaz sayılmalı. Devam etmek "
 "ister misiniz?"
 
-#: misc/scripts/package.sh:122
+#: misc/scripts/package.sh:129
 msgid "Reinstalling '%s'"
 msgstr "'%s' yeniden kuruluyor"
 
-#: misc/scripts/package.sh:133
+#: misc/scripts/package.sh:140
 msgid "This script replaces %s. Do you want to proceed?"
 msgstr "Bu betik %s paketinin yerini alıyor. Devam etmek ister misiniz?"
 
-#: misc/scripts/package.sh:149
+#: misc/scripts/package.sh:156
 msgid "%b conflicts with %s, which is currently installed by apt"
 msgstr "apt ile kurulu %b, %b ile çakışıyor"
 
-#: misc/scripts/package.sh:150 misc/scripts/package.sh:172
+#: misc/scripts/package.sh:157 misc/scripts/package.sh:179
 msgid "Remove the apt package by running '%b'"
 msgstr "apt paketini '%b' kullanarak kaldırın"
 
-#: misc/scripts/package.sh:157
+#: misc/scripts/package.sh:164
 msgid "%b conflicts with %s, which is currently installed by pacstall"
 msgstr "%b, pacstall tarafından kurulmuş %b paketiyle çakışıyor"
 
-#: misc/scripts/package.sh:158 misc/scripts/package.sh:179
+#: misc/scripts/package.sh:165 misc/scripts/package.sh:186
 msgid "Remove the pacstall package by running '%b'"
 msgstr "pacstall paketini '%b' kullanarak kaldırın"
 
-#: misc/scripts/package.sh:171
+#: misc/scripts/package.sh:178
 msgid "%b breaks %s, which is currently installed by apt"
 msgstr "%s, şu anda apt ile kurulu %s paketini bozuyor"
 
-#: misc/scripts/package.sh:178
+#: misc/scripts/package.sh:185
 msgid "%b breaks %s, which is currently installed by pacstall"
 msgstr "%s, şu anda pacstall ile kurulu %s paketini bozuyor"
 
-#: misc/scripts/package.sh:196
+#: misc/scripts/package.sh:203
 msgid "Checking pacstall dependencies"
 msgstr "Pacstall bağımlılıkları kontrol ediliyor"
 
-#: misc/scripts/package.sh:215
+#: misc/scripts/package.sh:222
 msgid "%b [update]"
 msgstr "%b [güncelleme]"
 
-#: misc/scripts/package.sh:217 misc/scripts/package.sh:228
+#: misc/scripts/package.sh:224 misc/scripts/package.sh:235
 msgid "Failed to install dependency (%s from %s)"
 msgstr "Bağımlılık kurulumu başarısız oldu (%s <- %s)"
 
-#: misc/scripts/package.sh:242
+#: misc/scripts/package.sh:249
 msgid "%s is associated with multiple source entries"
 msgstr "%s birden fazla kaynak girişleriyle ilişkilendirilmiş"
 
-#: misc/scripts/package.sh:276
+#: misc/scripts/package.sh:283
 msgid "Retrieving packages"
 msgstr "Paketler alınıyor"
 
-#: misc/scripts/package.sh:374
+#: misc/scripts/package.sh:381
 msgid "Running functions"
 msgstr "Fonksiyonlar çalıştırılıyor"
 
-#: misc/scripts/package.sh:379
+#: misc/scripts/package.sh:386
 msgid "Could not %s %s properly"
 msgstr "Düzgünce yapılamadı: %s <- %s"
 
@@ -848,7 +856,7 @@ msgstr "%b yedekleniyor"
 msgid "Installing %b"
 msgstr "%b kuruluyor"
 
-#: misc/scripts/query-info.sh:101
+#: misc/scripts/query-info.sh:102
 msgid "Key '%s' does not exist"
 msgstr "Anahtar '%s' yok"
 
@@ -945,31 +953,31 @@ msgstr "Betikler çalıştırılabilir yapılıyor"
 msgid "Could not load dep-tree.sh"
 msgstr "dep-tree.sh yüklenemedi"
 
-#: misc/scripts/upgrade.sh:104
+#: misc/scripts/upgrade.sh:105
 msgid "Checking for updates"
 msgstr "Güncellemeler kontrol ediliyor"
 
-#: misc/scripts/upgrade.sh:109 misc/scripts/upgrade.sh:240
+#: misc/scripts/upgrade.sh:110 misc/scripts/upgrade.sh:241
 msgid "Nothing to upgrade"
 msgstr "Yükseltecek bir şey yok"
 
-#: misc/scripts/upgrade.sh:112
+#: misc/scripts/upgrade.sh:113
 msgid "Building dependency tree"
 msgstr "Bağımlılık ağacı inşa ediliyor"
 
-#: misc/scripts/upgrade.sh:123
+#: misc/scripts/upgrade.sh:124
 msgid "Checking versions"
 msgstr "Sürümler kontrol ediliyor"
 
-#: misc/scripts/upgrade.sh:180
+#: misc/scripts/upgrade.sh:181
 msgid "Package %b is not on %b anymore"
 msgstr "%b paketi artık %b kaynağında değil"
 
-#: misc/scripts/upgrade.sh:243
+#: misc/scripts/upgrade.sh:244
 msgid "Packages can be upgraded"
 msgstr "Paketler yükseltilebilir"
 
-#: misc/scripts/upgrade.sh:268
+#: misc/scripts/upgrade.sh:269
 msgid "Do you want to upgrade %b?"
 msgstr "%b paketini güncellemek ister misiniz?"
 
