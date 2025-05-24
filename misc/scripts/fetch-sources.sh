@@ -688,7 +688,7 @@ function check_builddepends() {
         return 0
     fi
     if dep_const.apt_compare_to_constraints "${build_dep}"; then
-        if ! is_apt_package_installed "${just_build[0]}"; then
+        if ! is_apt_package_installed "${build_dep}"; then
             echo "${realbuild}" >> "${PACDIR}-needed-${type}-${pacname}"
             just_arch="$(dep_const.get_arch "${just_build[0]}")"
             fancy_message sub $"%b [remote]" "${CYAN}${just_build[0]}${NC} ${GREEN}↑${YELLOW}↓${NC}"
