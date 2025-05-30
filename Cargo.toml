@@ -8,6 +8,6 @@ authors = ["Elsie19 <hwengerstickel@protonmail.com>"]
 anyhow = "1.0.98"
 clap = { version = "4.5.37", features = ["cargo", "derive", "string"] }
 colored = "3.0.0"
-libpacstall = "0.3.0"
+libpacstall = { path = "../Projects/libpacstall" }
 reqwest = { version = "0.12.15", features = ["blocking"] }
 url = "2.5.4"

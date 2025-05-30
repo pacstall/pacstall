@@ -2,9 +2,13 @@ mod args;
 mod cmds;
 mod utilities;
 
+use std::{fs::File, path::Path};
+
 use args::{Arguments, Commands};
 use clap::Parser;
-use cmds::search::Search;
+
+use colored::Color;
+use libpacstall::local::{pkglist::Search, repos::PacstallRepos};
 
 fn main() -> anyhow::Result<()> {
     match Arguments::parse().command {
@@ -15,9 +19,12 @@ fn main() -> anyhow::Result<()> {
         Commands::Tree { package } => todo!(),
         Commands::Build { package, args } => todo!(),
         Commands::Search { package } => {
-            let pkglist =
-                Search::from_repo_path("/usr/share/pacstall/repo/pacstallrepo")?.pkglist()?;
-            println!("{}", pkglist.filter_pkg(&package));
+            let repo_file = File::open(Path::new("/usr/share/pacstall/repo/pacstallrepo"))?;
+            let repos = PacstallRepos::try_from(repo_file)?;
+            let pkglist = Search::from(repos).into_pkglist()?;
+            for package_entry in pkglist.filter_pkg(&package).entries() {
+                println!("{}", package_entry);
+            }
         }
         Commands::Remove { package } => todo!(),
         Commands::Install { package, args } => todo!(),

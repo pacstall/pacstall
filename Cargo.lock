@@ -1162,14 +1162,14 @@ checksum = "d750af042f7ef4f724306de029d18836c26c1765a54a6a3f094cbd23a7267ffa"
 [[package]]
 name = "libpacstall"
 version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "20c6139f3960c83fde81207e235176232f14da186d024a3f901bc061818ce080"
 dependencies = [
  "brush-core",
+ "colored",
  "csv",
  "debversion",
  "etc-os-release",
  "num_cpus",
+ "reqwest",
  "serde",
  "sprintf",
  "thiserror 2.0.12",
