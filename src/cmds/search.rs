@@ -26,11 +26,69 @@ pub struct PkgBase {
     pub packages: Vec<Package>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Package {
     pub name: String,
     pub repo: url::Url,
     pub pacscript: url::Url,
+}
+
+/// Used for filtering out package names into a pretty format.
+///
+/// This is the final output that users will see in `-S`.
+#[derive(Debug)]
+pub struct FilterPkg<'a> {
+    needle: &'a str,
+    pkgs: &'a [PkgBase],
+}
+
+// TODO: Sort output
+impl Display for FilterPkg<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        for pkgbase in self.pkgs {
+            let pkg_pkgbase = pkgbase.pkgbase.as_str();
+            // If pkgbase contains it
+            if pkg_pkgbase.contains(self.needle) {
+                for (idx, pkg) in pkgbase.packages.iter().enumerate() {
+                    let pretty = match metalink(&pkg.repo) {
+                        Some(o) => o.pretty(),
+                        None => pkg.pacscript.to_string(),
+                    };
+                    if pkgbase.is_single() {
+                        write!(f, "{} @ {}", pkg.name, pretty)?;
+                    } else {
+                        write!(f, "{pkg_pkgbase}:{} @ {}", pkg.name, pretty)?;
+                    }
+                    if idx != pkgbase.packages.iter().len() {
+                        writeln!(f)?;
+                    }
+                }
+            } else if pkgbase
+                .packages
+                .iter()
+                .any(|pkg| pkg.name.contains(self.needle))
+            {
+                for (idx, pkg) in pkgbase.packages.iter().enumerate() {
+                    if pkg.name.contains(self.needle) {
+                        let pretty = match metalink(&pkg.repo) {
+                            Some(o) => o.pretty(),
+                            None => pkg.pacscript.to_string(),
+                        };
+                        if pkgbase.is_single() {
+                            write!(f, "{} @ {}", pkg.name, pretty)?;
+                        } else {
+                            write!(f, "{pkg_pkgbase}:{} @ {}", pkg.name, pretty)?;
+                        }
+                        if idx != pkgbase.packages.iter().len() {
+                            writeln!(f)?;
+                        }
+                    }
+                }
+            }
+        }
+
+        Ok(())
+    }
 }
 
 impl From<PkgBase> for Package {
@@ -52,6 +110,15 @@ impl IntoIterator for PkgBase {
     }
 }
 
+impl IntoIterator for &PkgBase {
+    type Item = Package;
+    type IntoIter = std::vec::IntoIter<Self::Item>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.packages.clone().into_iter()
+    }
+}
+
 impl IntoIterator for PkgList {
     type Item = PkgBase;
     type IntoIter = std::vec::IntoIter<Self::Item>;
@@ -61,58 +128,13 @@ impl IntoIterator for PkgList {
     }
 }
 
-impl Display for PkgList {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{}",
-            self.contents
-                .iter()
-                .map(|it| format!("{it}"))
-                .collect::<Vec<_>>()
-                .join("\n")
-        )
-    }
-}
-
-impl Display for PkgBase {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let mut it = self.packages.iter().peekable();
-        while let Some(pkg) = it.next() {
-            let pretty_url = match metalink(&pkg.repo) {
-                Some(o) => o.pretty(),
-                None => pkg.pacscript.to_string(),
-            };
-            // BUG: Does not print `pkg:pkgbase` ever.
-            write!(
-                f,
-                "{} {} {}",
-                if self.is_single() {
-                    pkg.name.clone().green()
-                } else {
-                    format!("{}:{}", self.pkgbase, pkg.name).green()
-                },
-                "@".magenta(),
-                pretty_url.cyan()
-            )?;
-            if it.peek().is_some() {
-                writeln!(f)?;
-            }
-        }
-        Ok(())
-    }
-}
-
 impl PkgList {
     /// Search for package and flatten pkglist into non-recursive list (child packages will become
     /// "parent" packages).
-    pub fn filter_pkg(self, search: &str) -> Self {
-        PkgList {
-            contents: self
-                .contents
-                .into_iter()
-                .filter(|pkgbase| pkgbase.contains(search))
-                .collect(),
+    pub fn filter_pkg<'a>(&'a self, search: &'a str) -> FilterPkg<'a> {
+        FilterPkg {
+            needle: search,
+            pkgs: self.contents.as_slice(),
         }
     }
 }
@@ -122,21 +144,12 @@ impl PkgBase {
         self.packages.len() == 1 && self.pkgbase == self.packages[0].name
     }
 
-    fn contains(&self, search: &str) -> bool {
-        self.pkgbase.contains(search) || self.packages.iter().any(|pkg| pkg.name.contains(search))
+    pub fn flatten_pkgbase(&self) -> &[Package] {
+        &self.packages
     }
 
-    fn lift(self) -> Vec<Self> {
-        let mut pkgs = vec![];
-
-        for pkg in self.packages {
-            pkgs.push(PkgBase {
-                pkgbase: pkg.name.clone(),
-                packages: vec![pkg],
-            });
-        }
-
-        pkgs
+    fn contains(&self, search: &str) -> bool {
+        self.pkgbase.contains(search) || self.packages.iter().any(|pkg| pkg.name.contains(search))
     }
 }
 
