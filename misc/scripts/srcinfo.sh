@@ -156,7 +156,7 @@ function srcinfo.vars() {
 function srcinfo.write_global() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # shellcheck disable=SC2034
-    local CARCH='CARCH_REPLACE' DISTRO="${DISTRO}" CDISTRO="${CDISTRO}" AARCH='AARCH_REPLACE' var ar aars bar ars rar rep seek
+    local CARCH='CARCH_REPLACE' DISTRO='DISTROBASE:DISTROVER' CDISTRO='CDISTROBASE:CDISTROVER' AARCH='AARCH_REPLACE' var ar aars bar ars rar rep seek alt
     local -A AARCHS_MAP=(
         ["amd64"]="x86_64"
         ["arm64"]="aarch64"
@@ -189,34 +189,44 @@ function srcinfo.write_global() {
                 ars="${ars//+([[:space:]])/ }"
                 ars="${ars#[[:space:]]}"
                 ars="${ars%[[:space:]]}"
-                if [[ ${ars} =~ CARCH_REPLACE || ${ars} =~ AARCH_REPLACE ]]; then
-                    [[ -z ${arch[*]} ]] && arch=('amd64')
-                    for aars in "${arch[@]}"; do
-                        if [[ ${ars} =~ AARCH_REPLACE ]]; then
-                            seek="AARCH_REPLACE"
-                            rep="${AARCHS_MAP[${aars}]:-${aars}}"
-                        else
-                            seek="CARCH_REPLACE"
-                            rep="${CARCHS_MAP[${aars}]:-${aars}}"
-                        fi
-                        local -n fin="${ar}_${rep}"
+                for aars in "${arch[@]}"; do
+                    if [[ ${ars} =~ AARCH_REPLACE ]]; then
+                        seek="AARCH_REPLACE"
+                        rep="${AARCHS_MAP[${aars}]:-${aars}}"
+                        alt="${CARCHS_MAP[${aars}]:-${aars}}"
+                    else
+                        seek="CARCH_REPLACE"
+                        rep="${CARCHS_MAP[${aars}]:-${aars}}"
+                        alt="${AARCHS_MAP[${aars}]:-${aars}}"
+                    fi
+                    local -n fin="${ar}_${rep}" fan="${ar}_${alt}" fun="${ar}"
+                    if [[ ${ars} =~ ARCH_REPLACE ]]; then
                         # shellcheck disable=SC2076
                         if [[ " ${AARCHS_MAP[*]} " =~ " ${ar##*_} " || " ${!AARCHS_MAP[*]} " =~ " ${ar##*_} " || ${ar} == *"x86_64" ]]; then
-                            : "${ar}=${ars}"
+                            : "${ar}+=(${ars//${seek}/${rep}})"
                             if [[ ${ar} != *"${aars}" ]]; then
                                 continue
                             fi
                         else
-                            : "${ar}_${aars}=${ars}"
+                            : "${ar}_${aars}+=(${ars//${seek}/${rep}})"
                         fi
-                        if [[ -z ${fin[*]} ]]; then
-                            eval "${_//${seek}/${rep}}"
+                        if [[ -z ${fin[*]} && -z ${fan[*]} || " ${fin[*]} " == *" ${ars//${rep}/${seek}} "* ]]; then
+                            eval "${_//+=/=}"
+                        elif [[ " ${fun[*]} " != *" ${ars//${aars}/${alt}} "* && " ${fan[*]} " != *" ${ars//${aars}/${alt}} "* ]]; then
+                            eval "${_}"
                         fi
-                    done
-                    # shellcheck disable=SC2076
-                    if [[ " ${multivalued_arch_attrs[*]} " =~ " ${ar} " ]]; then
-                        unset "${ar}"
+                    else
+                        # shellcheck disable=SC2076
+                        if [[ " ${AARCHS_MAP[*]} " =~ " ${ar##*_} " || " ${!AARCHS_MAP[*]} " =~ " ${ar##*_} " || ${ar} == *"x86_64" ]]; then
+                            eval "${ar}+=(${ars})"
+                        else
+                            eval "${ar}_${aars}+=(${ars})"
+                        fi
                     fi
+                done
+                # shellcheck disable=SC2076
+                if [[ " ${multivalued_arch_attrs[*]} " =~ " ${ar} " ]]; then
+                    unset "${ar}"
                 fi
             done
         done
