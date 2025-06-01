@@ -3,7 +3,7 @@ use std::borrow::Cow;
 use brush_core::{Shell, ShellValue, ShellVariable};
 use libpacstall::{
     pkg::keys::{Arch, DistroClamp},
-    srcinfo::{ArchDistro, PkgBase, SrcInfo},
+    srcinfo::{ArchDistro, PkgBase, PkgInfo, SrcInfo},
     sys::shell::PacstallShell,
 };
 
@@ -110,8 +110,48 @@ impl PackagePkg {
                     makedepends: Self::collect_archdistro(&reference, "makedepends"),
                     makeconflicts: Self::collect_archdistro(&reference, "makeconflicts"),
                 },
-                // TODO: Implement this.
-                packages: vec![],
+                packages: {
+                    let packages = Self::get_env_var_as_array(&reference, "pkgname");
+                    if packages.len() > 1 {
+                        vec![]
+                    } else {
+                        // Single package.
+                        vec![PkgInfo {
+                            pkgname: packages[0].clone(),
+                            pkgdesc: Self::get_env_var_as_string(&reference, "pkgdesc"),
+                            url: Self::get_env_var_as_string(&reference, "url"),
+                            priority: Self::get_env_var_as_string(&reference, "priority"),
+                            arch: match reference.get_env_var("arch") {
+                                Some(maintainers) => match maintainers.value() {
+                                    ShellValue::String(string) => vec![string.to_owned().into()],
+                                    ShellValue::AssociativeArray(btree_map) => {
+                                        btree_map.values().cloned().map(|v| v.into()).collect()
+                                    }
+                                    ShellValue::IndexedArray(btree_map) => {
+                                        btree_map.values().cloned().map(|v| v.into()).collect()
+                                    }
+                                    ShellValue::Dynamic { .. } | ShellValue::Unset(_) => vec![],
+                                },
+                                None => vec![],
+                            },
+                            license: Self::get_env_var_as_array(&reference, "license"),
+                            gives: Self::collect_archdistro(&reference, "gives"),
+                            depends: Self::collect_archdistro(&reference, "depends"),
+                            checkdepends: Self::collect_archdistro(&reference, "checkdepends"),
+                            optdepends: Self::collect_archdistro(&reference, "optdepends"),
+                            checkconflicts: Self::collect_archdistro(&reference, "checkconflicts"),
+                            conflicts: Self::collect_archdistro(&reference, "conflicts"),
+                            provides: Self::collect_archdistro(&reference, "provides"),
+                            breaks: Self::collect_archdistro(&reference, "breaks"),
+                            replaces: Self::collect_archdistro(&reference, "replaces"),
+                            enhances: Self::collect_archdistro(&reference, "enhances"),
+                            recommends: Self::collect_archdistro(&reference, "recommends"),
+                            suggests: Self::collect_archdistro(&reference, "suggests"),
+                            backup: Self::get_env_var_as_array(&reference, "backup"),
+                            repology: Self::get_env_var_as_array(&reference, "repology"),
+                        }]
+                    }
+                },
             },
         })
     }
@@ -125,6 +165,13 @@ impl PackagePkg {
                 ShellValue::Dynamic { .. } | ShellValue::Unset(_) => vec![],
             },
             None => vec![],
+        }
+    }
+
+    fn get_env_var_as_string(shell: &Shell, var: &str) -> String {
+        match shell.get_env_str(var) {
+            Some(string) => string.to_string(),
+            None => String::new(),
         }
     }
 
