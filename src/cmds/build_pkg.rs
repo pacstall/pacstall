@@ -1,6 +1,6 @@
 use std::borrow::Cow;
 
-use brush_core::{Shell, ShellValue, ShellVariable};
+use brush_core::{Shell, ShellValue};
 use libpacstall::{
     pkg::keys::{Arch, DistroClamp},
     srcinfo::{ArchDistro, PkgBase, PkgInfo, SrcInfo},
@@ -15,23 +15,22 @@ pub struct PackagePkg {
 }
 
 impl PackagePkg {
+    /// Load in all pacscript variables into [`Self::srcinfo`].
     pub fn new(handle: PacstallShell) -> anyhow::Result<Self> {
-        let mut reference = handle.shell.clone();
+        let reference = handle.shell.clone();
         Ok(Self {
             handle,
             srcinfo: SrcInfo {
                 pkgbase: PkgBase {
                     pkgbase: reference
-                        .get_env_var("pkgbase")
-                        .unwrap_or(&ShellVariable::new(
+                        .get_env_str("pkgbase")
+                        .unwrap_or(
                             reference
                                 .get_env_var("pkgname")
                                 .expect("NO PKGNAME")
                                 .value()
-                                .clone(),
-                        ))
-                        .value()
-                        .to_cow_str(&reference)
+                                .to_cow_str(&reference),
+                        )
                         .to_string(),
                     pkgver: reference
                         .get_env_str("pkgver")
@@ -45,7 +44,7 @@ impl PackagePkg {
                         .get_env_str("epoch")
                         .unwrap_or(Cow::Borrowed("0"))
                         .parse()?,
-                    mask: Self::get_env_var_as_array(&reference, "mask"),
+                    mask: Self::get_env_var_as_array(&reference, "mask", |s| s.to_string()),
                     compatible: match reference.get_env_var("compatible") {
                         Some(compatible) => match compatible.value() {
                             ShellValue::String(string) => vec![string.parse()?],
@@ -97,71 +96,112 @@ impl PackagePkg {
                         },
                         None => vec![],
                     },
-                    source: Self::collect_archdistro(&reference, "source"),
-                    noextract: Self::get_env_var_as_array(&reference, "noextract"),
-                    nosubmodules: Self::get_env_var_as_array(&reference, "nosubmodules"),
-                    md5sums: Self::collect_archdistro(&reference, "md5sums"),
-                    sha1sums: Self::collect_archdistro(&reference, "sha1sums"),
-                    sha224sums: Self::collect_archdistro(&reference, "sha224sums"),
-                    sha256sums: Self::collect_archdistro(&reference, "sha256sums"),
-                    sha384sums: Self::collect_archdistro(&reference, "sha384sums"),
-                    sha512sums: Self::collect_archdistro(&reference, "sha512sums"),
-                    b2sums: Self::collect_archdistro(&reference, "b2sums"),
-                    makedepends: Self::collect_archdistro(&reference, "makedepends"),
-                    makeconflicts: Self::collect_archdistro(&reference, "makeconflicts"),
+                    source: Self::collect_archdistro(&reference, "source", |s| s.to_string()),
+                    noextract: Self::get_env_var_as_array(&reference, "noextract", |s| {
+                        s.to_string()
+                    }),
+                    nosubmodules: Self::get_env_var_as_array(&reference, "nosubmodules", |s| {
+                        s.to_string()
+                    }),
+                    md5sums: Self::collect_archdistro(&reference, "md5sums", |s| s.to_string()),
+                    sha1sums: Self::collect_archdistro(&reference, "sha1sums", |s| s.to_string()),
+                    sha224sums: Self::collect_archdistro(&reference, "sha224sums", |s| {
+                        s.to_string()
+                    }),
+                    sha256sums: Self::collect_archdistro(&reference, "sha256sums", |s| {
+                        s.to_string()
+                    }),
+                    sha384sums: Self::collect_archdistro(&reference, "sha384sums", |s| {
+                        s.to_string()
+                    }),
+                    sha512sums: Self::collect_archdistro(&reference, "sha512sums", |s| {
+                        s.to_string()
+                    }),
+                    b2sums: Self::collect_archdistro(&reference, "b2sums", |s| s.to_string()),
+                    makedepends: Self::collect_archdistro(&reference, "makedepends", |s| {
+                        s.to_string()
+                    }),
+                    makeconflicts: Self::collect_archdistro(&reference, "makeconflicts", |s| {
+                        s.to_string()
+                    }),
                 },
                 packages: {
-                    let packages = Self::get_env_var_as_array(&reference, "pkgname");
+                    let packages =
+                        Self::get_env_var_as_array(&reference, "pkgname", |s| s.to_string());
                     if packages.len() > 1 {
-                        vec![]
+                        // So basically, we will have "global variables", so having a global
+                        // "depends" but can be overridden on a per-package basis.
+                        let mut child_packages: Vec<PkgInfo> = vec![];
+
+                        for child in packages {
+                            // Set default package info, we will overwrite some after.
+                            let mut pkginfo = Self::default_pkginfo(&reference, child);
+                            // So now we have to extract variables from `package_${pkgname}`.
+                            // This follows generally `srcinfo.extr_fnvar`.
+                        }
+
+                        child_packages
                     } else {
                         // Single package.
-                        vec![PkgInfo {
-                            pkgname: packages[0].clone(),
-                            pkgdesc: Self::get_env_var_as_string(&reference, "pkgdesc"),
-                            url: Self::get_env_var_as_string(&reference, "url"),
-                            priority: Self::get_env_var_as_string(&reference, "priority"),
-                            arch: match reference.get_env_var("arch") {
-                                Some(maintainers) => match maintainers.value() {
-                                    ShellValue::String(string) => vec![string.to_owned().into()],
-                                    ShellValue::AssociativeArray(btree_map) => {
-                                        btree_map.values().cloned().map(|v| v.into()).collect()
-                                    }
-                                    ShellValue::IndexedArray(btree_map) => {
-                                        btree_map.values().cloned().map(|v| v.into()).collect()
-                                    }
-                                    ShellValue::Dynamic { .. } | ShellValue::Unset(_) => vec![],
-                                },
-                                None => vec![],
-                            },
-                            license: Self::get_env_var_as_array(&reference, "license"),
-                            gives: Self::collect_archdistro(&reference, "gives"),
-                            depends: Self::collect_archdistro(&reference, "depends"),
-                            checkdepends: Self::collect_archdistro(&reference, "checkdepends"),
-                            optdepends: Self::collect_archdistro(&reference, "optdepends"),
-                            checkconflicts: Self::collect_archdistro(&reference, "checkconflicts"),
-                            conflicts: Self::collect_archdistro(&reference, "conflicts"),
-                            provides: Self::collect_archdistro(&reference, "provides"),
-                            breaks: Self::collect_archdistro(&reference, "breaks"),
-                            replaces: Self::collect_archdistro(&reference, "replaces"),
-                            enhances: Self::collect_archdistro(&reference, "enhances"),
-                            recommends: Self::collect_archdistro(&reference, "recommends"),
-                            suggests: Self::collect_archdistro(&reference, "suggests"),
-                            backup: Self::get_env_var_as_array(&reference, "backup"),
-                            repology: Self::get_env_var_as_array(&reference, "repology"),
-                        }]
+                        vec![Self::default_pkginfo(&reference, packages[0].clone())]
                     }
                 },
             },
         })
     }
 
-    fn get_env_var_as_array(shell: &Shell, var: &str) -> Vec<String> {
+    fn default_pkginfo<S: Into<String>>(reference: &Shell, pkgname: S) -> PkgInfo {
+        PkgInfo {
+            pkgname: pkgname.into(),
+            pkgdesc: Self::get_env_var_as_string(reference, "pkgdesc"),
+            url: Self::get_env_var_as_string(reference, "url"),
+            priority: Self::get_env_var_as_string(reference, "priority").into(),
+            arch: match reference.get_env_var("arch") {
+                Some(maintainers) => match maintainers.value() {
+                    ShellValue::String(string) => vec![string.to_owned().into()],
+                    ShellValue::AssociativeArray(btree_map) => {
+                        btree_map.values().cloned().map(|v| v.into()).collect()
+                    }
+                    ShellValue::IndexedArray(btree_map) => {
+                        btree_map.values().cloned().map(|v| v.into()).collect()
+                    }
+                    ShellValue::Dynamic { .. } | ShellValue::Unset(_) => vec![],
+                },
+                None => vec![],
+            },
+            license: Self::get_env_var_as_array(reference, "license", |s| s.to_string()),
+            gives: Self::collect_archdistro(reference, "gives", |s| s.to_string()),
+            depends: Self::collect_archdistro(reference, "depends", |s| s.to_string()),
+            checkdepends: Self::collect_archdistro(reference, "checkdepends", |s| s.to_string()),
+            optdepends: Self::collect_archdistro(reference, "optdepends", |s| s.to_string()),
+            checkconflicts: Self::collect_archdistro(reference, "checkconflicts", |s| {
+                s.to_string()
+            }),
+            conflicts: Self::collect_archdistro(reference, "conflicts", |s| s.to_string()),
+            provides: Self::collect_archdistro(reference, "provides", |s| s.to_string()),
+            breaks: Self::collect_archdistro(reference, "breaks", |s| s.to_string()),
+            replaces: Self::collect_archdistro(reference, "replaces", |s| s.to_string()),
+            enhances: Self::collect_archdistro(reference, "enhances", |s| s.to_string()),
+            recommends: Self::collect_archdistro(reference, "recommends", |s| s.to_string()),
+            suggests: Self::collect_archdistro(reference, "suggests", |s| s.to_string()),
+            backup: Self::get_env_var_as_array(reference, "backup", |s| s.to_string()),
+            repology: Self::get_env_var_as_array(reference, "repology", |s| s.to_string()),
+        }
+    }
+
+    fn get_env_var_as_array<I, F>(shell: &Shell, var: &str, mapper: F) -> Vec<I>
+    where
+        F: Fn(&str) -> I,
+    {
         match shell.get_env_var(var) {
             Some(noextract) => match noextract.value() {
-                ShellValue::String(string) => vec![string.to_string()],
-                ShellValue::AssociativeArray(btree_map) => btree_map.values().cloned().collect(),
-                ShellValue::IndexedArray(btree_map) => btree_map.values().cloned().collect(),
+                ShellValue::String(string) => vec![mapper(string)],
+                ShellValue::AssociativeArray(btree_map) => {
+                    btree_map.values().map(|v| mapper(v)).collect()
+                }
+                ShellValue::IndexedArray(btree_map) => {
+                    btree_map.values().map(|v| mapper(v)).collect()
+                }
                 ShellValue::Dynamic { .. } | ShellValue::Unset(_) => vec![],
             },
             None => vec![],
@@ -178,7 +218,10 @@ impl PackagePkg {
     /// Find all variants of a given `base_var`.
     ///
     /// In pacstall these are usually called "enhanced arrays".
-    fn collect_archdistro(shell: &Shell, base_var: &str) -> Vec<(ArchDistro, String)> {
+    fn collect_archdistro<I, F>(shell: &Shell, base_var: &str, mapper: F) -> Vec<(ArchDistro, I)>
+    where
+        F: Fn(&str) -> I,
+    {
         let distro_info = match DistroClamp::system() {
             Ok(o) => o.info.unwrap_or(vec![]),
             Err(_) => vec![],
@@ -233,7 +276,7 @@ impl PackagePkg {
                         arch: Some(arch.clone()),
                         distro: Some(distro.clone()),
                     },
-                    format!("{base_var}_{arch}_{distro}"),
+                    format!("{base_var}_{distro}_{arch}"),
                 ));
             }
         }
@@ -242,16 +285,16 @@ impl PackagePkg {
             if let Some(var) = shell.get_env_var(&possiblity.1) {
                 match var.value() {
                     ShellValue::String(string) => {
-                        out.push((possiblity.0, string.to_owned()));
+                        out.push((possiblity.0, mapper(string)));
                     }
                     ShellValue::AssociativeArray(btree_map) => {
                         for value in btree_map.values() {
-                            out.push((possiblity.0.clone(), value.to_owned()));
+                            out.push((possiblity.0.clone(), mapper(value)));
                         }
                     }
                     ShellValue::IndexedArray(btree_map) => {
                         for value in btree_map.values() {
-                            out.push((possiblity.0.clone(), value.to_owned()));
+                            out.push((possiblity.0.clone(), mapper(value)));
                         }
                     }
                     ShellValue::Dynamic { .. } | ShellValue::Unset(_) => {}
