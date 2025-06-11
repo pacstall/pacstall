@@ -331,6 +331,10 @@ if ! [[ -f "${PACDIR}-no-download-${pkgbase}" ]]; then
                 ;;
             *)
                 case "${dest,,}" in
+                    *.deb)
+                        net_down
+                        deb_down && return 0
+                        ;;
                     *.zip | *.tar.gz | *.tgz | *.tar.bz2 | *.tbz2 | *.tar.bz | *.tbz | *.tar.xz | *.txz | *.tar.zst | *.tzst | *.gz | *.bz2 | *.xz | *.lz | *.lzma | *.zst | *.7z | *.rar | *.lz4 | *.tar)
                         net_down
                         genextr_declare "${dest,,}"

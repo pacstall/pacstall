@@ -413,20 +413,38 @@ function file_down() {
     fancy_message info $"Copying local archive %b" "${BPurple}${dest}${NC}"
     # shellcheck disable=SC2031
     cp -r "${source_url}" "${dest}" || fail_down
-    genextr_declare
-    if [[ ${dest} == *".deb" ]]; then
-        if deb_down; then
-            exit 0
-        else
-            clean_fail_down
-        fi
-    elif [[ -n ${ext_method} ]]; then
-        genextr_down
-    else
-        hashcheck_down
-    fi
-    # back to srcdir
-    gather_down
+    case "${source_url,,}" in
+        *.deb)
+            if deb_down; then
+                exit 0
+            else
+                clean_fail_down
+            fi
+            ;;
+        *.zip | *.tar.gz | *.tgz | *.tar.bz2 | *.tbz2 | *.tar.bz | *.tbz | *.tar.xz | *.txz | *.tar.zst | *.tzst | *.gz | *.bz2 | *.xz | *.lz | *.lzma | *.zst | *.7z | *.rar | *.lz4 | *.tar)
+            genextr_declare "${source_url,,}"
+            genextr_down
+            ;;
+        *)
+            case "${dest,,}" in
+                *.deb)
+                    if deb_down; then
+                        exit 0
+                    else
+                        clean_fail_down
+                    fi
+                    ;;
+                *.zip | *.tar.gz | *.tgz | *.tar.bz2 | *.tbz2 | *.tar.bz | *.tbz | *.tar.xz | *.txz | *.tar.zst | *.tzst | *.gz | *.bz2 | *.xz | *.lz | *.lzma | *.zst | *.7z | *.rar | *.lz4 | *.tar)
+                    genextr_declare "${dest,,}"
+                    genextr_down
+                    ;;
+                *)
+                    hashcheck_down
+                    gather_down
+                    ;;
+            esac
+            ;;
+    esac
 }
 
 # currently expecting: 1=hash 2=PACSTALL_KNOWN_SUMS 3=hashum_method 4=${CARCH}/${DISTRO} 5=${CARCH}
