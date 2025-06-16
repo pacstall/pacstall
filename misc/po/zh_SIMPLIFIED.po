@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-05-13 12:01+0000\n"
+"PO-Revision-Date: 2025-06-17 08:01+0000\n"
 "Last-Translator: Larm Kai Xian <lkaixian91@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "pacstall/pacstall/zh_SIMPLIFIED/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.12-dev\n"
+"X-Generator: Weblate 5.12.1\n"
 
 #: pacstall:287 misc/scripts/build.sh:163 misc/scripts/build.sh:688
 #: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:735
@@ -611,9 +611,8 @@ msgid "Performing post install operations"
 msgstr "执行善后安装过程中"
 
 #: misc/scripts/fetch-sources.sh:389 misc/scripts/package.sh:405
-#, fuzzy
 msgid "Storing pacscript"
-msgstr "储存此 pacscript 脚本"
+msgstr "正在储存 pacscript"
 
 #: misc/scripts/fetch-sources.sh:393
 msgid "Could not enter into %b"
@@ -646,10 +645,8 @@ msgid "Checking build dependencies"
 msgstr "检查构建依赖中"
 
 #: misc/scripts/fetch-sources.sh:729
-#, fuzzy
-#| msgid "%b version(s) cannot be satisfied"
 msgid "%b versions cannot be satisfied"
-msgstr "%b版本无法满足"
+msgstr "该%b版本无法满足"
 
 #: misc/scripts/fetch-sources.sh:731
 #, fuzzy
