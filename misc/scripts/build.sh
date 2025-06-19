@@ -728,6 +728,7 @@ function repacstall() {
     sudo rm -rf "${unpackdir:?}"/*
     fancy_message sub $"Repacking %b" "${CYAN}${pacname/\-deb/}.deb${NC}"
     sudo dpkg-deb -R "${input_dest}" "${unpackdir}"
+    sudo chmod 755 "${unpackdir}"
     depends_line=$(awk '/^Depends:/ {gsub(/^Depends: /, ""); print; exit}' "${upcontrol}")
     if [[ -n ${depends_line} ]]; then
         IFS=',' read -r -a depends_array <<< "${depends_line}"
