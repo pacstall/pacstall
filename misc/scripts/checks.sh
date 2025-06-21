@@ -723,7 +723,17 @@ function lint_kver() {
 
 function checks() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local ret=0 check linting_checks=(lint_pacname lint_gives lint_pkgrel lint_epoch lint_version lint_source lint_pkgdesc lint_maintainer lint_deps lint_ppa lint_relations lint_fields lint_hash lint_incompatible lint_arch lint_mask lint_priority lint_license lint_bugs lint_kver)
+    local ret=0 check linting_checks=(lint_gives lint_pkgrel lint_epoch lint_version lint_source lint_pkgdesc lint_maintainer lint_deps lint_ppa lint_relations lint_fields lint_hash lint_priority lint_license lint_bugs)
+    for check in "${linting_checks[@]}"; do
+        "${check}" || ret=1
+    done
+    # shellcheck disable=SC2034
+    { ignore_stack=true; return "${ret}"; }
+}
+
+function pre_checks() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+    local ret=0 check linting_checks=(lint_pacname lint_incompatible lint_arch lint_mask lint_kver)
     for check in "${linting_checks[@]}"; do
         "${check}" || ret=1
     done
