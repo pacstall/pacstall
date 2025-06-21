@@ -40,23 +40,10 @@ export TARCH
 # FARCH will be useful here when pkgbase is implemented
 append_modifier_entries "${TARCH}" "${DISTRO}"
 
-# Run checks function
-if ! checks; then
+# Run pre-checks function
+if ! pre_checks; then
     error_log 6 "install ${pacname}"
     clean_fail_down
-fi
-
-# Running `-B` on a deb package doesn't make sense, so let's download instead
-if ((PACSTALL_INSTALL == 0)) && [[ ${pacname} == *-deb ]]; then
-    parse_source_entry "${source[0]}"
-    if ! download "${source[0]}" "${dest}"; then
-        fancy_message error $"Failed to download '%s'" "${source[0]}"
-        { ignore_stack=true; return 1; }
-    else
-        fancy_message info $"Moving %b to %b" "${BGreen}${PACDIR}/${dest}${NC}" "${BGreen}${PACDEB_DIR}/${dest}${NC}"
-        sudo mv ./"${dest}" "${PACDEB_DIR}"
-    fi
-    return 0
 fi
 
 masked_packages=()
@@ -104,6 +91,25 @@ fi
 clean_builddir
 sudo mkdir -p "$STAGEDIR/$pacname/DEBIAN"
 sudo chmod a+rx "$STAGEDIR" "$STAGEDIR/$pacname" "$STAGEDIR/$pacname/DEBIAN"
+
+# Run checks function
+if ! checks; then
+    error_log 6 "install ${pacname}"
+    clean_fail_down
+fi
+
+# Running `-B` on a deb package doesn't make sense, so let's download instead
+if ((PACSTALL_INSTALL == 0)) && [[ ${pacname} == *-deb ]]; then
+    parse_source_entry "${source[0]}"
+    if ! download "${source[0]}" "${dest}"; then
+        fancy_message error $"Failed to download '%s'" "${source[0]}"
+        { ignore_stack=true; return 1; }
+    else
+        fancy_message info $"Moving %b to %b" "${BGreen}${PACDIR}/${dest}${NC}" "${BGreen}${PACDEB_DIR}/${dest}${NC}"
+        sudo mv ./"${dest}" "${PACDEB_DIR}"
+    fi
+    return 0
+fi
 
 # If priority exists and is required, and also that this package has not been installed before (first time)
 if [[ -n ${priority} && ${priority} == 'essential' ]] && ! is_package_installed "${pacname}"; then
