@@ -23,9 +23,9 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 # Pacstall version
-version_number="6.3.1"
-version_name="Chartreuse"
-declare -A version_color=([r]="223" [g]="255" [b]="0")
+version_number="6.3.2"
+version_name="Peridot"
+declare -A version_color=([r]="230" [g]="226" [b]="0")
 
 # Configuration
 export METADIR="/var/lib/pacstall/metadata"
