@@ -598,7 +598,7 @@ msgstr "O repositório git clonado não corresponde à hash do upstream"
 
 #: misc/scripts/fetch-sources.sh:287
 msgid "Downloading %b"
-msgstr "Baixando %d"
+msgstr "Baixando %b"
 
 #: misc/scripts/fetch-sources.sh:295
 msgid "Checking hash %b[%b...%b]"
