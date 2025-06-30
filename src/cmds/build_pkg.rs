@@ -8,10 +8,23 @@ use libpacstall::{
 };
 
 use strum::IntoEnumIterator;
+use thiserror::Error;
 
 pub struct PackagePkg {
     pub handle: PacstallShell,
     pub srcinfo: SrcInfo,
+}
+
+#[derive(Debug, Error)]
+pub enum SourceError {
+    #[error("missing function: `{name}`")]
+    MissingPackageFunction {
+        name: String,
+        #[source]
+        source: brush_core::Error,
+    },
+    #[error("brush error: {0}")]
+    Brush(#[from] brush_core::Error),
 }
 
 impl PackagePkg {
@@ -227,7 +240,7 @@ impl PackagePkg {
 
     /// Basically we set `PATH=""` and run the function lol. Could this be better? Nah, it's bash,
     /// fuck bash.
-    async fn extract_fn_vars(shell: &mut Shell, func: &str) -> anyhow::Result<()> {
+    async fn extract_fn_vars(shell: &mut Shell, func: &str) -> Result<(), SourceError> {
         let path = shell
             .get_env_var("PATH")
             .expect("Bitchass PATH don't exist")
@@ -238,7 +251,15 @@ impl PackagePkg {
             ShellVariable::new(ShellValue::String(String::new())),
         )?;
 
-        shell.invoke_function(func, &[]).await?;
+        match shell.invoke_function(func, &[]).await {
+            Ok(_) => {}
+            Err(e) => {
+                return Err(SourceError::MissingPackageFunction {
+                    name: func.to_string(),
+                    source: e,
+                });
+            }
+        }
 
         shell.set_env_global("PATH", path)?;
 
