@@ -1,6 +1,6 @@
 use std::borrow::Cow;
 
-use brush_core::{Shell, ShellValue};
+use brush_core::{Shell, ShellValue, ShellVariable};
 use libpacstall::{
     pkg::keys::{Arch, DistroClamp},
     srcinfo::{ArchDistro, PkgBase, PkgInfo, SrcInfo},
@@ -16,7 +16,7 @@ pub struct PackagePkg {
 
 impl PackagePkg {
     /// Load in all pacscript variables into [`Self::srcinfo`].
-    pub fn new(handle: PacstallShell) -> anyhow::Result<Self> {
+    pub async fn new(handle: PacstallShell) -> anyhow::Result<Self> {
         let reference = handle.shell.clone();
         Ok(Self {
             handle,
@@ -134,10 +134,20 @@ impl PackagePkg {
                         let mut child_packages: Vec<PkgInfo> = vec![];
 
                         for child in packages {
-                            // Set default package info, we will overwrite some after.
-                            let mut pkginfo = Self::default_pkginfo(&reference, child);
+                            // Firstly, we want a fresh environment for every child, so we clone
+                            // reference.
+                            let mut child_reference = reference.clone();
                             // So now we have to extract variables from `package_${pkgname}`.
                             // This follows generally `srcinfo.extr_fnvar`.
+                            Self::extract_fn_vars(
+                                &mut child_reference,
+                                &format!("package_{child}"),
+                            )
+                            .await?;
+                            // Set default package info, we will overwrite some after.
+                            let pkginfo = Self::default_pkginfo(&child_reference, child);
+
+                            child_packages.push(pkginfo);
                         }
 
                         child_packages
@@ -213,6 +223,26 @@ impl PackagePkg {
             Some(string) => string.to_string(),
             None => String::new(),
         }
+    }
+
+    /// Basically we set `PATH=""` and run the function lol. Could this be better? Nah, it's bash,
+    /// fuck bash.
+    async fn extract_fn_vars(shell: &mut Shell, func: &str) -> anyhow::Result<()> {
+        let path = shell
+            .get_env_var("PATH")
+            .expect("Bitchass PATH don't exist")
+            .clone();
+
+        shell.set_env_global(
+            "PATH",
+            ShellVariable::new(ShellValue::String(String::new())),
+        )?;
+
+        shell.invoke_function(func, &[]).await?;
+
+        shell.set_env_global("PATH", path)?;
+
+        Ok(())
     }
 
     /// Find all variants of a given `base_var`.

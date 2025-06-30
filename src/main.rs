@@ -24,7 +24,7 @@ async fn main() -> anyhow::Result<()> {
         Commands::Build { package, args } => {
             let mut shell = PacstallShell::new("RADIANCE").await?;
             shell.load_pacscript(package).await?;
-            let handle = PackagePkg::new(shell)?;
+            let handle = PackagePkg::new(shell).await?;
             println!("{:#?}", handle.srcinfo);
         }
         Commands::Search { package } => {
