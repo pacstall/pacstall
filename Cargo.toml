@@ -8,6 +8,7 @@ authors = ["Elsie19 <hwengerstickel@protonmail.com>"]
 anyhow = "1.0.98"
 brush-core = "0.3.1"
 clap = { version = "4.5.37", features = ["cargo", "derive", "string"] }
+cli-prompts = "0.1.0"
 colored = "3.0.0"
 libpacstall = { path = "../Projects/libpacstall" }
 reqwest = { version = "0.12.15", features = ["blocking"] }

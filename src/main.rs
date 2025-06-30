@@ -12,6 +12,10 @@ use libpacstall::{
     local::{pkglist::Search, repos::PacstallRepos},
     sys::shell::PacstallShell,
 };
+use utilities::{
+    ask::{YesNo::*, ask},
+    one_off::editor,
+};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -23,9 +27,14 @@ async fn main() -> anyhow::Result<()> {
         Commands::Tree { package } => todo!(),
         Commands::Build { package, args } => {
             let mut shell = PacstallShell::new("RADIANCE").await?;
-            shell.load_pacscript(package).await?;
+            shell.load_pacscript(&package).await?;
+
             let handle = PackagePkg::new(shell).await?;
-            println!("{:#?}", handle.srcinfo);
+            dbg!(handle.srcinfo);
+            if ask("Do you want to view/edit the pacscript?", No) {
+                /// We don't care lol.
+                let _ = editor(package);
+            }
         }
         Commands::Search { package } => {
             let repo_file = File::open(Path::new("/usr/share/pacstall/repo/pacstallrepo"))?;
