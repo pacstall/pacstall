@@ -13,6 +13,7 @@ cli-prompts = "0.1.0"
 colored = "3.0.0"
 libpacstall = { path = "../Projects/libpacstall" }
 reqwest = { version = "0.12.15", features = ["blocking"] }
+spinoff = "0.8.0"
 strum = { version = "0.27.1", features = ["strum_macros"] }
 thiserror = "2.0.12"
 tokio = "1.45.1"

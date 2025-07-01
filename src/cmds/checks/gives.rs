@@ -31,6 +31,10 @@ pub enum GivesError {
 }
 
 impl Check for Gives {
+    fn name(&self) -> &'static str {
+        "gives"
+    }
+
     fn check(&self, pkgchild: &PackageString, handle: &PackagePkg) -> Result<(), CheckError> {
         let gives = &handle
             .srcinfo
@@ -102,7 +106,7 @@ impl Gives {
     fn check_alnum(gives: &str) -> Result<(), CheckError> {
         let allowed: HashSet<char> = ('a'..='z').chain('0'..='9').chain(['-', '.']).collect();
 
-        fail_if!(gives.chars().all(|c| allowed.contains(&c)) => CheckError::Gives(GivesError::Alnum {
+        fail_if!(!gives.chars().all(|c| allowed.contains(&c)) => CheckError::Gives(GivesError::Alnum {
             pacname: String::from("gives"),
             text: gives.to_string(),
         }));

@@ -28,6 +28,10 @@ pub enum PacnameError {
 }
 
 impl Check for Pacname {
+    fn name(&self) -> &'static str {
+        "pacname"
+    }
+
     fn check(&self, pkgname: &PackageString, handle: &PackagePkg) -> Result<(), CheckError> {
         let pkgname = &handle
             .srcinfo
@@ -81,7 +85,7 @@ impl Pacname {
     fn check_alnum(pkgname: &str) -> Result<(), CheckError> {
         let allowed: HashSet<char> = ('a'..='z').chain('0'..='9').chain(['-', '.']).collect();
 
-        fail_if!(pkgname.chars().all(|c| allowed.contains(&c)) => CheckError::Pacname(PacnameError::Alnum {
+        fail_if!(!pkgname.chars().all(|c| allowed.contains(&c)) => CheckError::Pacname(PacnameError::Alnum {
             pacname: String::from("pacname"),
             text: pkgname.to_string(),
         }));
