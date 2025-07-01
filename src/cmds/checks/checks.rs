@@ -20,23 +20,46 @@ macro_rules! fail_if {
     };
 }
 
+/// In order to let [`Check::Error`] have individual types, I need a meta type that enforces the
+/// conversion to [`CheckError`], thus, esto.
+struct ErasedCheck<T>(T);
+
+impl<T> Check for ErasedCheck<T>
+where
+    T: Check,
+    T::Error: Into<CheckError>,
+{
+    type Error = CheckError;
+
+    fn name(&self) -> &'static str {
+        self.0.name()
+    }
+
+    fn check(&self, pkgchild: &PackageString, handle: &PackagePkg) -> Result<(), Self::Error> {
+        self.0.check(pkgchild, handle).map_err(Into::into)
+    }
+}
+
 /// Lints for pacstall.
 pub trait Check {
+    /// An error that can be turned into [`CheckError`].
+    type Error: Into<CheckError>;
+
     /// Check a particular key of a pacscript.
-    fn check(&self, pkgchild: &PackageString, handle: &PackagePkg) -> Result<(), CheckError>;
+    fn check(&self, pkgchild: &PackageString, handle: &PackagePkg) -> Result<(), Self::Error>;
 
     /// Name of lint.
     fn name(&self) -> &'static str;
 }
 
 pub struct Checks {
-    checks: Vec<Box<dyn Check>>,
+    checks: Vec<Box<dyn Check<Error = CheckError>>>,
 }
 
 impl Default for Checks {
     fn default() -> Self {
         Self {
-            checks: vec![Box::new(Pacname), Box::new(Gives)],
+            checks: vec![Box::new(ErasedCheck(Pacname)), Box::new(ErasedCheck(Gives))],
         }
     }
 }
@@ -45,7 +68,7 @@ impl Checks {
     /// Run checks for pacstall.
     // Yes this is a little fancy but I like it.
     pub fn run(&self, pkgchild: &PackageString, handle: &PackagePkg) -> Result<(), CheckError> {
-        let mut spinner = Spinner::new(spinners::Aesthetic, "Linting pacscript...", Color::Green);
+        let mut spinner = Spinner::new(spinners::Aesthetic, "Linting pacscript...", Color::Magenta);
         let mut timings: Vec<(&str, Duration)> = vec![];
 
         for check in &self.checks {

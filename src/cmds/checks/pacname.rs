@@ -28,11 +28,13 @@ pub enum PacnameError {
 }
 
 impl Check for Pacname {
+    type Error = PacnameError;
+
     fn name(&self) -> &'static str {
         "pacname"
     }
 
-    fn check(&self, pkgname: &PackageString, handle: &PackagePkg) -> Result<(), CheckError> {
+    fn check(&self, pkgname: &PackageString, handle: &PackagePkg) -> Result<(), Self::Error> {
         let pkgname = &handle
             .srcinfo
             .packages
@@ -55,40 +57,40 @@ impl Check for Pacname {
 }
 
 impl Pacname {
-    fn check_len(pkgname: &str) -> Result<(), CheckError> {
-        fail_if!(pkgname.len() < 2 => CheckError::Pacname(PacnameError::TwoChars {
+    fn check_len(pkgname: &str) -> Result<(), PacnameError> {
+        fail_if!(pkgname.len() < 2 => PacnameError::TwoChars {
                 pacname: String::from("pacname"),
                 text: pkgname.to_string(),
-        }));
+        });
 
         Ok(())
     }
 
-    fn check_alphanumeric(pkgname: &str) -> Result<(), CheckError> {
-        fail_if!(['.', '-', '+'].contains(&pkgname.chars().next().unwrap()) => CheckError::Pacname(PacnameError::Alphanumeric {
+    fn check_alphanumeric(pkgname: &str) -> Result<(), PacnameError> {
+        fail_if!(['.', '-', '+'].contains(&pkgname.chars().next().unwrap()) => PacnameError::Alphanumeric {
             pacname: String::from("pacname"),
             text: pkgname.to_string()
-        }));
+        });
 
         Ok(())
     }
 
-    fn check_lowercase(pkgname: &str) -> Result<(), CheckError> {
-        fail_if!(pkgname.to_ascii_lowercase() != *pkgname => CheckError::Pacname(PacnameError::Uppercase {
+    fn check_lowercase(pkgname: &str) -> Result<(), PacnameError> {
+        fail_if!(pkgname.to_ascii_lowercase() != *pkgname => PacnameError::Uppercase {
             pacname: String::from("pacname"),
             text: pkgname.to_string(),
-        }));
+        });
 
         Ok(())
     }
 
-    fn check_alnum(pkgname: &str) -> Result<(), CheckError> {
+    fn check_alnum(pkgname: &str) -> Result<(), PacnameError> {
         let allowed: HashSet<char> = ('a'..='z').chain('0'..='9').chain(['-', '.']).collect();
 
-        fail_if!(!pkgname.chars().all(|c| allowed.contains(&c)) => CheckError::Pacname(PacnameError::Alnum {
+        fail_if!(!pkgname.chars().all(|c| allowed.contains(&c)) => PacnameError::Alnum {
             pacname: String::from("pacname"),
             text: pkgname.to_string(),
-        }));
+        });
 
         Ok(())
     }

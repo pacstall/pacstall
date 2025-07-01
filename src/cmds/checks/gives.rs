@@ -31,11 +31,13 @@ pub enum GivesError {
 }
 
 impl Check for Gives {
+    type Error = GivesError;
+
     fn name(&self) -> &'static str {
         "gives"
     }
 
-    fn check(&self, pkgchild: &PackageString, handle: &PackagePkg) -> Result<(), CheckError> {
+    fn check(&self, pkgchild: &PackageString, handle: &PackagePkg) -> Result<(), Self::Error> {
         let gives = &handle
             .srcinfo
             .packages
@@ -45,7 +47,7 @@ impl Check for Gives {
             .cloned();
 
         match gives {
-            Some(gives_arches) => {
+            Some(gives_arches) if gives_arches.len() >= 1 => {
                 // Because gives could have possibly architecture dependent variables that
                 // don't evaluate on another, we should only check the hosts arch.
                 let system = DistroClamp::system().map_err(GivesError::DistroClampError)?;
@@ -65,9 +67,9 @@ impl Check for Gives {
                     }
                 }
             }
-            None => {
+            None | _ => {
                 // If this is a deb package, we have to have `gives`.
-                fail_if!(pkgchild.split().1 == PackageKind::Deb => CheckError::Gives(GivesError::NoGives(String::from("gives"))));
+                fail_if!(pkgchild.split().1 == PackageKind::Deb => GivesError::NoGives(String::from("gives")));
             }
         }
         Ok(())
@@ -75,40 +77,40 @@ impl Check for Gives {
 }
 
 impl Gives {
-    fn check_len(gives: &str) -> Result<(), CheckError> {
-        fail_if!(gives.len() < 2 => CheckError::Gives(GivesError::TwoChars {
+    fn check_len(gives: &str) -> Result<(), GivesError> {
+        fail_if!(gives.len() < 2 => GivesError::TwoChars {
                 pacname: String::from("gives"),
                 text: gives.to_string(),
-        }));
+        });
 
         Ok(())
     }
 
-    fn check_alphanumeric(gives: &str) -> Result<(), CheckError> {
-        fail_if!(['.', '-', '+'].contains(&gives.chars().next().unwrap()) => CheckError::Gives(GivesError::Alphanumeric {
+    fn check_alphanumeric(gives: &str) -> Result<(), GivesError> {
+        fail_if!(['.', '-', '+'].contains(&gives.chars().next().unwrap()) => GivesError::Alphanumeric {
             pacname: String::from("gives"),
             text: gives.to_string()
-        }));
+        });
 
         Ok(())
     }
 
-    fn check_lowercase(gives: &str) -> Result<(), CheckError> {
-        fail_if!(gives.to_ascii_lowercase() != *gives => CheckError::Gives(GivesError::Uppercase {
+    fn check_lowercase(gives: &str) -> Result<(), GivesError> {
+        fail_if!(gives.to_ascii_lowercase() != *gives => GivesError::Uppercase {
             pacname: String::from("gives"),
             text: gives.to_string(),
-        }));
+        });
 
         Ok(())
     }
 
-    fn check_alnum(gives: &str) -> Result<(), CheckError> {
+    fn check_alnum(gives: &str) -> Result<(), GivesError> {
         let allowed: HashSet<char> = ('a'..='z').chain('0'..='9').chain(['-', '.']).collect();
 
-        fail_if!(!gives.chars().all(|c| allowed.contains(&c)) => CheckError::Gives(GivesError::Alnum {
+        fail_if!(!gives.chars().all(|c| allowed.contains(&c)) => GivesError::Alnum {
             pacname: String::from("gives"),
             text: gives.to_string(),
-        }));
+        });
 
         Ok(())
     }
