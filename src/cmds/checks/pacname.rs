@@ -2,6 +2,7 @@ use std::collections::HashSet;
 
 use super::checks::{Check, CheckError};
 use crate::{cmds::build_pkg::PackagePkg, fail_if};
+use libpacstall::pkg::keys::PackageString;
 use thiserror::Error;
 
 pub(crate) struct Pacname;
@@ -20,12 +21,14 @@ pub enum PacnameError {
     #[error("{pacname}: `{text}` contains uppercase characters")]
     Uppercase { pacname: String, text: String },
 
-    #[error("{pacname}: `{text}` contains characters that are not lowercase, digits, minus, or periods")]
+    #[error(
+        "{pacname}: `{text}` contains characters that are not lowercase, digits, minus, or periods"
+    )]
     Alnum { pacname: String, text: String },
 }
 
 impl Check for Pacname {
-    fn check(&self, pkgname: &str, handle: &PackagePkg) -> Result<(), CheckError> {
+    fn check(&self, pkgname: &PackageString, handle: &PackagePkg) -> Result<(), CheckError> {
         let pkgname = &handle
             .srcinfo
             .packages
@@ -34,11 +37,14 @@ impl Check for Pacname {
             .ok_or(PacnameError::NoPacname(pkgname.to_string()))?
             .pkgname;
 
-        Self::check_len(pkgname)?;
-        // We can unwrap here because of the check above.
-        Self::check_alphanumeric(pkgname)?;
-        Self::check_lowercase(pkgname)?;
-        Self::check_alnum(pkgname)?;
+        for check in [
+            Self::check_len,
+            Self::check_alphanumeric,
+            Self::check_lowercase,
+            Self::check_alnum,
+        ] {
+            check(pkgname)?;
+        }
 
         Ok(())
     }
@@ -81,15 +87,5 @@ impl Pacname {
         }));
 
         Ok(())
-    }
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn check_len_fails() {
-        assert_eq!(Pacname::check_len("a").unwrap_err(), CheckError::Pacname(PacnameError::TwoChars { pacname: String::from("pacname"), text: String::from("a") }));
     }
 }

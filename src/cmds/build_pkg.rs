@@ -2,7 +2,7 @@ use std::{borrow::Cow, path::PathBuf};
 
 use brush_core::{Shell, ShellValue, ShellVariable};
 use libpacstall::{
-    pkg::keys::{Arch, DistroClamp},
+    pkg::keys::{Arch, DistroClamp, PackageString},
     srcinfo::{ArchDistro, PkgBase, PkgInfo, SrcInfo},
     sys::shell::PacstallShell,
 };
@@ -21,7 +21,7 @@ pub struct PackagePkg {
 
 #[derive(Debug, Error)]
 pub enum SourceError {
-    #[error("missing function: `{name}`")]
+    #[error("Missing function: `{name}`")]
     MissingPackageFunction {
         name: String,
         #[source]
@@ -49,6 +49,8 @@ pub enum BuildError {
 
 impl PackagePkg {
     /// Load in all pacscript variables into [`Self::srcinfo`].
+    // Yes I know this is shitty code, but this should be where I stuff all of it, because at some
+    // point, all this code has to be written.
     pub async fn new(handle: PacstallShell) -> Result<Self, SourceError> {
         let reference = handle.shell.clone();
         Ok(Self {
@@ -168,32 +170,39 @@ impl PackagePkg {
 
                         for child in packages {
                             // Firstly, we want a fresh environment for every child, so we clone
-                            // reference.
+                            // reference. Is this expensive? Yeah. Is it the easiest and least
+                            // breakable? Also yes.
                             let mut child_reference = reference.clone();
                             // So now we have to extract variables from `package_${pkgname}`.
-                            // This follows generally `srcinfo.extr_fnvar`.
+                            // So this also lifts variables into the outer scope, so any
+                            // variable/array inside `package_{child}` will be lifted into the main
+                            // scope, but, we are in a scratch environment, so it doesn't really
+                            // matter.
                             Self::extract_fn_vars(
                                 &mut child_reference,
                                 &format!("package_{child}"),
                             )
                             .await?;
-                            // Set default package info, we will overwrite some after.
-                            let pkginfo = Self::default_pkginfo(&child_reference, child);
 
-                            child_packages.push(pkginfo);
+                            // Shove that into the array.
+                            child_packages
+                                .push(Self::default_pkginfo(&child_reference, child.into()));
                         }
 
                         child_packages
                     } else {
                         // Single package.
-                        vec![Self::default_pkginfo(&reference, packages[0].clone())]
+                        vec![Self::default_pkginfo(
+                            &reference,
+                            packages[0].clone().into(),
+                        )]
                     }
                 },
             },
         })
     }
 
-    fn default_pkginfo<S: Into<String>>(reference: &Shell, pkgname: S) -> PkgInfo {
+    fn default_pkginfo(reference: &Shell, pkgname: PackageString) -> PkgInfo {
         PkgInfo {
             pkgname: pkgname.into(),
             pkgdesc: Self::get_env_var_as_string(reference, "pkgdesc"),
@@ -401,7 +410,7 @@ impl PackagePkg {
 
     async fn package(
         &mut self,
-        pkgs: &[String],
+        pkgs: &[PackageString],
         args: PkgArgs,
     ) -> Result<Vec<PathBuf>, BuildError> {
         for pkg in pkgs {
@@ -412,10 +421,7 @@ impl PackagePkg {
                 );
             }
 
-            // Do checks here.
-            let checks = Checks::default();
-
-            checks.run(pkg, self)?;
+            Checks::default().run(pkg, self)?;
         }
 
         Ok(vec![PathBuf::default()])

@@ -1,0 +1,112 @@
+use std::collections::HashSet;
+
+use super::checks::{Check, CheckError};
+use crate::{cmds::build_pkg::PackagePkg, fail_if};
+use libpacstall::pkg::keys::{Arch, DistroClamp, DistroClampError, PackageKind, PackageString};
+use thiserror::Error;
+
+pub(crate) struct Gives;
+
+#[derive(Debug, Error)]
+pub enum GivesError {
+    #[error("Package does not contain `{0}`")]
+    NoGives(String),
+
+    #[error("{pacname}: `{text}` must be at least two characters long")]
+    TwoChars { pacname: String, text: String },
+
+    #[error("{pacname}: `{text}` must start with an alphanumeric character")]
+    Alphanumeric { pacname: String, text: String },
+
+    #[error("{pacname}: `{text}` contains uppercase characters")]
+    Uppercase { pacname: String, text: String },
+
+    #[error(
+        "{pacname}: `{text}` contains characters that are not lowercase, digits, minus, or periods"
+    )]
+    Alnum { pacname: String, text: String },
+
+    #[error(transparent)]
+    DistroClampError(#[from] DistroClampError),
+}
+
+impl Check for Gives {
+    fn check(&self, pkgchild: &PackageString, handle: &PackagePkg) -> Result<(), CheckError> {
+        let gives = &handle
+            .srcinfo
+            .packages
+            .iter()
+            .find(|srcinfo| srcinfo.pkgname == pkgchild)
+            .map(|pkg| &pkg.gives)
+            .cloned();
+
+        match gives {
+            Some(gives_arches) => {
+                // Because gives could have possibly architecture dependent variables that
+                // don't evaluate on another, we should only check the hosts arch.
+                let system =
+                    DistroClamp::system().or_else(|e| Err(GivesError::DistroClampError(e)))?;
+                for check in [
+                    Self::check_len,
+                    Self::check_alphanumeric,
+                    Self::check_lowercase,
+                    Self::check_alnum,
+                ] {
+                    for arch in gives_arches {
+                        let (arch, evaled) = arch;
+                        // If given arch is same as host (or missing) *and* the same for the
+                        // distro/version.
+                        if Arch::host() == *arch && system == arch {
+                            check(evaled)?;
+                        }
+                    }
+                }
+            }
+            None => {
+                // If this is a deb package, we have to have `gives`.
+                fail_if!(pkgchild.split().1 == PackageKind::Deb => CheckError::Gives(GivesError::NoGives(String::from("gives"))));
+            }
+        }
+        Ok(())
+    }
+}
+
+impl Gives {
+    fn check_len(gives: &str) -> Result<(), CheckError> {
+        fail_if!(gives.len() < 2 => CheckError::Gives(GivesError::TwoChars {
+                pacname: String::from("gives"),
+                text: gives.to_string(),
+        }));
+
+        Ok(())
+    }
+
+    fn check_alphanumeric(gives: &str) -> Result<(), CheckError> {
+        fail_if!(['.', '-', '+'].contains(&gives.chars().next().unwrap()) => CheckError::Gives(GivesError::Alphanumeric {
+            pacname: String::from("gives"),
+            text: gives.to_string()
+        }));
+
+        Ok(())
+    }
+
+    fn check_lowercase(gives: &str) -> Result<(), CheckError> {
+        fail_if!(gives.to_ascii_lowercase() != *gives => CheckError::Gives(GivesError::Uppercase {
+            pacname: String::from("gives"),
+            text: gives.to_string(),
+        }));
+
+        Ok(())
+    }
+
+    fn check_alnum(gives: &str) -> Result<(), CheckError> {
+        let allowed: HashSet<char> = ('a'..='z').chain('0'..='9').chain(['-', '.']).collect();
+
+        fail_if!(gives.chars().all(|c| allowed.contains(&c)) => CheckError::Gives(GivesError::Alnum {
+            pacname: String::from("gives"),
+            text: gives.to_string(),
+        }));
+
+        Ok(())
+    }
+}
