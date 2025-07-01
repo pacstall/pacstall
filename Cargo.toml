@@ -6,7 +6,8 @@ authors = ["Elsie19 <hwengerstickel@protonmail.com>"]
 
 [dependencies]
 anyhow = "1.0.98"
-brush-core = "0.3.1"
+# TODO: Change this once it merges.
+brush-core = { version = "0.3.1", git = "https://github.com/reubeno/brush.git", branch = "openfiles-api" }
 clap = { version = "4.5.37", features = ["cargo", "derive", "string"] }
 cli-prompts = "0.1.0"
 colored = "3.0.0"

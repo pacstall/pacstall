@@ -1,4 +1,4 @@
-use std::borrow::Cow;
+use std::{borrow::Cow, path::PathBuf};
 
 use brush_core::{Shell, ShellValue, ShellVariable};
 use libpacstall::{
@@ -9,6 +9,10 @@ use libpacstall::{
 
 use strum::IntoEnumIterator;
 use thiserror::Error;
+
+use crate::{args::PkgArgs, fancy_message};
+
+use super::checks::checks::{CheckError, Checks};
 
 pub struct PackagePkg {
     pub handle: PacstallShell,
@@ -23,13 +27,29 @@ pub enum SourceError {
         #[source]
         source: brush_core::Error,
     },
-    #[error("brush error: {0}")]
+
+    #[error(transparent)]
     Brush(#[from] brush_core::Error),
+
+    #[error(transparent)]
+    Parse(#[from] std::num::ParseIntError),
+
+    #[error(transparent)]
+    DistroClamp(#[from] libpacstall::pkg::keys::DistroClampError),
+
+    #[error(transparent)]
+    MaintainerParse(#[from] libpacstall::pkg::keys::MaintainerParseError),
+}
+
+#[derive(Debug, Error)]
+pub enum BuildError {
+    #[error(transparent)]
+    CheckError(#[from] CheckError),
 }
 
 impl PackagePkg {
     /// Load in all pacscript variables into [`Self::srcinfo`].
-    pub async fn new(handle: PacstallShell) -> anyhow::Result<Self> {
+    pub async fn new(handle: PacstallShell) -> Result<Self, SourceError> {
         let reference = handle.shell.clone();
         Ok(Self {
             handle,
@@ -251,7 +271,16 @@ impl PackagePkg {
             ShellVariable::new(ShellValue::String(String::new())),
         )?;
 
-        match shell.invoke_function(func, &[]).await {
+        let mut params = shell.default_exec_params();
+
+        params
+            .open_files
+            .set(brush_core::OpenFiles::STDERR_FD, brush_core::OpenFile::Null);
+
+        match shell
+            .invoke_function(func, std::iter::once("foo"), &params)
+            .await
+        {
             Ok(_) => {}
             Err(e) => {
                 return Err(SourceError::MissingPackageFunction {
@@ -354,5 +383,41 @@ impl PackagePkg {
         }
 
         out
+    }
+
+    /// Builds a package into a deb.
+    ///
+    /// # Errors
+    /// Errors if any part of the build fails, else return the paths to the debs.
+    pub async fn build(&mut self, args: PkgArgs) -> Result<Vec<PathBuf>, BuildError> {
+        let pkg = if self.srcinfo.len() > 1 {
+            unimplemented!("Pkgchildren");
+        } else {
+            vec![self.srcinfo.packages[0].pkgname.clone()]
+        };
+
+        self.package(&pkg, args).await
+    }
+
+    async fn package(
+        &mut self,
+        pkgs: &[String],
+        args: PkgArgs,
+    ) -> Result<Vec<PathBuf>, BuildError> {
+        for pkg in pkgs {
+            if self.handle.shell.get_env_str("external_connection") == Some(Cow::Borrowed("true")) {
+                fancy_message!(
+                    Warn,
+                    "This package will connect to the internet during its build process."
+                );
+            }
+
+            // Do checks here.
+            let checks = Checks::default();
+
+            checks.run(pkg, self)?;
+        }
+
+        Ok(vec![PathBuf::default()])
     }
 }

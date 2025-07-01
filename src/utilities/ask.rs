@@ -20,7 +20,7 @@ impl From<YesNo> for bool {
 }
 
 /// Prompt user for a default action.
-pub fn ask<S: Into<YesNo>>(ask: &str, which: S) -> bool {
+pub fn ask<I: AsRef<str>, S: Into<YesNo>>(ask: I, which: S) -> bool {
     let which = which.into();
     let confirmation_style = ConfirmationStyle {
         label_style: LabelStyle::default()
@@ -31,7 +31,7 @@ pub fn ask<S: Into<YesNo>>(ask: &str, which: S) -> bool {
         submitted_formatting: Formatting::default().bold(),
     };
 
-    let prompt = Confirmation::new(ask)
+    let prompt = Confirmation::new(ask.as_ref())
         .default_positive(which.into())
         .style(confirmation_style);
 

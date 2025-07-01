@@ -27,14 +27,15 @@ async fn main() -> anyhow::Result<()> {
         Commands::Tree { package } => todo!(),
         Commands::Build { package, args } => {
             let mut shell = PacstallShell::new("RADIANCE").await?;
-            shell.load_pacscript(&package).await?;
 
-            let handle = PackagePkg::new(shell).await?;
-            dbg!(handle.srcinfo);
             if ask("Do you want to view/edit the pacscript?", No) {
-                /// We don't care lol.
-                let _ = editor(package);
+                // We don't care if it fails lol.
+                let _ = editor(&package);
             }
+
+            shell.load_pacscript(package).await?;
+            let mut handle = PackagePkg::new(shell).await?;
+            let build_path = handle.build(args).await?;
         }
         Commands::Search { package } => {
             let repo_file = File::open(Path::new("/usr/share/pacstall/repo/pacstallrepo"))?;
