@@ -48,8 +48,7 @@ impl Check for Gives {
             Some(gives_arches) => {
                 // Because gives could have possibly architecture dependent variables that
                 // don't evaluate on another, we should only check the hosts arch.
-                let system =
-                    DistroClamp::system().or_else(|e| Err(GivesError::DistroClampError(e)))?;
+                let system = DistroClamp::system().map_err(GivesError::DistroClampError)?;
                 for check in [
                     Self::check_len,
                     Self::check_alphanumeric,

@@ -51,25 +51,33 @@ impl Checks {
         for check in &self.checks {
             spinner.update_text(format!("Checking `{}`", check.name()));
             let instant = Instant::now();
-            check.check(pkgchild, handle)?;
+            match check.check(pkgchild, handle) {
+                Ok(_) => {}
+                Err(e) => {
+                    spinner.fail(&format!("Failed linting on `{}`", check.name()));
+                    return Err(e);
+                }
+            }
             timings.push((check.name(), instant.elapsed()));
         }
 
         spinner.success("All lints passed!");
 
-        println!(">>> Timings Report <<<");
-        let max_width = timings
-            .iter()
-            .map(|(label, _)| label.len())
-            .max()
-            .unwrap_or(0);
-        for (label, time) in timings {
-            println!(
-                "    {: <width$} -> {}ms",
-                label,
-                time.as_micros(),
-                width = max_width
-            )
+        if std::env::var("PACSTALL_TIMINGS").is_ok() {
+            println!(">>> Timings Report <<<");
+            let max_width = timings
+                .iter()
+                .map(|(label, _)| label.len())
+                .max()
+                .unwrap_or(0);
+            for (label, time) in timings {
+                println!(
+                    "    {: <width$} -> {}ms",
+                    label,
+                    time.as_micros(),
+                    width = max_width
+                );
+            }
         }
 
         Ok(())
