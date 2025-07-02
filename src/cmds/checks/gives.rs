@@ -86,7 +86,7 @@ impl Gives {
     }
 
     fn check_alphanumeric(gives: &str) -> Result<(), GivesError> {
-        fail_if!(matches!(&gives.chars().next().unwrap(), '.' | '-' | '+') => GivesError::Alphanumeric {
+        fail_if!(gives.starts_with(['.', '-', '+']) => GivesError::Alphanumeric {
             pacname: String::from("gives"),
             text: gives.to_string()
         });
