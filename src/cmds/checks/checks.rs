@@ -6,6 +6,7 @@ use spinoff::{Color, Spinner, spinners};
 use thiserror::Error;
 
 use super::{
+    deb::{DebSource, DebSourceError},
     gives::{Gives, GivesError},
     hash::{Hash, HashError},
     pacname::{Pacname, PacnameError},
@@ -64,6 +65,7 @@ impl Default for Checks {
                 Box::new(ErasedCheck(Pacname)),
                 Box::new(ErasedCheck(Gives)),
                 Box::new(ErasedCheck(Hash)),
+                Box::new(ErasedCheck(DebSource)),
             ],
         }
     }
@@ -90,7 +92,14 @@ impl Checks {
             timings.push((check.name(), instant.elapsed()));
         }
 
-        spinner.success("All lints passed!");
+        spinner.success(&format!(
+            "All lints passed in {}ms!",
+            timings
+                .iter()
+                .map(|(_, time)| time)
+                .sum::<Duration>()
+                .as_micros()
+        ));
 
         if std::env::var("PACSTALL_TIMINGS").is_ok() {
             println!(">>> Timings Report <<<");
@@ -121,4 +130,6 @@ pub enum CheckError {
     Gives(#[from] GivesError),
     #[error(transparent)]
     Hash(#[from] HashError),
+    #[error(transparent)]
+    DebSource(#[from] DebSourceError),
 }

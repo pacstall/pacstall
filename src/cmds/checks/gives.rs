@@ -43,8 +43,7 @@ impl Check for Gives {
             .packages
             .iter()
             .find(|srcinfo| srcinfo.pkgname == pkgchild)
-            .map(|pkg| &pkg.gives)
-            .cloned();
+            .map(|pkg| &pkg.gives);
 
         match gives {
             Some(gives_arches) if !gives_arches.is_empty() => {
@@ -57,7 +56,7 @@ impl Check for Gives {
                     Self::check_lowercase,
                     Self::check_alnum,
                 ] {
-                    for arch in gives_arches {
+                    for arch in *gives_arches {
                         let (arch, evaled) = arch;
                         // If given arch is same as host (or missing) *and* the same for the
                         // distro/version.
@@ -96,7 +95,7 @@ impl Gives {
     }
 
     fn check_lowercase(gives: &str) -> Result<(), GivesError> {
-        fail_if!(gives.to_ascii_lowercase() != *gives => GivesError::Uppercase {
+        fail_if!(gives.chars().any(|c| c.is_ascii_uppercase()) => GivesError::Uppercase {
             pacname: String::from("gives"),
             text: gives.to_string(),
         });
@@ -105,9 +104,9 @@ impl Gives {
     }
 
     fn check_alnum(gives: &str) -> Result<(), GivesError> {
-        let allowed: HashSet<char> = ('a'..='z').chain('0'..='9').chain(['-', '.']).collect();
+        let is_allowed = |c: char| matches!(c, 'a'..='z' | '0'..='9' | '-' | '.');
 
-        fail_if!(!gives.chars().all(|c| allowed.contains(&c)) => GivesError::Alnum {
+        fail_if!(!gives.chars().all(is_allowed) => GivesError::Alnum {
             pacname: String::from("gives"),
             text: gives.to_string(),
         });
