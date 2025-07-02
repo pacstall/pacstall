@@ -35,13 +35,19 @@ impl Check for Pacname {
     }
 
     fn check(&self, pkgname: &PackageString, handle: &PackagePkg) -> Result<(), Self::Error> {
-        let pkgname = &handle
-            .srcinfo
-            .packages
-            .iter()
-            .find(|srcinfo| srcinfo.pkgname == pkgname)
-            .ok_or(PacnameError::NoPacname(pkgname.to_string()))?
-            .pkgname;
+        let pkgname = if handle.srcinfo.is_child(pkgname) {
+            &handle
+                .srcinfo
+                .packages
+                .iter()
+                .find(|srcinfo| srcinfo.pkgname == pkgname)
+                .ok_or(PacnameError::NoPacname(pkgname.to_string()))?
+                .pkgname
+        } else if handle.srcinfo.is_parent(pkgname) {
+            &handle.srcinfo.pkgbase.pkgbase
+        } else {
+            panic!("Fatal error, could not find `{pkgname}` in children packages or pkgbase");
+        };
 
         for check in [
             Self::check_len,

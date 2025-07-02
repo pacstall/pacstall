@@ -22,12 +22,18 @@ impl Check for Pkgdesc {
     }
 
     fn check(&self, pkgchild: &PackageString, handle: &PackagePkg) -> Result<(), Self::Error> {
-        let pkgdesc = handle
-            .srcinfo
-            .packages
-            .iter()
-            .find(|package| package.pkgname == pkgchild)
-            .map(|pkg| &pkg.pkgdesc);
+        let pkgdesc = if handle.srcinfo.is_child(pkgchild) {
+            handle
+                .srcinfo
+                .packages
+                .iter()
+                .find(|package| package.pkgname == pkgchild)
+                .map(|pkg| &pkg.pkgdesc)
+        } else if handle.srcinfo.is_parent(pkgchild) {
+            Some(&handle.srcinfo.pkgbase.pkgdesc)
+        } else {
+            panic!("pkgdesc not found in either pkgbase or child packages");
+        };
 
         match pkgdesc {
             Some(yay) => {

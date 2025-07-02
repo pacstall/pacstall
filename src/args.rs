@@ -91,23 +91,23 @@ pub enum Commands {
 pub struct PkgArgs {
     /// Enable debug output.
     #[arg(short = 'x', long)]
-    debug: bool,
+    pub debug: bool,
 
     /// Disable prompts.
     #[arg(short = 'P', long)]
-    disable_prompts: bool,
+    pub disable_prompts: bool,
 
     /// Keep the build files after building.
     #[arg(short = 'K', long)]
-    keep: bool,
+    pub keep: bool,
 
     /// Skip the `check()` function if present.
     #[arg(short = 'N', long)]
-    nocheck: bool,
+    pub nocheck: bool,
 
     /// Download package entries quietly.
     #[arg(short = 'Q', long)]
-    quiet: bool,
+    pub quiet: bool,
 }
 
 /// Repository manipulation commands.

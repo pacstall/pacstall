@@ -1,6 +1,6 @@
 use std::time::{Duration, Instant};
 
-use crate::cmds::build_pkg::PackagePkg;
+use crate::{args::PkgArgs, cmds::build_pkg::PackagePkg};
 use libpacstall::pkg::keys::PackageString;
 use spinoff::{Color, Spinner, spinners};
 use thiserror::Error;
@@ -49,6 +49,11 @@ pub trait Check {
     type Error: Into<CheckError>;
 
     /// Check a particular key of a pacscript.
+    ///
+    /// Note that the implementor should check to determine if the package passed in is the sole
+    /// package or a child package.
+    ///
+    /// See [`libpacstall::srcinfo::SrcInfo::is_child`] and [`libpacstall::srcinfo::SrcInfo::is_parent`].
     fn check(&self, pkgchild: &PackageString, handle: &PackagePkg) -> Result<(), Self::Error>;
 
     /// Name of lint.
@@ -76,8 +81,17 @@ impl Default for Checks {
 impl Checks {
     /// Run checks for pacstall.
     // Yes this is a little fancy but I like it.
-    pub fn run(&self, pkgchild: &PackageString, handle: &PackagePkg) -> Result<(), CheckError> {
-        let mut spinner = Spinner::new(spinners::Aesthetic, "Linting pacscript...", Color::Magenta);
+    pub fn run(
+        &self,
+        pkgchild: &PackageString,
+        handle: &PackagePkg,
+        args: &PkgArgs,
+    ) -> Result<(), CheckError> {
+        let mut spinner = Spinner::new(
+            spinners::Aesthetic,
+            format!("Linting `{pkgchild}`..."),
+            Color::Magenta,
+        );
         let mut timings: Vec<(&str, Duration)> = vec![];
 
         for check in &self.checks {
@@ -85,7 +99,7 @@ impl Checks {
             let instant = Instant::now();
             // The magic happens here.
             match check.check(pkgchild, handle) {
-                Ok(_) => {}
+                Ok(()) => {}
                 Err(e) => {
                     spinner.fail(&format!("Failed linting on `{}`", check.name()));
                     return Err(e);
@@ -95,7 +109,7 @@ impl Checks {
         }
 
         spinner.success(&format!(
-            "All lints passed in {}ms!",
+            "All lints for `{pkgchild}` passed in {}ms!",
             timings
                 .iter()
                 .map(|(_, time)| time)

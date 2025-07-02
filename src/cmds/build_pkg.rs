@@ -61,15 +61,17 @@ impl PackagePkg {
                         .get_env_str("pkgbase")
                         .unwrap_or(
                             reference
-                                .get_env_var("pkgname")
-                                .expect("NO PKGNAME")
-                                .value()
-                                .to_cow_str(&reference),
+                                .get_env_str("pkgname")
+                                .unwrap_or(Cow::Borrowed("")),
                         )
+                        .into(),
+                    pkgdesc: reference
+                        .get_env_str("pkgdesc")
+                        .unwrap_or(Cow::Borrowed(""))
                         .to_string(),
                     pkgver: reference
                         .get_env_str("pkgver")
-                        .expect("NO PKGVER")
+                        .unwrap_or(Cow::Borrowed(""))
                         .to_string(),
                     pkgrel: reference
                         .get_env_str("pkgrel")
@@ -401,7 +403,12 @@ impl PackagePkg {
     /// Errors if any part of the build fails, else return the paths to the debs.
     pub async fn build(&mut self, args: PkgArgs) -> Result<Vec<PathBuf>, BuildError> {
         let pkg = if self.srcinfo.len() > 1 {
-            unimplemented!("Pkgchildren");
+            self.srcinfo
+                .packages
+                .iter()
+                .map(|package| package.pkgname.clone())
+                .chain(std::iter::once(self.srcinfo.pkgbase.pkgbase.clone()))
+                .collect::<Vec<_>>()
         } else {
             vec![self.srcinfo.packages[0].pkgname.clone()]
         };
@@ -415,14 +422,7 @@ impl PackagePkg {
         args: PkgArgs,
     ) -> Result<Vec<PathBuf>, BuildError> {
         for pkg in pkgs {
-            if self.handle.shell.get_env_str("external_connection") == Some(Cow::Borrowed("true")) {
-                fancy_message!(
-                    Warn,
-                    "This package will connect to the internet during its build process."
-                );
-            }
-
-            Checks::default().run(pkg, self)?;
+            Checks::default().run(pkg, self, &args)?;
         }
 
         Ok(vec![PathBuf::default()])
