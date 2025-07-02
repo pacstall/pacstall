@@ -7,6 +7,7 @@ use thiserror::Error;
 
 use super::{
     gives::{Gives, GivesError},
+    hash::{Hash, HashError},
     pacname::{Pacname, PacnameError},
 };
 
@@ -59,7 +60,11 @@ pub struct Checks {
 impl Default for Checks {
     fn default() -> Self {
         Self {
-            checks: vec![Box::new(ErasedCheck(Pacname)), Box::new(ErasedCheck(Gives))],
+            checks: vec![
+                Box::new(ErasedCheck(Pacname)),
+                Box::new(ErasedCheck(Gives)),
+                Box::new(ErasedCheck(Hash)),
+            ],
         }
     }
 }
@@ -74,6 +79,7 @@ impl Checks {
         for check in &self.checks {
             spinner.update_text(format!("Checking `{}`", check.name()));
             let instant = Instant::now();
+            // The magic happens here.
             match check.check(pkgchild, handle) {
                 Ok(_) => {}
                 Err(e) => {
@@ -111,7 +117,8 @@ impl Checks {
 pub enum CheckError {
     #[error(transparent)]
     Pacname(#[from] PacnameError),
-
     #[error(transparent)]
     Gives(#[from] GivesError),
+    #[error(transparent)]
+    Hash(#[from] HashError),
 }

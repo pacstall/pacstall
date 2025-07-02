@@ -6,14 +6,15 @@ authors = ["Elsie19 <hwengerstickel@protonmail.com>"]
 
 [dependencies]
 anyhow = "1.0.98"
-# TODO: Change this once it merges.
-brush-core = { version = "0.3.1", git = "https://github.com/reubeno/brush.git", branch = "openfiles-api" }
+brush-core = { version = "0.3.1", git = "https://github.com/reubeno/brush.git" }
 clap = { version = "4.5.37", features = ["cargo", "derive", "string"] }
 cli-prompts = "0.1.0"
 colored = "3.0.0"
 libpacstall = { path = "../Projects/libpacstall" }
 reqwest = { version = "0.12.15", features = ["blocking"] }
-spinoff = "0.8.0"
+spinoff = { version = "0.8.0", default-features = false, features = [
+    "aesthetic",
+] }
 strum = { version = "0.27.1", features = ["strum_macros"] }
 thiserror = "2.0.12"
 tokio = "1.45.1"

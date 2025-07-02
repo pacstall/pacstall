@@ -282,12 +282,13 @@ impl PackagePkg {
 
         let mut params = shell.default_exec_params();
 
+        // Silence output.
         params
             .open_files
             .set(brush_core::OpenFiles::STDERR_FD, brush_core::OpenFile::Null);
 
         match shell
-            .invoke_function(func, std::iter::once("foo"), &params)
+            .invoke_function(func, std::iter::empty::<&str>(), &params)
             .await
         {
             Ok(_) => {}

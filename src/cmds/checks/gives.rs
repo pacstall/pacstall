@@ -47,7 +47,7 @@ impl Check for Gives {
             .cloned();
 
         match gives {
-            Some(gives_arches) if gives_arches.len() >= 1 => {
+            Some(gives_arches) if !gives_arches.is_empty() => {
                 // Because gives could have possibly architecture dependent variables that
                 // don't evaluate on another, we should only check the hosts arch.
                 let system = DistroClamp::system().map_err(GivesError::DistroClampError)?;
@@ -67,7 +67,7 @@ impl Check for Gives {
                     }
                 }
             }
-            None | _ => {
+            _ => {
                 // If this is a deb package, we have to have `gives`.
                 fail_if!(pkgchild.split().1 == PackageKind::Deb => GivesError::NoGives(String::from("gives")));
             }

@@ -219,7 +219,7 @@ checksum = "1b8e56985ec62d17e9c1001dc89c88ecd7dc08e47eba5ec7c29c7b5eeecde967"
 [[package]]
 name = "brush-core"
 version = "0.3.2"
-source = "git+https://github.com/reubeno/brush.git?branch=openfiles-api#543de4fef3668ce91d2907ce81ad8846e46e4a73"
+source = "git+https://github.com/reubeno/brush.git#44980e5d5224b37a4a13f99c7caae14fb64117ee"
 dependencies = [
  "async-recursion",
  "async-trait",
@@ -257,7 +257,7 @@ dependencies = [
 [[package]]
 name = "brush-parser"
 version = "0.2.17"
-source = "git+https://github.com/reubeno/brush.git?branch=openfiles-api#543de4fef3668ce91d2907ce81ad8846e46e4a73"
+source = "git+https://github.com/reubeno/brush.git#44980e5d5224b37a4a13f99c7caae14fb64117ee"
 dependencies = [
  "cached",
  "indenter",
@@ -1188,6 +1188,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "078ea7b7c29a2b4df841a7f6ac8775ff6074020c6776d48491ce2268e068f972"
 dependencies = [
  "unic-langid",
+]
+
+[[package]]
+name = "io-uring"
+version = "0.7.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b86e202f00093dcba4275d4636b93ef9dd75d025ae560d2521b45ea28ab49013"
+dependencies = [
+ "bitflags 2.9.1",
+ "cfg-if",
+ "libc",
 ]
 
 [[package]]
@@ -2380,16 +2391,18 @@ dependencies = [
 
 [[package]]
 name = "tokio"
-version = "1.45.1"
+version = "1.46.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "75ef51a33ef1da925cea3e4eb122833cb377c61439ca401b770f54902b806779"
+checksum = "1140bb80481756a8cbe10541f37433b459c5aa1e727b4c020fbfebdc25bf3ec4"
 dependencies = [
  "backtrace",
  "bytes",
+ "io-uring",
  "libc",
  "mio 1.0.4",
  "pin-project-lite",
  "signal-hook-registry",
+ "slab",
  "socket2",
  "tokio-macros",
  "windows-sys 0.52.0",
