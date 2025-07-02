@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use super::checks::Check;
 use crate::{cmds::build_pkg::PackagePkg, fail_if};
 use libpacstall::{
-    pkg::keys::{Arch, DistroClamp, DistroClampError, HashSumType, PackageKind, PackageString},
+    pkg::keys::{Arch, DistroClamp, DistroClampError, PackageKind, PackageString},
     srcinfo::ArchDistro,
 };
 use thiserror::Error;

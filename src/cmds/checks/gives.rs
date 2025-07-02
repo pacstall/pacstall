@@ -1,6 +1,4 @@
-use std::collections::HashSet;
-
-use super::checks::{Check, CheckError};
+use super::checks::Check;
 use crate::{cmds::build_pkg::PackagePkg, fail_if};
 use libpacstall::pkg::keys::{Arch, DistroClamp, DistroClampError, PackageKind, PackageString};
 use thiserror::Error;

@@ -5,3 +5,4 @@ mod deb;
 mod gives;
 mod hash;
 mod pacname;
+mod pkgdesc;

@@ -10,6 +10,7 @@ use super::{
     gives::{Gives, GivesError},
     hash::{Hash, HashError},
     pacname::{Pacname, PacnameError},
+    pkgdesc::{Pkgdesc, PkgdescError},
 };
 
 /// Simple wrapper for if then return error.
@@ -66,6 +67,7 @@ impl Default for Checks {
                 Box::new(ErasedCheck(Gives)),
                 Box::new(ErasedCheck(Hash)),
                 Box::new(ErasedCheck(DebSource)),
+                Box::new(ErasedCheck(Pkgdesc)),
             ],
         }
     }
@@ -132,4 +134,6 @@ pub enum CheckError {
     Hash(#[from] HashError),
     #[error(transparent)]
     DebSource(#[from] DebSourceError),
+    #[error(transparent)]
+    Pkgdesc(#[from] PkgdescError),
 }

@@ -1,10 +1,6 @@
-use std::collections::HashSet;
-
 use super::checks::Check;
-use crate::{cmds::build_pkg::PackagePkg, fail_if};
-use libpacstall::pkg::keys::{
-    Arch, DistroClamp, DistroClampError, HashSumType, PackageKind, PackageString,
-};
+use crate::cmds::build_pkg::PackagePkg;
+use libpacstall::pkg::keys::{HashSumType, PackageString};
 use thiserror::Error;
 
 pub(crate) struct Hash;
