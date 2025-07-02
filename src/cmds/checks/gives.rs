@@ -1,6 +1,6 @@
 use super::checks::Check;
 use crate::{cmds::build_pkg::PackagePkg, fail_if};
-use libpacstall::pkg::keys::{Arch, DistroClamp, DistroClampError, PackageKind, PackageString};
+use libpacstall::pkg::keys::{Arch, DistroClamp, PackageKind, PackageString};
 use thiserror::Error;
 
 pub(crate) struct Gives;
@@ -23,9 +23,6 @@ pub enum GivesError {
         "{pacname}: `{text}` contains characters that are not lowercase, digits, minus, or periods"
     )]
     Alnum { pacname: String, text: String },
-
-    #[error(transparent)]
-    DistroClampError(#[from] DistroClampError),
 }
 
 impl Check for Gives {
@@ -35,7 +32,12 @@ impl Check for Gives {
         "gives"
     }
 
-    fn check(&self, pkgchild: &PackageString, handle: &PackagePkg) -> Result<(), Self::Error> {
+    fn check(
+        &self,
+        pkgchild: &PackageString,
+        handle: &PackagePkg,
+        system: &DistroClamp,
+    ) -> Result<(), Self::Error> {
         let gives = &handle
             .srcinfo
             .packages
@@ -47,7 +49,6 @@ impl Check for Gives {
             Some(gives_arches) if !gives_arches.is_empty() => {
                 // Because gives could have possibly architecture dependent variables that
                 // don't evaluate on another, we should only check the hosts arch.
-                let system = DistroClamp::system().map_err(GivesError::DistroClampError)?;
                 for check in [
                     Self::check_len,
                     Self::check_alphanumeric,

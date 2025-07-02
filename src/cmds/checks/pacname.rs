@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use super::checks::Check;
 use crate::{cmds::build_pkg::PackagePkg, fail_if};
-use libpacstall::pkg::keys::PackageString;
+use libpacstall::pkg::keys::{DistroClamp, PackageString};
 use thiserror::Error;
 
 pub(crate) struct Pacname;
@@ -34,7 +34,7 @@ impl Check for Pacname {
         "pacname"
     }
 
-    fn check(&self, pkgname: &PackageString, handle: &PackagePkg) -> Result<(), Self::Error> {
+    fn check(&self, pkgname: &PackageString, handle: &PackagePkg, _system: &DistroClamp) -> Result<(), Self::Error> {
         let pkgname = if handle.srcinfo.is_child(pkgname) {
             &handle
                 .srcinfo

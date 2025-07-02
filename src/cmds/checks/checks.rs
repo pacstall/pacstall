@@ -1,7 +1,7 @@
 use std::time::{Duration, Instant};
 
 use crate::{args::PkgArgs, cmds::build_pkg::PackagePkg};
-use libpacstall::pkg::keys::PackageString;
+use libpacstall::pkg::keys::{DistroClamp, DistroClampError, PackageString};
 use spinoff::{Color, Spinner, spinners};
 use thiserror::Error;
 
@@ -9,6 +9,7 @@ use super::{
     deb::{DebSource, DebSourceError},
     gives::{Gives, GivesError},
     hash::{Hash, HashError},
+    incompatible::{Incompatible, IncompatibleError},
     pacname::{Pacname, PacnameError},
     pkgdesc::{Pkgdesc, PkgdescError},
 };
@@ -38,8 +39,13 @@ where
         self.0.name()
     }
 
-    fn check(&self, pkgchild: &PackageString, handle: &PackagePkg) -> Result<(), Self::Error> {
-        self.0.check(pkgchild, handle).map_err(Into::into)
+    fn check(
+        &self,
+        pkgchild: &PackageString,
+        handle: &PackagePkg,
+        system: &DistroClamp,
+    ) -> Result<(), Self::Error> {
+        self.0.check(pkgchild, handle, system).map_err(Into::into)
     }
 }
 
@@ -54,7 +60,14 @@ pub trait Check {
     /// package or a child package.
     ///
     /// See [`libpacstall::srcinfo::SrcInfo::is_child`] and [`libpacstall::srcinfo::SrcInfo::is_parent`].
-    fn check(&self, pkgchild: &PackageString, handle: &PackagePkg) -> Result<(), Self::Error>;
+    ///
+    /// Note that `system` is nuanced-enhanced.
+    fn check(
+        &self,
+        pkgchild: &PackageString,
+        handle: &PackagePkg,
+        system: &DistroClamp,
+    ) -> Result<(), Self::Error>;
 
     /// Name of lint.
     fn name(&self) -> &'static str;
@@ -73,6 +86,7 @@ impl Default for Checks {
                 Box::new(ErasedCheck(Hash)),
                 Box::new(ErasedCheck(DebSource)),
                 Box::new(ErasedCheck(Pkgdesc)),
+                Box::new(ErasedCheck(Incompatible)),
             ],
         }
     }
@@ -87,6 +101,8 @@ impl Checks {
         handle: &PackagePkg,
         args: &PkgArgs,
     ) -> Result<(), CheckError> {
+        let system = DistroClamp::system()?;
+
         let mut spinner = Spinner::new(
             spinners::Aesthetic,
             format!("Linting `{pkgchild}`..."),
@@ -98,7 +114,7 @@ impl Checks {
             spinner.update_text(format!("Checking `{}`", check.name()));
             let instant = Instant::now();
             // The magic happens here.
-            match check.check(pkgchild, handle) {
+            match check.check(pkgchild, handle, &system) {
                 Ok(()) => {}
                 Err(e) => {
                     spinner.fail(&format!("Failed linting on `{}`", check.name()));
@@ -150,4 +166,8 @@ pub enum CheckError {
     DebSource(#[from] DebSourceError),
     #[error(transparent)]
     Pkgdesc(#[from] PkgdescError),
+    #[error(transparent)]
+    IncompatibleError(#[from] IncompatibleError),
+    #[error(transparent)]
+    DistroClampError(#[from] DistroClampError),
 }

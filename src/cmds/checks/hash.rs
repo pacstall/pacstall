@@ -1,6 +1,6 @@
 use super::checks::Check;
 use crate::cmds::build_pkg::PackagePkg;
-use libpacstall::pkg::keys::{HashSumType, PackageString};
+use libpacstall::pkg::keys::{DistroClamp, HashSumType, PackageString};
 use thiserror::Error;
 
 pub(crate) struct Hash;
@@ -22,7 +22,7 @@ impl Check for Hash {
         "hash"
     }
 
-    fn check(&self, _pkgchild: &PackageString, handle: &PackagePkg) -> Result<(), Self::Error> {
+    fn check(&self, _pkgchild: &PackageString, handle: &PackagePkg, _system: &DistroClamp) -> Result<(), Self::Error> {
         let types = &handle.srcinfo.pkgbase;
         for (hash_type, list) in [
             (HashSumType::Md5, &types.md5sums),

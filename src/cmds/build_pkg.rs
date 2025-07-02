@@ -10,7 +10,7 @@ use libpacstall::{
 use strum::IntoEnumIterator;
 use thiserror::Error;
 
-use crate::{args::PkgArgs, fancy_message};
+use crate::args::PkgArgs;
 
 use super::checks::checks::{CheckError, Checks};
 

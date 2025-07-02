@@ -1,6 +1,6 @@
 use super::checks::Check;
 use crate::cmds::build_pkg::PackagePkg;
-use libpacstall::pkg::keys::PackageString;
+use libpacstall::pkg::keys::{DistroClamp, PackageString};
 use thiserror::Error;
 
 pub(crate) struct Pkgdesc;
@@ -21,7 +21,7 @@ impl Check for Pkgdesc {
         "pkgdesc"
     }
 
-    fn check(&self, pkgchild: &PackageString, handle: &PackagePkg) -> Result<(), Self::Error> {
+    fn check(&self, pkgchild: &PackageString, handle: &PackagePkg, _system: &DistroClamp) -> Result<(), Self::Error> {
         let pkgdesc = if handle.srcinfo.is_child(pkgchild) {
             handle
                 .srcinfo

@@ -29,13 +29,11 @@ impl Check for DebSource {
         "deb source"
     }
 
-    fn check(&self, pkgchild: &PackageString, handle: &PackagePkg) -> Result<(), Self::Error> {
+    fn check(&self, pkgchild: &PackageString, handle: &PackagePkg, system: &DistroClamp) -> Result<(), Self::Error> {
         // It's not our time yet...
         if pkgchild.split().1 != PackageKind::Deb {
             return Ok(());
         }
-
-        let system = DistroClamp::system().map_err(DebSourceError::DistroClampError)?;
 
         let source = &handle.srcinfo.pkgbase.source;
 
