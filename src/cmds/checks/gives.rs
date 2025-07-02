@@ -86,7 +86,7 @@ impl Gives {
     }
 
     fn check_alphanumeric(gives: &str) -> Result<(), GivesError> {
-        fail_if!(['.', '-', '+'].contains(&gives.chars().next().unwrap()) => GivesError::Alphanumeric {
+        fail_if!(matches!(&gives.chars().next().unwrap(), '.' | '-' | '+') => GivesError::Alphanumeric {
             pacname: String::from("gives"),
             text: gives.to_string()
         });
@@ -106,7 +106,7 @@ impl Gives {
     fn check_alnum(gives: &str) -> Result<(), GivesError> {
         let is_allowed = |c: char| matches!(c, 'a'..='z' | '0'..='9' | '-' | '.');
 
-        fail_if!(!gives.chars().all(is_allowed) => GivesError::Alnum {
+        fail_if!(gives.chars().any(|c| !is_allowed(c)) => GivesError::Alnum {
             pacname: String::from("gives"),
             text: gives.to_string(),
         });
