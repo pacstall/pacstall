@@ -423,6 +423,9 @@ impl PackagePkg {
     ) -> Result<Vec<PathBuf>, BuildError> {
         for pkg in pkgs {
             Checks::default().run(pkg, self, &args)?;
+            // TODO: Masks.
+            //
+            // Arch time.
         }
 
         Ok(vec![PathBuf::default()])

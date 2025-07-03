@@ -50,6 +50,15 @@ where
 }
 
 /// Lints for pacstall.
+// TODO: Lint deps.
+// TODO: Lint custom_fields.
+// TODO: Lint mask.
+// - BUG: Mask does not appear in srcinfo so we need to do that.
+// TODO: Lint bugs.
+// - BUG: Bugs does not appear in srcinfo.
+// TODO: Lint license.
+// TODO: Lint kver.
+// - BUG: kver does not appear in srcinfo.
 pub trait Check {
     /// An error that can be turned into [`CheckError`].
     type Error: Into<CheckError>;
