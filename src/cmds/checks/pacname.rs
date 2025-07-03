@@ -104,3 +104,31 @@ impl Pacname {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    #[should_panic]
+    fn length_too_small() {
+        Pacname::check_len("f").unwrap();
+    }
+
+    #[test]
+    fn lengh_works() {
+        assert!(Pacname::check_len("foobar").is_ok());
+    }
+
+    #[test]
+    #[should_panic]
+    fn has_uppercase() {
+        Pacname::check_lowercase("neofetcH").unwrap();
+    }
+
+    #[test]
+    #[should_panic]
+    fn alnum() {
+        Pacname::check_alnum("foo%bar").unwrap();
+    }
+}
