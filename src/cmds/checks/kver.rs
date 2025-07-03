@@ -39,11 +39,11 @@ impl Check for Kver {
 
 impl Kver {
     fn has_constraint_prefix(s: &str) -> bool {
-        s.starts_with("<=")
+        s.starts_with('<')
+            || s.starts_with('>')
+            || s.starts_with("<=")
             || s.starts_with(">=")
             || s.starts_with('=')
-            || s.starts_with('<')
-            || s.starts_with('>')
     }
 }
 
