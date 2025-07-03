@@ -24,7 +24,7 @@ impl Check for Kver {
         handle: &PackagePkg,
         _system: &DistroClamp,
     ) -> Result<(), Self::Error> {
-        for kver in &handle.srcinfo.pkgbase.kver {
+        if let Some(kver) = &handle.srcinfo.pkgbase.kver {
             if !Self::has_constraint_prefix(kver) {
                 return Err(KverError::Constraint {
                     key: "kver",

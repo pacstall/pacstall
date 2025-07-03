@@ -82,7 +82,10 @@ impl PackagePkg {
                         .unwrap_or(Cow::Borrowed("0"))
                         .parse()?,
                     mask: Self::get_env_var_as_array(&reference, "mask", ToString::to_string),
-                    kver: Self::get_env_var_as_array(&reference, "kver", ToString::to_string),
+                    kver: reference
+                        .get_env_str("kver")
+                        .as_deref()
+                        .map(ToString::to_string),
                     compatible: match reference.get_env_var("compatible") {
                         Some(compatible) => match compatible.value() {
                             ShellValue::String(string) => vec![string.parse()?],
