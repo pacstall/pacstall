@@ -10,6 +10,7 @@ use super::{
     gives::{Gives, GivesError},
     hash::{Hash, HashError},
     incompatible::{Incompatible, IncompatibleError},
+    mask::{Mask, MaskError},
     pacname::{Pacname, PacnameError},
     pkgdesc::{Pkgdesc, PkgdescError},
 };
@@ -96,6 +97,7 @@ impl Default for Checks {
                 Box::new(ErasedCheck(DebSource)),
                 Box::new(ErasedCheck(Pkgdesc)),
                 Box::new(ErasedCheck(Incompatible)),
+                Box::new(ErasedCheck(Mask)),
             ],
         }
     }
@@ -177,6 +179,8 @@ pub enum CheckError {
     Pkgdesc(#[from] PkgdescError),
     #[error(transparent)]
     IncompatibleError(#[from] IncompatibleError),
+    #[error(transparent)]
+    MaskError(#[from] MaskError),
     #[error(transparent)]
     DistroClampError(#[from] DistroClampError),
 }

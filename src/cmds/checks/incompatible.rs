@@ -3,7 +3,6 @@ use std::fmt::Display;
 use super::checks::Check;
 use crate::cmds::build_pkg::PackagePkg;
 use libpacstall::pkg::keys::{DistroClamp, PackageString};
-use strum::additional_attributes;
 use thiserror::Error;
 
 pub(crate) struct Incompatible;
