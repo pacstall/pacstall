@@ -10,6 +10,7 @@ use super::{
     gives::{Gives, GivesError},
     hash::{Hash, HashError},
     incompatible::{Incompatible, IncompatibleError},
+    kver::{Kver, KverError},
     mask::{Mask, MaskError},
     pacname::{Pacname, PacnameError},
     pkgdesc::{Pkgdesc, PkgdescError},
@@ -87,17 +88,27 @@ pub struct Checks {
     checks: Vec<Box<dyn Check<Error = CheckError>>>,
 }
 
-impl Default for Checks {
-    fn default() -> Self {
+/// Check variants.
+impl Checks {
+    pub fn pre_checks() -> Self {
         Self {
             checks: vec![
                 Box::new(ErasedCheck(Pacname)),
+                Box::new(ErasedCheck(Incompatible)),
+                Box::new(ErasedCheck(Mask)),
+                Box::new(ErasedCheck(Kver)),
+                // TODO: Possibly lint arch
+            ],
+        }
+    }
+
+    pub fn checks() -> Self {
+        Self {
+            checks: vec![
                 Box::new(ErasedCheck(Gives)),
                 Box::new(ErasedCheck(Hash)),
                 Box::new(ErasedCheck(DebSource)),
                 Box::new(ErasedCheck(Pkgdesc)),
-                Box::new(ErasedCheck(Incompatible)),
-                Box::new(ErasedCheck(Mask)),
             ],
         }
     }
@@ -110,7 +121,7 @@ impl Checks {
         &self,
         pkgchild: &PackageString,
         handle: &PackagePkg,
-        args: &PkgArgs,
+        _args: &PkgArgs,
     ) -> Result<(), CheckError> {
         let system = DistroClamp::system()?;
 
@@ -181,6 +192,8 @@ pub enum CheckError {
     IncompatibleError(#[from] IncompatibleError),
     #[error(transparent)]
     MaskError(#[from] MaskError),
+    #[error(transparent)]
+    KverError(#[from] KverError),
     #[error(transparent)]
     DistroClampError(#[from] DistroClampError),
 }

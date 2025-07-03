@@ -8,21 +8,21 @@ pub(crate) struct Gives;
 #[derive(Debug, Error)]
 pub enum GivesError {
     #[error("Package does not contain `{0}`")]
-    NoGives(String),
+    NoGives(&'static str),
 
     #[error("{pacname}: `{text}` must be at least two characters long")]
-    TwoChars { pacname: String, text: String },
+    TwoChars { pacname: &'static str, text: String },
 
     #[error("{pacname}: `{text}` must start with an alphanumeric character")]
-    Alphanumeric { pacname: String, text: String },
+    Alphanumeric { pacname: &'static str, text: String },
 
     #[error("{pacname}: `{text}` contains uppercase characters")]
-    Uppercase { pacname: String, text: String },
+    Uppercase { pacname: &'static str, text: String },
 
     #[error(
         "{pacname}: `{text}` contains characters that are not lowercase, digits, minus, or periods"
     )]
-    Alnum { pacname: String, text: String },
+    Alnum { pacname: &'static str, text: String },
 }
 
 impl Check for Gives {
@@ -67,7 +67,7 @@ impl Check for Gives {
             }
             _ => {
                 // If this is a deb package, we have to have `gives`.
-                fail_if!(pkgchild.split().1 == PackageKind::Deb => GivesError::NoGives(String::from("gives")));
+                fail_if!(pkgchild.split().1 == PackageKind::Deb => GivesError::NoGives("gives"));
             }
         }
         Ok(())
@@ -77,7 +77,7 @@ impl Check for Gives {
 impl Gives {
     fn check_len(gives: &str) -> Result<(), GivesError> {
         fail_if!(gives.len() < 2 => GivesError::TwoChars {
-                pacname: String::from("gives"),
+                pacname: "gives",
                 text: gives.to_string(),
         });
 
@@ -86,7 +86,7 @@ impl Gives {
 
     fn check_alphanumeric(gives: &str) -> Result<(), GivesError> {
         fail_if!(gives.starts_with(['.', '-', '+']) => GivesError::Alphanumeric {
-            pacname: String::from("gives"),
+            pacname: "gives",
             text: gives.to_string()
         });
 
@@ -95,7 +95,7 @@ impl Gives {
 
     fn check_lowercase(gives: &str) -> Result<(), GivesError> {
         fail_if!(gives.chars().any(|c| c.is_ascii_uppercase()) => GivesError::Uppercase {
-            pacname: String::from("gives"),
+            pacname: "gives",
             text: gives.to_string(),
         });
 
@@ -106,7 +106,7 @@ impl Gives {
         let is_allowed = |c: char| matches!(c, 'a'..='z' | '0'..='9' | '-' | '.');
 
         fail_if!(gives.chars().any(|c| !is_allowed(c)) => GivesError::Alnum {
-            pacname: String::from("gives"),
+            pacname: "gives",
             text: gives.to_string(),
         });
 

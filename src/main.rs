@@ -23,8 +23,8 @@ async fn main() -> anyhow::Result<()> {
         Commands::List => todo!(),
         Commands::Upgrade => todo!(),
         Commands::Repo(_) => todo!(),
-        Commands::Info { package, key } => todo!(),
-        Commands::Tree { package } => todo!(),
+        Commands::Info { package: _, key: _ } => todo!(),
+        Commands::Tree { package: _ } => todo!(),
         Commands::Build { package, args } => {
             let mut shell = PacstallShell::new("RADIANCE").await?;
 
@@ -45,10 +45,16 @@ async fn main() -> anyhow::Result<()> {
                 println!("{package_entry}");
             }
         }
-        Commands::Remove { package } => todo!(),
-        Commands::Install { package, args } => todo!(),
-        Commands::Download { package } => todo!(),
-        Commands::Mark { package, operation } => todo!(),
+        Commands::Remove { package: _ } => todo!(),
+        Commands::Install {
+            package: _,
+            args: _,
+        } => todo!(),
+        Commands::Download { package: _ } => todo!(),
+        Commands::Mark {
+            package: _,
+            operation: _,
+        } => todo!(),
     }
 
     Ok(())

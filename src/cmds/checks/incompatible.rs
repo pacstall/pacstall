@@ -35,8 +35,8 @@ pub enum IncompatibleError {
     #[error("Key `{clamp}` found in both `{first}` and `{second}`")]
     Duplicate {
         clamp: LeanClamp,
-        first: String,
-        second: String,
+        first: &'static str,
+        second: &'static str,
     },
 }
 
@@ -61,8 +61,8 @@ impl Check for Incompatible {
         if let Some(failed_clamp) = Self::duplicates(incompatible, compatible) {
             return Err(IncompatibleError::Duplicate {
                 clamp: failed_clamp.into(),
-                first: String::from("compatible"),
-                second: String::from("incompatible"),
+                first: "compatible",
+                second: "incompatible",
             });
         }
 

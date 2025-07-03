@@ -219,7 +219,7 @@ checksum = "1b8e56985ec62d17e9c1001dc89c88ecd7dc08e47eba5ec7c29c7b5eeecde967"
 [[package]]
 name = "brush-core"
 version = "0.3.2"
-source = "git+https://github.com/reubeno/brush.git#44980e5d5224b37a4a13f99c7caae14fb64117ee"
+source = "git+https://github.com/reubeno/brush.git#37bcfe64f774fb3d20db84917f19ea48fd6ef641"
 dependencies = [
  "async-recursion",
  "async-trait",
@@ -257,7 +257,7 @@ dependencies = [
 [[package]]
 name = "brush-parser"
 version = "0.2.17"
-source = "git+https://github.com/reubeno/brush.git#44980e5d5224b37a4a13f99c7caae14fb64117ee"
+source = "git+https://github.com/reubeno/brush.git#37bcfe64f774fb3d20db84917f19ea48fd6ef641"
 dependencies = [
  "cached",
  "indenter",

@@ -21,7 +21,12 @@ impl Check for Pkgdesc {
         "pkgdesc"
     }
 
-    fn check(&self, pkgchild: &PackageString, handle: &PackagePkg, _system: &DistroClamp) -> Result<(), Self::Error> {
+    fn check(
+        &self,
+        pkgchild: &PackageString,
+        handle: &PackagePkg,
+        _system: &DistroClamp,
+    ) -> Result<(), Self::Error> {
         let pkgdesc = if handle.srcinfo.is_child(pkgchild) {
             handle
                 .srcinfo

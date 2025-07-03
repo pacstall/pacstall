@@ -7,8 +7,8 @@ pub(crate) struct Mask;
 
 #[derive(Debug, Error)]
 pub enum MaskError {
-    #[error("{key} index {index} cannot be empty")]
-    Empty { key: String, index: usize },
+    #[error("{key}: index `{index}` cannot be empty")]
+    Empty { key: &'static str, index: usize },
 }
 
 impl Check for Mask {
@@ -26,10 +26,7 @@ impl Check for Mask {
     ) -> Result<(), Self::Error> {
         for (index, mask) in handle.srcinfo.pkgbase.mask.iter().enumerate() {
             if mask.is_empty() {
-                return Err(MaskError::Empty {
-                    key: String::from("mask"),
-                    index,
-                });
+                return Err(MaskError::Empty { key: "mask", index });
             }
         }
 

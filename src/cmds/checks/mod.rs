@@ -5,6 +5,7 @@ mod deb;
 mod gives;
 mod hash;
 mod incompatible;
+mod kver;
 mod mask;
 mod pacname;
 mod pkgdesc;

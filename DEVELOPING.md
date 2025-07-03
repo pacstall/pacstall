@@ -204,6 +204,8 @@ In bashstall, the checks are located in `misc/scripts/checks.sh`, and in rust th
 
 Some lints inside checks may not even be needed in ruststall, because parsing is handled elsewhere. To give an example, `incompatible` and `compatible` elements do not need to be checked for improper formatting, because that is done at the `SRCINFO` conversion stage by [DistroClamp](https://docs.rs/libpacstall/latest/libpacstall/pkg/keys/struct.DistroClamp.html).
 
+Also, test your lints!!! Even better is to make your lints into functions that can be tested via rust tests.
+
 ### What needs to happen now?
 
 This is a list of random ideas that we could implement. I don't care what gets done as long as we do some of them:

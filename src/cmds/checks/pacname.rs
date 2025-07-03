@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 use super::checks::Check;
 use crate::{cmds::build_pkg::PackagePkg, fail_if};
 use libpacstall::pkg::keys::{DistroClamp, PackageString};
@@ -13,18 +11,18 @@ pub enum PacnameError {
     NoPacname(String),
 
     #[error("{pacname}: `{text}` must be at least two characters long")]
-    TwoChars { pacname: String, text: String },
+    TwoChars { pacname: &'static str, text: String },
 
     #[error("{pacname}: `{text}` must start with an alphanumeric character")]
-    Alphanumeric { pacname: String, text: String },
+    Alphanumeric { pacname: &'static str, text: String },
 
     #[error("{pacname}: `{text}` contains uppercase characters")]
-    Uppercase { pacname: String, text: String },
+    Uppercase { pacname: &'static str, text: String },
 
     #[error(
         "{pacname}: `{text}` contains characters that are not lowercase, digits, minus, or periods"
     )]
-    Alnum { pacname: String, text: String },
+    Alnum { pacname: &'static str, text: String },
 }
 
 impl Check for Pacname {
@@ -34,7 +32,12 @@ impl Check for Pacname {
         "pacname"
     }
 
-    fn check(&self, pkgname: &PackageString, handle: &PackagePkg, _system: &DistroClamp) -> Result<(), Self::Error> {
+    fn check(
+        &self,
+        pkgname: &PackageString,
+        handle: &PackagePkg,
+        _system: &DistroClamp,
+    ) -> Result<(), Self::Error> {
         let pkgname = if handle.srcinfo.is_child(pkgname) {
             &handle
                 .srcinfo
@@ -65,7 +68,7 @@ impl Check for Pacname {
 impl Pacname {
     fn check_len(pkgname: &str) -> Result<(), PacnameError> {
         fail_if!(pkgname.len() < 2 => PacnameError::TwoChars {
-                pacname: String::from("pacname"),
+                pacname: "pacname",
                 text: pkgname.to_string(),
         });
 
@@ -73,8 +76,8 @@ impl Pacname {
     }
 
     fn check_alphanumeric(pkgname: &str) -> Result<(), PacnameError> {
-        fail_if!(['.', '-', '+'].contains(&pkgname.chars().next().unwrap()) => PacnameError::Alphanumeric {
-            pacname: String::from("pacname"),
+        fail_if!(pkgname.starts_with(['.', '-', '+']) => PacnameError::Alphanumeric {
+            pacname: "pacname",
             text: pkgname.to_string()
         });
 
@@ -82,8 +85,8 @@ impl Pacname {
     }
 
     fn check_lowercase(pkgname: &str) -> Result<(), PacnameError> {
-        fail_if!(pkgname.to_ascii_lowercase() != *pkgname => PacnameError::Uppercase {
-            pacname: String::from("pacname"),
+        fail_if!(pkgname.chars().any(|c| c.is_ascii_uppercase()) => PacnameError::Uppercase {
+            pacname: "pacname",
             text: pkgname.to_string(),
         });
 
@@ -91,10 +94,10 @@ impl Pacname {
     }
 
     fn check_alnum(pkgname: &str) -> Result<(), PacnameError> {
-        let allowed: HashSet<char> = ('a'..='z').chain('0'..='9').chain(['-', '.']).collect();
+        let is_allowed = |c: char| matches!(c, 'a'..='z' | '0'..='9' | '-' | '.');
 
-        fail_if!(!pkgname.chars().all(|c| allowed.contains(&c)) => PacnameError::Alnum {
-            pacname: String::from("pacname"),
+        fail_if!(pkgname.chars().any(|c| !is_allowed(c)) => PacnameError::Alnum {
+            pacname: "pacname",
             text: pkgname.to_string(),
         });
 
