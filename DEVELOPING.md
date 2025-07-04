@@ -42,7 +42,7 @@ The purpose of `package-base.sh` is to be an entry point to normalizing a packag
         - [x] `$VISUAL`
         - [x] `sensible-editor`
 - [ ] Set `$DIR` and `$homedir`[^3]
-    - [ ] Set `$DIR`
+    - [x] Set `$DIR` ([Done](https://github.com/Elsie19/libpacstall/blob/e8b3f4cb6a0378958911a75bdc2cef48a2678ee7/src/sys/vars.rs#L73-L78))
     - [x] Set `$homedir` ([Done](https://github.com/Elsie19/libpacstall/blob/b140fb72726efe44d3edc5d41e37b817012519a1/src/sys/vars.rs#L61))
 - [ ] Move pacscript into tmp directory[^4]
     - [ ] `a+r` permissions
@@ -56,7 +56,7 @@ The purpose of `package-base.sh` is to be an entry point to normalizing a packag
     - [x] Set `$KVER` ([Done](https://github.com/Elsie19/libpacstall/blob/b140fb72726efe44d3edc5d41e37b817012519a1/src/sys/vars.rs#L60))
 - [x] Source pacscript[^6] ([Done](https://github.com/pacstall/pacstall/blob/354a4965b2080a1779796e6236473ce7cee9122f/src/main.rs#L36))
 - [ ] Prompt user for `pkgbase` install[^7]
-- [ ] Run `package_override`[^8] (TODO: Ask Oren what this does, I assume it normalizes some variables)
+- [x] Run `package_override`[^8] (Oren says this is supposed to set variables inside `package_{}`) ([Parsing done](https://github.com/pacstall/pacstall/blob/7fca74659caf9b61e991fada14b6c8ac64b6e660/src/cmds/build_pkg.rs#L278-L312) and [functionality done](https://github.com/pacstall/pacstall/blob/7fca74659caf9b61e991fada14b6c8ac64b6e660/src/cmds/build_pkg.rs#L177-L196) inside initial parsing step)
 - [ ] Entry point into packaging[^9]
 
 #### `package.sh`
@@ -95,7 +95,7 @@ The purpose of `package-base.sh` is to be an entry point to normalizing a packag
     - [ ] Handle `$breaks`[^29]
 - [x] ~~Handle `$ppa`~~[^30] (Defunct, breaking version as well)
 - [ ] Handle `$pacdeps`[^31] (TODO: Talk to Oren about adding `:pacdep` to packages in other arrays)
-- [ ] Do whatever tf this section does[^32] (TODO: Ask Oren what this is)
+- [ ] Match source download endings and add to makedeps[^32] (Oren reports that this gathers extraction types for pacscripts and adds them to makedeps (like unzip))
 - [ ] Install builddepends[^33]
     - [Function here](https://github.com/pacstall/pacstall/blob/87ffd2b546785af0acc8441bc12ada338312fab8/misc/scripts/fetch-sources.sh#L722).
 - [ ] `prompt_depends`[^34]
