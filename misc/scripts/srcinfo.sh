@@ -146,7 +146,7 @@ function srcinfo.vars() {
     eval "multivalued_arch_attrs=(${vars} ${_sums}sums ${_vars}_${_distros} ${_sums}sums_${_distros})"
     multilist=("${multivalued_arch_attrs[@]}")
     mapfile -t -O "${#multilist[@]}" multilist < <(
-        for i in {amd64,x86_64,arm64,aarch64,armel,arm,armhf,armv7h,i386,i686,mips64el,ppc64el,riscv64,s390x}; do
+        for i in {amd64,x86_64,arm64,aarch64,armel,arm,armhf,armv7h,i386,i686,ppc64el,riscv64,s390x}; do
             printf "%s_${i}\n" "${multivalued_arch_attrs[@]}"
         done
     )
@@ -163,7 +163,6 @@ function srcinfo.write_global() {
         ["armel"]="arm"
         ["armhf"]="armv7h"
         ["i386"]="i686"
-        ["mips64el"]="mips64el"
         ["ppc64el"]="ppc64el"
         ["riscv64"]="riscv64"
         ["s390x"]="s390x"
@@ -174,7 +173,6 @@ function srcinfo.write_global() {
         ["arm"]="armel"
         ["armv7h"]="armhf"
         ["i686"]="i386"
-        ["mips64el"]="mips64el"
         ["ppc64el"]="ppc64el"
         ["riscv64"]="riscv64"
         ["s390x"]="s390x"
