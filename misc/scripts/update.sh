@@ -54,6 +54,10 @@ pacstall_deps=(
     "jq" "distro-info-data" "spdx-licenses" "gettext"
 )
 
+if [[ -f '/etc/apparmor.d/curl' ]]; then
+    pacstall_deps+=("apparmor-utils")
+fi
+
 echo -e "[${BGreen}+${NC}] INFO: Updating..."
 
 if [[ -n $GIT_USER ]]; then
@@ -65,6 +69,10 @@ else
         suggested_solution $"Confirm that '%b' is valid" "${UCyan}${REPO}/pacstall${NC}"
         exit 1
     fi
+fi
+
+if [[ -f '/etc/apparmor.d/curl' ]]; then
+    sudo aa-disable curl > /dev/null
 fi
 
 fancy_message sub $"Fetching translation list"

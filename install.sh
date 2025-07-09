@@ -100,6 +100,10 @@ case "$reply" in
         ;;
 esac
 
+if [[ -f '/etc/apparmor.d/curl' ]]; then
+    pacstall_deps+=("apparmor-utils")
+fi
+
 for pkg in "${pacstall_deps[@]}"; do
     if ! dpkg -s "${pkg}" > /dev/null 2>&1; then
         if [[ ${pkg} == "spdx-licenses" ]]; then
@@ -117,6 +121,10 @@ if ((${#to_install[@]} != 0)); then
     else
         apt-get install -y "${to_install[@]}"
     fi
+fi
+
+if [[ -f '/etc/apparmor.d/curl' ]]; then
+    sudo aa-disable curl > /dev/null
 fi
 
 METADIR="/var/lib/pacstall/metadata"
