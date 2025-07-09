@@ -83,7 +83,7 @@ for pkg in "${pacstall_deps[@]}"; do
     if ! dpkg -s "${pkg}" > /dev/null 2>&1; then
         if [[ ${pkg} == "spdx-licenses" ]]; then
             if [[ -z $(apt-cache search --names-only "^${pkg}$") ]]; then
-                sudo curl -s "https://ftp.debian.org/debian/pool/main/s/${pkg}/${pkg}_3.21-1_all.deb" -o "${PACTMP}/${pkg}.deb" && \
+                sudo wget -q -O "/tmp/${pkg}.deb" "https://ftp.debian.org/debian/pool/main/s/${pkg}/${pkg}_3.21-1_all.deb" && \
                     sudo apt install "${PACTMP}/${pkg}.deb" -y && sudo rm -f "${PACTMP}/${pkg}.deb" && continue
             fi
         fi
@@ -113,20 +113,20 @@ pacstall_scripts=(
     "bwrap" "srcinfo" "manage-repo"
 )
 for script in "${pacstall_scripts[@]}"; do
-    sudo curl -s -o "$SCRIPTDIR/scripts/${script}.sh" "${REPO}/misc/scripts/${script}.sh" &
+    sudo wget -q -O "$SCRIPTDIR/scripts/${script}.sh" "${REPO}/misc/scripts/${script}.sh" &
 done
 for lang in "${linguas[@]}"; do
-    sudo curl -s -o "${PODIR}/${lang}.po" "${REPO}/misc/po/${lang}.po" &
+    sudo wget -q -O "${PODIR}/${lang}.po" "${REPO}/misc/po/${lang}.po" &
 done
 # Remove renamed files
 for i in {error_log,download,download-local,install-local,build-local}.sh; do
     sudo rm -f "${SCRIPTDIR:?}/scripts/$i"
 done
-sudo curl -s -o "/usr/bin/pacstall" "${REPO}/pacstall" &
-sudo curl -s -o "${MAN8DIR}/pacstall.8" "${REPO}/misc/man/pacstall.8" &
-sudo curl -s -o "${MAN5DIR}/pacstall.5" "${REPO}/misc/man/pacstall.5" &
-sudo curl -s -o "${BASH_COMPLETION_DIR}/pacstall" "${REPO}/misc/completion/bash" &
-sudo curl -s -o "${FISH_COMPLETION_DIR}/pacstall.fish" "${REPO}/misc/completion/fish" &
+sudo wget -q -O "/usr/bin/pacstall" "${REPO}/pacstall" &
+sudo wget -q -O "${MAN8DIR}/pacstall.8" "${REPO}/misc/man/pacstall.8" &
+sudo wget -q -O "${MAN5DIR}/pacstall.5" "${REPO}/misc/man/pacstall.5" &
+sudo wget -q -O "${BASH_COMPLETION_DIR}/pacstall" "${REPO}/misc/completion/bash" &
+sudo wget -q -O "${FISH_COMPLETION_DIR}/pacstall.fish" "${REPO}/misc/completion/fish" &
 wait && stty "${tty_settings}"
 
 fancy_message sub $"Rebuilding translations"
