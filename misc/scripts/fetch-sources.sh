@@ -836,11 +836,26 @@ function compare_remote_version() {
         *"github.com"*)
             remoterepo="${_remoterepo/'github.com'/'raw.githubusercontent.com'}/${_remotebranch}" ;;
         *"gitlab.com"*)
-            remoterepo="${_remoterepo}/-/raw/${_remotebranch}" ;;
+            if [[ ${_remoterepo} != *"/-/raw/"* ]]; then
+                remoterepo="${_remoterepo}/-/raw/${_remotebranch}"
+            else
+                remoterepo="${_remoterepo}"
+            fi
+        ;;
         *"git.sr.ht"*)
-            remoterepo="${_remoterepo}/blob/${_remotebranch}" ;;
+            if [[ ${_remoterepo} != *"/blob/"* ]]; then
+                remoterepo="${_remoterepo}/blob/${_remotebranch}"
+            else
+                remoterepo="${_remoterepo}"
+            fi
+        ;;
         *"codeberg"*)
-            remoterepo="${_remoterepo}/raw/branch/${_remotebranch}" ;;
+            if [[ ${_remoterepo} != *"/raw/branch/"* ]]; then
+                remoterepo="${_remoterepo}/raw/branch/${_remotebranch}"
+            else
+                remoterepo="${_remoterepo}"
+            fi
+        ;;
         *)
             remoterepo="${_remoterepo}" ;;
     esac
