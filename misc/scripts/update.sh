@@ -48,10 +48,19 @@ if ! $(cd "${PACTMP}" 2> /dev/null); then
     exit 1
 fi
 
+if ! command -v curl &> /dev/null; then
+    apt-get install -y -qq curl iputils-ping
+fi
+
+if ! command -v wget &> /dev/null; then
+    apt-get install -y -qq wget ca-certificates
+fi
+
 pacstall_deps=(
     "sudo" "wget" "build-essential" "unzip" "git"
     "zstd" "iputils-ping" "aptitude" "bubblewrap"
     "jq" "distro-info-data" "spdx-licenses" "gettext"
+    "curl" "iputils-ping" "ca-certificates"
 )
 
 echo -e "[${BGreen}+${NC}] INFO: Updating..."

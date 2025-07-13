@@ -72,6 +72,10 @@ if ! command -v curl &> /dev/null; then
     apt-get install -y -qq curl iputils-ping
 fi
 
+if ! command -v wget &> /dev/null; then
+    apt-get install -y -qq wget ca-certificates
+fi
+
 echo -e "${PACYELLOW}┌────────────────────────┐\n│   ${PACCYAN}Pacstall Installer${PACYELLOW}   │\n└────────────────────────┘${NC}"
 
 echo
@@ -90,6 +94,7 @@ pacstall_deps=(
     "sudo" "wget" "build-essential" "unzip" "git"
     "zstd" "iputils-ping" "aptitude" "bubblewrap"
     "jq" "distro-info-data" "spdx-licenses" "gettext"
+    "curl" "iputils-ping" "ca-certificates"
 )
 echo -ne "Do you want to install axel (faster downloads)? [${BGreen}Y${NC}/${RED}n${NC}] "
 read -r reply <&0
