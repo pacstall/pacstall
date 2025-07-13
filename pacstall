@@ -23,9 +23,9 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 # Pacstall version
-version_number="6.3.3"
-version_name="Highlighter"
-declare -A version_color=([r]="255" [g]="252" [b]="8")
+version_number="6.3.4"
+version_name="Icterine"
+declare -A version_color=([r]="252" [g]="247" [b]="94")
 
 # Configuration
 export METADIR="/var/lib/pacstall/metadata"
