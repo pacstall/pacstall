@@ -415,7 +415,7 @@ function lint_fields() {
             elif [[ ${tlogvar} != "${tlogvar^}" ]] || ! lint_capital_check "${tlogvar}"; then
                 fancy_message error $"'%s' custom field must capitalize only the first letter of each word in field name" "${tlogvar}"
                 ret=1
-            elif [[ ${tlogvar: -1} == '-' || ${tlogvar:1} == '-' ]]; then
+            elif [[ ${tlogvar} =~ ^-|-$ ]]; then
                 fancy_message error $"'%s' custom field cannot start or end with a hyphen" "${tlogvar}"
                 ret=1
             fi
