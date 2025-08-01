@@ -405,7 +405,7 @@ function lint_field_fmt() {
     elif ! lint_capital_check "${infield}"; then
         return 4
     # Ensure last or first letter isn't a hyphen
-    elif [[ ${infield: -1} != '-' || ${infield:1} != '-' ]]; then
+    elif [[ ${infield: -1} == '-' || ${infield:1} == '-' ]]; then
         return 5
     else
         return 0
