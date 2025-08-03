@@ -23,9 +23,9 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 # Pacstall version
-version_number="6.3.4"
-version_name="Icterine"
-declare -A version_color=([r]="252" [g]="247" [b]="94")
+version_number="6.3.5"
+version_name="Divorce"
+declare -A version_color=([r]="247" [g]="255" [b]="111")
 
 # Configuration
 export METADIR="/var/lib/pacstall/metadata"
