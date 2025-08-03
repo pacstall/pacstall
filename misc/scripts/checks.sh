@@ -389,29 +389,6 @@ function lint_capital_check() {
     done
 }
 
-function lint_field_fmt() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local infield="${1}"
-    # Ensure no spaces
-    if [[ ${infield} =~ [[:space:]] ]]; then
-        { ignore_stack=true; return 1; }
-    # Ensure no numbers
-    elif [[ ${infield} =~ [0-9] ]]; then
-        return 2
-    # Ensure first letter is Capital
-    elif [[ ${infield} != "${infield^}" ]]; then
-        return 3
-    # Ensure hyphenated field names are capitalized only on the first letter of each word
-    elif ! lint_capital_check "${infield}"; then
-        return 4
-    # Ensure last or first letter isn't a hyphen
-    elif [[ ${infield: -1} != '-' || ${infield:1} != '-' ]]; then
-        return 5
-    else
-        return 0
-    fi
-}
-
 function lint_fields() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # shellcheck disable=SC2034
@@ -429,26 +406,18 @@ function lint_fields() {
             if array.contains deblog_used "${tlogvar}"; then
                 fancy_message error $"'%s' is already used as a field in pacstall" "${tlogvar}"
                 ret=1
-            else
-                lint_field_fmt "${tlogvar}"
-                case "$?" in
-                    1)
-                        fancy_message error $"'%s' custom field cannot contain a space in field name" "${tlogvar}"
-                        ret=1
-                        ;;
-                    2)
-                        fancy_message error $"'%s' custom field cannot contain a number in field name" "${tlogvar}"
-                        ret=1
-                        ;;
-                    3 | 4)
-                        fancy_message error $"'%s' custom field must capitalize only the first letter of each word in field name" "${tlogvar}"
-                        ret=1
-                        ;;
-                    5)
-                        fancy_message error $"'%s' custom field cannot start or end with a hyphen" "${tlogvar}"
-                        ret=1
-                        ;;
-                esac
+            elif [[ ${tlogvar} =~ [[:space:]] ]]; then
+                fancy_message error $"'%s' custom field cannot contain a space in field name" "${tlogvar}"
+                ret=1
+            elif [[ ${tlogvar} =~ [0-9] ]]; then
+                fancy_message error $"'%s' custom field cannot contain a number in field name" "${tlogvar}"
+                ret=1
+            elif [[ ${tlogvar} != "${tlogvar^}" ]] || ! lint_capital_check "${tlogvar}"; then
+                fancy_message error $"'%s' custom field must capitalize only the first letter of each word in field name" "${tlogvar}"
+                ret=1
+            elif [[ ${tlogvar} =~ ^-|-$ ]]; then
+                fancy_message error $"'%s' custom field cannot start or end with a hyphen" "${tlogvar}"
+                ret=1
             fi
             { ignore_stack=true; ((idx++)); }
         done
