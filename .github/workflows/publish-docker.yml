@@ -165,7 +165,7 @@ jobs:
           echo "REGISTRY_IMAGE=${{ env.REGISTRY }}/${{ github.repository_owner }}/${distro_tag}" >> $GITHUB_ENV
 
       - name: Download digests
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           path: /tmp/digests
           pattern: digests-${{ env.DISTRO_TAG }}*
