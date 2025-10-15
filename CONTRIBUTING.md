@@ -124,7 +124,7 @@ footer
 
 * `main`: Changes to the main file ( `pacstall` ).
 * `installer`: Changes to the installer ( `install.sh` ).
-* `completion`: Changes to the completion files ( `misc/completion `).
+* `completion`: Changes to the completion files ( `misc/completion`).
 * `scripts`: Changes to the scripts ( `misc/scripts` ).
 * `github`: Changes to GitHub specific files ( `.github` etc ).
 * Your own scope if you feel your changes don't fall under the aforementioned scopes.
