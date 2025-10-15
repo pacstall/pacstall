@@ -23,9 +23,9 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 # Pacstall version
-version_number="6.3.5"
-version_name="Divorce"
-declare -A version_color=([r]="247" [g]="255" [b]="111")
+version_number="6.3.6"
+version_name="Banana"
+declare -A version_color=([r]="249" [g]="255" [b]="153")
 
 # Configuration
 export METADIR="/var/lib/pacstall/metadata"
