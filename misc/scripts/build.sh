@@ -567,7 +567,7 @@ function makedeb() {
                 'declare -g NCPU="${PACSTALL_BUILD_CORES:-1}"' 'else' 'declare -g NCPU="$(nproc)"' 'fi'
             )
             echo '#!/bin/bash' | sudo tee "$STAGEDIR/$pacname/DEBIAN/$deb_post_file" > /dev/null
-            for pacmf_out in "${pac_min_functions[@]}"; do
+            for pacmf_out in "${pac_min_functions[@]}" "export STAGEDIR=${STAGEDIR}"; do
                 echo "${pacmf_out}" | sudo tee -a "$STAGEDIR/$pacname/DEBIAN/$deb_post_file" > /dev/null
             done
             {
