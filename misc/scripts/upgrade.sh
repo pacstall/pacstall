@@ -69,10 +69,10 @@ function calc_repo_ver() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local compare_repo="$1" compare_package="$2" compare_tmp compare_safe compare_pkgver compare_pkgrel compare_epoch compare_source comp compare_base
     unset comp_repo_ver
-    compare_tmp="$(sudo mktemp -p "${PACDIR}" "calc-repo-ver-$compare_package.XXXXXX")"
+    compare_tmp="$(mktemp -p "${PACDIR}" "calc-repo-ver-$compare_package.XXXXXX")"
     compare_safe="${compare_tmp}"
-    curl -fsSL "$compare_repo/packages/$compare_package/.SRCINFO" | sudo tee "${compare_safe}" > /dev/null || { ignore_stack=true; return 1; }
-    sudo chown "${PACSTALL_USER}" "${compare_safe}"
+    curl -fsSL "$compare_repo/packages/$compare_package/.SRCINFO" | tee "${compare_safe}" > /dev/null || { ignore_stack=true; return 1; }
+    chown "${PACSTALL_USER}" "${compare_safe}"
     srcinfo.parse "${compare_safe}" "${compare_package}"
     srcinfo.match_pkg "compare_base" "${compare_package}" "pkgbase"
     for comp in "pkgver" "pkgrel" "epoch"; do
@@ -87,7 +87,7 @@ function calc_repo_ver() {
         comp_repo_ver="${compare_epoch:+$compare_epoch:}${compare_pkgver}-pacstall${compare_pkgrel:-1}"
     fi
     srcinfo.cleanup "${compare_package}"
-    sudo rm -rf "${compare_safe:?}"
+    rm -rf "${compare_safe:?}"
 }
 
 export UPGRADE="yes"
@@ -145,8 +145,8 @@ N="$(nproc)"
 
             if [[ -z "${_remoterepo}" ]]; then
                 _remoterepo="orphan"
-                sudo sed -i '/_remotebranch=/d' "$METADIR/$i"
-                echo '_remoterepo="orphan"' | sudo tee -a "$METADIR/$i" > /dev/null
+                sed -i '/_remotebranch=/d' "$METADIR/$i"
+                echo '_remoterepo="orphan"' | tee -a "$METADIR/$i" > /dev/null
             fi
             case "${_remoterepo}" in
                 *"github.com"*)
@@ -194,8 +194,8 @@ N="$(nproc)"
                 fi
                 if [[ ${remoterepo} != "orphan" ]]; then
                     fancy_message warn $"Package %b is not on %b anymore" "${GREEN}${i}${NC}" "${CYAN}${parsedrepo}${NC}"
-                    sudo sed -i 's/_remoterepo=".*"/_remoterepo="orphan"/g' "$METADIR/$i"
-                    sudo sed -i '/_remotebranch=/d' "$METADIR/$i"
+                    sed -i 's/_remoterepo=".*"/_remoterepo="orphan"/g' "$METADIR/$i"
+                    sed -i '/_remotebranch=/d' "$METADIR/$i"
                 fi
                 unset parsedrepo
             fi

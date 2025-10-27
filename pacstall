@@ -193,6 +193,13 @@ function fancy_message() {
     esac
 }
 
+function need_sudo() {
+    if [ "$(id -u)" -ne 0 ]; then
+        fancy_message error $"You cannot perform this operation unless you are root" >&2
+        exit 1
+    fi
+}
+
 function decl_scriptvars() {
     local _distros _vars _archs _sums distros \
         vars="source depends makedepends optdepends pacdeps checkdepends provides conflicts breaks replaces enhances recommends suggests makeconflicts checkconflicts" \
@@ -229,35 +236,35 @@ decl_scriptvars
 
 function cleanup() {
     if [[ -n ${PACDIR} ]]; then
-        sudo rm -f "${PACDIR}-srcinfo-access-"*
+        rm -f "${PACDIR}-srcinfo-access-"*
         if [[ -n ${KEEP} && -n ${pacname} ]]; then
-            sudo rm -rf "${PACDIR}-keep/${pacname}"
+            rm -rf "${PACDIR}-keep/${pacname}"
             mkdir -p "${PACDIR}-keep/${pacname}"
             #shellcheck disable=SC2153
-            sudo mv "${PACDIR}/${PACKAGE}.pacscript" "${PACDIR}-keep/${pacname}"
-            sudo mv "${PACDIR}/${PACKAGE}.SRCINFO" "${PACDIR}-keep/${pacname}/.SRCINFO"
-            sudo mv "${PACDIR}/${pacname}~${pkgver}" "${PACDIR}-keep/${pacname}"
+            mv "${PACDIR}/${PACKAGE}.pacscript" "${PACDIR}-keep/${pacname}"
+            mv "${PACDIR}/${PACKAGE}.SRCINFO" "${PACDIR}-keep/${pacname}/.SRCINFO"
+            mv "${PACDIR}/${pacname}~${pkgver}" "${PACDIR}-keep/${pacname}"
         fi
         if [[ -n ${pacname} ]]; then
             if [[ -f "${PACDIR}-pacdeps-${pacname}" ]]; then
-                sudo rm -rf "${PACDIR}-pacdeps-${pacname}"
+                rm -rf "${PACDIR}-pacdeps-${pacname}"
             else
-                sudo rm -rf "${PACDIR}/"*
+                rm -rf "${PACDIR}/"*
             fi
-            sudo rm -rf "${STAGEDIR:-/usr/src/pacstall}/${pacname}"
+            rm -rf "${STAGEDIR:-/usr/src/pacstall}/${pacname}"
             for i in "deps" "gives" "missing-deps" "not-satisfied-deps" "suggested-optdeps" "missing-optdeps" "not-satisfied-optdeps" "already-installed-optdeps" "selectopts-optdeps" "needed-builddepends" "missing-builddepends" "unsatisfied-builddepends" "needed-checkdepends" "missing-checkdepends" "unsatisfied-checkdepends"; do
                 if [[ -f "${PACDIR}-${i}-${pacname}" ]]; then
-                    sudo rm -rf "${PACDIR}-${i}-${pacname}"
+                    rm -rf "${PACDIR}-${i}-${pacname}"
                 fi
             done
         fi
-        [[ -n ${pkgbase} ]] && sudo rm -rf "${PACDIR}-selectopts-pkgbase-${pkgbase}" "${PACDIR}-no-download-${pkgbase}"
+        [[ -n ${pkgbase} ]] && rm -rf "${PACDIR}-selectopts-pkgbase-${pkgbase}" "${PACDIR}-no-download-${pkgbase}"
         # shellcheck disable=SC2153
-        [[ -n ${STAGEDIR} && -n ${PACKAGE} ]] && sudo rm -rf "${STAGEDIR}/${pacname:-$PACKAGE}"
-        [[ -n ${pacfile} ]] && sudo rm -f "${pacfile}"
-        [[ -n ${srcinfile} ]] && sudo rm -f "${srcinfile}"
-        [[ -n ${bwrapenv} ]] && sudo rm -f "${bwrapenv}"
-        [[ -n ${safeenv} ]] && sudo rm -f "${safeenv}"
+        [[ -n ${STAGEDIR} && -n ${PACKAGE} ]] && rm -rf "${STAGEDIR}/${pacname:-$PACKAGE}"
+        [[ -n ${pacfile} ]] && rm -f "${pacfile}"
+        [[ -n ${srcinfile} ]] && rm -f "${srcinfile}"
+        [[ -n ${bwrapenv} ]] && rm -f "${bwrapenv}"
+        [[ -n ${safeenv} ]] && rm -f "${safeenv}"
     fi
     local compg
     mapfile -t compg < <(compgen -v "srcinfo_")
@@ -453,7 +460,7 @@ function download() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local src="$1" out="${2:-${src##*/}}"
     if [[ $PACSTALL_DOWNLOADER != "payload" ]]; then
-        sudo rm -f "${out:?}"
+        rm -f "${out:?}"
     fi
     if [[ -z $PACSTALL_DOWNLOADER || -f "${PACDIR}-pacdeps-$PACKAGE" ]]; then
         if has_command axel; then
@@ -876,6 +883,7 @@ Helpful links:
                 exit 1
             fi
 
+            need_sudo
             function trap_ctrlc() {
                 fancy_message warn $"The installation of %s was interrupted, removing files" "${PACKAGE:-package}"
                 rm -rf "${PACDIR:?}"/* # :? makes bash error out in case PACDIR is empty, saving us from yoinking /* directory by mistake
@@ -959,8 +967,8 @@ Helpful links:
 
                     # Make the directory if not exist
                     if [[ ! -e "$SCRIPTDIR/repo/" ]]; then
-                        sudo mkdir -p "$SCRIPTDIR/repo"
-                        sudo touch "$SCRIPTDIR/repo/pacstallrepo"
+                        mkdir -p "$SCRIPTDIR/repo"
+                        touch "$SCRIPTDIR/repo/pacstallrepo"
                         pacstall -A
                     fi
 
@@ -991,7 +999,7 @@ Helpful links:
                 if ! source "$SCRIPTDIR/scripts/package-base.sh"; then
                     fancy_message error $"Failed to install %b" "$GREEN$PACKAGE$NC"
                     if ! [[ -f "${PACDIR}-pacdeps-$PACKAGE" ]]; then
-                        sudo rm -rf "${PACDIR:?}"
+                        rm -rf "${PACDIR:?}"
                     fi
                     exit 1
                 fi
@@ -1070,6 +1078,7 @@ Helpful links:
                 exit 1
             fi
 
+            need_sudo
             while [[ -n $2 ]]; do
                 PACKAGE=$2
                 shift
@@ -1085,9 +1094,10 @@ Helpful links:
             REPO="${2%/}"
             ALIAS="${3#*@}"
             REPOCMD="add"
+            need_sudo
 
             if [[ ! -f "$SCRIPTDIR/repo/pacstallrepo" ]]; then
-                echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' | sudo tee "$SCRIPTDIR/repo/pacstallrepo" > /dev/null
+                echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' | tee "$SCRIPTDIR/repo/pacstallrepo" > /dev/null
                 return 0
             fi
 
@@ -1106,9 +1116,9 @@ Helpful links:
             REPO="${2%/}"
             ALIAS="${3#*@}"
             REPOCMD="remove"
-
+            need_sudo
             if [[ ! -f "$SCRIPTDIR/repo/pacstallrepo" ]]; then
-                echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' | sudo tee "$SCRIPTDIR/repo/pacstallrepo" > /dev/null
+                echo 'https://raw.githubusercontent.com/pacstall/pacstall-programs/master' | tee "$SCRIPTDIR/repo/pacstallrepo" > /dev/null
                 return 0
             fi
 
@@ -1152,6 +1162,7 @@ Helpful links:
                     USERNAME="$2"
                     BRANCH="$3"
                 fi
+                need_sudo
                 # This stuff gives the ability for persistent updates
                 if [[ -z $BRANCH && -z $USERNAME ]]; then
                     if [[ -f "$SCRIPTDIR/repo/update" ]]; then
@@ -1183,7 +1194,7 @@ Helpful links:
                     fancy_message error $"Visit %s for more information on how to reinstall. Most packages will also need to be reinstalled" "https://github.com/$USERNAME/pacstall/tree/$BRANCH"
                     exit 1
                 fi
-                sudo wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/update.sh -P "$SCRIPTDIR/scripts" 2> /dev/null
+                wget -q -N https://raw.githubusercontent.com/"$USERNAME"/pacstall/"$BRANCH"/misc/scripts/update.sh -P "$SCRIPTDIR/scripts" 2> /dev/null
                 # shellcheck source=./misc/scripts/update.sh
                 source "$SCRIPTDIR/scripts/update.sh"
                 exit 0
@@ -1243,7 +1254,7 @@ Helpful links:
                 fancy_message error $"You failed to specify a package"
                 exit 1
             fi
-
+            need_sudo
             while [[ -n $2 ]]; do
                 PACKAGE=$2
                 shift
@@ -1282,7 +1293,7 @@ Helpful links:
                 fancy_message error $"Invalid argument '%s'" "$*"
                 exit 1
             fi
-
+            need_sudo
             check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
                 fancy_message error $"Could not connect to the internet"
                 suggested_solution $"Confirm that the URLs '%b' or '%b' are accessible" "${UGreen}https://github.com${NC}" "${UGreen}https://gitlab.com${NC}"
@@ -1331,13 +1342,14 @@ Helpful links:
                 fancy_message error $"Package is not installed"
                 exit 1
             fi
+            need_sudo
             case "${STATE}" in
                 hold)
-                    sudo sed -i '/_upgrade=/d' "$METADIR/$PACKAGE"
-                    echo "_upgrade=false" | sudo tee -a "$METADIR/$PACKAGE" > /dev/null
+                    sed -i '/_upgrade=/d' "$METADIR/$PACKAGE"
+                    echo "_upgrade=false" | tee -a "$METADIR/$PACKAGE" > /dev/null
                     ;;
                 unhold)
-                    sudo sed -i '/_upgrade=/d' "$METADIR/$PACKAGE"
+                    sed -i '/_upgrade=/d' "$METADIR/$PACKAGE"
                     ;;
                 *)
                     fancy_message error $"'%b' is not a valid option, use '%b' or '%b'" "${STATE}" "hold" "unhold"

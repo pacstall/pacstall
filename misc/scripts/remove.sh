@@ -35,7 +35,7 @@ if ! dpkg -l "${_gives:-$_name}" &> /dev/null; then
     exit 1
 fi
 
-sudo apt-get remove "${_gives:-$_name}" -y || {
+apt-get remove "${_gives:-$_name}" -y || {
     error_log 1 "remove $PACKAGE"
     exit 1
 }
@@ -46,6 +46,6 @@ if [[ -n ${_ppa[*]} ]]; then
     done
 fi
 
-sudo rm -f "${METADIR:?}/${_name}"
-sudo rm -f "/etc/apt/preferences.d/${_name//./-}-pin"
+rm -f "${METADIR:?}/${_name}"
+rm -f "/etc/apt/preferences.d/${_name//./-}-pin"
 # vim:set ft=sh ts=4 sw=4 et:

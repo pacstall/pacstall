@@ -47,13 +47,13 @@ function deblog() {
     local key="$1"
     shift
     local content=("$@")
-    echo "$key: ${content[*]}" | sudo tee -a "$STAGEDIR/$pacname/DEBIAN/control" > /dev/null
+    echo "$key: ${content[*]}" |   tee -a "$STAGEDIR/$pacname/DEBIAN/control" > /dev/null
 }
 
 function clean_builddir() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    sudo rm -rf "${STAGEDIR:?}/${pacname:?}"
-    sudo rm -f "${STAGEDIR:?}/${pacname}_*.deb"
+      rm -rf "${STAGEDIR:?}/${pacname:?}"
+      rm -f "${STAGEDIR:?}/${pacname}_*.deb"
 }
 
 function check_gen_dep() {
@@ -235,7 +235,7 @@ function prompt_depends() {
     local d o deps missing_optdeps not_satisfied_optdeps missing_deps not_satisfied_deps suggested_optdeps not_installed_yet_optdeps already_installed_optdeps
     fancy_message info $"Checking apt dependencies"
     for i in "deps" "missing_deps" "not_satisfied_deps" "suggested_optdeps" "missing_optdeps" "not_satisfied_optdeps" "already_installed_optdeps"; do
-        sudo rm -rf "${PACDIR}-${i//_/-}-${pacname}"
+          rm -rf "${PACDIR}-${i//_/-}-${pacname}"
         touch "${PACDIR}-${i//_/-}-${pacname}"
     done
     for d in "${depends[@]}"; do
@@ -280,7 +280,7 @@ function prompt_depends() {
         deblog_depends all_deps_to_install "Depends"
     fi
     for i in "gives" "deps" "missing-deps" "not-satisfied-deps" "suggested-optdeps" "missing-optdeps" "not-satisfied-optdeps" "already-installed-optdeps"; do
-        sudo rm -rf "${PACDIR}-${i}-${pacname}"
+          rm -rf "${PACDIR}-${i}-${pacname}"
     done
 }
 
@@ -293,9 +293,9 @@ function generate_changelog() {
 function clean_logdir() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if [[ ! -d ${LOGDIR} ]]; then
-        sudo mkdir -p "${LOGDIR}"
+          mkdir -p "${LOGDIR}"
     fi
-    sudo find -H "${LOGDIR:-/var/log/pacstall/error_log/}" -maxdepth 1 -mtime +30 -delete
+      find -H "${LOGDIR:-/var/log/pacstall/error_log/}" -maxdepth 1 -mtime +30 -delete
 }
 
 function createdeb() {
@@ -314,8 +314,8 @@ function createdeb() {
     fi
     cd "$STAGEDIR/$pacname" || { ignore_stack=true; return 1; }
     # https://tldp.org/HOWTO/html_single/Debian-Binary-Package-Building-HOWTO/#AEN66
-    echo "2.0" | sudo tee debian-binary > /dev/null
-    sudo tar -cf "$PWD/control.tar" -T /dev/null
+    echo "2.0" |   tee debian-binary > /dev/null
+      tar -cf "$PWD/control.tar" -T /dev/null
     local CONTROL_LOCATION="$PWD/control.tar"
     # avoid having to cd back
     pushd DEBIAN > /dev/null || { ignore_stack=true; return 1; }
@@ -325,9 +325,9 @@ function createdeb() {
         fi
     done
     fancy_message sub $"Packing control.tar"
-    sudo tar -rf "$CONTROL_LOCATION" "${files_for_control[@]}"
+      tar -rf "$CONTROL_LOCATION" "${files_for_control[@]}"
     popd > /dev/null || { ignore_stack=true; return 1; }
-    sudo tar -cf "$PWD/data.tar" -T /dev/null
+      tar -cf "$PWD/data.tar" -T /dev/null
     local DATA_LOCATION="$PWD/data.tar"
     # collect every top level file/dir except for deb stuff
     for i in *; do
@@ -335,13 +335,13 @@ function createdeb() {
         local files_for_data+=("$i")
     done
     fancy_message sub $"Packing data.tar"
-    sudo tar -rf "$DATA_LOCATION" "${files_for_data[@]}"
+      tar -rf "$DATA_LOCATION" "${files_for_data[@]}"
 
     fancy_message sub $"Compressing"
-    sudo "$command" "${flags[@]}" "$DATA_LOCATION" "$CONTROL_LOCATION"
-    sudo ar -rU "$debname.deb" debian-binary control.tar."$compression" data.tar."$compression" > /dev/null 2>&1
-    sudo mv "$debname.deb" ..
-    sudo rm -f debian-binary control.tar."$compression" data.tar."$compression"
+      "$command" "${flags[@]}" "$DATA_LOCATION" "$CONTROL_LOCATION"
+      ar -rU "$debname.deb" debian-binary control.tar."$compression" data.tar."$compression" > /dev/null 2>&1
+      mv "$debname.deb" ..
+      rm -f debian-binary control.tar."$compression" data.tar."$compression"
 }
 
 function is_builddep_arch() {
@@ -562,27 +562,27 @@ function makedeb() {
                 'local NC="\033[0m"' 'case $MESSAGE_TYPE in' 'info)echo -e "[$BOLD+$NC] INFO: $MESSAGE";;'
                 'warn)echo -e "[$BOLD*$NC] WARNING: $MESSAGE";;' 'error)echo -e "[$BOLD!$NC] ERROR: $MESSAGE";;'
                 'sub)echo -e "  [$BOLD>$NC] $MESSAGE";;' '*)echo -e "[$BOLD?$NC] UNKNOWN: $MESSAGE"' 'esac' '}'
-                'function get_homedir(){' 'local PACSTALL_USER=$(logname 2>/dev/null||echo "${SUDO_USER:-$USER}")'
+                'function get_homedir(){' 'local PACSTALL_USER=$(logname 2>/dev/null||echo "${ _USER:-$USER}")'
                 'eval echo ~"$PACSTALL_USER"' '}' 'export homedir="$(get_homedir)"' 'if [[ -n $PACSTALL_BUILD_CORES ]];then'
                 'declare -g NCPU="${PACSTALL_BUILD_CORES:-1}"' 'else' 'declare -g NCPU="$(nproc)"' 'fi'
             )
-            echo '#!/bin/bash' | sudo tee "$STAGEDIR/$pacname/DEBIAN/$deb_post_file" > /dev/null
+            echo '#!/bin/bash' |   tee "$STAGEDIR/$pacname/DEBIAN/$deb_post_file" > /dev/null
             for pacmf_out in "${pac_min_functions[@]}" "export STAGEDIR=${STAGEDIR}"; do
-                echo "${pacmf_out}" | sudo tee -a "$STAGEDIR/$pacname/DEBIAN/$deb_post_file" > /dev/null
+                echo "${pacmf_out}" |   tee -a "$STAGEDIR/$pacname/DEBIAN/$deb_post_file" > /dev/null
             done
             {
                 cat "${pacfile}"
                 echo -e "\n$i"
-            } | sudo tee -a "$STAGEDIR/$pacname/DEBIAN/$deb_post_file" > /dev/null
+            } |   tee -a "$STAGEDIR/$pacname/DEBIAN/$deb_post_file" > /dev/null
         fi
     done
     unset pre_inst_upg post_inst_upg
-    echo -e "sudo rm -f ${METADIR:?}/$pacname\nsudo rm -f /etc/apt/preferences.d/${pacname//./-}-pin" | sudo tee -a "$STAGEDIR/$pacname/DEBIAN/postrm" > /dev/null
+    echo -e "  rm -f ${METADIR:?}/$pacname\n  rm -f /etc/apt/preferences.d/${pacname//./-}-pin" |   tee -a "$STAGEDIR/$pacname/DEBIAN/postrm" > /dev/null
     local postfile
     for postfile in {postrm,postinst,preinst,prerm}; do
         if [[ -f "$STAGEDIR/$pacname/DEBIAN/${postfile}" ]]; then
-            sudo chmod -x "$STAGEDIR/$pacname/DEBIAN/${postfile}" &> /dev/null
-            sudo chmod 755 "$STAGEDIR/$pacname/DEBIAN/${postfile}" &> /dev/null
+              chmod -x "$STAGEDIR/$pacname/DEBIAN/${postfile}" &> /dev/null
+              chmod 755 "$STAGEDIR/$pacname/DEBIAN/${postfile}" &> /dev/null
         fi
     done
 
@@ -606,18 +606,18 @@ function makedeb() {
                 if [[ -f "$STAGEDIR/$pacname/${file:2}" ]]; then
                     fancy_message warn $"'%s' is inside the package... Skipping" "${file}" && continue
                 fi
-                echo "remove-on-upgrade /${file:2}" | sudo tee -a "$STAGEDIR/$pacname/DEBIAN/conffiles" > /dev/null
+                echo "remove-on-upgrade /${file:2}" |   tee -a "$STAGEDIR/$pacname/DEBIAN/conffiles" > /dev/null
             else
                 if [[ ${file:0:1} == "/" ]]; then
                     fancy_message warn $"'%s' cannot contain path starting with '/'... Skipping" "${file}" && continue
                 fi
-                echo "/${file}" | sudo tee -a "$STAGEDIR/$pacname/DEBIAN/conffiles" > /dev/null
+                echo "/${file}" |   tee -a "$STAGEDIR/$pacname/DEBIAN/conffiles" > /dev/null
             fi
         done
     fi
 
     local estsize
-    estsize="$(sudo du -s --apparent-size --exclude=DEBIAN -- "$STAGEDIR/$pacname" | cut -d$'\t' -f1)"
+    estsize="$(  du -s --apparent-size --exclude=DEBIAN -- "$STAGEDIR/$pacname" | cut -d$'\t' -f1)"
     deblog "Installed-Size" "${estsize}"
     if ((estsize < 10)); then
         install_size="$((estsize * 1024)) B"
@@ -627,7 +627,7 @@ function makedeb() {
             duargs+="h"
             numargs="--from=iec --to=si"
         } || numargs="--to=si"
-        rawsize="$(sudo du -s${duargs} --exclude=DEBIAN -- "$STAGEDIR/$pacname" | cut -d$'\t' -f1)"
+        rawsize="$(  du -s${duargs} --exclude=DEBIAN -- "$STAGEDIR/$pacname" | cut -d$'\t' -f1)"
         # shellcheck disable=SC2086
         install_size="$(
             numfmt ${numargs} --format="%3.2f" "${rawsize}" \
@@ -655,7 +655,7 @@ function makedeb() {
     fi
     export install_size
 
-    generate_changelog | sudo tee -a "$STAGEDIR/$pacname/DEBIAN/changelog" > /dev/null
+    generate_changelog |   tee -a "$STAGEDIR/$pacname/DEBIAN/changelog" > /dev/null
 
     cd "$STAGEDIR" || { ignore_stack=true; return 1; }
     if array.contains arch "all"; then
@@ -675,44 +675,44 @@ function install_deb() {
             if is_apt_package_installed "${pkg}"; then
                 # this is only required for essential packages. Otherwise use 'conflicts' with 'replaces'.
                 if [[ ${priority} == "essential" ]]; then
-                    sudo apt-get remove -y "${pkg}" --allow-remove-essential
+                      apt-get remove -y "${pkg}" --allow-remove-essential
                 fi
             fi
         done
         # --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
-        if ! sudo -E apt-get install --reinstall "$STAGEDIR/$debname.deb" -y --allow-downgrades 2> /dev/null; then
+        if !   -E apt-get install --reinstall "$STAGEDIR/$debname.deb" -y --allow-downgrades 2> /dev/null; then
             echo -ne "\t"
             fancy_message error $"Failed to install %s deb" "$pacname"
             error_log 8 "install $pacname"
-            sudo dpkg -r --force-all "${gives:-$pacname}" 2> /dev/null
+              dpkg -r --force-all "${gives:-$pacname}" 2> /dev/null
             fancy_message info $"Cleaning up"
             cleanup
             exit 1
         fi
         if [[ -f "${PACDIR}-pacdeps-$pacname" ]]; then
-            sudo apt-mark auto "${gives:-$pacname}" 2> /dev/null
+              apt-mark auto "${gives:-$pacname}" 2> /dev/null
         fi
-        sudo rm -rf "${STAGEDIR:?}/${pacname}"
-        sudo rm -rf "${PACDIR:?}/${debname}.deb"
+          rm -rf "${STAGEDIR:?}/${pacname}"
+          rm -rf "${PACDIR:?}/${debname}.deb"
 
         if ! [[ -d /etc/apt/preferences.d/ ]]; then
-            sudo mkdir -p /etc/apt/preferences.d
+              mkdir -p /etc/apt/preferences.d
         fi
         if ! array.contains provides "${gives:-${pacname}}"; then
             provides+=("${gives:-${pacname}}")
         fi
-        echo -e "Package: ${provides[*]}\nPin: release o=*\nPin-Priority: -1\n" | sudo tee "/etc/apt/preferences.d/${pacname//./-}-pin" > /dev/null
-        echo -e "Package: ${provides[*]}\nPin: version ${full_version}\nPin-Priority: 100" | sudo tee -a "/etc/apt/preferences.d/${pacname//./-}-pin" > /dev/null
+        echo -e "Package: ${provides[*]}\nPin: release o=*\nPin-Priority: -1\n" |   tee "/etc/apt/preferences.d/${pacname//./-}-pin" > /dev/null
+        echo -e "Package: ${provides[*]}\nPin: version ${full_version}\nPin-Priority: 100" |   tee -a "/etc/apt/preferences.d/${pacname//./-}-pin" > /dev/null
         return 0
     else
-        sudo mv "$STAGEDIR/$debname.deb" "$PACDEB_DIR"
-        sudo chown "$PACSTALL_USER":"$PACSTALL_USER" "$PACDEB_DIR/$debname.deb"
+          mv "$STAGEDIR/$debname.deb" "$PACDEB_DIR"
+          chown "$PACSTALL_USER":"$PACSTALL_USER" "$PACDEB_DIR/$debname.deb"
         fancy_message info $"Package built at %b" "${BGreen}$PACDEB_DIR/$debname.deb${NC}"
         if [[ $KEEP ]]; then
             fancy_message info $"Moving %b to %b" "${BGreen}$STAGEDIR/$pacname${NC}" "${BGreen}${PACDIR}-no-build/$pacname${NC}"
-            sudo rm -rf "${PACDIR}-no-build/${pacname:?}"
+              rm -rf "${PACDIR}-no-build/${pacname:?}"
             mkdir -p "${PACDIR}-no-build/$pacname"
-            sudo mv "$STAGEDIR/$pacname" "${PACDIR}-no-build/$pacname"
+              mv "$STAGEDIR/$pacname" "${PACDIR}-no-build/$pacname"
         fi
         return 0
     fi
@@ -724,11 +724,11 @@ function repacstall() {
     local depends_array unpackdir depends_line deper pacgives meper ceper pacdep depends_array_form repac_depends_str upcontrol input_dest="${1}"
     unpackdir="${STAGEDIR}/${pacname}"
     upcontrol="${unpackdir}/DEBIAN/control"
-    sudo mkdir -p "${unpackdir}"
-    sudo rm -rf "${unpackdir:?}"/*
+      mkdir -p "${unpackdir}"
+      rm -rf "${unpackdir:?}"/*
     fancy_message sub $"Repacking %b" "${CYAN}${pacname/\-deb/}.deb${NC}"
-    sudo dpkg-deb -R "${input_dest}" "${unpackdir}"
-    sudo chmod 755 "${unpackdir}"
+      dpkg-deb -R "${input_dest}" "${unpackdir}"
+      chmod 755 "${unpackdir}"
     depends_line=$(awk '/^Depends:/ {gsub(/^Depends: /, ""); print; exit}' "${upcontrol}")
     if [[ -n ${depends_line} ]]; then
         IFS=',' read -r -a depends_array <<< "${depends_line}"
@@ -786,9 +786,9 @@ function repacstall() {
     # recompile constraints
     dep_const.format_control depends_array depends_array_form
     dep_const.comma_array depends_array_form repac_depends_str
-    sudo sed -i '/^Depends:/d' "${upcontrol}"
-    sudo sed -i "/Installed-Size:/a Depends: ${repac_depends_str}" "${upcontrol}"
-    sudo sed -i "/Description:/i Modified-By-Pacstall: yes" "${upcontrol}"
+      sed -i '/^Depends:/d' "${upcontrol}"
+      sed -i "/Installed-Size:/a Depends: ${repac_depends_str}" "${upcontrol}"
+      sed -i "/Description:/i Modified-By-Pacstall: yes" "${upcontrol}"
     if array.contains arch "${CARCH}" || array.contains arch "${AARCH}"; then
         local deb_arch="${CARCH}"
     else
@@ -871,7 +871,7 @@ function meta_log() {
     fi
 
     # Metadata writing
-    write_meta | sudo tee "$METADIR/$pacname" > /dev/null
+    write_meta |   tee "$METADIR/$pacname" > /dev/null
     unset pURL pBRANCH pISSUES pTYPE pREPO pOWNER
 }
 

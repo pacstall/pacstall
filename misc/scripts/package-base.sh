@@ -43,11 +43,11 @@ function trap_ctrlc() {
     # shellcheck disable=SC2031
     if is_apt_package_installed "${pacname}"; then
         # shellcheck disable=SC2031
-        sudo apt-get purge "${gives:-$pacname}" -y > /dev/null
+        apt-get purge "${gives:-$pacname}" -y > /dev/null
     fi
     # shellcheck disable=SC2031
     true_pkg="${pacname:-$PACKAGE}"
-    sudo rm -f "/etc/apt/preferences.d/${true_pkg//./-}-pin"
+     rm -f "/etc/apt/preferences.d/${true_pkg//./-}-pin"
     cleanup
     exit 1
 }
@@ -87,9 +87,9 @@ function package_override() {
             fi
         fi
         if [[ -z ${look[*]} && -z ${lbase[*]} ]]; then
-            echo "unset ${o}" | sudo tee -a "${safeenv}" > /dev/null
+            echo "unset ${o}" |  tee -a "${safeenv}" > /dev/null
         else
-            declare -p "${o}" | sudo tee -a "${safeenv}" > /dev/null
+            declare -p "${o}" |  tee -a "${safeenv}" > /dev/null
         fi
     done
     srcinfo.cleanup "${pacname}"
@@ -163,7 +163,7 @@ function package_pkg() {
                             fancy_message error $"Failed to install %b" "${GREEN}${pacname}${NC}"
                             # shellcheck disable=SC2031
                             if ! [[ -f "${PACDIR}-pacdeps-${pacname}" ]]; then
-                                sudo rm -rf "${PACDIR:?}"
+                                 rm -rf "${PACDIR:?}"
                             fi
                             exit 1
                         fi
@@ -173,7 +173,7 @@ function package_pkg() {
             fancy_message info $"Cleaning up"
             rm -rf "${PACDIR}-no-download-${pkgbase}"
             if is_apt_package_installed "${PACKAGE}-dummy-builddeps"; then
-                sudo apt-get purge "${PACKAGE}-dummy-builddeps" -y > /dev/null
+                 apt-get purge "${PACKAGE}-dummy-builddeps" -y > /dev/null
             fi
             cleanup
             return 0
@@ -187,13 +187,13 @@ function package_pkg() {
             fancy_message error $"Failed to install %b" "${GREEN}${pacname}${NC}"
             # shellcheck disable=SC2031
             if ! [[ -f "${PACDIR}-pacdeps-${pacname}" ]]; then
-                sudo rm -rf "${PACDIR:?}"
+                 rm -rf "${PACDIR:?}"
             fi
             exit 1
         fi
         fancy_message info $"Cleaning up"
         if is_apt_package_installed "${PACKAGE}-dummy-builddeps"; then
-            sudo apt-get purge "${PACKAGE}-dummy-builddeps" -y > /dev/null
+            apt-get purge "${PACKAGE}-dummy-builddeps" -y > /dev/null
         fi
         cleanup
         return 0
@@ -238,8 +238,8 @@ DIR="$PWD"
 homedir="$(eval echo ~"$PACSTALL_USER")"
 export homedir
 
-sudo cp "${PACKAGE}.pacscript" "${PACTMP}"
-sudo chmod a+r "${PACTMP}/${PACKAGE}.pacscript"
+cp "${PACKAGE}.pacscript" "${PACTMP}"
+chmod a+r "${PACTMP}/${PACKAGE}.pacscript"
 pacfile="$(readlink -f "${PACTMP}/${PACKAGE}.pacscript")"
 export pacfile
 mapfile -t FARCH < <(dpkg --print-foreign-architectures)
