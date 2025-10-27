@@ -47,7 +47,7 @@ function trap_ctrlc() {
     fi
     # shellcheck disable=SC2031
     true_pkg="${pacname:-$PACKAGE}"
-     rm -f "/etc/apt/preferences.d/${true_pkg//./-}-pin"
+    rm -f "/etc/apt/preferences.d/${true_pkg//./-}-pin"
     cleanup
     exit 1
 }
@@ -87,9 +87,9 @@ function package_override() {
             fi
         fi
         if [[ -z ${look[*]} && -z ${lbase[*]} ]]; then
-            echo "unset ${o}" |  tee -a "${safeenv}" > /dev/null
+            echo "unset ${o}" | tee -a "${safeenv}" > /dev/null
         else
-            declare -p "${o}" |  tee -a "${safeenv}" > /dev/null
+            declare -p "${o}" | tee -a "${safeenv}" > /dev/null
         fi
     done
     srcinfo.cleanup "${pacname}"
@@ -163,7 +163,7 @@ function package_pkg() {
                             fancy_message error $"Failed to install %b" "${GREEN}${pacname}${NC}"
                             # shellcheck disable=SC2031
                             if ! [[ -f "${PACDIR}-pacdeps-${pacname}" ]]; then
-                                 rm -rf "${PACDIR:?}"
+                                rm -rf "${PACDIR:?}"
                             fi
                             exit 1
                         fi
@@ -173,7 +173,7 @@ function package_pkg() {
             fancy_message info $"Cleaning up"
             rm -rf "${PACDIR}-no-download-${pkgbase}"
             if is_apt_package_installed "${PACKAGE}-dummy-builddeps"; then
-                 apt-get purge "${PACKAGE}-dummy-builddeps" -y > /dev/null
+                apt-get purge "${PACKAGE}-dummy-builddeps" -y > /dev/null
             fi
             cleanup
             return 0
@@ -187,7 +187,7 @@ function package_pkg() {
             fancy_message error $"Failed to install %b" "${GREEN}${pacname}${NC}"
             # shellcheck disable=SC2031
             if ! [[ -f "${PACDIR}-pacdeps-${pacname}" ]]; then
-                 rm -rf "${PACDIR:?}"
+                rm -rf "${PACDIR:?}"
             fi
             exit 1
         fi
