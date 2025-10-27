@@ -680,7 +680,7 @@ function install_deb() {
             fi
         done
         # --allow-downgrades is to allow git packages to "downgrade", because the commits aren't necessarily a higher number than the last version
-        if !  -E apt-get install --reinstall "$STAGEDIR/$debname.deb" -y --allow-downgrades 2> /dev/null; then
+        if ! -E apt-get install --reinstall "$STAGEDIR/$debname.deb" -y --allow-downgrades 2> /dev/null; then
             echo -ne "\t"
             fancy_message error $"Failed to install %s deb" "$pacname"
             error_log 8 "install $pacname"
