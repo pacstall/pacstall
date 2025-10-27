@@ -89,8 +89,8 @@ if [[ -n ${limit_kver} ]]; then
 fi
 
 clean_builddir
-sudo mkdir -p "$STAGEDIR/$pacname/DEBIAN"
-sudo chmod a+rx "$STAGEDIR" "$STAGEDIR/$pacname" "$STAGEDIR/$pacname/DEBIAN"
+mkdir -p "$STAGEDIR/$pacname/DEBIAN"
+chmod a+rx "$STAGEDIR" "$STAGEDIR/$pacname" "$STAGEDIR/$pacname/DEBIAN"
 
 # Run checks function
 if ! checks; then
@@ -106,7 +106,7 @@ if ((PACSTALL_INSTALL == 0)) && [[ ${pacname} == *-deb ]]; then
         { ignore_stack=true; return 1; }
     else
         fancy_message info $"Moving %b to %b" "${BGreen}${PACDIR}/${dest}${NC}" "${BGreen}${PACDEB_DIR}/${dest}${NC}"
-        sudo mv ./"${dest}" "${PACDEB_DIR}"
+        mv ./"${dest}" "${PACDEB_DIR}"
     fi
     return 0
 fi
@@ -160,7 +160,7 @@ if ! is_package_installed "${pacname}"; then
                     # Check if anything in conflicts variable is installed already
                     # shellcheck disable=SC2031
                     fancy_message error $"%b conflicts with %s, which is currently installed by apt" "${RED}$pacname${NC}" "$pkg"
-                    suggested_solution $"Remove the apt package by running '%b'" "${UCyan}sudo apt purge $pkg${NC}"
+                    suggested_solution $"Remove the apt package by running '%b'" "${UCyan}apt purge $pkg${NC}"
                     error_log 13 "install ${pacname}"
                     clean_fail_down
                 fi
@@ -182,7 +182,7 @@ if ! is_package_installed "${pacname}"; then
                 if is_apt_package_installed "${pkg}" && ! is_package_installed "${pkg}"; then
                     # Check if anything in breaks variable is installed already
                     fancy_message error $"%b breaks %s, which is currently installed by apt" "${RED}$pacname${NC}" "$pkg"
-                    suggested_solution $"Remove the apt package by running '%b'" "${UCyan}sudo apt purge $pkg${NC}"
+                    suggested_solution $"Remove the apt package by running '%b'" "${UCyan}apt purge $pkg${NC}"
                     error_log 13 "install ${pacname}"
                     clean_fail_down
                 fi
@@ -201,7 +201,7 @@ fi
 if [[ -n $ppa ]]; then
     for i in "${ppa[@]}"; do
         # Add ppa, but ppa bad I guess
-        sudo add-apt-repository ppa:"$i"
+        add-apt-repository ppa:"$i"
     done
 fi
 
@@ -234,7 +234,7 @@ if [[ -n ${pacdeps[*]} ]]; then
             else
                 fancy_message sub $"%b [installed]" "${PURPLE}${pdep}${NC} ${GREEN}✓${NC}"
                 if ! awk '/_pacstall_depends="true"/ {found=1; exit} END {if (found != 1) exit 1}' "${METADIR}/${pdep}"; then
-                    echo '_pacstall_depends="true"' | sudo tee -a "${METADIR}/${pdep}" > /dev/null
+                    echo '_pacstall_depends="true"' | tee -a "${METADIR}/${pdep}" > /dev/null
                 fi
             fi
         elif fancy_message sub $"%b [required]" "${PURPLE}${pdep}${NC} ${RED}✗${NC}" && ! pacstall "$cmd" "${pdep}${repo}"; then
@@ -360,7 +360,7 @@ if ! [[ -f "${PACDIR}-no-download-${pkgbase}" ]]; then
 fi
 
 export pacdir="$PWD"
-sudo chown -R root:root . 2> /dev/null
+chown -R root:root . 2> /dev/null
 
 export pkgdir="$STAGEDIR/$pacname"
 export -f ask fancy_message select_options
@@ -413,18 +413,18 @@ meta_log
 
 fancy_message info $"Performing post install operations"
 fancy_message sub $"Storing pacscript"
-sudo mkdir -p "/var/cache/pacstall/${pacname}/${full_version}"
+mkdir -p "/var/cache/pacstall/${pacname}/${full_version}"
 if ! cd "$DIR" 2> /dev/null; then
     error_log 1 "install ${pacname}"
     fancy_message error $"Could not enter into %s" "${DIR}"
-    sudo dpkg -r "${gives:-$pacname}" 2> /dev/null
+    dpkg -r "${gives:-$pacname}" 2> /dev/null
     clean_fail_down
 fi
 
-sudo cp -r "${pacfile}" "/var/cache/pacstall/${pacname}/${full_version}"
-sudo chmod o+r "/var/cache/pacstall/${pacname}/${full_version}/${PACKAGE}.pacscript"
-sudo cp -r "${srcinfile}" "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
-sudo chmod o+r "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
+cp -r "${pacfile}" "/var/cache/pacstall/${pacname}/${full_version}"
+chmod o+r "/var/cache/pacstall/${pacname}/${full_version}/${PACKAGE}.pacscript"
+cp -r "${srcinfile}" "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
+chmod o+r "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
 
 fancy_message info $"Done installing %b" "${BPurple}${pacname}${NC}"
 return 0
