@@ -133,7 +133,7 @@ N="$(nproc)"
 (
     for i in "${list[@]}"; do
         ((n = n % N))
-        ((n++ == 0)) && wait && if ((rust_stty == 0)); then echo "${tty_settings}" | stty; else stty "${tty_settings}"; fi
+        ((n++ == 0)) && wait && if ((rust_stty == 0)); then echo "${tty_settings}" | stty &>/dev/null; else stty "${tty_settings}"; fi
         (
             unset _pkgbase _remoterepo
             source "$METADIR/$i"
@@ -254,7 +254,7 @@ N="$(nproc)"
             fi
         ) &
     done
-    wait && if ((rust_stty == 0)); then echo "${tty_settings}" | stty; else stty "${tty_settings}"; fi
+    wait && if ((rust_stty == 0)); then echo "${tty_settings}" | stty &>/dev/null; else stty "${tty_settings}"; fi
 )
 
 if [[ ! -s ${up_list} ]]; then
