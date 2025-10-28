@@ -108,8 +108,11 @@ tabs -4
 tty_settings=$(stty -g)
 
 # TODO: REMOVE THIS AFTER https://github.com/uutils/coreutils/issues/9056.
-rust_stty="$(strings -a "$(which stty)" | grep 'rust')"
-rust_stty="$?"
+if strings -a "$(which stty)" | grep -q 'rust'; then
+    rust_stty=0
+else
+    rust_stty=1
+fi
 
 # shellcheck disable=SC2207
 old_version=($(pacstall -V))
