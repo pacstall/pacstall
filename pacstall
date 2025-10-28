@@ -1369,6 +1369,8 @@ Helpful links:
                 PRNUM="${BASH_REMATCH[3]}"
                 METAURL="${BASH_REMATCH[5]}"
             fi
+            need_sudo
+
             # shellcheck source=./misc/scripts/quality-assurance.sh
             source "$SCRIPTDIR/scripts/quality-assurance.sh"
             exit 0
