@@ -377,7 +377,7 @@ function srcinfo.parse() {
             unset global
         fi
     done
-    declare -p "${total_list[@]}" | sudo tee -a "${PACDIR}-srcinfo-access-${access}" > /dev/null
+    declare -p "${total_list[@]}" | tee -a "${PACDIR}-srcinfo-access-${access}" > /dev/null
 }
 
 function srcinfo.cleanup() {
@@ -385,7 +385,7 @@ function srcinfo.cleanup() {
     local compg
     mapfile -t compg < <(compgen -v "srcinfo_")
     unset "${compg[@]}" srcinfo_access globase global 2> /dev/null
-    sudo rm -f "${PACDIR}-srcinfo-access-${1}"
+    rm -f "${PACDIR}-srcinfo-access-${1}"
 }
 
 # @description Output a specific variable from .SRCINFO

@@ -81,10 +81,10 @@ mapfile -t linguas < <(curl -fsSL "${REPO}/misc/po/LINGUAS")
 
 fancy_message sub $"Updating directories"
 for i in "${METADIR}" "${LOGDIR}" "${MAN8DIR}" "${MAN5DIR}" "${PODIR}" "${BASH_COMPLETION_DIR}" "${FISH_COMPLETION_DIR}"; do
-    sudo mkdir -p "${i}"
+    mkdir -p "${i}"
 done
 for lang in "${linguas[@]}"; do
-    sudo mkdir -p "/usr/share/locale/${lang}/LC_MESSAGES/"
+    mkdir -p "/usr/share/locale/${lang}/LC_MESSAGES/"
 done
 
 fancy_message sub $"Checking dependencies"
@@ -92,15 +92,15 @@ for pkg in "${pacstall_deps[@]}"; do
     if ! dpkg -s "${pkg}" > /dev/null 2>&1; then
         if [[ ${pkg} == "spdx-licenses" ]]; then
             if [[ -z $(apt-cache search --names-only "^${pkg}$") ]]; then
-                sudo wget -q -O "/tmp/${pkg}.deb" "https://ftp.debian.org/debian/pool/main/s/${pkg}/${pkg}_3.21-1_all.deb" && \
-                    sudo apt install "${PACTMP}/${pkg}.deb" -y && sudo rm -f "${PACTMP}/${pkg}.deb" && continue
+                wget -q -O "/tmp/${pkg}.deb" "https://ftp.debian.org/debian/pool/main/s/${pkg}/${pkg}_3.21-1_all.deb" && \
+                    apt install "${PACTMP}/${pkg}.deb" -y && rm -f "${PACTMP}/${pkg}.deb" && continue
             fi
         fi
         to_install+=("${pkg}")
     fi
 done
 if ((${#to_install[@]} != 0)); then
-    sudo apt-get install "${to_install[@]}" -y
+    apt-get install "${to_install[@]}" -y
 fi
 
 tabs -4
@@ -122,39 +122,39 @@ pacstall_scripts=(
     "bwrap" "srcinfo" "manage-repo"
 )
 for script in "${pacstall_scripts[@]}"; do
-    sudo wget -q -O "$SCRIPTDIR/scripts/${script}.sh" "${REPO}/misc/scripts/${script}.sh" &
+    wget -q -O "$SCRIPTDIR/scripts/${script}.sh" "${REPO}/misc/scripts/${script}.sh" &
 done
 for lang in "${linguas[@]}"; do
-    sudo wget -q -O "${PODIR}/${lang}.po" "${REPO}/misc/po/${lang}.po" &
+    wget -q -O "${PODIR}/${lang}.po" "${REPO}/misc/po/${lang}.po" &
 done
 # Remove renamed files
 for i in {error_log,download,download-local,install-local,build-local}.sh; do
-    sudo rm -f "${SCRIPTDIR:?}/scripts/$i"
+    rm -f "${SCRIPTDIR:?}/scripts/$i"
 done
-sudo wget -q -O "/usr/bin/pacstall" "${REPO}/pacstall" &
-sudo wget -q -O "${MAN8DIR}/pacstall.8" "${REPO}/misc/man/pacstall.8" &
-sudo wget -q -O "${MAN5DIR}/pacstall.5" "${REPO}/misc/man/pacstall.5" &
-sudo wget -q -O "${BASH_COMPLETION_DIR}/pacstall" "${REPO}/misc/completion/bash" &
-sudo wget -q -O "${FISH_COMPLETION_DIR}/pacstall.fish" "${REPO}/misc/completion/fish" &
+wget -q -O "/usr/bin/pacstall" "${REPO}/pacstall" &
+wget -q -O "${MAN8DIR}/pacstall.8" "${REPO}/misc/man/pacstall.8" &
+wget -q -O "${MAN5DIR}/pacstall.5" "${REPO}/misc/man/pacstall.5" &
+wget -q -O "${BASH_COMPLETION_DIR}/pacstall" "${REPO}/misc/completion/bash" &
+wget -q -O "${FISH_COMPLETION_DIR}/pacstall.fish" "${REPO}/misc/completion/fish" &
 wait && stty "${tty_settings}"
 
 fancy_message sub $"Rebuilding translations"
 for lang in "${linguas[@]}"; do
-    sudo msgfmt -o "/usr/share/locale/${lang}/LC_MESSAGES/pacstall.mo" "${PODIR}/${lang}.po"
+    msgfmt -o "/usr/share/locale/${lang}/LC_MESSAGES/pacstall.mo" "${PODIR}/${lang}.po"
 done
 
 fancy_message sub $"Rebuilding manpages"
-sudo gzip --force -9n "${MAN8DIR}/pacstall.8"
-sudo gzip --force -9n "${MAN5DIR}/pacstall.5"
+gzip --force -9n "${MAN8DIR}/pacstall.8"
+gzip --force -9n "${MAN5DIR}/pacstall.5"
 
 fancy_message sub $"Making scripts executable"
-sudo chmod +x "/usr/bin/pacstall"
-sudo chmod +x "${SCRIPTDIR}/scripts/"*
+chmod +x "/usr/bin/pacstall"
+chmod +x "${SCRIPTDIR}/scripts/"*
 
 if [[ -n $GIT_USER ]]; then
-    echo "pacstall master" | sudo tee "${SCRIPTDIR}/repo/update" > /dev/null
+    echo "pacstall master" | tee "${SCRIPTDIR}/repo/update" > /dev/null
 else
-    echo "${USERNAME} ${BRANCH}" | sudo tee "${SCRIPTDIR}/repo/update" > /dev/null
+    echo "${USERNAME} ${BRANCH}" | tee "${SCRIPTDIR}/repo/update" > /dev/null
 fi
 
 # shellcheck disable=SC2207

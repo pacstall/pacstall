@@ -57,8 +57,8 @@ function cleanup_qa() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     if [[ -f "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak" ]]; then
         fancy_message info $"Returning %b backup" "${CYAN}$SCRIPTDIR/repo/pacstallrepo${NC}"
-        sudo rm -f "${SCRIPTDIR:?}/repo/pacstallrepo"
-        sudo mv "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak" "$SCRIPTDIR/repo/pacstallrepo"
+        rm -f "${SCRIPTDIR:?}/repo/pacstallrepo"
+        mv "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak" "$SCRIPTDIR/repo/pacstallrepo"
     fi
 }
 
@@ -72,8 +72,8 @@ fi
 read -r provider user repo pr <<< "$(parse_pr "$metalink" "$number")"
 read -r provider_url login <<< "$(parse_link "$provider" "$user" "$repo" "$pr")"
 fancy_message info $"Backing up %b" "${CYAN}$SCRIPTDIR/repo/pacstallrepo${NC}"
-sudo mv "$SCRIPTDIR/repo/pacstallrepo" "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak"
-echo "$provider_url" | sudo tee "$SCRIPTDIR/repo/pacstallrepo" > /dev/null
+mv "$SCRIPTDIR/repo/pacstallrepo" "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak"
+echo "$provider_url" | tee "$SCRIPTDIR/repo/pacstallrepo" > /dev/null
 fancy_message info $"Installing %b" "${GREEN}$inst${NC}(${PURPLE}$login${NC}:${RED}$pr${NC})"
 unset precmd
 ((PACSTALL_DEBUG)) && precmd="-x"

@@ -365,10 +365,10 @@ function deb_down() {
             exit 1
         fi
     fi
-    if [[ -n ${pacdeps[*]} || ${depends[*]} || ${makedepends[*]} || ${checkdepends[*]} ]] && repacstall "${dest}" || sudo apt install -y -f ./"${dest}" --allow-downgrades 2> /dev/null; then
+    if [[ -n ${pacdeps[*]} || ${depends[*]} || ${makedepends[*]} || ${checkdepends[*]} ]] && repacstall "${dest}" || apt install -y -f ./"${dest}" --allow-downgrades 2> /dev/null; then
         meta_log
         if [[ -f "${PACDIR}-pacdeps-$pacname" ]]; then
-            sudo apt-mark auto "${gives:-$pacname}" 2> /dev/null
+            apt-mark auto "${gives:-$pacname}" 2> /dev/null
         fi
         fancy_message info $"Performing post install operations"
         if type -t post_upgrade &> /dev/null && ${upgrade}; then
@@ -387,23 +387,23 @@ function deb_down() {
             fi
         fi
         fancy_message sub $"Storing pacscript"
-        sudo mkdir -p "/var/cache/pacstall/${pacname}/${full_version}"
+        mkdir -p "/var/cache/pacstall/${pacname}/${full_version}"
         if ! cd "$DIR" 2> /dev/null; then
             error_log 1 "install ${pacname}"
             fancy_message error $"Could not enter into %b" "${DIR}"
             exit 1
         fi
-        sudo cp -r "${pacfile}" "/var/cache/pacstall/${pacname}/${full_version}"
-        sudo chmod o+r "/var/cache/pacstall/${pacname}/${full_version}/${PACKAGE}.pacscript"
-        sudo cp -r "${srcinfile}" "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
-        sudo chmod o+r "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
+        cp -r "${pacfile}" "/var/cache/pacstall/${pacname}/${full_version}"
+        chmod o+r "/var/cache/pacstall/${pacname}/${full_version}/${PACKAGE}.pacscript"
+        cp -r "${srcinfile}" "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
+        chmod o+r "/var/cache/pacstall/${pacname}/${full_version}/.SRCINFO"
         fancy_message info $"Done installing %b" "${BPurple}${pacname}${NC}"
         unset expectedHash dest source_url git_branch git_tag git_commit to_location ext_deps ext_method ext_to_flag hashsum_method payload_arr
         return 0
     else
         fancy_message error $"Failed to install the package"
         error_log 14 "install ${pacname}"
-        sudo apt purge "${gives:-$pacname}" -y > /dev/null
+        apt purge "${gives:-$pacname}" -y > /dev/null
         clean_fail_down
     fi
 }
@@ -726,7 +726,7 @@ function install_builddepends() {
     if [[ -n ${makedepends[*]} ]]; then
         fancy_message info $"Checking build dependencies"
         for i in "needed-builddepends" "missing-builddepends" "unsatisfied-builddepends"; do
-            sudo rm -rf "${PACDIR}-${i}-${pacname}"
+            rm -rf "${PACDIR}-${i}-${pacname}"
             touch "${PACDIR}-${i}-${pacname}"
         done
         for m in "${makedepends[@]}"; do
@@ -735,7 +735,7 @@ function install_builddepends() {
         wait
         for i in "needed-builddepends" "missing-builddepends" "unsatisfied-builddepends"; do
             mapfile -t "${i//-/_}" <"${PACDIR}-${i}-${pacname}"
-            sudo rm -rf "${PACDIR}-${i}-${pacname}"
+            rm -rf "${PACDIR}-${i}-${pacname}"
         done
         if [[ -n ${missing_builddepends[*]} ]]; then
             echo -ne "\t"
@@ -760,7 +760,7 @@ function install_builddepends() {
     if [[ -n ${checkdepends[*]} ]]; then
         fancy_message info $"Checking check dependencies"
         for i in "needed-checkdepends" "missing-checkdepends" "unsatisfied-checkdepends"; do
-            sudo rm -rf "${PACDIR}-${i}-${pacname}"
+            rm -rf "${PACDIR}-${i}-${pacname}"
             touch "${PACDIR}-${i}-${pacname}"
         done
         for c in "${checkdepends[@]}"; do
@@ -769,7 +769,7 @@ function install_builddepends() {
         wait
         for i in "needed-checkdepends" "missing-checkdepends" "unsatisfied-checkdepends"; do
             mapfile -t "${i//-/_}" <"${PACDIR}-${i}-${pacname}"
-            sudo rm -rf "${PACDIR}-${i}-${pacname}"
+            rm -rf "${PACDIR}-${i}-${pacname}"
         done
         if [[ -n ${missing_checkdepends[*]} ]]; then
             echo -ne "\t"
@@ -806,7 +806,7 @@ function install_builddepends() {
             PACSTALL_INSTALL=1
             # shellcheck disable=SC2030
             pacname="${PACKAGE}-dummy-builddeps"
-            sudo mkdir -p "${STAGEDIR}/${pacname}/DEBIAN"
+            mkdir -p "${STAGEDIR}/${pacname}/DEBIAN"
             deblog "Depends" "${bdeps_str}"
             # shellcheck disable=SC2034
             bcons_array=("${makeconflicts[@]}" "${checkconflicts[@]}")
@@ -866,11 +866,11 @@ function compare_remote_version() {
     fi
     remotever="$(
         unset pkgrel
-        remote_tmp="$(sudo mktemp -p "${PACDIR}" "compare-repo-ver-$crv_input.XXXXXX")"
+        remote_tmp="$(mktemp -p "${PACDIR}" "compare-repo-ver-$crv_input.XXXXXX")"
         remote_safe="${remote_tmp}"
         # shellcheck disable=SC2034
-        curl -fsSL "$remoterepo/packages/$crv_fetch/.SRCINFO" | sudo tee "${remote_safe}" > /dev/null || { ignore_stack=true; return 1; }
-        sudo chown "${PACSTALL_USER}" "${remote_safe}"
+        curl -fsSL "$remoterepo/packages/$crv_fetch/.SRCINFO" | tee "${remote_safe}" > /dev/null || { ignore_stack=true; return 1; }
+        chown "${PACSTALL_USER}" "${remote_safe}"
         srcinfo.parse "${remote_safe}" "${crv_fetch}"
         srcinfo.match_pkg "crv_base" "${crv_fetch}" "pkgbase"
         for remv in "pkgver" "pkgrel" "epoch"; do
@@ -885,7 +885,7 @@ function compare_remote_version() {
             echo "${crv_epoch:+$crv_epoch:}${crv_pkgver}-pacstall${crv_pkgrel:-1}"
         fi
         srcinfo.cleanup "${crv_fetch}"
-        sudo rm -rf "${remote_safe:?}"
+        rm -rf "${remote_safe:?}"
     )" > /dev/null
     localver=$(source "${METADIR}/${crv_input}" && echo "${_version}")
     if [[ $crv_input == *"-git" ]]; then
