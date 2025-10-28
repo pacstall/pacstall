@@ -92,8 +92,8 @@ for pkg in "${pacstall_deps[@]}"; do
     if ! dpkg -s "${pkg}" > /dev/null 2>&1; then
         if [[ ${pkg} == "spdx-licenses" ]]; then
             if [[ -z $(apt-cache search --names-only "^${pkg}$") ]]; then
-                sudo wget -q -O "/tmp/${pkg}.deb" "https://ftp.debian.org/debian/pool/main/s/${pkg}/${pkg}_3.21-1_all.deb" && \
-                    sudo apt install "${PACTMP}/${pkg}.deb" -y && sudo rm -f "${PACTMP}/${pkg}.deb" && continue
+                sudo wget -q -O "/tmp/${pkg}.deb" "https://ftp.debian.org/debian/pool/main/s/${pkg}/${pkg}_3.21-1_all.deb" \
+                    && sudo apt install "${PACTMP}/${pkg}.deb" -y && sudo rm -f "${PACTMP}/${pkg}.deb" && continue
             fi
         fi
         to_install+=("${pkg}")
@@ -106,6 +106,11 @@ fi
 tabs -4
 
 tty_settings=$(stty -g)
+
+# TODO: REMOVE THIS AFTER https://github.com/uutils/coreutils/issues/9056.
+rust_stty="$(strings -a "$(which stty)" | grep 'rust')"
+rust_stty="$?"
+
 # shellcheck disable=SC2207
 old_version=($(pacstall -V))
 # shellcheck disable=SC2207
@@ -136,7 +141,7 @@ sudo wget -q -O "${MAN8DIR}/pacstall.8" "${REPO}/misc/man/pacstall.8" &
 sudo wget -q -O "${MAN5DIR}/pacstall.5" "${REPO}/misc/man/pacstall.5" &
 sudo wget -q -O "${BASH_COMPLETION_DIR}/pacstall" "${REPO}/misc/completion/bash" &
 sudo wget -q -O "${FISH_COMPLETION_DIR}/pacstall.fish" "${REPO}/misc/completion/fish" &
-wait && stty "${tty_settings}"
+wait && if ((rust_stty == 0)); then echo "${tty_settings}" | stty; else stty "${tty_settings}"; fi
 
 fancy_message sub $"Rebuilding translations"
 for lang in "${linguas[@]}"; do

@@ -124,11 +124,16 @@ up_urls="$(mktemp ${PACTMP}/XXXXXX-pacstall-up-urls)"
 fancy_message sub $"Checking versions"
 
 tty_settings=$(stty -g)
+
+# TODO: REMOVE THIS AFTER https://github.com/uutils/coreutils/issues/9056.
+rust_stty="$(strings -a "$(which stty)" | grep 'rust')"
+rust_stty="$?"
+
 N="$(nproc)"
 (
     for i in "${list[@]}"; do
         ((n = n % N))
-        ((n++ == 0)) && wait && stty "$tty_settings"
+        ((n++ == 0)) && wait && if ((rust_stty == 0)); then echo "${tty_settings}" | stty; else stty "${tty_settings}"; fi
         (
             unset _pkgbase _remoterepo
             source "$METADIR/$i"
@@ -249,7 +254,7 @@ N="$(nproc)"
             fi
         ) &
     done
-    wait && stty "$tty_settings"
+    wait && if ((rust_stty == 0)); then echo "${tty_settings}" | stty; else stty "${tty_settings}"; fi
 )
 
 if [[ ! -s ${up_list} ]]; then
