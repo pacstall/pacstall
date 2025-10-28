@@ -124,11 +124,12 @@ up_urls="$(mktemp ${PACTMP}/XXXXXX-pacstall-up-urls)"
 fancy_message sub $"Checking versions"
 
 tty_settings=$(stty -g)
+
 N="$(nproc)"
 (
     for i in "${list[@]}"; do
         ((n = n % N))
-        ((n++ == 0)) && wait && stty "$tty_settings"
+        ((n++ == 0)) && wait && { stty "${tty_settings}" &>/dev/null || echo "${tty_settings}" | stty &>/dev/null; }
         (
             unset _pkgbase _remoterepo
             source "$METADIR/$i"
@@ -249,7 +250,7 @@ N="$(nproc)"
             fi
         ) &
     done
-    wait && stty "$tty_settings"
+    wait && { stty "${tty_settings}" &>/dev/null || echo "${tty_settings}" | stty &>/dev/null; }
 )
 
 if [[ ! -s ${up_list} ]]; then
