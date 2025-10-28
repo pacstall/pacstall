@@ -108,7 +108,7 @@ tabs -4
 tty_settings=$(stty -g)
 
 # TODO: REMOVE THIS AFTER https://github.com/uutils/coreutils/issues/9056.
-if strings -a "$(which stty)" | grep -q 'rust'; then
+if dpkg -s "coreutils-from-uutils" &>/dev/null; then
     rust_stty=0
 else
     rust_stty=1
