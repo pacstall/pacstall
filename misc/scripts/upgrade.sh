@@ -125,18 +125,11 @@ fancy_message sub $"Checking versions"
 
 tty_settings=$(stty -g)
 
-# TODO: REMOVE THIS AFTER https://github.com/uutils/coreutils/issues/9056.
-if dpkg -s "coreutils-from-uutils" &>/dev/null; then
-    rust_stty=1
-else
-    rust_stty=0
-fi
-
 N="$(nproc)"
 (
     for i in "${list[@]}"; do
         ((n = n % N))
-        ((n++ == 0)) && wait && if ((rust_stty)); then echo "${tty_settings}" | stty &>/dev/null; else stty "${tty_settings}"; fi
+        ((n++ == 0)) && wait && { stty "${tty_settings}" &>/dev/null || echo "${tty_settings}" | stty &>/dev/null; }
         (
             unset _pkgbase _remoterepo
             source "$METADIR/$i"
@@ -257,7 +250,7 @@ N="$(nproc)"
             fi
         ) &
     done
-    wait && if ((rust_stty)); then echo "${tty_settings}" | stty &>/dev/null; else stty "${tty_settings}"; fi
+    wait && { stty "${tty_settings}" &>/dev/null || echo "${tty_settings}" | stty &>/dev/null; }
 )
 
 if [[ ! -s ${up_list} ]]; then

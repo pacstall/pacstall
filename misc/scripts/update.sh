@@ -107,13 +107,6 @@ tabs -4
 
 tty_settings=$(stty -g)
 
-# TODO: REMOVE THIS AFTER https://github.com/uutils/coreutils/issues/9056.
-if dpkg -s "coreutils-from-uutils" &>/dev/null; then
-    rust_stty=1
-else
-    rust_stty=0
-fi
-
 # shellcheck disable=SC2207
 old_version=($(pacstall -V))
 # shellcheck disable=SC2207
@@ -144,7 +137,7 @@ sudo wget -q -O "${MAN8DIR}/pacstall.8" "${REPO}/misc/man/pacstall.8" &
 sudo wget -q -O "${MAN5DIR}/pacstall.5" "${REPO}/misc/man/pacstall.5" &
 sudo wget -q -O "${BASH_COMPLETION_DIR}/pacstall" "${REPO}/misc/completion/bash" &
 sudo wget -q -O "${FISH_COMPLETION_DIR}/pacstall.fish" "${REPO}/misc/completion/fish" &
-wait && if ((rust_stty)); then echo "${tty_settings}" | stty &>/dev/null; else stty "${tty_settings}"; fi
+wait && { stty "${tty_settings}" &>/dev/null || echo "${tty_settings}" | stty &>/dev/null; }
 
 fancy_message sub $"Rebuilding translations"
 for lang in "${linguas[@]}"; do
