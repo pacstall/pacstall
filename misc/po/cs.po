@@ -1,27 +1,30 @@
 msgid ""
 msgstr ""
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2025-11-06 22:51+0000\n"
+"Last-Translator: Pavel Borecki <pavel.borecki@gmail.com>\n"
+"Language-Team: Czech <https://hosted.weblate.org/projects/pacstall/pacstall/"
+"cs/>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: pacstall:287 misc/scripts/build.sh:163 misc/scripts/build.sh:688
 #: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:735
 #: misc/scripts/fetch-sources.sh:765 misc/scripts/package-base.sh:173
 #: misc/scripts/package-base.sh:194
 msgid "Cleaning up"
-msgstr ""
+msgstr "Čištění"
 
 #: pacstall:381
 msgid "Suggested solution(s)"
-msgstr ""
+msgstr "Navrhovaná řešení"
 
 #: pacstall:415
 msgid "Packagelist not found"
-msgstr ""
+msgstr "Seznam balíčků nenalezen"
 
 #: pacstall:416 pacstall:425
 msgid "Confirm that '%b' exists"
@@ -29,7 +32,7 @@ msgstr ""
 
 #: pacstall:418
 msgid "Failed to download file, check your connection"
-msgstr ""
+msgstr "Soubor se nepodařilo stáhnout – zkontrolujte své připojení"
 
 #: pacstall:424
 msgid "The URL cannot be found"
