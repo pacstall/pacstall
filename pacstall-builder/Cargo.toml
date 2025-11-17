@@ -1,0 +1,7 @@
+[package]
+name = "pacstall-builder"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+
+[dependencies]
