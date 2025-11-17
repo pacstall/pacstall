@@ -1291,7 +1291,7 @@ checksum = "f9fbbcab51052fe104eb5e5d351cf728d30a5be1fe14d9be8a3b097481fb97de"
 
 [[package]]
 name = "libpacstall"
-version = "0.8.0"
+version = "0.8.1"
 dependencies = [
  "brush-core",
  "colored 3.0.0",
