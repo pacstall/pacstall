@@ -1,14 +1,42 @@
-#![allow(dead_code)] // While we finish the plumbing
-
 use std::{
     collections::BTreeMap,
     error::Error,
     ops::{Deref, DerefMut, RangeInclusive},
 };
 
+#[derive(Clone)]
 pub struct StringSpan {
     string: String,
     span: RangeInclusive<usize>,
+}
+
+impl PartialEq for StringSpan {
+    fn eq(&self, other: &Self) -> bool {
+        self.string.eq(&other.string)
+    }
+}
+
+impl Eq for StringSpan {}
+
+impl PartialOrd for StringSpan {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        self.string.partial_cmp(&other.string)
+    }
+}
+
+impl Ord for StringSpan {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.string.cmp(&other.string)
+    }
+}
+
+impl Default for StringSpan {
+    fn default() -> Self {
+        Self {
+            string: String::new(),
+            span: 0..=0,
+        }
+    }
 }
 
 impl Deref for StringSpan {
@@ -50,19 +78,28 @@ pub enum BashValue {
     IndexedArray(BTreeMap<u64, StringSpan>),
 }
 
-/* impl TryInto<BashValue> for ShellValue {
-    // TODO: Add some error.
-    type Error = ();
-
-    fn try_into(self) -> Result<BashValue, Self::Error> {
+impl BashValue {
+    /// Decay arrays into their first element.
+    pub fn decay(self) -> StringSpan {
         match self {
-            Self::String(s) => Ok(BashValue::String(s)),
-            Self::AssociativeArray(a) => Ok(BashValue::AssociatedArray(a)),
-            Self::IndexedArray(a) => Ok(BashValue::IndexedArray(a)),
-            _ => Err(()),
+            Self::String(s) => s,
+            Self::AssociatedArray(elems) => {
+                let first = elems.iter().map(|s| s.0).min_by_key(|&s| s.span.start());
+                match first {
+                    Some(first) => elems.get(first).cloned().unwrap_or_default(),
+                    None => StringSpan::default(),
+                }
+            }
+            Self::IndexedArray(elems) => {
+                let lowest = elems.iter().map(|s| s.0).min();
+                match lowest {
+                    Some(lowest) => elems.get(lowest).cloned().unwrap_or_default(),
+                    None => StringSpan::default(),
+                }
+            }
         }
     }
-} */
+}
 
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub enum PassOrFail<E> {
@@ -131,14 +168,14 @@ impl<E> MicroCheck<E> {
 
     pub fn new(
         name: &'static str,
-        status: PassOrFail<E>,
         desc: Option<&'static str>,
         help_link: Option<&'static str>,
+        status: PassOrFail<E>,
     ) -> Self {
         Self {
             name,
-            status,
             desc,
+            status,
             help_link,
         }
     }
@@ -151,6 +188,10 @@ pub enum PassType {
 }
 
 impl<E> CheckStatus<E> {
+    pub const fn new() -> Self {
+        Self { passes: vec![] }
+    }
+
     pub fn name(&self, idx: usize) -> Option<&str> {
         self.passes.get(idx).map(MicroCheck::name)
     }
@@ -180,11 +221,27 @@ impl<E> CheckStatus<E> {
     }
 }
 
-pub trait Check<I, E>
-where
-    I: Into<BashValue>,
-    E: Error,
-{
+pub trait Check {
+    type Err: Error;
+
     /// Run check(s) and report their pass/fail status.
-    fn check(&self, input: I) -> CheckStatus<E>;
+    fn check(&self, input: BashValue) -> CheckStatus<Self::Err>;
 }
+
+#[macro_export]
+macro_rules! impl_check {
+    ($checks:ident, $check:expr, $name:expr, $desc:expr, $help:expr, $error:expr) => {
+        $checks.push(MicroCheck::new(
+            $name,
+            $desc,
+            $help,
+            if $check {
+                PassOrFail::Pass
+            } else {
+                PassOrFail::Fail($error)
+            },
+        ))
+    };
+}
+
+pub(super) use impl_check;

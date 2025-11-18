@@ -1,3 +1,5 @@
+#![allow(dead_code)] // While we finish the plumbing
+
 mod args;
 mod cmds;
 
