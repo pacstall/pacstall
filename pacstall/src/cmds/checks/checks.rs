@@ -203,6 +203,15 @@ pub enum PassType {
     Failing,
 }
 
+impl<E> From<PassOrFail<E>> for PassType {
+    fn from(value: PassOrFail<E>) -> Self {
+        match value {
+            PassOrFail::Pass => Self::Passing,
+            PassOrFail::Fail(_) => Self::Failing,
+        }
+    }
+}
+
 impl<E> CheckStatus<E> {
     pub const fn new() -> Self {
         Self { passes: vec![] }
@@ -222,7 +231,7 @@ impl<E> CheckStatus<E> {
 
     /// Determine whether a check has failed to complete all of its subchecks.
     pub fn has_error(&self) -> bool {
-        self.passes.iter().any(|pass| pass.failed())
+        self.passes.iter().any(MicroCheck::failed)
     }
 
     /// Filter out a list based on a predicate.
