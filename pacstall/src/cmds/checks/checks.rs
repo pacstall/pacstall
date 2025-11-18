@@ -4,7 +4,11 @@ use std::{
     ops::{Deref, DerefMut, RangeInclusive},
 };
 
-#[derive(Clone)]
+/// A wrapper for a [`String`] that includes a source span.
+///
+/// This should behave exactly like a string does, and any difference in behavior should be
+/// considered a bug.
+#[derive(Clone, Eq)]
 pub struct StringSpan {
     string: String,
     span: RangeInclusive<usize>,
@@ -15,8 +19,6 @@ impl PartialEq for StringSpan {
         self.string.eq(&other.string)
     }
 }
-
-impl Eq for StringSpan {}
 
 impl PartialOrd for StringSpan {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
@@ -72,14 +74,38 @@ impl StringSpan {
     }
 }
 
+/// All relevant bash types that a pacstall key can be.
 pub enum BashValue {
+    /// A single string.
+    ///
+    /// ```bash
+    /// foo="bar"
+    /// ```
     String(StringSpan),
+    /// An associated array.
+    ///
+    /// ```bash
+    /// foo=([a]="here is a" [b]="here is b")
+    /// ```
     AssociatedArray(BTreeMap<StringSpan, StringSpan>),
+    /// An index array.
+    ///
+    /// ```bash
+    /// foo=(1 2 3)
+    /// ```
     IndexedArray(BTreeMap<u64, StringSpan>),
 }
 
 impl BashValue {
     /// Decay arrays into their first element.
+    ///
+    /// Equivalent to:
+    ///
+    /// ```bash
+    /// foo=(bar baz bing)
+    /// my_bar="${foo}" # Is now `bar`
+    /// ```
+    #[must_use = "return value should be considered or else there is no point in decaying"]
     pub fn decay(self) -> StringSpan {
         match self {
             Self::String(s) => s,
@@ -101,6 +127,7 @@ impl BashValue {
     }
 }
 
+/// Has a [`MicroCheck`] passed or failed?
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub enum PassOrFail<E> {
     Pass,
@@ -124,23 +151,9 @@ pub struct CheckStatus<E> {
     passes: Vec<MicroCheck<E>>,
 }
 
-impl<E> Deref for CheckStatus<E> {
-    type Target = Vec<MicroCheck<E>>;
-
-    fn deref(&self) -> &Self::Target {
-        &self.passes
-    }
-}
-
-impl<E> DerefMut for CheckStatus<E> {
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.passes
-    }
-}
-
 impl<E> MicroCheck<E> {
-    pub fn name(&self) -> &str {
-        &self.name
+    pub fn name(&self) -> &'static str {
+        self.name
     }
 
     pub fn desc(&self) -> Option<&'static str> {
@@ -181,6 +194,9 @@ impl<E> MicroCheck<E> {
     }
 }
 
+/// Which [`PassOrFail`] branch is hit?
+///
+/// See [`CheckStatus::filter_type`].
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub enum PassType {
     Passing,
@@ -209,25 +225,32 @@ impl<E> CheckStatus<E> {
         self.passes.iter().any(|pass| pass.failed())
     }
 
+    /// Filter out a list based on a predicate.
+    ///
+    /// See [`PassType`].
     pub fn filter_type(&self, pass_type: PassType) -> impl Iterator<Item = &MicroCheck<E>> {
-        self.iter().filter(move |pass| match pass_type {
+        self.passes.iter().filter(move |pass| match pass_type {
             PassType::Passing => pass.passed(),
             PassType::Failing => pass.failed(),
         })
     }
 
+    /// Push a check into the status.
     pub fn push(&mut self, chk: MicroCheck<E>) {
         self.passes.push(chk);
     }
 }
 
+/// Implement an umbrella of checks for a given input.
 pub trait Check {
+    /// The check's error type.
     type Err: Error;
 
     /// Run check(s) and report their pass/fail status.
     fn check(&self, input: BashValue) -> CheckStatus<Self::Err>;
 }
 
+/// Convenience wrapper for adding [`MicroCheck`]s to the [`CheckStatus`] array.
 #[macro_export]
 macro_rules! impl_check {
     ($checks:ident, $check:expr, $name:expr, $desc:expr, $help:expr, $error:expr) => {
