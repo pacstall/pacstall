@@ -9,6 +9,7 @@ anyhow = "1.0.98"
 brush-core = { version = "0.3.1", git = "https://github.com/reubeno/brush.git" }
 clap = { version = "4.5.37", features = ["cargo", "derive", "string"] }
 cli-prompts = "0.1.0"
+debian-packaging = { version = "0.18.0", default-features = false }
 pacstall-core = { path = "../pacstall-core" }
 thiserror = "2.0.12"
 tokio = "1.48.0"

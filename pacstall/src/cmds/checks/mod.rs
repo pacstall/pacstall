@@ -3,13 +3,13 @@ pub mod checks;
 
 // Checks
 pub mod pacname;
+pub mod pkgver;
 /*
 // Reference list
 // Not all are separate modules
 pub mod gives;
 pub mod pkgrel;
 pub mod epoch;
-pub mod version;
 pub mod source_deb_test;
 pub mod source;
 pub mod pkgdesc;

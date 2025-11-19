@@ -30,7 +30,7 @@ impl Check for Pacname {
             "pacname exists",
             Some("Package does not contain 'pacname'"),
             Some("url"),
-            PacnameError::Empty
+            Self::Err::Empty
         );
 
         let (has_min_size, size) = Self::two_minimum_chars(&input);
@@ -40,7 +40,7 @@ impl Check for Pacname {
             "pacname size",
             Some("'pacname' must be at least two characters long"),
             Some("url"),
-            PacnameError::MinimumSizeViolation(size)
+            Self::Err::MinimumSizeViolation(size)
         );
 
         impl_check!(
@@ -49,7 +49,7 @@ impl Check for Pacname {
             "pacname uppercase",
             Some("'pacname' must not contain uppercase letters"),
             Some("url"),
-            PacnameError::CaseViolation
+            Self::Err::CaseViolation
         );
 
         checks

@@ -256,6 +256,8 @@ pub trait Check {
     type Err: Error;
 
     /// Run check(s) and report their pass/fail status.
+    ///
+    /// It's generally a good idea to have many individual subchecks that compose this [`Check::check`]. Try to keep subchecks as small as possible. Bonus points if they return a bool, so they can be easily unit tested.
     fn check(&self, input: BashValue) -> CheckStatus<Self::Err>;
 }
 
