@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-07-18 23:03+0000\n"
-"Last-Translator: SteveXu9102 <2849130532@qq.com>\n"
+"PO-Revision-Date: 2025-11-22 11:51+0000\n"
+"Last-Translator: M0n1kk4 <monika18dol@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "pacstall/pacstall/zh_SIMPLIFIED/>\n"
 "Language: zh_SIMPLIFIED\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.13-dev\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: pacstall:287 misc/scripts/build.sh:163 misc/scripts/build.sh:688
 #: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:735
@@ -515,7 +515,7 @@ msgstr "'%s' 不是有效许可证"
 
 #: misc/scripts/checks.sh:717
 msgid "'%s' must be prefixed with a constraint (<=|>=|=|<|>)"
-msgstr ""
+msgstr "'%s' 必须以某种约束条件作为前缀(<=|>=|=|<|>)"
 
 #: misc/scripts/fetch-sources.sh:29
 msgid "Could not find build.sh"
@@ -646,8 +646,6 @@ msgid "%b versions cannot be satisfied"
 msgstr "该%b版本无法满足"
 
 #: misc/scripts/fetch-sources.sh:731
-#, fuzzy
-#| msgid "%b version(s) cannot be satisfied"
 msgid "%b version cannot be satisfied"
 msgstr "%b版本无法满足"
 
@@ -657,9 +655,8 @@ msgid "Checking check dependencies"
 msgstr "正在检查此检查依赖"
 
 #: misc/scripts/fetch-sources.sh:784
-#, fuzzy
 msgid "Creating build dependency/conflicts dummy package"
-msgstr "创建此构建依赖中/冲突虚拟软件包"
+msgstr "创建用于检测构建依赖关系及冲突的虚拟包"
 
 #: misc/scripts/fetch-sources.sh:799
 msgid "Failed to install build or check dependencies"
@@ -667,7 +664,7 @@ msgstr "无法安装此构建或检查该依赖"
 
 #: misc/scripts/fetch-sources.sh:882
 msgid "Kernel version constraint for this Pacscript not satisfied: %b"
-msgstr ""
+msgstr "此 Pacscript 的内核版本要求未得到满足：%b"
 
 #: misc/scripts/get-pacscript.sh:33
 msgid "Run '%b'"
@@ -706,9 +703,8 @@ msgid "Found pkgbase: %b"
 msgstr "已获取 pkgbase: %b"
 
 #: misc/scripts/package-base.sh:129
-#, fuzzy
 msgid "%b has exceeded the maximum number of packages to build. Skipping"
-msgstr "此 %b 已超过该最大可构建包的数量. 跳过中"
+msgstr "%b超过了可构建的包的最大数量。正在跳过"
 
 #: misc/scripts/package-base.sh:209
 msgid "%b is not an integer. Falling back to 1"
@@ -719,9 +715,8 @@ msgid "(%b) Do you want to view/edit the pacscript?"
 msgstr "(%b) 您想查看/编辑此pacscipt吗?"
 
 #: misc/scripts/package-base.sh:231
-#, fuzzy
 msgid "Editor not found, falling back to '%s'"
-msgstr "此编辑器不存在, 退回至 '%s'"
+msgstr "未找到编辑器，将回退使用'%s'"
 
 #: misc/scripts/package-base.sh:236
 #, fuzzy
@@ -729,9 +724,8 @@ msgid "Sourcing pacscript"
 msgstr "寻找pacscript脚本中"
 
 #: misc/scripts/package-base.sh:260
-#, fuzzy
 msgid "Could not source pacscript"
-msgstr "无法采购pacscript脚本"
+msgstr "无法找到 pacscript 的来源"
 
 #: misc/scripts/package.sh:28
 msgid "This package will connect to the internet during its build process."
@@ -773,9 +767,8 @@ msgid "This script replaces %s. Do you want to proceed?"
 msgstr "该脚本代替 %s. 您确定要继续执行吗?"
 
 #: misc/scripts/package.sh:156
-#, fuzzy
 msgid "%b conflicts with %s, which is currently installed by apt"
-msgstr "该 %b 与 %s 不兼容, 因正在被apt安装"
+msgstr "%b与%s存在冲突，而%s目前是通过apt安装的"
 
 #: misc/scripts/package.sh:157 misc/scripts/package.sh:179
 msgid "Remove the apt package by running '%b'"
@@ -790,14 +783,12 @@ msgid "Remove the pacstall package by running '%b'"
 msgstr "执行 '%b' 以移除该pacstall软件包"
 
 #: misc/scripts/package.sh:178
-#, fuzzy
 msgid "%b breaks %s, which is currently installed by apt"
-msgstr "该 %b 导致 %s 报错, 因正在被apt安装"
+msgstr "%b会中断当前通过apt安装的%s程序"
 
 #: misc/scripts/package.sh:185
-#, fuzzy
 msgid "%b breaks %s, which is currently installed by pacstall"
-msgstr "该 %b 导致 %s 报错, 因正在被pacstall安装"
+msgstr "%b会中断当前通过pacstall安装的%s程序"
 
 #: misc/scripts/package.sh:203
 msgid "Checking pacstall dependencies"
@@ -825,7 +816,7 @@ msgstr "运行该函数中"
 
 #: misc/scripts/package.sh:386
 msgid "Could not %s %s properly"
-msgstr ""
+msgstr "无法执行 %s %s 操作"
 
 #: misc/scripts/quality-assurance.sh:49
 msgid "%b is not a valid provider!"
@@ -836,9 +827,8 @@ msgid "available providers are: '%s'"
 msgstr "可用的提供者有: '%s'"
 
 #: misc/scripts/quality-assurance.sh:59
-#, fuzzy
 msgid "Returning %b backup"
-msgstr "返回该 %b 的备份中"
+msgstr "正在恢复 %b 备份文件"
 
 #: misc/scripts/quality-assurance.sh:68
 msgid "'%s' and '%s' cannot be empty!"
@@ -857,19 +847,17 @@ msgid "Installing %b"
 msgstr "正在安装 %b"
 
 #: misc/scripts/query-info.sh:102
-#, fuzzy
 msgid "Key '%s' does not exist"
-msgstr "该钥匙 '%s' 不存在"
+msgstr "键“%s”不存在"
 
 #: misc/scripts/remove.sh:29 misc/scripts/remove.sh:34
-#, fuzzy
 msgid "%s is not installed"
-msgstr "无安装此 %s"
+msgstr "%s未安装"
 
 #: misc/scripts/remove.sh:45
 msgid ""
 "You may have dangling PPAs on your system. You can remove them using '%b'"
-msgstr ""
+msgstr "你的系统里可能还有一些残留的 PPA。你可以用'%b'命令把它们删除"
 
 #: misc/scripts/search.sh:256 misc/scripts/search.sh:258
 #: misc/scripts/search.sh:290
@@ -877,9 +865,8 @@ msgid "There is no package with the name %b in the repo %b"
 msgstr "无软件包命名为 %b 出现在该仓库里: %b"
 
 #: misc/scripts/search.sh:306
-#, fuzzy
 msgid "%b is not on your repo list or does not exist"
-msgstr "该 %b 没有出现在您的仓库列表中或此软件包不存在"
+msgstr "%b 不在你的软件源列表中，或者该源不存在"
 
 #: misc/scripts/search.sh:361 misc/scripts/search.sh:444
 #: misc/scripts/search.sh:475
@@ -887,9 +874,8 @@ msgid "There is no package with the name %b"
 msgstr "无软件包命名为 %b"
 
 #: misc/scripts/search.sh:379
-#, fuzzy
 msgid "Add %s to the local repo absolute path on %b"
-msgstr "在 %b 的本地仓库的绝对路径中加入 %s"
+msgstr "把 %s 加到 %b 的本地仓库绝对路径里"
 
 #: misc/scripts/search.sh:383
 msgid "Replace '~' with the full home path on %b"
@@ -909,14 +895,12 @@ msgid "Cannot connect to Pacstall repo: %b"
 msgstr "无法连接至Pacstall仓库: %b"
 
 #: misc/scripts/search.sh:505
-#, fuzzy
 msgid "%bDo you want to %s %b from the official repo?"
-msgstr "%b您要 %s %b 从官方仓库吗?"
+msgstr "%b您是否想要从官方仓库下载 %b 文件？"
 
 #: misc/scripts/search.sh:523
-#, fuzzy
 msgid "%bDo you want to %s %b from the repo %b?"
-msgstr "%b您要 %s %b 从仓库吗?"
+msgstr "%b您是否想要从仓库 %b中获取 %s %b？"
 
 #: misc/scripts/update.sh:64
 #, fuzzy
