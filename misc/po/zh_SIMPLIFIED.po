@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2025-11-22 11:51+0000\n"
-"Last-Translator: M0n1kk4 <monika18dol@gmail.com>\n"
+"Last-Translator: cy lin <cylin577@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "pacstall/pacstall/zh_SIMPLIFIED/>\n"
 "Language: zh_SIMPLIFIED\n"
@@ -650,7 +650,6 @@ msgid "%b version cannot be satisfied"
 msgstr "%b版本无法满足"
 
 #: misc/scripts/fetch-sources.sh:743
-#, fuzzy
 msgid "Checking check dependencies"
 msgstr "正在检查此检查依赖"
 
