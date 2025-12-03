@@ -658,11 +658,13 @@ function getMasks_offending_pkg() {
     { ignore_stack=true; return 1; }
 }
 
-# run sudo apt update if it's been more than a week
-eval "$(apt-config shell State Dir::State)"
-eval "$(apt-config shell List Dir::State::Lists)"
-[[ -z "$(find -H "/${State}/${List}" -maxdepth 0 -mtime -7)" ]] && sudo apt-get update -qq --allow-releaseinfo-change
-unset State List
+function apt_update() {
+    # run sudo apt update if it's been more than a week
+    eval "$(apt-config shell State Dir::State)"
+    eval "$(apt-config shell List Dir::State::Lists)"
+    [[ -z "$(find -H "/${State}/${List}" -maxdepth 0 -mtime -7)" ]] && sudo apt-get update -qq --allow-releaseinfo-change
+    unset State List
+}
 
 # shellcheck source=./misc/scripts/error-log.sh
 source "$SCRIPTDIR/scripts/error-log.sh"
@@ -750,6 +752,8 @@ function lock() {
     local ignore_long="--search --download --add-repo --remove-repo --version --tree --search-description --search-info --cache-info --help"
     local ignore="$ignore_short $ignore_long"
 
+    ((EUID != 0)) && { ignore_stack=true; return 0; }
+
     for ((i = 1; i <= option_flags + 1; i++)); do
         if [[ $ignore =~ (^|[[:space:]])"${!i}"($|[[:space:]]) ]]; then
             { ignore_stack=true; return 1; }
@@ -785,6 +789,25 @@ fi
 
 # don't allow nosandbox to be run with envars
 unset NOSANDBOX
+
+function elevate() {
+    if ((EUID != 0)); then
+        ((PACSTALL_DEBUG == 0)) || debug="-x"
+        [[ $KEEP ]] && keep="-K"
+        ((PACSTALL_INSTALL == 0)) || build="-B"
+        [[ $NOCHECK ]] && nocheck="-Nc"
+        [[ $PACSTALL_VERBOSE ]] || quiet="-Q"
+        [[ $NOSANDBOX ]] && nosandbox="-Ns"
+
+        sudo PACSTALL_SUPPRESS_SOLUTIONS="$PACSTALL_SUPPRESS_SOLUTIONS" \
+            PACSTALL_BUILD_CORES="$PACSTALL_BUILD_CORES" PACSTALL_EDITOR="$PACSTALL_EDITOR" \
+            PACSTALL_DOWNLOADER="$PACSTALL_DOWNLOADER" PACSTALL_PAYLOAD="$PACSTALL_PAYLOAD" \
+            PACSTALL_TMPDIR="$PACSTALL_TMPDIR" NO_COLOR="$NO_COLOR" SUDO_USER="${SUDO_USER}" \
+            DISABLE_PROMPTS="$DISABLE_PROMPTS" pacstall "$debug" "$keep" "$build" "$nocheck" "$quiet" "$nosandbox" $@
+        code=$?
+        { ignore_stack=true; exit $code; }
+    fi
+}
 
 while [[ $1 != "--" ]]; do
     case "$1" in
@@ -870,6 +893,9 @@ Helpful links:
             ;;
 
         -I | --install)
+            elevate
+            apt_update
+
             unset CHILD PKGPATH
             if [[ -z $2 ]]; then
                 fancy_message error $"You failed to specify a package"
@@ -1064,6 +1090,7 @@ Helpful links:
             ;;
 
         -R | --remove)
+            elevate
 
             if [[ -z $2 ]]; then
                 fancy_message error $"You failed to specify a package"
@@ -1082,6 +1109,8 @@ Helpful links:
             ;;
 
         -A | --add-repo)
+            elevate
+
             REPO="${2%/}"
             ALIAS="${3#*@}"
             REPOCMD="add"
@@ -1103,6 +1132,8 @@ Helpful links:
             ;;
 
         -Rr | --remove-repo)
+            elevate
+
             REPO="${2%/}"
             ALIAS="${3#*@}"
             REPOCMD="remove"
@@ -1137,6 +1168,8 @@ Helpful links:
             ;;
 
         -U | --update)
+            elevate
+
             if ! is_apt_package_installed "pacstall"; then
                 # If the input is `.`, is a directory, and there is no other input
                 if [[ $2 == "." && -d $2 && -z $3 ]]; then
@@ -1283,6 +1316,9 @@ Helpful links:
                 exit 1
             fi
 
+            elevate
+            apt_update
+
             check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
                 fancy_message error $"Could not connect to the internet"
                 suggested_solution $"Confirm that the URLs '%b' or '%b' are accessible" "${UGreen}https://github.com${NC}" "${UGreen}https://gitlab.com${NC}"
@@ -1320,6 +1356,8 @@ Helpful links:
             ;;
 
         -M | --mark)
+            elevate
+
             PACKAGE=$2
             STATE=$3
             if [[ -z $PACKAGE ]]; then
