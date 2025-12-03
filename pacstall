@@ -1316,8 +1316,7 @@ Helpful links:
                 exit 1
             fi
 
-            elevate
-            apt_update
+            [[ $LIST_ONLY ]] || { elevate; apt_update }
 
             check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
                 fancy_message error $"Could not connect to the internet"
