@@ -1309,14 +1309,17 @@ Helpful links:
             ;;
 
         -Up | --upgrade | -Lu | --list-upgrades)
+            elevate
             [[ ${1} == "-Lu" || ${1} == "--list-upgrades" ]] && LIST_ONLY=true
+            [[ $LIST_ONLY ]] || apt_update
+
             shift
             if [[ -n $* ]]; then
                 fancy_message error $"Invalid argument '%s'" "$*"
                 exit 1
             fi
 
-            [[ $LIST_ONLY ]] || { elevate; apt_update }
+
 
             check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
                 fancy_message error $"Could not connect to the internet"
