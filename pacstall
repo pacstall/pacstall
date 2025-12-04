@@ -752,7 +752,7 @@ function lock() {
     local ignore_long="--search --download --add-repo --remove-repo --version --tree --search-description --search-info --cache-info --help"
     local ignore="$ignore_short $ignore_long"
 
-    ((EUID != 0)) && { ignore_stack=true; return 0; }
+    ((EUID != 0)) && { ignore_stack=true; return 1; }
 
     for ((i = 1; i <= option_flags + 1; i++)); do
         if [[ $ignore =~ (^|[[:space:]])"${!i}"($|[[:space:]]) ]]; then
@@ -764,9 +764,11 @@ function lock() {
         fi
     done
 
-    if [[ -f "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak" ]]; then
+    if [[ -f "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak" ]] || [[ $PACSTALL_ELEVATED ]]; then
+        valid=2
+        [[ -f "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak" ]] && [[ $PACSTALL_ELEVATED ]] && valid=3
         instances=($(pidof -o %PPID -x "$0"))
-        if [[ ${#instances[@]} -lt 2 ]]; then
+        if [[ ${#instances[@]} -lt $valid ]]; then
             { ignore_stack=true; return 1; }
         fi
         return 0
@@ -794,16 +796,17 @@ function elevate() {
     if ((EUID != 0)); then
         ((PACSTALL_DEBUG == 0)) || debug="-x"
         [[ $KEEP ]] && keep="-K"
-        ((PACSTALL_INSTALL == 0)) || build="-B"
+        ((PACSTALL_INSTALL == 1)) || build="-B"
         [[ $NOCHECK ]] && nocheck="-Nc"
-        [[ $PACSTALL_VERBOSE ]] || quiet="-Q"
+        ${PACSTALL_VERBOSE} || quiet="-Q"
         [[ $NOSANDBOX ]] && nosandbox="-Ns"
 
         sudo PACSTALL_SUPPRESS_SOLUTIONS="$PACSTALL_SUPPRESS_SOLUTIONS" \
             PACSTALL_BUILD_CORES="$PACSTALL_BUILD_CORES" PACSTALL_EDITOR="$PACSTALL_EDITOR" \
             PACSTALL_DOWNLOADER="$PACSTALL_DOWNLOADER" PACSTALL_PAYLOAD="$PACSTALL_PAYLOAD" \
             PACSTALL_TMPDIR="$PACSTALL_TMPDIR" NO_COLOR="$NO_COLOR" SUDO_USER="${SUDO_USER}" \
-            DISABLE_PROMPTS="$DISABLE_PROMPTS" pacstall "$debug" "$keep" "$build" "$nocheck" "$quiet" "$nosandbox" $@
+            DISABLE_PROMPTS="$DISABLE_PROMPTS" PACSTALL_ELEVATED=true \
+            pacstall $debug $keep $build $nocheck $quiet $nosandbox $@
         code=$?
         { ignore_stack=true; exit $code; }
     fi
@@ -893,7 +896,7 @@ Helpful links:
             ;;
 
         -I | --install)
-            elevate
+            elevate $@
             apt_update
 
             unset CHILD PKGPATH
@@ -1090,7 +1093,7 @@ Helpful links:
             ;;
 
         -R | --remove)
-            elevate
+            elevate $@
 
             if [[ -z $2 ]]; then
                 fancy_message error $"You failed to specify a package"
@@ -1109,7 +1112,7 @@ Helpful links:
             ;;
 
         -A | --add-repo)
-            elevate
+            elevate $@
 
             REPO="${2%/}"
             ALIAS="${3#*@}"
@@ -1132,7 +1135,7 @@ Helpful links:
             ;;
 
         -Rr | --remove-repo)
-            elevate
+            elevate $@
 
             REPO="${2%/}"
             ALIAS="${3#*@}"
@@ -1168,7 +1171,7 @@ Helpful links:
             ;;
 
         -U | --update)
-            elevate
+            elevate $@
 
             if ! is_apt_package_installed "pacstall"; then
                 # If the input is `.`, is a directory, and there is no other input
@@ -1309,7 +1312,7 @@ Helpful links:
             ;;
 
         -Up | --upgrade | -Lu | --list-upgrades)
-            elevate
+            elevate $@
             [[ ${1} == "-Lu" || ${1} == "--list-upgrades" ]] && LIST_ONLY=true
             [[ $LIST_ONLY ]] || apt_update
 
@@ -1358,7 +1361,7 @@ Helpful links:
             ;;
 
         -M | --mark)
-            elevate
+            elevate $@
 
             PACKAGE=$2
             STATE=$3
