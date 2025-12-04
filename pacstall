@@ -801,14 +801,15 @@ function elevate() {
         ${PACSTALL_VERBOSE} || quiet="-Q"
         [[ $NOSANDBOX ]] && nosandbox="-Ns"
 
+        trap - ERR RETURN
+        unset ignore_stack
         sudo PACSTALL_SUPPRESS_SOLUTIONS="$PACSTALL_SUPPRESS_SOLUTIONS" \
             PACSTALL_BUILD_CORES="$PACSTALL_BUILD_CORES" PACSTALL_EDITOR="$PACSTALL_EDITOR" \
             PACSTALL_DOWNLOADER="$PACSTALL_DOWNLOADER" PACSTALL_PAYLOAD="$PACSTALL_PAYLOAD" \
             PACSTALL_TMPDIR="$PACSTALL_TMPDIR" NO_COLOR="$NO_COLOR" SUDO_USER="${SUDO_USER}" \
             DISABLE_PROMPTS="$DISABLE_PROMPTS" PACSTALL_ELEVATED=true \
             pacstall $debug $keep $build $nocheck $quiet $nosandbox $@
-        code=$?
-        { ignore_stack=true; exit $code; }
+        exit $?
     fi
 }
 
