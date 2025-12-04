@@ -816,14 +816,14 @@ function elevate() {
 while [[ $1 != "--" ]]; do
     case "$1" in
         -P | --disable-prompts)
-            fancy_message warn $"Prompts are disabled"
+            [[ $PACSTALL_ELEVATED ]] || fancy_message warn $"Prompts are disabled"
             export DISABLE_PROMPTS=yes
             export DEBIAN_FRONTEND=noninteractive
             ;;
 
         -B | --build-only)
             export PACDEB_DIR="$PWD"
-            fancy_message info $"Package will be built and not installed"
+            [[ $PACSTALL_ELEVATED ]] || fancy_message info $"Package will be built and not installed"
             export PACSTALL_INSTALL=0
             ;;
 
@@ -1323,8 +1323,6 @@ Helpful links:
                 exit 1
             fi
 
-
-
             check_url "https://github.com" 2> /dev/null || check_url "https://gitlab.com" 2> /dev/null || {
                 fancy_message error $"Could not connect to the internet"
                 suggested_solution $"Confirm that the URLs '%b' or '%b' are accessible" "${UGreen}https://github.com${NC}" "${UGreen}https://gitlab.com${NC}"
@@ -1407,23 +1405,23 @@ Helpful links:
             ;;
 
         -K | --keep)
-            fancy_message info $"Keeping build files"
+            [[ $PACSTALL_ELEVATED ]] || fancy_message info $"Keeping build files"
             KEEP=true
             ;;
 
         -Nc | --nocheck)
-            fancy_message info $"Skipping check() if present"
+            [[ $PACSTALL_ELEVATED ]] || fancy_message info $"Skipping check() if present"
             NOCHECK=true
             ;;
 
         -Q | --quiet)
-            fancy_message info $"Downloading package entries quietly"
+            [[ $PACSTALL_ELEVATED ]] || fancy_message info $"Downloading package entries quietly"
             PACSTALL_VERBOSE=false
             ;;
 
         -Ns | --nosandbox)
-            fancy_message warn $"Building package without bwrap sandbox"
-            fancy_message sub $"Be cautious, this exposes your system to potential harm"
+            [[ $PACSTALL_ELEVATED ]] || fancy_message warn $"Building package without bwrap sandbox"
+            [[ $PACSTALL_ELEVATED ]] || fancy_message sub $"Be cautious, this exposes your system to potential harm"
             NOSANDBOX=true
             ;;
 
