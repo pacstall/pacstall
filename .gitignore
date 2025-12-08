@@ -2,3 +2,4 @@
 *.tar.gz
 *.tar.xz
 *.gz
+target/
