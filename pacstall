@@ -1347,7 +1347,7 @@ Helpful links:
 
             source "$METADIR/$PACKAGE"
 
-            dpkg --listfiles "${_gives:-$_name}" | sed -e "s/[^-][^\/]*\//  │/g" -e "s/│\([^ ]\)/│──\1/"
+            dpkg --listfiles "${_gives:-$_name}" | sort | sed -e "s/[^-][^\/]*\//  │/g" -e "s/│\([^ ]\)/│──\1/"
             exit 0
             ;;
 
