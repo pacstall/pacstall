@@ -253,7 +253,7 @@ function cleanup() {
         fi
         [[ -n ${pkgbase} ]] && sudo rm -rf "${PACDIR}-selectopts-pkgbase-${pkgbase}" "${PACDIR}-no-download-${pkgbase}"
         # shellcheck disable=SC2153
-        [[ -n ${STAGEDIR} && -n ${PACKAGE} ]] && sudo rm -rf "${STAGEDIR}/${pacname:-$PACKAGE}" "${STAGEDIR:?}/${pacname}_*.deb"
+        [[ -n ${STAGEDIR} && -n ${PACKAGE} ]] && sudo rm -rf "${STAGEDIR}/${pacname:-$PACKAGE}"*
         [[ -n ${pacfile} ]] && sudo rm -f "${pacfile}"
         [[ -n ${srcinfile} ]] && sudo rm -f "${srcinfile}"
         [[ -n ${bwrapenv} ]] && sudo rm -f "${bwrapenv}"

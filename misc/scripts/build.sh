@@ -53,7 +53,7 @@ function deblog() {
 function clean_stagedir() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     sudo rm -rf "${STAGEDIR:?}/${pacname:?}"
-    sudo rm -f "${STAGEDIR:?}/${pacname}_*.deb"
+    sudo rm -f "${STAGEDIR:?}/${pacname}_"*".deb"
 }
 
 function check_gen_dep() {
