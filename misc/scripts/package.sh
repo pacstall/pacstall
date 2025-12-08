@@ -88,7 +88,7 @@ if [[ -n ${limit_kver} ]]; then
     fi
 fi
 
-clean_builddir
+clean_stagedir
 sudo mkdir -p "$STAGEDIR/$pacname/DEBIAN"
 sudo chmod a+rx "$STAGEDIR" "$STAGEDIR/$pacname" "$STAGEDIR/$pacname/DEBIAN"
 

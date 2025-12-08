@@ -50,10 +50,10 @@ function deblog() {
     echo "$key: ${content[*]}" | sudo tee -a "$STAGEDIR/$pacname/DEBIAN/control" > /dev/null
 }
 
-function clean_builddir() {
+function clean_stagedir() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     sudo rm -rf "${STAGEDIR:?}/${pacname:?}"
-    sudo rm -f "${STAGEDIR:?}/${pacname}_*.deb"
+    sudo rm -f "${STAGEDIR:?}/${pacname}_"*".deb"
 }
 
 function check_gen_dep() {
