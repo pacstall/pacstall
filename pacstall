@@ -23,9 +23,9 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 # Pacstall version
-version_number="6.3.7"
-version_name="Vanilla"
-declare -A version_color=([r]="245" [g]="245" [b]="191")
+version_number="6.3.8"
+version_name="Leukos"
+declare -A version_color=([r]="253" [g]="251" [b]="224")
 
 # Configuration
 export METADIR="/var/lib/pacstall/metadata"
