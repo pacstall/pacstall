@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-12-23 21:57+0000\n"
-"Last-Translator: XblateX <blate@users.noreply.hosted.weblate.org>\n"
+"PO-Revision-Date: 2025-12-10 12:52+0000\n"
+"Last-Translator: Oleksii Shashkov <iron.woodcutter@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/uk/>\n"
 "Language: uk\n"
@@ -10,29 +10,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.15-dev\n"
 
 #: pacstall:287 misc/scripts/build.sh:163 misc/scripts/build.sh:688
 #: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:753
 #: misc/scripts/fetch-sources.sh:783 misc/scripts/package-base.sh:173
 #: misc/scripts/package-base.sh:194
 msgid "Cleaning up"
-msgstr ""
+msgstr "Прибирання"
 
 #: pacstall:381
 msgid "Suggested solution(s)"
-msgstr ""
+msgstr "Запропоновані рішення"
 
 #: pacstall:415
 msgid "Packagelist not found"
-msgstr ""
+msgstr "Список пакетів не знайдено"
 
 #: pacstall:416 pacstall:425
 msgid "Confirm that '%b' exists"
-msgstr ""
+msgstr "Переконайтеся, що '%b' існує"
 
 #: pacstall:418
-#, fuzzy
 msgid "Failed to download file, check your connection"
 msgstr "Не вдалося завантажити файл, перевірте з'єднання"
 
@@ -42,57 +41,57 @@ msgstr "URL-адресу не знайдено"
 
 #: pacstall:432
 msgid "Failed with http code %s"
-msgstr ""
+msgstr "Помилка з http-кодом %s"
 
 #: pacstall:433
 msgid "Confirm that '%b' is accessible"
-msgstr ""
+msgstr "Переконайтеся, що '%b' доступний"
 
 #: pacstall:676 misc/scripts/package.sh:404 misc/scripts/package.sh:419
 #: misc/scripts/update.sh:47
 msgid "Could not enter into %s"
-msgstr ""
+msgstr "Не вдалося увійти в %s"
 
 #: pacstall:682
 msgid "Reading input from pipe"
-msgstr ""
+msgstr "Читання вхідних даних з каналу"
 
 #: pacstall:741
 msgid "Only one command flag can be used at a time"
-msgstr ""
+msgstr "Одночасно можна використовувати тільки один параметр команди"
 
 #: pacstall:783
 msgid "Pacstall is already running another instance"
-msgstr ""
+msgstr "Pacstall вже запускає інший екземпляр"
 
 #: pacstall:789
 msgid "The other instance has finished running, unlocking"
-msgstr ""
+msgstr "Інший екземпляр завершив роботу, розблокування"
 
 #: pacstall:819
 msgid "Prompts are disabled"
-msgstr ""
+msgstr "Повідомлення вимкнені"
 
 #: pacstall:826
 msgid "Package will be built and not installed"
-msgstr ""
+msgstr "Пакет буде зібрано, але не встановлено"
 
 #: pacstall:905 pacstall:978 pacstall:1040 pacstall:1081 pacstall:1100
 #: pacstall:1280 pacstall:1340 pacstall:1368 misc/scripts/query-info.sh:28
 msgid "You failed to specify a package"
-msgstr ""
+msgstr "Ви не вказали необхідний пакет"
 
 #: pacstall:910
 msgid "The installation of %s was interrupted, removing files"
-msgstr ""
+msgstr "Встановлення %s було перервано, видалення файлів"
 
 #: pacstall:947 misc/scripts/package-base.sh:139
 msgid "%s does not exist"
-msgstr ""
+msgstr "%s не існує"
 
 #: pacstall:985
 msgid "Payload not found"
-msgstr ""
+msgstr "Не знайдено завантаження"
 
 #: pacstall:998 pacstall:1045 pacstall:1085 pacstall:1213 pacstall:1290
 #: pacstall:1327
@@ -102,33 +101,32 @@ msgstr "Не вдалося підключитися до мережі інте�
 #: pacstall:999 pacstall:1046 pacstall:1086 pacstall:1214 pacstall:1291
 #: pacstall:1328
 msgid "Confirm that the URLs '%b' or '%b' are accessible"
-msgstr ""
+msgstr "Переконайтеся, що URL-адреси '%b' або '%b' доступні"
 
 #: pacstall:1015 pacstall:1305 misc/scripts/upgrade.sh:299
 msgid "Failed to download the %b pacscript"
-msgstr ""
+msgstr "Не вдалося завантажити %b pacscript"
 
 #: pacstall:1016 pacstall:1306
 msgid "Confirm that the package exists by running '%b'"
-msgstr ""
+msgstr "Перевірте наявність пакета, виконавши команду '%b'"
 
 #: pacstall:1016 pacstall:1306
-#, fuzzy
 msgid "Check your internet connection"
-msgstr "Перевірте підключення до інтернету"
+msgstr "Перевірте ваше підключення до мережі інтернет"
 
 #: pacstall:1022 misc/scripts/package-base.sh:163
 #: misc/scripts/package-base.sh:187
 msgid "Failed to install %b"
-msgstr ""
+msgstr "Не вдалося встановити %b"
 
 #: pacstall:1109
 msgid "Failed to remove %b"
-msgstr ""
+msgstr "Не вдалося видалити %b"
 
 #: pacstall:1132
 msgid "You failed to specify a repo to add"
-msgstr ""
+msgstr "Ви не вказали репозиторій для додавання"
 
 #: pacstall:1133
 msgid "Add a repository in the following format:"
@@ -139,6 +137,8 @@ msgid ""
 "Consult the pacstall man page by running '%b', and searching for the term "
 "'%b'"
 msgstr ""
+"Зверніться до сторінки довідки pacstall, виконавши команду '%b' і здійснивши "
+"пошук терміна '%b'"
 
 #: pacstall:1155
 msgid "You failed to specify a repo to remove"
@@ -150,36 +150,42 @@ msgstr "Видаліть репозиторій у наступному форм
 
 #: pacstall:1182
 msgid "%s is not a git repository"
-msgstr ""
+msgstr "%s не є репозиторієм git"
 
 #: pacstall:1219
 msgid ""
 "The repository you are trying to upgrade to contains a version of pacstall "
 "that cannot be updated from %b"
 msgstr ""
+"Репозиторій, який ви намагаєтеся оновити, містить версію pacstall, яку "
+"неможливо оновити з %b"
 
 #: pacstall:1220
 msgid ""
 "Visit %s for more information on how to reinstall. Most packages will also "
 "need to be reinstalled"
 msgstr ""
+"Відвідайте %s, щоб отримати додаткову інформацію про перевстановлення. "
+"Більшість пакетів також потрібно буде перевстановити"
 
 #: pacstall:1228
 msgid ""
 "Pacstall was installed from a %s, and cannot be updated with this command"
 msgstr ""
+"Pacstall було встановлено з %s і не може бути оновлено за допомогою цієї "
+"команди"
 
 #: pacstall:1229
 msgid "Install the latest %b from the %b repository"
-msgstr ""
+msgstr "Встановіть останню версію %b з репозиторію %b"
 
 #: pacstall:1229
 msgid "Install the latest %b with the command '%b'"
-msgstr ""
+msgstr "Встановіть останню версію %b за допомогою команди %b"
 
 #: pacstall:1237 pacstall:1322
 msgid "Invalid argument '%s'"
-msgstr ""
+msgstr "Недійсний аргумент '%s'"
 
 #: pacstall:1249
 msgid "Nothing installed yet"
@@ -187,259 +193,266 @@ msgstr "Поки що нічого не встановлено"
 
 #: pacstall:1310
 msgid "%b pacscript is downloaded to %b"
-msgstr ""
+msgstr "%b pacscript завантажено до %b"
 
 #: pacstall:1344 pacstall:1373 misc/scripts/query-info.sh:33
 msgid "Package is not installed"
-msgstr ""
+msgstr "Пакет не встановлено"
 
 #: pacstall:1385
 msgid "'%b' is not a valid option, use '%b' or '%b'"
-msgstr ""
+msgstr "'%b' не є дійсним варіантом, використовуйте '%b' або '%b'"
 
 #: pacstall:1408
 msgid "Keeping build files"
-msgstr ""
+msgstr "Збереження файлів збірки"
 
 #: pacstall:1413
 msgid "Skipping check() if present"
-msgstr ""
+msgstr "Пропустити check(), якщо присутній"
 
 #: pacstall:1418
 msgid "Downloading package entries quietly"
-msgstr ""
+msgstr "Завантаження пакета в фоновому режимі"
 
 #: pacstall:1423
 msgid "Building package without bwrap sandbox"
-msgstr ""
+msgstr "Створення пакета без пісочниці bwrap"
 
 #: pacstall:1424
 msgid "Be cautious, this exposes your system to potential harm"
-msgstr "Будьте обережні, це може завдати шкоди Вашій системі"
+msgstr "Будьте обережні, це наражає вашу систему на потенційну небезпеку"
 
 #: misc/scripts/add-repo.sh:29 misc/scripts/build.sh:41
 #: misc/scripts/search.sh:31 misc/scripts/upgrade.sh:47
 msgid "Could not find manage-repo.sh"
-msgstr ""
+msgstr "Не вдалося знайти manage-repo.sh"
 
 #: misc/scripts/add-repo.sh:39 misc/scripts/add-repo.sh:47
 #: misc/scripts/add-repo.sh:55 misc/scripts/add-repo.sh:63
 #: misc/scripts/add-repo.sh:70
 msgid "Assuming that git branch is %b"
-msgstr ""
+msgstr "Припускаючи, що гілка git є %b"
 
 #: misc/scripts/add-repo.sh:90
 msgid "Repository alias cannot be '%s'"
-msgstr ""
+msgstr "Псевдонім репозиторію не може бути '%s'"
 
 #: misc/scripts/add-repo.sh:93
 msgid "Repository alias cannot be a hyperlink"
-msgstr ""
+msgstr "Псевдонім репозиторію не може бути гіперпосиланням"
 
 #: misc/scripts/add-repo.sh:96
 msgid "Repository alias cannot start with '%s', '%s', or '%s'"
-msgstr ""
+msgstr "Псевдонім репозиторію не може починатися з '%s', '%s' або '%s'"
 
 #: misc/scripts/add-repo.sh:99
 msgid "The alias %b is already in use by %b"
-msgstr ""
+msgstr "Псевдонім %b вже використовується %b"
 
 #: misc/scripts/add-repo.sh:104
 msgid "%b is already in the repo list, doing nothing"
-msgstr ""
+msgstr "%b вже є в списку репозиторіїв, жодних дій не буде виконано"
 
 #: misc/scripts/add-repo.sh:107
 msgid "Do you want to add %b to the repo list?"
-msgstr ""
+msgstr "Ви хочете додати %b до списку репозиторіїв?"
 
 #: misc/scripts/add-repo.sh:112
 msgid "If the URL is a private repo, edit %b"
-msgstr ""
+msgstr "Якщо URL є приватним репозиторієм, відредагуйте %b"
 
 #: misc/scripts/add-repo.sh:113
 msgid "packagelist file not found"
-msgstr ""
+msgstr "файл списку пакунків не знайдено"
 
 #: misc/scripts/add-repo.sh:142
 msgid "Do you want to remove %b from the repo list?"
-msgstr ""
+msgstr "Ви хочете видалити %b зі списку репозиторіїв?"
 
 #: misc/scripts/add-repo.sh:154
 msgid "The repo list has been updated"
-msgstr ""
+msgstr "Список репозиторіїв було оновлено"
 
 #: misc/scripts/build.sh:29
 msgid "Could not find version-constraints"
-msgstr ""
+msgstr "Не вдалося знайти умови обмеження версії"
 
 #: misc/scripts/build.sh:35 misc/scripts/upgrade.sh:41
 msgid "Could not find srcinfo.sh"
-msgstr ""
+msgstr "Не вдалося знайти srcinfo.sh"
 
 #: misc/scripts/build.sh:95 misc/scripts/build.sh:100
 #: misc/scripts/fetch-sources.sh:705 misc/scripts/fetch-sources.sh:718
 #: misc/scripts/package.sh:240
 msgid "%b [required]"
-msgstr ""
+msgstr "%b [необхідний]"
 
 #: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:712
 msgid "%b [remote]"
-msgstr ""
+msgstr "%b [віддалений]"
 
 #: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:714
 #: misc/scripts/package.sh:235
 msgid "%b [installed]"
-msgstr ""
+msgstr "%b [встановлений]"
 
 #: misc/scripts/build.sh:156 misc/scripts/build.sh:176
 #: misc/scripts/fetch-sources.sh:742 misc/scripts/fetch-sources.sh:776
 msgid "%b does not exist in apt repositories"
-msgstr ""
+msgstr "%b не знайдено в репозиторіях apt"
 
 #: misc/scripts/build.sh:160 misc/scripts/build.sh:180
 #: misc/scripts/fetch-sources.sh:780
 msgid "%b version(s) cannot be satisfied"
-msgstr ""
+msgstr "Версія(ї) %b не відповідає(ють) вимогам"
 
 #: misc/scripts/build.sh:172
 msgid "Optional dependencies"
-msgstr ""
+msgstr "Необов'язкові залежності"
 
 #: misc/scripts/build.sh:207
 msgid "%b has exceeded the maximum number of optional dependencies. Skipping"
 msgstr ""
+"%b перевищив максимальну кількість необов'язкових залежностей. Пропускається"
 
 #: misc/scripts/build.sh:217 misc/scripts/package-base.sh:150
 msgid "Selecting packages %b"
-msgstr ""
+msgstr "Вибір пакетів %b"
 
 #: misc/scripts/build.sh:236
 msgid "Checking apt dependencies"
-msgstr ""
+msgstr "Перевірка залежностей apt"
 
 #: misc/scripts/build.sh:327
 msgid "Packing control.tar"
-msgstr ""
+msgstr "Пакування control.tar"
 
 #: misc/scripts/build.sh:337
 msgid "Packing data.tar"
-msgstr ""
+msgstr "Пакування data.tar"
 
 #: misc/scripts/build.sh:340
 msgid "Compressing"
-msgstr ""
+msgstr "Стиснення"
 
 #: misc/scripts/build.sh:365
 msgid "Packaging %b as %b"
-msgstr ""
+msgstr "Пакетування %b як %b"
 
 #: misc/scripts/build.sh:367 misc/scripts/package-base.sh:159
 msgid "Packaging %b"
-msgstr ""
+msgstr "Пакетування %b"
 
 #: misc/scripts/build.sh:594
 msgid "Empty key... Skipping"
-msgstr ""
+msgstr "Порожній ключ... Пропускається"
 
 #: misc/scripts/build.sh:600
 msgid "'%s' cannot contain empty path... Skipping"
-msgstr ""
+msgstr "'%s' не може містити порожній шлях... Пропускається"
 
 #: misc/scripts/build.sh:604 misc/scripts/build.sh:612
 msgid "'%s' cannot contain path starting with '/'... Skipping"
-msgstr ""
+msgstr "'%s' не може містити шлях, що починається з “/”... Пропускається"
 
 #: misc/scripts/build.sh:607
 msgid "'%s' is inside the package... Skipping"
-msgstr ""
+msgstr "'%s' знаходиться всередині пакета... Пропускається"
 
 #: misc/scripts/build.sh:685
 msgid "Failed to install %s deb"
-msgstr ""
+msgstr "Не вдалося встановити %s deb"
 
 #: misc/scripts/build.sh:710
 msgid "Package built at %b"
-msgstr ""
+msgstr "Пакет створено в %b"
 
 #: misc/scripts/build.sh:712 misc/scripts/package.sh:108
 msgid "Moving %b to %b"
-msgstr ""
+msgstr "Переміщення %b до %b"
 
 #: misc/scripts/build.sh:729
 msgid "Repacking %b"
-msgstr ""
+msgstr "Перепакування %b"
 
 #: misc/scripts/bwrap.sh:113
 msgid "Running %s"
-msgstr ""
+msgstr "Виконання %s"
 
 #: misc/scripts/checks.sh:33 misc/scripts/checks.sh:127
 #: misc/scripts/checks.sh:175 misc/scripts/checks.sh:228
 #: misc/scripts/checks.sh:579
 msgid "Package does not contain '%s'"
-msgstr ""
+msgstr "Пакет не містить '%s'"
 
 #: misc/scripts/checks.sh:38
 msgid "%s: '%s' must be at least two characters long"
-msgstr ""
+msgstr "%s: '%s' повинен містити щонайменше два символи"
 
 #: misc/scripts/checks.sh:43
 msgid "%s: '%s' must start with an alphanumeric character"
-msgstr ""
+msgstr "%s: '%s' повинен починатися з літери або цифри"
 
 #: misc/scripts/checks.sh:47
 msgid "%s: '%s' contains uppercase characters"
-msgstr ""
+msgstr "%s: '%s' містить великі літери"
 
 #: misc/scripts/checks.sh:51
 msgid ""
 "%s: '%s' contains characters that are not lowercase, digits, minus, or "
 "periods"
 msgstr ""
+"%s: '%s' містить символи, які не є малими літерами, цифрами, знаком мінус "
+"або крапками"
 
 #: misc/scripts/checks.sh:61
 msgid "Deb package does not contain gives"
-msgstr ""
+msgstr "Пакет deb не містить інструкцій"
 
 #: misc/scripts/checks.sh:67
 msgid "'%s' must be at least two characters long"
-msgstr ""
+msgstr "'%s' повинен містити щонайменше два символи"
 
 #: misc/scripts/checks.sh:72
 msgid "'%s' must start with an alphanumeric character"
-msgstr ""
+msgstr "'%s' повинен починатися з літери або цифри"
 
 #: misc/scripts/checks.sh:76
 msgid "'%s' contains uppercase characters"
-msgstr ""
+msgstr "'%s' містить великі літери"
 
 #: misc/scripts/checks.sh:80
 msgid ""
 "'%s' contains characters that are not lowercase, digits, minus, or periods"
 msgstr ""
+"'%s' містить символи, які не є малими літерами, цифрами, знаком мінус або "
+"крапками"
 
 #: misc/scripts/checks.sh:92 misc/scripts/checks.sh:107
 #: misc/scripts/checks.sh:648
 msgid "'%s' is empty"
-msgstr ""
+msgstr "'%s' порожній"
 
 #: misc/scripts/checks.sh:95 misc/scripts/checks.sh:110
 msgid "'%s' must be an unsigned integer"
-msgstr ""
+msgstr "'%s' повинен бути цілим числом без знака"
 
 #: misc/scripts/checks.sh:123
 msgid ""
 "'%s' must contain only alphanumerics and the characters . + - ~ and should "
 "start with a digit"
 msgstr ""
+"'%s' повинен містити тільки літери, цифри та символи . + - ~ і повинен "
+"починатися з цифри"
 
 #: misc/scripts/checks.sh:144
 msgid ".deb files can only be provided as a singular '%s'"
-msgstr ""
+msgstr "Файли .deb можуть бути надані тільки як окремий '%s'"
 
 #: misc/scripts/checks.sh:237
 msgid "Package does not have a maintainer. Please be advised"
-msgstr ""
+msgstr "Цей пакет не має супроводжувача. Будь ласка, зверніть на це увагу"
 
 #: misc/scripts/checks.sh:282 misc/scripts/checks.sh:309
 #: misc/scripts/checks.sh:359 misc/scripts/checks.sh:402
@@ -447,520 +460,533 @@ msgstr ""
 #: misc/scripts/checks.sh:584 misc/scripts/checks.sh:621
 #: misc/scripts/checks.sh:666
 msgid "'%s' index '%s' cannot be empty"
-msgstr ""
+msgstr "'%s' індекс '%s' не може бути порожнім"
 
 #: misc/scripts/checks.sh:286 misc/scripts/checks.sh:290
 msgid "'%s' index '%s' is not formatted correctly"
-msgstr ""
+msgstr "'%s' індекс '%s' не відформатований правильно"
 
 #: misc/scripts/checks.sh:320
 msgid "'%s' index '%s' cannot start with %s"
-msgstr ""
+msgstr "'%s' індекс '%s' не може починатися з %s"
 
 #: misc/scripts/checks.sh:328
 msgid "%s index '%s' is improperly formatted"
-msgstr ""
+msgstr "%s індекс '%s' має неправильний формат"
 
 #: misc/scripts/checks.sh:407
 msgid "'%s' is already used as a field in pacstall"
-msgstr ""
+msgstr "'%s' вже використовується як поле в pacstall"
 
 #: misc/scripts/checks.sh:410
 msgid "'%s' custom field cannot contain a space in field name"
-msgstr ""
+msgstr "Поле '%s' не може містити пробіл у назві поля"
 
 #: misc/scripts/checks.sh:413
 msgid "'%s' custom field cannot contain a number in field name"
-msgstr ""
+msgstr "Поле '%s' не може містити цифру у назві поля"
 
 #: misc/scripts/checks.sh:416
 msgid ""
 "'%s' custom field must capitalize only the first letter of each word in "
 "field name"
 msgstr ""
+"У полі '%s' великою літерою має бути написана лише перша літера кожного "
+"слова в назві поля"
 
 #: misc/scripts/checks.sh:419
 msgid "'%s' custom field cannot start or end with a hyphen"
-msgstr ""
+msgstr "Поле '%s' не може починатися або закінчуватися дефісом"
 
 #: misc/scripts/checks.sh:444 misc/scripts/checks.sh:469
 #: misc/scripts/checks.sh:477
 msgid "Only one checksum method can be provided for hashes"
 msgstr ""
+"Для хеш-функції можна вказати тільки один метод перевірки контрольної суми"
 
 #: misc/scripts/checks.sh:505 misc/scripts/checks.sh:635
 msgid "'%s' is improperly formatted"
-msgstr ""
+msgstr "'%s' має неправильний формат"
 
 #: misc/scripts/checks.sh:520 misc/scripts/checks.sh:543
 msgid "'%s' and '%s' indices cannot both be provided"
-msgstr ""
+msgstr "Індекси '%s' та '%s' не можуть бути вказані одночасно"
 
 #: misc/scripts/checks.sh:535 misc/scripts/checks.sh:558
 msgid "'%s' index '%s' is improperly formatted"
-msgstr ""
+msgstr "'%s' індекс '%s' має неправильний формат"
 
 #: misc/scripts/checks.sh:595
 msgid "'%s' is not a valid architecture"
-msgstr ""
+msgstr "'%s' не є дійсною архітектурою"
 
 #: misc/scripts/checks.sh:608
 msgid "cannot use both Debian and Arch style naming in '%s' array"
 msgstr ""
+"У масиві '%s' не можна одночасно використовувати іменування в стилі Debian і "
+"Arch"
 
 #: misc/scripts/checks.sh:651
 msgid "'%s' must be either: '%s', '%s', '%s', '%s', or '%s'"
-msgstr ""
+msgstr "'%s' має бути одним із таких значень: '%s', '%s', '%s', '%s' або '%s'"
 
 #: misc/scripts/checks.sh:672
 msgid "'%s' is not a valid license"
-msgstr ""
+msgstr "'%s' не є дійсною ліцензією"
 
 #: misc/scripts/checks.sh:686
 msgid "'%s' must be prefixed with a constraint (<=|>=|=|<|>)"
-msgstr ""
+msgstr "Перед '%s' повинен стояти оператор обмеження (<=|>=|=|<|>)"
 
 #: misc/scripts/fetch-sources.sh:29
 msgid "Could not find build.sh"
-msgstr ""
+msgstr "Не вдалося знайти build.sh"
 
 #: misc/scripts/fetch-sources.sh:190
 msgid "Hashes do not match (with method %s)"
-msgstr ""
+msgstr "Хеші не збігаються (за методом %s)"
 
 #: misc/scripts/fetch-sources.sh:191
 msgid "Got:      %b"
-msgstr ""
+msgstr "Отримано:      %b"
 
 #: misc/scripts/fetch-sources.sh:192
 msgid "Expected: %b"
-msgstr ""
+msgstr "Очікувано: %b"
 
 #: misc/scripts/fetch-sources.sh:201
 msgid "Failed to download package"
-msgstr ""
+msgstr "Не вдалося завантажити пакет"
 
 #: misc/scripts/fetch-sources.sh:211
 msgid "Could not enter into the main directory %b"
-msgstr ""
+msgstr "Не вдалося увійти до головного каталогу %b"
 
 #: misc/scripts/fetch-sources.sh:224
 msgid "Cloning %b from branch %b"
-msgstr ""
+msgstr "Клонування %b з гілки %b"
 
 #: misc/scripts/fetch-sources.sh:227
 msgid "Cloning %b from tag %b"
-msgstr ""
+msgstr "Клонування %b з тегу %b"
 
 #: misc/scripts/fetch-sources.sh:232
 msgid "Cloning %b with no blobs"
-msgstr ""
+msgstr "Клонування %b без блобів"
 
 #: misc/scripts/fetch-sources.sh:235
 msgid "Cloning %b from %b"
-msgstr ""
+msgstr "Клонування %b з %b"
 
 #: misc/scripts/fetch-sources.sh:243
 msgid "Could not enter into the cloned git repository"
-msgstr ""
+msgstr "Не вдалося увійти в клонований репозиторій git"
 
 #: misc/scripts/fetch-sources.sh:247
 msgid "Fetching commit %b"
-msgstr ""
+msgstr "Отримання коміту %b"
 
 #: misc/scripts/fetch-sources.sh:261
 msgid "Not cloning submodules for %b"
-msgstr ""
+msgstr "Не клонувати підмодулі для %b"
 
 #: misc/scripts/fetch-sources.sh:267
 msgid "Checking integrity of %b"
-msgstr ""
+msgstr "Перевірка цілісності %b"
 
 #: misc/scripts/fetch-sources.sh:268
 msgid "Could not check integrity of cloned git repository"
-msgstr ""
+msgstr "Не вдалося перевірити цілісність клонованого репозиторію git"
 
 #: misc/scripts/fetch-sources.sh:273 misc/scripts/fetch-sources.sh:277
 msgid "Cloned git repository does not match upstream hash"
-msgstr ""
+msgstr "Клонований репозиторій git не відповідає хешу джерела"
 
 #: misc/scripts/fetch-sources.sh:287
 msgid "Downloading %b"
-msgstr ""
+msgstr "Завантаження %b"
 
 #: misc/scripts/fetch-sources.sh:295
 msgid "Checking hash %b[%b...%b]"
-msgstr ""
+msgstr "Перевірка хешу %b[%b...%b]"
 
 #: misc/scripts/fetch-sources.sh:311
 msgid "Extracting %b"
-msgstr ""
+msgstr "Видобування %b"
 
 #: misc/scripts/fetch-sources.sh:354 misc/scripts/fetch-sources.sh:361
 #: misc/scripts/fetch-sources.sh:375 misc/scripts/fetch-sources.sh:382
 msgid "Running %s hook"
-msgstr ""
+msgstr "Виконання хука %s"
 
 #: misc/scripts/fetch-sources.sh:357 misc/scripts/fetch-sources.sh:364
 #: misc/scripts/fetch-sources.sh:378 misc/scripts/fetch-sources.sh:385
 msgid "Could not run %s hook successfully"
-msgstr ""
+msgstr "Не вдалося успішно виконати хук %s"
 
 #: misc/scripts/fetch-sources.sh:373 misc/scripts/package.sh:414
 msgid "Performing post install operations"
-msgstr ""
+msgstr "Виконання операцій після встановлення"
 
 #: misc/scripts/fetch-sources.sh:389 misc/scripts/package.sh:415
 msgid "Storing pacscript"
-msgstr ""
+msgstr "Зберігання pacscript"
 
 #: misc/scripts/fetch-sources.sh:393
 msgid "Could not enter into %b"
-msgstr ""
+msgstr "Не вдалося увійти в %b"
 
 #: misc/scripts/fetch-sources.sh:400 misc/scripts/package.sh:429
 msgid "Done installing %b"
-msgstr ""
+msgstr "Завершено встановлення %b"
 
 #: misc/scripts/fetch-sources.sh:404
 msgid "Failed to install the package"
-msgstr ""
+msgstr "Не вдалося встановити пакет"
 
 #: misc/scripts/fetch-sources.sh:413
 msgid "Copying local archive %b"
-msgstr ""
+msgstr "Копіювання локального архіву %b"
 
 #: misc/scripts/fetch-sources.sh:611 misc/scripts/fetch-sources.sh:645
 #: misc/scripts/fetch-sources.sh:652 misc/scripts/fetch-sources.sh:658
 #: misc/scripts/fetch-sources.sh:690
 msgid "This Pacscript does not work on %b"
-msgstr ""
+msgstr "Цей Pacscript не працює на %b"
 
 #: misc/scripts/fetch-sources.sh:678
 msgid "This package is for %b, which is a foreign architecture"
-msgstr ""
+msgstr "Цей пакет призначений для %b, що є сторонньою архітектурою"
 
 #: misc/scripts/fetch-sources.sh:727
 msgid "Checking build dependencies"
-msgstr ""
+msgstr "Перевірка залежностей збірки"
 
 #: misc/scripts/fetch-sources.sh:747
 msgid "%b versions cannot be satisfied"
-msgstr ""
+msgstr "Неможливо задовольнити вимоги для версії %b"
 
 #: misc/scripts/fetch-sources.sh:749
 msgid "%b version cannot be satisfied"
-msgstr ""
+msgstr "Неможливо задовольнити вимогу для версії %b"
 
 #: misc/scripts/fetch-sources.sh:761
 msgid "Checking check dependencies"
-msgstr ""
+msgstr "Перевірка взаємозалежностей"
 
 #: misc/scripts/fetch-sources.sh:802
 msgid "Creating build dependency/conflicts dummy package"
-msgstr ""
+msgstr "Створення фіктивного пакета для перевірки залежностей/конфліктів збірки"
 
 #: misc/scripts/fetch-sources.sh:817
 msgid "Failed to install build or check dependencies"
-msgstr ""
+msgstr "Не вдалося виконати збірку або перевірити залежності"
 
 #: misc/scripts/fetch-sources.sh:915
 msgid "Kernel version constraint for this Pacscript not satisfied: %b"
-msgstr ""
+msgstr "Вимоги до версії ядра для цього Pacscript не виконано: %b"
 
 #: misc/scripts/get-pacscript.sh:33
 msgid "Run '%b'"
-msgstr ""
+msgstr "Запустити '%b'"
 
 #: misc/scripts/get-pacscript.sh:38 misc/scripts/upgrade.sh:280
 msgid "Could not enter %s"
-msgstr ""
+msgstr "Не вдалося ввести %s"
 
 #: misc/scripts/get-pacscript.sh:49 misc/scripts/get-pacscript.sh:57
 msgid "Could not download %s"
-msgstr ""
+msgstr "Не вдалося завантажити %s"
 
 #: misc/scripts/manage-repo.sh:169
 msgid "'%s' valid types are: '%s', '%s'"
-msgstr ""
+msgstr "Для '%s' дійсними типами є: '%s', '%s'"
 
 #: misc/scripts/manage-repo.sh:185
 msgid "'%s' valid types are: '%s', '%s', '%s'"
-msgstr ""
+msgstr "Для '%s' дійсними типами є: '%s', '%s', '%s'"
 
 #: misc/scripts/package-base.sh:29
 msgid "Could not find checks.sh"
-msgstr ""
+msgstr "Не вдалося знайти checks.sh"
 
 #: misc/scripts/package-base.sh:35 misc/scripts/upgrade.sh:35
 msgid "Could not find fetch-sources.sh"
-msgstr ""
+msgstr "Не вдалося знайти fetch-sources.sh"
 
 #: misc/scripts/package-base.sh:42
 msgid "Interrupted, cleaning up"
-msgstr ""
+msgstr "Перервано, відбувається прибирання"
 
 #: misc/scripts/package-base.sh:103
 msgid "Found pkgbase: %b"
-msgstr ""
+msgstr "Знайдено pkgbase: %b"
 
 #: misc/scripts/package-base.sh:129
 msgid "%b has exceeded the maximum number of packages to build. Skipping"
-msgstr ""
+msgstr "%b перевищив максимальну кількість пакетів для збірки. Пропускається"
 
 #: misc/scripts/package-base.sh:209
 msgid "%b is not an integer. Falling back to 1"
-msgstr ""
+msgstr "%b не є цілим числом. Повернення до 1"
 
 #: misc/scripts/package-base.sh:218
 msgid "(%b) Do you want to view/edit the pacscript?"
-msgstr ""
+msgstr "(%b) Ви бажаєте переглянути/відредагувати pacscript?"
 
 #: misc/scripts/package-base.sh:231
 msgid "Editor not found, falling back to '%s'"
-msgstr ""
+msgstr "Редактор не знайдено, використовується '%s'"
 
 #: misc/scripts/package-base.sh:236
 msgid "Sourcing pacscript"
-msgstr ""
+msgstr "Отримання pacscript"
 
 #: misc/scripts/package-base.sh:260
 msgid "Could not source pacscript"
-msgstr ""
+msgstr "Не вдалося отримати pacscript"
 
 #: misc/scripts/package.sh:28
 msgid "This package will connect to the internet during its build process."
-msgstr ""
+msgstr "Цей пакет встановить з'єднання з мережею інтернет під час збірки."
 
 #: misc/scripts/package.sh:56
 msgid ""
 "The package %b is masking %b. By installing the masked package, you may "
 "cause damage to your operating system"
 msgstr ""
+"Пакет %b замаскує %b. Встановлення маскованого пакета може призвести до "
+"пошкодження вашої операційної системи"
 
 #: misc/scripts/package.sh:59
 msgid ""
 "Somehow, '%s' found masked packages that match the package you want to "
 "install, but '%s' could not find it. Report this upstream"
 msgstr ""
+"Якимось чином '%s' знайшов замасковані пакети, які відповідають пакету, який "
+"ви хочете встановити, але не зміг знайти '%s'. Повідомте про це розробника"
 
 #: misc/scripts/package.sh:105
 msgid "Failed to download '%s'"
-msgstr ""
+msgstr "Не вдалося завантажити '%s'"
 
 #: misc/scripts/package.sh:116
 msgid ""
 "This package has '%s', meaning once this is installed, it should be assumed "
 "to be unremovable. Do you want to continue?"
 msgstr ""
+"Цей пакет містить '%s', тобто після встановлення його не можна буде "
+"видалити. Ви бажаєте продовжити?"
 
 #: misc/scripts/package.sh:135
 msgid "Reinstalling '%s'"
-msgstr ""
+msgstr "Перевстановлення '%s'"
 
 #: misc/scripts/package.sh:146
 msgid "This script replaces %s. Do you want to proceed?"
-msgstr ""
+msgstr "Цей скрипт замінює %s. Ви бажаєте продовжити?"
 
 #: misc/scripts/package.sh:162
 msgid "%b conflicts with %s, which is currently installed by apt"
-msgstr ""
+msgstr "%b конфліктує з %s, який наразі встановлений за допомогою apt"
 
 #: misc/scripts/package.sh:163 misc/scripts/package.sh:185
 msgid "Remove the apt package by running '%b'"
-msgstr ""
+msgstr "Видаліть пакет apt за допомогою команди '%b'"
 
 #: misc/scripts/package.sh:170
 msgid "%b conflicts with %s, which is currently installed by pacstall"
-msgstr ""
+msgstr "%b конфліктує з %s, який наразі встановлений за допомогою pacstall"
 
 #: misc/scripts/package.sh:171 misc/scripts/package.sh:192
 msgid "Remove the pacstall package by running '%b'"
-msgstr ""
+msgstr "Видаліть пакет pacstall за допомогою команди '%b'"
 
 #: misc/scripts/package.sh:184
 msgid "%b breaks %s, which is currently installed by apt"
-msgstr ""
+msgstr "%b порушує пакет %s, встановлений в даний момент за допомогою apt"
 
 #: misc/scripts/package.sh:191
 msgid "%b breaks %s, which is currently installed by pacstall"
-msgstr ""
+msgstr "%b порушує пакет %s, встановлений в даний момент за допомогою pacstall"
 
 #: misc/scripts/package.sh:209
 msgid "Checking pacstall dependencies"
-msgstr ""
+msgstr "Перевірка залежностей pacstall"
 
 #: misc/scripts/package.sh:228
 msgid "%b [update]"
-msgstr ""
+msgstr "%b [оновлений]"
 
 #: misc/scripts/package.sh:230 misc/scripts/package.sh:241
 msgid "Failed to install dependency (%s from %s)"
-msgstr ""
+msgstr "Не вдалося встановити залежність (%s з %s)"
 
 #: misc/scripts/package.sh:255
 msgid "%s is associated with multiple source entries"
-msgstr ""
+msgstr "%s пов'язаний з декількома джерелами"
 
 #: misc/scripts/package.sh:289
 msgid "Retrieving packages"
-msgstr ""
+msgstr "Отримання пакетів"
 
 #: misc/scripts/package.sh:391
 msgid "Running functions"
-msgstr ""
+msgstr "Виконання функцій"
 
 #: misc/scripts/package.sh:396
 msgid "Could not %s %s properly"
-msgstr ""
+msgstr "Не вдалося виконати належним чином %s %s"
 
 #: misc/scripts/quality-assurance.sh:49
 msgid "%b is not a valid provider!"
-msgstr ""
+msgstr "%b не є дійсним постачальником!"
 
 #: misc/scripts/quality-assurance.sh:50
 msgid "available providers are: '%s'"
-msgstr ""
+msgstr "доступні постачальники: '%s'"
 
 #: misc/scripts/quality-assurance.sh:59
 msgid "Returning %b backup"
-msgstr ""
+msgstr "Відновлення резервної копії %b"
 
 #: misc/scripts/quality-assurance.sh:68
 msgid "'%s' and '%s' cannot be empty!"
-msgstr ""
+msgstr "'%s' та '%s' не можуть бути порожніми!"
 
 #: misc/scripts/quality-assurance.sh:69
 msgid "use the syntax: %b"
-msgstr ""
+msgstr "використовуйте синтаксис: %b"
 
 #: misc/scripts/quality-assurance.sh:74
 msgid "Backing up %b"
-msgstr ""
+msgstr "Резервне копіювання %b"
 
 #: misc/scripts/quality-assurance.sh:77
 msgid "Installing %b"
-msgstr ""
+msgstr "Встановлення %b"
 
 #: misc/scripts/query-info.sh:102
 msgid "Key '%s' does not exist"
-msgstr ""
+msgstr "Ключ '%s' не існує"
 
 #: misc/scripts/remove.sh:29 misc/scripts/remove.sh:34
 msgid "%s is not installed"
-msgstr ""
+msgstr "%s не встановлено"
 
 #: misc/scripts/remove.sh:45
 msgid ""
 "You may have dangling PPAs on your system. You can remove them using '%b'"
 msgstr ""
+"У вашій системі можуть знаходитися недіючі PPA. Ви можете видалити їх за "
+"допомогою команди '%b'"
 
 #: misc/scripts/search.sh:256 misc/scripts/search.sh:258
 #: misc/scripts/search.sh:290
 msgid "There is no package with the name %b in the repo %b"
-msgstr ""
+msgstr "У репозиторії %b відсутній пакет з назвою %b"
 
 #: misc/scripts/search.sh:306
 msgid "%b is not on your repo list or does not exist"
-msgstr ""
+msgstr "%b відсутній у ваших репозиторіях або не існує"
 
 #: misc/scripts/search.sh:361 misc/scripts/search.sh:444
 #: misc/scripts/search.sh:475
 msgid "There is no package with the name %b"
-msgstr ""
+msgstr "Немає пакета з назвою %b"
 
 #: misc/scripts/search.sh:379
 msgid "Add %s to the local repo absolute path on %b"
-msgstr ""
+msgstr "Додати %s до абсолютного шляху локального репозиторію в %b"
 
 #: misc/scripts/search.sh:383
 msgid "Replace '~' with the full home path on %b"
-msgstr ""
+msgstr "Замініть '~' на повний шлях до домашнього каталогу на %b"
 
 #: misc/scripts/search.sh:389
 msgid "Pacstall repo line improperly formatted: %b"
-msgstr ""
+msgstr "Рядок сховища Pacstall має неправильний формат: %b"
 
 #: misc/scripts/search.sh:390 misc/scripts/search.sh:395
 msgid "You can remove or fix the URL by editing %b"
-msgstr ""
+msgstr "Ви можете видалити або виправити URL-адресу, відредагувавши %b"
 
 #: misc/scripts/search.sh:394
 msgid "Cannot connect to Pacstall repo: %b"
-msgstr ""
+msgstr "Неможливо підключитися до репозиторію Pacstall: %b"
 
 #: misc/scripts/search.sh:505
 msgid "%bDo you want to %s %b from the official repo?"
-msgstr ""
+msgstr "%bВи хочете %s %b з офіційного репозиторію?"
 
 #: misc/scripts/search.sh:523
 msgid "%bDo you want to %s %b from the repo %b?"
-msgstr ""
+msgstr "%bВи хочете %s %b з репозиторію %b?"
 
 #: misc/scripts/update.sh:73
 msgid "Invalid URL"
-msgstr ""
+msgstr "Недійсна URL-адреса"
 
 #: misc/scripts/update.sh:74
 msgid "Confirm that '%b' is valid"
-msgstr ""
+msgstr "Переконайтеся, що '%b' є дійсним"
 
 #: misc/scripts/update.sh:79
 msgid "Fetching translation list"
-msgstr ""
+msgstr "Отримання списку перекладів"
 
 #: misc/scripts/update.sh:82
 msgid "Updating directories"
-msgstr ""
+msgstr "Оновлення каталогів"
 
 #: misc/scripts/update.sh:90
 msgid "Checking dependencies"
-msgstr ""
+msgstr "Перевірка залежностей"
 
 #: misc/scripts/update.sh:118
 msgid "Pulling scripts from GitHub"
-msgstr ""
+msgstr "Отримання скриптів з GitHub"
 
 #: misc/scripts/update.sh:142
 msgid "Rebuilding translations"
-msgstr ""
+msgstr "Оновлення перекладів"
 
 #: misc/scripts/update.sh:147
 msgid "Rebuilding manpages"
-msgstr ""
+msgstr "Оновлення сторінок довідки"
 
 #: misc/scripts/update.sh:151
 msgid "Making scripts executable"
-msgstr ""
+msgstr "Створення виконуваних скриптів"
 
 #: misc/scripts/upgrade.sh:29
 msgid "Could not load dep-tree.sh"
-msgstr ""
+msgstr "Не вдалося завантажити dep-tree.sh"
 
 #: misc/scripts/upgrade.sh:105
 msgid "Checking for updates"
-msgstr ""
+msgstr "Перевірка оновлень"
 
 #: misc/scripts/upgrade.sh:110 misc/scripts/upgrade.sh:257
 msgid "Nothing to upgrade"
-msgstr ""
+msgstr "Немає нічого для оновлення"
 
 #: misc/scripts/upgrade.sh:113
 msgid "Building dependency tree"
-msgstr ""
+msgstr "Побудова дерева залежностей"
 
 #: misc/scripts/upgrade.sh:124
 msgid "Checking versions"
-msgstr ""
+msgstr "Перевірка версій"
 
 #: misc/scripts/upgrade.sh:197
 msgid "Package %b is not on %b anymore"
-msgstr ""
+msgstr "Пакет %b більше не доступний в %b"
 
 #: misc/scripts/upgrade.sh:260
 msgid "Packages can be upgraded"
-msgstr ""
+msgstr "Пакети можна оновити"
 
 #: misc/scripts/upgrade.sh:285
 msgid "Do you want to upgrade %b?"
-msgstr ""
+msgstr "Ви хочете оновити %b?"
