@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-12-10 12:52+0000\n"
+"PO-Revision-Date: 2025-12-12 13:56+0000\n"
 "Last-Translator: Oleksii Shashkov <iron.woodcutter@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/uk/>\n"
@@ -676,7 +676,8 @@ msgstr "Перевірка взаємозалежностей"
 
 #: misc/scripts/fetch-sources.sh:802
 msgid "Creating build dependency/conflicts dummy package"
-msgstr "Створення фіктивного пакета для перевірки залежностей/конфліктів збірки"
+msgstr ""
+"Створення фіктивного пакета для перевірки залежностей/конфліктів збірки"
 
 #: misc/scripts/fetch-sources.sh:817
 msgid "Failed to install build or check dependencies"
