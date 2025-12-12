@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-12-10 12:52+0000\n"
+"PO-Revision-Date: 2025-12-12 13:56+0000\n"
 "Last-Translator: Oleksii Shashkov <iron.woodcutter@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/uk/>\n"
@@ -181,7 +181,7 @@ msgstr "Встановіть останню версію %b з репозито�
 
 #: pacstall:1229
 msgid "Install the latest %b with the command '%b'"
-msgstr "Встановіть останню версію %b за допомогою команди %b"
+msgstr "Встановіть останню версію %b за допомогою команди '%b'"
 
 #: pacstall:1237 pacstall:1322
 msgid "Invalid argument '%s'"
