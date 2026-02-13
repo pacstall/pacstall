@@ -733,7 +733,7 @@ done
 short_commands=("-I" "-S" "-R" "-D" "-A" "-Rr" "-U" "-L" "-Lu" "-Up" "-Qa" "-Sd" "-Si" "-Ci" "-M" "-T" "-V" "-h")
 long_commands=("--install" "--search" "--remove" "--download" "--add-repo" "--remove-repo" "--update" "--list" "--list-upgrades" "--upgrade" "--quality-assurance" "--search-description" "--search-info" "--cache-info" "--mark" "--tree" "--version" "--help")
 commands=("${short_commands[@]}" "${long_commands[@]}")
-matches=($(comm -12 <(sort <(printf "%s\n" "${unique_argument_list[@]}")) <(sort <(printf "%s\n" "${commands[@]}"))))
+matches=($(comm -12 --nocheck-order <(sort <(printf "%s\n" "${unique_argument_list[@]}")) <(sort <(printf "%s\n" "${commands[@]}"))))
 if ((${#matches[@]} <= 1)); then
     # Set the new list of arguments
     set -- "${unique_argument_list[@]}"
