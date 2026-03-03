@@ -659,7 +659,7 @@ function lint_priority() {
 function lint_license() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # shellcheck disable=SC2034
-    local ret=0 linlicense idx=0 license_list=($(printf '%s\n' /usr/share/spdx-licenses/xml/*.xml | cut -d. -f1))
+    local ret=0 linlicense idx=0 license_list=($(printf '%s\n' /usr/share/spdx-licenses/xml/*.xml | cut -d. -f1 | rev | cut -d/ -f1 | rev))
     if [[ -n ${license[*]} ]]; then
         for linlicense in "${license[@]}"; do
             if [[ -z ${linlicense} ]]; then
