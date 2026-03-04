@@ -23,9 +23,9 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 # Pacstall version
-version_number="6.3.9"
-version_name="Pegasus"
-declare -A version_color=([r]="254" [g]="252" [b]="239")
+version_number="6.3.10"
+version_name="Alicorn"
+declare -A version_color=([r]="253" [g]="249" [b]="241")
 
 # Configuration
 export METADIR="/var/lib/pacstall/metadata"
