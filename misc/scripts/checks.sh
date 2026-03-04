@@ -660,9 +660,10 @@ function lint_license() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # shellcheck disable=SC2034
     local ret=0 linlicense idx=0 license_list=()
-	license_list=(/usr/share/spdx-licenses/xml/*.xml)
-	license_list=("${license_list[@]##*/}")
-	license_list=("${license_list[@]%.xml}")
+    license_list=(/usr/share/spdx-licenses/xml/*.xml /usr/share/spdx-licenses/*.txt)
+    license_list=("${license_list[@]##*/}")
+    license_list=("${license_list[@]%.xml}")
+    license_list=("${license_list[@]%.txt}")
     if [[ -n ${license[*]} ]]; then
         for linlicense in "${license[@]}"; do
             if [[ -z ${linlicense} ]]; then
