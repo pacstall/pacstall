@@ -569,7 +569,13 @@ function set_distro() {
     local distro_name distro_version_name distro_version_number distro_parent distro_parent_vname distro_parent_number
     calc_distro
     if [[ ${1} == "parent" ]]; then
-        echo "${distro_parent:-${distro_name}}:${distro_parent_vname:-${distro_version_name}}"
+        if [[ ${2} == "number" ]]; then
+            echo "${distro_parent:-${distro_name}}:${distro_parent_number:-${distro_version_number}}"
+        else
+            echo "${distro_parent:-${distro_name}}:${distro_parent_vname:-${distro_version_name}}"
+        fi
+    elif [[ ${1} == "number" ]]; then
+        echo "${distro_name}:${distro_version_number}"
     else
         echo "${distro_name}:${distro_version_name}"
     fi

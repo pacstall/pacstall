@@ -156,7 +156,10 @@ function srcinfo.vars() {
 function srcinfo.write_global() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # shellcheck disable=SC2034
-    local CARCH='CARCH_REPLACE' DISTRO='DISTROBASE:DISTROVER' CDISTRO='CDISTROBASE:CDISTROVER' AARCH='AARCH_REPLACE' var ar aars bar ars rar rep seek alt
+    local CARCH='CARCH_REPLACE' AARCH='AARCH_REPLACE' \
+        DISTRO='DISTROBASE:DISTROVER' DISTRO_NUM='DISTROBASE:DISTRONUM' \
+        CDISTRO='CDISTROBASE:CDISTROVER' CDISTRO_NUM='CDISTROBASE:CDISTRONUM' \
+        var ar aars bar ars rar rep seek alt
     local -A AARCHS_MAP=(
         ["amd64"]="x86_64"
         ["arm64"]="aarch64"
