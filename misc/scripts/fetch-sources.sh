@@ -570,12 +570,12 @@ function set_distro() {
     calc_distro
     if [[ ${1} == "parent" ]]; then
         if [[ ${2} == "number" ]]; then
-            echo "${distro_parent:-${distro_name}}:${distro_parent_number:-${distro_version_number}}"
+            echo "${distro_parent_number:-${distro_version_number}}"
         else
             echo "${distro_parent:-${distro_name}}:${distro_parent_vname:-${distro_version_name}}"
         fi
     elif [[ ${1} == "number" ]]; then
-        echo "${distro_name}:${distro_version_number}"
+        echo "${distro_version_number}"
     else
         echo "${distro_name}:${distro_version_name}"
     fi

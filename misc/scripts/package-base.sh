@@ -250,11 +250,11 @@ case ${CARCH} in
     *) AARCH="${HOSTTYPE}" ;;
 esac
 CDISTRO="$(set_distro)"
-CDISTRO_NUM="$(set_distro number)"
+CDNUM="$(set_distro number)"
 DISTRO="$(set_distro parent)"
-DISTRO_NUM="$(set_distro parent number)"
+DNUM="$(set_distro parent number)"
 KVER="$(uname -r)"
-export CARCH AARCH CDISTRO CDISTRO_NUM DISTRO DISTRO_NUM KVER
+export CARCH AARCH CDISTRO CDNUM DISTRO DNUM KVER
 
 # Running source on an isolated env
 safe_source "${pacfile}"
