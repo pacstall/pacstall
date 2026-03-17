@@ -97,10 +97,12 @@ case ${CARCH} in
     armhf) AARCH='armv7h' ;;
     *) AARCH="${HOSTTYPE}" ;;
 esac
-DISTRO="$(set_distro parent)"
 CDISTRO="$(set_distro)"
+CDNUM="$(set_distro number)"
+DISTRO="$(set_distro parent)"
+DNUM="$(set_distro parent number)"
 KVER="$(uname -r)"
-export CARCH AARCH DISTRO CDISTRO KVER
+export CARCH AARCH CDISTRO CDNUM DISTRO DNUM KVER
 
 fancy_message info $"Checking for updates"
 
