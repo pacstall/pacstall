@@ -66,6 +66,7 @@ function parse_source_entry() {
     if [[ ${dest} == *"?"* ]]; then
         dest="${dest%%\?*}"
     fi
+    src_dsply="${source_url##*/}"
 }
 
 function calc_git_pkgver() {
@@ -221,18 +222,18 @@ function git_down() {
     if [[ -n ${git_branch} || -n ${git_tag} ]]; then
         if [[ -n ${git_branch} ]]; then
             revision="${git_branch}"
-            fancy_message info $"Cloning %b from branch %b" "${BPurple}${dest}${NC}" "${CYAN}${git_branch}${NC}"
+            fancy_message info $"Cloning %b from branch %b" "${BPurple}${src_dsply}${NC}" "${CYAN}${git_branch}${NC}"
         elif [[ -n ${git_tag} ]]; then
             revision="${git_tag}"
-            fancy_message info $"Cloning %b from tag %b" "${BPurple}${dest}${NC}" "${CYAN}${git_tag}${NC}"
+            fancy_message info $"Cloning %b from tag %b" "${BPurple}${src_dsply}${NC}" "${CYAN}${git_tag}${NC}"
         fi
         gitopts="-b ${revision}"
     elif [[ -n ${git_commit} ]]; then
         gitopts=("--no-checkout" "--filter=blob:none")
-        fancy_message info $"Cloning %b with no blobs" "${BPurple}${dest}${NC}"
+        fancy_message info $"Cloning %b with no blobs" "${BPurple}${src_dsply}${NC}"
     else
         unset gitopts
-        fancy_message info $"Cloning %b from %b" "${BPurple}${dest}${NC}" "${CYAN}HEAD${NC}"
+        fancy_message info $"Cloning %b from %b" "${BPurple}${src_dsply}${NC}" "${CYAN}HEAD${NC}"
     fi
     # git clone quietly, with no history, and if submodules are there, download with 10 jobs
     # shellcheck disable=SC2086,SC2031
@@ -258,7 +259,7 @@ function git_down() {
         # don't send this one to /dev/null like the others
         git submodule update "${quiet[@]}" --init --recursive --depth=1 || fail_down
     else
-        fancy_message sub $"Not cloning submodules for %b" "${PURPLE}${dest}${NC}"
+        fancy_message sub $"Not cloning submodules for %b" "${PURPLE}${src_dsply}${NC}"
     fi
     # Check the integrity
     calc_git_pkgver
@@ -276,7 +277,7 @@ function git_down() {
         else
             fancy_message error $"Cloned git repository does not match upstream hash"
             clean_fail_down
-        fi
+       fi
     fi
     # cd back to srcdir
     gather_down
@@ -284,7 +285,7 @@ function git_down() {
 
 function net_down() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    fancy_message info $"Downloading %b" "${BPurple}${dest}${NC}"
+    fancy_message info $"Downloading %b" "${BPurple}${src_dsply}${NC}"
     # shellcheck disable=SC2031
     download "$source_url" "$dest" || fail_down
 }
@@ -308,7 +309,7 @@ function genextr_down() {
         fi
     done
     if ${extract}; then
-        fancy_message sub $"Extracting %b" "${CYAN}${dest}${NC}"
+        fancy_message sub $"Extracting %b" "${CYAN}${src_dsply}${NC}"
         if [[ -n ${to_location} ]]; then
             mkdir -p "temp_ext"
             case "${ext_to_flag}" in
@@ -410,7 +411,7 @@ function deb_down() {
 
 function file_down() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    fancy_message info $"Copying local archive %b" "${BPurple}${dest}${NC}"
+    fancy_message info $"Copying local archive %b" "${BPurple}${src_dsply}${NC}"
     # shellcheck disable=SC2031
     cp -r "${source_url}" "${dest}" || fail_down
     case "${source_url,,}" in
