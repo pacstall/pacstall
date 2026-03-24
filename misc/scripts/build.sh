@@ -306,11 +306,13 @@ function createdeb() {
         local cmd_comp="zstd"
         local flags_comp=("-19" "-T0" "-q" "--rm")
         local ext_comp="zst"
+        local pack_msg_fmt="Packing and compressing %s"
     else
-        # Immediate install (gzip), so we want fast build times over everything else
-        local cmd_comp="gzip"
-        local flags_comp=("-1n")
-        local ext_comp="gz"
+        # Immediate install, so we want fast build times over everything else
+        local cmd_comp=cat
+        local flags_comp=()
+        local ext_comp=
+        local pack_msg_fmt="Packing %s"
     fi
 
     cd "$STAGEDIR/$pacname" || { ignore_stack=true; return 1; }
@@ -322,7 +324,7 @@ function createdeb() {
 
     shopt -s nullglob
 
-    local cname="control.tar.$ext_comp"
+    local cname="control.tar${ext_comp:+.${ext_comp}}"
     local cpath="$(pwd)/$cname"
 
     # avoid having to cd back
@@ -334,7 +336,7 @@ function createdeb() {
         fi
     done
 
-    fancy_message sub $"Packing and compressing $cname"
+    fancy_message sub "$(printf "$pack_msg_fmt" "$cname")"
 
     sudo tar -c "${citems[@]}" \
         | "$cmd_comp" "${flags_comp[@]}" \
@@ -347,10 +349,10 @@ function createdeb() {
     # Exclude control metadata from package contents
     sudo rm -r DEBIAN debian-binary "$cname"
 
-    local dname="data.tar.$ext_comp"
+    local dname="data.tar${ext_comp:+.${ext_comp}}"
     local dpath="$(pwd)/$dname"
 
-    fancy_message sub $"Packing and compressing $dname"
+    fancy_message sub "$(printf "$pack_msg_fmt" "$dname")"
 
     sudo tar -c * .* \
         | "$cmd_comp" "${flags_comp[@]}" \
