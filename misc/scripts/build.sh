@@ -303,45 +303,65 @@ function createdeb() {
     local debname="${1}_${2}_${3}"
     if ((PACSTALL_INSTALL == 0)); then
         # We are not going to immediately install, meaning the user might want to share their deb with someone else, so create the highest compression.
-        local flags=("-19" "-T0" "-q")
-        local compression="zst"
-        local command="zstd"
+        local cmd_comp="zstd"
+        local flags_comp=("-19" "-T0" "-q" "--rm")
+        local ext_comp="zst"
     else
         # Immediate install (gzip), so we want fast build times over everything else
-        local flags=("-1n")
-        local compression="gz"
-        local command="gzip"
+        local cmd_comp="gzip"
+        local flags_comp=("-1n")
+        local ext_comp="gz"
     fi
+
     cd "$STAGEDIR/$pacname" || { ignore_stack=true; return 1; }
     # https://tldp.org/HOWTO/html_single/Debian-Binary-Package-Building-HOWTO/#AEN66
+
+    local debfile="../$debname.deb"
+
     echo "2.0" | sudo tee debian-binary > /dev/null
-    sudo tar -cf "$PWD/control.tar" -T /dev/null
-    local CONTROL_LOCATION="$PWD/control.tar"
+
+    shopt -s nullglob
+
+    local cname="control.tar.$ext_comp"
+    local cpath="$(pwd)/$cname"
+
     # avoid having to cd back
     pushd DEBIAN > /dev/null || { ignore_stack=true; return 1; }
-    for i in *; do
-        if [[ -f $i ]]; then
-            local files_for_control+=("$i")
+    local filename
+    for filename in *; do
+        if [[ -f $filename ]]; then
+            local citems+=("$filename")
         fi
     done
-    fancy_message sub $"Packing control.tar"
-    sudo tar -rf "$CONTROL_LOCATION" "${files_for_control[@]}"
-    popd > /dev/null || { ignore_stack=true; return 1; }
-    sudo tar -cf "$PWD/data.tar" -T /dev/null
-    local DATA_LOCATION="$PWD/data.tar"
-    # collect every top level file/dir except for deb stuff
-    for i in *; do
-        [[ $i =~ ^(DEBIAN|control.tar|data.tar|debian-binary)$ ]] && continue
-        local files_for_data+=("$i")
-    done
-    fancy_message sub $"Packing data.tar"
-    sudo tar -rf "$DATA_LOCATION" "${files_for_data[@]}"
 
-    fancy_message sub $"Compressing"
-    sudo "$command" "${flags[@]}" "$DATA_LOCATION" "$CONTROL_LOCATION"
-    sudo ar -rU "$debname.deb" debian-binary control.tar."$compression" data.tar."$compression" > /dev/null 2>&1
-    sudo mv "$debname.deb" ..
-    sudo rm -f debian-binary control.tar."$compression" data.tar."$compression"
+    fancy_message sub $"Packing and compressing $cname"
+
+    sudo tar -c "${citems[@]}" \
+        | "$cmd_comp" "${flags_comp[@]}" \
+        | sudo tee "$cpath" > /dev/null
+
+    popd > /dev/null || { ignore_stack=true; return 1; }
+
+    sudo ar qc "$debfile" debian-binary "$cname"
+
+    # Exclude control metadata from package contents
+    sudo rm -r DEBIAN debian-binary "$cname"
+
+    local dname="data.tar.$ext_comp"
+    local dpath="$(pwd)/$dname"
+
+    fancy_message sub $"Packing and compressing $dname"
+
+    sudo tar -c * .* \
+        | "$cmd_comp" "${flags_comp[@]}" \
+        | sudo tee "$dpath" > /dev/null
+
+    sudo ar qc "$debfile" "$dname"
+
+    sudo rm "$dname" > /dev/null 2>&1
+
+    shopt -u nullglob
+
 }
 
 function is_builddep_arch() {
