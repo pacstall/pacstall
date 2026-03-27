@@ -55,7 +55,7 @@ readonly __OLD_ENV
 $(declare -pf def_colors) && def_colors
 $(for i in {ask,fancy_message,parse_source_entry,calc_git_pkgver}; do declare -pf "${i}"; done)
 source "${input}"
-mapfile -t NEW_ENV < <(comm -13 --nocheck-order <(printf '%s\n' \"\${__OLD_ENV[@]}\") <(compgen -A variable |sort))
+mapfile -t NEW_ENV < <(comm -13 --nocheck-order <(printf '%s\n' \"\${__OLD_ENV[@]}\") <(compgen -A variable | sort))
 declare -p \${NEW_ENV[@]} >> "${bwrapenv}"
 declare -pf >> "${bwrapenv}"
 echo > "${safeenv}"
@@ -102,7 +102,7 @@ mapfile -t OLD_ENV < <(compgen -A variable | sort)
 source ${bwrapenv}
 ${func} 2>&1 "${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log" && FUNCSTATUS="\${PIPESTATUS[0]}" && \
 if [[ \$FUNCSTATUS ]]; then \
-    mapfile -t NEW_ENV < <(comm -13 --nocheck-order <(printf '%s\n' \"\${OLD_ENV[@]}\") <(compgen -A variable |sort)); \
+    mapfile -t NEW_ENV < <(comm -13 --nocheck-order <(printf '%s\n' \"\${OLD_ENV[@]}\") <(compgen -A variable | sort)); \
     declare -p \${NEW_ENV[@]} >> "${bwrapenv}"; \
 fi && ignore_stack=true && exit \$FUNCSTATUS
 EOF
