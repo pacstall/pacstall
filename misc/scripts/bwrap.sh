@@ -96,7 +96,7 @@ function bwrap_function() {
     # shellcheck disable=SC2034
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local func="$1"
-    tmpfile="$(sudo mktemp -p "${PWD}")"
+    tmpfile="$(sudo mktemp -p "${PACDIR}")"
     sudo tee -a "$tmpfile" > /dev/null << EOF
 #!/bin/bash -a
 mapfile -t OLD_ENV < <(compgen -A variable -P "--unset ")
