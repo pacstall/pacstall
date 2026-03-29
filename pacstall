@@ -805,8 +805,6 @@ function elevate() {
         ${PACSTALL_VERBOSE} || quiet="-Q"
         [[ $NOSANDBOX ]] && nosandbox="-Ns"
 
-        trap - ERR RETURN
-        unset ignore_stack
         sudo PACSTALL_SUPPRESS_SOLUTIONS="$PACSTALL_SUPPRESS_SOLUTIONS" \
             PACSTALL_BUILD_CORES="$PACSTALL_BUILD_CORES" PACSTALL_EDITOR="$PACSTALL_EDITOR" \
             PACSTALL_DOWNLOADER="$PACSTALL_DOWNLOADER" PACSTALL_PAYLOAD="$PACSTALL_PAYLOAD" \
