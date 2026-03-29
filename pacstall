@@ -46,6 +46,12 @@ export PACSTALL_INSTALL=1
 
 PACSTALL_DEBUG=0
 if [[ "${1}" == "-x" || "${1}" == "--debug" ]]; then
+  if [[ -v PACSTALL_LOG ]]; then
+    # Separate elevated log file because of permissions issues
+    [[ $PACSTALL_ELEVATED ]] && PACSTALL_LOG="${PACSTALL_LOG}.elevated"
+    exec 3>>"${PACSTALL_LOG}"
+    export BASH_XTRACEFD=3
+  fi
   set -x
   PACSTALL_DEBUG=1
   shift 1
@@ -804,15 +810,16 @@ function elevate() {
         [[ $NOCHECK ]] && nocheck="-Nc"
         ${PACSTALL_VERBOSE} || quiet="-Q"
         [[ $NOSANDBOX ]] && nosandbox="-Ns"
+        [[ -v PACSTALL_LOG ]] && xtrace="PACSTALL_LOG=${PACSTALL_LOG}"
 
-        trap - ERR RETURN
-        unset ignore_stack
         sudo PACSTALL_SUPPRESS_SOLUTIONS="$PACSTALL_SUPPRESS_SOLUTIONS" \
             PACSTALL_BUILD_CORES="$PACSTALL_BUILD_CORES" PACSTALL_EDITOR="$PACSTALL_EDITOR" \
             PACSTALL_DOWNLOADER="$PACSTALL_DOWNLOADER" PACSTALL_PAYLOAD="$PACSTALL_PAYLOAD" \
             PACSTALL_TMPDIR="$PACSTALL_TMPDIR" NO_COLOR="$NO_COLOR" SUDO_USER="${SUDO_USER}" \
-            DISABLE_PROMPTS="$DISABLE_PROMPTS" PACSTALL_ELEVATED=true \
+            DISABLE_PROMPTS="$DISABLE_PROMPTS" PACSTALL_ELEVATED=true $xtrace \
             pacstall $debug $keep $build $nocheck $quiet $nosandbox $@
+        cat "${PACSTALL_LOG}" "${PACSTALL_LOG}.elevated" > ${PACSTALL_LOG}
+        sudo rm "${PACSTALL_LOG}.elevated"
         exit $?
     fi
 }
