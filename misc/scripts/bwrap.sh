@@ -50,6 +50,7 @@ function safe_source() {
 
     sudo tee "$tmpfile" > /dev/null << EOF
 #!/bin/bash -a
+declare __OLD_ENV=""
 mapfile -t __OLD_ENV < <(compgen -A variable | sort)
 readonly __OLD_ENV
 $(declare -pf def_colors) && def_colors
