@@ -324,12 +324,8 @@ msgid "Checking apt dependencies"
 msgstr "Vérification des dépendances apt"
 
 #: misc/scripts/build.sh:327
-msgid "Packing control.tar"
-msgstr "Empaquetage de control.tar"
-
-#: misc/scripts/build.sh:337
-msgid "Packing data.tar"
-msgstr "Empaquetage de data.tar"
+msgid "Packing %s"
+msgstr "Empaquetage de %s"
 
 #: misc/scripts/build.sh:340
 msgid "Compressing"

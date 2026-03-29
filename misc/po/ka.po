@@ -315,11 +315,7 @@ msgid "Checking apt dependencies"
 msgstr ""
 
 #: misc/scripts/build.sh:327
-msgid "Packing control.tar"
-msgstr ""
-
-#: misc/scripts/build.sh:337
-msgid "Packing data.tar"
+msgid "Packing %s"
 msgstr ""
 
 #: misc/scripts/build.sh:340
