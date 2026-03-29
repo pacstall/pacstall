@@ -45,18 +45,25 @@ export PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER:-$(whoa
 export PACSTALL_INSTALL=1
 
 PACSTALL_DEBUG=0
+if [[ -n ${PACSTALL_XTRACE} ]] && ! [[ ${PACSTALL_XTRACE} =~ ^[0-9]+$ ]]; then
+    printf $'%b %b must be an integer\n' '[\033[1;31m!\033[0m] \033[1mERROR\033[0m:' 'PACSTALL_XTRACE' >&2
+    exit 1
+fi
 if [[ "${1}" == "-x" || "${1}" == "--debug" ]]; then
-  if [[ -v PACSTALL_LOG ]]; then
-    # Separate elevated log file because of permissions issues
-    [[ $PACSTALL_ELEVATED ]] && PACSTALL_LOG="${PACSTALL_LOG}.elevated"
-    exec 3>>"${PACSTALL_LOG}"
-    export BASH_XTRACEFD=3
-  fi
-  set -x
-  PACSTALL_DEBUG=1
-  shift 1
+    if [[ -n ${PACSTALL_LOG} && -n ${PACSTALL_XTRACE} ]]; then
+        # Separate elevated log file because of permissions issues
+        if [[ $PACSTALL_ELEVATED ]]; then
+            eval "exec ${PACSTALL_XTRACE}>'${PACSTALL_LOG}.elevated'"
+        else
+            eval "exec ${PACSTALL_XTRACE}>'${PACSTALL_LOG}'"
+        fi
+        export BASH_XTRACEFD="${PACSTALL_XTRACE}"
+    fi
+    set -x
+    PACSTALL_DEBUG=1
+    shift 1
 else
-  set +x
+    set +x
 fi
 export PACSTALL_DEBUG
 
@@ -810,17 +817,20 @@ function elevate() {
         [[ $NOCHECK ]] && nocheck="-Nc"
         ${PACSTALL_VERBOSE} || quiet="-Q"
         [[ $NOSANDBOX ]] && nosandbox="-Ns"
-        [[ -v PACSTALL_LOG ]] && xtrace="PACSTALL_LOG=${PACSTALL_LOG}"
 
         sudo PACSTALL_SUPPRESS_SOLUTIONS="$PACSTALL_SUPPRESS_SOLUTIONS" \
             PACSTALL_BUILD_CORES="$PACSTALL_BUILD_CORES" PACSTALL_EDITOR="$PACSTALL_EDITOR" \
             PACSTALL_DOWNLOADER="$PACSTALL_DOWNLOADER" PACSTALL_PAYLOAD="$PACSTALL_PAYLOAD" \
             PACSTALL_TMPDIR="$PACSTALL_TMPDIR" NO_COLOR="$NO_COLOR" SUDO_USER="${SUDO_USER}" \
-            DISABLE_PROMPTS="$DISABLE_PROMPTS" PACSTALL_ELEVATED=true $xtrace \
+            DISABLE_PROMPTS="$DISABLE_PROMPTS" PACSTALL_ELEVATED=true \
+            PACSTALL_LOG="${PACSTALL_LOG}" PACSTALL_XTRACE="${PACSTALL_XTRACE}" \
             pacstall $debug $keep $build $nocheck $quiet $nosandbox $@
-        cat "${PACSTALL_LOG}" "${PACSTALL_LOG}.elevated" > ${PACSTALL_LOG}
-        sudo rm "${PACSTALL_LOG}.elevated"
-        exit $?
+        exit_code=$?
+        if [[ -n ${debug} && -n ${PACSTALL_LOG} && -n ${PACSTALL_XTRACE} ]]; then
+            sudo cat "${PACSTALL_LOG}.elevated" >> "${PACSTALL_LOG}" \
+                && sudo rm -rf "${PACSTALL_LOG}.elevated"
+        fi
+        exit ${exit_code}
     fi
 }
 
