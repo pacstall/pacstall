@@ -238,6 +238,10 @@ DIR="$PWD"
 homedir="$(eval echo ~"$PACSTALL_USER")"
 export homedir
 
+if ! [[ -f "${PACDIR}/${PACKAGE}.pacscript" ]]; then
+    sudo cp "${PACKAGE}.pacscript" "${PACDIR}"
+    sudo chmod a+r "${PACDIR}/${PACKAGE}.pacscript"
+fi
 pacfile="$(readlink -f "${PACDIR}/${PACKAGE}.pacscript")"
 export pacfile
 mapfile -t FARCH < <(dpkg --print-foreign-architectures)
