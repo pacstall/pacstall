@@ -6,7 +6,7 @@ msgstr ""
 "Content-Transfer-Encoding: ENCODING\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: pacstall:287 misc/scripts/build.sh:163 misc/scripts/build.sh:671
+#: pacstall:287 misc/scripts/build.sh:163 misc/scripts/build.sh:672
 #: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:761
 #: misc/scripts/fetch-sources.sh:791 misc/scripts/package-base.sh:173
 #: misc/scripts/package-base.sh:194
@@ -50,162 +50,162 @@ msgstr ""
 msgid "Reading input from pipe"
 msgstr ""
 
-#: pacstall:741
+#: pacstall:745
 msgid "Only one command flag can be used at a time"
 msgstr ""
 
-#: pacstall:783
+#: pacstall:787
 msgid "Pacstall is already running another instance"
 msgstr ""
 
-#: pacstall:789
+#: pacstall:793
 msgid "The other instance has finished running, unlocking"
 msgstr ""
 
-#: pacstall:819
+#: pacstall:821
 msgid "Prompts are disabled"
 msgstr ""
 
-#: pacstall:826
+#: pacstall:828
 msgid "Package will be built and not installed"
 msgstr ""
 
-#: pacstall:905 pacstall:978 pacstall:1040 pacstall:1081 pacstall:1100
-#: pacstall:1280 pacstall:1340 pacstall:1368 misc/scripts/query-info.sh:28
+#: pacstall:907 pacstall:980 pacstall:1042 pacstall:1083 pacstall:1102
+#: pacstall:1282 pacstall:1342 pacstall:1370 misc/scripts/query-info.sh:28
 msgid "You failed to specify a package"
 msgstr ""
 
-#: pacstall:910
+#: pacstall:912
 msgid "The installation of %s was interrupted, removing files"
 msgstr ""
 
-#: pacstall:947 misc/scripts/package-base.sh:139
+#: pacstall:949 misc/scripts/package-base.sh:139
 msgid "%s does not exist"
 msgstr ""
 
-#: pacstall:985
+#: pacstall:987
 msgid "Payload not found"
 msgstr ""
 
-#: pacstall:998 pacstall:1045 pacstall:1085 pacstall:1213 pacstall:1290
-#: pacstall:1327
+#: pacstall:1000 pacstall:1047 pacstall:1087 pacstall:1215 pacstall:1292
+#: pacstall:1329
 msgid "Could not connect to the internet"
 msgstr ""
 
-#: pacstall:999 pacstall:1046 pacstall:1086 pacstall:1214 pacstall:1291
-#: pacstall:1328
+#: pacstall:1001 pacstall:1048 pacstall:1088 pacstall:1216 pacstall:1293
+#: pacstall:1330
 msgid "Confirm that the URLs '%b' or '%b' are accessible"
 msgstr ""
 
-#: pacstall:1015 pacstall:1305 misc/scripts/upgrade.sh:301
+#: pacstall:1017 pacstall:1307 misc/scripts/upgrade.sh:301
 msgid "Failed to download the %b pacscript"
 msgstr ""
 
-#: pacstall:1016 pacstall:1306
+#: pacstall:1018 pacstall:1308
 msgid "Confirm that the package exists by running '%b'"
 msgstr ""
 
-#: pacstall:1016 pacstall:1306
+#: pacstall:1018 pacstall:1308
 msgid "Check your internet connection"
 msgstr ""
 
-#: pacstall:1022 misc/scripts/package-base.sh:163
+#: pacstall:1024 misc/scripts/package-base.sh:163
 #: misc/scripts/package-base.sh:187
 msgid "Failed to install %b"
 msgstr ""
 
-#: pacstall:1109
+#: pacstall:1111
 msgid "Failed to remove %b"
 msgstr ""
 
-#: pacstall:1132
+#: pacstall:1134
 msgid "You failed to specify a repo to add"
 msgstr ""
 
-#: pacstall:1133
+#: pacstall:1135
 msgid "Add a repository in the following format:"
 msgstr ""
 
-#: pacstall:1133 pacstall:1156
+#: pacstall:1135 pacstall:1158
 msgid ""
 "Consult the pacstall man page by running '%b', and searching for the term "
 "'%b'"
 msgstr ""
 
-#: pacstall:1155
+#: pacstall:1157
 msgid "You failed to specify a repo to remove"
 msgstr ""
 
-#: pacstall:1156
+#: pacstall:1158
 msgid "Remove a repository in the following format:"
 msgstr ""
 
-#: pacstall:1182
+#: pacstall:1184
 msgid "%s is not a git repository"
 msgstr ""
 
-#: pacstall:1219
+#: pacstall:1221
 msgid ""
 "The repository you are trying to upgrade to contains a version of pacstall "
 "that cannot be updated from %b"
 msgstr ""
 
-#: pacstall:1220
+#: pacstall:1222
 msgid ""
 "Visit %s for more information on how to reinstall. Most packages will also "
 "need to be reinstalled"
 msgstr ""
 
-#: pacstall:1228
+#: pacstall:1230
 msgid ""
 "Pacstall was installed from a %s, and cannot be updated with this command"
 msgstr ""
 
-#: pacstall:1229
+#: pacstall:1231
 msgid "Install the latest %b from the %b repository"
 msgstr ""
 
-#: pacstall:1229
+#: pacstall:1231
 msgid "Install the latest %b with the command '%b'"
 msgstr ""
 
-#: pacstall:1237 pacstall:1322
+#: pacstall:1239 pacstall:1324
 msgid "Invalid argument '%s'"
 msgstr ""
 
-#: pacstall:1249
+#: pacstall:1251
 msgid "Nothing installed yet"
 msgstr ""
 
-#: pacstall:1310
+#: pacstall:1312
 msgid "%b pacscript is downloaded to %b"
 msgstr ""
 
-#: pacstall:1344 pacstall:1373 misc/scripts/query-info.sh:33
+#: pacstall:1346 pacstall:1375 misc/scripts/query-info.sh:33
 msgid "Package is not installed"
 msgstr ""
 
-#: pacstall:1385
+#: pacstall:1387
 msgid "'%b' is not a valid option, use '%b' or '%b'"
 msgstr ""
 
-#: pacstall:1408
+#: pacstall:1410
 msgid "Keeping build files"
 msgstr ""
 
-#: pacstall:1413
+#: pacstall:1415
 msgid "Skipping check() if present"
 msgstr ""
 
-#: pacstall:1418
+#: pacstall:1420
 msgid "Downloading package entries quietly"
 msgstr ""
 
-#: pacstall:1423
+#: pacstall:1425
 msgid "Building package without bwrap sandbox"
 msgstr ""
 
-#: pacstall:1424
+#: pacstall:1426
 msgid "Be cautious, this exposes your system to potential harm"
 msgstr ""
 
@@ -309,55 +309,55 @@ msgstr ""
 msgid "Checking apt dependencies"
 msgstr ""
 
-#: misc/scripts/build.sh:315 misc/scripts/build.sh:318
+#: misc/scripts/build.sh:316 misc/scripts/build.sh:319
 msgid "Packing %s"
 msgstr ""
 
-#: misc/scripts/build.sh:323
+#: misc/scripts/build.sh:324
 msgid "Compressing"
 msgstr ""
 
-#: misc/scripts/build.sh:348
+#: misc/scripts/build.sh:349
 msgid "Packaging %b as %b"
 msgstr ""
 
-#: misc/scripts/build.sh:350 misc/scripts/package-base.sh:159
+#: misc/scripts/build.sh:351 misc/scripts/package-base.sh:159
 msgid "Packaging %b"
 msgstr ""
 
-#: misc/scripts/build.sh:577
+#: misc/scripts/build.sh:578
 msgid "Empty key... Skipping"
 msgstr ""
 
-#: misc/scripts/build.sh:583
+#: misc/scripts/build.sh:584
 msgid "'%s' cannot contain empty path... Skipping"
 msgstr ""
 
-#: misc/scripts/build.sh:587 misc/scripts/build.sh:595
+#: misc/scripts/build.sh:588 misc/scripts/build.sh:596
 msgid "'%s' cannot contain path starting with '/'... Skipping"
 msgstr ""
 
-#: misc/scripts/build.sh:590
+#: misc/scripts/build.sh:591
 msgid "'%s' is inside the package... Skipping"
 msgstr ""
 
-#: misc/scripts/build.sh:668
+#: misc/scripts/build.sh:669
 msgid "Failed to install %s deb"
 msgstr ""
 
-#: misc/scripts/build.sh:693
+#: misc/scripts/build.sh:694
 msgid "Package built at %b"
 msgstr ""
 
-#: misc/scripts/build.sh:695 misc/scripts/package.sh:108
+#: misc/scripts/build.sh:696 misc/scripts/package.sh:108
 msgid "Moving %b to %b"
 msgstr ""
 
-#: misc/scripts/build.sh:712
+#: misc/scripts/build.sh:713
 msgid "Repacking %b"
 msgstr ""
 
-#: misc/scripts/bwrap.sh:115
+#: misc/scripts/bwrap.sh:123
 msgid "Running %s"
 msgstr ""
 
