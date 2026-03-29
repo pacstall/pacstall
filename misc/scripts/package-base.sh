@@ -238,9 +238,11 @@ DIR="$PWD"
 homedir="$(eval echo ~"$PACSTALL_USER")"
 export homedir
 
-sudo cp "${PACKAGE}.pacscript" "${PACTMP}"
-sudo chmod a+r "${PACTMP}/${PACKAGE}.pacscript"
-pacfile="$(readlink -f "${PACTMP}/${PACKAGE}.pacscript")"
+if ! [[ -f "${PACDIR}/${PACKAGE}.pacscript" ]]; then
+    sudo cp "${PACKAGE}.pacscript" "${PACDIR}"
+    sudo chmod a+r "${PACDIR}/${PACKAGE}.pacscript"
+fi
+pacfile="$(readlink -f "${PACDIR}/${PACKAGE}.pacscript")"
 export pacfile
 mapfile -t FARCH < <(dpkg --print-foreign-architectures)
 CARCH="$(dpkg --print-architecture)"
@@ -263,8 +265,8 @@ if ! source "${safeenv}"; then
     error_log 12 "install $PACKAGE"
     clean_fail_down
 fi
-srcinfo.print_out > "${PACTMP}/${PACKAGE}.SRCINFO"
-srcinfile="$(readlink -f "${PACTMP}/${PACKAGE}.SRCINFO")"
+srcinfo.print_out > "${PACDIR}/${PACKAGE}.SRCINFO"
+srcinfile="$(readlink -f "${PACDIR}/${PACKAGE}.SRCINFO")"
 export srcinfile
 
 package_pkg
