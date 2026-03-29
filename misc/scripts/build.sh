@@ -300,42 +300,25 @@ function clean_logdir() {
 
 function createdeb() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local debname="${1}_${2}_${3}"
+    local debname="${1}_${2}_${3}" CONTROL_LOCATION="$STAGEDIR/${1}/control.tar" DATA_LOCATION="$STAGEDIR/${1}/data.tar"
     if ((PACSTALL_INSTALL == 0)); then
         # We are not going to immediately install, meaning the user might want to share their deb with someone else, so create the highest compression.
-        local flags=("-19" "-T0" "-q")
-        local compression="zst"
-        local command="zstd"
+        local flags=("-19" "-T0" "-q") compression="zst" command="zstd"
     else
         # Immediate install (gzip), so we want fast build times over everything else
-        local flags=("-1n")
-        local compression="gz"
-        local command="gzip"
+        local flags=("-1n") compression="gz" command="gzip"
     fi
-    cd "$STAGEDIR/$pacname" || { ignore_stack=true; return 1; }
+    cd "${STAGEDIR}/${1}" || { ignore_stack=true; return 1; }
     # https://tldp.org/HOWTO/html_single/Debian-Binary-Package-Building-HOWTO/#AEN66
     echo "2.0" | sudo tee debian-binary > /dev/null
-    sudo tar -cf "$PWD/control.tar" -T /dev/null
-    local CONTROL_LOCATION="$PWD/control.tar"
-    # avoid having to cd back
-    pushd DEBIAN > /dev/null || { ignore_stack=true; return 1; }
-    for i in *; do
-        if [[ -f $i ]]; then
-            local files_for_control+=("$i")
-        fi
-    done
-    fancy_message sub $"Packing control.tar"
-    sudo tar -rf "$CONTROL_LOCATION" "${files_for_control[@]}"
-    popd > /dev/null || { ignore_stack=true; return 1; }
-    sudo tar -cf "$PWD/data.tar" -T /dev/null
-    local DATA_LOCATION="$PWD/data.tar"
+
+    fancy_message sub $"Packing %s" "control.tar"
+    sudo tar -cf "${CONTROL_LOCATION}" -C DEBIAN .
+
+    fancy_message sub $"Packing %s" "data.tar"
     # collect every top level file/dir except for deb stuff
-    for i in *; do
-        [[ $i =~ ^(DEBIAN|control.tar|data.tar|debian-binary)$ ]] && continue
-        local files_for_data+=("$i")
-    done
-    fancy_message sub $"Packing data.tar"
-    sudo tar -rf "$DATA_LOCATION" "${files_for_data[@]}"
+    find . -maxdepth 1 -mindepth 1 ! -name DEBIAN ! -name control.tar ! -name data.tar ! -name debian-binary -print0 \
+        | tar -cf "${DATA_LOCATION}" --null -T -
 
     fancy_message sub $"Compressing"
     sudo "$command" "${flags[@]}" "$DATA_LOCATION" "$CONTROL_LOCATION"
