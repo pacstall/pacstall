@@ -827,7 +827,7 @@ function elevate() {
             pacstall $debug $keep $build $nocheck $quiet $nosandbox $@
         exit_code=$?
         if [[ -n ${debug} && -n ${PACSTALL_LOG} && -n ${PACSTALL_XTRACE} ]]; then
-            sudo cat "${PACSTALL_LOG}.elevated" >> "${PACSTALL_LOG}" \
+            cat "${PACSTALL_LOG}.elevated" >> "${PACSTALL_LOG}" \
                 && sudo rm -rf "${PACSTALL_LOG}.elevated"
         fi
         exit ${exit_code}
