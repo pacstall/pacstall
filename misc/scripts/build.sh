@@ -301,7 +301,7 @@ function clean_logdir() {
 function createdeb() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local debname="${1}_${2}_${3}" CONTROL_LOCATION DATA_LOCATION STAGE_LOCATION="${STAGEDIR}/${1}"
-	CONTROL_LOCATION="${STAGE_LOCATION}/control.tar" DATA_LOCATION="${STAGE_LOCATION}/data.tar"
+    CONTROL_LOCATION="${STAGE_LOCATION}/control.tar" DATA_LOCATION="${STAGE_LOCATION}/data.tar"
     if ((PACSTALL_INSTALL == 0)); then
         # We are not going to immediately install, meaning the user might want to share their deb with someone else, so create the highest compression.
         local flags=("-19" "-T0" "-q") compression="zst" command="zstd"
