@@ -830,7 +830,7 @@ function elevate() {
         exit_code=$?
         if [[ -n ${debug} && -n ${PACSTALL_LOG} && -n ${PACSTALL_XTRACE} ]]; then
             set +x
-            cat "${PACSTALL_LOG}.elevated" >> "${PACSTALL_LOG}" \
+            tail -n +1 -v "${PACSTALL_LOG}.elevated" >> "${PACSTALL_LOG}" \
                 && sudo rm -rf "${PACSTALL_LOG}.elevated"
         fi
         exit ${exit_code}
