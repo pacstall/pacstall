@@ -48,11 +48,13 @@ PACSTALL_DEBUG=0
 if [[ "${1}" == "-x" || "${1}" == "--debug" ]]; then
     if [[ -n ${PACSTALL_XTRACELOG} && -n ${PACSTALL_XTRACEFD} ]]; then
         if ! [[ ${PACSTALL_XTRACEFD} =~ ^[0-9]+$ ]]; then
-            # avoid having to duplicate gettext string used in later checks
-            printf '[\033[1;31m!\033[0m] \033[1mERROR\033[0m: '
-            printf $"'%s' must be an unsigned integer" 'PACSTALL_XTRACEFD' >&2
-            # avoid having the newline in a gettext string
-            printf '\n'
+            {
+                # avoid having to duplicate gettext string used in later checks
+                printf '[\033[1;31m!\033[0m] \033[1mERROR\033[0m: ';
+                printf $"'%s' must be an unsigned integer" 'PACSTALL_XTRACEFD';
+                # avoid having the newline in a gettext string
+                printf '\n';
+            } >&2
             exit 1
         fi
         # Separate elevated log file because of permissions issues
