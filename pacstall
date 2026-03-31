@@ -46,20 +46,20 @@ export PACSTALL_INSTALL=1
 
 PACSTALL_DEBUG=0
 if [[ "${1}" == "-x" || "${1}" == "--debug" ]]; then
-    if [[ -n ${PACSTALL_LOG} && -n ${PACSTALL_XTRACE} ]]; then
-        if ! [[ ${PACSTALL_XTRACE} =~ ^[0-9]+$ ]]; then
-            printf $'%b must be an integer' '[\033[1;31m!\033[0m] \033[1mERROR\033[0m: PACSTALL_XTRACE' >&2
+    if [[ -n ${PACSTALL_XTRACELOG} && -n ${PACSTALL_XTRACEFD} ]]; then
+        if ! [[ ${PACSTALL_XTRACEFD} =~ ^[0-9]+$ ]]; then
+            printf $'%b must be an integer' '[\033[1;31m!\033[0m] \033[1mERROR\033[0m: PACSTALL_XTRACEFD' >&2
             # avoid having the newline in a gettext string
             printf '\n'
             exit 1
         fi
         # Separate elevated log file because of permissions issues
         if [[ $PACSTALL_ELEVATED ]]; then
-            eval "exec ${PACSTALL_XTRACE}>'${PACSTALL_LOG}.elevated'"
+            eval "exec ${PACSTALL_XTRACEFD}>'${PACSTALL_XTRACELOG}.elevated'"
         else
-            eval "exec ${PACSTALL_XTRACE}>'${PACSTALL_LOG}'"
+            eval "exec ${PACSTALL_XTRACEFD}>'${PACSTALL_XTRACELOG}'"
         fi
-        export BASH_XTRACEFD="${PACSTALL_XTRACE}"
+        export BASH_XTRACEFD="${PACSTALL_XTRACEFD}"
     fi
     set -x
     PACSTALL_DEBUG=1
@@ -825,13 +825,13 @@ function elevate() {
             PACSTALL_DOWNLOADER="$PACSTALL_DOWNLOADER" PACSTALL_PAYLOAD="$PACSTALL_PAYLOAD" \
             PACSTALL_TMPDIR="$PACSTALL_TMPDIR" NO_COLOR="$NO_COLOR" SUDO_USER="${SUDO_USER}" \
             DISABLE_PROMPTS="$DISABLE_PROMPTS" PACSTALL_ELEVATED=true \
-            PACSTALL_LOG="${PACSTALL_LOG}" PACSTALL_XTRACE="${PACSTALL_XTRACE}" \
+            PACSTALL_XTRACELOG="${PACSTALL_XTRACELOG}" PACSTALL_XTRACEFD="${PACSTALL_XTRACEFD}" \
             pacstall $debug $keep $build $nocheck $quiet $nosandbox $@
         exit_code=$?
-        if [[ -n ${debug} && -n ${PACSTALL_LOG} && -n ${PACSTALL_XTRACE} ]]; then
+        if [[ -n ${debug} && -n ${PACSTALL_XTRACELOG} && -n ${PACSTALL_XTRACEFD} ]]; then
             set +x
-            tail -n +1 -v "${PACSTALL_LOG}.elevated" >> "${PACSTALL_LOG}" \
-                && sudo rm -rf "${PACSTALL_LOG}.elevated"
+            tail -n +1 -v "${PACSTALL_XTRACELOG}.elevated" >> "${PACSTALL_XTRACELOG}" \
+                && sudo rm -rf "${PACSTALL_XTRACELOG}.elevated"
         fi
         exit ${exit_code}
     fi
