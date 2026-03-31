@@ -46,7 +46,7 @@ export PACSTALL_INSTALL=1
 
 PACSTALL_DEBUG=0
 if [[ "${1}" == "-x" || "${1}" == "--debug" ]]; then
-    if [[ -n ${PACSTALL_XTRACE} ]] && ! [[ ${PACSTALL_XTRACE} =~ ^[0-9]+$ ]]; then
+    if [[ -n ${PACSTALL_LOG} && -n ${PACSTALL_XTRACE} ]] && ! [[ ${PACSTALL_XTRACE} =~ ^[0-9]+$ ]]; then
         printf $'%b must be an integer' '[\033[1;31m!\033[0m] \033[1mERROR\033[0m: PACSTALL_XTRACE' >&2
         # avoid having the newline in a gettext string
         printf '\n'
