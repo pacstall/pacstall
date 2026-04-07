@@ -315,12 +315,8 @@ msgid "Checking apt dependencies"
 msgstr "检查apt依赖"
 
 #: misc/scripts/build.sh:327
-msgid "Packing control.tar"
-msgstr "打包control.tar"
-
-#: misc/scripts/build.sh:337
-msgid "Packing data.tar"
-msgstr "打包data.tar"
+msgid "Packing %s"
+msgstr "打包%s"
 
 #: misc/scripts/build.sh:340
 msgid "Compressing"

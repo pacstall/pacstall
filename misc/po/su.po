@@ -327,12 +327,8 @@ msgid "Checking apt dependencies"
 msgstr "Mariksakeun heula dependensi apt"
 
 #: misc/scripts/build.sh:327
-msgid "Packing control.tar"
-msgstr "Maketkeun control.tar"
-
-#: misc/scripts/build.sh:337
-msgid "Packing data.tar"
-msgstr "Maketkeun data.tar"
+msgid "Packing %s"
+msgstr "Maketkeun %s"
 
 #: misc/scripts/build.sh:340
 msgid "Compressing"
