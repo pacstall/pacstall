@@ -548,7 +548,7 @@ function makedeb() {
                 'sub)echo -e "  [$BOLD>$NC] $MESSAGE";;' '*)echo -e "[$BOLD?$NC] UNKNOWN: $MESSAGE"' 'esac' '}'
                 'function get_homedir(){' 'local PACSTALL_USER=$(logname 2>/dev/null||echo "${SUDO_USER:-$USER}")'
                 'eval echo ~"$PACSTALL_USER"' '}' 'export homedir="$(get_homedir)"' 'if [[ -n $PACSTALL_BUILD_CORES ]];then'
-                'declare -g NCPU="${PACSTALL_BUILD_CORES:-1}"' 'else' 'declare -g NCPU="$(nproc)"' 'fi'
+                'declare -g NCPU="${PACSTALL_BUILD_CORES:-1}"' 'else' 'declare -g NCPU="$(nproc)"' 'fi' "export KVER=${KVER}"
             )
             echo '#!/bin/bash' | sudo tee "$STAGEDIR/$pacname/DEBIAN/$deb_post_file" > /dev/null
             for pacmf_out in "${pac_min_functions[@]}" "export STAGEDIR=${STAGEDIR}"; do
