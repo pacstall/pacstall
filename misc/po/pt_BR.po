@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-10-01 23:22+0000\n"
-"Last-Translator: David Brochero <broxzuka@gmail.com>\n"
+"PO-Revision-Date: 2026-04-18 19:09+0000\n"
+"Last-Translator: Vitor <vitor.rtrindade@outlook.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "pacstall/pacstall/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.17.1-dev\n"
 
 #: pacstall:54 misc/scripts/checks.sh:95 misc/scripts/checks.sh:110
 msgid "'%s' must be an unsigned integer"
@@ -174,14 +174,15 @@ msgstr ""
 msgid ""
 "Pacstall was installed from a %s, and cannot be updated with this command"
 msgstr ""
+"Pacstall foi instalado de um %s, e não pode ser atualizado com este comando"
 
 #: pacstall:1257
 msgid "Install the latest %b from the %b repository"
-msgstr ""
+msgstr "Instale o último %b do %b repositório"
 
 #: pacstall:1257
 msgid "Install the latest %b with the command '%b'"
-msgstr ""
+msgstr "Instale o último %b com o comando %b"
 
 #: pacstall:1265 pacstall:1350
 msgid "Invalid argument '%s'"
@@ -200,10 +201,8 @@ msgid "Package is not installed"
 msgstr "O pacote não está instalado"
 
 #: pacstall:1413
-#, fuzzy
-#| msgid "'%s' is not a valid license"
 msgid "'%b' is not a valid option, use '%b' or '%b'"
-msgstr "'%s' não é uma licença válida"
+msgstr "'%b' não é uma opção válida, use '%b' ou'%b'"
 
 #: pacstall:1436
 msgid "Keeping build files"
