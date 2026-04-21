@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-04-18 19:09+0000\n"
-"Last-Translator: Vitor <vitor.rtrindade@outlook.com>\n"
+"PO-Revision-Date: 2026-04-21 17:40+0000\n"
+"Last-Translator: Oren Klopfer <oren@taumoda.com>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "pacstall/pacstall/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -202,7 +202,7 @@ msgstr "O pacote não está instalado"
 
 #: pacstall:1413
 msgid "'%b' is not a valid option, use '%b' or '%b'"
-msgstr "'%b' não é uma opção válida, use '%b' ou'%b'"
+msgstr "'%b' não é uma opção válida, use '%b' ou '%b'"
 
 #: pacstall:1436
 msgid "Keeping build files"
