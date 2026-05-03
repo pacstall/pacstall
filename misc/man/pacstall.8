@@ -584,8 +584,8 @@ directly to terminal
 .RS
 .RS
 .PP
-$ BASH_XTRACEFD=3 \f[B]pacstall -x -I\f[R] \f[I]foobar\f[R]
-3>\f[I]/tmp/pac-debug.log\f[R] # produce debug output to external file
+$ PACSTALL_XTRACEFD=3 PACSTALL_XTRACELOG=/tmp/pac-debug.log \f[B]pacstall -x -I\f[R] \f[I]foobar\f[R]
+# produce debug output to external file
 .RE
 .RE
 .SH ENVIRONMENT
