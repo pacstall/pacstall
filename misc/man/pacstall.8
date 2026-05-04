@@ -584,8 +584,9 @@ directly to terminal
 .RS
 .RS
 .PP
-$ PACSTALL_XTRACEFD=3 PACSTALL_XTRACELOG=/tmp/pac-debug.log \f[B]pacstall -x -I\f[R] \f[I]foobar\f[R]
-# produce debug output to external file
+$ PACSTALL_XTRACEFD=3 PACSTALL_XTRACELOG=/tmp/pac-debug.log
+\f[B]pacstall -x -I\f[R] \f[I]foobar\f[R] # produce debug output to
+external file
 .RE
 .RE
 .SH ENVIRONMENT
@@ -618,6 +619,14 @@ as the separator.
 Sets the path to perform downloads, extractions, and builds.
 Should always be defined \f[B]without\f[R] a trailing (ending) slash.
 Defaults to \f[V]/tmp\f[R] if not specified.
+.TP
+\f[B]PACSTALL_XTRACEFD\f[R]
+Sets \f[V]BASH_XTRACEFD\f[R] for the \f[V]-x\f[R] parameter.
+Must be used with \f[V]PACSTALL_XTRACELOG\f[R].
+.TP
+\f[B]PACSTALL_XTRACELOG\f[R]
+Sets log output for the \f[V]-x\f[R] parameter.
+Must be used with \f[V]PACSTALL_XTRACEFD\f[R].
 .TP
 \f[B]NO_COLOR\f[R]
 Turns off all colors.
