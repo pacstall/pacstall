@@ -5,7 +5,7 @@
 <a href="https://github.com/pacstall/pacstall/actions?query=workflow%3A%22test+install+script%22"><img src="https://img.shields.io/github/actions/workflow/status/pacstall/pacstall/remote-bash.yml?branch=master&style=flat-square"></a>
 <a href="https://www.codefactor.io/repository/github/pacstall/pacstall"><img src="https://img.shields.io/codefactor/grade/github/pacstall/pacstall/develop?style=flat-square"></a>
 <a href="https://github.com/pacstall/pacstall-programs"><img src="https://img.shields.io/github/commit-activity/m/pacstall/pacstall-programs?style=flat-square&label=user%20repo%20activity"></a><br>
-<a href="https://github.com/pacstall/pacstall-programs"><img alt="pkg_count" src="https://img.shields.io/github/directory-file-count/pacstall/pacstall-programs%2Fpackages?type=dir&style=flat-square&label=packages&color=%209b15"></a>
+<a href="https://github.com/pacstall/pacstall-programs"><img alt="pkg_count" src="https://img.shields.io/endpoint?url=https://ghloc.vercel.app/api/pacstall/pacstall-programs/badge?filter=packagelist&style=flat-square&label=packages&color=%209b15"></a>
 <a href="https://discord.gg/yzrjXJV6K8"><img src="https://img.shields.io/discord/839818021207801878?color=5865F2&label=Discord&logo=discord&logoColor=FFFFFF&style=flat-square"></a>
 <a href="https://lemmy.ml/c/pacstall/"><img src="https://img.shields.io/badge/Lemmy-red?logo=lemmy&logoColor=white&style=flat-square"></a>
 
