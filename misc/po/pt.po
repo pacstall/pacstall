@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-08-15 15:02+0000\n"
+"PO-Revision-Date: 2026-05-30 15:01+0000\n"
 "Last-Translator: ssantos <ssantos@web.de>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/pt/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.13\n"
+"X-Generator: Weblate 2026.6.dev0\n"
 
 #: pacstall:54 misc/scripts/checks.sh:95 misc/scripts/checks.sh:110
 msgid "'%s' must be an unsigned integer"
@@ -174,14 +174,15 @@ msgstr ""
 msgid ""
 "Pacstall was installed from a %s, and cannot be updated with this command"
 msgstr ""
+"Pacstall foi instalado de um %s e não pode ser atualizado com este comando"
 
 #: pacstall:1257
 msgid "Install the latest %b from the %b repository"
-msgstr ""
+msgstr "Instale o último %b do %b repositório"
 
 #: pacstall:1257
 msgid "Install the latest %b with the command '%b'"
-msgstr ""
+msgstr "Instale o último %b com o comando %b"
 
 #: pacstall:1265 pacstall:1350
 msgid "Invalid argument '%s'"
@@ -201,7 +202,7 @@ msgstr "O pacote não está instalado"
 
 #: pacstall:1413
 msgid "'%b' is not a valid option, use '%b' or '%b'"
-msgstr ""
+msgstr "'%b' não é uma opção válida, use '%b' ou '%b'"
 
 #: pacstall:1436
 msgid "Keeping build files"
@@ -524,7 +525,7 @@ msgstr "'%s' não é uma licença válida"
 
 #: misc/scripts/checks.sh:690
 msgid "'%s' must be prefixed with a constraint (<=|>=|=|<|>)"
-msgstr ""
+msgstr "'%s' deve ser prefixado com uma restrição (<=|>=|=|<|>)"
 
 #: misc/scripts/fetch-sources.sh:29
 msgid "Could not find build.sh"
@@ -652,11 +653,11 @@ msgstr "A verificar as dependências de compilação"
 
 #: misc/scripts/fetch-sources.sh:755
 msgid "%b versions cannot be satisfied"
-msgstr ""
+msgstr "as versões %b não podem ser satisfeitas"
 
 #: misc/scripts/fetch-sources.sh:757
 msgid "%b version cannot be satisfied"
-msgstr ""
+msgstr "versão %b não pode ser satisfeita"
 
 #: misc/scripts/fetch-sources.sh:769
 msgid "Checking check dependencies"
@@ -672,7 +673,7 @@ msgstr "Falha ao instalar as dependências de compilação ou de verificação"
 
 #: misc/scripts/fetch-sources.sh:923
 msgid "Kernel version constraint for this Pacscript not satisfied: %b"
-msgstr ""
+msgstr "O limite de versão kernel para este Pacscript não satisfeito: %b"
 
 #: misc/scripts/get-pacscript.sh:33
 msgid "Run '%b'"
@@ -680,7 +681,7 @@ msgstr "A executar '%b'"
 
 #: misc/scripts/get-pacscript.sh:38 misc/scripts/upgrade.sh:282
 msgid "Could not enter %s"
-msgstr ""
+msgstr "Não foi possível entrar %s"
 
 #: misc/scripts/get-pacscript.sh:49 misc/scripts/get-pacscript.sh:57
 msgid "Could not download %s"
@@ -764,10 +765,12 @@ msgid ""
 "This package has '%s', meaning once this is installed, it should be assumed "
 "to be unremovable. Do you want to continue?"
 msgstr ""
+"Este pacote tem '%s', o que significa que, uma vez instalado, ele deve ser "
+"assumido como irremovível. Queres continuar?"
 
 #: misc/scripts/package.sh:135
 msgid "Reinstalling '%s'"
-msgstr ""
+msgstr "A reinstalar o '%s'"
 
 #: misc/scripts/package.sh:146
 msgid "This script replaces %s. Do you want to proceed?"
