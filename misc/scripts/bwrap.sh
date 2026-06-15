@@ -106,8 +106,8 @@ function bwrap_function() {
     tmpfile="$(sudo mktemp -p "${PACDIR}")"
     sudo tee -a "$tmpfile" > /dev/null << EOF
 #!/bin/bash -a
-mapfile -t OLD_ENV < <(compgen -A variable | sort)
 source ${bwrapenv}
+mapfile -t OLD_ENV < <(compgen -A variable | sort)
 ${func} 2>&1 "${LOGDIR}/$(printf '%(%Y-%m-%d_%T)T')-$name-$func.log" && FUNCSTATUS="\${PIPESTATUS[0]}" && \
 if [[ \$FUNCSTATUS ]]; then \
     mapfile -t NEW_ENV < <(
