@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-11-22 11:51+0000\n"
-"Last-Translator: cy lin <cylin577@gmail.com>\n"
+"PO-Revision-Date: 2026-06-17 02:01+0000\n"
+"Last-Translator: reducedradius <feixiang512@outlook.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "pacstall/pacstall/zh_SIMPLIFIED/>\n"
 "Language: zh_SIMPLIFIED\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.15-dev\n"
+"X-Generator: Weblate 2026.7.dev0\n"
 
 #: pacstall:54 misc/scripts/checks.sh:95 misc/scripts/checks.sh:110
 msgid "'%s' must be an unsigned integer"
@@ -898,7 +898,6 @@ msgid "%bDo you want to %s %b from the repo %b?"
 msgstr "%b您是否想要从仓库 %b中获取 %s %b？"
 
 #: misc/scripts/update.sh:73
-#, fuzzy
 msgid "Invalid URL"
 msgstr "无效网址"
 
