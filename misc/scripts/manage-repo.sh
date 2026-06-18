@@ -76,7 +76,7 @@ function repo.unraw_types() {
             ;;
         "codeberg")
             pTYPE="${type}"
-            pURL="${rep%raw/branch/*}"
+            pURL="${rep%/raw/branch/*}"
             pBRANCH="${rep##*/}"
             pISSUES="${pURL}/issues"
             pTYPE="${type}"
@@ -204,7 +204,7 @@ function repo.specify() {
     if [[ $1 == "file://"* ]] || [[ $1 == "/"* ]] || [[ $1 == "~"* ]] || [[ $1 == "."* ]]; then
         repo.get_path "${1}" URLNAME
         export URLNAME
-    elif [[ $1 == "github:"* ]] || [[ $1 == "gitlab:"* ]] || [[ $1 == "sourchut:"* ]] || [[ $1 == "codeberg:"* ]]; then
+    elif [[ $1 == "github:"* ]] || [[ $1 == "gitlab:"* ]] || [[ $1 == "sourcehut:"* ]] || [[ $1 == "codeberg:"* ]]; then
         export URLNAME="${1}"
     elif [[ $1 == *"github"* ]] || [[ $1 == *"gitlab"* ]] || [[ $1 == *"git.sr.ht"* ]] || [[ $1 == *"codeberg"* ]]; then
         URLNAME="$(repo.to_metalink "${1}")"
