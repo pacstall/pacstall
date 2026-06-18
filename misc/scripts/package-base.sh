@@ -239,6 +239,7 @@ homedir="$(eval echo ~"$PACSTALL_USER")"
 export homedir
 
 if ! [[ -f "${PACDIR}/${PACKAGE}.pacscript" ]]; then
+    mkdir -p "${PACDIR}"
     sudo cp "${PACKAGE}.pacscript" "${PACDIR}"
     sudo chmod a+r "${PACDIR}/${PACKAGE}.pacscript"
 fi
