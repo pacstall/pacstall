@@ -696,6 +696,10 @@ if ! $(cd "${PACTMP}" 2> /dev/null); then
     exit 1
 fi
 
+if [[ -f "${PACDIR}" ]]; then
+    rm -rf "${PACDIR}"
+fi
+
 if [[ ! -t 0 ]]; then
     NON_INTERACTIVE=true
     fancy_message warn $"Reading input from pipe"
