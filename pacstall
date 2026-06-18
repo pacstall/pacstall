@@ -697,7 +697,7 @@ if ! $(cd "${PACTMP}" 2> /dev/null); then
 fi
 
 if [[ -f "${PACDIR}" ]]; then
-    rm -rf "${PACDIR}"
+    rm -f "${PACDIR}"
 fi
 
 if [[ ! -t 0 ]]; then
