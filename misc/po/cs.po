@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-11-06 22:51+0000\n"
+"PO-Revision-Date: 2026-07-02 13:10+0000\n"
 "Last-Translator: Pavel Borecki <pavel.borecki@gmail.com>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/pacstall/pacstall/"
 "cs/>\n"
@@ -9,11 +9,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
-"X-Generator: Weblate 5.15-dev\n"
+"X-Generator: Weblate 2026.7.dev0\n"
 
 #: pacstall:54 misc/scripts/checks.sh:95 misc/scripts/checks.sh:110
 msgid "'%s' must be an unsigned integer"
-msgstr ""
+msgstr "Je třeba, aby „%s“ bylo celé číslo bez znaménka"
 
 #: pacstall:306 misc/scripts/build.sh:163 misc/scripts/build.sh:672
 #: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:761
@@ -32,7 +32,7 @@ msgstr "Seznam balíčků nenalezen"
 
 #: pacstall:435 pacstall:444
 msgid "Confirm that '%b' exists"
-msgstr ""
+msgstr "Potvrďte, že „%b“ existuje"
 
 #: pacstall:437
 msgid "Failed to download file, check your connection"
@@ -40,24 +40,24 @@ msgstr "Soubor se nepodařilo stáhnout – zkontrolujte své připojení"
 
 #: pacstall:443
 msgid "The URL cannot be found"
-msgstr ""
+msgstr "URL nebylo možné nalézt"
 
 #: pacstall:451
 msgid "Failed with http code %s"
-msgstr ""
+msgstr "Nezdařilo se s http kódem %s"
 
 #: pacstall:452
 msgid "Confirm that '%b' is accessible"
-msgstr ""
+msgstr "Potvrďte, že „%b“ je přístupné"
 
 #: pacstall:695 misc/scripts/package.sh:404 misc/scripts/package.sh:419
 #: misc/scripts/update.sh:47
 msgid "Could not enter into %s"
-msgstr ""
+msgstr "Nebylo možné vstoupit do %s"
 
 #: pacstall:701
 msgid "Reading input from pipe"
-msgstr ""
+msgstr "Čtení vstupu z roury"
 
 #: pacstall:764
 msgid "Only one command flag can be used at a time"
