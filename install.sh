@@ -36,17 +36,23 @@ export PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER:-$(whoa
 
 function set_colors() {
     # Colors
-    BOLD='\033[1m'
-    NC="\033[0m"
+    export BOLD='\033[1m'
+    export NC="\033[0m"
 
-    RED='\033[0;31m'
-    GREEN='\033[0;32m'
+    export BLACK='\033[0;30m'
+    export RED='\033[0;31m'
+    export GREEN='\033[0;32m'
+    export YELLOW='\033[0;33m'
+    export BLUE='\033[0;34m'
+    export PURPLE='\033[0;35m'
+    export CYAN='\033[0;36m'
+    export WHITE='\033[0;37m'
 
-    BRed='\033[1;31m'
-    BGreen='\033[1;32m'
-    BYellow='\033[1;33m'
-    PACCYAN='\e[38;5;30m'
-    PACYELLOW='\e[38;5;214m'
+    export BRed='\033[1;31m'
+    export BGreen='\033[1;32m'
+    export BYellow='\033[1;33m'
+    export PACCYAN='\e[38;5;30m'
+    export PACYELLOW='\e[38;5;214m'
 }
 
 function fancy_message() {
@@ -236,15 +242,15 @@ function set_exec() {
 
 set_colors
 ((EUID != 0)) && { fancy_message error "Must be root to install Pacstall!"; ignore_stack=true; exit 1; }
-pre_check
+pre_check || return 1
 echo -e "${PACYELLOW}┌────────────────────────┐\n│   ${PACCYAN}Pacstall Installer${PACYELLOW}   │\n└────────────────────────┘${NC}\n"
-pre_update
-install_deps
-fetch_i18n
-build_dirs
-fetch_scripts
-build_i18n
-build_man
-set_exec
+pre_update || return 1
+install_deps || return 1
+fetch_i18n || return 1
+build_dirs || return 1
+fetch_scripts || return 1
+build_i18n || return 1
+build_man || return 1
+set_exec || return 1
 fancy_message info "Installation complete"
 # vim:set ft=sh ts=4 sw=4 et:
