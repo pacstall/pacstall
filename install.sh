@@ -243,22 +243,17 @@ function set_exec() {
     chmod +x "${SCRIPTDIR}/scripts/"*
 }
 
-function run_install() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    set_colors
-    ((EUID != 0)) && { fancy_message error "Must be root to install Pacstall!"; ignore_stack=true; exit 1; }
-    pre_check
-    echo -e "${PACYELLOW}┌────────────────────────┐\n│   ${PACCYAN}Pacstall Installer${PACYELLOW}   │\n└────────────────────────┘${NC}\n"
-    pre_update
-    install_deps
-    fetch_i18n
-    build_dirs
-    fetch_scripts
-    build_i18n
-    build_man
-    set_exec
-    fancy_message info "Installation complete"
-}
-
-run_install
+set_colors
+((EUID != 0)) && { fancy_message error "Must be root to install Pacstall!"; ignore_stack=true; exit 1; }
+pre_check
+echo -e "${PACYELLOW}┌────────────────────────┐\n│   ${PACCYAN}Pacstall Installer${PACYELLOW}   │\n└────────────────────────┘${NC}\n"
+pre_update
+install_deps
+fetch_i18n
+build_dirs
+fetch_scripts
+build_i18n
+build_man
+set_exec
+fancy_message info "Installation complete"
 # vim:set ft=sh ts=4 sw=4 et:
