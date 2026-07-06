@@ -114,27 +114,27 @@ function pre_check() {
 
     if ! command -v apt &> /dev/null; then
         fancy_message error "apt could not be found"
-        exit 1
+        return 1
     fi
 
     if ! command -v curl &> /dev/null; then
-        apt-get install -y -qq curl iputils-ping
+        apt-get install -y -qq curl iputils-ping || return 1
     fi
 
     if ! command -v wget &> /dev/null; then
-        apt-get install -y -qq wget ca-certificates
+        apt-get install -y -qq wget ca-certificates || return 1
     fi
 }
 
 function pre_update() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    eval "$(apt-config shell State Dir::State)"
-    eval "$(apt-config shell List Dir::State::Lists)"
+    eval "$(apt-config shell State Dir::State)" || return 1
+    eval "$(apt-config shell List Dir::State::Lists)" || return 1
     if [[ -z "$(find -H "/${State}/${List}" -maxdepth 0 -mtime -7)" ]]; then
         fancy_message info "Updating"
         case "${GITHUB_ACTIONS}" in
-            true) apt-get update -qq ;;
-            *) apt-get update ;;
+            true) apt-get update -qq || return 1 ;;
+            *) apt-get update || return 1 ;;
         esac
     fi
 }
@@ -161,8 +161,11 @@ function install_deps() {
         if ! dpkg -s "${pkg}" > /dev/null 2>&1; then
             if [[ ${pkg} == "spdx-licenses" ]]; then
                 if [[ -z $(apt-cache search --names-only "^${pkg}$") ]]; then
-                    wget -q -O "/tmp/${pkg}.deb" "https://ftp.debian.org/debian/pool/main/s/${pkg}/${pkg}_3.27.0+ds-1_all.deb" && \
-                        sudo apt install "/tmp/${pkg}.deb" -y && sudo rm -f "/tmp/${pkg}.deb" && continue
+                    {
+                        wget -q -O "/tmp/${pkg}.deb" "https://ftp.debian.org/debian/pool/main/s/${pkg}/${pkg}_3.27.0+ds-1_all.deb" && \
+                        sudo apt install "/tmp/${pkg}.deb" -y && \
+                        sudo rm -f "/tmp/${pkg}.deb" && continue
+                    } || return 1
                 fi
             fi
             to_install+=("${pkg}")
@@ -170,9 +173,9 @@ function install_deps() {
     done
     if ((${#to_install[@]} != 0)); then
         if [[ ${GITHUB_ACTIONS} == "true" ]]; then
-            apt-get install -qq -y "${to_install[@]}"
+            apt-get install -qq -y "${to_install[@]}" || return 1
         else
-            apt-get install -y "${to_install[@]}"
+            apt-get install -y "${to_install[@]}" || return 1
         fi
     fi
 }
@@ -180,16 +183,16 @@ function install_deps() {
 function fetch_i18n() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     fancy_message info "Fetching translation list"
-    mapfile -t linguas < <(wget -qO- "${REPO}/misc/po/LINGUAS")
+    mapfile -t linguas < <(wget -qO- "${REPO}/misc/po/LINGUAS") || return 1
 }
 
 function build_dirs() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     fancy_message info "Making directories"
-    mkdir -p "${SCRIPTDIR}/scripts" "${SCRIPTDIR}/repo" "${PACDIR}" "${METADIR}" "${LOGDIR}" "${MAN8DIR}" "${MAN5DIR}" "${PODIR}" "${BASH_COMPLETION_DIR}" "${FISH_COMPLETION_DIR}"
-    chown "${PACSTALL_USER}" -cR "${PACDIR}" "${LOGDIR}"
+    mkdir -p "${SCRIPTDIR}/scripts" "${SCRIPTDIR}/repo" "${PACDIR}" "${METADIR}" "${LOGDIR}" "${MAN8DIR}" "${MAN5DIR}" "${PODIR}" "${BASH_COMPLETION_DIR}" "${FISH_COMPLETION_DIR}" || return 1
+    chown "${PACSTALL_USER}" -cR "${PACDIR}" "${LOGDIR}" || return 1
     for lang in "${linguas[@]}"; do
-        mkdir -p "/usr/share/locale/${lang}/LC_MESSAGES/"
+        mkdir -p "/usr/share/locale/${lang}/LC_MESSAGES/" || return 1
     done
 }
 
@@ -222,15 +225,15 @@ function build_i18n() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     fancy_message info "Building translations"
     for lang in "${linguas[@]}"; do
-        msgfmt -o "/usr/share/locale/${lang}/LC_MESSAGES/pacstall.mo" "${PODIR}/${lang}.po"
+        msgfmt -o "/usr/share/locale/${lang}/LC_MESSAGES/pacstall.mo" "${PODIR}/${lang}.po" || return 1
     done
 }
 
 function build_man() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     fancy_message info "Building manpages"
-    gzip --force -9n "${MAN8DIR}/pacstall.8"
-    gzip --force -9n "${MAN5DIR}/pacstall.5"
+    gzip --force -9n "${MAN8DIR}/pacstall.8" || return 1
+    gzip --force -9n "${MAN5DIR}/pacstall.5" || return 1
 }
 
 function set_exec() {
@@ -244,16 +247,16 @@ function run_install() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     set_colors
     ((EUID != 0)) && { fancy_message error "Must be root to install Pacstall!"; ignore_stack=true; exit 1; }
-    pre_check || return 1
+    pre_check
     echo -e "${PACYELLOW}┌────────────────────────┐\n│   ${PACCYAN}Pacstall Installer${PACYELLOW}   │\n└────────────────────────┘${NC}\n"
-    pre_update || return 1
-    install_deps || return 1
-    fetch_i18n || return 1
-    build_dirs || return 1
-    fetch_scripts || return 1
-    build_i18n || return 1
-    build_man || return 1
-    set_exec || return 1
+    pre_update
+    install_deps
+    fetch_i18n
+    build_dirs
+    fetch_scripts
+    build_i18n
+    build_man
+    set_exec
     fancy_message info "Installation complete"
 }
 
