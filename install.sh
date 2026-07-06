@@ -69,10 +69,10 @@ function fancy_message() {
     local MESSAGE="${2}"
 
     case ${MESSAGE_TYPE} in
-        info) echo -e "[${BGreen}+${NC}] INFO: ${MESSAGE}" ;;
-        warn) echo >&2 -e "[${BYellow}*${NC}] WARNING: ${MESSAGE}" ;;
-        error) echo >&2 -e "[${BRed}!${NC}] ERROR: ${MESSAGE}" ;;
-        *) echo >&2 -e "[${BOLD}?${NC}] UNKNOWN: ${MESSAGE}" ;;
+        info) echo -e "[${BGreen}+${NC}] ${BOLD}INFO${NC}: ${MESSAGE}" ;;
+        warn) echo >&2 -e "[${BYellow}*${NC}] ${BOLD}WARNING${NC}: ${MESSAGE}" ;;
+        error) echo >&2 -e "[${BRed}!${NC}] ${BOLD}ERROR${NC}: ${MESSAGE}" ;;
+        *) echo >&2 -e "[${BOLD}?${NC}] ${BOLD}UNKNOWN${NC}: ${MESSAGE}" ;;
     esac
 }
 
