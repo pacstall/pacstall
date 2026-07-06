@@ -245,15 +245,15 @@ function set_exec() {
 
 set_colors
 ((EUID != 0)) && { fancy_message error "Must be root to install Pacstall!"; ignore_stack=true; exit 1; }
-pre_check || exit 1
+pre_check
 echo -e "${PACYELLOW}┌────────────────────────┐\n│   ${PACCYAN}Pacstall Installer${PACYELLOW}   │\n└────────────────────────┘${NC}\n"
-pre_update || exit 1
-install_deps || exit 1
-fetch_i18n || exit 1
-build_dirs || exit 1
-fetch_scripts || exit 1
-build_i18n || exit 1
-build_man || exit 1
-set_exec || exit 1
+pre_update
+install_deps
+fetch_i18n
+build_dirs
+fetch_scripts
+build_i18n
+build_man
+set_exec
 fancy_message info "Installation complete"
 # vim:set ft=sh ts=4 sw=4 et:
