@@ -239,21 +239,21 @@ function build_man() {
 function set_exec() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     fancy_message info "Making scripts executable"
-    chmod +x "/usr/bin/pacstall"
-    chmod +x "${SCRIPTDIR}/scripts/"*
+    chmod +x "/usr/bin/pacstall" || return 1
+    chmod +x "${SCRIPTDIR}/scripts/"* || return 1
 }
 
 set_colors
 ((EUID != 0)) && { fancy_message error "Must be root to install Pacstall!"; ignore_stack=true; exit 1; }
-pre_check
+pre_check || exit 1
 echo -e "${PACYELLOW}┌────────────────────────┐\n│   ${PACCYAN}Pacstall Installer${PACYELLOW}   │\n└────────────────────────┘${NC}\n"
-pre_update
-install_deps
-fetch_i18n
-build_dirs
-fetch_scripts
-build_i18n
-build_man
-set_exec
+pre_update || exit 1
+install_deps || exit 1
+fetch_i18n || exit 1
+build_dirs || exit 1
+fetch_scripts || exit 1
+build_i18n || exit 1
+build_man || exit 1
+set_exec || exit 1
 fancy_message info "Installation complete"
 # vim:set ft=sh ts=4 sw=4 et:
