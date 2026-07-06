@@ -244,6 +244,7 @@ function set_exec() {
 }
 
 function run_install() {
+    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     set_colors
     ((EUID != 0)) && { fancy_message error "Must be root to install Pacstall!"; ignore_stack=true; exit 1; }
     pre_check || return 1
