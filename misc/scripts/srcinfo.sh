@@ -323,7 +323,7 @@ function srcinfo.parse() {
     srcfile="${1:?No .SRCINFO passed to srcinfo.parse}"
     access="${2:?No output file given to srcinfo.parse}"
     srcinfo.cleanup "${PACDIR}-srcinfo-access-${access}"
-    [[ ! -s ${srcfile} ]] && return 5
+    [[ ! -s ${srcfile} ]] && { ignore_stack=true; return 5; }
     mapfile -t srcinfo_data < "${srcfile}"
     for line in "${srcinfo_data[@]}"; do
         # Skip blank lines
@@ -333,12 +333,12 @@ function srcinfo.parse() {
         declare -A temp_line
         if ! srcinfo._basic_check "${line}"; then
             echo "Could not parse line: '${line}'" >&2
-            return 3
+            { ignore_stack=true; return 3; }
         fi
         srcinfo.parse_key_val "${line}" temp_line
         if [[ -z ${temp_line[value]} ]]; then
             echo "Empty value for: '${line}'" >&2
-            return 4
+            { ignore_stack=true; return 4; }
         fi
         # Define pkgbase first, it must be the first thing listed
         if [[ -z ${globase} ]]; then
