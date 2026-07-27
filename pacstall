@@ -779,6 +779,11 @@ function lock() {
     local ignore_long="--search --download --add-repo --remove-repo --version --tree --search-description --search-info --cache-info --help"
     local ignore="$ignore_short $ignore_long"
 
+    local myroot pid
+    local -a instances=()
+
+    myroot="$(readlink -f /proc/self/root)"
+
     ((EUID != 0)) && { ignore_stack=true; return 1; }
 
     for ((i = 1; i <= option_flags + 1; i++)); do
@@ -791,17 +796,26 @@ function lock() {
         fi
     done
 
+    for pid in $(pidof -o %PPID -x "$0"); do
+        if [[ $(readlink -f "/proc/$pid/root" 2>/dev/null) == "${myroot}" ]]; then
+            instances+=("${pid}")
+        fi
+    done
+
     if [[ -f "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak" ]] || [[ $PACSTALL_ELEVATED ]]; then
         valid=2
         [[ -f "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak" ]] && [[ $PACSTALL_ELEVATED ]] && valid=3
-        instances=($(pidof -o %PPID -x "$0"))
-        if [[ ${#instances[@]} -lt $valid ]]; then
+        if (( ${#instances[@]} < valid )); then
             { ignore_stack=true; return 1; }
         fi
         return 0
     fi
 
-    pidof -o %PPID -x "$0" > /dev/null && return 0 || { ignore_stack=true; return 1; }
+    if (( ${#instances[@]} > 0 )); then
+        return 0
+    fi
+
+    { ignore_stack=true; return 1; }
 }
 
 while lock $@; do
