@@ -23,9 +23,9 @@
 # along with Pacstall. If not, see <https://www.gnu.org/licenses/>.
 
 # Pacstall version
-version_number="6.4.1"
-version_name="Salmon"
-declare -A version_color=([r]="255" [g]="140" [b]="105")
+version_number="6.4.2"
+version_name="Nectarine"
+declare -A version_color=([r]="248" [g]="148" [b]="93")
 
 # Configuration
 export METADIR="/var/lib/pacstall/metadata"
