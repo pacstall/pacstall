@@ -659,7 +659,7 @@ function getMasks() {
 
 function getMasks_offending_pkg() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local the_name="${1}"
+    local the_name="${1}" pkgs
     mapfile -t pkgs < <(pacstall -L)
     if ((${#pkgs[@]} == 0)); then
         return 0
@@ -708,11 +708,13 @@ fi
 # Separate grouped short options
 argument_list=()
 
+shopt -s extglob
+
 for i in "${@}"; do
     # Just add argument if doesn't start with exactly one hyphen.
     if ! [[ ${i} =~ ^-[^-] ]]; then
         # if argument is '-B', '-P', '-K' or '-Nc', add to beginning of argument list.
-        if [[ ${i} == "--build" || ${i} == "--disable-prompts" || ${i} == "--keep" || ${i} == "--nocheck" || ${i} == "--quiet" || ${i} == "--nosandbox" ]]; then
+        if [[ ${i} == --@(build|disable-prompts|keep|nocheck|quiet|nosandbox) ]]; then
             argument_list=("${i}" "${argument_list[@]}")
         else
             argument_list+=("${i}")
@@ -725,7 +727,7 @@ for i in "${@}"; do
     # Arguments start with uppercase except 'h'.
     for j in $(sed -E 's/[[:upper:]]|h/ &/g' <<< "${i:1}"); do
         # If current string is 'B', 'P', 'K' or 'Nc', add to beginning of argument list.
-        if [[ ${j} == "B" || ${j} == "P" || ${j} == "K" || ${j} == "Nc" || ${j} == "Q" || ${j} == "Ns" ]]; then
+        if [[ ${j} == @(B|P|K|Nc|Q|Ns) ]]; then
             argument_list=("-${j}" "${argument_list[@]}")
         else
             argument_list+=("-${j}")
@@ -733,6 +735,8 @@ for i in "${@}"; do
     done
     unset j
 done
+
+shopt -u extglob
 
 # Remove duplicates
 declare -A arg_map=(
