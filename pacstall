@@ -558,7 +558,7 @@ function select_options() {
                         select_options "$message" "$length" "$varname"
                         ;;
                 esac
-                out+=($(seq "${split_arr[0]}" "${split_arr[1]}"))
+                mapfile -t -O"${#out[@]}" out < <(seq "${split_arr[0]}" "${split_arr[1]}")
                 continue
             else
                 out+=("$i")
@@ -779,6 +779,9 @@ function lock() {
     local ignore_long="--search --download --add-repo --remove-repo --version --tree --search-description --search-info --cache-info --help"
     local ignore="$ignore_short $ignore_long"
 
+    local valid
+    local -a instances
+
     ((EUID != 0)) && { ignore_stack=true; return 1; }
 
     for ((i = 1; i <= option_flags + 1; i++)); do
@@ -794,8 +797,8 @@ function lock() {
     if [[ -f "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak" ]] || [[ $PACSTALL_ELEVATED ]]; then
         valid=2
         [[ -f "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak" ]] && [[ $PACSTALL_ELEVATED ]] && valid=3
-        instances=($(pidof -o %PPID -x "$0"))
-        if [[ ${#instances[@]} -lt $valid ]]; then
+        mapfile -t instances < <(pidof -o %PPID -x "$0" -d $'\n')
+        if (( ${#instances[@]} < valid )); then
             { ignore_stack=true; return 1; }
         fi
         return 0
