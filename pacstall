@@ -808,7 +808,7 @@ function lock() {
         return 0
     fi
 
-    pidof -o %PPID -x "$0" > /dev/null && return 0 || { ignore_stack=true; return 1; }
+    pidof -q -o %PPID -x "$0" && return 0 || { ignore_stack=true; return 1; }
 }
 
 while lock $@; do
