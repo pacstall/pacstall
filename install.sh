@@ -78,29 +78,34 @@ function fancy_message() {
 
 function stacktrace() {
     local catch=$?
-    if ((catch==1)) && ! ${ignore_stack}; then
-        local i stack_size=${#FUNCNAME[@]} func linen src trace content stack_color color_idx \
-            colors=(196 197 198 199 200 201 165 129 93 57 21 27 33 39 45 51 50 49 48 47 46 82 118 154 190 226 220 214 208 202)
-        echo -e "[${BRed}!${NC}] ${BOLD}ERROR${NC}: Stacktrace (most recent call last)" >&2
-        for ((i = stack_size - 1; i >= 1; i--)); do
-            color_idx=$(( (stack_size - 1 - i) % ${#colors[@]} ))
-            stack_color="\033[38;5;${colors[color_idx]}m"
-            ((i != stack_size - 1)) && func="${FUNCNAME[i - 1]}"
-            [[ -z ${func} ]] && func='MAIN'
-            [[ ${func} == "stacktrace" ]] && { unset func; trace="${RED}TRACEBACK${NC}"; }
-            linen="${BASH_LINENO[i - 1]}"
-            src="${BASH_SOURCE[i]}"
-            [[ -z ${src} ]] && src=non_file_source
-            echo -e " ${stack_color}${func:+├}${trace:+╰}─➤${GREEN}${func}${NC}${trace}${NC}${func:+()}${trace:+:} ${src%/*}/${PURPLE}${src##*/}${NC}:${YELLOW}${linen}${NC}" >&2
-            # shellcheck disable=SC2027
-            echo -e " ${stack_color}${func:+│}${trace:+ }${NC}  ${CYAN}╰───➤${NC} \033[38;5;242m"$(tail -n +"${linen}" "${src}" | head -n1)"${NC}" >&2
-        done
+	if ! [[ -n ${BASH_SOURCE[0]} && -f ${BASH_SOURCE[0]} ]]; then
         fancy_message error "Installation failed"
         exit 1
     else
-        export ignore_stack=false
-        return "${catch}"
-    fi
+	    if ((catch==1)) && ! ${ignore_stack}; then
+	        local i stack_size=${#FUNCNAME[@]} func linen src trace content stack_color color_idx \
+	            colors=(196 197 198 199 200 201 165 129 93 57 21 27 33 39 45 51 50 49 48 47 46 82 118 154 190 226 220 214 208 202)
+	        echo -e "[${BRed}!${NC}] ${BOLD}ERROR${NC}: Stacktrace (most recent call last)" >&2
+	        for ((i = stack_size - 1; i >= 1; i--)); do
+	            color_idx=$(( (stack_size - 1 - i) % ${#colors[@]} ))
+	            stack_color="\033[38;5;${colors[color_idx]}m"
+	            ((i != stack_size - 1)) && func="${FUNCNAME[i - 1]}"
+	            [[ -z ${func} ]] && func='MAIN'
+	            [[ ${func} == "stacktrace" ]] && { unset func; trace="${RED}TRACEBACK${NC}"; }
+	            linen="${BASH_LINENO[i - 1]}"
+	            src="${BASH_SOURCE[i]}"
+	            [[ -z ${src} ]] && src=non_file_source
+	            echo -e " ${stack_color}${func:+├}${trace:+╰}─➤${GREEN}${func}${NC}${trace}${NC}${func:+()}${trace:+:} ${src%/*}/${PURPLE}${src##*/}${NC}:${YELLOW}${linen}${NC}" >&2
+	            # shellcheck disable=SC2027
+	            echo -e " ${stack_color}${func:+│}${trace:+ }${NC}  ${CYAN}╰───➤${NC} \033[38;5;242m"$(tail -n +"${linen}" "${src}" | head -n1)"${NC}" >&2
+	        done
+	        fancy_message error "Installation failed"
+	        exit 1
+	    else
+	        export ignore_stack=false
+	        return "${catch}"
+	    fi
+	fi
 }
 { export ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
 
