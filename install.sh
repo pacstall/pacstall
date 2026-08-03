@@ -79,7 +79,7 @@ function fancy_message() {
 function stacktrace() {
     local catch=$?
 	if ! [[ -n ${BASH_SOURCE[0]} && -f ${BASH_SOURCE[0]} ]]; then
-        fancy_message error "Installation failed"
+        fancy_message error "Installation failed. Exiting..."
         exit 1
     else
 	    if ((catch==1)) && ! ${ignore_stack}; then
@@ -99,7 +99,7 @@ function stacktrace() {
 	            # shellcheck disable=SC2027
 	            echo -e " ${stack_color}${func:+│}${trace:+ }${NC}  ${CYAN}╰───➤${NC} \033[38;5;242m"$(tail -n +"${linen}" "${src}" | head -n1)"${NC}" >&2
 	        done
-	        fancy_message error "Installation failed"
+	        fancy_message error "Installation failed. Exiting..."
 	        exit 1
 	    else
 	        export ignore_stack=false
