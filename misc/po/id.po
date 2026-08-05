@@ -1,8 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2025-04-02 01:05+0000\n"
-"Last-Translator: \"James \\\"Jim\\\" Ed Randson\" "
-"<053476233@ecampus.ut.ac.id>\n"
+"PO-Revision-Date: 2026-08-04 15:01+0000\n"
+"Last-Translator: James Ed Randson <053476233@ecampus.ut.ac.id>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/id/>\n"
 "Language: id\n"
@@ -10,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.11-dev\n"
+"X-Generator: Weblate 2026.8.1.dev0\n"
 
 #: pacstall:54 misc/scripts/checks.sh:95 misc/scripts/checks.sh:110
 msgid "'%s' must be an unsigned integer"
@@ -526,7 +525,7 @@ msgstr "'%s' bukan merupakan lisensi yang valid"
 
 #: misc/scripts/checks.sh:690
 msgid "'%s' must be prefixed with a constraint (<=|>=|=|<|>)"
-msgstr ""
+msgstr "'%s' harus diawali dengan batasan (<=|>=|=|<|>)"
 
 #: misc/scripts/fetch-sources.sh:29
 msgid "Could not find build.sh"
@@ -674,7 +673,7 @@ msgstr "Gagal menginstal dependensi build atau check"
 
 #: misc/scripts/fetch-sources.sh:923
 msgid "Kernel version constraint for this Pacscript not satisfied: %b"
-msgstr ""
+msgstr "Batasan versi kernel untuk Pacscript ini tidak terpenuhi: %b"
 
 #: misc/scripts/get-pacscript.sh:33
 msgid "Run '%b'"
