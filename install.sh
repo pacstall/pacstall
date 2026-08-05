@@ -78,11 +78,8 @@ function fancy_message() {
 
 function stacktrace() {
     local catch=$?
-	if ! [[ -n ${BASH_SOURCE[0]} && -f ${BASH_SOURCE[0]} ]]; then
-        fancy_message error "Installation failed. Exiting..."
-        exit 1
-    else
-	    if ((catch!=0)) && ! ${ignore_stack}; then
+    if ((catch!=0)) && ! ${ignore_stack}; then
+        if [[ -n ${BASH_SOURCE[0]} && -f ${BASH_SOURCE[0]} ]]; then
 	        local i stack_size=${#FUNCNAME[@]} func linen src trace content stack_color color_idx \
 	            colors=(196 197 198 199 200 201 165 129 93 57 21 27 33 39 45 51 50 49 48 47 46 82 118 154 190 226 220 214 208 202)
 	        echo -e "[${BRed}!${NC}] ${BOLD}ERROR${NC}: Stacktrace (most recent call last)" >&2
@@ -99,13 +96,13 @@ function stacktrace() {
 	            # shellcheck disable=SC2027
 	            echo -e " ${stack_color}${func:+│}${trace:+ }${NC}  ${CYAN}╰───➤${NC} \033[38;5;242m"$(tail -n +"${linen}" "${src}" | head -n1)"${NC}" >&2
 	        done
-	        fancy_message error "Installation failed. Exiting..."
-	        exit 1
-	    else
-	        export ignore_stack=false
-	        return "${catch}"
-	    fi
-	fi
+        fi
+        fancy_message error "Installation failed. Exiting..."
+        exit 1
+    else
+        export ignore_stack=false
+        return "${catch}"
+    fi
 }
 { export ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
 
