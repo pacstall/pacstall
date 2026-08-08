@@ -34,6 +34,9 @@ export FISH_COMPLETION_DIR="/usr/share/fish/vendor_completions.d"
 export REPO="https://raw.githubusercontent.com/pacstall/pacstall/master"
 export PACSTALL_USER=$(logname 2> /dev/null || echo "${SUDO_USER:-${USER:-$(whoami)}}")
 
+# declare verbose debug output
+declare -gx PS4=$'\E[0;10m\E[1m\033[1;31m\033[1;37m[\033[1;35m${BASH_SOURCE[0]##*/}:\033[1;34m${FUNCNAME[0]:-NOFUNC}():\033[1;33m${LINENO}\033[1;37m] - \033[1;33mDEBUG: \E[0;10m'
+
 function set_colors() {
     # Colors
     export BOLD='\033[1m'
