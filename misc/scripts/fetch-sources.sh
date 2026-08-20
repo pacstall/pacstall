@@ -349,7 +349,7 @@ function deb_down() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     hashcheck_down
     local upgrade=false
-    if is_package_installed "${pacname}" && type -t pre_upgrade &> /dev/null; then
+    if is_package_installed "${pacname}" && is_function pre_upgrade; then
         upgrade=true
         fancy_message sub $"Running %s hook" "pre_upgrade"
         if ! pre_upgrade; then
@@ -357,7 +357,7 @@ function deb_down() {
             fancy_message error $"Could not run %s hook successfully" "preinst"
             exit 1
         fi
-    elif type -t pre_install &> /dev/null; then
+    elif is_function pre_install; then
         fancy_message sub $"Running %s hook" "pre_install"
         if ! pre_install; then
             error_log 5 "pre_install hook"
@@ -371,14 +371,14 @@ function deb_down() {
             sudo apt-mark auto "${gives:-$pacname}" 2> /dev/null
         fi
         fancy_message info $"Performing post install operations"
-        if type -t post_upgrade &> /dev/null && ${upgrade}; then
+        if is_function post_upgrade && ${upgrade}; then
             fancy_message sub $"Running %s hook" "post_upgrade"
             if ! post_upgrade; then
                 error_log 5 "post_upgrade hook"
                 fancy_message error $"Could not run %s hook successfully" "postinst"
                 exit 1
             fi
-        elif type -t post_install &> /dev/null; then
+        elif is_function post_install; then
             fancy_message sub $"Running %s hook" "post_install"
             if ! post_install; then
                 error_log 5 "post_install hook"
