@@ -651,7 +651,7 @@ function get_incompatible_releases() {
     for incompat in "${incomp_list[@]}"; do
         key="${incompat%%\[*}"
         reason="${incompat#*\[}"
-        [[ $reason != "${incompat}" ]] && reason"${reason%\]}"
+        [[ $reason != "${incompat}" ]] && reason="${reason%\]}"
 
         # check for `*:jammy`
         if [[ $key == "*:"* ]]; then

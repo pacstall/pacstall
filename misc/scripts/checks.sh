@@ -513,7 +513,7 @@ function lint_hash() {
 
 function lint_incompatible() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local ret=0 incompat compat idx=0 comp_err=0
+    local ret=0 incompat compat idx=0 comp_err=0 incompat_regex='^[^:[]+:[^:[]+(\[[^]]+\])?$'
     if [[ -n ${compatible[*]} ]]; then
         if [[ -n ${incompatible[*]} ]]; then
             if [[ ${comp_err} != 1 ]]; then
@@ -554,7 +554,7 @@ function lint_incompatible() {
         done
         idx=0
         for incompat in "${incompatible[@]}"; do
-            if [[ $incompat != *:* ]] || [[ $incompat == "*:*" ]] || [[ ! $incompat =~ ^[^:\[\]]+:[^:\[\]]+(\[[^\[\]]+\])?$ ]]; then
+            if [[ $incompat != *:* ]] || [[ $incompat == "*:*" ]] || [[ ! $incompat =~ ${incompat_regex} ]]; then
                 fancy_message error $"'%s' index '%s' is improperly formatted" "incompatible" "${idx}"
                 ret=1
             fi
