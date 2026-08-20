@@ -661,20 +661,32 @@ function get_incompatible_releases() {
         if [[ $key == "*:"* ]]; then
             # check for `22.04` or `jammy`
             if [[ ${key#*:} == "${distro_version_number}" || ${key#*:} == "${distro_version_name}" ]]; then
-                fancy_message error $"This Pacscript does not work on %b%b" "${BBlue}${distro_version_name}${NC}/${BBlue}${distro_version_number}${NC}" "${reason:+: $reason}"
+                if [[ -n ${reason} ]]; then
+                    fancy_message error $"This Pacscript does not work on %b: %b" "${BBlue}${distro_version_name}${NC}/${BBlue}${distro_version_number}${NC}" "${reason}"
+                else
+                    fancy_message error $"This Pacscript does not work on %b" "${BBlue}${distro_version_name}${NC}/${BBlue}${distro_version_number}${NC}"
+                fi
                 { ignore_stack=true; return 1; }
             fi
         # check for `ubuntu:*`
         elif [[ $key == *":*" ]]; then
             # check for `ubuntu`
             if [[ ${key%%:*} == "${distro_name}" ]]; then
-                fancy_message error $"This Pacscript does not work on %b%b" "${BBlue}${distro_name}${NC}" "${reason:+: $reason}"
+                if [[ -n ${reason} ]]; then
+                    fancy_message error $"This Pacscript does not work on %b: %b" "${BBlue}${distro_name}${NC}" "${reason}"
+                else
+                    fancy_message error $"This Pacscript does not work on %b" "${BBlue}${distro_name}${NC}"
+                fi
                 { ignore_stack=true; return 1; }
             fi
         else
             # check for `ubuntu:jammy` or `ubuntu:22.04`
             if [[ $key == "${distro_name}:${distro_version_name}" || $key == "${distro_name}:${distro_version_number}" ]]; then
-                fancy_message error $"This Pacscript does not work on %b%b" "${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${distro_name}:${distro_version_number}${NC}" "${reason:+: $reason}"
+                if [[ -n ${reason} ]]; then
+                    fancy_message error $"This Pacscript does not work on %b: %b" "${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${distro_name}:${distro_version_number}${NC}" "${reason}"
+                else
+                    fancy_message error $"This Pacscript does not work on %b" "${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${distro_name}:${distro_version_number}${NC}"
+                fi
                 { ignore_stack=true; return 1; }
             fi
         fi
