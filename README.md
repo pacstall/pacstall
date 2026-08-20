@@ -2,7 +2,7 @@
 <a href="https://github.com/pacstall/pacstall/releases/latest"><img src="https://img.shields.io/github/v/release/pacstall/pacstall?color=red&style=flat-square"></a>
 <a href="https://www.gnu.org/software/bash/"><img src="https://img.shields.io/badge/bash-v5-brightgreen?style=flat-square&logo" alt="Bash v5"></a>
   <a href="https://github.com/pacstall/pacstall/issues"><img src="https://img.shields.io/github/issues/pacstall/pacstall?style=flat-square"></a>
-<a href="https://github.com/pacstall/pacstall/actions?query=workflow%3A%22test+install+script%22"><img src="https://img.shields.io/github/actions/workflow/status/pacstall/pacstall/remote-bash.yml?branch=master&style=flat-square"></a>
+<a href="https://github.com/pacstall/pacstall/actions?query=workflow%3A%22test+install+script%22"><img src="https://img.shields.io/github/actions/workflow/status/pacstall/pacstall/test-pr.yml?branch=develop&style=flat-square"></a>
 <a href="https://www.codefactor.io/repository/github/pacstall/pacstall"><img src="https://img.shields.io/codefactor/grade/github/pacstall/pacstall/develop?style=flat-square"></a>
 <a href="https://github.com/pacstall/pacstall-programs"><img src="https://img.shields.io/github/commit-activity/m/pacstall/pacstall-programs?style=flat-square&label=user%20repo%20activity"></a><br>
 <a href="https://github.com/pacstall/pacstall-programs"><img alt="pkg_count" src="https://img.shields.io/endpoint?url=https://ghloc.vercel.app/api/pacstall/pacstall-programs/badge?filter=packagelist&style=flat-square&label=packages&color=%209b15"></a>
