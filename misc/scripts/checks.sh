@@ -554,7 +554,7 @@ function lint_incompatible() {
         done
         idx=0
         for incompat in "${incompatible[@]}"; do
-            if [[ $incompat != *:* ]] || [[ $incompat == "*:*" ]]; then
+            if [[ $incompat != *:* ]] || [[ $incompat == "*:*" ]] || [[ ! $incompat =~ ^[^:\[\]]+:[^:\[\]]+(\[[^\[\]]+\])?$ ]]; then
                 fancy_message error $"'%s' index '%s' is improperly formatted" "incompatible" "${idx}"
                 ret=1
             fi

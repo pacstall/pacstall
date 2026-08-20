@@ -625,18 +625,21 @@ function get_compatible_releases() {
 function get_incompatible_releases() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # example for this function is "ubuntu:jammy"
-    local distro_name distro_version_name distro_version_number distro_parent distro_parent_vname distro_parent_number incomp_list=("${@,,}")
+    local distro_name distro_version_name distro_version_number distro_parent distro_parent_vname distro_parent_number incomp_list=("${@,,}") incomp_keys=() key reason
     calc_distro
 
+    for key in "${incomp_list[@]}"; do
+        incomp_keys+=("${key%%\[*}")
+    done
 
-    if ! array.contains incomp_list "${distro_name}:${distro_version_name}" && \
-        ! array.contains incomp_list "${distro_name}:${distro_version_number}" && \
-        ! array.contains incomp_list "${distro_name}:*" && \
-        ! array.contains incomp_list "*:${distro_version_name}" && \
-        ! array.contains incomp_list "*:${distro_version_number}"; then
+    if ! array.contains incomp_keys "${distro_name}:${distro_version_name}" && \
+        ! array.contains incomp_keys "${distro_name}:${distro_version_number}" && \
+        ! array.contains incomp_keys "${distro_name}:*" && \
+        ! array.contains incomp_keys "*:${distro_version_name}" && \
+        ! array.contains incomp_keys "*:${distro_version_number}"; then
         if [[ -n ${distro_parent_vname} ]] && \
-            { array.contains incomp_list "*:${distro_parent_vname}" || \
-            array.contains incomp_list "*:${distro_parent_number}";
+            { array.contains incomp_keys "*:${distro_parent_vname}" || \
+            array.contains incomp_keys "*:${distro_parent_number}";
         }; then
             distro_name="${distro_parent}"
             distro_version_name="${distro_parent_vname}"
@@ -645,25 +648,29 @@ function get_incompatible_releases() {
             fi
         fi
     fi
-    for key in "${incomp_list[@]}"; do
+    for incompat in "${incomp_list[@]}"; do
+        key="${incompat%%\[*}"
+        reason="${incompat#*\[}"
+        [[ $reason != "${incompat}" ]] && reason"${reason%\]}"
+
         # check for `*:jammy`
         if [[ $key == "*:"* ]]; then
             # check for `22.04` or `jammy`
             if [[ ${key#*:} == "${distro_version_number}" || ${key#*:} == "${distro_version_name}" ]]; then
-                fancy_message error $"This Pacscript does not work on %b" "${BBlue}${distro_version_name}${NC}/${BBlue}${distro_version_number}${NC}"
+                fancy_message error $"This Pacscript does not work on %b%b" "${BBlue}${distro_version_name}${NC}/${BBlue}${distro_version_number}${NC}" "${reason:+: $reason}"
                 { ignore_stack=true; return 1; }
             fi
         # check for `ubuntu:*`
         elif [[ $key == *":*" ]]; then
             # check for `ubuntu`
             if [[ ${key%%:*} == "${distro_name}" ]]; then
-                fancy_message error $"This Pacscript does not work on %b" "${BBlue}${distro_name}${NC}"
+                fancy_message error $"This Pacscript does not work on %b%b" "${BBlue}${distro_name}${NC}" "${reason:+: $reason}"
                 { ignore_stack=true; return 1; }
             fi
         else
             # check for `ubuntu:jammy` or `ubuntu:22.04`
             if [[ $key == "${distro_name}:${distro_version_name}" || $key == "${distro_name}:${distro_version_number}" ]]; then
-                fancy_message error $"This Pacscript does not work on %b" "${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${distro_name}:${distro_version_number}${NC}"
+                fancy_message error $"This Pacscript does not work on %b%b" "${BBlue}${distro_name}:${distro_version_name}${NC}/${BBlue}${distro_name}:${distro_version_number}${NC}" "${reason:+: $reason}"
                 { ignore_stack=true; return 1; }
             fi
         fi
