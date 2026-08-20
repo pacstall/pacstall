@@ -4,6 +4,7 @@ on: [pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
+    if: github.actor != 'dependabot[bot]'
     container:
       image: ubuntu:latest
       options: --privileged
