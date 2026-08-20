@@ -620,7 +620,7 @@ function is_array() {
 
 function is_function() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    if [[ $(type -t "${1}") == "function" ]]; then
+    if declare -F "${1}" &> /dev/null; then
         return 0
     else
         { ignore_stack=true; return 1; }

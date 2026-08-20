@@ -512,12 +512,12 @@ function makedeb() {
     fi
     local pre_inst_upg post_inst_upg
     if is_package_installed "${pacname}"; then
-        if type -t pre_upgrade &> /dev/null; then
+        if is_function pre_upgrade; then
             pre_inst_upg="pre_upgrade"
         else
             pre_inst_upg="pre_install"
         fi
-        if type -t post_upgrade &> /dev/null; then
+        if is_function post_upgrade; then
             post_inst_upg="post_upgrade"
         else
             post_inst_upg="post_install"
