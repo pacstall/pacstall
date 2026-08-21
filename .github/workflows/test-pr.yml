@@ -17,7 +17,7 @@ jobs:
         DEBIAN_FRONTEND: noninteractive
     steps:
       - id: checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Install dependencies
         run: |
           apt update -qq
