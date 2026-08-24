@@ -695,6 +695,7 @@ function get_incompatible_releases() {
                 { ignore_stack=true; return 1; }
             fi
         fi
+    unset key reason
     done
 }
 
