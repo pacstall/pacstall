@@ -43,19 +43,19 @@ function parse_link() {
     if [[ $provider == "github" ]]; then
         if ! gh_provides=$(curl -fSs "https://api.github.com/repos/${user}/${repo}/pulls/${pr}"); then
             fancy_message error $"Could not retrieve pull request information from %b" "GitHub"
-            exit 1
+            { ignore_stack=true; return 1; }
         fi
         if ! read -r head_repo_full_name head_sha login < <(
             jq -er '[.head.repo.full_name, .head.sha, .head.user.login] | @tsv' <<< "${gh_provides}"
         ); then
             fancy_message error $"%b returned an invalid pull request response" "GitHub"
-            exit 1
+            { ignore_stack=true; return 1; }
         fi
         echo "https://raw.githubusercontent.com/$head_repo_full_name/$head_sha" "$login"
     else
         fancy_message error $"%b is not a valid provider!" "${CYAN}$provider${NC}"
         fancy_message sub $"available providers are: '%s'" "github"
-        exit 1
+        { ignore_stack=true; return 1; }
     fi
 }
 
