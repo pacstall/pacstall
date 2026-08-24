@@ -39,11 +39,9 @@ function parse_pr() {
 function parse_link() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     unset login
-    local provider="$1" user="$2" repo="$3" pr="$4" gh_catch
+    local provider="$1" user="$2" repo="$3" pr="$4" gh_provides head_repo_full_name head_sha
     if [[ $provider == "github" ]]; then
-        gh_provides=$(curl -fSs "https://api.github.com/repos/${user}/${repo}/pulls/${pr}")
-        gh_catch=$?
-        if ((gh_catch != 0)); then
+        if ! gh_provides=$(curl -fSs "https://api.github.com/repos/${user}/${repo}/pulls/${pr}"); then
             fancy_message error $"Could not retrieve pull request information from %b" "GitHub"
             { ignore_stack=true; return 1; }
         fi
