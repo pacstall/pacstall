@@ -570,6 +570,7 @@ function set_distro() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local distro_name distro_version_name distro_version_number distro_parent distro_parent_vname distro_parent_number
     calc_distro
+
     if [[ ${1} == "parent" ]]; then
         if [[ ${2} == "number" ]]; then
             echo "${distro_parent_number:-${distro_version_number}}"
