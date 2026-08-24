@@ -586,7 +586,7 @@ function set_distro() {
 function get_compatible_releases() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     # example for this function is "ubuntu:jammy"
-    local distro_name distro_version_name distro_version_number distro_parent distro_parent_vname distro_parent_number is_compat=false comp_list=("${@}")
+    local distro_name distro_version_name distro_version_number distro_parent distro_parent_vname distro_parent_number is_compat=false comp_list=("${@},,")
     calc_distro
     for key in "${comp_list[@]}"; do
         # check for `*:jammy`
