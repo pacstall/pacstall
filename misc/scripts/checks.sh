@@ -531,7 +531,7 @@ function lint_incompatible() {
         done
         idx=0
         for compat in "${compatible[@]}"; do
-            if [[ $compat != *:* ]] || [[ $compat == "*:*" ]]; then
+            if [[ ${compat} != *":"* ]] || [[ ${compat} =~ "*:*" ]]; then
                 fancy_message error $"'%s' index '%s' is improperly formatted" "compatible" "${idx}"
                 ret=1
             fi
@@ -554,7 +554,7 @@ function lint_incompatible() {
         done
         idx=0
         for incompat in "${incompatible[@]}"; do
-            if [[ $incompat != *:* ]] || [[ $incompat == "*:*" ]] || [[ ! $incompat =~ ${incompat_regex} ]]; then
+            if [[ ${incompat} != *":"* ]] || [[ ${incompat} =~ "*:*" ]] || [[ ! ${incompat} =~ ${incompat_regex} ]]; then
                 fancy_message error $"'%s' index '%s' is improperly formatted" "incompatible" "${idx}"
                 ret=1
             fi
