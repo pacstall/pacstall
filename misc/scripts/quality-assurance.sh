@@ -77,7 +77,8 @@ if [[ -z $number || -z $inst ]]; then
     exit 1
 fi
 read -r provider user repo pr <<< "$(parse_pr "$metalink" "$number")"
-read -r provider_url login <<< "$(parse_link "$provider" "$user" "$repo" "$pr")"
+parse_link_output=$(parse_link "$provider" "$user" "$repo" "$pr")
+read -r provider_url login <<< "$parse_link_output"
 fancy_message info $"Backing up %b" "${CYAN}$SCRIPTDIR/repo/pacstallrepo${NC}"
 sudo mv "$SCRIPTDIR/repo/pacstallrepo" "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak"
 echo "$provider_url" | sudo tee "$SCRIPTDIR/repo/pacstallrepo" > /dev/null
