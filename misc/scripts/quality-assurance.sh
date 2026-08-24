@@ -26,6 +26,7 @@
 
 function parse_pr() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+    local -a ADDR
     IFS=':' read -ra ADDR <<< "$1"
     local provider user repo pr
     provider="${ADDR[0]}"
@@ -40,10 +41,16 @@ function parse_link() {
     unset login
     local provider="$1" user="$2" repo="$3" pr="$4"
     if [[ $provider == "github" ]]; then
-        gh_provides=$(curl -s "https://api.github.com/repos/$user/$repo/pulls/$pr")
-        head_repo_full_name=$(echo "$gh_provides" | jq -r '.head.repo.full_name')
-        head_sha=$(echo "$gh_provides" | jq -r '.head.sha')
-        login=$(echo "$gh_provides" | jq -r '.head.user.login')
+        if ! gh_provides=$(curl -fSs "https://api.github.com/repos/${user}/${repo}/pulls/${pr}"); then
+            fancy_message error $"Could not retrieve pull request information from %b" "GitHub"
+            exit 1
+        fi
+        if ! read -r head_repo_full_name head_sha login < <(
+            jq -er '[.head.repo.full_name, .head.sha, .head.user.login] | @tsv' <<< "${gh_provides}"
+        ); then
+            fancy_message error $"%b returned an invalid pull request response" "GitHub"
+            exit 1
+        fi
         echo "https://raw.githubusercontent.com/$head_repo_full_name/$head_sha" "$login"
     else
         fancy_message error $"%b is not a valid provider!" "${CYAN}$provider${NC}"
