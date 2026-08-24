@@ -30,8 +30,8 @@ function parse_pr() {
     IFS=':' read -ra ADDR <<< "$1"
     local provider user repo pr
     provider="${ADDR[0]}"
-    user=$(echo "${ADDR[1]}" | cut -d'/' -f1)
-    repo=$(echo "${ADDR[1]}" | cut -d'/' -f2)
+    user="${ADDR[1]%%/*}"
+    repo="${ADDR[1]#*/}"
     pr="$2"
     echo "$provider" "$user" "$repo" "$pr"
 }
