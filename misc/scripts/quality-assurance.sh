@@ -26,11 +26,12 @@
 
 function parse_pr() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
+    local -a ADDR
     IFS=':' read -ra ADDR <<< "$1"
     local provider user repo pr
     provider="${ADDR[0]}"
-    user=$(echo "${ADDR[1]}" | cut -d'/' -f1)
-    repo=$(echo "${ADDR[1]}" | cut -d'/' -f2)
+    user="${ADDR[1]%%/*}"
+    repo="${ADDR[1]#*/}"
     pr="$2"
     echo "$provider" "$user" "$repo" "$pr"
 }
@@ -38,17 +39,23 @@ function parse_pr() {
 function parse_link() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     unset login
-    local provider="$1" user="$2" repo="$3" pr="$4"
+    local provider="$1" user="$2" repo="$3" pr="$4" gh_provides head_repo_full_name head_sha
     if [[ $provider == "github" ]]; then
-        gh_provides=$(curl -s "https://api.github.com/repos/$user/$repo/pulls/$pr")
-        head_repo_full_name=$(echo "$gh_provides" | jq -r '.head.repo.full_name')
-        head_sha=$(echo "$gh_provides" | jq -r '.head.sha')
-        login=$(echo "$gh_provides" | jq -r '.head.user.login')
+        if ! gh_provides=$(curl -fSs "https://api.github.com/repos/${user}/${repo}/pulls/${pr}"); then
+            fancy_message error $"Could not retrieve pull request information from %b" "GitHub"
+            { ignore_stack=true; return 1; }
+        fi
+        if ! read -r head_repo_full_name head_sha login < <(
+            jq -er '[.head.repo.full_name, .head.sha, .head.user.login] | @tsv' <<< "${gh_provides}"
+        ); then
+            fancy_message error $"%b returned an invalid pull request response" "GitHub"
+            { ignore_stack=true; return 1; }
+        fi
         echo "https://raw.githubusercontent.com/$head_repo_full_name/$head_sha" "$login"
     else
         fancy_message error $"%b is not a valid provider!" "${CYAN}$provider${NC}"
         fancy_message sub $"available providers are: '%s'" "github"
-        exit 1
+        { ignore_stack=true; return 1; }
     fi
 }
 
@@ -70,7 +77,8 @@ if [[ -z $number || -z $inst ]]; then
     exit 1
 fi
 read -r provider user repo pr <<< "$(parse_pr "$metalink" "$number")"
-read -r provider_url login <<< "$(parse_link "$provider" "$user" "$repo" "$pr")"
+parse_link_output=$(parse_link "$provider" "$user" "$repo" "$pr")
+read -r provider_url login <<< "$parse_link_output"
 fancy_message info $"Backing up %b" "${CYAN}$SCRIPTDIR/repo/pacstallrepo${NC}"
 sudo mv "$SCRIPTDIR/repo/pacstallrepo" "$SCRIPTDIR/repo/pacstallrepo.pacstall-qa.bak"
 echo "$provider_url" | sudo tee "$SCRIPTDIR/repo/pacstallrepo" > /dev/null
