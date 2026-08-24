@@ -639,7 +639,10 @@ function get_incompatible_releases() {
         ! array.contains incomp_keys "*:${distro_version_name}" && \
         ! array.contains incomp_keys "*:${distro_version_number}"; then
         if [[ -n ${distro_parent_vname} ]] && \
-            { array.contains incomp_keys "*:${distro_parent_vname}" || \
+            { array.contains incomp_keys "${distro_parent}:${distro_parent_vname}" || \
+            array.contains incomp_keys "${distro_parent}:${distro_parent_number}" || \
+            array.contains incomp_keys "${distro_parent}:*" || \
+            array.contains incomp_keys "*:${distro_parent_vname}" || \
             array.contains incomp_keys "*:${distro_parent_number}";
         }; then
             distro_name="${distro_parent}"
