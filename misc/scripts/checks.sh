@@ -254,7 +254,7 @@ function lint_var_arch() {
 
 function lint_pipe_check() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    perl -ne 'exit 1 unless /^(?:[^\s|:]+(?::[^\s|:]+)?\s\|\s)+[^\s|:]+(?::[^\s|:]+)?(?::\s[^|:]+)?(?<!\s)$/' <<< "$1"
+    [[ $1 =~ ^([^[:space:]:|]+(:[^[:space:]:|]+)?[[:space:]]\|[[:space:]])+[^[:space:]:|]+(:[^[:space:]:|]+)?(: [^|:]*[^[:space:]:|])?$ ]]
 }
 
 function lint_deps() {
