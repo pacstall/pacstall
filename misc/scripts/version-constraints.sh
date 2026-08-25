@@ -184,10 +184,9 @@ function dep_const.get_pipe() {
                 echo "${pkg}"
                 return 0
             else
-                if [[ -n "$(aptitude search --quiet --disable-columns "?exact-name(${check_name[0]%:*})?architecture(${pipe_arch})" -F "%p")" || \
-                    -n "$(aptitude search --quiet --disable-columns "?exact-name(${check_name[0]%:*})?architecture(all)" -F "%p")" || \
-                    -n "$(aptitude search --quiet --disable-columns "?provides(^${check_name[0]%:*}$)?architecture(${pipe_arch})" -F "%p")" || \
-                    -n "$(aptitude search --quiet --disable-columns "?provides(^${check_name[0]%:*}$)?architecture(all)" -F "%p")" ]]; then
+                if aptitude search --quiet --disable-columns \
+    "?or(?or(?exact-name(${check_name[0]%:*})?architecture(${pipe_arch}),?exact-name(${check_name[0]%:*})?architecture(all)),?or(?provides(^${check_name[0]%:*}$)?architecture(${pipe_arch}),?provides(^${check_name[0]%:*}$)?architecture(all)))" \
+                -F "%p" | grep -q .; then
                     viable_packages+=("${pkg}")
                 fi
             fi
