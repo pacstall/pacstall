@@ -269,7 +269,7 @@ function dep_const.format_version() {
 
 function dep_const.is_pipe() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    if perl -ne 'exit 1 unless /^(?:[^\s|:]+(?::[^\s|:]+)?\s\|\s)+[^\s|:]+(?::[^\s|:]+)?(?::\s[^|:]+)?(?<!\s)$/' <<< "$1"; then
+    if [[ $1 =~ ^([^[:space:]:|]+(:[^[:space:]:|]+)?[[:space:]]\|[[:space:]])+[^[:space:]:|]+(:[^[:space:]:|]+)?(: [^|:]*[^[:space:]:|])?$ ]]; then
         return 0
     else
         { ignore_stack=true; return 1; }
