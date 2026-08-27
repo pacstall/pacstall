@@ -814,9 +814,6 @@ function write_meta() {
         declare -p _maintainer
         unset _maintainer
     fi
-    if [[ -n $ppa ]]; then
-        echo "_ppa=(${ppa[*]})"
-    fi
     if [[ -n $url ]]; then
         echo "_homepage=\"${url}\""
     fi

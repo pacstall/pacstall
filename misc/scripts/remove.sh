@@ -40,12 +40,6 @@ sudo apt-get remove "${_gives:-$_name}" -y || {
     exit 1
 }
 
-if [[ -n ${_ppa[*]} ]]; then
-    for ppa in "${_ppa[@]}"; do
-        fancy_message warn $"You may have dangling PPAs on your system. You can remove them using '%b'" "${UCyan}sudo add-apt-repository --remove ppa:$ppa${NC}"
-    done
-fi
-
 sudo rm -f "${METADIR:?}/${_name}"
 sudo rm -f "/etc/apt/preferences.d/${_name//./-}-pin"
 # vim:set ft=sh ts=4 sw=4 et:

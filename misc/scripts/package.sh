@@ -198,13 +198,6 @@ if ! is_package_installed "${pacname}"; then
     fi
 fi
 
-if [[ -n $ppa ]]; then
-    for i in "${ppa[@]}"; do
-        # Add ppa, but ppa bad I guess
-        sudo add-apt-repository ppa:"$i"
-    done
-fi
-
 if [[ -n ${pacdeps[*]} ]]; then
     fancy_message info $"Checking pacstall dependencies"
     for pdep in "${pacdeps[@]}"; do
