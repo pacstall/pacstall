@@ -409,7 +409,9 @@ source "${safeenv}"
 makedeb
 
 # Metadata writing
-meta_log
+if ((PACSTALL_INSTALL != 0)); then
+    meta_log
+fi
 
 fancy_message info $"Performing post install operations"
 fancy_message sub $"Storing pacscript"
