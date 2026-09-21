@@ -11,8 +11,8 @@ msgid "'%s' must be an unsigned integer"
 msgstr ""
 
 #: pacstall:306 misc/scripts/build.sh:163 misc/scripts/build.sh:672
-#: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:784
-#: misc/scripts/fetch-sources.sh:814 misc/scripts/package-base.sh:173
+#: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:791
+#: misc/scripts/fetch-sources.sh:821 misc/scripts/package-base.sh:173
 #: misc/scripts/package-base.sh:194
 msgid "Cleaning up"
 msgstr ""
@@ -273,27 +273,27 @@ msgid "Could not find srcinfo.sh"
 msgstr ""
 
 #: misc/scripts/build.sh:95 misc/scripts/build.sh:100
-#: misc/scripts/fetch-sources.sh:736 misc/scripts/fetch-sources.sh:749
+#: misc/scripts/fetch-sources.sh:743 misc/scripts/fetch-sources.sh:756
 #: misc/scripts/package.sh:240
 msgid "%b [required]"
 msgstr ""
 
-#: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:743
+#: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:750
 msgid "%b [remote]"
 msgstr ""
 
-#: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:745
+#: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:752
 #: misc/scripts/package.sh:235
 msgid "%b [installed]"
 msgstr ""
 
 #: misc/scripts/build.sh:156 misc/scripts/build.sh:176
-#: misc/scripts/fetch-sources.sh:773 misc/scripts/fetch-sources.sh:807
+#: misc/scripts/fetch-sources.sh:780 misc/scripts/fetch-sources.sh:814
 msgid "%b does not exist in apt repositories"
 msgstr ""
 
 #: misc/scripts/build.sh:160 misc/scripts/build.sh:180
-#: misc/scripts/fetch-sources.sh:811
+#: misc/scripts/fetch-sources.sh:818
 msgid "%b version(s) cannot be satisfied"
 msgstr ""
 
@@ -618,46 +618,46 @@ msgstr ""
 msgid "Copying local archive %b"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:619 misc/scripts/fetch-sources.sh:667
-#: misc/scripts/fetch-sources.sh:678 misc/scripts/fetch-sources.sh:688
-#: misc/scripts/fetch-sources.sh:721
+#: misc/scripts/fetch-sources.sh:620 misc/scripts/fetch-sources.sh:673
+#: misc/scripts/fetch-sources.sh:684 misc/scripts/fetch-sources.sh:694
+#: misc/scripts/fetch-sources.sh:728
 msgid "This Pacscript does not work on %b"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:665 misc/scripts/fetch-sources.sh:676
-#: misc/scripts/fetch-sources.sh:686
+#: misc/scripts/fetch-sources.sh:671 misc/scripts/fetch-sources.sh:682
+#: misc/scripts/fetch-sources.sh:692
 msgid "This Pacscript does not work on %b: %b"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:709
+#: misc/scripts/fetch-sources.sh:716
 msgid "This package is for %b, which is a foreign architecture"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:758
+#: misc/scripts/fetch-sources.sh:765
 msgid "Checking build dependencies"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:778
+#: misc/scripts/fetch-sources.sh:785
 msgid "%b versions cannot be satisfied"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:780
+#: misc/scripts/fetch-sources.sh:787
 msgid "%b version cannot be satisfied"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:792
+#: misc/scripts/fetch-sources.sh:799
 msgid "Checking check dependencies"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:833
+#: misc/scripts/fetch-sources.sh:840
 msgid "Creating build dependency/conflicts dummy package"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:848
+#: misc/scripts/fetch-sources.sh:855
 msgid "Failed to install build or check dependencies"
 msgstr ""
 
-#: misc/scripts/fetch-sources.sh:946
+#: misc/scripts/fetch-sources.sh:953
 msgid "Kernel version constraint for this Pacscript not satisfied: %b"
 msgstr ""
 
@@ -807,31 +807,39 @@ msgstr ""
 msgid "Could not %s %s properly"
 msgstr ""
 
-#: misc/scripts/quality-assurance.sh:49
+#: misc/scripts/quality-assurance.sh:45
+msgid "Could not retrieve pull request information from %b"
+msgstr ""
+
+#: misc/scripts/quality-assurance.sh:51
+msgid "%b returned an invalid pull request response"
+msgstr ""
+
+#: misc/scripts/quality-assurance.sh:56
 msgid "%b is not a valid provider!"
 msgstr ""
 
-#: misc/scripts/quality-assurance.sh:50
+#: misc/scripts/quality-assurance.sh:57
 msgid "available providers are: '%s'"
 msgstr ""
 
-#: misc/scripts/quality-assurance.sh:59
+#: misc/scripts/quality-assurance.sh:66
 msgid "Returning %b backup"
 msgstr ""
 
-#: misc/scripts/quality-assurance.sh:68
+#: misc/scripts/quality-assurance.sh:75
 msgid "'%s' and '%s' cannot be empty!"
 msgstr ""
 
-#: misc/scripts/quality-assurance.sh:69
+#: misc/scripts/quality-assurance.sh:76
 msgid "use the syntax: %b"
 msgstr ""
 
-#: misc/scripts/quality-assurance.sh:74
+#: misc/scripts/quality-assurance.sh:82
 msgid "Backing up %b"
 msgstr ""
 
-#: misc/scripts/quality-assurance.sh:77
+#: misc/scripts/quality-assurance.sh:85
 msgid "Installing %b"
 msgstr ""
 
