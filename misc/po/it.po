@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2024-08-22 22:07+0000\n"
-"Last-Translator: Pietro Inglese <pietroinglese2016@gmail.com>\n"
+"PO-Revision-Date: 2026-09-27 17:51+0000\n"
+"Last-Translator: CiccioBro <ciccio.17.bro@gmail.com>\n"
 "Language-Team: Italian <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/it/>\n"
 "Language: it\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7\n"
+"X-Generator: Weblate 2026.10.dev0\n"
 
 #: pacstall:54 misc/scripts/checks.sh:95 misc/scripts/checks.sh:110
 msgid "'%s' must be an unsigned integer"
@@ -197,11 +197,11 @@ msgstr "Il pacscript %b è stato scaricato su %b"
 
 #: pacstall:1372 pacstall:1401 misc/scripts/query-info.sh:33
 msgid "Package is not installed"
-msgstr ""
+msgstr "Pacchetto non installato"
 
 #: pacstall:1413
 msgid "'%b' is not a valid option, use '%b' or '%b'"
-msgstr ""
+msgstr "'%b' non è una opzione valida, usa '%b' o '%b'"
 
 #: pacstall:1436
 msgid "Keeping build files"
@@ -209,70 +209,70 @@ msgstr ""
 
 #: pacstall:1441
 msgid "Skipping check() if present"
-msgstr ""
+msgstr "Saltando check() se presente"
 
 #: pacstall:1446
 msgid "Downloading package entries quietly"
-msgstr ""
+msgstr "Scaricare silenziosamente le voci dei pacchetti"
 
 #: pacstall:1451
 msgid "Building package without bwrap sandbox"
-msgstr ""
+msgstr "Compilando il pacchetto senza sandbox brwap"
 
 #: pacstall:1452
 msgid "Be cautious, this exposes your system to potential harm"
-msgstr ""
+msgstr "Attenzione, questo espone il sistema a potenziali danni"
 
 #: misc/scripts/add-repo.sh:29 misc/scripts/build.sh:41
 #: misc/scripts/search.sh:31 misc/scripts/upgrade.sh:47
 msgid "Could not find manage-repo.sh"
-msgstr ""
+msgstr "Impossibile trovare manage-repo.sh"
 
 #: misc/scripts/add-repo.sh:39 misc/scripts/add-repo.sh:47
 #: misc/scripts/add-repo.sh:55 misc/scripts/add-repo.sh:63
 #: misc/scripts/add-repo.sh:70
 msgid "Assuming that git branch is %b"
-msgstr ""
+msgstr "Assumendo che la branch di git sia %b"
 
 #: misc/scripts/add-repo.sh:90
 msgid "Repository alias cannot be '%s'"
-msgstr ""
+msgstr "L'alias della repository non può essere '%s'"
 
 #: misc/scripts/add-repo.sh:93
 msgid "Repository alias cannot be a hyperlink"
-msgstr ""
+msgstr "L'alias della repository non può essere un link"
 
 #: misc/scripts/add-repo.sh:96
 msgid "Repository alias cannot start with '%s', '%s', or '%s'"
-msgstr ""
+msgstr "L'alias della repository non può iniziare con '%s', '%s' or '%s'"
 
 #: misc/scripts/add-repo.sh:99
 msgid "The alias %b is already in use by %b"
-msgstr ""
+msgstr "L'alias '%b' è già in uso da '%b'"
 
 #: misc/scripts/add-repo.sh:104
 msgid "%b is already in the repo list, doing nothing"
-msgstr ""
+msgstr "'%b' è già nella lista dei repo, nessuna modifica"
 
 #: misc/scripts/add-repo.sh:107
 msgid "Do you want to add %b to the repo list?"
-msgstr ""
+msgstr "Vuoi aggiungere %b alla lista dei repo?"
 
 #: misc/scripts/add-repo.sh:112
 msgid "If the URL is a private repo, edit %b"
-msgstr ""
+msgstr "Se l'URL è un repo privato, modifica %b"
 
 #: misc/scripts/add-repo.sh:113
 msgid "packagelist file not found"
-msgstr ""
+msgstr "packagelist non trovato"
 
 #: misc/scripts/add-repo.sh:142
 msgid "Do you want to remove %b from the repo list?"
-msgstr ""
+msgstr "Vuoi rimuovere %b dalla lista dei repo?"
 
 #: misc/scripts/add-repo.sh:154
 msgid "The repo list has been updated"
-msgstr ""
+msgstr "La lista dei repo è stata aggiornata"
 
 #: misc/scripts/build.sh:29
 msgid "Could not find version-constraints"
@@ -280,27 +280,27 @@ msgstr ""
 
 #: misc/scripts/build.sh:35 misc/scripts/upgrade.sh:41
 msgid "Could not find srcinfo.sh"
-msgstr ""
+msgstr "Impossibile trovare srcinfo.sh"
 
 #: misc/scripts/build.sh:95 misc/scripts/build.sh:100
 #: misc/scripts/fetch-sources.sh:713 misc/scripts/fetch-sources.sh:726
 #: misc/scripts/package.sh:240
 msgid "%b [required]"
-msgstr ""
+msgstr "%b [richiesto]"
 
 #: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:720
 msgid "%b [remote]"
-msgstr ""
+msgstr "%b [remoto]"
 
 #: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:722
 #: misc/scripts/package.sh:235
 msgid "%b [installed]"
-msgstr ""
+msgstr "%b [installato]"
 
 #: misc/scripts/build.sh:156 misc/scripts/build.sh:176
 #: misc/scripts/fetch-sources.sh:750 misc/scripts/fetch-sources.sh:784
 msgid "%b does not exist in apt repositories"
-msgstr ""
+msgstr "%b non esiste nei repo di apt"
 
 #: misc/scripts/build.sh:160 misc/scripts/build.sh:180
 #: misc/scripts/fetch-sources.sh:788
@@ -309,7 +309,7 @@ msgstr ""
 
 #: misc/scripts/build.sh:172
 msgid "Optional dependencies"
-msgstr ""
+msgstr "Dipendenze opzionali"
 
 #: misc/scripts/build.sh:207
 msgid "%b has exceeded the maximum number of optional dependencies. Skipping"
@@ -317,31 +317,31 @@ msgstr ""
 
 #: misc/scripts/build.sh:217 misc/scripts/package-base.sh:150
 msgid "Selecting packages %b"
-msgstr ""
+msgstr "Selezionando pacchetti %b"
 
 #: misc/scripts/build.sh:236
 msgid "Checking apt dependencies"
-msgstr ""
+msgstr "Controllo delle dipendenze apt"
 
 #: misc/scripts/build.sh:316 misc/scripts/build.sh:319
 msgid "Packing %s"
-msgstr ""
+msgstr "Pacchettizzando %s"
 
 #: misc/scripts/build.sh:324
 msgid "Compressing"
-msgstr ""
+msgstr "Comprimendo"
 
 #: misc/scripts/build.sh:349
 msgid "Packaging %b as %b"
-msgstr ""
+msgstr "Pacchettizzando %b come %b"
 
 #: misc/scripts/build.sh:351 misc/scripts/package-base.sh:159
 msgid "Packaging %b"
-msgstr ""
+msgstr "Pacchettizzando %b"
 
 #: misc/scripts/build.sh:578
 msgid "Empty key... Skipping"
-msgstr ""
+msgstr "Chiave vuota... Saltando"
 
 #: misc/scripts/build.sh:584
 msgid "'%s' cannot contain empty path... Skipping"
@@ -357,7 +357,7 @@ msgstr ""
 
 #: misc/scripts/build.sh:669
 msgid "Failed to install %s deb"
-msgstr ""
+msgstr "Impossibile installare il deb %s"
 
 #: misc/scripts/build.sh:694
 msgid "Package built at %b"
@@ -365,7 +365,7 @@ msgstr "Lista di pacchetti non trovata costruita a %b"
 
 #: misc/scripts/build.sh:696 misc/scripts/package.sh:108
 msgid "Moving %b to %b"
-msgstr ""
+msgstr "Spostando %b a %b"
 
 #: misc/scripts/build.sh:713
 msgid "Repacking %b"
@@ -373,7 +373,7 @@ msgstr ""
 
 #: misc/scripts/bwrap.sh:123
 msgid "Running %s"
-msgstr ""
+msgstr "Eseguendo %s"
 
 #: misc/scripts/checks.sh:33 misc/scripts/checks.sh:127
 #: misc/scripts/checks.sh:175 misc/scripts/checks.sh:228
@@ -383,47 +383,51 @@ msgstr "il pacchetto non contine '%s'"
 
 #: misc/scripts/checks.sh:38
 msgid "%s: '%s' must be at least two characters long"
-msgstr ""
+msgstr "%s: '%s' deve contenere almeno 2 caratteri"
 
 #: misc/scripts/checks.sh:43
 msgid "%s: '%s' must start with an alphanumeric character"
-msgstr ""
+msgstr "%s: '%s' deve iniziare con un carattere alfanumerico"
 
 #: misc/scripts/checks.sh:47
 msgid "%s: '%s' contains uppercase characters"
-msgstr ""
+msgstr "%s: '%s' contiene caratteri maiuscoli"
 
 #: misc/scripts/checks.sh:51
 msgid ""
 "%s: '%s' contains characters that are not lowercase, digits, minus, or "
 "periods"
 msgstr ""
+"%s: '%s' contiene caratteri che non sono lettere minuscole, cifre, trattini "
+"o punti"
 
 #: misc/scripts/checks.sh:61
 msgid "Deb package does not contain gives"
-msgstr ""
+msgstr "Il pacchetto deb non contiene gives"
 
 #: misc/scripts/checks.sh:67
 msgid "'%s' must be at least two characters long"
-msgstr ""
+msgstr "'%s' deve contenere almeno 2 caratteri"
 
 #: misc/scripts/checks.sh:72
 msgid "'%s' must start with an alphanumeric character"
-msgstr ""
+msgstr "'%s' deve iniziare con un crattere alfanumerico"
 
 #: misc/scripts/checks.sh:76
 msgid "'%s' contains uppercase characters"
-msgstr ""
+msgstr "'%s' contiente caratteri maiuscoli"
 
 #: misc/scripts/checks.sh:80
 msgid ""
 "'%s' contains characters that are not lowercase, digits, minus, or periods"
 msgstr ""
+"'%s' contiene caratteri che non sono lettere minuscole, cifre, trattini o "
+"punti"
 
 #: misc/scripts/checks.sh:92 misc/scripts/checks.sh:107
 #: misc/scripts/checks.sh:648
 msgid "'%s' is empty"
-msgstr ""
+msgstr "'%s' è vuoto"
 
 #: misc/scripts/checks.sh:123
 msgid ""
