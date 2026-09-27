@@ -17,8 +17,8 @@ msgid "'%s' must be an unsigned integer"
 msgstr "'%s' muss eine vorzeichenlose Ganzzahl sein"
 
 #: pacstall:306 misc/scripts/build.sh:163 misc/scripts/build.sh:672
-#: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:761
-#: misc/scripts/fetch-sources.sh:791 misc/scripts/package-base.sh:173
+#: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:784
+#: misc/scripts/fetch-sources.sh:814 misc/scripts/package-base.sh:173
 #: misc/scripts/package-base.sh:194
 msgid "Cleaning up"
 msgstr "Räume auf"
@@ -56,87 +56,87 @@ msgstr "Bestätige, dass '%b' erreichbar ist"
 msgid "Could not enter into %s"
 msgstr "Konnte nicht ins %s gelangen"
 
-#: pacstall:701
+#: pacstall:705
 msgid "Reading input from pipe"
 msgstr "Lese Eingabe aus der Pipe"
 
-#: pacstall:764
+#: pacstall:772
 msgid "Only one command flag can be used at a time"
 msgstr "Nur ein Befehlskennzeichen (Flag) kann zeitgleich verwendet werden"
 
-#: pacstall:806
+#: pacstall:817
 msgid "Pacstall is already running another instance"
 msgstr "Pacstall führt bereits eine andere Instanz aus"
 
-#: pacstall:812
+#: pacstall:823
 msgid "The other instance has finished running, unlocking"
 msgstr "Die andere Instanz wurde beendet. Freigabe erfolgt"
 
-#: pacstall:847
+#: pacstall:858
 msgid "Prompts are disabled"
 msgstr "Eingabeaufforderungen sind deaktiviert"
 
-#: pacstall:854
+#: pacstall:865
 msgid "Package will be built and not installed"
 msgstr "Paket wird erstellt und nicht installiert"
 
-#: pacstall:933 pacstall:1006 pacstall:1068 pacstall:1109 pacstall:1128
-#: pacstall:1308 pacstall:1368 pacstall:1396 misc/scripts/query-info.sh:28
+#: pacstall:944 pacstall:1017 pacstall:1079 pacstall:1120 pacstall:1139
+#: pacstall:1319 pacstall:1379 pacstall:1407 misc/scripts/query-info.sh:28
 msgid "You failed to specify a package"
 msgstr "Es wurde kein Paket angegeben"
 
-#: pacstall:938
+#: pacstall:949
 msgid "The installation of %s was interrupted, removing files"
 msgstr "Die Installation von %s wurde unterbrochen, entferne Dateien"
 
-#: pacstall:975 misc/scripts/package-base.sh:139
+#: pacstall:986 misc/scripts/package-base.sh:139
 msgid "%s does not exist"
 msgstr "%s existiert nicht"
 
-#: pacstall:1013
+#: pacstall:1024
 msgid "Payload not found"
 msgstr "Nutzdaten nicht gefunden"
 
-#: pacstall:1026 pacstall:1073 pacstall:1113 pacstall:1241 pacstall:1318
-#: pacstall:1355
+#: pacstall:1037 pacstall:1084 pacstall:1124 pacstall:1252 pacstall:1329
+#: pacstall:1366
 msgid "Could not connect to the internet"
 msgstr "Konnte keine Verbindung zum Internet herstellen"
 
-#: pacstall:1027 pacstall:1074 pacstall:1114 pacstall:1242 pacstall:1319
-#: pacstall:1356
+#: pacstall:1038 pacstall:1085 pacstall:1125 pacstall:1253 pacstall:1330
+#: pacstall:1367
 msgid "Confirm that the URLs '%b' or '%b' are accessible"
 msgstr "Bestätige, dass die URLs '%b' oder '%b' erreichbar sind"
 
-#: pacstall:1043 pacstall:1333 misc/scripts/upgrade.sh:301
+#: pacstall:1054 pacstall:1344 misc/scripts/upgrade.sh:301
 msgid "Failed to download the %b pacscript"
 msgstr "Das Herunterladen von Pacscript %b ist fehlgeschlagen"
 
-#: pacstall:1044 pacstall:1334
+#: pacstall:1055 pacstall:1345
 msgid "Confirm that the package exists by running '%b'"
 msgstr "Bestätige das Vorhandensein des Paketes durch Ausführen von '%b'"
 
-#: pacstall:1044 pacstall:1334
+#: pacstall:1055 pacstall:1345
 msgid "Check your internet connection"
 msgstr "Überprüfe die Internetverbindung"
 
-#: pacstall:1050 misc/scripts/package-base.sh:163
+#: pacstall:1061 misc/scripts/package-base.sh:163
 #: misc/scripts/package-base.sh:187
 msgid "Failed to install %b"
 msgstr "Konnte %b nicht installieren"
 
-#: pacstall:1137
+#: pacstall:1148
 msgid "Failed to remove %b"
 msgstr "Konnte %b nicht entfernen"
 
-#: pacstall:1160
+#: pacstall:1171
 msgid "You failed to specify a repo to add"
 msgstr "Es wurde keine Repo zum Hinzufügen angegeben"
 
-#: pacstall:1161
+#: pacstall:1172
 msgid "Add a repository in the following format:"
 msgstr "Füge eine Repository im folgenden Format hinzu:"
 
-#: pacstall:1161 pacstall:1184
+#: pacstall:1172 pacstall:1195
 msgid ""
 "Consult the pacstall man page by running '%b', and searching for the term "
 "'%b'"
@@ -144,19 +144,19 @@ msgstr ""
 "Konsultiere die Pacstall-Manpage durch Ausführen von '%b' und suche nach dem "
 "Begriff '%b'"
 
-#: pacstall:1183
+#: pacstall:1194
 msgid "You failed to specify a repo to remove"
 msgstr "Es wurde kein zu entfernendes Repo angegeben"
 
-#: pacstall:1184
+#: pacstall:1195
 msgid "Remove a repository in the following format:"
 msgstr "Entferne ein Repository im folgenden Format:"
 
-#: pacstall:1210
+#: pacstall:1221
 msgid "%s is not a git repository"
 msgstr "%s ist kein Git-Repository"
 
-#: pacstall:1247
+#: pacstall:1258
 msgid ""
 "The repository you are trying to upgrade to contains a version of pacstall "
 "that cannot be updated from %b"
@@ -164,7 +164,7 @@ msgstr ""
 "Das Repository, auf das ein Upgrade durchführt werden soll, enthält eine "
 "Version von Pacstall, welche nicht von %b aktualisiert werden kann"
 
-#: pacstall:1248
+#: pacstall:1259
 msgid ""
 "Visit %s for more information on how to reinstall. Most packages will also "
 "need to be reinstalled"
@@ -172,58 +172,58 @@ msgstr ""
 "Besuche %s für weitere Informationen zur Neuinstallation. Die meisten Pakete "
 "müssen außerdem neu installiert werden"
 
-#: pacstall:1256
+#: pacstall:1267
 msgid ""
 "Pacstall was installed from a %s, and cannot be updated with this command"
 msgstr ""
 "Pacstall wurde installiert von %s, und kann nicht mit diesem Befehl "
 "aktualisiert werden"
 
-#: pacstall:1257
+#: pacstall:1268
 msgid "Install the latest %b from the %b repository"
 msgstr "Installiere das letzte %b von der %b Repository"
 
-#: pacstall:1257
+#: pacstall:1268
 msgid "Install the latest %b with the command '%b'"
 msgstr "Installiere das letzte %b mit dem Befehl '%b'"
 
-#: pacstall:1265 pacstall:1350
+#: pacstall:1276 pacstall:1361
 msgid "Invalid argument '%s'"
 msgstr "Ungültiges Argument '%s'"
 
-#: pacstall:1277
+#: pacstall:1288
 msgid "Nothing installed yet"
 msgstr "Noch nichts installiert"
 
-#: pacstall:1338
+#: pacstall:1349
 msgid "%b pacscript is downloaded to %b"
 msgstr "%b Pacscript wurde auf %b heruntergeladen"
 
-#: pacstall:1372 pacstall:1401 misc/scripts/query-info.sh:33
+#: pacstall:1383 pacstall:1412 misc/scripts/query-info.sh:33
 msgid "Package is not installed"
 msgstr "Paket ist nicht installiert"
 
-#: pacstall:1413
+#: pacstall:1424
 msgid "'%b' is not a valid option, use '%b' or '%b'"
 msgstr "'%b' ist keine gültige Option, nutze '%b' oder '%b'"
 
-#: pacstall:1436
+#: pacstall:1447
 msgid "Keeping build files"
 msgstr "Build-Dateien behalten"
 
-#: pacstall:1441
+#: pacstall:1452
 msgid "Skipping check() if present"
 msgstr "Überspringe Prüfung(), falls vorhanden"
 
-#: pacstall:1446
+#: pacstall:1457
 msgid "Downloading package entries quietly"
 msgstr "Paketeinträge werden kommentarlos heruntergeladen"
 
-#: pacstall:1451
+#: pacstall:1462
 msgid "Building package without bwrap sandbox"
 msgstr "Erstelle Paket ohne Bwrap-Sandbox"
 
-#: pacstall:1452
+#: pacstall:1463
 msgid "Be cautious, this exposes your system to potential harm"
 msgstr "Vorsicht, das System wird einem potenziellen Schaden ausgesetzt"
 
@@ -287,28 +287,28 @@ msgid "Could not find srcinfo.sh"
 msgstr "Konnte srcinfo.sh nicht finden"
 
 #: misc/scripts/build.sh:95 misc/scripts/build.sh:100
-#: misc/scripts/fetch-sources.sh:713 misc/scripts/fetch-sources.sh:726
+#: misc/scripts/fetch-sources.sh:736 misc/scripts/fetch-sources.sh:749
 #: misc/scripts/package.sh:240
 msgid "%b [required]"
 msgstr "%b [erforderlich]"
 
-#: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:720
+#: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:743
 #, fuzzy
 msgid "%b [remote]"
 msgstr "%b [Fernzugang | or: unzugänglich | or just: remote]"
 
-#: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:722
+#: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:745
 #: misc/scripts/package.sh:235
 msgid "%b [installed]"
 msgstr "%b [installiert]"
 
 #: misc/scripts/build.sh:156 misc/scripts/build.sh:176
-#: misc/scripts/fetch-sources.sh:750 misc/scripts/fetch-sources.sh:784
+#: misc/scripts/fetch-sources.sh:773 misc/scripts/fetch-sources.sh:807
 msgid "%b does not exist in apt repositories"
 msgstr "%b existiert nicht in den apt-Repositorys"
 
 #: misc/scripts/build.sh:160 misc/scripts/build.sh:180
-#: misc/scripts/fetch-sources.sh:788
+#: misc/scripts/fetch-sources.sh:811
 msgid "%b version(s) cannot be satisfied"
 msgstr "%b Version(en) kann(können) nicht erfüllt werden"
 
@@ -650,41 +650,48 @@ msgstr "Paket konnte nicht installiert werden"
 msgid "Copying local archive %b"
 msgstr "Kopiere lokales Archiv %b"
 
-#: misc/scripts/fetch-sources.sh:619 misc/scripts/fetch-sources.sh:653
-#: misc/scripts/fetch-sources.sh:660 misc/scripts/fetch-sources.sh:666
-#: misc/scripts/fetch-sources.sh:698
+#: misc/scripts/fetch-sources.sh:619 misc/scripts/fetch-sources.sh:667
+#: misc/scripts/fetch-sources.sh:678 misc/scripts/fetch-sources.sh:688
+#: misc/scripts/fetch-sources.sh:721
 msgid "This Pacscript does not work on %b"
 msgstr "Dieses Pacscript funktioniert nicht auf %b"
 
+#: misc/scripts/fetch-sources.sh:665 misc/scripts/fetch-sources.sh:676
 #: misc/scripts/fetch-sources.sh:686
+#, fuzzy
+#| msgid "This Pacscript does not work on %b"
+msgid "This Pacscript does not work on %b: %b"
+msgstr "Dieses Pacscript funktioniert nicht auf %b"
+
+#: misc/scripts/fetch-sources.sh:709
 msgid "This package is for %b, which is a foreign architecture"
 msgstr "Dieses Paket ist für %b, welches eine fremde Architektur ist"
 
-#: misc/scripts/fetch-sources.sh:735
+#: misc/scripts/fetch-sources.sh:758
 msgid "Checking build dependencies"
 msgstr "Prüfe Build-Abhängigkeiten"
 
-#: misc/scripts/fetch-sources.sh:755
+#: misc/scripts/fetch-sources.sh:778
 msgid "%b versions cannot be satisfied"
 msgstr "%b Versionen können nicht erfüllt werden"
 
-#: misc/scripts/fetch-sources.sh:757
+#: misc/scripts/fetch-sources.sh:780
 msgid "%b version cannot be satisfied"
 msgstr "%b Version kann nicht erfüllt werden"
 
-#: misc/scripts/fetch-sources.sh:769
+#: misc/scripts/fetch-sources.sh:792
 msgid "Checking check dependencies"
 msgstr "Überprüfung von Abhängigkeiten"
 
-#: misc/scripts/fetch-sources.sh:810
+#: misc/scripts/fetch-sources.sh:833
 msgid "Creating build dependency/conflicts dummy package"
 msgstr "Erstelle Build-Abhängigkeiten/steht im Konflikt zum Dummy-Paket"
 
-#: misc/scripts/fetch-sources.sh:825
+#: misc/scripts/fetch-sources.sh:848
 msgid "Failed to install build or check dependencies"
 msgstr "Build konnte nicht installiert oder Abhängigkeiten überprüft werden"
 
-#: misc/scripts/fetch-sources.sh:923
+#: misc/scripts/fetch-sources.sh:946
 msgid "Kernel version constraint for this Pacscript not satisfied: %b"
 msgstr ""
 
@@ -746,7 +753,7 @@ msgstr "Editor nicht gefunden, Zurücksetzen auf '%s'"
 msgid "Sourcing pacscript"
 msgstr "Holen von Pacscript"
 
-#: misc/scripts/package-base.sh:264
+#: misc/scripts/package-base.sh:265
 msgid "Could not source pacscript"
 msgstr "Konnte Pacscript nicht holen"
 

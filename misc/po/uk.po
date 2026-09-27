@@ -17,8 +17,8 @@ msgid "'%s' must be an unsigned integer"
 msgstr "'%s' повинен бути цілим числом без знака"
 
 #: pacstall:306 misc/scripts/build.sh:163 misc/scripts/build.sh:672
-#: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:761
-#: misc/scripts/fetch-sources.sh:791 misc/scripts/package-base.sh:173
+#: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:784
+#: misc/scripts/fetch-sources.sh:814 misc/scripts/package-base.sh:173
 #: misc/scripts/package-base.sh:194
 msgid "Cleaning up"
 msgstr "Прибирання"
@@ -56,87 +56,87 @@ msgstr "Переконайтеся, що '%b' доступний"
 msgid "Could not enter into %s"
 msgstr "Не вдалося увійти в %s"
 
-#: pacstall:701
+#: pacstall:705
 msgid "Reading input from pipe"
 msgstr "Читання вхідних даних з каналу"
 
-#: pacstall:764
+#: pacstall:772
 msgid "Only one command flag can be used at a time"
 msgstr "Одночасно можна використовувати тільки один параметр команди"
 
-#: pacstall:806
+#: pacstall:817
 msgid "Pacstall is already running another instance"
 msgstr "Pacstall вже запускає інший екземпляр"
 
-#: pacstall:812
+#: pacstall:823
 msgid "The other instance has finished running, unlocking"
 msgstr "Інший екземпляр завершив роботу, розблокування"
 
-#: pacstall:847
+#: pacstall:858
 msgid "Prompts are disabled"
 msgstr "Повідомлення вимкнені"
 
-#: pacstall:854
+#: pacstall:865
 msgid "Package will be built and not installed"
 msgstr "Пакет буде зібрано, але не встановлено"
 
-#: pacstall:933 pacstall:1006 pacstall:1068 pacstall:1109 pacstall:1128
-#: pacstall:1308 pacstall:1368 pacstall:1396 misc/scripts/query-info.sh:28
+#: pacstall:944 pacstall:1017 pacstall:1079 pacstall:1120 pacstall:1139
+#: pacstall:1319 pacstall:1379 pacstall:1407 misc/scripts/query-info.sh:28
 msgid "You failed to specify a package"
 msgstr "Ви не вказали необхідний пакет"
 
-#: pacstall:938
+#: pacstall:949
 msgid "The installation of %s was interrupted, removing files"
 msgstr "Встановлення %s було перервано, видалення файлів"
 
-#: pacstall:975 misc/scripts/package-base.sh:139
+#: pacstall:986 misc/scripts/package-base.sh:139
 msgid "%s does not exist"
 msgstr "%s не існує"
 
-#: pacstall:1013
+#: pacstall:1024
 msgid "Payload not found"
 msgstr "Не знайдено завантаження"
 
-#: pacstall:1026 pacstall:1073 pacstall:1113 pacstall:1241 pacstall:1318
-#: pacstall:1355
+#: pacstall:1037 pacstall:1084 pacstall:1124 pacstall:1252 pacstall:1329
+#: pacstall:1366
 msgid "Could not connect to the internet"
 msgstr "Не вдалося підключитися до мережі інтернет"
 
-#: pacstall:1027 pacstall:1074 pacstall:1114 pacstall:1242 pacstall:1319
-#: pacstall:1356
+#: pacstall:1038 pacstall:1085 pacstall:1125 pacstall:1253 pacstall:1330
+#: pacstall:1367
 msgid "Confirm that the URLs '%b' or '%b' are accessible"
 msgstr "Переконайтеся, що URL-адреси '%b' або '%b' доступні"
 
-#: pacstall:1043 pacstall:1333 misc/scripts/upgrade.sh:301
+#: pacstall:1054 pacstall:1344 misc/scripts/upgrade.sh:301
 msgid "Failed to download the %b pacscript"
 msgstr "Не вдалося завантажити %b pacscript"
 
-#: pacstall:1044 pacstall:1334
+#: pacstall:1055 pacstall:1345
 msgid "Confirm that the package exists by running '%b'"
 msgstr "Перевірте наявність пакета, виконавши команду '%b'"
 
-#: pacstall:1044 pacstall:1334
+#: pacstall:1055 pacstall:1345
 msgid "Check your internet connection"
 msgstr "Перевірте ваше підключення до мережі інтернет"
 
-#: pacstall:1050 misc/scripts/package-base.sh:163
+#: pacstall:1061 misc/scripts/package-base.sh:163
 #: misc/scripts/package-base.sh:187
 msgid "Failed to install %b"
 msgstr "Не вдалося встановити %b"
 
-#: pacstall:1137
+#: pacstall:1148
 msgid "Failed to remove %b"
 msgstr "Не вдалося видалити %b"
 
-#: pacstall:1160
+#: pacstall:1171
 msgid "You failed to specify a repo to add"
 msgstr "Ви не вказали репозиторій для додавання"
 
-#: pacstall:1161
+#: pacstall:1172
 msgid "Add a repository in the following format:"
 msgstr "Додайте репозиторій у наступному форматі:"
 
-#: pacstall:1161 pacstall:1184
+#: pacstall:1172 pacstall:1195
 msgid ""
 "Consult the pacstall man page by running '%b', and searching for the term "
 "'%b'"
@@ -144,19 +144,19 @@ msgstr ""
 "Зверніться до сторінки довідки pacstall, виконавши команду '%b' і здійснивши "
 "пошук терміна '%b'"
 
-#: pacstall:1183
+#: pacstall:1194
 msgid "You failed to specify a repo to remove"
 msgstr "Ви не вказали репозиторій для видалення"
 
-#: pacstall:1184
+#: pacstall:1195
 msgid "Remove a repository in the following format:"
 msgstr "Видаліть репозиторій у наступному форматі:"
 
-#: pacstall:1210
+#: pacstall:1221
 msgid "%s is not a git repository"
 msgstr "%s не є репозиторієм git"
 
-#: pacstall:1247
+#: pacstall:1258
 msgid ""
 "The repository you are trying to upgrade to contains a version of pacstall "
 "that cannot be updated from %b"
@@ -164,7 +164,7 @@ msgstr ""
 "Репозиторій, який ви намагаєтеся оновити, містить версію pacstall, яку "
 "неможливо оновити з %b"
 
-#: pacstall:1248
+#: pacstall:1259
 msgid ""
 "Visit %s for more information on how to reinstall. Most packages will also "
 "need to be reinstalled"
@@ -172,58 +172,58 @@ msgstr ""
 "Відвідайте %s, щоб отримати додаткову інформацію про перевстановлення. "
 "Більшість пакетів також потрібно буде перевстановити"
 
-#: pacstall:1256
+#: pacstall:1267
 msgid ""
 "Pacstall was installed from a %s, and cannot be updated with this command"
 msgstr ""
 "Pacstall було встановлено з %s і не може бути оновлено за допомогою цієї "
 "команди"
 
-#: pacstall:1257
+#: pacstall:1268
 msgid "Install the latest %b from the %b repository"
 msgstr "Встановіть останню версію %b з репозиторію %b"
 
-#: pacstall:1257
+#: pacstall:1268
 msgid "Install the latest %b with the command '%b'"
 msgstr "Встановіть останню версію %b за допомогою команди '%b'"
 
-#: pacstall:1265 pacstall:1350
+#: pacstall:1276 pacstall:1361
 msgid "Invalid argument '%s'"
 msgstr "Недійсний аргумент '%s'"
 
-#: pacstall:1277
+#: pacstall:1288
 msgid "Nothing installed yet"
 msgstr "Поки що нічого не встановлено"
 
-#: pacstall:1338
+#: pacstall:1349
 msgid "%b pacscript is downloaded to %b"
 msgstr "%b pacscript завантажено до %b"
 
-#: pacstall:1372 pacstall:1401 misc/scripts/query-info.sh:33
+#: pacstall:1383 pacstall:1412 misc/scripts/query-info.sh:33
 msgid "Package is not installed"
 msgstr "Пакет не встановлено"
 
-#: pacstall:1413
+#: pacstall:1424
 msgid "'%b' is not a valid option, use '%b' or '%b'"
 msgstr "'%b' не є дійсним варіантом, використовуйте '%b' або '%b'"
 
-#: pacstall:1436
+#: pacstall:1447
 msgid "Keeping build files"
 msgstr "Збереження файлів збірки"
 
-#: pacstall:1441
+#: pacstall:1452
 msgid "Skipping check() if present"
 msgstr "Пропустити check(), якщо присутній"
 
-#: pacstall:1446
+#: pacstall:1457
 msgid "Downloading package entries quietly"
 msgstr "Завантаження пакета в фоновому режимі"
 
-#: pacstall:1451
+#: pacstall:1462
 msgid "Building package without bwrap sandbox"
 msgstr "Створення пакета без пісочниці bwrap"
 
-#: pacstall:1452
+#: pacstall:1463
 msgid "Be cautious, this exposes your system to potential harm"
 msgstr "Будьте обережні, це наражає вашу систему на потенційну небезпеку"
 
@@ -287,27 +287,27 @@ msgid "Could not find srcinfo.sh"
 msgstr "Не вдалося знайти srcinfo.sh"
 
 #: misc/scripts/build.sh:95 misc/scripts/build.sh:100
-#: misc/scripts/fetch-sources.sh:713 misc/scripts/fetch-sources.sh:726
+#: misc/scripts/fetch-sources.sh:736 misc/scripts/fetch-sources.sh:749
 #: misc/scripts/package.sh:240
 msgid "%b [required]"
 msgstr "%b [необхідний]"
 
-#: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:720
+#: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:743
 msgid "%b [remote]"
 msgstr "%b [віддалений]"
 
-#: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:722
+#: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:745
 #: misc/scripts/package.sh:235
 msgid "%b [installed]"
 msgstr "%b [встановлений]"
 
 #: misc/scripts/build.sh:156 misc/scripts/build.sh:176
-#: misc/scripts/fetch-sources.sh:750 misc/scripts/fetch-sources.sh:784
+#: misc/scripts/fetch-sources.sh:773 misc/scripts/fetch-sources.sh:807
 msgid "%b does not exist in apt repositories"
 msgstr "%b не знайдено в репозиторіях apt"
 
 #: misc/scripts/build.sh:160 misc/scripts/build.sh:180
-#: misc/scripts/fetch-sources.sh:788
+#: misc/scripts/fetch-sources.sh:811
 msgid "%b version(s) cannot be satisfied"
 msgstr "Версія(ї) %b не відповідає(ють) вимогам"
 
@@ -644,42 +644,49 @@ msgstr "Не вдалося встановити пакет"
 msgid "Copying local archive %b"
 msgstr "Копіювання локального архіву %b"
 
-#: misc/scripts/fetch-sources.sh:619 misc/scripts/fetch-sources.sh:653
-#: misc/scripts/fetch-sources.sh:660 misc/scripts/fetch-sources.sh:666
-#: misc/scripts/fetch-sources.sh:698
+#: misc/scripts/fetch-sources.sh:619 misc/scripts/fetch-sources.sh:667
+#: misc/scripts/fetch-sources.sh:678 misc/scripts/fetch-sources.sh:688
+#: misc/scripts/fetch-sources.sh:721
 msgid "This Pacscript does not work on %b"
 msgstr "Цей Pacscript не працює на %b"
 
+#: misc/scripts/fetch-sources.sh:665 misc/scripts/fetch-sources.sh:676
 #: misc/scripts/fetch-sources.sh:686
+#, fuzzy
+#| msgid "This Pacscript does not work on %b"
+msgid "This Pacscript does not work on %b: %b"
+msgstr "Цей Pacscript не працює на %b"
+
+#: misc/scripts/fetch-sources.sh:709
 msgid "This package is for %b, which is a foreign architecture"
 msgstr "Цей пакет призначений для %b, що є сторонньою архітектурою"
 
-#: misc/scripts/fetch-sources.sh:735
+#: misc/scripts/fetch-sources.sh:758
 msgid "Checking build dependencies"
 msgstr "Перевірка залежностей збірки"
 
-#: misc/scripts/fetch-sources.sh:755
+#: misc/scripts/fetch-sources.sh:778
 msgid "%b versions cannot be satisfied"
 msgstr "Неможливо задовольнити вимоги для версії %b"
 
-#: misc/scripts/fetch-sources.sh:757
+#: misc/scripts/fetch-sources.sh:780
 msgid "%b version cannot be satisfied"
 msgstr "Неможливо задовольнити вимогу для версії %b"
 
-#: misc/scripts/fetch-sources.sh:769
+#: misc/scripts/fetch-sources.sh:792
 msgid "Checking check dependencies"
 msgstr "Перевірка взаємозалежностей"
 
-#: misc/scripts/fetch-sources.sh:810
+#: misc/scripts/fetch-sources.sh:833
 msgid "Creating build dependency/conflicts dummy package"
 msgstr ""
 "Створення фіктивного пакета для перевірки залежностей/конфліктів збірки"
 
-#: misc/scripts/fetch-sources.sh:825
+#: misc/scripts/fetch-sources.sh:848
 msgid "Failed to install build or check dependencies"
 msgstr "Не вдалося виконати збірку або перевірити залежності"
 
-#: misc/scripts/fetch-sources.sh:923
+#: misc/scripts/fetch-sources.sh:946
 msgid "Kernel version constraint for this Pacscript not satisfied: %b"
 msgstr "Вимоги до версії ядра для цього Pacscript не виконано: %b"
 
@@ -739,7 +746,7 @@ msgstr "Редактор не знайдено, використовується
 msgid "Sourcing pacscript"
 msgstr "Отримання pacscript"
 
-#: misc/scripts/package-base.sh:264
+#: misc/scripts/package-base.sh:265
 msgid "Could not source pacscript"
 msgstr "Не вдалося отримати pacscript"
 
