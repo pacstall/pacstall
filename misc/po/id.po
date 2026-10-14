@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2026-08-04 15:01+0000\n"
+"PO-Revision-Date: 2026-10-15 11:51+0000\n"
 "Last-Translator: James Ed Randson <053476233@ecampus.ut.ac.id>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/pacstall/"
 "pacstall/id/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 2026.8.1.dev0\n"
+"X-Generator: Weblate 2026.11.dev0\n"
 
 #: pacstall:54 misc/scripts/checks.sh:95 misc/scripts/checks.sh:110
 msgid "'%s' must be an unsigned integer"
@@ -645,10 +645,8 @@ msgstr "Pacscript ini tidak dapat digunakan pada %b"
 
 #: misc/scripts/fetch-sources.sh:665 misc/scripts/fetch-sources.sh:676
 #: misc/scripts/fetch-sources.sh:686
-#, fuzzy
-#| msgid "This Pacscript does not work on %b"
 msgid "This Pacscript does not work on %b: %b"
-msgstr "Pacscript ini tidak dapat digunakan pada %b"
+msgstr "Pacscript ini tidak dapat digunakan pada %b: %b"
 
 #: misc/scripts/fetch-sources.sh:709
 msgid "This package is for %b, which is a foreign architecture"
