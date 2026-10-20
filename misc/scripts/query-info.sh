@@ -70,9 +70,6 @@ if [[ -n ${_remoterepo} ]]; then
 fi
 license="${license//,/}"
 get_field "$PACKAGE" Maintainer maintainer
-if [[ -n ${_ppa} ]]; then
-    ppa="${_ppa}"
-fi
 if [[ -n ${_pacdeps} ]]; then
     pacstall_dependencies="${_pacdeps[*]}"
 fi
@@ -134,9 +131,6 @@ if [[ -v mask ]]; then
     echo -e "${BGreen}mask${NC}: ${mask}"
 fi
 echo -e "${BGreen}maintainer${NC}: ${maintainer}"
-if [[ -v ppa ]]; then
-    echo -e "${BGreen}ppa${NC}: ${ppa}"
-fi
 if [[ -v pacstall_dependencies ]]; then
     echo -e "${BGreen}pacstall dependencies${NC}: ${pacstall_dependencies}"
 fi

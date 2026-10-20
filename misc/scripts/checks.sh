@@ -300,40 +300,6 @@ function lint_deps() {
     { ignore_stack=true; return "${ret}"; }
 }
 
-function lint_ppa() {
-    { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local ret=0 el_ppa idx=0
-    if [[ -n ${ppa[*]} ]]; then
-        for el_ppa in "${ppa[@]}"; do
-            if [[ -z ${el_ppa} ]]; then
-                fancy_message error $"'%s' index '%s' cannot be empty" "ppa" "${idx}"
-                ret=1
-            fi
-            { ignore_stack=true; ((idx++)); }
-        done
-        if ((ret != 0)); then
-            { ignore_stack=true; return 1; }
-        fi
-        idx=0
-        for el_ppa in "${ppa[@]}"; do
-            if [[ $el_ppa =~ ^ppa: ]]; then
-                fancy_message error $"'%s' index '%s' cannot start with %s" "ppa" "${idx}" "'ppa:'"
-                ret=1
-            fi
-            { ignore_stack=true; ((idx++)); }
-        done
-        idx=0
-        for el_ppa in "${ppa[@]}"; do
-            if [[ ! $el_ppa =~ ^[a-zA-Z0-9]+\/[a-zA-Z0-9]+ ]]; then
-                fancy_message error $"%s index '%s' is improperly formatted" "'ppa'" "${idx}"
-                ret=1
-            fi
-            { ignore_stack=true; ((idx++)); }
-        done
-    fi
-    { ignore_stack=true; return "${ret}"; }
-}
-
 function lint_relations() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
     local rel_type rel_array ret=0 rela idx rdarch rdistro rddarch
@@ -696,7 +662,7 @@ function lint_kver() {
 
 function checks() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local ret=0 check linting_checks=(lint_gives lint_pkgrel lint_epoch lint_version lint_source lint_pkgdesc lint_maintainer lint_deps lint_ppa lint_relations lint_fields lint_hash lint_priority lint_license lint_bugs)
+    local ret=0 check linting_checks=(lint_gives lint_pkgrel lint_epoch lint_version lint_source lint_pkgdesc lint_maintainer lint_deps lint_relations lint_fields lint_hash lint_priority lint_license lint_bugs)
     for check in "${linting_checks[@]}"; do
         "${check}" || ret=1
     done
