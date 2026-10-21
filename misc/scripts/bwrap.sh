@@ -117,7 +117,7 @@ if [[ \$FUNCSTATUS ]]; then \
         <(printf '%s\n' "\${OLD_ENV[@]}" | sort) \
         <(compgen -A variable | sort)
     );
-    if [[ -n \${NEW_ENV[@]} ]]; then \
+    if [[ -n \${NEW_ENV[*]} ]]; then \
         declare -p \${NEW_ENV[@]} >> "${bwrapenv}"; \
     fi; \
 fi && ignore_stack=true && exit \$FUNCSTATUS
