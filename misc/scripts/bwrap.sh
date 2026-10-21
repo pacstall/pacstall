@@ -61,7 +61,7 @@ mapfile -t NEW_ENV < <(
     <(printf '%s\n' "\${__OLD_ENV[@]}" | sort) \
     <(compgen -A variable | sort)
 )
-if [[ -n \${NEW_ENV[@]} ]]; then
+if [[ -n \${NEW_ENV[*]} ]]; then
     declare -p \${NEW_ENV[@]} >> "${bwrapenv}"
 fi
 declare -pf >> "${bwrapenv}"
