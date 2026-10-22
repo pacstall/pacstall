@@ -61,7 +61,9 @@ mapfile -t NEW_ENV < <(
     <(printf '%s\n' "\${__OLD_ENV[@]}" | sort) \
     <(compgen -A variable | sort)
 )
-((\${#NEW_ENV[@]} != 0)) && declare -p \${NEW_ENV[@]} >> "${bwrapenv}"
+if [[ -n \${NEW_ENV[*]} ]]; then
+    declare -p \${NEW_ENV[@]} >> "${bwrapenv}"
+fi
 declare -pf >> "${bwrapenv}"
 echo > "${safeenv}"
 for i in {${allvar_str}}; do
@@ -115,7 +117,9 @@ if [[ \$FUNCSTATUS ]]; then \
         <(printf '%s\n' "\${OLD_ENV[@]}" | sort) \
         <(compgen -A variable | sort)
     );
-    ((\${#NEW_ENV[@]} != 0)) && declare -p \${NEW_ENV[@]} >> "${bwrapenv}"; \
+    if [[ -n \${NEW_ENV[*]} ]]; then \
+        declare -p \${NEW_ENV[@]} >> "${bwrapenv}"; \
+    fi; \
 fi && ignore_stack=true && exit \$FUNCSTATUS
 EOF
     sudo chmod +x "$tmpfile"
