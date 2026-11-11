@@ -17,8 +17,8 @@ msgid "'%s' must be an unsigned integer"
 msgstr "'%s' повинен бути цілим числом без знака"
 
 #: pacstall:306 misc/scripts/build.sh:163 misc/scripts/build.sh:672
-#: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:784
-#: misc/scripts/fetch-sources.sh:814 misc/scripts/package-base.sh:173
+#: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:791
+#: misc/scripts/fetch-sources.sh:821 misc/scripts/package-base.sh:173
 #: misc/scripts/package-base.sh:194
 msgid "Cleaning up"
 msgstr "Прибирання"
@@ -51,7 +51,7 @@ msgstr "Помилка з http-кодом %s"
 msgid "Confirm that '%b' is accessible"
 msgstr "Переконайтеся, що '%b' доступний"
 
-#: pacstall:695 misc/scripts/package.sh:404 misc/scripts/package.sh:419
+#: pacstall:695 misc/scripts/package.sh:397 misc/scripts/package.sh:414
 #: misc/scripts/update.sh:47
 msgid "Could not enter into %s"
 msgstr "Не вдалося увійти в %s"
@@ -287,27 +287,27 @@ msgid "Could not find srcinfo.sh"
 msgstr "Не вдалося знайти srcinfo.sh"
 
 #: misc/scripts/build.sh:95 misc/scripts/build.sh:100
-#: misc/scripts/fetch-sources.sh:736 misc/scripts/fetch-sources.sh:749
-#: misc/scripts/package.sh:240
+#: misc/scripts/fetch-sources.sh:743 misc/scripts/fetch-sources.sh:756
+#: misc/scripts/package.sh:233
 msgid "%b [required]"
 msgstr "%b [необхідний]"
 
-#: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:743
+#: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:750
 msgid "%b [remote]"
 msgstr "%b [віддалений]"
 
-#: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:745
-#: misc/scripts/package.sh:235
+#: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:752
+#: misc/scripts/package.sh:228
 msgid "%b [installed]"
 msgstr "%b [встановлений]"
 
 #: misc/scripts/build.sh:156 misc/scripts/build.sh:176
-#: misc/scripts/fetch-sources.sh:773 misc/scripts/fetch-sources.sh:807
+#: misc/scripts/fetch-sources.sh:780 misc/scripts/fetch-sources.sh:814
 msgid "%b does not exist in apt repositories"
 msgstr "%b не знайдено в репозиторіях apt"
 
 #: misc/scripts/build.sh:160 misc/scripts/build.sh:180
-#: misc/scripts/fetch-sources.sh:811
+#: misc/scripts/fetch-sources.sh:818
 msgid "%b version(s) cannot be satisfied"
 msgstr "Версія(ї) %b не відповідає(ють) вимогам"
 
@@ -376,13 +376,13 @@ msgstr "Переміщення %b до %b"
 msgid "Repacking %b"
 msgstr "Перепакування %b"
 
-#: misc/scripts/bwrap.sh:123
+#: misc/scripts/bwrap.sh:127
 msgid "Running %s"
 msgstr "Виконання %s"
 
 #: misc/scripts/checks.sh:33 misc/scripts/checks.sh:127
 #: misc/scripts/checks.sh:175 misc/scripts/checks.sh:228
-#: misc/scripts/checks.sh:579
+#: misc/scripts/checks.sh:545
 msgid "Package does not contain '%s'"
 msgstr "Пакет не містить '%s'"
 
@@ -430,7 +430,7 @@ msgstr ""
 "крапками"
 
 #: misc/scripts/checks.sh:92 misc/scripts/checks.sh:107
-#: misc/scripts/checks.sh:648
+#: misc/scripts/checks.sh:614
 msgid "'%s' is empty"
 msgstr "'%s' порожній"
 
@@ -450,11 +450,10 @@ msgstr "Файли .deb можуть бути надані тільки як о�
 msgid "Package does not have a maintainer. Please be advised"
 msgstr "Цей пакет не має супроводжувача. Будь ласка, зверніть на це увагу"
 
-#: misc/scripts/checks.sh:282 misc/scripts/checks.sh:309
-#: misc/scripts/checks.sh:359 misc/scripts/checks.sh:402
-#: misc/scripts/checks.sh:527 misc/scripts/checks.sh:550
-#: misc/scripts/checks.sh:584 misc/scripts/checks.sh:621
-#: misc/scripts/checks.sh:670
+#: misc/scripts/checks.sh:282 misc/scripts/checks.sh:325
+#: misc/scripts/checks.sh:368 misc/scripts/checks.sh:493
+#: misc/scripts/checks.sh:516 misc/scripts/checks.sh:550
+#: misc/scripts/checks.sh:587 misc/scripts/checks.sh:636
 msgid "'%s' index '%s' cannot be empty"
 msgstr "'%s' індекс '%s' не може бути порожнім"
 
@@ -462,27 +461,19 @@ msgstr "'%s' індекс '%s' не може бути порожнім"
 msgid "'%s' index '%s' is not formatted correctly"
 msgstr "'%s' індекс '%s' не відформатований правильно"
 
-#: misc/scripts/checks.sh:320
-msgid "'%s' index '%s' cannot start with %s"
-msgstr "'%s' індекс '%s' не може починатися з %s"
-
-#: misc/scripts/checks.sh:328
-msgid "%s index '%s' is improperly formatted"
-msgstr "%s індекс '%s' має неправильний формат"
-
-#: misc/scripts/checks.sh:407
+#: misc/scripts/checks.sh:373
 msgid "'%s' is already used as a field in pacstall"
 msgstr "'%s' вже використовується як поле в pacstall"
 
-#: misc/scripts/checks.sh:410
+#: misc/scripts/checks.sh:376
 msgid "'%s' custom field cannot contain a space in field name"
 msgstr "Поле '%s' не може містити пробіл у назві поля"
 
-#: misc/scripts/checks.sh:413
+#: misc/scripts/checks.sh:379
 msgid "'%s' custom field cannot contain a number in field name"
 msgstr "Поле '%s' не може містити цифру у назві поля"
 
-#: misc/scripts/checks.sh:416
+#: misc/scripts/checks.sh:382
 msgid ""
 "'%s' custom field must capitalize only the first letter of each word in "
 "field name"
@@ -490,47 +481,47 @@ msgstr ""
 "У полі '%s' великою літерою має бути написана лише перша літера кожного "
 "слова в назві поля"
 
-#: misc/scripts/checks.sh:419
+#: misc/scripts/checks.sh:385
 msgid "'%s' custom field cannot start or end with a hyphen"
 msgstr "Поле '%s' не може починатися або закінчуватися дефісом"
 
-#: misc/scripts/checks.sh:444 misc/scripts/checks.sh:469
-#: misc/scripts/checks.sh:477
+#: misc/scripts/checks.sh:410 misc/scripts/checks.sh:435
+#: misc/scripts/checks.sh:443
 msgid "Only one checksum method can be provided for hashes"
 msgstr ""
 "Для хеш-функції можна вказати тільки один метод перевірки контрольної суми"
 
-#: misc/scripts/checks.sh:505 misc/scripts/checks.sh:635
+#: misc/scripts/checks.sh:471 misc/scripts/checks.sh:601
 msgid "'%s' is improperly formatted"
 msgstr "'%s' має неправильний формат"
 
-#: misc/scripts/checks.sh:520 misc/scripts/checks.sh:543
+#: misc/scripts/checks.sh:486 misc/scripts/checks.sh:509
 msgid "'%s' and '%s' indices cannot both be provided"
 msgstr "Індекси '%s' та '%s' не можуть бути вказані одночасно"
 
-#: misc/scripts/checks.sh:535 misc/scripts/checks.sh:558
+#: misc/scripts/checks.sh:501 misc/scripts/checks.sh:524
 msgid "'%s' index '%s' is improperly formatted"
 msgstr "'%s' індекс '%s' має неправильний формат"
 
-#: misc/scripts/checks.sh:595
+#: misc/scripts/checks.sh:561
 msgid "'%s' is not a valid architecture"
 msgstr "'%s' не є дійсною архітектурою"
 
-#: misc/scripts/checks.sh:608
+#: misc/scripts/checks.sh:574
 msgid "cannot use both Debian and Arch style naming in '%s' array"
 msgstr ""
 "У масиві '%s' не можна одночасно використовувати іменування в стилі Debian і "
 "Arch"
 
-#: misc/scripts/checks.sh:651
+#: misc/scripts/checks.sh:617
 msgid "'%s' must be either: '%s', '%s', '%s', '%s', or '%s'"
 msgstr "'%s' має бути одним із таких значень: '%s', '%s', '%s', '%s' або '%s'"
 
-#: misc/scripts/checks.sh:676
+#: misc/scripts/checks.sh:642
 msgid "'%s' is not a valid license"
 msgstr "'%s' не є дійсною ліцензією"
 
-#: misc/scripts/checks.sh:690
+#: misc/scripts/checks.sh:656
 msgid "'%s' must be prefixed with a constraint (<=|>=|=|<|>)"
 msgstr "Перед '%s' повинен стояти оператор обмеження (<=|>=|=|<|>)"
 
@@ -620,11 +611,11 @@ msgstr "Виконання хука %s"
 msgid "Could not run %s hook successfully"
 msgstr "Не вдалося успішно виконати хук %s"
 
-#: misc/scripts/fetch-sources.sh:373 misc/scripts/package.sh:414
+#: misc/scripts/fetch-sources.sh:373 misc/scripts/package.sh:409
 msgid "Performing post install operations"
 msgstr "Виконання операцій після встановлення"
 
-#: misc/scripts/fetch-sources.sh:389 misc/scripts/package.sh:415
+#: misc/scripts/fetch-sources.sh:389 misc/scripts/package.sh:410
 msgid "Storing pacscript"
 msgstr "Зберігання pacscript"
 
@@ -632,7 +623,7 @@ msgstr "Зберігання pacscript"
 msgid "Could not enter into %b"
 msgstr "Не вдалося увійти в %b"
 
-#: misc/scripts/fetch-sources.sh:400 misc/scripts/package.sh:429
+#: misc/scripts/fetch-sources.sh:400 misc/scripts/package.sh:424
 msgid "Done installing %b"
 msgstr "Завершено встановлення %b"
 
@@ -644,49 +635,49 @@ msgstr "Не вдалося встановити пакет"
 msgid "Copying local archive %b"
 msgstr "Копіювання локального архіву %b"
 
-#: misc/scripts/fetch-sources.sh:619 misc/scripts/fetch-sources.sh:667
-#: misc/scripts/fetch-sources.sh:678 misc/scripts/fetch-sources.sh:688
-#: misc/scripts/fetch-sources.sh:721
+#: misc/scripts/fetch-sources.sh:620 misc/scripts/fetch-sources.sh:673
+#: misc/scripts/fetch-sources.sh:684 misc/scripts/fetch-sources.sh:694
+#: misc/scripts/fetch-sources.sh:728
 msgid "This Pacscript does not work on %b"
 msgstr "Цей Pacscript не працює на %b"
 
-#: misc/scripts/fetch-sources.sh:665 misc/scripts/fetch-sources.sh:676
-#: misc/scripts/fetch-sources.sh:686
+#: misc/scripts/fetch-sources.sh:671 misc/scripts/fetch-sources.sh:682
+#: misc/scripts/fetch-sources.sh:692
 #, fuzzy
 #| msgid "This Pacscript does not work on %b"
 msgid "This Pacscript does not work on %b: %b"
 msgstr "Цей Pacscript не працює на %b"
 
-#: misc/scripts/fetch-sources.sh:709
+#: misc/scripts/fetch-sources.sh:716
 msgid "This package is for %b, which is a foreign architecture"
 msgstr "Цей пакет призначений для %b, що є сторонньою архітектурою"
 
-#: misc/scripts/fetch-sources.sh:758
+#: misc/scripts/fetch-sources.sh:765
 msgid "Checking build dependencies"
 msgstr "Перевірка залежностей збірки"
 
-#: misc/scripts/fetch-sources.sh:778
+#: misc/scripts/fetch-sources.sh:785
 msgid "%b versions cannot be satisfied"
 msgstr "Неможливо задовольнити вимоги для версії %b"
 
-#: misc/scripts/fetch-sources.sh:780
+#: misc/scripts/fetch-sources.sh:787
 msgid "%b version cannot be satisfied"
 msgstr "Неможливо задовольнити вимогу для версії %b"
 
-#: misc/scripts/fetch-sources.sh:792
+#: misc/scripts/fetch-sources.sh:799
 msgid "Checking check dependencies"
 msgstr "Перевірка взаємозалежностей"
 
-#: misc/scripts/fetch-sources.sh:833
+#: misc/scripts/fetch-sources.sh:840
 msgid "Creating build dependency/conflicts dummy package"
 msgstr ""
 "Створення фіктивного пакета для перевірки залежностей/конфліктів збірки"
 
-#: misc/scripts/fetch-sources.sh:848
+#: misc/scripts/fetch-sources.sh:855
 msgid "Failed to install build or check dependencies"
 msgstr "Не вдалося виконати збірку або перевірити залежності"
 
-#: misc/scripts/fetch-sources.sh:946
+#: misc/scripts/fetch-sources.sh:953
 msgid "Kernel version constraint for this Pacscript not satisfied: %b"
 msgstr "Вимоги до версії ядра для цього Pacscript не виконано: %b"
 
@@ -814,31 +805,31 @@ msgstr "%b порушує пакет %s, встановлений в даний 
 msgid "%b breaks %s, which is currently installed by pacstall"
 msgstr "%b порушує пакет %s, встановлений в даний момент за допомогою pacstall"
 
-#: misc/scripts/package.sh:209
+#: misc/scripts/package.sh:202
 msgid "Checking pacstall dependencies"
 msgstr "Перевірка залежностей pacstall"
 
-#: misc/scripts/package.sh:228
+#: misc/scripts/package.sh:221
 msgid "%b [update]"
 msgstr "%b [оновлений]"
 
-#: misc/scripts/package.sh:230 misc/scripts/package.sh:241
+#: misc/scripts/package.sh:223 misc/scripts/package.sh:234
 msgid "Failed to install dependency (%s from %s)"
 msgstr "Не вдалося встановити залежність (%s з %s)"
 
-#: misc/scripts/package.sh:255
+#: misc/scripts/package.sh:248
 msgid "%s is associated with multiple source entries"
 msgstr "%s пов'язаний з декількома джерелами"
 
-#: misc/scripts/package.sh:289
+#: misc/scripts/package.sh:282
 msgid "Retrieving packages"
 msgstr "Отримання пакетів"
 
-#: misc/scripts/package.sh:391
+#: misc/scripts/package.sh:384
 msgid "Running functions"
 msgstr "Виконання функцій"
 
-#: misc/scripts/package.sh:396
+#: misc/scripts/package.sh:389
 msgid "Could not %s %s properly"
 msgstr "Не вдалося виконати належним чином %s %s"
 
@@ -870,20 +861,13 @@ msgstr "Резервне копіювання %b"
 msgid "Installing %b"
 msgstr "Встановлення %b"
 
-#: misc/scripts/query-info.sh:102
+#: misc/scripts/query-info.sh:99
 msgid "Key '%s' does not exist"
 msgstr "Ключ '%s' не існує"
 
 #: misc/scripts/remove.sh:29 misc/scripts/remove.sh:34
 msgid "%s is not installed"
 msgstr "%s не встановлено"
-
-#: misc/scripts/remove.sh:45
-msgid ""
-"You may have dangling PPAs on your system. You can remove them using '%b'"
-msgstr ""
-"У вашій системі можуть знаходитися недіючі PPA. Ви можете видалити їх за "
-"допомогою команди '%b'"
 
 #: misc/scripts/search.sh:256 misc/scripts/search.sh:258
 #: misc/scripts/search.sh:290
@@ -994,3 +978,15 @@ msgstr "Пакети можна оновити"
 #: misc/scripts/upgrade.sh:287
 msgid "Do you want to upgrade %b?"
 msgstr "Ви хочете оновити %b?"
+
+#~ msgid "'%s' index '%s' cannot start with %s"
+#~ msgstr "'%s' індекс '%s' не може починатися з %s"
+
+#~ msgid "%s index '%s' is improperly formatted"
+#~ msgstr "%s індекс '%s' має неправильний формат"
+
+#~ msgid ""
+#~ "You may have dangling PPAs on your system. You can remove them using '%b'"
+#~ msgstr ""
+#~ "У вашій системі можуть знаходитися недіючі PPA. Ви можете видалити їх за "
+#~ "допомогою команди '%b'"

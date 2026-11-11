@@ -16,8 +16,8 @@ msgid "'%s' must be an unsigned integer"
 msgstr "'%s' harus berupa bilangan bulat tak bertanda"
 
 #: pacstall:306 misc/scripts/build.sh:163 misc/scripts/build.sh:672
-#: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:784
-#: misc/scripts/fetch-sources.sh:814 misc/scripts/package-base.sh:173
+#: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:791
+#: misc/scripts/fetch-sources.sh:821 misc/scripts/package-base.sh:173
 #: misc/scripts/package-base.sh:194
 msgid "Cleaning up"
 msgstr "Membersihkan"
@@ -50,7 +50,7 @@ msgstr "Gagal dengan kode http %s"
 msgid "Confirm that '%b' is accessible"
 msgstr "Pastikan bahwa '%b' dapat diakses"
 
-#: pacstall:695 misc/scripts/package.sh:404 misc/scripts/package.sh:419
+#: pacstall:695 misc/scripts/package.sh:397 misc/scripts/package.sh:414
 #: misc/scripts/update.sh:47
 msgid "Could not enter into %s"
 msgstr "Tidak dapat memasuki %s"
@@ -286,27 +286,27 @@ msgid "Could not find srcinfo.sh"
 msgstr "Tidak dapat menemukan srcinfo.sh"
 
 #: misc/scripts/build.sh:95 misc/scripts/build.sh:100
-#: misc/scripts/fetch-sources.sh:736 misc/scripts/fetch-sources.sh:749
-#: misc/scripts/package.sh:240
+#: misc/scripts/fetch-sources.sh:743 misc/scripts/fetch-sources.sh:756
+#: misc/scripts/package.sh:233
 msgid "%b [required]"
 msgstr "%b [diperlukan]"
 
-#: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:743
+#: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:750
 msgid "%b [remote]"
 msgstr "%b [remot]"
 
-#: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:745
-#: misc/scripts/package.sh:235
+#: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:752
+#: misc/scripts/package.sh:228
 msgid "%b [installed]"
 msgstr "%b [terinstal]"
 
 #: misc/scripts/build.sh:156 misc/scripts/build.sh:176
-#: misc/scripts/fetch-sources.sh:773 misc/scripts/fetch-sources.sh:807
+#: misc/scripts/fetch-sources.sh:780 misc/scripts/fetch-sources.sh:814
 msgid "%b does not exist in apt repositories"
 msgstr "%b tidak dapat ditemukan di repositori apt"
 
 #: misc/scripts/build.sh:160 misc/scripts/build.sh:180
-#: misc/scripts/fetch-sources.sh:811
+#: misc/scripts/fetch-sources.sh:818
 msgid "%b version(s) cannot be satisfied"
 msgstr "Versi %b tidak dapat dipenuhi"
 
@@ -374,13 +374,13 @@ msgstr "Memindahkan %b ke %b"
 msgid "Repacking %b"
 msgstr "Mengemas ulang %b"
 
-#: misc/scripts/bwrap.sh:123
+#: misc/scripts/bwrap.sh:127
 msgid "Running %s"
 msgstr "Menjalankan %s"
 
 #: misc/scripts/checks.sh:33 misc/scripts/checks.sh:127
 #: misc/scripts/checks.sh:175 misc/scripts/checks.sh:228
-#: misc/scripts/checks.sh:579
+#: misc/scripts/checks.sh:545
 msgid "Package does not contain '%s'"
 msgstr "Paket tidak berisikan dengan '%s'"
 
@@ -425,7 +425,7 @@ msgid ""
 msgstr "'%s' berisi karakter yang bukan huruf kecil, angka, minus, atau titik"
 
 #: misc/scripts/checks.sh:92 misc/scripts/checks.sh:107
-#: misc/scripts/checks.sh:648
+#: misc/scripts/checks.sh:614
 msgid "'%s' is empty"
 msgstr "'%s' kosong"
 
@@ -445,11 +445,10 @@ msgstr "File .deb hanya dapat disediakan sebagai '%s' tunggal"
 msgid "Package does not have a maintainer. Please be advised"
 msgstr "Paket tidak memiliki pengelola. Harap diperhatikan"
 
-#: misc/scripts/checks.sh:282 misc/scripts/checks.sh:309
-#: misc/scripts/checks.sh:359 misc/scripts/checks.sh:402
-#: misc/scripts/checks.sh:527 misc/scripts/checks.sh:550
-#: misc/scripts/checks.sh:584 misc/scripts/checks.sh:621
-#: misc/scripts/checks.sh:670
+#: misc/scripts/checks.sh:282 misc/scripts/checks.sh:325
+#: misc/scripts/checks.sh:368 misc/scripts/checks.sh:493
+#: misc/scripts/checks.sh:516 misc/scripts/checks.sh:550
+#: misc/scripts/checks.sh:587 misc/scripts/checks.sh:636
 msgid "'%s' index '%s' cannot be empty"
 msgstr "'%s' index '%s' tidak boleh kosong"
 
@@ -457,27 +456,19 @@ msgstr "'%s' index '%s' tidak boleh kosong"
 msgid "'%s' index '%s' is not formatted correctly"
 msgstr "'%s' index '%s' tidak diformat dengan benar"
 
-#: misc/scripts/checks.sh:320
-msgid "'%s' index '%s' cannot start with %s"
-msgstr "'%s' index '%s' tidak boleh berawalan %s"
-
-#: misc/scripts/checks.sh:328
-msgid "%s index '%s' is improperly formatted"
-msgstr "%s index '%s' tidak diformat dengan benar"
-
-#: misc/scripts/checks.sh:407
+#: misc/scripts/checks.sh:373
 msgid "'%s' is already used as a field in pacstall"
 msgstr "'%s' sudah digunakan sebagai bidang di pacstall"
 
-#: misc/scripts/checks.sh:410
+#: misc/scripts/checks.sh:376
 msgid "'%s' custom field cannot contain a space in field name"
 msgstr "Bidang kustom '%s' tidak boleh berisi spasi pada nama bidang"
 
-#: misc/scripts/checks.sh:413
+#: misc/scripts/checks.sh:379
 msgid "'%s' custom field cannot contain a number in field name"
 msgstr "Bidang kustom '%s' tidak dapat berisi angka dalam nama bidang"
 
-#: misc/scripts/checks.sh:416
+#: misc/scripts/checks.sh:382
 msgid ""
 "'%s' custom field must capitalize only the first letter of each word in "
 "field name"
@@ -485,45 +476,45 @@ msgstr ""
 "Bidang kustom '%s' harus menggunakan huruf besar hanya pada huruf pertama "
 "dari setiap kata dalam nama bidang"
 
-#: misc/scripts/checks.sh:419
+#: misc/scripts/checks.sh:385
 msgid "'%s' custom field cannot start or end with a hyphen"
 msgstr ""
 "Bidang kustom '%s' tidak boleh berawal atau berakhir dengan tanda hubung"
 
-#: misc/scripts/checks.sh:444 misc/scripts/checks.sh:469
-#: misc/scripts/checks.sh:477
+#: misc/scripts/checks.sh:410 misc/scripts/checks.sh:435
+#: misc/scripts/checks.sh:443
 msgid "Only one checksum method can be provided for hashes"
 msgstr "Hanya satu metode checksum yang dapat disediakan untuk hash"
 
-#: misc/scripts/checks.sh:505 misc/scripts/checks.sh:635
+#: misc/scripts/checks.sh:471 misc/scripts/checks.sh:601
 msgid "'%s' is improperly formatted"
 msgstr "'%s' tidak diformat dengan benar"
 
-#: misc/scripts/checks.sh:520 misc/scripts/checks.sh:543
+#: misc/scripts/checks.sh:486 misc/scripts/checks.sh:509
 msgid "'%s' and '%s' indices cannot both be provided"
 msgstr "Indeks '%s' dan '%s' tidak dapat diberikan"
 
-#: misc/scripts/checks.sh:535 misc/scripts/checks.sh:558
+#: misc/scripts/checks.sh:501 misc/scripts/checks.sh:524
 msgid "'%s' index '%s' is improperly formatted"
 msgstr "'%s' index '%s' tidak diformat dengan benar"
 
-#: misc/scripts/checks.sh:595
+#: misc/scripts/checks.sh:561
 msgid "'%s' is not a valid architecture"
 msgstr "'%s' bukan merupakan arsitektur yang valid"
 
-#: misc/scripts/checks.sh:608
+#: misc/scripts/checks.sh:574
 msgid "cannot use both Debian and Arch style naming in '%s' array"
 msgstr "tidak dapat menggunakan penamaan gaya Debian dan Arch dalam larik '%s'"
 
-#: misc/scripts/checks.sh:651
+#: misc/scripts/checks.sh:617
 msgid "'%s' must be either: '%s', '%s', '%s', '%s', or '%s'"
 msgstr "'%s' harus berupa: '%s', '%s', '%s', '%s', atau '%s'"
 
-#: misc/scripts/checks.sh:676
+#: misc/scripts/checks.sh:642
 msgid "'%s' is not a valid license"
 msgstr "'%s' bukan merupakan lisensi yang valid"
 
-#: misc/scripts/checks.sh:690
+#: misc/scripts/checks.sh:656
 msgid "'%s' must be prefixed with a constraint (<=|>=|=|<|>)"
 msgstr "'%s' harus diawali dengan batasan (<=|>=|=|<|>)"
 
@@ -613,11 +604,11 @@ msgstr "Menjalankan kait %s"
 msgid "Could not run %s hook successfully"
 msgstr "Tidak dapat menjalankan kait %s dengan sukses"
 
-#: misc/scripts/fetch-sources.sh:373 misc/scripts/package.sh:414
+#: misc/scripts/fetch-sources.sh:373 misc/scripts/package.sh:409
 msgid "Performing post install operations"
 msgstr "Menjalankan operasi pasca penginstalan"
 
-#: misc/scripts/fetch-sources.sh:389 misc/scripts/package.sh:415
+#: misc/scripts/fetch-sources.sh:389 misc/scripts/package.sh:410
 msgid "Storing pacscript"
 msgstr "Menyimpan pacscript"
 
@@ -625,7 +616,7 @@ msgstr "Menyimpan pacscript"
 msgid "Could not enter into %b"
 msgstr "Tidak dapat memasuki %b"
 
-#: misc/scripts/fetch-sources.sh:400 misc/scripts/package.sh:429
+#: misc/scripts/fetch-sources.sh:400 misc/scripts/package.sh:424
 msgid "Done installing %b"
 msgstr "Selesai menginstal %b"
 
@@ -637,46 +628,46 @@ msgstr "Gagal menginstal paket"
 msgid "Copying local archive %b"
 msgstr "Menyalin arsip lokal %b"
 
-#: misc/scripts/fetch-sources.sh:619 misc/scripts/fetch-sources.sh:667
-#: misc/scripts/fetch-sources.sh:678 misc/scripts/fetch-sources.sh:688
-#: misc/scripts/fetch-sources.sh:721
+#: misc/scripts/fetch-sources.sh:620 misc/scripts/fetch-sources.sh:673
+#: misc/scripts/fetch-sources.sh:684 misc/scripts/fetch-sources.sh:694
+#: misc/scripts/fetch-sources.sh:728
 msgid "This Pacscript does not work on %b"
 msgstr "Pacscript ini tidak dapat digunakan pada %b"
 
-#: misc/scripts/fetch-sources.sh:665 misc/scripts/fetch-sources.sh:676
-#: misc/scripts/fetch-sources.sh:686
+#: misc/scripts/fetch-sources.sh:671 misc/scripts/fetch-sources.sh:682
+#: misc/scripts/fetch-sources.sh:692
 msgid "This Pacscript does not work on %b: %b"
 msgstr "Pacscript ini tidak dapat digunakan pada %b: %b"
 
-#: misc/scripts/fetch-sources.sh:709
+#: misc/scripts/fetch-sources.sh:716
 msgid "This package is for %b, which is a foreign architecture"
 msgstr "Paket ini untuk %b, yang merupakan arsitektur asing"
 
-#: misc/scripts/fetch-sources.sh:758
+#: misc/scripts/fetch-sources.sh:765
 msgid "Checking build dependencies"
 msgstr "Memeriksa dependensi build"
 
-#: misc/scripts/fetch-sources.sh:778
+#: misc/scripts/fetch-sources.sh:785
 msgid "%b versions cannot be satisfied"
 msgstr "Versi %b tidak dapat dipenuhi"
 
-#: misc/scripts/fetch-sources.sh:780
+#: misc/scripts/fetch-sources.sh:787
 msgid "%b version cannot be satisfied"
 msgstr "Versi %b tidak dapat dipenuhi"
 
-#: misc/scripts/fetch-sources.sh:792
+#: misc/scripts/fetch-sources.sh:799
 msgid "Checking check dependencies"
 msgstr "Memeriksa dependensi check"
 
-#: misc/scripts/fetch-sources.sh:833
+#: misc/scripts/fetch-sources.sh:840
 msgid "Creating build dependency/conflicts dummy package"
 msgstr "Membuat paket dummy dependensi build/konfilk"
 
-#: misc/scripts/fetch-sources.sh:848
+#: misc/scripts/fetch-sources.sh:855
 msgid "Failed to install build or check dependencies"
 msgstr "Gagal menginstal dependensi build atau check"
 
-#: misc/scripts/fetch-sources.sh:946
+#: misc/scripts/fetch-sources.sh:953
 msgid "Kernel version constraint for this Pacscript not satisfied: %b"
 msgstr "Batasan versi kernel untuk Pacscript ini tidak terpenuhi: %b"
 
@@ -805,31 +796,31 @@ msgstr "%b merusak %s, yang saat ini terinstal oleh apt"
 msgid "%b breaks %s, which is currently installed by pacstall"
 msgstr "%b merusak %s, yang saat ini terinstal oleh pacstall"
 
-#: misc/scripts/package.sh:209
+#: misc/scripts/package.sh:202
 msgid "Checking pacstall dependencies"
 msgstr "Memeriksa dependensi pacstall"
 
-#: misc/scripts/package.sh:228
+#: misc/scripts/package.sh:221
 msgid "%b [update]"
 msgstr "%b [pembaruan]"
 
-#: misc/scripts/package.sh:230 misc/scripts/package.sh:241
+#: misc/scripts/package.sh:223 misc/scripts/package.sh:234
 msgid "Failed to install dependency (%s from %s)"
 msgstr "Gagal menginstal dependensi (%s dari %s)"
 
-#: misc/scripts/package.sh:255
+#: misc/scripts/package.sh:248
 msgid "%s is associated with multiple source entries"
 msgstr "%s berkaitan dengan beberapa entri sumber"
 
-#: misc/scripts/package.sh:289
+#: misc/scripts/package.sh:282
 msgid "Retrieving packages"
 msgstr "Mengambil paket"
 
-#: misc/scripts/package.sh:391
+#: misc/scripts/package.sh:384
 msgid "Running functions"
 msgstr "Menjalankan fungsi"
 
-#: misc/scripts/package.sh:396
+#: misc/scripts/package.sh:389
 msgid "Could not %s %s properly"
 msgstr "Tidak dapat %s %s dengan benar"
 
@@ -861,20 +852,13 @@ msgstr "Mencadangkan %b"
 msgid "Installing %b"
 msgstr "Menginstal %b"
 
-#: misc/scripts/query-info.sh:102
+#: misc/scripts/query-info.sh:99
 msgid "Key '%s' does not exist"
 msgstr "Kunci '%s' tidak ada"
 
 #: misc/scripts/remove.sh:29 misc/scripts/remove.sh:34
 msgid "%s is not installed"
 msgstr "%s tidak terinstal"
-
-#: misc/scripts/remove.sh:45
-msgid ""
-"You may have dangling PPAs on your system. You can remove them using '%b'"
-msgstr ""
-"Anda mungkin memiliki PPA yang terkait pada sistem anda. Anda dapat "
-"menghapusnya dengan menggunakan '%b'"
 
 #: misc/scripts/search.sh:256 misc/scripts/search.sh:258
 #: misc/scripts/search.sh:290
@@ -985,6 +969,18 @@ msgstr "Paket dapat diperbarui"
 #: misc/scripts/upgrade.sh:287
 msgid "Do you want to upgrade %b?"
 msgstr "Apakah anda ingin memperbarui %b?"
+
+#~ msgid "'%s' index '%s' cannot start with %s"
+#~ msgstr "'%s' index '%s' tidak boleh berawalan %s"
+
+#~ msgid "%s index '%s' is improperly formatted"
+#~ msgstr "%s index '%s' tidak diformat dengan benar"
+
+#~ msgid ""
+#~ "You may have dangling PPAs on your system. You can remove them using '%b'"
+#~ msgstr ""
+#~ "Anda mungkin memiliki PPA yang terkait pada sistem anda. Anda dapat "
+#~ "menghapusnya dengan menggunakan '%b'"
 
 #~ msgid "Could not enter into the extracted archive"
 #~ msgstr "Tidak dapat memasuki arsip yang diekstrak"

@@ -16,8 +16,8 @@ msgid "'%s' must be an unsigned integer"
 msgstr "'%s' கையொப்பமிடாத முழு எண்ணாக இருக்க வேண்டும்"
 
 #: pacstall:306 misc/scripts/build.sh:163 misc/scripts/build.sh:672
-#: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:784
-#: misc/scripts/fetch-sources.sh:814 misc/scripts/package-base.sh:173
+#: misc/scripts/fetch-sources.sh:175 misc/scripts/fetch-sources.sh:791
+#: misc/scripts/fetch-sources.sh:821 misc/scripts/package-base.sh:173
 #: misc/scripts/package-base.sh:194
 msgid "Cleaning up"
 msgstr "சுத்தமாக்கப்படுகிறது"
@@ -50,7 +50,7 @@ msgstr "HTTP குறியீடு %s உடன் தோல்வியட�
 msgid "Confirm that '%b' is accessible"
 msgstr "'%b' அணுகக்கூடியது என்பதை உறுதிப்படுத்தவும்"
 
-#: pacstall:695 misc/scripts/package.sh:404 misc/scripts/package.sh:419
+#: pacstall:695 misc/scripts/package.sh:397 misc/scripts/package.sh:414
 #: misc/scripts/update.sh:47
 msgid "Could not enter into %s"
 msgstr "%s இல் நுழைய முடியவில்லை"
@@ -282,27 +282,27 @@ msgid "Could not find srcinfo.sh"
 msgstr "srcinfo.sh கண்டுபிடிக்க முடியவில்லை"
 
 #: misc/scripts/build.sh:95 misc/scripts/build.sh:100
-#: misc/scripts/fetch-sources.sh:736 misc/scripts/fetch-sources.sh:749
-#: misc/scripts/package.sh:240
+#: misc/scripts/fetch-sources.sh:743 misc/scripts/fetch-sources.sh:756
+#: misc/scripts/package.sh:233
 msgid "%b [required]"
 msgstr "%b [தேவை]"
 
-#: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:743
+#: misc/scripts/build.sh:107 misc/scripts/fetch-sources.sh:750
 msgid "%b [remote]"
 msgstr "%b [தொலைவு]"
 
-#: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:745
-#: misc/scripts/package.sh:235
+#: misc/scripts/build.sh:109 misc/scripts/fetch-sources.sh:752
+#: misc/scripts/package.sh:228
 msgid "%b [installed]"
 msgstr "%b [நிறுவப்பட்டது]"
 
 #: misc/scripts/build.sh:156 misc/scripts/build.sh:176
-#: misc/scripts/fetch-sources.sh:773 misc/scripts/fetch-sources.sh:807
+#: misc/scripts/fetch-sources.sh:780 misc/scripts/fetch-sources.sh:814
 msgid "%b does not exist in apt repositories"
 msgstr "%b ஆப்ட் வைக்குமிடம்ங்களில் இல்லை"
 
 #: misc/scripts/build.sh:160 misc/scripts/build.sh:180
-#: misc/scripts/fetch-sources.sh:811
+#: misc/scripts/fetch-sources.sh:818
 msgid "%b version(s) cannot be satisfied"
 msgstr "%b பதிப்பு(கள்) திருப்தி அடையவில்லை"
 
@@ -370,13 +370,13 @@ msgstr "%b ஐ %b க்கு நகர்த்துகிறது"
 msgid "Repacking %b"
 msgstr "%b ஐ மீண்டும் அடைக்கின்றது"
 
-#: misc/scripts/bwrap.sh:123
+#: misc/scripts/bwrap.sh:127
 msgid "Running %s"
 msgstr "%s ஐ இயக்குகிறது"
 
 #: misc/scripts/checks.sh:33 misc/scripts/checks.sh:127
 #: misc/scripts/checks.sh:175 misc/scripts/checks.sh:228
-#: misc/scripts/checks.sh:579
+#: misc/scripts/checks.sh:545
 msgid "Package does not contain '%s'"
 msgstr "தொகுப்பில் '%s' இல்லை"
 
@@ -423,7 +423,7 @@ msgstr ""
 "'%s' சிறிய எழுத்துகள், எண்கள், கழித்தல் அல்லது புள்ளிகள் அல்லாத எழுத்துகளைக் கொண்டுள்ளது"
 
 #: misc/scripts/checks.sh:92 misc/scripts/checks.sh:107
-#: misc/scripts/checks.sh:648
+#: misc/scripts/checks.sh:614
 msgid "'%s' is empty"
 msgstr "'%s' காலியாக உள்ளது"
 
@@ -443,11 +443,10 @@ msgstr ".deb கோப்புகளை ஒரு ஒற்றை '%s' ஆக �
 msgid "Package does not have a maintainer. Please be advised"
 msgstr "தொகுப்புக்கு பராமரிப்பாளர் இல்லை. தயவுசெய்து கவனத்தில் கொள்ளவும்"
 
-#: misc/scripts/checks.sh:282 misc/scripts/checks.sh:309
-#: misc/scripts/checks.sh:359 misc/scripts/checks.sh:402
-#: misc/scripts/checks.sh:527 misc/scripts/checks.sh:550
-#: misc/scripts/checks.sh:584 misc/scripts/checks.sh:621
-#: misc/scripts/checks.sh:670
+#: misc/scripts/checks.sh:282 misc/scripts/checks.sh:325
+#: misc/scripts/checks.sh:368 misc/scripts/checks.sh:493
+#: misc/scripts/checks.sh:516 misc/scripts/checks.sh:550
+#: misc/scripts/checks.sh:587 misc/scripts/checks.sh:636
 msgid "'%s' index '%s' cannot be empty"
 msgstr "'%s' குறியீடு '%s' காலியாக இருக்க முடியாது"
 
@@ -455,27 +454,19 @@ msgstr "'%s' குறியீடு '%s' காலியாக இருக்
 msgid "'%s' index '%s' is not formatted correctly"
 msgstr "'%s' குறியீடு '%s' சரியான வடிவத்தில் இல்லை"
 
-#: misc/scripts/checks.sh:320
-msgid "'%s' index '%s' cannot start with %s"
-msgstr "'%s' குறியீடு '%s' %s உடன் தொடங்க முடியாது"
-
-#: misc/scripts/checks.sh:328
-msgid "%s index '%s' is improperly formatted"
-msgstr "%s குறியீடு '%s' தவறான வடிவத்தில் உள்ளது"
-
-#: misc/scripts/checks.sh:407
+#: misc/scripts/checks.sh:373
 msgid "'%s' is already used as a field in pacstall"
 msgstr "'%s' ஏற்கனவே பேக்ஸ்டால்-ல் ஒரு புலமாகப் பயன்படுத்தப்பட்டுள்ளது"
 
-#: misc/scripts/checks.sh:410
+#: misc/scripts/checks.sh:376
 msgid "'%s' custom field cannot contain a space in field name"
 msgstr "'%s' தனிபயன் புலத்தின் பெயரில் இடைவெளி இருக்க முடியாது"
 
-#: misc/scripts/checks.sh:413
+#: misc/scripts/checks.sh:379
 msgid "'%s' custom field cannot contain a number in field name"
 msgstr "'%s' தனிபயன் புலத்தின் பெயரில் எண் இருக்க முடியாது"
 
-#: misc/scripts/checks.sh:416
+#: misc/scripts/checks.sh:382
 msgid ""
 "'%s' custom field must capitalize only the first letter of each word in "
 "field name"
@@ -483,45 +474,45 @@ msgstr ""
 "'%s' தனிபயன் புலத்தின் பெயரில் ஒவ்வொரு வார்த்தையின் முதல் எழுத்து மட்டும் பெரியதாக இருக்க "
 "வேண்டும்"
 
-#: misc/scripts/checks.sh:419
+#: misc/scripts/checks.sh:385
 msgid "'%s' custom field cannot start or end with a hyphen"
 msgstr "'%s' தனிபயன் புலம் ஹைபனுடன் தொடங்கவோ முடிக்கவோ முடியாது"
 
-#: misc/scripts/checks.sh:444 misc/scripts/checks.sh:469
-#: misc/scripts/checks.sh:477
+#: misc/scripts/checks.sh:410 misc/scripts/checks.sh:435
+#: misc/scripts/checks.sh:443
 msgid "Only one checksum method can be provided for hashes"
 msgstr "ஹாஷ்களுக்கு ஒரே ஒரு சரிபார்ப்பு முறை மட்டுமே வழங்கப்பட முடியும்"
 
-#: misc/scripts/checks.sh:505 misc/scripts/checks.sh:635
+#: misc/scripts/checks.sh:471 misc/scripts/checks.sh:601
 msgid "'%s' is improperly formatted"
 msgstr "'%s' தவறான வடிவத்தில் உள்ளது"
 
-#: misc/scripts/checks.sh:520 misc/scripts/checks.sh:543
+#: misc/scripts/checks.sh:486 misc/scripts/checks.sh:509
 msgid "'%s' and '%s' indices cannot both be provided"
 msgstr "'%s' மற்றும் '%s' குறியீடுகள் இரண்டும் வழங்க முடியாது"
 
-#: misc/scripts/checks.sh:535 misc/scripts/checks.sh:558
+#: misc/scripts/checks.sh:501 misc/scripts/checks.sh:524
 msgid "'%s' index '%s' is improperly formatted"
 msgstr "'%s' குறியீடு '%s' தவறான வடிவத்தில் உள்ளது"
 
-#: misc/scripts/checks.sh:595
+#: misc/scripts/checks.sh:561
 msgid "'%s' is not a valid architecture"
 msgstr "'%s' செல்லுபடியாகும் கட்டமைப்பு அல்ல"
 
-#: misc/scripts/checks.sh:608
+#: misc/scripts/checks.sh:574
 msgid "cannot use both Debian and Arch style naming in '%s' array"
 msgstr ""
 "'%s' வரிசையில் Debian மற்றும் Arch பாணி பெயர்களை ஒரே நேரத்தில் பயன்படுத்த முடியாது"
 
-#: misc/scripts/checks.sh:651
+#: misc/scripts/checks.sh:617
 msgid "'%s' must be either: '%s', '%s', '%s', '%s', or '%s'"
 msgstr "'%s' '%s', '%s', '%s', '%s', அல்லது '%s' ஆக இருக்க வேண்டும்"
 
-#: misc/scripts/checks.sh:676
+#: misc/scripts/checks.sh:642
 msgid "'%s' is not a valid license"
 msgstr "'%s' செல்லுபடியாகும் உரிமம் அல்ல"
 
-#: misc/scripts/checks.sh:690
+#: misc/scripts/checks.sh:656
 msgid "'%s' must be prefixed with a constraint (<=|>=|=|<|>)"
 msgstr "'%s' என்பது ஒரு கட்டுப்பாட்டுடன் முன்னொட்டாக இருக்க வேண்டும் (<=|>=|=|<|>)"
 
@@ -611,11 +602,11 @@ msgstr "%s ஹூக் இயக்கப்படுகிறது"
 msgid "Could not run %s hook successfully"
 msgstr "%s ஹூக்கை வெற்றிகரமாக இயக்க முடியவில்லை"
 
-#: misc/scripts/fetch-sources.sh:373 misc/scripts/package.sh:414
+#: misc/scripts/fetch-sources.sh:373 misc/scripts/package.sh:409
 msgid "Performing post install operations"
 msgstr "நிறுவலுக்கு பின் செயல்பாடுகளைச் செய்கிறது"
 
-#: misc/scripts/fetch-sources.sh:389 misc/scripts/package.sh:415
+#: misc/scripts/fetch-sources.sh:389 misc/scripts/package.sh:410
 msgid "Storing pacscript"
 msgstr "பேக்ஸ்ரிப்ட் ஐ சேமிக்கிறது"
 
@@ -623,7 +614,7 @@ msgstr "பேக்ஸ்ரிப்ட் ஐ சேமிக்கிறத�
 msgid "Could not enter into %b"
 msgstr "%b இல் நுழைய முடியவில்லை"
 
-#: misc/scripts/fetch-sources.sh:400 misc/scripts/package.sh:429
+#: misc/scripts/fetch-sources.sh:400 misc/scripts/package.sh:424
 msgid "Done installing %b"
 msgstr "%b நிறுவல் முடிந்தது"
 
@@ -635,48 +626,48 @@ msgstr "தொகுப்பை நிறுவுவதில் தோல்�
 msgid "Copying local archive %b"
 msgstr "உள்ளூர் காப்பகம் %b ஐ நகலெடுக்கிறது"
 
-#: misc/scripts/fetch-sources.sh:619 misc/scripts/fetch-sources.sh:667
-#: misc/scripts/fetch-sources.sh:678 misc/scripts/fetch-sources.sh:688
-#: misc/scripts/fetch-sources.sh:721
+#: misc/scripts/fetch-sources.sh:620 misc/scripts/fetch-sources.sh:673
+#: misc/scripts/fetch-sources.sh:684 misc/scripts/fetch-sources.sh:694
+#: misc/scripts/fetch-sources.sh:728
 msgid "This Pacscript does not work on %b"
 msgstr "இந்த பேக்ஸ்கிரிப்ட் %b இல் வேலை செய்ய முடியவில்லை"
 
-#: misc/scripts/fetch-sources.sh:665 misc/scripts/fetch-sources.sh:676
-#: misc/scripts/fetch-sources.sh:686
+#: misc/scripts/fetch-sources.sh:671 misc/scripts/fetch-sources.sh:682
+#: misc/scripts/fetch-sources.sh:692
 #, fuzzy
 #| msgid "This Pacscript does not work on %b"
 msgid "This Pacscript does not work on %b: %b"
 msgstr "இந்த பேக்ஸ்கிரிப்ட் %b இல் வேலை செய்ய முடியவில்லை"
 
-#: misc/scripts/fetch-sources.sh:709
+#: misc/scripts/fetch-sources.sh:716
 msgid "This package is for %b, which is a foreign architecture"
 msgstr "இந்த தொகுப்பு %b க்கானது, அது ஒரு அயலக வடிவம்"
 
-#: misc/scripts/fetch-sources.sh:758
+#: misc/scripts/fetch-sources.sh:765
 msgid "Checking build dependencies"
 msgstr "கட்டும் சார்புகளை சரிபார்க்கிறது"
 
-#: misc/scripts/fetch-sources.sh:778
+#: misc/scripts/fetch-sources.sh:785
 msgid "%b versions cannot be satisfied"
 msgstr "%b பதிப்புகளைத் திருப்திப்படுத்த முடியாது"
 
-#: misc/scripts/fetch-sources.sh:780
+#: misc/scripts/fetch-sources.sh:787
 msgid "%b version cannot be satisfied"
 msgstr "%b பதிப்பைத் திருப்திப்படுத்த முடியாது"
 
-#: misc/scripts/fetch-sources.sh:792
+#: misc/scripts/fetch-sources.sh:799
 msgid "Checking check dependencies"
 msgstr "சரிபார்ப்பு சார்புகளை சரிபார்க்கிறது"
 
-#: misc/scripts/fetch-sources.sh:833
+#: misc/scripts/fetch-sources.sh:840
 msgid "Creating build dependency/conflicts dummy package"
 msgstr "கட்டு சார்பு/மோதல் போலி தொகுப்பை உருவாக்குதல்"
 
-#: misc/scripts/fetch-sources.sh:848
+#: misc/scripts/fetch-sources.sh:855
 msgid "Failed to install build or check dependencies"
 msgstr "சார்புகளை சரிபார்க்கவோ அல்லது கட்டுதலை நிறுவவோ முடியவில்லை"
 
-#: misc/scripts/fetch-sources.sh:946
+#: misc/scripts/fetch-sources.sh:953
 msgid "Kernel version constraint for this Pacscript not satisfied: %b"
 msgstr "இந்த பேக்ஸ்கிரிப்ட்டிற்கான கர்னல் பதிப்பு கட்டுப்பாடு திருப்தி அடையவில்லை: %b"
 
@@ -804,31 +795,31 @@ msgstr "%b %s யை உடைகிறது, இது தற்போது �
 msgid "%b breaks %s, which is currently installed by pacstall"
 msgstr "%b %s யை உடைகிறது, இது தற்போது பேக்ஸ்டால் வழியாக நிறுவப்பட்டுள்ளது"
 
-#: misc/scripts/package.sh:209
+#: misc/scripts/package.sh:202
 msgid "Checking pacstall dependencies"
 msgstr "பேக்ஸ்டால் சாரபுகளை சரிபார்த்து கொண்டு இருக்கிறது"
 
-#: misc/scripts/package.sh:228
+#: misc/scripts/package.sh:221
 msgid "%b [update]"
 msgstr "%b [மேம்படுத்து]"
 
-#: misc/scripts/package.sh:230 misc/scripts/package.sh:241
+#: misc/scripts/package.sh:223 misc/scripts/package.sh:234
 msgid "Failed to install dependency (%s from %s)"
 msgstr "சாரபுகளை நிறுவ முடியவில்லை (%s இல் %s இலிருந்து)"
 
-#: misc/scripts/package.sh:255
+#: misc/scripts/package.sh:248
 msgid "%s is associated with multiple source entries"
 msgstr "%s பல மூல உள்ளீடுகளுடன் தொடர்புடையது"
 
-#: misc/scripts/package.sh:289
+#: misc/scripts/package.sh:282
 msgid "Retrieving packages"
 msgstr "தொகுப்புகளை மீட்டெடுக்கிறது"
 
-#: misc/scripts/package.sh:391
+#: misc/scripts/package.sh:384
 msgid "Running functions"
 msgstr "இயங்கிக்கொண்டிருக்கும் செயல்பாடு"
 
-#: misc/scripts/package.sh:396
+#: misc/scripts/package.sh:389
 msgid "Could not %s %s properly"
 msgstr "%s %s ஐ சரியாகச் செய்ய முடியவில்லை"
 
@@ -860,18 +851,13 @@ msgstr "காப்பு நகல் எடுத்துக்கொண்�
 msgid "Installing %b"
 msgstr "%b நிறுவிக்கொண்டு இருக்கிறது"
 
-#: misc/scripts/query-info.sh:102
+#: misc/scripts/query-info.sh:99
 msgid "Key '%s' does not exist"
 msgstr "%s இல்லை"
 
 #: misc/scripts/remove.sh:29 misc/scripts/remove.sh:34
 msgid "%s is not installed"
 msgstr "%s நிறுவபடவில்லை"
-
-#: misc/scripts/remove.sh:45
-msgid ""
-"You may have dangling PPAs on your system. You can remove them using '%b'"
-msgstr "உங்களிடம் தொங்கும் PPAகள் உள்ளன. நீங்கள் அவைகளை '%b' உபயோகிப்பதன் மூலம் நீக்கலாம்"
 
 #: misc/scripts/search.sh:256 misc/scripts/search.sh:258
 #: misc/scripts/search.sh:290
@@ -982,3 +968,13 @@ msgstr "மேம்படுத்த கூடிய தொகுப்பு�
 #: misc/scripts/upgrade.sh:287
 msgid "Do you want to upgrade %b?"
 msgstr "நீங்கள் %b மேம்படுத்த போகிறீர்களா?"
+
+#~ msgid "'%s' index '%s' cannot start with %s"
+#~ msgstr "'%s' குறியீடு '%s' %s உடன் தொடங்க முடியாது"
+
+#~ msgid "%s index '%s' is improperly formatted"
+#~ msgstr "%s குறியீடு '%s' தவறான வடிவத்தில் உள்ளது"
+
+#~ msgid ""
+#~ "You may have dangling PPAs on your system. You can remove them using '%b'"
+#~ msgstr "உங்களிடம் தொங்கும் PPAகள் உள்ளன. நீங்கள் அவைகளை '%b' உபயோகிப்பதன் மூலம் நீக்கலாம்"
