@@ -33,7 +33,7 @@
 # @arg $1 string A versioned string.
 function dep_const.apt_compare_to_constraints() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    local compare_pkg="${1}" split_up=() pkg_version pkg_versions stripped ret=1 const_arch compare_type
+    local compare_pkg="${1}" split_up=() pkg_version pkg_versions stripped ret=1 const_arch compare_type version
     dep_const.strip_description "${compare_pkg}" stripped
     dep_const.split_name_and_version "${stripped}" split_up
     if ((${#split_up[@]} == 1)); then
@@ -60,27 +60,32 @@ function dep_const.apt_compare_to_constraints() {
         if [[ -n ${pkg_version} ]]; then
             { dpkg --compare-versions "${pkg_version}" "${compare_type}" "${split_up[1]}"; ret=$?; }
         else
-            mapfile -t pkg_versions < <(aptitude search --quiet --disable-columns "?provides(^${split_up[0]%:*}$)?architecture(${const_arch})" -F "%V" \
-                | while read -r line; do
-                    if dpkg --compare-versions "${line}" "${compare_type}" "${split_up[1]}"; then
-                        echo "${line}"
-                    fi
-                done)
-            if [[ -n ${pkg_versions[*]} ]]; then
-                # let apt pick which one, we don't care, as long as the constraint was satisfied
-                ret=0
-            else
-                mapfile -t pkg_versions < <(aptitude search --quiet --disable-columns "?provides(^${split_up[0]%:*}$)?architecture(all)" -F "%V" \
-                    | while read -r line; do
-                        if dpkg --compare-versions "${line}" "${compare_type}" "${split_up[1]}"; then
-                            echo "${line}"
-                        fi
-                    done)
-                if [[ -n ${pkg_versions[*]} ]]; then
+            mapfile -t pkg_versions < <(
+                aptitude search --quiet --disable-columns \
+                    "?provides(^${split_up[0]%:*}$)?architecture(${const_arch})" \
+                    -F "%V"
+            )
+
+            for version in "${pkg_versions[@]}"; do
+                if dpkg --compare-versions "$version" "$compare_type" "${split_up[1]}"; then
                     ret=0
-                else
-                    ret=1
+                    break
                 fi
+            done
+
+            if ((ret != 0)); then
+                mapfile -t pkg_versions < <(
+                    aptitude search --quiet --disable-columns \
+                        "?provides(^${split_up[0]%:*}$)?architecture(all)" \
+                        -F "%V"
+                )
+
+                for version in "${pkg_versions[@]}"; do
+                    if dpkg --compare-versions "$version" "$compare_type" "${split_up[1]}"; then
+                        ret=0
+                        break
+                    fi
+                done
             fi
         fi
     fi
@@ -184,10 +189,9 @@ function dep_const.get_pipe() {
                 echo "${pkg}"
                 return 0
             else
-                if [[ -n "$(aptitude search --quiet --disable-columns "?exact-name(${check_name[0]%:*})?architecture(${pipe_arch})" -F "%p")" || \
-                    -n "$(aptitude search --quiet --disable-columns "?exact-name(${check_name[0]%:*})?architecture(all)" -F "%p")" || \
-                    -n "$(aptitude search --quiet --disable-columns "?provides(^${check_name[0]%:*}$)?architecture(${pipe_arch})" -F "%p")" || \
-                    -n "$(aptitude search --quiet --disable-columns "?provides(^${check_name[0]%:*}$)?architecture(all)" -F "%p")" ]]; then
+                if aptitude search --quiet --disable-columns \
+    "?or(?or(?exact-name(${check_name[0]%:*})?architecture(${pipe_arch}),?exact-name(${check_name[0]%:*})?architecture(all)),?or(?provides(^${check_name[0]%:*}$)?architecture(${pipe_arch}),?provides(^${check_name[0]%:*}$)?architecture(all)))" \
+                -F "%p" | grep -q .; then
                     viable_packages+=("${pkg}")
                 fi
             fi
@@ -265,7 +269,7 @@ function dep_const.format_version() {
 
 function dep_const.is_pipe() {
     { ignore_stack=false; set -o pipefail; trap stacktrace ERR RETURN; }
-    if perl -ne 'exit 1 unless /^(?:[^\s|:]+(?::[^\s|:]+)?\s\|\s)+[^\s|:]+(?::[^\s|:]+)?(?::\s[^|:]+)?(?<!\s)$/' <<< "$1"; then
+    if [[ $1 =~ ^([^[:space:]:|]+(:[^[:space:]:|]+)?[[:space:]]\|[[:space:]])+[^[:space:]:|]+(:[^[:space:]:|]+)?(: [^|:]*[^[:space:]:|])?$ ]]; then
         return 0
     else
         { ignore_stack=true; return 1; }
